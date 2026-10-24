@@ -1,0 +1,192 @@
+{
+  "schema": "ADA_ACTUAL_LOADED_LEGACY_DRIVER_MAP_CANDIDATE_V1",
+  "binary": "/data/c16/ada_trace_extensions_v8_20261024_v1/legacy_driver_prepare_v1/legacy_jit_host",
+  "binary_sha256": "d0a097b169e4e7d6fcecf9d87017b166a797af139ba9c259e3570df034e752d4",
+  "input_ptx_sha256": "78dc27bd93db5c5c71c8ce6fd1cbd801ac9e2ea22d15f2f6dd88699f9238273b",
+  "input_ptx_target": "sm_70",
+  "actual_loaded_cubin_arch": 89,
+  "actual_loaded_cubin_sha256": "41425beaa2ecbd5a0bdc3e3f992bcb8be328c17dce22c9a335d2a280ac399bf1",
+  "nvdisasm_metadata": {
+    "ELF": {
+      "layout-id": 4,
+      "ei_osabi": 65,
+      "ei_abiversion": 8
+    },
+    "SM": {
+      "version": {
+        "major": 8,
+        "minor": 9
+      }
+    },
+    "SchemaVersion": {
+      "major": 12,
+      "minor": 8,
+      "revision": 0
+    },
+    "Producer": "nvdisasm V13.0.85 Build cuda_13.0.r13.0/compiler.36400806_0",
+    "Description": "",
+    ".note.nv.cuinfo": {
+      "nv_note_cuinfo": 2,
+      "nv_note_cuinfo_virt_sm": 70,
+      "nv_note_cuinfo_toolVersion": 130
+    },
+    ".note.nv.tkinfo": {
+      "nv_note_tkinfo": 2,
+      "tki_objFname": "",
+      "tki_toolName": "ptxas",
+      "tki_toolVersion": "Cuda compilation tools, release 13.0, V13.0.100",
+      "tki_toolBranch": "Build system must define TOOLS_VERSION_EXTENDED",
+      "tki_toolOptions": "-arch sm_89 "
+    }
+  },
+  "nvdisasm_binary_sha256": "3c27bded09bd877807207b62db8186a0a9a359d10311ab6e2c885f9b418c9f41",
+  "instructions": [
+    {
+      "function": "jit_leaf",
+      "pc": 0,
+      "sass": "MOV R1, c[0x0][0x28]",
+      "src": [],
+      "dst": [
+        1
+      ]
+    },
+    {
+      "function": "jit_leaf",
+      "pc": 16,
+      "sass": "S2R R2, SR_CTAID.X",
+      "src": [],
+      "dst": [
+        2
+      ]
+    },
+    {
+      "function": "jit_leaf",
+      "pc": 32,
+      "sass": "S2R R3, SR_TID.X",
+      "src": [],
+      "dst": [
+        3
+      ]
+    },
+    {
+      "function": "jit_leaf",
+      "pc": 48,
+      "sass": "IMAD R2, R2, c[0x0][0x0], R3",
+      "src": [
+        2,
+        3
+      ],
+      "dst": [
+        2
+      ]
+    },
+    {
+      "function": "jit_leaf",
+      "pc": 64,
+      "sass": "ISETP.GE.U32.AND P0, PT, R2, c[0x0][0x168], PT",
+      "src": [
+        2
+      ],
+      "dst": [
+        320
+      ]
+    },
+    {
+      "function": "jit_leaf",
+      "pc": 80,
+      "sass": "@P0 EXIT",
+      "src": [
+        320
+      ],
+      "dst": []
+    },
+    {
+      "function": "jit_leaf",
+      "pc": 96,
+      "sass": "MOV R5, 0x11",
+      "src": [],
+      "dst": [
+        5
+      ]
+    },
+    {
+      "function": "jit_leaf",
+      "pc": 112,
+      "sass": "ULDC.64 UR4, c[0x0][0x118]",
+      "src": [],
+      "dst": [
+        260,
+        261
+      ]
+    },
+    {
+      "function": "jit_leaf",
+      "pc": 128,
+      "sass": "MOV R3, 0x4",
+      "src": [],
+      "dst": [
+        3
+      ]
+    },
+    {
+      "function": "jit_leaf",
+      "pc": 144,
+      "sass": "IMAD R5, R2.reuse, R5, 0x5",
+      "src": [
+        2,
+        5
+      ],
+      "dst": [
+        5
+      ]
+    },
+    {
+      "function": "jit_leaf",
+      "pc": 160,
+      "sass": "IMAD.WIDE.U32 R2, R2, R3, c[0x0][0x160]",
+      "src": [
+        2,
+        3
+      ],
+      "dst": [
+        2,
+        3
+      ]
+    },
+    {
+      "function": "jit_leaf",
+      "pc": 176,
+      "sass": "STG.E [R2.64], R5",
+      "src": [
+        2,
+        3,
+        5,
+        260,
+        261
+      ],
+      "dst": []
+    },
+    {
+      "function": "jit_leaf",
+      "pc": 192,
+      "sass": "EXIT",
+      "src": [],
+      "dst": []
+    },
+    {
+      "function": "jit_leaf",
+      "pc": 208,
+      "sass": "BRA 0xd0",
+      "src": [],
+      "dst": []
+    }
+  ],
+  "cubins": [
+    {
+      "name": "actual_driver_jit_sm89.cubin",
+      "sha256": "41425beaa2ecbd5a0bdc3e3f992bcb8be328c17dce22c9a335d2a280ac399bf1",
+      "actual_loaded_not_relabelled": true
+    }
+  ],
+  "mapping_source_dump_status": "NVBit return false but valid closed original ELF independently disassembled; initial tool false-return assumption failure retained"
+}

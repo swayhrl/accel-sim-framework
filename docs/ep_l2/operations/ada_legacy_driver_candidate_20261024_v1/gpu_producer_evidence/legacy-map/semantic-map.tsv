@@ -1,0 +1,14 @@
+jit_leaf	0	1	-	MOV R1, c[0x0][0x28]
+jit_leaf	10	2	-	S2R R2, SR_CTAID.X
+jit_leaf	20	3	-	S2R R3, SR_TID.X
+jit_leaf	30	2	2,3	IMAD R2, R2, c[0x0][0x0], R3
+jit_leaf	40	320	2	ISETP.GE.U32.AND P0, PT, R2, c[0x0][0x168], PT
+jit_leaf	50	-	320	@P0 EXIT
+jit_leaf	60	5	-	MOV R5, 0x11
+jit_leaf	70	260,261	-	ULDC.64 UR4, c[0x0][0x118]
+jit_leaf	80	3	-	MOV R3, 0x4
+jit_leaf	90	5	2,5	IMAD R5, R2.reuse, R5, 0x5
+jit_leaf	a0	2,3	2,3	IMAD.WIDE.U32 R2, R2, R3, c[0x0][0x160]
+jit_leaf	b0	-	2,3,5,260,261	STG.E [R2.64], R5
+jit_leaf	c0	-	-	EXIT
+jit_leaf	d0	-	-	BRA 0xd0

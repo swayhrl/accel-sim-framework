@@ -1,0 +1,74 @@
+/data/c16/ada_trace_extensions_v8_20261024_v1/legacy_driver_prepare_v1/legacy_jit_host.cc: In function ‘int main(int, char**)’:
+/data/c16/ada_trace_extensions_v8_20261024_v1/legacy_driver_prepare_v1/legacy_jit_host.cc:13:16: warning: ‘CUresult cuParamSetv(CUfunction, int, void*, unsigned int)’ is deprecated [-Wdeprecated-declarations]
+   13 |  CK(cuParamSetv(f,0,&p,sizeof(p)));CK(cuParamSeti(f,8,n));CK(cuParamSetSize(f,12));
+      |     ~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/data/c16/ada_trace_extensions_v8_20261024_v1/legacy_driver_prepare_v1/legacy_jit_host.cc:5:32: note: in definition of macro ‘CK’
+    5 | #define CK(x) do { CUresult s=(x); if(s!=CUDA_SUCCESS){const char *e=nullptr;cuGetErrorString(s,&e);fprintf(stderr,"%s: %s\\n",#x,e?e:"unknown");return 2;} } while(0)
+      |                                ^
+In file included from /data/c16/ada_trace_extensions_v8_20261024_v1/legacy_driver_prepare_v1/legacy_jit_host.cc:1:
+/usr/local/cuda-12.8/include/cuda.h:18655:36: note: declared here
+18655 | __CUDA_DEPRECATED CUresult CUDAAPI cuParamSetv(CUfunction hfunc, int offset, void *ptr, unsigned int numbytes);
+      |                                    ^~~~~~~~~~~
+/data/c16/ada_trace_extensions_v8_20261024_v1/legacy_driver_prepare_v1/legacy_jit_host.cc:13:50: warning: ‘CUresult cuParamSeti(CUfunction, int, unsigned int)’ is deprecated [-Wdeprecated-declarations]
+   13 |  CK(cuParamSetv(f,0,&p,sizeof(p)));CK(cuParamSeti(f,8,n));CK(cuParamSetSize(f,12));
+      |                                       ~~~~~~~~~~~^~~~~~~
+/data/c16/ada_trace_extensions_v8_20261024_v1/legacy_driver_prepare_v1/legacy_jit_host.cc:5:32: note: in definition of macro ‘CK’
+    5 | #define CK(x) do { CUresult s=(x); if(s!=CUDA_SUCCESS){const char *e=nullptr;cuGetErrorString(s,&e);fprintf(stderr,"%s: %s\\n",#x,e?e:"unknown");return 2;} } while(0)
+      |                                ^
+/usr/local/cuda-12.8/include/cuda.h:18587:36: note: declared here
+18587 | __CUDA_DEPRECATED CUresult CUDAAPI cuParamSeti(CUfunction hfunc, int offset, unsigned int value);
+      |                                    ^~~~~~~~~~~
+/data/c16/ada_trace_extensions_v8_20261024_v1/legacy_driver_prepare_v1/legacy_jit_host.cc:13:76: warning: ‘CUresult cuParamSetSize(CUfunction, unsigned int)’ is deprecated [-Wdeprecated-declarations]
+   13 |  CK(cuParamSetv(f,0,&p,sizeof(p)));CK(cuParamSeti(f,8,n));CK(cuParamSetSize(f,12));
+      |                                                              ~~~~~~~~~~~~~~^~~~~~
+/data/c16/ada_trace_extensions_v8_20261024_v1/legacy_driver_prepare_v1/legacy_jit_host.cc:5:32: note: in definition of macro ‘CK’
+    5 | #define CK(x) do { CUresult s=(x); if(s!=CUDA_SUCCESS){const char *e=nullptr;cuGetErrorString(s,&e);fprintf(stderr,"%s: %s\\n",#x,e?e:"unknown");return 2;} } while(0)
+      |                                ^
+/usr/local/cuda-12.8/include/cuda.h:18554:36: note: declared here
+18554 | __CUDA_DEPRECATED CUresult CUDAAPI cuParamSetSize(CUfunction hfunc, unsigned int numbytes);
+      |                                    ^~~~~~~~~~~~~~
+/data/c16/ada_trace_extensions_v8_20261024_v1/legacy_driver_prepare_v1/legacy_jit_host.cc:14:24: warning: ‘CUresult cuFuncSetBlockShape(CUfunction, int, int, int)’ is deprecated [-Wdeprecated-declarations]
+   14 |  CK(cuFuncSetBlockShape(f,!strcmp(mode,"launch")?65:37,1,1));
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/data/c16/ada_trace_extensions_v8_20261024_v1/legacy_driver_prepare_v1/legacy_jit_host.cc:5:32: note: in definition of macro ‘CK’
+    5 | #define CK(x) do { CUresult s=(x); if(s!=CUDA_SUCCESS){const char *e=nullptr;cuGetErrorString(s,&e);fprintf(stderr,"%s: %s\\n",#x,e?e:"unknown");return 2;} } while(0)
+      |                                ^
+/usr/local/cuda-12.8/include/cuda.h:18488:36: note: declared here
+18488 | __CUDA_DEPRECATED CUresult CUDAAPI cuFuncSetBlockShape(CUfunction hfunc, int x, int y, int z);
+      |                                    ^~~~~~~~~~~~~~~~~~~
+/data/c16/ada_trace_extensions_v8_20261024_v1/legacy_driver_prepare_v1/legacy_jit_host.cc:15:24: warning: ‘CUresult cuFuncSetSharedSize(CUfunction, unsigned int)’ is deprecated [-Wdeprecated-declarations]
+   15 |  CK(cuFuncSetSharedSize(f,0));CUstream stream=nullptr;
+      |     ~~~~~~~~~~~~~~~~~~~^~~~~
+/data/c16/ada_trace_extensions_v8_20261024_v1/legacy_driver_prepare_v1/legacy_jit_host.cc:5:32: note: in definition of macro ‘CK’
+    5 | #define CK(x) do { CUresult s=(x); if(s!=CUDA_SUCCESS){const char *e=nullptr;cuGetErrorString(s,&e);fprintf(stderr,"%s: %s\\n",#x,e?e:"unknown");return 2;} } while(0)
+      |                                ^
+/usr/local/cuda-12.8/include/cuda.h:18522:36: note: declared here
+18522 | __CUDA_DEPRECATED CUresult CUDAAPI cuFuncSetSharedSize(CUfunction hfunc, unsigned int bytes);
+      |                                    ^~~~~~~~~~~~~~~~~~~
+/data/c16/ada_trace_extensions_v8_20261024_v1/legacy_driver_prepare_v1/legacy_jit_host.cc:16:42: warning: ‘CUresult cuLaunchGrid(CUfunction, int, int)’ is deprecated [-Wdeprecated-declarations]
+   16 |  if(!strcmp(mode,"grid")){CK(cuLaunchGrid(f,2,1));}
+      |                              ~~~~~~~~~~~~^~~~~~~
+/data/c16/ada_trace_extensions_v8_20261024_v1/legacy_driver_prepare_v1/legacy_jit_host.cc:5:32: note: in definition of macro ‘CK’
+    5 | #define CK(x) do { CUresult s=(x); if(s!=CUDA_SUCCESS){const char *e=nullptr;cuGetErrorString(s,&e);fprintf(stderr,"%s: %s\\n",#x,e?e:"unknown");return 2;} } while(0)
+      |                                ^
+/usr/local/cuda-12.8/include/cuda.h:18761:36: note: declared here
+18761 | __CUDA_DEPRECATED CUresult CUDAAPI cuLaunchGrid(CUfunction f, int grid_width, int grid_height);
+      |                                    ^~~~~~~~~~~~
+/data/c16/ada_trace_extensions_v8_20261024_v1/legacy_driver_prepare_v1/legacy_jit_host.cc:17:104: warning: ‘CUresult cuLaunchGridAsync(CUfunction, int, int, CUstream)’ is deprecated [-Wdeprecated-declarations]
+   17 |  else if(!strcmp(mode,"grid_async")){CK(cuStreamCreate(&stream,CU_STREAM_DEFAULT));CK(cuLaunchGridAsync(f,2,1,stream));}
+      |                                                                                       ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+/data/c16/ada_trace_extensions_v8_20261024_v1/legacy_driver_prepare_v1/legacy_jit_host.cc:5:32: note: in definition of macro ‘CK’
+    5 | #define CK(x) do { CUresult s=(x); if(s!=CUDA_SUCCESS){const char *e=nullptr;cuGetErrorString(s,&e);fprintf(stderr,"%s: %s\\n",#x,e?e:"unknown");return 2;} } while(0)
+      |                                ^
+/usr/local/cuda-12.8/include/cuda.h:18823:36: note: declared here
+18823 | __CUDA_DEPRECATED CUresult CUDAAPI cuLaunchGridAsync(CUfunction f, int grid_width, int grid_height, CUstream hStream);
+      |                                    ^~~~~~~~~~~~~~~~~
+/data/c16/ada_trace_extensions_v8_20261024_v1/legacy_driver_prepare_v1/legacy_jit_host.cc:18:19: warning: ‘CUresult cuLaunch(CUfunction)’ is deprecated [-Wdeprecated-declarations]
+   18 |  else {CK(cuLaunch(f));}
+      |           ~~~~~~~~^~~
+/data/c16/ada_trace_extensions_v8_20261024_v1/legacy_driver_prepare_v1/legacy_jit_host.cc:5:32: note: in definition of macro ‘CK’
+    5 | #define CK(x) do { CUresult s=(x); if(s!=CUDA_SUCCESS){const char *e=nullptr;cuGetErrorString(s,&e);fprintf(stderr,"%s: %s\\n",#x,e?e:"unknown");return 2;} } while(0)
+      |                                ^
+/usr/local/cuda-12.8/include/cuda.h:18707:36: note: declared here
+18707 | __CUDA_DEPRECATED CUresult CUDAAPI cuLaunch(CUfunction f);
+      |                                    ^~~~~~~~

@@ -1,0 +1,11 @@
+# Typed legacy Driver launch candidate
+
+The old NVBit1771 tracer contained branches for cuLaunch,cuLaunchGrid and cuLaunchGridAsync but decoded launch configuration through a modern cuLaunchKernel parameter layout. The independent candidate uses each actual legacy struct and explicit successful cuFuncSetBlockShape/cuFuncSetSharedSize state. It preserves the old frozen producer55,c8 and v8 tools. It shares one actor/stream guard across modern and legacy launches and verifies direct synchronization returns.
+
+Three actual legacy native/capture pairs and a modern native/capture regression complete the full65-element GPU/CPU reference. All four actual loaded SM89 cubins have SHA41425beaa2ecbd5a0bdc3e3f992bcb8be328c17dce22c9a335d2a280ac399bf1. Grid/Async/modern use2CTA×37threads and45 source records/834 active lanes; cuLaunch uses1CTA×65threads with physical warps32,32,1 and39 records/780 lanes. Every one of65 global store addresses equals a common measured base+4*global_index. Raw/header/config/API pairs and loaded-code hashes are joined independently.
+
+The real Async stream5b8f3b6d54d0 is parsed without truncation. A CPU API probe distinguishes it from5a8f3b6d54d0 with identical low32 bits through parser,actual warp_inst.issue,shd_warp.init and cache_stats keys. This is not a full asynchronous timing or all-memory-path simulation claim.
+
+The new singleCTA65 exact candidate proposes one additional native simulator attempt with expected1040=780source+260internal auxiliary active lanes,325constant lanes,65stores and1CTA/3warps. It is unregistered and unexecuted at this freeze; parent review is required. The campaign currently consumed6/8. The Async producer qualification does not automatically spend a duplicate simulation attempt.
+
+Kernel argument bank0 device bytes are not snapshotted. Source explicitly sets a64-bit pointer at legacy parameter offset0 and uint32 N65 at8,total12 bytes,and checks every API return. This is a source rule with independently measured instruction memory addresses. It is not a complete CUDA input capsule. The profile remains single context/lifetime; generation reuse,Graph,texture/surface,arbitrary legacy ABIs,all-suite admission and hardware timing equivalence remain outside this candidate. Source and failed CPU-build evidence are retained.

@@ -1,0 +1,102 @@
+{
+  "status": "SCOPED_NATIVE_TERMINAL_JOIN_PASS",
+  "uuid": "6de4f2ae916c4d9181c14d55d19f43ba",
+  "raw_sha256": "f5300d3f91e63c0323895f3a4292330b3748397dc313f1395bcd4887cbc38fd8",
+  "spec_sha256": "43d967e3502952cf56e8f5a163e541ac35ded18d8fddcd0c1dcb83ec20832b0a",
+  "all_pins_verified": 95,
+  "source_sass_records": 264,
+  "source_active_lane_instances": 5266,
+  "internal_aux_uops": 16,
+  "internal_aux_active_lane_instances": 296,
+  "gpu_tot_sim_insn": 5562,
+  "constant_lane_instances": 518,
+  "actual_const_requests": 6,
+  "L1C_accesses": 28,
+  "L1C_misses": 12,
+  "L1C_hits": 16,
+  "L2_const_accesses": 12,
+  "global_store_lane_instances": 65,
+  "core_global_write_requests": 10,
+  "issued_ctas": 2,
+  "completed_ctas": 2,
+  "physical_EXIT_lanes": 74,
+  "zero_mask_source_records": 2,
+  "map_union_paths": 11,
+  "maps_samples": 42,
+  "maps_primary_identity": {
+    "pid": 993389,
+    "start_ticks": 959556383,
+    "state": "R"
+  },
+  "live_checkpoints": [
+    {
+      "label": "FIRST_ISSUE",
+      "pid": 993389,
+      "start_ticks": 959556383,
+      "monotonic": 9595564.60661312,
+      "state": "T",
+      "maps_sha256": "a4f45e7051738591cccc9f4b0ed6f56fae55ae76109d3da43e2024fef0b5e0bb"
+    },
+    {
+      "label": "TERMINAL",
+      "pid": 993389,
+      "start_ticks": 959556383,
+      "monotonic": 9595565.227876779,
+      "state": "T",
+      "maps_sha256": "3143fe616257503df8041f3784a52ed15778700a3192df38648574d093d90722"
+    }
+  ],
+  "maps_scope": {
+    "module": "/root/data/ada_native_extensions_stage4_20261024_v1/native_maps_observer_v2.py",
+    "period_seconds": 0.02,
+    "primary_and_sampled_descendants": true,
+    "PID_start_ticks_monotonic_samples": true,
+    "new_seen_paths_immediate_full_SHA_vs_pins": true,
+    "explicit_SIGSTOP_SIGCONT_at": [
+      "FIRST_ISSUE",
+      "TERMINAL"
+    ],
+    "scope": "Sampled live mappings plus explicit stopped primary issue and post-simulation checkpoints. Does not prove every transient DSO/process. Host wall-time observation stops are explicit; simulated cycles unaffected.",
+    "observed_path_read_failure": "Fail closed RuntimeError even if path disappears between maps and hash; only explicit proc exit races may be skipped",
+    "child_discovery_scope": "Recursive /proc/PID/task/PID/children main-thread child lists only; not all thread children, reparented children or every transient process"
+  },
+  "numerical_values": "GPU same-process full65 reference; trace-driven consumer does not recompute numerical values",
+  "hardware_timing_qualification": false,
+  "EP_V100_science_promotion": false,
+  "warp_sync_drain_records": [
+    [
+      1,
+      0,
+      0,
+      0,
+      28
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      32
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      5
+    ]
+  ],
+  "shared_lane_instructions": 130,
+  "shared_load_lanes": 65,
+  "shared_store_lanes": 65,
+  "call_lane_targets": 65,
+  "return_lane_targets": 65,
+  "warp_sync_profile": {
+    "profile": "CONSERVATIVE_WHOLE_WARP_OLDER_INSTRUCTION_AND_STORE_ACK_DRAIN",
+    "no_CTA_barrier_alias": true,
+    "zero_mask_has_no_drain": true,
+    "prior_issued_instructions_excludes_ibuffer": true,
+    "consumer_value_computation": "Trace-driven consumer does not recompute numerical values. Same-process GPU CPU-reference is the numerical proof; consumer validates typed dependencies, requests, control, counts and termination.",
+    "hardware_latency_or_overlap_equivalence": false
+  }
+}

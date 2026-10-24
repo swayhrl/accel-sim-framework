@@ -1,0 +1,456 @@
+nvcc -ccbin=g++ -D_FORCE_INLINES -I/data/c16/env/nvbit-1.7.7.1/core  -Xptxas -astoolspatch --keep-device-functions -arch=sm_89 -Xcompiler -Wall -Xcompiler -fPIC -c inject_funcs.cu -o inject_funcs.o
+nvcc -ccbin=g++ -D_FORCE_INLINES -arch=sm_89 -I/data/c16/env/nvbit-1.7.7.1/core -I. -O3 -fatbin tool_func/flush_channel.cu -o tool_func/flush_channel.fatbin
+bin2c -c --name ada_flush_bin tool_func/flush_channel.fatbin > tool_func/flush_channel.c
+nvcc -ccbin=g++ -D_FORCE_INLINES -dc -c -std=c++17 -I/data/c16/env/nvbit-1.7.7.1/core -Xptxas -cloning=no -Xcompiler -Wall -arch=sm_89 -O3 -Xcompiler -fPIC tracer_tool.cu -o tracer_tool.o
+tracer_tool.cu:494:43: warning: missing terminating " character
+  494 |   if(first_thread!=thread){fprintf(stderr,"ADA_UNSUPPORTED_MULTI_HOST_LAUNCH_THREAD
+      |                                           ^
+tracer_tool.cu:495:1: warning: missing terminating " character
+  495 | ");abort();}
+      | ^
+tracer_tool.cu:496:56: warning: missing terminating " character
+  496 |   if(have_stream&&stream!=first_stream){fprintf(stderr,"ADA_UNSUPPORTED_MULTI_STREAM
+      |                                                        ^
+tracer_tool.cu:497:1: warning: missing terminating " character
+  497 | ");abort();}
+      | ^
+tracer_tool.cu:544:41: warning: missing terminating " character
+  544 |     if(c.function!=func){fprintf(stderr,"ADA_LEGACY_FUNCTION_MISMATCH
+      |                                         ^
+tracer_tool.cu:545:1: warning: missing terminating " character
+  545 | ");abort();}
+      | ^
+tracer_tool.cu:548:236: warning: missing terminating " character
+  548 |     config<<api<<"      "<<std::hex<<(uintptr_t)ctx<<"  "<<(uintptr_t)func<<"   "<<(uintptr_t)hStream<<std::dec<<"      "<<gridDimX<<"  "<<gridDimY<<"  "<<gridDimZ<<"  "<<blockDimX<<" "<<blockDimY<<" "<<blockDimZ<<" "<<sharedMemBytes<<"
+      |                                                                                                                                                                                                                                            ^
+tracer_tool.cu:549:1: warning: missing terminating " character
+  549 | ";
+      | ^
+tracer_tool.cu(494): error: missing closing quote
+                                          ,"ADA_UNSUPPORTED_MULTI_HOST_LAUNCH_THREAD
+                                           ^
+
+tracer_tool.cu(495): error: missing closing quote
+  ");abort();}
+  ^
+
+tracer_tool.cu(496): error: expected a ")"
+    if(have_stream&&stream!=first_stream){fprintf(
+    ^
+
+tracer_tool.cu(496): error: missing closing quote
+                                                       ,"ADA_UNSUPPORTED_MULTI_STREAM
+                                                        ^
+
+tracer_tool.cu(497): error: missing closing quote
+  ");abort();}
+  ^
+
+tracer_tool.cu(508): warning #12-D: parsing restarts here after previous syntax error
+     ); _exit(
+     ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+tracer_tool.cu(509): error: expected an identifier
+     (static_cast <bool> (
+      ^
+
+tracer_tool.cu(509): error: function "cudaGetLastError" is not a type name
+     cudaGetLastError() == cudaSuccess
+     ^
+
+tracer_tool.cu(509): error: expected a ")"
+     cudaGetLastError() == cudaSuccess
+                        ^
+
+tracer_tool.cu(509): error: expected a ")"
+     ) ? void (0) : __assert_fail (
+       ^
+
+Error: function "__builtin_LINE" (declared implicitly) was previously declared consteval
+
+tracer_tool.cu(509): error: expected an identifier
+     , __builtin_FILE (), __builtin_LINE (), __extension__ __PRETTY_FUNCTION__))
+                                             ^
+
+tracer_tool.cu(510): error: expected a declaration
+    }
+    ^
+
+tracer_tool.cu(515): warning #12-D: parsing restarts here after previous syntax error
+    std::string func_name = std::string(nvbit_get_func_name(ctx, func, true));
+                                                                             ^
+
+tracer_tool.cu(517): error: identifier "ctx" is undefined
+        should_trace_kernel(ctx_kernelid[ctx], func_name);
+                                         ^
+
+tracer_tool.cu(517): error: identifier "func_name" is undefined
+        should_trace_kernel(ctx_kernelid[ctx], func_name);
+                                               ^
+
+tracer_tool.cu(518): error: expected a declaration
+    if (active_from_start)
+    ^
+
+tracer_tool.cu(521): error: variable "ctx_trace_this_kernel" is not a type name
+    ctx_trace_this_kernel[ctx] = trace_this_kernel;
+    ^
+
+tracer_tool.cu(521): error: invalid specifier for structured binding declaration
+    ctx_trace_this_kernel[ctx] = trace_this_kernel;
+    ^
+
+tracer_tool.cu(524): error: expected a declaration
+    if (terminate_after_limit_number_of_kernels_reached && g_max_kernel_id != 0 &&
+    ^
+
+tracer_tool.cu(540): warning #12-D: parsing restarts here after previous syntax error
+    unsigned int gridDimX,gridDimY,gridDimZ,blockDimX,blockDimY,blockDimZ,sharedMemBytes;CUstream hStream;
+                                                                                        ^
+
+tracer_tool.cu(541): error: expected a declaration
+    if(cbid==API_CUDA_cuLaunch||cbid==API_CUDA_cuLaunchGrid||cbid==API_CUDA_cuLaunchGridAsync){
+    ^
+
+tracer_tool.cu(544): error: missing closing quote
+                                        ,"ADA_LEGACY_FUNCTION_MISMATCH
+                                         ^
+
+tracer_tool.cu(545): error: missing closing quote
+  ");abort();}
+  ^
+
+tracer_tool.cu(548): error: missing closing quote
+      config<<api<<"	"<<std::hex<<(uintptr_t)ctx<<"	"<<(uintptr_t)func<<"	"<<(uintptr_t)hStream<<std::dec<<"	"<<gridDimX<<"	"<<gridDimY<<"	"<<gridDimZ<<"	"<<blockDimX<<"	"<<blockDimY<<"	"<<blockDimZ<<"	"<<sharedMemBytes<<"
+                    	                              	                     	                                  	              	              	              	               	               	               	                   ^
+
+tracer_tool.cu(549): error: missing closing quote
+  ";
+  ^
+
+tracer_tool.cu(561): warning #12-D: parsing restarts here after previous syntax error
+    int nregs = get_attr_with_kernel_fallback(func, CU_FUNC_ATTRIBUTE_NUM_REGS);
+                                                                               ^
+
+tracer_tool.cu(563): error: identifier "func" is undefined
+        get_attr_with_kernel_fallback(func, CU_FUNC_ATTRIBUTE_SHARED_SIZE_BYTES);
+                                      ^
+
+tracer_tool.cu(568): error: this declaration has no storage class or type specifier
+    instrument_function_if_needed(ctx, func);
+    ^
+
+tracer_tool.cu(568): error: declaration is incompatible with "void instrument_function_if_needed(CUcontext, CUfunction)" (declared at line 318)
+    instrument_function_if_needed(ctx, func);
+    ^
+
+tracer_tool.cu(568): error: too many initializer values
+    instrument_function_if_needed(ctx, func);
+                                       ^
+
+tracer_tool.cu(571): error: this declaration has no storage class or type specifier
+    nvbit_enable_instrumented(ctx, func, true);
+    ^
+
+tracer_tool.cu(571): error: declaration is incompatible with "void nvbit_enable_instrumented(CUcontext, CUfunction, bool, bool)" (declared at line 391 of /data/c16/env/nvbit-1.7.7.1/core/nvbit.h)
+    nvbit_enable_instrumented(ctx, func, true);
+    ^
+
+tracer_tool.cu(571): error: too many initializer values
+    nvbit_enable_instrumented(ctx, func, true);
+                                   ^
+
+tracer_tool.cu(572): error: this declaration has no storage class or type specifier
+    stop_report = false;
+    ^
+
+tracer_tool.cu(572): error: variable "stop_report" has already been defined (previous definition at line 8 of common.h)
+    stop_report = false;
+    ^
+
+tracer_tool.cu(577): error: this declaration has no storage class or type specifier
+    sprintf(buffer, "%s/kernel-%d-ctx_0x%lx.trace", trace_filename.c_str(),
+    ^
+
+tracer_tool.cu(577): error: declaration is incompatible with "int sprintf(char *, const char *, ...) noexcept(true)" (declared at line 28 of /usr/include/x86_64-linux-gnu/bits/stdio2.h)
+    sprintf(buffer, "%s/kernel-%d-ctx_0x%lx.trace", trace_filename.c_str(),
+    ^
+
+tracer_tool.cu(577): error: too many initializer values
+    sprintf(buffer, "%s/kernel-%d-ctx_0x%lx.trace", trace_filename.c_str(),
+                    ^
+
+tracer_tool.cu(577): error: a value of type "char *" cannot be used to initialize an entity of type "int"
+    sprintf(buffer, "%s/kernel-%d-ctx_0x%lx.trace", trace_filename.c_str(),
+            ^
+
+tracer_tool.cu(580): error: expected a declaration
+    if (!stop_report) {
+    ^
+
+tracer_tool.cu(601): warning #12-D: parsing restarts here after previous syntax error
+      fprintf(ctx_resultsFile[ctx], "-nregs = %d\n", nregs);
+                                                           ^
+
+tracer_tool.cu(602): error: this declaration has no storage class or type specifier
+      fprintf(ctx_resultsFile[ctx], "-binary version = %d\n", binary_version);
+      ^
+
+tracer_tool.cu(602): error: declaration is incompatible with "int fprintf(FILE *, const char *, ...)" (declared at line 77 of /usr/include/x86_64-linux-gnu/bits/stdio2.h)
+      fprintf(ctx_resultsFile[ctx], "-binary version = %d\n", binary_version);
+      ^
+
+tracer_tool.cu(602): error: too many initializer values
+      fprintf(ctx_resultsFile[ctx], "-binary version = %d\n", binary_version);
+                                    ^
+
+tracer_tool.cu(603): error: this declaration has no storage class or type specifier
+      fprintf(ctx_resultsFile[ctx], "-cuda stream id = %lu\n", (uint64_t)hStream);
+      ^
+
+tracer_tool.cu(603): error: variable "fprintf" has already been defined (previous definition at line 602)
+      fprintf(ctx_resultsFile[ctx], "-cuda stream id = %lu\n", (uint64_t)hStream);
+      ^
+
+tracer_tool.cu(603): error: too many initializer values
+      fprintf(ctx_resultsFile[ctx], "-cuda stream id = %lu\n", (uint64_t)hStream);
+                                    ^
+
+tracer_tool.cu(604): error: this declaration has no storage class or type specifier
+      fprintf(ctx_resultsFile[ctx], "-shmem base_addr = 0x%016lx\n",
+      ^
+
+tracer_tool.cu(604): error: variable "fprintf" has already been defined (previous definition at line 602)
+      fprintf(ctx_resultsFile[ctx], "-shmem base_addr = 0x%016lx\n",
+      ^
+
+tracer_tool.cu(604): error: too many initializer values
+      fprintf(ctx_resultsFile[ctx], "-shmem base_addr = 0x%016lx\n",
+                                    ^
+
+tracer_tool.cu(606): error: this declaration has no storage class or type specifier
+      fprintf(ctx_resultsFile[ctx], "-local mem base_addr = 0x%016lx\n",
+      ^
+
+tracer_tool.cu(606): error: variable "fprintf" has already been defined (previous definition at line 602)
+      fprintf(ctx_resultsFile[ctx], "-local mem base_addr = 0x%016lx\n",
+      ^
+
+tracer_tool.cu(606): error: too many initializer values
+      fprintf(ctx_resultsFile[ctx], "-local mem base_addr = 0x%016lx\n",
+                                    ^
+
+tracer_tool.cu(608): error: this declaration has no storage class or type specifier
+      fprintf(ctx_resultsFile[ctx], "-nvbit version = %s\n", "1.7.7.1");
+      ^
+
+tracer_tool.cu(608): error: variable "fprintf" has already been defined (previous definition at line 602)
+      fprintf(ctx_resultsFile[ctx], "-nvbit version = %s\n", "1.7.7.1");
+      ^
+
+tracer_tool.cu(608): error: too many initializer values
+      fprintf(ctx_resultsFile[ctx], "-nvbit version = %s\n", "1.7.7.1");
+                                    ^
+
+tracer_tool.cu(609): error: this declaration has no storage class or type specifier
+      fprintf(ctx_resultsFile[ctx], "-accelsim tracer version = %s\n",
+      ^
+
+tracer_tool.cu(609): error: variable "fprintf" has already been defined (previous definition at line 602)
+      fprintf(ctx_resultsFile[ctx], "-accelsim tracer version = %s\n",
+      ^
+
+tracer_tool.cu(609): error: too many initializer values
+      fprintf(ctx_resultsFile[ctx], "-accelsim tracer version = %s\n",
+                                    ^
+
+tracer_tool.cu(611): error: this declaration has no storage class or type specifier
+      fprintf(ctx_resultsFile[ctx], "-enable lineinfo = %d\n", lineinfo);
+      ^
+
+tracer_tool.cu(611): error: variable "fprintf" has already been defined (previous definition at line 602)
+      fprintf(ctx_resultsFile[ctx], "-enable lineinfo = %d\n", lineinfo);
+      ^
+
+tracer_tool.cu(611): error: too many initializer values
+      fprintf(ctx_resultsFile[ctx], "-enable lineinfo = %d\n", lineinfo);
+                                    ^
+
+tracer_tool.cu(612): error: this declaration has no storage class or type specifier
+      fprintf(ctx_resultsFile[ctx], "\n");
+      ^
+
+tracer_tool.cu(612): error: variable "fprintf" has already been defined (previous definition at line 602)
+      fprintf(ctx_resultsFile[ctx], "\n");
+      ^
+
+tracer_tool.cu(612): error: too many initializer values
+      fprintf(ctx_resultsFile[ctx], "\n");
+                                    ^
+
+tracer_tool.cu(614): error: this declaration has no storage class or type specifier
+      fprintf(ctx_resultsFile[ctx],
+      ^
+
+tracer_tool.cu(614): error: variable "fprintf" has already been defined (previous definition at line 602)
+      fprintf(ctx_resultsFile[ctx],
+      ^
+
+tracer_tool.cu(615): error: too many initializer values
+              "#traces format = [line_num] PC mask dest_num [reg_dests] "
+              ^
+
+tracer_tool.cu(619): error: this declaration has no storage class or type specifier
+      fprintf(ctx_resultsFile[ctx], "\n");
+      ^
+
+tracer_tool.cu(619): error: variable "fprintf" has already been defined (previous definition at line 602)
+      fprintf(ctx_resultsFile[ctx], "\n");
+      ^
+
+tracer_tool.cu(619): error: too many initializer values
+      fprintf(ctx_resultsFile[ctx], "\n");
+                                    ^
+
+tracer_tool.cu(620): error: expected a declaration
+    }
+    ^
+
+tracer_tool.cu(625): error: this declaration has no storage class or type specifier
+    sprintf(buffer, "kernel-%d-ctx_0x%lx.trace%s", ctx_kernelid[ctx], ctx,
+    ^
+
+tracer_tool.cu(625): error: variable "sprintf" has already been defined (previous definition at line 577)
+    sprintf(buffer, "kernel-%d-ctx_0x%lx.trace%s", ctx_kernelid[ctx], ctx,
+    ^
+
+tracer_tool.cu(625): error: too many initializer values
+    sprintf(buffer, "kernel-%d-ctx_0x%lx.trace%s", ctx_kernelid[ctx], ctx,
+                    ^
+
+tracer_tool.cu(625): error: a value of type "char *" cannot be used to initialize an entity of type "int"
+    sprintf(buffer, "kernel-%d-ctx_0x%lx.trace%s", ctx_kernelid[ctx], ctx,
+            ^
+
+tracer_tool.cu(627): error: expected a declaration
+    if (!stop_report) {
+    ^
+
+tracer_tool.cu(631): warning #12-D: parsing restarts here after previous syntax error
+    fclose(kernelsFile);
+                       ^
+
+tracer_tool.cu(633): error: this declaration has no storage class or type specifier
+    statsFile = fopen(ctx_stats_location[ctx].c_str(), "a");
+    ^
+
+tracer_tool.cu(633): error: variable "statsFile" has already been defined (previous definition at line 224)
+    statsFile = fopen(ctx_stats_location[ctx].c_str(), "a");
+    ^
+
+tracer_tool.cu(634): error: identifier "gridDimX" is undefined
+    unsigned blocks = gridDimX * gridDimY * gridDimZ;
+                      ^
+
+tracer_tool.cu(634): error: identifier "gridDimY" is undefined
+    unsigned blocks = gridDimX * gridDimY * gridDimZ;
+                                 ^
+
+tracer_tool.cu(634): error: identifier "gridDimZ" is undefined
+    unsigned blocks = gridDimX * gridDimY * gridDimZ;
+                                            ^
+
+tracer_tool.cu(635): error: identifier "blockDimX" is undefined
+    unsigned threads = blockDimX * blockDimY * blockDimZ;
+                       ^
+
+tracer_tool.cu(635): error: identifier "blockDimY" is undefined
+    unsigned threads = blockDimX * blockDimY * blockDimZ;
+                                   ^
+
+tracer_tool.cu(635): error: identifier "blockDimZ" is undefined
+    unsigned threads = blockDimX * blockDimY * blockDimZ;
+                                               ^
+
+tracer_tool.cu(637): error: this declaration has no storage class or type specifier
+    fprintf(statsFile, "%s, %s, %d, %d, %d, %d, %d, %d, %d, %d, ", buffer,
+    ^
+
+tracer_tool.cu(637): error: variable "fprintf" has already been defined (previous definition at line 602)
+    fprintf(statsFile, "%s, %s, %d, %d, %d, %d, %d, %d, %d, %d, ", buffer,
+    ^
+
+tracer_tool.cu(637): error: too many initializer values
+    fprintf(statsFile, "%s, %s, %d, %d, %d, %d, %d, %d, %d, %d, ", buffer,
+                       ^
+
+tracer_tool.cu(637): error: a value of type "FILE *" (aka "_IO_FILE *") cannot be used to initialize an entity of type "int"
+    fprintf(statsFile, "%s, %s, %d, %d, %d, %d, %d, %d, %d, %d, ", buffer,
+            ^
+
+tracer_tool.cu(641): error: this declaration has no storage class or type specifier
+    fclose(statsFile);
+    ^
+
+tracer_tool.cu(641): error: declaration is incompatible with "int fclose(FILE *)" (declared at line 184 of /usr/include/stdio.h)
+    fclose(statsFile);
+    ^
+
+tracer_tool.cu(641): error: a value of type "FILE *" (aka "_IO_FILE *") cannot be used to initialize an entity of type "int"
+    fclose(statsFile);
+           ^
+
+tracer_tool.cu(643): error: variable "ctx_kernelid" is not a type name
+    ctx_kernelid[ctx]++;
+    ^
+
+tracer_tool.cu(643): error: invalid specifier for structured binding declaration
+    ctx_kernelid[ctx]++;
+    ^
+
+tracer_tool.cu(643): error: missing initializer
+    ctx_kernelid[ctx]++;
+                     ^
+
+tracer_tool.cu(643): error: declaration is incompatible with structured binding "ctx" (declared at line 521)
+    ctx_kernelid[ctx]++;
+                 ^
+
+tracer_tool.cu(643): error: expected a ";"
+    ctx_kernelid[ctx]++;
+                     ^
+
+tracer_tool.cu(644): error: variable "ctx_current_kernel_name" is not a type name
+    ctx_current_kernel_name[ctx] =
+    ^
+
+tracer_tool.cu(644): error: invalid specifier for structured binding declaration
+    ctx_current_kernel_name[ctx] =
+    ^
+
+tracer_tool.cu(644): error: declaration is incompatible with structured binding "ctx" (declared at line 643)
+    ctx_current_kernel_name[ctx] =
+                            ^
+
+tracer_tool.cu(645): error: a variable declared with an auto type specifier cannot appear in its own initializer
+        std::string(nvbit_get_func_name(ctx, func, true));
+                                        ^
+
+tracer_tool.cu(646): error: this declaration has no storage class or type specifier
+    recv_thread_receiving = true;
+    ^
+
+tracer_tool.cu(646): error: variable "recv_thread_receiving" has already been defined (previous definition at line 65)
+    recv_thread_receiving = true;
+    ^
+
+tracer_tool.cu(647): error: expected a declaration
+  }
+  ^
+
+Error limit reached.
+100 errors detected in the compilation of "tracer_tool.cu".
+Compilation terminated.
+make: *** [Makefile:58: tracer_tool.o] Error 4
