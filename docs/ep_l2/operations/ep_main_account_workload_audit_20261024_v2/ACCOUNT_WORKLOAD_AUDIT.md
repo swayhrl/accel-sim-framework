@@ -1,0 +1,82 @@
+# 174-new / 原174账户 workload资产严格核查（2026-10-24）
+
+结论：上一轮18组输入是EP历史已命名资产集合，远非两个账户的全部候选资产。本轮确实找到了未覆盖程序的源码和trace。下面的“trace齐备”只指commandlist可读、其声明的每个文件存在、可读、是非零普通文件，且小文件读取前后状态稳定；不表示trace正文语义、捕获完整性、数值正确性或当前EP runtime资格已经通过。
+
+本轮仅做有限只读核查。未启动模拟器、编译器、旧controller、Goal或asset ensure物化；未复制/解压/重算trace正文，没有改写科研预算、原57/44/T0或任何历史接受状态。新报告和核查脚本保存在EP-MAIN独立文档工作树。
+
+## 核查范围和方法
+
+- 身份：174-new为`huangrulin-sshfs-174`、mount namespace `4026535153`；原174为`huangrulin-174`、namespace `4026534768`，均为当前登录root账户。原174通过现有管理组件的SSH连接参数执行只读文件查询，没有调用旧科学控制器。
+- 主扫描：两个账户的`/workspace`、`/root`非隐藏科学目录、`/opt`，以及`/root/share/huangrulin`、`/root/share/accel-sim`、`/root/share/workloads`、`/root/share/workspace_migrated_20260905`、`/root/share/container-workspaces/hrl-174-new`。另扫描`/tmp`、`/var/tmp`；补查CUDA安装samples路径和相关输入根目录。
+- 174-new主扫描66,015目录/663,913条目，临时目录2,319目录/6,960条目；原174主扫描273,913目录/2,671,897条目，临时目录30,577目录/277,602条目。四次扫描均未截断、没有遍历权限错误。不同根和主/临时扫描可能包含别名，这些数字是扫描工作量，不能当成独立资产数量。
+- 深度遍历排除隐藏目录、Git对象、依赖环境、模型缓存和checkpoints等；不进入其他用户目录，不遍历整个164归档。目录按设备/inode识别重复，之后对有suite含义的目录别名再次定点读取，防止首次访问的结果目录别名掩盖真实suite名称。
+- 定点复查174-new的50个、原174的428个候选commandlist路径。原174343个存在、336个通过成员元数据检查；174-new50个存在、43个通过。另纳入临时目录5个已找到的suite commandlist，合计483条路径观察；不是483个独立workload。
+- 读取commandlist和相邻run.sh等小文件；只stat声明的trace正文。大归档只核对存在与文件元数据，不展开。保留原有归档索引，但它们不作为本轮新验证的归档内容证明。
+
+完整范围、时间和原始捕获SHA见[SCOPE_AND_SCAN_RECEIPT.json](SCOPE_AND_SCAN_RECEIPT.json)。不存在结论仅适用于以上可见、已展开的文件范围；未展开归档内部和其他用户/未挂载位置不能据此排除。
+
+## 按suite核查结果
+
+| Suite | 原174当前找到的trace资产 | 174-new当前可读取的trace资产 | 对完整性的判断 |
+|---|---|---|---|
+| CUDA SDK路径`cudasdk/9.1` | 10个程序；均有成员齐备、路径未标记裁剪的版本 | VectorAdd、ConvolutionSeparable、FWT三程序的指定输入 | 比旧4程序多6个；不是整个CUDA Samples的穷尽可用集合 |
+| Rodinia 3.1 | 20个实现标签，合并ParticleFilter float/naive后为19程序家族；均有成员齐备、路径未标记裁剪的版本 | B+Tree、CFD、DWT2D、Gaussian、Hotspot、LUD、NN七个实现 | 比旧5程序多14个程序家族；有源码/空壳却无齐备trace的项目，不能称全套可跑 |
+| Parboil | 11程序源码目录均在；8程序有成员齐备且路径未标记裁剪的版本，MRI-Gridding另有裁剪版本 | SAD、SGEMM、MRI-Q的指定输入，以及共享MRI-Gridding裁剪版本 | 展开trace覆盖9/11程序；LBM、TPACF未找到齐备的展开trace |
+| PolyBench/GPU 1.0 | 15/15程序均有trace资产；9个存在无裁剪标记版本，另6个只找到标记裁剪版本 | 13/15程序可读；5个有无裁剪标记版本，另8个只有裁剪版本 | 程序名覆盖全；完整应用输入覆盖和EP运行资格均不能宣布全 |
+
+“无裁剪标记”依据实际目录与已有输入布局分类，并不是重新核验过原始捕获完整性。套件源码目录、完整输入、裁剪输入和可接受科学结果分别统计。不同suite的BFS、GEMM/SGEMM、卷积不是同一输入，不能互相替代。
+
+### CUDA新增的六个程序
+
+BlackScholes、Histogram、MergeSort、ScalarProd、SortingNetworks、Transpose均在原174找到成员齐备的trace。入口位于：
+
+`/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/`
+
+另有原已登记程序的新输入，例如VectorAdd size6000000、ScalarProd size8192/13920。它们需要按输入分别登记，不能继承Vector size4000000的EP结果。174-new目前没有发现这六个新增程序的齐备展开trace；源码集合存在不代表已准备好运行。
+
+### Rodinia 3.1新增的程序家族
+
+Backprop、Gaussian、Hotspot3D、HybridSort、Kmeans、LavaMD、LUD、Myocyte、NN、NW、ParticleFilter（float/naive两实现）、Pathfinder、SRAD v1、Streamcluster。主要入口位于：
+
+`/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/`
+
+Gaussian、LUD、NN的指定输入已能从174-new账户路径访问。原174还保存了Gaussian、LUD、CFD、DWT等其他尺寸，目录别名和S/F结果副本没有重复计作新程序。
+
+Huffman目录只有run.sh和失效data链接，未找到该输入的trace目录；SRAD v2和MUMmerGPU的trace目录只有commandlist，没有kernelslist.g和可用的已声明trace集合。源码中的Heartwall、Leukocyte等也不能直接算作Rodinia 3.1齐备trace。
+
+### Parboil新增和缺口
+
+新增五个无裁剪标记的程序：BFS、CUTCP、Histo、MRI-Q、Stencil。与已有SAD、SGEMM、SpMV合为8个。主要入口：
+
+`/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/`
+
+MRI-Gridding只在当前展开集合中找到1of10/1of40等裁剪版本，其中有有效副本，也有中断/失效副本。LBM和TPACF在两边的gpu-app-collection源码树内有CUDA源码，但本轮没有找到齐备展开trace。原174另有`parboil.tgz`和`parboil.mri.closeout.stage.tar.zst`，未展开，不能排除其内部另含输入。
+
+### PolyBench/GPU：15个程序都有资产，但并非都找到完整版本
+
+- 有成员齐备且无裁剪标记的版本：2DCONV、3DCONV、3MM、ATAX、BICG、GEMM、GESUMMV、MVT、SYRK，共9个。
+- 当前只找到标记裁剪版本：2MM、CORR、COVAR、FDTD-2D、GRAMSCHM、SYR2K，共6个。
+- 174-new可以读取其中13个程序；3DCONV、MVT的齐备展开输入目前只在原174找到。174-new的3MM和SYRK目前仅发现共享裁剪版本。
+
+原174无裁剪标记版本分布在`hw_run/c2p-polybench-full-20260821/`、`hw_run/decoupled-l2-extract/polybench.rss-profile.stage/`和`hw_run/decoupled-l2-bank-diagnosis/20260825-b07c0ad-full/`。共享裁剪根为：
+
+`/root/share/accel-sim/decoupled-l2-trace-fraction/`
+
+原174另有17,943,970,556B的`polybench.tgz`，本轮未读取其压缩正文。以上六项是“本轮未找到展开的无裁剪版本”，不等于归档里也没有。
+
+## 174-new上新发现的两类资产
+
+1. **今天已迁移的精确输入映射**：`/root/data/ep_dtc_trace_migration_20261024_v1/controls/ASSET_CATALOG.json`列出20个输入对象。本轮重新stat全部成员，大小、已有验证树的dev/inode/mtime身份和旧绝对路径对应关系均匹配。路径实际指向真164挂载，并非20份本地ext4副本，也不等于20个独立程序。其中新增候选包括2DCONV、ATAX、BICG、GESUMMV、Gaussian、LUD、NN和MRI-Q，部分只登记为DTC资产，未取得EP资格。
+2. **Rodinia 2.0-ft旧套件**：174-new本地`/root/workspace/offline-sim-v1/cache/assets/official/rodinia_2.0-ft/rodinia_2.0-ft/9.1/`有11个成员齐备输入：Backprop、BFS、Heartwall、Hotspot、Kmeans、LUD、NN、NW、Pathfinder、SRAD v2、Streamcluster。版本和输入均与3.1分开；不能用它们补称3.1覆盖全。
+
+此前“只有Vector/GEMM输入就位”的表述对应旧清点时点；今天新增映射的当前状态已经变化。本轮仅核查这些已有资产，未实施其迁移，也未继承其DTC科学资格。详见[NATIVE_MIGRATION_CURRENT_METADATA.json](NATIVE_MIGRATION_CURRENT_METADATA.json)。
+
+## 剔除失效副本与后续用途
+
+共享裁剪根中有7个不同路径未通过本轮检查，两账户看见的是同一共享资产，不重复计两次：三个commandlist没有kernel项；MRI-Gridding cta-v1缺51个成员，中断1of10副本缺50个成员；旧CORR/COVAR trim-local副本存在零字节成员。后续选输入必须使用逐项主表中通过检查的确切路径，不能只按程序名选择。
+
+建议后续候选准备优先查看已在174-new可读取的8个新增无裁剪标记输入：2DCONV、ATAX、BICG、GESUMMV、Gaussian、LUD、NN、MRI-Q。其“来源/trace语义/完整应用/当前EP模型兼容性/RO证书/原生runtime资格”仍需逐项闭合；本报告不启动资格实验，也不把元数据齐备转为科学接受。B+Tree、SpMV、Scan既有EP HOLD保持，旧MAIN6/7和独立SGEMM分组保持。
+
+逐程序和双账户入口见[PROGRAM_COVERAGE.csv](PROGRAM_COVERAGE.csv)、[PROGRAM_COVERAGE.json](PROGRAM_COVERAGE.json)。全部483条路径观察、缺失项和成员身份见`EXACT_INPUT_INDEX.json.gz`、`TRACE_MEMBER_OBJECT_METADATA.json.gz`；源码/目录证据与归档存在清单另附。`VALIDATION.json`保存派生统计检查和受保护文件前后SHA核对。
+
+无suite标签的trace也保留在UNTAGGED_TRACE_OBSERVATIONS.json中：885条路径观察，65条按相同commandlist及全部相同文件对象匹配到已知suite；其余未获得suite归属，不计入四套程序总数。它们包含运行副本、机制fixture和其他模型输入；本报告没有把未归属条目判为可用或不可用，也没有将SHOC等其他suite混入上述计数。

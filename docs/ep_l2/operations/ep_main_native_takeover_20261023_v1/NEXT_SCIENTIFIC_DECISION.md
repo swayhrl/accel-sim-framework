@@ -4,6 +4,8 @@
 
 资产依据：2026-10-24只读清点已完成，18个输入变体/14个benchmark程序；见[workload资产主表](../ep_main_workload_inventory_20261024_v1/WORKLOAD_ASSET_INVENTORY.md)。文件存在、历史接受、native准备和启动授权分别记录。
 
+账户资产范围补充：双账户严格目录核查发现CUDA新增6程序、Rodinia3.1新增14程序家族、Parboil新增候选和PolyBench15程序trace覆盖；完整/裁剪/原生映射及未归属项分开记录，见[最新资产核查](../ep_main_account_workload_audit_20261024_v2/ACCOUNT_WORKLOAD_AUDIT.md)。下一项资产工作是按该表准备候选语义资格，不自动运行、搬运或继承DTC资格。
+
 ## 已完成的首要问题
 
 Vector单端真实原生应用接受：250118个RO事务、749882个RO合并请求、1000000个RO请求/响应；687311次structural-eligible head-cycle，其中2385次与新Tag需求真正共现。covered新Tag需求915784次，目标set RESERVED最大3/16；实际生产FT/RO调用域TagFAIL、relieve、detach、detached退休均0。375000次TVD skip的raw维度保持NA。

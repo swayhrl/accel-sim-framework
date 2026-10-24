@@ -24,3 +24,6 @@ large experiments, with isolated worktrees, exact merge/readback and closeout.
 
 Workload asset reference: docs/ep_l2/operations/ep_main_workload_inventory_20261024_v1/WORKLOAD_ASSET_INVENTORY.md.
 Count input variants, benchmark programs, accepted runs and native readiness separately.
+
+Expanded account asset audit: docs/ep_l2/operations/ep_main_account_workload_audit_20261024_v2/ACCOUNT_WORKLOAD_AUDIT.md.
+This supersedes the old inventory only for present asset scope/readiness; scientific qualification and budgets do not inherit.

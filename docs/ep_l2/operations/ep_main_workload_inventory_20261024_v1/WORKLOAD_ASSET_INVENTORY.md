@@ -1,3 +1,5 @@
+> 后续范围扩展（2026-10-24）：本页保留18组历史已命名输入的时点记录；双账户完整目录核查已找到更多候选，且今天新增的真164输入映射改变了native资产准备状态。当前账户资产以[严格核查报告](../ep_main_account_workload_audit_20261024_v2/ACCOUNT_WORKLOAD_AUDIT.md)为准，科学接受状态不自动改变。
+
 # EP-L2 workload资产清点（2026-10-24）
 
 本轮为只读资产盘点。18个精确输入变体、14个benchmark程序、4个suite；不以kernel数、S/F、不同binary或输入尺寸重复计算独立workload。没有启动模拟、native测试、编译、搬运trace或修改科研账本。
