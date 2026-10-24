@@ -1,0 +1,41 @@
+{
+  "SSD_available_bytes": 10672996352,
+  "SSD_required_bytes": 10536091648,
+  "asset_expected_bytes": 176089,
+  "asset_id": "RAW_DTC_ccd171d043dab567",
+  "asset_kind": "DTC_RAW",
+  "completed_assets": 0,
+  "current_host_io": {
+    "full": {
+      "avg10": 2.97,
+      "avg300": 3.0,
+      "avg60": 2.98,
+      "total": 199640162313.0
+    },
+    "some": {
+      "avg10": 2.98,
+      "avg300": 3.0,
+      "avg60": 3.0,
+      "total": 220580573684.0
+    }
+  },
+  "driver_pid": 926915,
+  "error": "ZERO_SHARE_PILOT_NOT_QUALIFIED SOURCE_PREPARE_HOLD Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"frozen_copy_source.py\", line 403, in <module>\n  File \"frozen_copy_source.py\", line 289, in prepare_source\n  File \"frozen_copy_source.py\", line 272, in source_gate\n  File \"<string>\", line 59, in admission\n  File \"<string>\", line 6, in need\nRuntimeError: OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER\n",
+  "held_assets": 1,
+  "last_hold": {
+    "asset_id": "RAW_DTC_ccd171d043dab567",
+    "elapsed_seconds": 0.31324172019958496,
+    "kind": "DTC_RAW",
+    "new_scientific_starts": 0,
+    "reason": "SOURCE_PREPARE_HOLD Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"frozen_copy_source.py\", line 403, in <module>\n  File \"frozen_copy_source.py\", line 289, in prepare_source\n  File \"frozen_copy_source.py\", line 272, in source_gate\n  File \"<string>\", line 59, in admission\n  File \"<string>\", line 6, in need\nRuntimeError: OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER\n",
+    "source_disposition": "KEEP",
+    "status": "HOLD_EXACT_ASSET",
+    "unix": 1792818366.170594
+  },
+  "phase": "DRIVER_HOLD",
+  "queue_index": 1,
+  "total_assets": 115,
+  "total_new_transferred_bytes": 0,
+  "traceback": "Traceback (most recent call last):\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 99, in main\n    m,prep=prepare(scope);bundle=P(m['new_true164_bundle'].replace('/home/shared','/root/share/mnt164',1));update(force=True,phase='TRUE164_RANGE_TRANSFER')\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 45, in prepare\n    rc=p.wait(timeout=30);err=p.stderr.read().decode(errors='replace');c.need(rc==0 and prepared is not None,'SOURCE_PREPARE_HOLD '+err[-2000:])\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/copy_engine.py\", line 17, in need\n    if not ok:raise RuntimeError(msg)\nRuntimeError: SOURCE_PREPARE_HOLD Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"frozen_copy_source.py\", line 403, in <module>\n  File \"frozen_copy_source.py\", line 289, in prepare_source\n  File \"frozen_copy_source.py\", line 272, in source_gate\n  File \"<string>\", line 59, in admission\n  File \"<string>\", line 6, in need\nRuntimeError: OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER\n\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 121, in <module>\n    try:main()\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 112, in main\n    if index==0:raise RuntimeError('ZERO_SHARE_PILOT_NOT_QUALIFIED '+str(e))\nRuntimeError: ZERO_SHARE_PILOT_NOT_QUALIFIED SOURCE_PREPARE_HOLD Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"frozen_copy_source.py\", line 403, in <module>\n  File \"frozen_copy_source.py\", line 289, in prepare_source\n  File \"frozen_copy_source.py\", line 272, in source_gate\n  File \"<string>\", line 59, in admission\n  File \"<string>\", line 6, in need\nRuntimeError: OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER\n\n",
+  "unix": 1792818366.1736631
+}

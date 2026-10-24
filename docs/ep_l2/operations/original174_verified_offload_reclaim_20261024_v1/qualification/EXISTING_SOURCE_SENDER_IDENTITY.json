@@ -1,0 +1,42 @@
+{
+  "unix": 1792818470.9561644,
+  "pid": 1308364,
+  "start_ticks": 956911897,
+  "state": "S",
+  "ppid": 1308344,
+  "cwd": "/root",
+  "exe": "/usr/bin/python3.10",
+  "wchan": "do_select",
+  "command_arguments": [
+    "python3",
+    "-B",
+    "-c",
+    "\"\"\"Read-only source hashes under existing sender lease; emits resumable metadata.\"\"\"\nimport os,sys,json,time,hashlib,fcntl,stat,subprocess\nreq=json.load(sys.stdin)\nassert os.uname().nodename==req['hostname']\nif req['host']=='174':\n lock=open('/root/share/host174_storage_recovery_bridge/20261016_storageops_02/.TLS_V10_SOURCE_SENDER.lock','rb');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)\ntry:os.nice(19)\nexcept OSError:pass\nrate=30*1024**2;start=time.monotonic();total=0;last=start;rate_checked=0;current_rate=rate\nif os.path.isfile('/usr/bin/ionice'):subprocess.run(['/usr/bin/ionice','-c','3','-p',str(os.getpid())],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)\ndef adaptive_rate():\n global rate_checked,current_rate\n now=time.monotonic()\n if now-rate_checked>=5:\n  try:\n   line=next(x for x in open('/proc/pressure/io') if x.startswith('full '));full=float(next(x.split('=')[1] for x in line.split() if x.startswith('avg10=')))\n  except (OSError,StopIteration,ValueError):full=100\n  current_rate=min(rate,(30 if full<5 else 10 if full<10 else 4 if full<20 else 1)*1024**2);rate_checked=now\n return current_rate\ndef identity(s):return {'dev':s.st_dev,'inode':s.st_ino,'size':s.st_size,'mtime_ns':s.st_mtime_ns,'ctime_ns':s.st_ctime_ns,'uid':s.st_uid,'gid':s.st_gid,'mode':stat.S_IMODE(s.st_mode),'nlink':s.st_nlink,'type':'file' if stat.S_ISREG(s.st_mode) else 'other'}\nfor row in req['files']:\n before=identity(os.stat(row['path']));assert before==row['identity'],('SOURCE_CHANGED',row['path'])\n fd=os.open(row['path'],os.O_RDONLY|getattr(os,'O_NOATIME',0));h=hashlib.sha256();count=0\n with os.fdopen(fd,'rb') as f:\n  while True:\n   tick=time.monotonic();b=f.read(1024**2)\n   if not b:break\n   h.update(b);count+=len(b);total+=len(b)\n   time.sleep(max(0,len(b)/adaptive_rate()-(time.monotonic()-tick)))\n   if time.monotonic()-last>=10:\n    print(json.dumps({'event':'HASH_PROGRESS','key':row['key'],'file_bytes':count,'session_bytes':total,'elapsed':time.monotonic()-start,'adaptive_rate_bytes_sec':current_rate,'io_policy':'USER_AUTHORIZED_PROGRESS_WITH_ADAPTIVE_THROTTLE'}),flush=True);last=time.monotonic()\n  assert identity(os.fstat(f.fileno()))==before\n assert identity(os.stat(row['path']))==before and count==before['size']\n print(json.dumps({'event':'FILE_SHA','key':row['key'],'path':row['path'],'sha256':h.hexdigest(),'identity':before,'bytes':count,'source_before_after_unchanged':True}),flush=True)\nprint(json.dumps({'event':'HASH_DONE','session_bytes':total,'elapsed':time.monotonic()-start,'source_writes':0}),flush=True)\n"
+  ],
+  "fds": [
+    {
+      "fd": "0",
+      "target": "pipe:[3713276208]"
+    },
+    {
+      "fd": "1",
+      "target": "pipe:[3713276209]"
+    },
+    {
+      "fd": "2",
+      "target": "pipe:[3713276210]"
+    },
+    {
+      "fd": "3",
+      "target": "/root/share/host174_storage_recovery_bridge/20261016_storageops_02/.TLS_V10_SOURCE_SENDER.lock"
+    },
+    {
+      "fd": "4",
+      "target": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/hotspot3D-rodinia-3.1/512_8_100___data_power_512x8___data_temp_512x8_output_out/traces/kernel-3.traceg"
+    }
+  ],
+  "io": "rchar: 41238215560\nwchar: 361369\nsyscr: 41792\nsyscw: 703\nread_bytes: 41203200000\nwrite_bytes: 0\ncancelled_write_bytes: 0\n",
+  "task_names": [
+    "python3"
+  ]
+}
