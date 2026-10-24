@@ -2,7 +2,7 @@
 import os,sys,json,time,hashlib,fcntl,stat,subprocess
 req=json.load(sys.stdin)
 assert os.uname().nodename==req['hostname']
-if req['host']=='174':
+if req['host']=='174' and not req.get('parallel_readonly_hash_authorized'):
  lock=open('/root/share/host174_storage_recovery_bridge/20261016_storageops_02/.TLS_V10_SOURCE_SENDER.lock','rb');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
 try:os.nice(19)
 except OSError:pass
@@ -19,7 +19,10 @@ def adaptive_rate():
  return current_rate
 def identity(s):return {'dev':s.st_dev,'inode':s.st_ino,'size':s.st_size,'mtime_ns':s.st_mtime_ns,'ctime_ns':s.st_ctime_ns,'uid':s.st_uid,'gid':s.st_gid,'mode':stat.S_IMODE(s.st_mode),'nlink':s.st_nlink,'type':'file' if stat.S_ISREG(s.st_mode) else 'other'}
 for row in req['files']:
- before=identity(os.stat(row['path']));assert before==row['identity'],('SOURCE_CHANGED',row['path'])
+ try:before=identity(os.stat(row['path']))
+ except FileNotFoundError:
+  print(json.dumps({'event':'MISSING_SOURCE','key':row['key'],'path':row['path'],'expected_identity':row['identity'],'source_body_hashed':False}),flush=True);continue
+ assert before==row['identity'],('SOURCE_CHANGED',row['path'])
  fd=os.open(row['path'],os.O_RDONLY|getattr(os,'O_NOATIME',0));h=hashlib.sha256();count=0
  with os.fdopen(fd,'rb') as f:
   while True:

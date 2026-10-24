@@ -19,6 +19,7 @@ def classify(path):
  return None,None,None
 for ap in sorted((R/'control').glob('ARCHIVE_[0-9]*.json.gz')):
  d=json.loads(gzip.decompress(ap.read_bytes()));members={};conflicts=set()
+ assert d.get('inventory_format')=='V2_FULL_DECODED_EOF_IGNORE_ZEROS' and d['decoded_compression_EOF_integrity_checked']
  for row in d['members']:
   name=PurePosixPath(row['archive_member']).as_posix()
   if name in members and members[name].get('sha256')!=row.get('sha256'):conflicts.add(name)
@@ -55,7 +56,7 @@ for ap in sorted((R/'control').glob('ARCHIVE_[0-9]*.json.gz')):
   # contain the same byte sequence.
   rows.append({'relative_path':'archive_objects/'+sha,'archive_member':row['archive_member'],'size':row['size'],'sha256':sha,'header_prefix_hex':row['header_prefix_hex'],'uid':row['uid'],'gid':row['gid'],'mode':row['mode'],'mtime_ns':int(decimal.Decimal(row['mtime'])*1000000000),'ctime_ns':0,'dev':0,'inode':0,'type':'file','nlink':1})
  oid=hashlib.sha256(canon({'archive_sha256':d['archive_sha256'],'members':rows})).hexdigest();mid=oid[:20]
- m={'schema':'SHARED_SM70_ARCHIVE_CAS_PAYLOAD_V1','payload_kind':'CAS_FILES_V1','source_backend':'archive','freeze_status':'FROZEN_ARCHIVE_FULL_SHA','primary_asset_id':'ARCHIVE_'+mid,'object_id':oid,'source_root':'/','source_root_identity':{'uid':0,'gid':0,'mode':493,'mtime_ns':0,'metadata_policy':'VIRTUAL_PAYLOAD_NAMESPACE'},'archive_path':d['path'],'archive_identity':d['archive_identity'],'archive_sha256':d['archive_sha256'],'members':rows,'source_data_bytes':sum(r['size'] for r in rows),'ordered_kernel_members':[],'entry_name':'NOT_AN_APPLICATION_INPUT','commandlist_bytes_hex':'','new_true164_bundle':'/home/shared/huangrulin/traces/bundles/_payload/'+mid,'reuse':False,'source_host':'174'}
+ m={'schema':'SHARED_SM70_ARCHIVE_CAS_PAYLOAD_V1','payload_kind':'CAS_FILES_V1','source_backend':'archive','freeze_status':'FROZEN_ARCHIVE_FULL_SHA','primary_asset_id':'ARCHIVE_'+mid,'object_id':oid,'source_root':'/','source_root_identity':{'uid':0,'gid':0,'mode':493,'mtime_ns':0,'metadata_policy':'VIRTUAL_PAYLOAD_NAMESPACE'},'archive_path':d.get('archive_path',d['path']),'original_archive_provenance':d['path'],'archive_identity':d['archive_identity'],'archive_sha256':d['archive_sha256'],'members':rows,'source_data_bytes':sum(r['size'] for r in rows),'ordered_kernel_members':[],'entry_name':'NOT_AN_APPLICATION_INPUT','commandlist_bytes_hex':'','new_true164_bundle':'/home/shared/huangrulin/traces/bundles/_payload/'+mid,'reuse':False,'source_host':d.get('source_host','174')}
  path=R/'manifests'/(mid+'.json');path.write_text(json.dumps(m,indent=2)+'\n');batches.append({'manifest':str(path),'host':'174_ARCHIVE','id':mid,'bytes':m['source_data_bytes'],'sha256':hashlib.sha256(path.read_bytes()).hexdigest()})
  for row in rows:objects[row['sha256']]['storage']={'path':str(NAS/'bundles/_payload'/mid/'tree'/row['relative_path']),'kind':'NEW_TRUE164_ARCHIVE_CAS_PAYLOAD','batch_id':mid}
 put('control/ALL_OBJECTS.json',objects);put('control/ALL_BUNDLES.json',bundles);put('control/ARCHIVE_BATCHES.json',batches);put('control/ARCHIVE_INPUT_ISSUES.json',issues)

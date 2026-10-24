@@ -52,6 +52,13 @@ for a in cat['assets']:
   assert [s.st_dev,s.st_ino,s.st_size,s.st_mtime_ns]==m['verified_tree_identity']
   objects[sha]['storage']={'path':str(p),'kind':'PRIOR_VERIFIED_TRUE164_OBJECT','proof_reference':a['proof_reference'],'expected_identity':[s.st_dev,s.st_ino,s.st_size,s.st_mtime_ns]};reuse+=1
 pending={h:[] for h in hashes}
+from verified_storage import discover
+shared,shared_receipts=discover()
+for sha,o in objects.items():
+ if not o.get('storage') and sha in shared:
+  assert Path(shared[sha]['path']).stat().st_size==o['size']
+  o['storage']=shared[sha]
+put('control/COMMITTED_STORAGE_REUSE.json',{'status':'PASS_PINNED_METADATA_AND_CURRENT_IDENTITY','bundles':shared_receipts,'matching_content_objects':sum(o.get('storage',{}).get('kind','').startswith('ADOPTED_') for o in objects.values()),'independent_full_SHA_done_by_final_restore_stage':False})
 for sha,o in objects.items():
  if o.get('storage'):continue
  # Prefer native shared files when possible; the native backend can reuse the
@@ -78,5 +85,5 @@ for host,items in pending.items():
   batch.append(o);size+=o['size']
  close(batch,size)
 put('control/EXPANDED_OBJECTS.json',objects);put('control/EXPANDED_BUNDLES.json',candidates);put('control/EXPANDED_BATCHES.json',batches)
-summary={'logical_aliases':len(aliases),'content_and_extent_bundles':len(candidates),'unique_file_content_objects':len(objects),'unique_content_bytes':sum(o['size'] for o in objects.values()),'new_transfer_bytes':sum(b['bytes'] for b in batches),'existing164_content_objects_reused':sum(o['storage']['kind']=='PRIOR_VERIFIED_TRUE164_OBJECT' for o in objects.values()),'new_batches':len(batches),'input_extent_counts':dict(collections.Counter(b['extent'] for b in candidates))}
+summary={'logical_aliases':len(aliases),'content_and_extent_bundles':len(candidates),'unique_file_content_objects':len(objects),'unique_content_bytes':sum(o['size'] for o in objects.values()),'new_transfer_bytes':sum(b['bytes'] for b in batches),'existing164_content_objects_reused':sum('expected_identity' in o['storage'] for o in objects.values()),'new_batches':len(batches),'input_extent_counts':dict(collections.Counter(b['extent'] for b in candidates))}
 put('control/EXPANDED_FROZEN_BUDGET.json',summary);print(json.dumps(summary),flush=True)

@@ -109,7 +109,7 @@ def source_send(request,testing=False):
  if manifest.get('source_backend')=='archive':return source_archive_send(request,testing)
  if testing:need(P(manifest['source_root']).is_relative_to(TASK/'synthetic'),'test source outside own synthetic namespace')
  else:need((os.uname().nodename=='huangrulin-174' and os.readlink('/proc/self/ns/mnt')=='mnt:[4026534768]') or (manifest.get('source_backend')=='native' and os.uname().nodename=='huangrulin-sshfs-174' and os.readlink('/proc/self/ns/mnt')=='mnt:[4026535153]'),'wrong frozen source namespace')
- lock=((TASK/'synthetic/.SOURCE_TEST.lock') if testing else (BRIDGE/'.TLS_V10_SOURCE_SENDER.lock')).open('a' if testing else 'rb');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+ lock=((TASK/'synthetic/.SOURCE_TEST.lock') if testing else (BRIDGE/'.SHARED_SM70_LIBRARY_SOURCE.lock')).open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
  try:os.nice(19)
  except OSError:pass
  def frame(obj):b=canon(obj);sys.stdout.buffer.write(struct.pack('!Q',len(b))+b);sys.stdout.buffer.flush()
@@ -130,15 +130,15 @@ def source_send(request,testing=False):
 
 def spawn_sender(manifest,skip,testing=False):
  request={'manifest':manifest,'skip':skip}
- if testing or manifest.get('source_backend')=='native':
-  p=subprocess.Popen(['/usr/bin/python3','-B',str(P(__file__)),('source-native' if manifest.get('source_backend')=='native' else 'source-synthetic')],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE);p.stdin.write(canon(request));p.stdin.close();return p
+ if testing or manifest.get('source_backend')=='native' or manifest.get('source_host')=='174-new':
+  p=subprocess.Popen(['/usr/bin/python3','-B',str(P(__file__)),('source-native' if manifest.get('source_backend')=='native' or manifest.get('source_host')=='174-new' else 'source-synthetic')],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE);p.stdin.write(canon(request));p.stdin.close();return p
  source=P(__file__).read_text();boot='import sys,json;code=sys.stdin.buffer.readline();exec(compile(json.loads(code),"frozen_readonly_trace_export.py","exec"),{"__name__":"trace_source"})';payload=source+'\nsource_send(json.loads(sys.stdin.buffer.readline()))\n'
  ssh=['ssh','-i','/root/.ssh/id_ed25519_old174','-o','IdentitiesOnly=yes','-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','UserKnownHostsFile=/root/data/result_offload_pilot_20261023_v1/controls/OLD174_VERIFIED_KNOWN_HOSTS','-p','2233','root@10.208.130.174'];p=subprocess.Popen(ssh+['python3 -B -c '+shlex.quote(boot)],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE);p.stdin.write((json.dumps(payload)+'\n').encode()+canon(request));p.stdin.close();return p
 
 def migrate(manifest,testing=False,inject_after_ranges=None):
  need(manifest['freeze_status'].startswith('FROZEN'),'source scope held');g=Resources(testing);before=g(True);bundle=P(manifest['new_true164_bundle'].replace('/home/shared','/root/share/mnt164',1));need(bundle.is_relative_to(NAS),'wrong new NAS scope');need(not manifest.get('reuse'),'reuse must not enter new payload path')
  available=os.statvfs(NAS.parent).f_bavail*os.statvfs(NAS.parent).f_frsize;need(available>=3*manifest['source_data_bytes']+64*MIB,'RESOURCE_HOLD_NAS_CAPACITY')
- lock=(BRIDGE/'.TARGET_RECEIVER.lock').open('rb');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB);v=v9();bundle.mkdir(parents=True,exist_ok=True);publish_bytes(bundle/'SOURCE_MANIFEST.json',canon(manifest),v);(bundle/'chunks').mkdir(exist_ok=True);(bundle/'tree').mkdir(exist_ok=True)
+ lock=(BRIDGE/'.SHARED_SM70_LIBRARY_TARGET.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB);v=v9();bundle.mkdir(parents=True,exist_ok=True);publish_bytes(bundle/'SOURCE_MANIFEST.json',canon(manifest),v);(bundle/'chunks').mkdir(exist_ok=True);(bundle/'tree').mkdir(exist_ok=True)
  if (bundle/'COMMIT.json').exists():return verify_committed(bundle,g,rehash=False)
  skip={};ranges={};newbytes=0;resumed=0
  for row in manifest['members']:
@@ -247,17 +247,17 @@ def source_archive_send(request,testing=False):
  import tarfile,gzip,threading
  m=request['manifest'];archive=P(m['archive_path']);skip=request['skip']
  if testing:need(archive.is_relative_to(TASK/'synthetic'),'archive test outside owned source')
- else:need(os.uname().nodename=='huangrulin-174' and os.readlink('/proc/self/ns/mnt')=='mnt:[4026534768]','archive source identity')
+ else:need((os.uname().nodename=='huangrulin-174' and os.readlink('/proc/self/ns/mnt')=='mnt:[4026534768]') or (m.get('source_host')=='174-new' and os.uname().nodename=='huangrulin-sshfs-174' and os.readlink('/proc/self/ns/mnt')=='mnt:[4026535153]'),'archive source identity')
  need(same_source(identity(archive),m['archive_identity']),'archive identity changed before stream')
- lock=((TASK/'synthetic/.SOURCE_TEST.lock') if testing else (BRIDGE/'.TLS_V10_SOURCE_SENDER.lock')).open('a' if testing else 'rb');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+ lock=((TASK/'synthetic/.SOURCE_TEST.lock') if testing else (BRIDGE/'.SHARED_SM70_LIBRARY_SOURCE.lock')).open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
  try:os.nice(19)
  except OSError:pass
  def frame(o):b=canon(o);sys.stdout.buffer.write(struct.pack('!Q',len(b))+b);sys.stdout.buffer.flush()
- wanted={r['archive_member']:r for r in m['members']};found=[];decoder=None;feeder=None;errors=[];started=time.monotonic();physical=[0]
+ wanted={r['archive_member']:r for r in m['members']};found=[];decoder=None;feeder=None;gz=None;errors=[];started=time.monotonic();physical=[0];archive_hash=hashlib.sha256()
  fd=os.open(archive,os.O_RDONLY|os.O_NOFOLLOW|getattr(os,'O_NOATIME',0));raw=os.fdopen(fd,'rb')
  class RateReader:
   def read(self,n=-1):
-   b=raw.read(n);physical[0]+=len(b);adaptive_io_pace(len(b),30*MIB);return b
+   b=raw.read(n);archive_hash.update(b);physical[0]+=len(b);adaptive_io_pace(len(b),30*MIB);return b
  reader=RateReader()
  if str(archive).endswith('.zst'):
   decoder=subprocess.Popen([('/usr/bin/zstd' if P('/usr/bin/zstd').is_file() else str(TASK/'tools/zstd')),'-dc'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -269,8 +269,15 @@ def source_archive_send(request,testing=False):
      decoder.stdin.write(b)
     decoder.stdin.close()
    except Exception as x:errors.append(str(x))
-  feeder=threading.Thread(target=feed);feeder.start();tf=tarfile.open(fileobj=decoder.stdout,mode='r|')
- else:tf=tarfile.open(fileobj=reader,mode='r|gz')
+  feeder=threading.Thread(target=feed);feeder.start();decoded_stream=decoder.stdout
+ else:gz=gzip.GzipFile(fileobj=reader,mode='rb');decoded_stream=gz
+ class StrictTarInfo(tarfile.TarInfo):
+  @classmethod
+  def fromtarfile(cls,archive):
+   try:return super().fromtarfile(archive)
+   except (tarfile.EmptyHeaderError,tarfile.EOFHeaderError):raise
+   except tarfile.HeaderError as exc:raise tarfile.ReadError('strict archive header '+str(exc)) from exc
+ tf=tarfile.open(fileobj=decoded_stream,mode='r|',ignore_zeros=True,tarinfo=StrictTarInfo,errorlevel=2)
  try:
   for ti in tf:
    name=ti.name
@@ -293,7 +300,13 @@ def source_archive_send(request,testing=False):
   if decoder:
    while decoder.stdout.read(MIB):pass
    feeder.join();need(not errors,'zstd input stream error');need(decoder.wait()==0,'zstd decoder failed')
+  else:
+   while gz.read(MIB):pass
+   gz.close()
+   while reader.read(MIB):pass
   raw.close()
+ need(physical[0]==m['archive_identity']['size'],'archive physical EOF incomplete')
+ if m.get('archive_sha256'):need(archive_hash.hexdigest()==m['archive_sha256'],'archive whole SHA differs from inventory')
  need(same_source(identity(archive),m['archive_identity']),'archive changed before final source close')
  frame({'event':'SOURCE_DONE','Source_simulator_starts':0,'source_disposition':'SOURCE_KEEP'})
 

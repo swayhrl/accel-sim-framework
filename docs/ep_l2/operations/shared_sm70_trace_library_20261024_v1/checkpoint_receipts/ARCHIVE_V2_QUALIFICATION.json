@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "tests": [
+    {
+      "test": "concatenated_tar",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "test": "concatenated_gzip",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "test": "bad_crc",
+      "status": "PASS_EXPECTED_REJECTION",
+      "exit_code": 1
+    },
+    {
+      "test": "truncated_gzip",
+      "status": "PASS_EXPECTED_REJECTION",
+      "exit_code": 1
+    },
+    {
+      "test": "nonzero_invalid_header",
+      "status": "PASS_EXPECTED_REJECTION",
+      "exit_code": 1
+    },
+    {
+      "test": "exact_archive_SHA_cached_member_reuse",
+      "status": "PASS"
+    },
+    {
+      "test": "different_archive_SHA_cache_rejected",
+      "status": "PASS_EXPECTED_REJECTION"
+    }
+  ],
+  "worker_sha256": "397c351df04745af7d853c6cacdd043229492674dd26ca129925245a985aa4f5",
+  "synthetic_only": true,
+  "scientific_starts": 0
+}

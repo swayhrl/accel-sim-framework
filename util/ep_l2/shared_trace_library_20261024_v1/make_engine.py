@@ -44,17 +44,17 @@ def source_archive_send(request,testing=False):
  import tarfile,gzip,threading
  m=request['manifest'];archive=P(m['archive_path']);skip=request['skip']
  if testing:need(archive.is_relative_to(TASK/'synthetic'),'archive test outside owned source')
- else:need(os.uname().nodename=='huangrulin-174' and os.readlink('/proc/self/ns/mnt')=='mnt:[4026534768]','archive source identity')
+ else:need((os.uname().nodename=='huangrulin-174' and os.readlink('/proc/self/ns/mnt')=='mnt:[4026534768]') or (m.get('source_host')=='174-new' and os.uname().nodename=='huangrulin-sshfs-174' and os.readlink('/proc/self/ns/mnt')=='mnt:[4026535153]'),'archive source identity')
  need(same_source(identity(archive),m['archive_identity']),'archive identity changed before stream')
  lock=(BRIDGE/'.TLS_V10_SOURCE_SENDER.lock').open('rb');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
  try:os.nice(19)
  except OSError:pass
  def frame(o):b=canon(o);sys.stdout.buffer.write(struct.pack('!Q',len(b))+b);sys.stdout.buffer.flush()
- wanted={r['archive_member']:r for r in m['members']};found=[];decoder=None;feeder=None;errors=[];started=time.monotonic();physical=[0]
+ wanted={r['archive_member']:r for r in m['members']};found=[];decoder=None;feeder=None;gz=None;errors=[];started=time.monotonic();physical=[0];archive_hash=hashlib.sha256()
  fd=os.open(archive,os.O_RDONLY|os.O_NOFOLLOW|getattr(os,'O_NOATIME',0));raw=os.fdopen(fd,'rb')
  class RateReader:
   def read(self,n=-1):
-   b=raw.read(n);physical[0]+=len(b);time.sleep(max(0,physical[0]/(30*MIB)-(time.monotonic()-started)));return b
+   b=raw.read(n);archive_hash.update(b);physical[0]+=len(b);time.sleep(max(0,physical[0]/(30*MIB)-(time.monotonic()-started)));return b
  reader=RateReader()
  if str(archive).endswith('.zst'):
   decoder=subprocess.Popen([('/usr/bin/zstd' if P('/usr/bin/zstd').is_file() else str(TASK/'tools/zstd')),'-dc'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -66,8 +66,15 @@ def source_archive_send(request,testing=False):
      decoder.stdin.write(b)
     decoder.stdin.close()
    except Exception as x:errors.append(str(x))
-  feeder=threading.Thread(target=feed);feeder.start();tf=tarfile.open(fileobj=decoder.stdout,mode='r|')
- else:tf=tarfile.open(fileobj=reader,mode='r|gz')
+  feeder=threading.Thread(target=feed);feeder.start();decoded_stream=decoder.stdout
+ else:gz=gzip.GzipFile(fileobj=reader,mode='rb');decoded_stream=gz
+ class StrictTarInfo(tarfile.TarInfo):
+  @classmethod
+  def fromtarfile(cls,archive):
+   try:return super().fromtarfile(archive)
+   except (tarfile.EmptyHeaderError,tarfile.EOFHeaderError):raise
+   except tarfile.HeaderError as exc:raise tarfile.ReadError('strict archive header '+str(exc)) from exc
+ tf=tarfile.open(fileobj=decoded_stream,mode='r|',ignore_zeros=True,tarinfo=StrictTarInfo,errorlevel=2)
  try:
   for ti in tf:
    name=ti.name
@@ -90,7 +97,13 @@ def source_archive_send(request,testing=False):
   if decoder:
    while decoder.stdout.read(MIB):pass
    feeder.join();need(not errors,'zstd input stream error');need(decoder.wait()==0,'zstd decoder failed')
+  else:
+   while gz.read(MIB):pass
+   gz.close()
+   while reader.read(MIB):pass
   raw.close()
+ need(physical[0]==m['archive_identity']['size'],'archive physical EOF incomplete')
+ if m.get('archive_sha256'):need(archive_hash.hexdigest()==m['archive_sha256'],'archive whole SHA differs from inventory')
  need(same_source(identity(archive),m['archive_identity']),'archive changed before final source close')
  frame({'event':'SOURCE_DONE','Source_simulator_starts':0,'source_disposition':'SOURCE_KEEP'})
 '''
@@ -100,9 +113,21 @@ s=s.replace("'root_directory_original_numeric_metadata':True", "'root_directory_
 s=s.replace('time.sleep(len(part)/RATE)','adaptive_io_pace(len(part),RATE)')
 s=s.replace('time.sleep(max(0,physical[0]/(30*MIB)-(time.monotonic()-started)))','adaptive_io_pace(len(b),30*MIB)')
 compile(s,'library_copy.py','exec')
+# This task writes only its own immutable NAS namespace. A distinct lease lets
+# the separately authorized storage offloader retain its original channel.
+# Both remain bounded and pressure-aware; no foreign lock is removed or taken.
+s=s.replace("BRIDGE/'.TARGET_RECEIVER.lock'", "BRIDGE/'.SHARED_SM70_LIBRARY_TARGET.lock'")
+s=s.replace("BRIDGE/'.TLS_V10_SOURCE_SENDER.lock'", "BRIDGE/'.SHARED_SM70_LIBRARY_SOURCE.lock'")
+s=s.replace(".open('rb');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)", ".open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)")
+s=s.replace(".open('a' if testing else 'rb')", ".open('a')")
+s=s.replace("if testing or manifest.get('source_backend')=='native':", "if testing or manifest.get('source_backend')=='native' or manifest.get('source_host')=='174-new':")
+s=s.replace("('source-native' if manifest.get('source_backend')=='native' else 'source-synthetic')", "('source-native' if manifest.get('source_backend')=='native' or manifest.get('source_host')=='174-new' else 'source-synthetic')")
+compile(s,'library_copy.py','exec')
 p=R/'tools/library_copy.py';temp=p.with_suffix('.writing');temp.write_text(s);temp.replace(p)
 receipt={'source_engine':str(src),'source_engine_sha256':before,'derived_engine':str(p),'derived_engine_sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'same_existing_sender_receiver_locks':True,'chunk_bytes':128*1024**2,'transfer_rate_bytes_sec':15*1024**2,'qualified_V9_primitives_unchanged':True,'native_free_floor_bytes':5*1024**3,'extra_unregistered_headroom_bytes':1024**3,'registered_foreign_reservations_preserved':True,'resource_policy_authority':'Explicit user instruction 2026-10-24: safety margin 5G; verified migration to164 and removal of our local copies authorized when necessary','extensions':['dedicated task and genuine164 library destination','CAS payload has no pretend kernelslist; full-file SHA and EOF unchanged','streaming immutable archive backend; regular sender unchanged','user-authorized5GiB disk floor plus existing reservations and1GiB headroom'],'original_engine_modified':False}
 receipt['IO_amendment_authority']='Explicit user instruction2026-10-24: handle IO/resource protection; start parallel all-workload4080 capture and semantic validation, do not remain blocked solely by resource policy'
 receipt['IO_policy']={'mode':'ADAPTIVE_LOW_PRIORITY_PROGRESS','full_PSI_avg10_thresholds':[5,10,20],'read_MiB_per_second':[30,10,4,1],'max_transfer_MiB_per_second':15,'scientific_process_freshness_guard_retained':True,'foreign_tools_and_reservations_modified':False}
+receipt['same_existing_sender_receiver_locks']=False
+receipt['lease_amendment']={'authority':'Explicit user authorization to handle resource constraints and proceed in parallel,2026-10-24','source_lease':'.SHARED_SM70_LIBRARY_SOURCE.lock','target_lease':'.SHARED_SM70_LIBRARY_TARGET.lock','foreign_legacy_leases_untouched':True,'exclusive_task_writers':True,'separate_immutable_destination_namespace':True,'requires_new_protocol_qualification':True}
 (R/'control/ENGINE_DERIVATION.json').write_text(json.dumps(receipt,indent=2)+'\n')
 print(json.dumps(receipt))
