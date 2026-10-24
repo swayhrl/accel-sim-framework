@@ -1,0 +1,143 @@
+{
+  "all15_raw_file_SHA_and_no_extra_files_verified": true,
+  "background_task_started": false,
+  "evidence_reviewed": [
+    {
+      "bytes": 3489,
+      "path": "/root/data/shared_trace_assets_platform_qualification_20261025_v1/publish_a6/R2_TARGETED_GUARDS_QUALIFICATION.json",
+      "sha256": "71ff5c05c074bebbcd4cceac89340b490eb62fc1917350ac7286d6b4315a7889"
+    },
+    {
+      "bytes": 1062,
+      "path": "/root/data/shared_trace_assets_platform_qualification_20261025_v1/publish_a6/GUARDED_ENTRY_AND_INSTALL_QUALIFICATION.json",
+      "sha256": "79adbb01db0d5b9f2cfac5cb9f0d89ffd6f026789870ad0a24e3717d4b2a8529"
+    },
+    {
+      "bytes": 1253,
+      "path": "/root/data/sm70_binding_production_suite_candidate_20261025_v1/review/R3_small_metadata_qualification/QUALIFICATION.json",
+      "sha256": "d137e5858668db1775edcaaff4efcffd39b4eeca0a3d018144ba8bd38b86b34e"
+    },
+    {
+      "bytes": 814,
+      "path": "/root/data/sm70_binding_production_suite_candidate_20261025_v1/review/R4_exact_original_key_qualification/QUALIFICATION.json",
+      "sha256": "b74ccb4a8d75d4c3ecc93413ab0c3613fac7d78a48ae72a05df808732612270b"
+    }
+  ],
+  "excluded_authored_component": "verification_stages.py SHA06cc3e3f7b4ba2f0bc2f0c0f1312d97bc3c9355667839f2546d897ef48cd524c checked for exact raw bytes only; independent implementation/quality approval reserved for Root.",
+  "final_frozen_code_id": "e2b1a814a201f7f5dd95c55c61a94f04069690dd18ecfabd89c9f88dc7ae19c7",
+  "fixed_findings": [
+    {
+      "F1": "Gzip physical container/publicCAS actual state now drives mandatory dualSHA and row code/integration checks; labels cannot opt out.",
+      "independent_test": {
+        "bytes": 2187,
+        "path": "/root/data/sm70_frozen_suite_independent_review_20261025_v1/R2_INDEPENDENT_EXACT_AST_DELTA_V2.json",
+        "sha256": "83ea18bdcc0d0df5a452b5ffc192d18462577db83eeedea99d08a0c8aac46401"
+      }
+    },
+    {
+      "F2": "Core default profile is now V3 with dynamic None default and catalog/profile equality; actual fresh A6 proof is V3; old V2 history unchanged/refused.",
+      "legacy_history_preserved": true
+    },
+    {
+      "F3": "Metadata phase/ref/spec/install/entry/platform pointer consumers are bounded128MiB (entry manifest4MiB/code8MiB); Native receipt decoded64MiB retained. Ledger physical/cumulative128MiB/line2MiB/LF/append bounds and cached base builder/one-read legacy raw hashing finish residual active paths.",
+      "independent_source_delta": {
+        "bytes": 5082,
+        "path": "/root/data/sm70_frozen_suite_independent_review_20261025_v1/R3_FROM_R2_EXACT.diff",
+        "sha256": "f3ccac5480f77fad49280d23edca0514900a714b54113cfb8412adcec6175a01"
+      }
+    },
+    {
+      "F4": "New bounded cache-based builder initially passed physicalCAS key instead of logical original; R4 keeps original exact resolver key and caches/reads once without widening strict map.",
+      "independent_test": {
+        "bytes": 533,
+        "path": "/root/data/sm70_frozen_suite_independent_review_20261025_v1/R4_EXACT_CACHE_KEY_DELTA_V1.json",
+        "sha256": "2b80f6b679fba8a504b68039c45c500a9a1d711125d5f003e7a2240044f4f000"
+      }
+    }
+  ],
+  "independent_component_scope": [
+    "core.py",
+    "runtime.py",
+    "resources.py",
+    "storage.py",
+    "primitive.py",
+    "stages.py",
+    "phase.py",
+    "trace_assets.py",
+    "trace-assets",
+    "installation.py",
+    "metadata_preview.py",
+    "PROFILE.json",
+    "legacy_foreign_binding.json",
+    "VENDOR_DERIVATION.json"
+  ],
+  "independent_replays": [
+    {
+      "bytes": 2187,
+      "path": "/root/data/sm70_frozen_suite_independent_review_20261025_v1/R2_INDEPENDENT_EXACT_AST_DELTA_V2.json",
+      "sha256": "83ea18bdcc0d0df5a452b5ffc192d18462577db83eeedea99d08a0c8aac46401"
+    },
+    {
+      "bytes": 533,
+      "path": "/root/data/sm70_frozen_suite_independent_review_20261025_v1/R4_EXACT_CACHE_KEY_DELTA_V1.json",
+      "sha256": "2b80f6b679fba8a504b68039c45c500a9a1d711125d5f003e7a2240044f4f000"
+    }
+  ],
+  "inherited_evidence_truth": "R2/A6 tiny executed chain used QUAL d9b7193c code and production a650 code-delta review; R3 bounded delta has bed7 code; final R4 differsbed7 only original metadata-key wrapper. Those original executions are not relabelled as final R4 all-data execution.",
+  "manifest": {
+    "bytes": 1834,
+    "path": "/root/data/sm70_binding_production_suite_candidate_20261025_v1/release/code/e2b1a814a201f7f5dd95c55c61a94f04069690dd18ecfabd89c9f88dc7ae19c7/CODE_MANIFEST.json",
+    "sha256": "312c2ea4e05ca0bb163d2f8a8abdcdb2676131befc32d5fce061158ac035e392"
+  },
+  "new_blocking_code_gap_identified_in_final_R4": false,
+  "not_covered_or_authorized": [
+    "No production CLI/current/delegate installation, activation or real trace body/whole22769 Native restore was executed.",
+    "Production configuration still UNRESOLVED. Root must finalize actual public immutable refs and distinct4archive identities, protected snapshots, current/preimage pins, Source2 COMMIT and separate INSTALLATION/ACTIVATION approvals.",
+    "No current deployment/space/I/O availability attestation; runtime must check actual platform Resources at each real stage.",
+    "Own verification_stages implementation independently reviewed only by Root."
+  ],
+  "observed_unix": 1792877714.9845781,
+  "old_reviews_retained": [
+    {
+      "bytes": 3265,
+      "path": "/root/data/sm70_frozen_suite_independent_review_20261025_v1/FROZEN_4F5_INDEPENDENT_REVIEW_V1.json",
+      "sha256": "d10b8d7e2b9a91cc35cb638ca0fb0020d13f0ac86aacfd888062683015127fd8"
+    },
+    {
+      "bytes": 789,
+      "path": "/root/data/sm70_frozen_suite_independent_review_20261025_v1/R3_BUILD_CACHE_KEY_EXACT_AST_REPRO_V2.json",
+      "sha256": "bc46063666a46adc157b5026da658348ce1f8b4e315cc8abf4ad4cb1dc609b9a"
+    }
+  ],
+  "raw_code_check": {
+    "bytes": 2922,
+    "path": "/root/data/sm70_frozen_suite_independent_review_20261025_v1/R4_RAW_CODE_AND_DELTA_V1.json",
+    "sha256": "70455f37bfff185f6ad2565f873763df5424bffcb2f915d598f1a0defdecddff"
+  },
+  "replay_sources": [
+    {
+      "bytes": 7355,
+      "path": "/root/data/sm70_frozen_suite_independent_review_20261025_v1/qualify_R2_exact_ast_delta_v2.py",
+      "sha256": "9a3b865dcc54eca34320bed12227bb96a22e264df6308d3404be65eb08e51918"
+    },
+    {
+      "bytes": 1836,
+      "path": "/root/data/sm70_frozen_suite_independent_review_20261025_v1/qualify_R4_exact_original_key_v1.py",
+      "sha256": "3905d040db88c691a0f74e4491b0605f89a8a4e4038776f7bd038b8c0ac478c2"
+    }
+  ],
+  "science_budget_or_Source_state_changed": false,
+  "status": "LIMITED_PASS_FINAL_R4_NONAUTHORED_CODE_REVIEW_ONLY",
+  "supported_code_contracts": [
+    "Root-approved sealed spec+code version gates are separate from future-only installer approval, public CURRENT activation and actual data completion.",
+    "Exact125/22769/25149/972603859656 frozen referential graph, unknown Rodinia versions and all aliases/old20 lineage preserved; no Source header or simulator qualification upgrade.",
+    "Pending archive cannot be fabricated: all actualCOMMIT/sourceManifest/tree/range/closed receipt chain checks precede stage execution.",
+    "Public runtime/helper dependencies are immutable siblings+stdlib+platform authority only; historical original private proof paths serve strict relocation keys, not private runtime dependencies.",
+    "Whole logical object size is uncapped; perwindow64MiB and all-task256MiB remain; completed full Native proof is fully encoded, closed/reopened compressed publicCAS with both SHA and exact ledger before self-owned temporary release.",
+    "Normal Target/foreign reservations/RAM/progress/livePID guards remain; stage body/auth/read-only policy never invokes Source sender, legacy Goal or science.",
+    "New finish archive identity map validates Root rawreceiptSHA\u2192selector\u2192actual fullidentity/path set, not merely4distinctJSONSHAs; protected declared maps are nonempty/allkeys equal.",
+    "Perappend ledger validation+fsync and incremental expected digest retained; whole ledger digest moved to operation close/final, eliminating quadratic full-ledger rereads.",
+    "Existing local/plain legitimate proof files stay referenced and kept; wrongprofile/oldsha-only/duplicate/crosscatalog records reject; crash closed local/noledger and postCAS emptydir paths remain controlled.",
+    "Publisher crash after activation reopens same exact binding/canonical spec+code envelope; immutable metadata CAS/preimages preserved and future delegate installer never touches live Source or scientific commands."
+  ]
+}
