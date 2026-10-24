@@ -1,0 +1,208 @@
+{
+  "status": "SOURCE_PATH_REVIEW_PENDING_WHOLE11MEMBER_ADDRESS_AUDIT",
+  "resolver_path": "/root/data/dtc_main_v100_sweep_20261025_v1/telemetry_v2/framework/gpu-simulator/trace-driven/trace_driven.cc",
+  "resolver_sha256": "e82e9156bd28d61a044e1f677dc9e0e162290043404730ac9a81dae5ab402689",
+  "ordinary_STG_excerpt_first_line": 406,
+  "ordinary_STG_excerpt": [
+    "    case OP_STG:",
+    "    case OP_STL:",
+    "      assert(data_size > 0);",
+    "      memory_op = memory_store;",
+    "      cache_op = CACHE_ALL;",
+    "      if (m_opcode == OP_STL)",
+    "        space.set_type(local_space);",
+    "      else",
+    "        space.set_type(global_space);",
+    "      // check the cache scope, if its strong GPU, then bypass L1",
+    "      if ((trace.check_opcode_contain(opcode_tokens, \"STRONG\") &&",
+    "           trace.check_opcode_contain(opcode_tokens, \"GPU\")) ||",
+    "          trace.check_opcode_contain(opcode_tokens, \"BYPASS\")) {",
+    "        cache_op = CACHE_GLOBAL;",
+    "      }",
+    "      break;",
+    "    case OP_ATOMG:"
+  ],
+  "generic_ST_excerpt_first_line": 456,
+  "generic_ST_excerpt": [
+    "      break;",
+    "    case OP_ST:",
+    "    case OP_LD:",
+    "      assert(data_size > 0);",
+    "      if (m_opcode == OP_LD)",
+    "        memory_op = memory_load;",
+    "      else",
+    "        memory_op = memory_store;",
+    "      // resolve generic loads",
+    "      if (kernel_trace_info->shmem_base_addr == 0 ||",
+    "          kernel_trace_info->local_base_addr == 0) {",
+    "        // shmem and local addresses are not set",
+    "        // assume all the mem reqs are shared by default",
+    "        space.set_type(shared_space);",
+    "      } else {",
+    "        // check the first active address",
+    "        for (unsigned i = 0; i < warp_size(); ++i)",
+    "          if (active_mask.test(i)) {",
+    "            if (trace.memadd_info->addrs[i] >=",
+    "                    kernel_trace_info->shmem_base_addr &&",
+    "                trace.memadd_info->addrs[i] <",
+    "                    kernel_trace_info->local_base_addr)",
+    "              space.set_type(shared_space);",
+    "            else if (trace.memadd_info->addrs[i] >=",
+    "                         kernel_trace_info->local_base_addr &&",
+    "                     trace.memadd_info->addrs[i] <",
+    "                         kernel_trace_info->local_base_addr +",
+    "                             LOCAL_MEM_SIZE_MAX) {",
+    "              space.set_type(local_space);",
+    "              cache_op = CACHE_ALL;",
+    "            } else {",
+    "              space.set_type(global_space);",
+    "              cache_op = CACHE_ALL;",
+    "            }",
+    "            break;",
+    "          }",
+    "      }",
+    ""
+  ],
+  "opcode_map_path": "/root/data/dtc_main_v100_sweep_20261025_v1/telemetry_v2/framework/gpu-simulator/ISA_Def/volta_opcode.h",
+  "opcode_map_sha256": "dc88c632ab09210faf8239bd9eb988056641e0643642d622dc43304c4b787da4",
+  "opcode_map_entries": [
+    {
+      "line": 112,
+      "text": "    {\"ST\", OpcodeChar(OP_ST, STORE_OP)},"
+    },
+    {
+      "line": 113,
+      "text": "    {\"STG\", OpcodeChar(OP_STG, STORE_OP)},"
+    }
+  ],
+  "observed_completed_members": 6,
+  "observed_generic_rows": [
+    {
+      "ordinal": 1,
+      "records": 1936,
+      "counts": [
+        {
+          "opcode": "ST",
+          "resolved_space": "GLOBAL",
+          "records": 1936
+        }
+      ],
+      "widths": [
+        {
+          "opcode": "ST.E.SYS",
+          "trace_width": 4,
+          "parser_width": 4,
+          "records": 1936
+        }
+      ]
+    },
+    {
+      "ordinal": 2,
+      "records": 1936,
+      "counts": [
+        {
+          "opcode": "ST",
+          "resolved_space": "GLOBAL",
+          "records": 1936
+        }
+      ],
+      "widths": [
+        {
+          "opcode": "ST.E.SYS",
+          "trace_width": 4,
+          "parser_width": 4,
+          "records": 1936
+        }
+      ]
+    },
+    {
+      "ordinal": 3,
+      "records": 1936,
+      "counts": [
+        {
+          "opcode": "ST",
+          "resolved_space": "GLOBAL",
+          "records": 1936
+        }
+      ],
+      "widths": [
+        {
+          "opcode": "ST.E.SYS",
+          "trace_width": 4,
+          "parser_width": 4,
+          "records": 1936
+        }
+      ]
+    },
+    {
+      "ordinal": 4,
+      "records": 1936,
+      "counts": [
+        {
+          "opcode": "ST",
+          "resolved_space": "GLOBAL",
+          "records": 1936
+        }
+      ],
+      "widths": [
+        {
+          "opcode": "ST.E.SYS",
+          "trace_width": 4,
+          "parser_width": 4,
+          "records": 1936
+        }
+      ]
+    },
+    {
+      "ordinal": 5,
+      "records": 1936,
+      "counts": [
+        {
+          "opcode": "ST",
+          "resolved_space": "GLOBAL",
+          "records": 1936
+        }
+      ],
+      "widths": [
+        {
+          "opcode": "ST.E.SYS",
+          "trace_width": 4,
+          "parser_width": 4,
+          "records": 1936
+        }
+      ]
+    },
+    {
+      "ordinal": 6,
+      "records": 1936,
+      "counts": [
+        {
+          "opcode": "ST",
+          "resolved_space": "GLOBAL",
+          "records": 1936
+        }
+      ],
+      "widths": [
+        {
+          "opcode": "ST.E.SYS",
+          "trace_width": 4,
+          "parser_width": 4,
+          "records": 1936
+        }
+      ]
+    }
+  ],
+  "interpretation": "For observedST.E.SYS,width4 and allactiveaddresses resolvingGLOBAL,the existing genericST branch sets memory_store/global_space/CACHE_ALL. OrdinarySTG.E.SYS has the same memory operation/space/cache attributes;no STRONG.GPU or BYPASS modifier is present in observed generic opcodes. This is current consumer-path support,not a native numerical-value or whole-application-capture proof.",
+  "conditions_for_later_adjudication": [
+    "Every one of11fullmembersSHArechecked",
+    "Everygenericactive-laneaddresssameclassasfirstlane",
+    "Nonzero valid shared/local bases for everymember",
+    "Allgenericwidthsandcodecformsvalid",
+    "No otheroriginalbodyissues/priorhardscientificHOLD",
+    "Explicitseparatescientificadmissionafterreview;originalHOLDunchanged"
+  ],
+  "performance_or_admission_granted": false,
+  "source_or_model_modified": false,
+  "new_scientific_starts": 0,
+  "observed_utc": "2026-10-24T22:26:33.853661+00:00"
+}

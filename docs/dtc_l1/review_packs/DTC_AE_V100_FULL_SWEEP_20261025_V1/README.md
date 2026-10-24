@@ -45,3 +45,7 @@ The inherited PolicyB had an additional6h deadline despite the outer90day spec. 
 ## Whole-input observational capacity revision
 
 MyocyteCH/DM exhausted the original8192packet exporter ceiling. The never-started R4waiter was cancelled metadata-only;[continuation_r5_cap1m/README.md](continuation_r5_cap1m/README.md) records the isolated one-line observational Framework revision,unchanged Core/cache/configs,precise versioned specs and32zero-model checks for continuing only original unused cells. All105old attempts and their actual identities remain unchanged.
+
+## Cutcp current-source format adjudication
+
+[Cutcp generic global-store review](format_adjudications/CUTCP_GENERIC_GLOBAL_STORES_V1/README.md) independently verifiedall11whole membersand21,296genericstore records. A separate current-source qualified-input candidate retains the originalHOLD unchanged. The original unused four Cutcpcells require a precise closed-boundary admission continuation;no old model is rerun and no new input/configuration is introduced.
