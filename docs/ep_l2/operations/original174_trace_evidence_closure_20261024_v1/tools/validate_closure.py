@@ -25,7 +25,7 @@ bc=load(B/'evidence/C16_CANONICAL_SOURCE_MODELS_CURRENT_IDENTITY_AND_IMMUTABLE_R
 check['six_protected_original_models_still_exact_identity']=len(cc)==6 and all(all(x.get(k)==y.get(k) for k in ['path','dev','inode','size','mtime_ns','ctime_ns']) for x,y in zip(bc,cc))
 bt=load(B/'evidence/TRUE164_C16_AWMA_CATALOG_AND_SIX_MODEL_METADATA.json')['models'];ct=load(R/'evidence/C16_TRUE164_AUTHORITY_CURRENT_METADATA_NO_MODEL_READ.json')['files']
 check['six_authority_current_path_size_mtime']=len(ct)==6 and all(all(x.get(k)==y.get(k) for k in ['path','size','mtime_ns']) for x,y in zip(bt,ct))
-plans=[r for r in rows(R/'ARCHIVE_ACTION_QUEUE.csv') if r['status']=='REQUIRES_COPY_AUTHORIZATION'];keys=set();planbytes=0
+plans=[r for r in rows(R/'ARCHIVE_ACTION_QUEUE.csv') if r['status']=='REQUIRES_COPY_AUTHORIZATION' and r['queue_id'].startswith('TRACE_')];keys=set();planbytes=0
 for r in plans:
  x=load(R/r['manifest_reference'])
  for f in x['selected_uncovered_members']:
@@ -36,6 +36,9 @@ check['empty_roots_rejected_before_cwd']=len(load(R/'evidence/P2_OWNER_SCOPED_NO
 resource=load(R/'RESOURCE_AND_ACTIVE_SCIENCE_AUDIT.json')
 check['no_transfer_Source_mutation_science_start']=resource['new_archive_transfer_bytes']==0 and resource['new_Source_writes_or_deletes']==0 and resource['new_scientific_starts_stops_or_budget_mutations']==0
 check['no_large_trace_or_model_rehash']=resource['big_trace_or_model_full_SHA_passes']==0
+p2=load(R/'evidence/P2_BOUNDED_CURRENT_FULL_SOURCE_RAW_FILE_SHA_MANIFEST.json')
+check['P2_63_exact_raw_scopes_full_Source_SHA']=p2['status']=='ALL_SOURCE_RAW_SCOPES_FROZEN' and p2['read_bytes']==222915898 and len(p2['results'])==63 and sum(len(z['files']) for z in p2['results'])==774 and all(f['identity_stable'] for z in p2['results'] for f in z['files'])
+check['P2_current_Owner_digest_bindings']=all(all(z[k] in {f['sha256'] for f in z['files']} for k in ['owner_stdout_sha256','owner_terminal_sha256','owner_spec_sha256','manifest_sha256'] if z.get(k)) for z in p2['results'])
 check['no_raw_payload_or_secret_upload_extensions']=not any(f.suffix in ['.traceg','.tgz','.zst','.safetensors','.pem','.key','.log'] for f in R.rglob('*') if f.is_file())
 secret=[]
 for f in R.rglob('*'):
