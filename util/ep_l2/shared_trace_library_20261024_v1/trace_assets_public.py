@@ -50,7 +50,7 @@ def materialize(d,a,dest,max_bytes,dry):
  if os.uname().nodename!='huangrulin-sshfs-174' or parent.stat().st_dev!=Path('/root/data').stat().st_dev:raise ValueError('use a new destination on verified174-new native /root/data filesystem')
  receipt_path=dest.with_name(dest.name+'.MATERIALIZATION_RECEIPT.json')
  if os.path.lexists(receipt_path):raise ValueError('adjacent materialization receipt must also be ABSENT')
- free=shutil.disk_usage(parent).free;size=sum(m['size'] for m in a['members']);reserve=8*1024**3
+ free=shutil.disk_usage(parent).free;size=sum(m['size'] for m in a['members']);reserve=6*1024**3+64*1024**2
  n=Path('/root/data/ep_l2_dtc_l1_native_v2/control/science_authority/NATIVE_SCIENCE_REGISTRY.json')
  if n.exists():reserve+=sum(x.get('reserved_write_bytes',0) for x in json.loads(n.read_text()).get('registered_future_requests',{}).values())
  admit=size<=max_bytes and free>=size+reserve

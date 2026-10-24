@@ -3,6 +3,12 @@ import json,hashlib
 R=Path('/root/data/shared_sm70_trace_library_20261024_v1')
 src=Path('/root/data/ep_dtc_trace_migration_20261024_v1/tools/trace_copy.py');s=src.read_text();before=hashlib.sha256(src.read_bytes()).hexdigest()
 s=s.replace("TASK=P('/root/data/ep_dtc_trace_migration_20261024_v1')","TASK=P('/root/data/shared_sm70_trace_library_20261024_v1')")
+# User explicitly revised the native free-space floor on 2026-10-24.
+# Preserve every registered project reservation and the additional 1GiB headroom.
+assert "required=7*GIB+reserved+GIB+64*MIB" in s
+s=s.replace("required=7*GIB+reserved+GIB+64*MIB","required=5*GIB+reserved+GIB+64*MIB")
+# Discover the second currently registered DTC controller without modifying it.
+s=s.replace("for f in ae.glob('*.INTENT.json'):","pending_intents=set(ae.glob('*.INTENT.json'))\n  for registered in registry.get('registered_future_requests',{}).values():\n   consumed=registered.get('consumed',{})\n   if not isinstance(consumed,dict):continue\n   for record in consumed.values():\n    if isinstance(record,dict) and not record.get('execution_receipt') and record.get('intent'):pending_intents.add(P(record['intent']))\n  for f in sorted(pending_intents):")
 s=s.replace("NAS=P('/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_ep_dtc_trace_inputs_v1')","NAS=P('/root/share/mnt164/huangrulin/traces')")
 old="if row['relative_path']==manifest['entry_name']:need(p.read_bytes().hex()==manifest['commandlist_bytes_hex'],'commandlist bytes/order drift')\n  else:need(first[:128].hex()==row['header_prefix_hex'],'kernel header differs from source')"
 new="if manifest.get('payload_kind')=='CAS_FILES_V1':\n   if row.get('header_prefix_hex'):need(first[:128].hex()==row['header_prefix_hex'],'CAS prefix differs from frozen source')\n  elif row['relative_path']==manifest['entry_name']:need(p.read_bytes().hex()==manifest['commandlist_bytes_hex'],'commandlist bytes/order drift')\n  else:need(first[:128].hex()==row['header_prefix_hex'],'kernel header differs from source')"
@@ -73,6 +79,6 @@ s=s.replace("lock=(BRIDGE/'.TLS_V10_SOURCE_SENDER.lock').open('rb');fcntl.flock(
 s=s.replace("'root_directory_original_numeric_metadata':True", "'root_directory_original_numeric_metadata':manifest.get('payload_kind')!='CAS_FILES_V1','root_directory_manifest_numeric_metadata':True")
 compile(s,'library_copy.py','exec')
 p=R/'tools/library_copy.py';p.write_text(s)
-receipt={'source_engine':str(src),'source_engine_sha256':before,'derived_engine':str(p),'derived_engine_sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'same_existing_sender_receiver_locks':True,'chunk_bytes':128*1024**2,'transfer_rate_bytes_sec':15*1024**2,'qualified_V9_primitives_unchanged':True,'extensions':['dedicated task and genuine164 library destination','CAS payload has no pretend kernelslist; full-file SHA and EOF unchanged','streaming immutable archive backend; regular sender unchanged'],'original_engine_modified':False}
+receipt={'source_engine':str(src),'source_engine_sha256':before,'derived_engine':str(p),'derived_engine_sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'same_existing_sender_receiver_locks':True,'chunk_bytes':128*1024**2,'transfer_rate_bytes_sec':15*1024**2,'qualified_V9_primitives_unchanged':True,'native_free_floor_bytes':5*1024**3,'extra_unregistered_headroom_bytes':1024**3,'registered_foreign_reservations_preserved':True,'resource_policy_authority':'Explicit user instruction 2026-10-24: safety margin 5G; verified migration to164 and removal of our local copies authorized when necessary','extensions':['dedicated task and genuine164 library destination','CAS payload has no pretend kernelslist; full-file SHA and EOF unchanged','streaming immutable archive backend; regular sender unchanged','user-authorized5GiB disk floor plus existing reservations and1GiB headroom'],'original_engine_modified':False}
 (R/'control/ENGINE_DERIVATION.json').write_text(json.dumps(receipt,indent=2)+'\n')
 print(json.dumps(receipt))

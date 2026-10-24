@@ -1,7 +1,7 @@
 from pathlib import Path
 import sys,subprocess,shlex,json,time,os
 R=Path('/root/data/shared_sm70_trace_library_20261024_v1');host=sys.argv[1]
-sys.path.insert(0,'/root/data/ep_dtc_trace_migration_20261024_v1/tools');import trace_copy
+sys.path.insert(0,str(R/'tools'));import library_copy as trace_copy
 g=trace_copy.Resources();g(True)
 files=json.loads((R/'control'/f'{host}_FROZEN_METADATA.json').read_text())
 out=R/'control'/f'{host}_FILE_SHA.jsonl';done={}
@@ -20,13 +20,19 @@ if host=='174':
 else:cmd=['python3','-B',str(R/'tools/hash_worker.py')]
 p=subprocess.Popen(cmd,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
 p.stdin.write(json.dumps(req));p.stdin.close();completed=len(done)
-with out.open('a') as log:
- for line in p.stdout:
-  d=json.loads(line);g()
-  if d['event']=='FILE_SHA':log.write(line);log.flush();completed+=1
-  progress={'host':host,'event':d['event'],'completed_files':completed,'pending_session_files':len(pending),'last':d,'observed_unix':time.time()}
-  (R/'control'/f'{host}_HASH_PROGRESS.json').write_text(json.dumps(progress)+'\n')
-rc=p.wait();err=p.stderr.read()
+try:
+ with out.open('a') as log:
+  for line in p.stdout:
+   d=json.loads(line);g()
+   if d['event']=='FILE_SHA':log.write(line);log.flush();completed+=1
+   progress={'host':host,'event':d['event'],'completed_files':completed,'pending_session_files':len(pending),'last':d,'observed_unix':time.time()}
+   (R/'control'/f'{host}_HASH_PROGRESS.json').write_text(json.dumps(progress)+'\n')
+ rc=p.wait();err=p.stderr.read()
+finally:
+ if p.poll() is None:
+  p.terminate()
+  try:p.wait(timeout=15)
+  except subprocess.TimeoutExpired:p.kill();p.wait()
 if rc:raise RuntimeError((rc,err))
 # Rebuild complete map including current commandlist hashes and resumed rows.
 for line in out.read_text().splitlines():

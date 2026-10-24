@@ -55,12 +55,18 @@ class Resources:
   if not force and self.last_value and time.monotonic()-self.last<10:return self.last_value
   need(os.uname().nodename=='huangrulin-sshfs-174' and os.readlink('/proc/self/ns/mnt')=='mnt:[4026535153]' and NATIVE.stat().st_dev==2128,'Target identity changed')
   fs=json.loads(subprocess.check_output(['findmnt','-J','-T',str(NAS.parent)],text=True))['filesystems'][0];need(fs['source']=='admin-wcx@10.208.130.164:/home/shared' and fs['fstype']=='fuse.sshfs','not genuine164')
-  registry=read(NATIVE/'control/science_authority/NATIVE_SCIENCE_REGISTRY.json');reserved=sum(x.get('reserved_write_bytes',0) for x in registry.get('registered_future_requests',{}).values());disk=os.statvfs(NATIVE);free=disk.f_bavail*disk.f_frsize;required=7*GIB+reserved+GIB+64*MIB
+  registry=read(NATIVE/'control/science_authority/NATIVE_SCIENCE_REGISTRY.json');reserved=sum(x.get('reserved_write_bytes',0) for x in registry.get('registered_future_requests',{}).values());disk=os.statvfs(NATIVE);free=disk.f_bavail*disk.f_frsize;required=5*GIB+reserved+GIB+64*MIB
   need(free>=required and disk.f_favail>=100000,'RESOURCE_HOLD_SHARED_SSD_ALL_PROJECT_RESERVATIONS')
   mem=int(next(x.split()[1] for x in P('/proc/meminfo').read_text().splitlines() if x.startswith('MemAvailable:')))*1024;cur=int(P('/sys/fs/cgroup/memory.current').read_text());maxval=P('/sys/fs/cgroup/memory.max').read_text().strip();need(mem>=64*GIB and (maxval=='max' or int(maxval)-cur>=GIB),'RESOURCE_HOLD_HOST_OR_CGROUP_RAM')
   pressure={line.split()[0]:{a.split('=')[0]:float(a.split('=')[1]) for a in line.split()[1:]} for line in P('/proc/pressure/io').read_text().splitlines()};active=[]
   ae=P('/root/data/dtc_main_20261023_v1/ae_fair_v1/control/qualification_ledger')
-  for f in ae.glob('*.INTENT.json'):
+  pending_intents=set(ae.glob('*.INTENT.json'))
+  for registered in registry.get('registered_future_requests',{}).values():
+   consumed=registered.get('consumed',{})
+   if not isinstance(consumed,dict):continue
+   for record in consumed.values():
+    if isinstance(record,dict) and not record.get('execution_receipt') and record.get('intent'):pending_intents.add(P(record['intent']))
+  for f in sorted(pending_intents):
    if f.with_name(f.name.replace('.INTENT.','.DONE.')).exists():continue
    i=read(f);out=P(i['output']);proof=out/'NATIVE_SIMULATOR_PID_AND_MAPS.json'
    if not proof.exists():continue
