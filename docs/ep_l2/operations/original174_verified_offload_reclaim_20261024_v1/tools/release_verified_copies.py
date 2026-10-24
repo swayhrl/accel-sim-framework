@@ -26,7 +26,7 @@ def journal(path,x,sync=True):
 
 def check_rows(rows):
     ids=set()
-    for index,x in enumerate(rows):
+    for x in rows:
         p=x['path'];need(p and p.startswith(('/root/data/full_result_offload_20261023_v1/','/workspace/worktrees/accel-sim-decoupled-l2/hw_run/c2p-polybench-full-20260821/')),'UNAUTHORIZED_SELECTOR')
         need(os.path.realpath(p)==p,'SYMLINK_ANCESTOR_OR_ALIAS')
         now=ident(p);need(all(now[k]==x['identity'][k] for k in KEYS),'SOURCE_IDENTITY_CHANGED '+p)
@@ -58,7 +58,7 @@ def retire(rows,role):
             x=json.loads(line)
             if x.get('event')=='DONE':done[x['path']]=x
     results=[]
-    for x in rows:
+    for index,x in enumerate(rows):
         p=P(x['path']);before_one=free()
         # All exact files must be present on the initial invocation; a restart
         # requires explicit reconciliation of this durable DONE list, never a
@@ -80,7 +80,7 @@ def source_main():
     need((os.uname().nodename,os.readlink('/proc/self/ns/mnt'))==('huangrulin-174','mnt:[4026534768]'),'WRONG_SOURCE_NAMESPACE')
     rows=REQUEST['source_rows'];need(len(rows)==4,'EXACT_FOUR_SOURCE_FILES_ONLY')
     need(all('/polybench-bicg/NO_ARGS/traces/kernel-' in x['path'] or '/polybench-atax/NO_ARGS/traces/kernel-' in x['path'] for x in rows),'WRONG_SOURCE_SUBSET')
-    print(json.dumps(retire(rows,'SOURCE')),flush=True)
+    print(json.dumps(dict(role='SOURCE',preflight=check_rows(rows),df_available_bytes=free()) if REQUEST.get('dry_run') else retire(rows,'SOURCE')),flush=True)
 
 def main():
     global REQUEST
@@ -97,6 +97,14 @@ def main():
     for x in REQUEST['remote_trace_objects']:
         now=ident(x['path']);need(all(now[k]==x['identity'][k] for k in ['dev','inode','size','mtime_ns']),'VERIFIED_ARCHIVE_OBJECT_CHANGED')
     check_rows(REQUEST['native_rows'])
+    if '--check' in sys.argv:
+        REQUEST['dry_run']=True
+        source=P(__file__).read_text();boot='import sys,json;exec(compile(json.loads(sys.stdin.buffer.readline()),"exact_authorized_retirement.py","exec"),{"__name__":"source_release"})'
+        ssh=['ssh','-i','/root/.ssh/id_ed25519_old174','-o','IdentitiesOnly=yes','-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','UserKnownHostsFile=/root/data/result_offload_pilot_20261023_v1/controls/OLD174_VERIFIED_KNOWN_HOSTS','-p','2233','root@10.208.130.174']
+        child=subprocess.run(ssh+['python3 -B -c '+shlex.quote(boot)],input=(json.dumps(source+'\nsource_main()\n')+'\n').encode()+canon(REQUEST),stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=90)
+        need(child.returncode==0,'SOURCE_DRY_RUN_HOLD '+child.stderr.decode(errors='replace')[-2000:])
+        print(json.dumps(dict(status='EXACT_RETIREMENT_DRY_RUN_PASS',native_files=len(REQUEST['native_rows']),source=json.loads(child.stdout),df_available_bytes=free(),unlinks=0)),flush=True)
+        return
     NAS.mkdir(exist_ok=True);(NAS/'control').mkdir(exist_ok=True)
     # Persist both scopes before any destructive operation, including Source
     # rows whose archive is readable only from the genuine Target mount.
