@@ -1,0 +1,96 @@
+{
+  "status": "SCOPED_LEGACY65_R2_NATIVE_TERMINAL_JOIN_PASS",
+  "uuid": "86b6f52282c943d69b377f4332a4246a",
+  "raw_sha256": "8475ad0e227ffc907bd59d036ebca8735152e0767e36b715c1330906809708d7",
+  "all_spec_pins_verified": 105,
+  "source_sass_records": 39,
+  "source_active_lanes": 780,
+  "aux_uops": 12,
+  "aux_active_lanes": 260,
+  "all_original_pc_mask_opcode_multiset_matches": true,
+  "source_trace_sha256": "04f3a00d7a6ac88123f114cc77ac6a074966374b939f5160a3ebdbed0617d0ba",
+  "stats": {
+    "gpu_tot_sim_insn": 1040,
+    "const_lane_instances": 325,
+    "actual_const_requests": 3,
+    "L1C_accesses": 15,
+    "L1C_misses": 9,
+    "L2_CONST_accesses": 6,
+    "global_write_requests": 9,
+    "issued_ctas": 1,
+    "completed_ctas": 1
+  },
+  "global_store_lanes": 65,
+  "physical_EXIT_lanes": 65,
+  "physical_nonzero_EXIT_masks": [
+    "0x1",
+    "0xffffffff",
+    "0xffffffff"
+  ],
+  "zero_mask_source_records": 3,
+  "maps_samples": 38,
+  "map_union_paths": 8,
+  "live_stopped_checkpoints": [
+    {
+      "monotonic": 9597420.44168152,
+      "pid": 998348,
+      "start_ticks": 959741962,
+      "state": "T",
+      "label": "FIRST_ISSUE",
+      "maps_sha256": "e000eb9a70c74bb9353c905a7bd900cd94fefcc107bd90622c8d043682b6072a",
+      "mapped_files": 8,
+      "primary": true,
+      "saved_maps": "maps_000035_pid998348_FIRST_ISSUE.txt",
+      "paths": [
+        "/root/data/ada_native_extensions_stage4_20261024_v1/core/lib/gcc-11.4.0/cuda-12040/release/libcudart.so",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/ld-linux-x86-64.so.2",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libc.so.6",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libgcc_s.so.1",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libm.so.6",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libstdc++.so.6.0.30",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libz.so.1.2.11",
+        "/root/data/ep_l2_main_ada_legacy65_r2_compat_20261024_v1/bin/accel-sim.out"
+      ]
+    },
+    {
+      "monotonic": 9597420.992424857,
+      "pid": 998348,
+      "start_ticks": 959741962,
+      "state": "T",
+      "label": "TERMINAL",
+      "maps_sha256": "c69e18941c986666ec37af91978e48e9822442a0e3e324f05a5bf6cce4779ada",
+      "mapped_files": 8,
+      "primary": true,
+      "saved_maps": "maps_000037_pid998348_TERMINAL.txt",
+      "paths": [
+        "/root/data/ada_native_extensions_stage4_20261024_v1/core/lib/gcc-11.4.0/cuda-12040/release/libcudart.so",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/ld-linux-x86-64.so.2",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libc.so.6",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libgcc_s.so.1",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libm.so.6",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libstdc++.so.6.0.30",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libz.so.1.2.11",
+        "/root/data/ep_l2_main_ada_legacy65_r2_compat_20261024_v1/bin/accel-sim.out"
+      ]
+    }
+  ],
+  "maps_discovery_scope": {
+    "module": "/root/data/ada_native_extensions_stage4_20261024_v1/native_maps_observer_v2.py",
+    "period_seconds": 0.02,
+    "primary_and_sampled_descendants": true,
+    "PID_start_ticks_monotonic_samples": true,
+    "new_seen_paths_immediate_full_SHA_vs_pins": true,
+    "explicit_SIGSTOP_SIGCONT_at": [
+      "FIRST_ISSUE",
+      "TERMINAL"
+    ],
+    "scope": "Sampled live mappings plus explicit stopped primary issue and post-simulation checkpoints. Does not prove every transient DSO/process. Host wall-time observation stops are explicit; simulated cycles unaffected.",
+    "observed_path_read_failure": "Fail closed RuntimeError even if path disappears between maps and hash; only explicit proc exit races may be skipped",
+    "child_discovery_scope": "Recursive /proc/PID/task/PID/children main-thread child lists only; not all thread children, reparented children or every transient process"
+  },
+  "numeric_reference": "Actual same-process GPU full65 CPU check, trace-driven consumer does not recompute values",
+  "hardware_timing_qualification": false,
+  "EP_scientific_promotion": false,
+  "campaign_consumed_after": 7,
+  "campaign_ceiling": 8
+}
