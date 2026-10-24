@@ -1,8 +1,8 @@
 # Lane T verified offload — ACTIVE
 
-Observed 2026-10-25T01:27:10.890568+08:00. Frozen queue: **11 committed, 104 pending**. Unique committed payload: 104,024,142,612 bytes. Driver running: True; PID 1033480, start_ticks 961292693. Phase: `SOURCE_PREHASH`; asset: `TRACE_9ad2f284f8c2a318`. Historical HOLD rows remain in the append-only ledger and do not mean an active asset is currently held.
+Observed 2026-10-25T01:32:25.167328+08:00. Frozen queue: **11 committed, 104 pending**. Unique committed payload: 104,024,142,612 bytes. Driver running: True; PID 1033480, start_ticks 961292693. Phase: `TRANSFER_RANGE_VERIFIED`; asset: `TRACE_9ad2f284f8c2a318`. Historical HOLD rows remain in the append-only ledger and do not mean an active asset is currently held.
 
-Shared SSD available: 21,619,163,136 bytes. Share/MD127 available: 36,591,529,984 bytes; qualified payload staging remains zero. Genuine164 available: 49,384,930,512,896 bytes. Fresh resource/science gates remain enforced by the driver.
+Shared SSD available: 21,618,987,008 bytes. Share/MD127 available: 36,591,529,984 bytes; qualified payload staging remains zero. Genuine164 available: 49,372,321,972,224 bytes. Fresh resource/science gates remain enforced by the driver.
 
 `CURRENT_RECOVERY_STATUS.md` is the preserved pre-resume audit. `LIVE_CONTINUATION_STATUS.json` is the live PID-checked handoff, including a closed/reopened durable genuine164 metadata receipt. Existing COMMIT controls are independently read back by the exporter, without retransmitting committed payload. Original task IDs, frozen scopes, object identities, global exclusion and range/SHA rules are retained.
 
