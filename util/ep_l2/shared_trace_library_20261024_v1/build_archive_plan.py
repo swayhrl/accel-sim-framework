@@ -41,6 +41,8 @@ for ap in sorted((R/'control').glob('ARCHIVE_[0-9]*.json.gz')):
   logical=[{'relative_path':rel,'sha256':r['sha256'],'size':r['size']} for rel,r in selected]
   identity={'suite':su,'program':program,'version':version,'extent':extent,'members':sorted(logical,key=lambda m:m['relative_path'])};bid=hashlib.sha256(canon(identity)).hexdigest()
   provenance={'host':'174_ARCHIVE','path':d['path']+'!/'+name,'archive_sha256':d['archive_sha256'],'archive_member':entry['archive_member'],'kernel_launches':len(order),'source_keep':True}
+  if d.get('archive_path',d['path'])!=d['path']:
+   provenance.update(actual_archive_source_path=d['archive_path'],actual_archive_source_host=d['source_host'],original_archive_path_disposition='EXTERNALLY_RETIRED_AFTER_VERIFIED_TRUE164_PERSISTENCE',actual_true164_archive_kept=True)
   previous=next((b for b in bundles if b['bundle_id']==bid),None)
   if previous:previous['source_aliases'].append(provenance)
   else:bundles.append({'bundle_id':bid,**identity,'source_aliases':[provenance],'ordered_kernel_members':order,'scientific_qualification_granted':False,'access_scope':'ALL_PROJECTS_IN_174NEW_NAMESPACE'})

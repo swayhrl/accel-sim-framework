@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "tests": [
+    {
+      "test": "concatenated_tar",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "test": "concatenated_gzip",
+      "status": "PASS",
+      "exit_code": 0
+    },
+    {
+      "test": "bad_crc",
+      "status": "PASS_EXPECTED_REJECTION",
+      "exit_code": 1
+    },
+    {
+      "test": "truncated_gzip",
+      "status": "PASS_EXPECTED_REJECTION",
+      "exit_code": 1
+    },
+    {
+      "test": "nonzero_invalid_header",
+      "status": "PASS_EXPECTED_REJECTION",
+      "exit_code": 1
+    }
+  ],
+  "engine_sha256": "5dde70e17b4efae4fca4aa5baee81c2aae4083342a72e1987908107ca6a45a90",
+  "foreign_legacy_locks_untouched": true,
+  "synthetic_only": true
+}

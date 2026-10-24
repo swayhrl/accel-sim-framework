@@ -1,6 +1,6 @@
 from pathlib import Path
 import os,json,hashlib,tarfile,sys,importlib.util
-R=Path('/root/data/shared_sm70_trace_library_20261024_v1');sys.path.insert(0,str(R/'tools'));import library_copy as e
+R=Path('/root/data/shared_sm70_trace_library_20261024_v1');sys.path.insert(0,str(R/'tools'));e=__import__(os.environ.get('COPY_ENGINE_MODULE','library_copy'))
 REV=os.environ.get('QUALIFY_REVISION','V1')
 src=R/'synthetic';src.mkdir(exist_ok=True)
 data=b'SM70_SHARED_ASSET_PROTOCOL\n'+bytes(range(256))*40000

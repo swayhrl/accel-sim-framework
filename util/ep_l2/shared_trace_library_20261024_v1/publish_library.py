@@ -12,6 +12,8 @@ def relative_link(path,target):
  if os.path.lexists(path):assert path.is_symlink() and path.resolve()==target.resolve(),('VIEW_COLLISION',str(path));return
  path.symlink_to(rel)
 sealed={}
+retirement=json.loads((R/'control/RETIRED_SOURCE_CONTENT_REUSE.json').read_text())
+retired_by_key={row['key']:row for row in retirement['objects']}
 expanded=json.loads((R/'control/EXPANDED_BUNDLES.json').read_text())
 architecture_by_sha={m['sha256']:'70' for b in expanded for m in b['members'] if m['relative_path']!='kernelslist.g'}
 for index in sorted((R/'control').glob('ARCHIVE_[0-9]*.json.gz')):
@@ -23,7 +25,14 @@ for sha,o in objects.items():
  assert p.resolve().is_relative_to(Path('/root/share/mnt164/huangrulin'))
  if 'expected_identity' in o['storage']:assert [s.st_dev,s.st_ino,s.st_size,s.st_mtime_ns]==o['storage']['expected_identity']
  elif o['storage'].get('batch_id'):assert (NAS/'bundles/_payload'/o['storage']['batch_id']/'COMMIT.json').is_file()
- sealed[sha]={'sha256':sha,'size':s.st_size,'true164_path':str(p).replace('/root/share/mnt164','/home/shared',1),'verified_identity':[s.st_dev,s.st_ino,s.st_size,s.st_mtime_ns],'storage_kind':o['storage']['kind'],'source_provenance':o['sources'],'proof':o['storage']}
+ provenance=[]
+ for historical in o['sources']:
+  record=dict(historical)
+  if record.get('key') in retired_by_key:
+   retired=retired_by_key[record['key']]
+   record.update(original_path_disposition='HISTORICAL_SOURCE_ALIAS_RETIRED_BY_OTHER_AUTHORIZED_STORAGE_TASK',new_original_source_body_read_claimed=False,verified_content_reuse_proof='receipts/goal_20261024_v1/RETIRED_SOURCE_CONTENT_REUSE.json',retirement_actor=retirement['retirement_actor'])
+  provenance.append(record)
+ sealed[sha]={'sha256':sha,'size':s.st_size,'true164_path':str(p).replace('/root/share/mnt164','/home/shared',1),'verified_identity':[s.st_dev,s.st_ino,s.st_size,s.st_mtime_ns],'storage_kind':o['storage']['kind'],'source_provenance':provenance,'proof':o['storage']}
 assets=[]
 for b in bundles:
  gate();bid=b['bundle_id'];directory=NAS/'bundles'/bid;tree=directory/'tree';tree.mkdir(parents=True,exist_ok=True)

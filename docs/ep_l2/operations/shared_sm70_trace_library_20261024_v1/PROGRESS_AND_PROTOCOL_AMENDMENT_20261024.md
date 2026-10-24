@@ -79,8 +79,9 @@ engineering semantic compatibility, not hardware performance qualification.
 
 The CALL v8 candidate decoded its instructions but issued zero instructions in
 its first exact native case. That case remains a failure, consumes its one fresh
-budget, and is not reported as PASS. Its64-bit PC issue is being repaired in a
-separate candidate. Specialized control-flow/API/instruction domains remain
+budget, and is not reported as PASS. Its64-bit PC issue was repaired in a
+separate Core candidate; the fourth exact case actually issued1932 active-lane
+micro-operations and passed the parent65-lane CALL/RET target/frame join. Specialized control-flow/API/instruction domains remain
 explicitly held until their own measured evidence passes.
 
 The shared library is not yet declared complete. Expanded transfers, archive
@@ -94,11 +95,44 @@ The parent independently rehashed both Ada stage1 engineering archives and all35
 manifest members on true164. Only the two terminal requests had their128MiB
 write reservations reduced to zero through the existing epoch2 exclusive lock
 and registry/epoch pointer update. Consumed attempts, exact budgets, global
-remaining budget and all foreign records are unchanged. The failed CALL request
-retains its separate reservation. No native hot outputs were removed.
+remaining budget and all foreign records are unchanged. At that checkpoint the failed CALL request
+retained its separate reservation; both stage2 terminal reservations were
+subsequently retired after complete164 readback, without refunding either attempt. No native hot outputs were removed.
 
 Six completed audit/hash ledgers (56,447,059 bytes) were fully written to164,
 closed, reopened and independently SHA-verified before their native paths became
 symlinks to the immutable cold objects. This frees native control allocation
 while preserving existing reader paths. It is separate from retirement of
 original Source workload assets.
+
+## V7 IO promotion and current source scope
+
+The native sdf device was measured at0.42% busy, no reads and no inflight IO,
+while global IO PSI remained near5. NAS/FUSE waiting must not be treated as
+proof of local block-device saturation. The separate immutable V7 copy engine
+was qualified and promoted only after the third V6 batch reached COMMIT and
+its Source/receiver exited. Its SHA256 is
+5dde70e17b4efae4fca4aa5baee81c2aae4083342a72e1987908107ca6a45a90.
+Its own maximum is32MiB/s. Healthy sdf observations require busy<10%,
+await<25ms and inflight<4; unknown/busy devices retain conservative PSI
+throttling. Foreign channels and their rates are unchanged. Seven IO/lease
+positive/negative tests, full protocol interruption/restore qualification,
+archive corruption negatives and the actual native backend fixture passed.
+Each V7 process freezes its own source bytes before exporting or sealing a
+restore tool; the live V6 engine was not rewritten.
+
+The parent independently verified the three initially public4080 objects,
+146 members and58,404,226 bytes, from the EP-MAIN directory. The public command
+is /root/workspace/assets/bin/trace-assets-rtx4080; its scientific/profile
+qualification fields remain explicit. Stage2 engineering archives and all368
+members also passed independent parent SHA checks; all four completed semantic
+attempts retain consumed=1 and budget=1 while their future write reservations
+are zero. The original zero-issue candidate remains failed.
+
+The fixed CUDA v11.8 source contains205 programs, not merely the73 modern
+mappings of old SDK names. The remaining132 source candidates are now an
+explicit current-Goal extension. Source/version, native attempt, logical input,
+full trace, derived trim and scientific acceptance counts stay separate.
+Implicit-rand/clock input snapshots, loaded-cubin/Driver/JIT and other special
+domains remain work in progress. No snapshot observer is claimed equivalent
+to an entirely unobserved process solely because its HtoD hashes agree.

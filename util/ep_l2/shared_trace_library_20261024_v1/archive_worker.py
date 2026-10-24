@@ -27,6 +27,9 @@ class StrictTarInfo(tarfile.TarInfo):
 
 for request in req:
  path=request.get('actual_path',request['path'])
+ archive_key=hashlib.sha256(request['path'].encode()).hexdigest()
+ archive_lease=open('/root/share/host174_storage_recovery_bridge/20261016_storageops_02/.SHARED_SM70_ARCHIVE_'+archive_key+'.lock','a')
+ fcntl.flock(archive_lease,fcntl.LOCK_EX|fcntl.LOCK_NB)
  if request.get('source_host')=='174-new':
   assert os.uname().nodename=='huangrulin-sshfs-174' and os.readlink('/proc/self/ns/mnt')=='mnt:[4026535153]'
   assert os.path.realpath(path).startswith('/root/share/mnt164/huangrulin/') or (request.get('synthetic_qualification_only') and os.path.realpath(path).startswith('/root/data/shared_sm70_trace_library_20261024_v1/synthetic/'))
@@ -108,3 +111,4 @@ for request in req:
  if request.get('expected_archive_sha256'):assert raw_hash.hexdigest()==request['expected_archive_sha256']
  result={'event':'ARCHIVE_DONE','path':request['path'],'archive_path':path,'source_host':request.get('source_host','174'),'inventory_format':'V2_FULL_DECODED_EOF_IGNORE_ZEROS','decoded_compression_EOF_integrity_checked':True,'strict_nonzero_invalid_headers_rejected':True,'archive_identity':before,'archive_sha256':raw_hash.hexdigest(),'compressed_bytes_read':counter[0],'hashed_member_bytes':hashed,'reused_same_archive_SHA_member_bytes':reused,'members':records,'source_before_after_unchanged':True,'source_writes':0,'parallel_read_only_inventory_authorized':parallel_read_only,'payload_transfer_sender_started':False,'elapsed':time.monotonic()-start}
  print(json.dumps(result),flush=True)
+ archive_lease.close()
