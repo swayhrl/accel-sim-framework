@@ -1,0 +1,4 @@
+import pathlib,os,time,subprocess,json,hashlib
+C=pathlib.Path('/root/data/shared_rtx4080_trace_library_20261024_v1/stencil768_private_qualification_A2/late_receiver_COMMIT/control');B=pathlib.Path('/root/data/shared_rtx4080_trace_library_20261024_v1/stencil768_private_qualification_A2/late_receiver_COMMIT/fake_library');I='ORD_LATE_stencil_c3e987b033b4_A002_CPU_ADOPT_V2';W=pathlib.Path('/root/data/shared_rtx4080_trace_library_20261024_v1/stencil768_private_qualification_A2/late_receiver_COMMIT/ORD_LATE_stencil_c3e987b033b4_A002_CPU_ADOPT_V2_post_epoch4_single768');W.mkdir()
+(C/'CONTROLLER_EXECUTED').write_text('x')
+d=B/'objects'/I;d.mkdir();m=d/'MANIFEST.json';m.write_text(json.dumps({'files':[]}));q={'asset_id':I,'status':'COMMITTED_VERIFIED','manifest_sha256':hashlib.sha256(m.read_bytes()).hexdigest()};(d/'COMMIT.json').write_text(json.dumps(q));(B/'receipts'/(I+'_RECEIVER_READBACK.json')).write_text(json.dumps(q));raise SystemExit(23)

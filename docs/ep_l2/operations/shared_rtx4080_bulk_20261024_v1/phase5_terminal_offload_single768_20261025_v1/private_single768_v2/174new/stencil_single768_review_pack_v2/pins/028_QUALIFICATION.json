@@ -1,0 +1,170 @@
+{
+  "status": "PRIVATE_SINGLE768_POLICY_SHA_AND_PROCESS_GUARDS_PASS",
+  "source_outer_sha256": "5d841c22ba5c693f5b0935c5a40104beaaa2febdddec4661221dd51f7baaf3c1",
+  "source_common_sha256": "2f03dbb2e99f82a6ef52488182703e90d9d4f7d27e2001b5b58c73864d52a545",
+  "policy_boundaries": [
+    {
+      "reserved": 1879048192,
+      "used": 0,
+      "exact_free_boundary": 9193914368,
+      "edge_accept_short1_reject": true
+    },
+    {
+      "reserved": 1879048192,
+      "used": 134217728,
+      "exact_free_boundary": 9059696640,
+      "edge_accept_short1_reject": true
+    },
+    {
+      "reserved": 1879048192,
+      "used": 805306368,
+      "exact_free_boundary": 8388608000,
+      "edge_accept_short1_reject": true
+    },
+    {
+      "reserved": 14763950080,
+      "used": 0,
+      "exact_free_boundary": 22078816256,
+      "edge_accept_short1_reject": true
+    },
+    {
+      "reserved": 14763950080,
+      "used": 134217728,
+      "exact_free_boundary": 21944598528,
+      "edge_accept_short1_reject": true
+    },
+    {
+      "reserved": 14763950080,
+      "used": 805306368,
+      "exact_free_boundary": 21273509888,
+      "edge_accept_short1_reject": true
+    }
+  ],
+  "actual_pinned_V10_normal_resource_snapshot": {
+    "normal": {
+      "observed_unix": 1792874089.9933064,
+      "SSD_free_bytes": 22368292864,
+      "required_SSD_bytes": 21273509888,
+      "registered_foreign_write_reservations_bytes": 14763950080,
+      "unregistered_other_project_headroom_bytes": 1073741824,
+      "task_controls_reserve_bytes": 67108864,
+      "host_MemAvailable_bytes": 302930882560,
+      "cgroup_current": 106055327744,
+      "host_IO_pressure": {
+        "some": {
+          "avg10": 7.46,
+          "avg60": 8.1,
+          "avg300": 7.67,
+          "total": 224088803739.0
+        },
+        "full": {
+          "avg10": 7.42,
+          "avg60": 8.04,
+          "avg300": 7.62,
+          "total": 203118845699.0
+        }
+      },
+      "adaptive_IO_max_read_bytes_sec": 10485760,
+      "IO_policy": "V7_BLOCK_HEALTH_DISTINGUISHES_NAS_SELF_WAIT",
+      "physical_block_health": {
+        "known": false
+      },
+      "active_AEFAIR": [
+        {
+          "cohort": "E2-AEV100-977e34578994c3d2-DM",
+          "pid": 1069239,
+          "start_ticks": 962248392,
+          "completed": 10669055,
+          "phase": "SIMULATE",
+          "progress_age_seconds": 1.867361607,
+          "progress_reader": {
+            "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/95fedea6-6293-4673-9150-e36822857be0/progress.jsonl.gz",
+            "format": "gzip_stream",
+            "compressed_bytes_read": 222154,
+            "plain_bytes_read": 0,
+            "decoded_bytes": 3203029,
+            "complete_records_seen": 7336,
+            "retained_records": 32,
+            "gzip_completed_members": 0,
+            "gzip_last_member_eof": false,
+            "live_unfinalized_gzip_CRC_not_claimed": true,
+            "pending_bytes_not_adopted_as_complete": 0,
+            "limits": {
+              "compressed_bytes": 16777216,
+              "decoded_bytes": 67108864,
+              "retained_records": 32,
+              "single_record_bytes": 262144
+            },
+            "record_identity": "MATCHED_EXACT_PROOF_PID_START_TICKS"
+          }
+        }
+      ],
+      "Share_new_bytes": 0,
+      "all_policy_gates_pass": true
+    },
+    "authority": {
+      "registry_path": "/root/data/ep_l2_dtc_l1_native_v2/control/science_authority/NATIVE_SCIENCE_REGISTRY.json",
+      "registry_sha256": "8d90e2ea169fed06f2ad3b5482684ee677c1bdfcd24fd7c8c0f78487b80a0bd1",
+      "epoch_path": "/root/data/ep_l2_dtc_l1_native_v2/control/CURRENT_SCIENCE_EPOCH.json",
+      "epoch_sha256": "7356b545b8ed6e21a4511c6ced519b197be21b2ab42fdb828f0c0cbc86cd5f2e",
+      "epoch": 2,
+      "holder": "huangrulin-sshfs-174",
+      "sum_all_records_reserved_write_bytes": 14763950080,
+      "record_count": 12,
+      "filtering": "NONE: every registered_future_requests record regardless of state/consumed/owner",
+      "read_only_double_epoch_consistency": true,
+      "unix": 1792874089.9949343
+    },
+    "policy": {
+      "floor": 21273509888,
+      "required": 21273509888,
+      "PASS": true
+    },
+    "Native_used": 0,
+    "Native_usage_breakdown": {
+      "work_bytes": 0,
+      "Native_control_bytes": 0,
+      "total_bytes": 0
+    },
+    "Native_free": 22368260096
+  },
+  "pure_NAS_SHA_equals_frozen5d_SHA": true,
+  "real_small_CPU_process_cases": [
+    {
+      "case": "startup_journal_failure",
+      "PASS": true,
+      "queue": "FAILED_RETAINED",
+      "unresolved": [],
+      "foreign_sentinel_unchanged": true,
+      "fixture_outer_sha256": "0c8408712f52c5ecc6465c068ac513badb499e6b8c46984090dd7b15f4bc8216"
+    },
+    {
+      "case": "dynamic_foreign_growth_own_twoPG",
+      "PASS": true,
+      "queue": "FAILED_RETAINED",
+      "unresolved": [],
+      "foreign_sentinel_unchanged": true,
+      "fixture_outer_sha256": "56944a43de32ef66cfde0992a04f212d7aeb6d04f6a77734a6acb72ab4d8eed0"
+    },
+    {
+      "case": "late_receiver_COMMIT",
+      "PASS": true,
+      "queue": "COMMITTED_VERIFIED",
+      "unresolved": [],
+      "foreign_sentinel_unchanged": true,
+      "fixture_outer_sha256": "fb6ff1a09fb6f2c3d416cf1dc90fce8fc13a146ba01ef45e8390b5ab0181c72c"
+    },
+    {
+      "case": "leader_reaped_leaves_child",
+      "PASS": true,
+      "queue": "FAILED_RETAINED",
+      "unresolved": [],
+      "foreign_sentinel_unchanged": true,
+      "fixture_outer_sha256": "09f9a8f52a3fe90b81c1dfb74fbc9b194044be484e673fdb2147a09a9f7676ff"
+    }
+  ],
+  "production_WORK_created": false,
+  "production_or_registry_or_scientific_input_mutations": false,
+  "GPU_109_SIM_or_scientific_record_validator_runs": 0,
+  "scope": "Fake controllers/resources exercise only actual outer/process/dynamic-policy code, not a producer/scientific positive"
+}
