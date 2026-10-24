@@ -1,0 +1,58 @@
+#!/usr/bin/env python3
+"""Project-independent, read-only RTX4080 trace catalog/verification; explicit bounded local restore."""
+import argparse,pathlib,json,hashlib,os,sys,shutil,time
+BASE=pathlib.Path('/root/workspace/assets/traces/rtx4080_sm89/bulk_20261024_v1')
+def sha(p):
+ h=hashlib.sha256()
+ with p.open('rb') as f:
+  for b in iter(lambda:f.read(1048576),b''):h.update(b)
+ return h.hexdigest()
+def catalog():
+ current=BASE/'catalog/CURRENT_RTX4080_CATALOG.json'
+ if current.exists():
+  p=json.loads(current.read_text());f=BASE/'catalog'/p['relative_path'];assert sha(f)==p['sha256'];return json.loads(f.read_text()),p['sha256']
+ f=BASE/'catalog/ASSETS.json';return json.loads(f.read_text()),sha(f)
+def load(ident):
+ assert ident and all(c.isalnum() or c in '_.-' for c in ident) and ident not in ['.','..'],'invalid asset id'
+ root=BASE/'objects'/ident;commit=json.loads((root/'COMMIT.json').read_text());assert commit['status']=='COMMITTED_VERIFIED' and commit['kind']=='FULL_APPLICATION_TRACE'
+ assert sha(root/'MANIFEST.json')==commit['manifest_sha256']
+ m=json.loads((root/'MANIFEST.json').read_text());asset=json.loads((root/'ASSET.json').read_text())
+ return root,commit,m,asset
+def verify(ident):
+ root,c,m,a=load(ident)
+ for x in m['files']:
+  rel=pathlib.PurePosixPath(x['path']);assert not rel.is_absolute() and '..' not in rel.parts
+  p=root/x['path'];assert not p.is_symlink() and root.resolve() in p.resolve().parents
+  assert p.stat().st_size==x['bytes'] and sha(p)==x['sha256'],x['path']
+ return {'asset_id':ident,'status':'ALL_DECLARED_MEMBERS_FULL_SHA_PASS','files':len(m['files']),'bytes':sum(x['bytes']for x in m['files']),'manifest_sha256':c['manifest_sha256'],'scope':'MANIFEST files exact; plus COMMIT and MANIFEST envelope','numerical_status':a.get('numerical_status'),'producer_qualification':a.get('producer_semantic_qualification'),'consumer_qualification':a.get('consumer_qualification'),'full_application':a.get('full_application')}
+def nclass(a):
+ s=a.get('numerical_status','').upper()
+ return 'negative' if any(x in s for x in ['NEGATIVE','NOT_SCIENTIFICALLY','FAIL']) else 'pass' if 'PASS' in s else 'unchecked'
+p=argparse.ArgumentParser();sub=p.add_subparsers(dest='cmd',required=True)
+l=sub.add_parser('list');l.add_argument('--numerical',choices=['all','pass','negative','unchecked'],default='all');l.add_argument('--science-candidates',action='store_true')
+s=sub.add_parser('show');s.add_argument('asset_id')
+v=sub.add_parser('verify');v.add_argument('asset_id',nargs='?');v.add_argument('--all',action='store_true')
+r=sub.add_parser('restore');r.add_argument('asset_id');r.add_argument('--dest',required=True);r.add_argument('--max-bytes',type=int,default=128*1024**2)
+a=p.parse_args()
+if a.cmd=='list':
+ cat,rev=catalog();out=[]
+ for entry in cat['objects']:
+  _,_,_,asset=load(entry['asset_id']);nc=nclass(asset)
+  if a.numerical!='all' and nc!=a.numerical:continue
+  if a.science_candidates and not (nc=='pass' and asset.get('producer_semantic_qualification')=='ADA7_ORDINARY_FULL_RECORD_PASS'):continue
+  out.append({'asset_id':entry['asset_id'],'suite':asset.get('suite'),'source_version':asset.get('source_version'),'program':asset.get('program'),'variant':asset.get('variant',asset.get('input')),'numerical_class':nc,'numerical_status':asset.get('numerical_status'),'producer_qualification':asset.get('producer_semantic_qualification'),'consumer_qualification':asset.get('consumer_qualification'),'public_path':str(BASE/'objects'/entry['asset_id'])})
+ print(json.dumps({'catalog_revision_sha256':rev,'objects':out,'count':len(out),'science_candidate_scope':'numerical+producer positive only; does not grant a project/profile runtime or timing qualification'},indent=2))
+elif a.cmd=='show':
+ root,c,m,asset=load(a.asset_id);print(json.dumps({'asset':asset,'commit':c,'manifest':m,'public_path':str(root)},indent=2))
+elif a.cmd=='verify':
+ ids=[x['asset_id']for x in catalog()[0]['objects']] if a.all else [a.asset_id]
+ assert all(ids),'asset id or --all required';print(json.dumps({'cwd':os.getcwd(),'results':[verify(x)for x in ids]},indent=2))
+else:
+ root,c,m,asset=load(a.asset_id);envelope=['MANIFEST.json','COMMIT.json'];size=sum(x['bytes']for x in m['files'])+sum((root/x).stat().st_size for x in envelope)
+ assert size<=a.max_bytes,('explicit restore byte bound',size,a.max_bytes)
+ dest=pathlib.Path(a.dest).resolve();assert not dest.exists(),'destination must be ABSENT';verify(a.asset_id);dest.mkdir(parents=True)
+ for x in m['files']+[{'path':n,'bytes':(root/n).stat().st_size,'sha256':sha(root/n)}for n in envelope]:
+  f=dest/x['path'];f.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(root/x['path'],f);assert f.stat().st_size==x['bytes'] and sha(f)==x['sha256']
+ receipt={'status':'BOUNDED_RESTORE_FULL_SHA_PASS','asset_id':a.asset_id,'dest':str(dest),'bytes':size,'max_bytes':a.max_bytes,'source_untouched':True,'cwd':os.getcwd(),'unix':time.time()}
+ (dest/'RESTORE_RECEIPT.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt,indent=2))
+
