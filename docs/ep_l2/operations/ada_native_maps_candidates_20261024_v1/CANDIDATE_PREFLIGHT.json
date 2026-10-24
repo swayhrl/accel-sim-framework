@@ -1,0 +1,54 @@
+{
+  "schema": "ADA_STAGE4_CANDIDATE_PREFLIGHT_V1",
+  "application_attempts_consumed_by_preparation": 0,
+  "campaign_consumed": 4,
+  "campaign_ceiling": 8,
+  "registered": false,
+  "native_core_head": "e5942d5bdeb9848327dbaaf63d155ca6970904f4",
+  "framework_sha256": "d1566bbb07da7252b3924bbf436accc81b1ed8174eb73f614d0316907485393f",
+  "core_library_sha256": "f4c0e5014fe601e624c9b7e7131ea4a65a4459c0d3987b26ee673f75e28d106c",
+  "cpu_low32_regression": "PC64_PROBE_PASS same_low32_distinct=2 simt_pdom=7ac035285200 ifetch=79c035285200 call_frame=79c035285200 rpc=7ac035285200 index_entries=2 no_simulator_application_started=1\n",
+  "cpu_warp_drain_states": "CPU_WARP_DRAIN_STATE_PASS buffered_excluded older_blocks stores_block before_ibuffer_free\n",
+  "maps_cpu_qualification": {
+    "CPU_ONLY_NOT_SIMULATOR_APPLICATION": true,
+    "observer_sha256": "e4513960120431b7a54bbe566b8a960be6a16d21f3b23a3deea4ddf43bc331df",
+    "results": {
+      "positive_new_late_mapping": {
+        "status": "PASS",
+        "proof": {
+          "sample_count": 3,
+          "union_paths": 5,
+          "checkpoint_labels": [
+            "FIRST_ISSUE",
+            "TERMINAL"
+          ],
+          "primary_identity": {
+            "pid": 987807,
+            "start_ticks": 959379378,
+            "state": "R"
+          },
+          "scope": "SAMPLED_WITH_TWO_EXPLICIT_HOST_STOPS_NOT_ALL_TRANSIENT_DEPENDENCIES"
+        }
+      },
+      "negative_new_unpinned_mapping": {
+        "status": "REJECTED",
+        "reason": "unfrozen mapped dependency /usr/lib/x86_64-linux-gnu/libm.so.6"
+      },
+      "negative_late_hash_drift": {
+        "status": "REJECTED",
+        "reason": "mapped dependency hash drift /usr/lib/x86_64-linux-gnu/libm.so.6"
+      },
+      "negative_pid_identity": {
+        "status": "REJECTED",
+        "reason": "primary PID reused"
+      },
+      "negative_missing_terminal": {
+        "status": "REJECTED",
+        "reason": "missing/reordered explicit issue/terminal maps ['FIRST_ISSUE']"
+      }
+    },
+    "all_expected_reasons": true
+  },
+  "no_performance_calibration": true,
+  "pending": "Parent independent review before registration/application run"
+}

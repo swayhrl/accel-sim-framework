@@ -1,0 +1,86 @@
+diff --git a/src/abstract_hardware_model.h b/src/abstract_hardware_model.h
+index 6409e3d..990ef6a 100644
+--- a/src/abstract_hardware_model.h
++++ b/src/abstract_hardware_model.h
+@@ -1149,6 +1149,7 @@ class warp_inst_t : public inst_t {
+     m_is_ldgsts = false;
+     m_is_ldgdepbar = false;
+     m_is_depbar = false;
++    m_is_warp_sync = false;
+ 
+     m_depbar_group_no = 0;
+   }
+@@ -1171,6 +1172,7 @@ class warp_inst_t : public inst_t {
+     m_is_ldgsts = false;
+     m_is_ldgdepbar = false;
+     m_is_depbar = false;
++    m_is_warp_sync = false;
+ 
+     m_depbar_group_no = 0;
+   }
+@@ -1374,6 +1376,8 @@ class warp_inst_t : public inst_t {
+   bool m_is_ldgsts;
+   bool m_is_ldgdepbar;
+   bool m_is_depbar;
++  // Explicit conservative whole-warp drain profile; no CTA barrier allocation.
++  bool m_is_warp_sync;
+ 
+   unsigned int m_depbar_group_no;
+ };
+diff --git a/src/gpgpu-sim/shader.cc b/src/gpgpu-sim/shader.cc
+index 99b9487..92dd051 100644
+--- a/src/gpgpu-sim/shader.cc
++++ b/src/gpgpu-sim/shader.cc
+@@ -1,3 +1,5 @@
++#include <csignal>
++#include <cstdlib>
+ // Copyright (c) 2009-2021, Tor M. Aamodt, Wilson W.L. Fung, Ali Bakhoda,
+ // George L. Yuan, Andrew Turner, Inderpreet Singh, Vijay Kandiah, Nikos
+ // Hardavellas, Mahmoud Khairy, Junrui Pan, Timothy G. Rogers The University of
+@@ -1246,6 +1248,14 @@ void shader_core_ctx::issue_warp(register_set &pipe_reg_set,
+       pipe_reg_set.get_free(m_config->sub_core_model, sch_id);
+   assert(pipe_reg);
+ 
++  if (next_inst->m_is_warp_sync) {
++    // Check before ibuffer_free: buffered instructions are not yet issued.
++    assert(m_warp[warp_id]->num_issued_inst_in_pipeline() == 0);
++    assert(m_warp[warp_id]->stores_done());
++    fprintf(stdout, "ada_warp_sync_drain sid=%u warp=%u pc=0x%llx older_issued=0 pending_stores=0 active=%u\n",
++            m_sid, warp_id, static_cast<unsigned long long>(next_inst->pc),
++            static_cast<unsigned>(active_mask.count()));
++  }
+   m_warp[warp_id]->ibuffer_free();
+   assert(next_inst->valid());
+   **pipe_reg = *next_inst;  // static instruction information
+@@ -1253,6 +1263,19 @@ void shader_core_ctx::issue_warp(register_set &pipe_reg_set,
+       active_mask, warp_id, m_gpu->gpu_tot_sim_cycle + m_gpu->gpu_sim_cycle,
+       m_warp[warp_id]->get_dynamic_warp_id(), sch_id,
+       m_warp[warp_id]->get_streamID());  // dynamic instruction information
++  // A deliberate host observation stop after the first actual issue. This
++  // changes wall time only and is enabled solely by the exact native profile.
++  static bool ada_first_issue_seen = false;
++  if (!ada_first_issue_seen && active_mask.any()) {
++    ada_first_issue_seen = true;
++    const char *ada_checkpoint = std::getenv("ADA_NATIVE_MAP_CHECKPOINTS");
++    if (ada_checkpoint && std::string(ada_checkpoint) == "1") {
++      fprintf(stdout, "ADA_NATIVE_MAP_CHECKPOINT FIRST_ISSUE pc=0x%llx sid=%u warp=%u\n",
++              static_cast<unsigned long long>((*pipe_reg)->pc), m_sid, warp_id);
++      fflush(stdout);
++      raise(SIGSTOP);
++    }
++  }
+   m_stats->shader_cycle_distro[2 + (*pipe_reg)->active_count()]++;
+   func_exec_inst(**pipe_reg);
+   static const bool awma_crosscal_enabled = []() {
+@@ -1551,7 +1574,10 @@ void scheduler_unit::cycle() {
+           warp(warp_id).ibuffer_flush();
+         } else {
+           valid_inst = true;
+-          if (!m_scoreboard->checkCollision(warp_id, pI)) {
++          if (!m_scoreboard->checkCollision(warp_id, pI) &&
++              (!pI->m_is_warp_sync ||
++               (warp(warp_id).num_issued_inst_in_pipeline() == 0 &&
++                warp(warp_id).stores_done()))) {
+             SCHED_DPRINTF(
+                 "Warp (warp_id %u, dynamic_warp_id %u) passes scoreboard\n",
+                 (*iter)->get_warp_id(), (*iter)->get_dynamic_warp_id());

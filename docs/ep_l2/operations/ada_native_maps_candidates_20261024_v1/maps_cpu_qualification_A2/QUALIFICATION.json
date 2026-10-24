@@ -1,0 +1,40 @@
+{
+  "CPU_ONLY_NOT_SIMULATOR_APPLICATION": true,
+  "observer_sha256": "e4513960120431b7a54bbe566b8a960be6a16d21f3b23a3deea4ddf43bc331df",
+  "results": {
+    "positive_new_late_mapping": {
+      "status": "PASS",
+      "proof": {
+        "sample_count": 3,
+        "union_paths": 5,
+        "checkpoint_labels": [
+          "FIRST_ISSUE",
+          "TERMINAL"
+        ],
+        "primary_identity": {
+          "pid": 987807,
+          "start_ticks": 959379378,
+          "state": "R"
+        },
+        "scope": "SAMPLED_WITH_TWO_EXPLICIT_HOST_STOPS_NOT_ALL_TRANSIENT_DEPENDENCIES"
+      }
+    },
+    "negative_new_unpinned_mapping": {
+      "status": "REJECTED",
+      "reason": "unfrozen mapped dependency /usr/lib/x86_64-linux-gnu/libm.so.6"
+    },
+    "negative_late_hash_drift": {
+      "status": "REJECTED",
+      "reason": "mapped dependency hash drift /usr/lib/x86_64-linux-gnu/libm.so.6"
+    },
+    "negative_pid_identity": {
+      "status": "REJECTED",
+      "reason": "primary PID reused"
+    },
+    "negative_missing_terminal": {
+      "status": "REJECTED",
+      "reason": "missing/reordered explicit issue/terminal maps ['FIRST_ISSUE']"
+    }
+  },
+  "all_expected_reasons": true
+}
