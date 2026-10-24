@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+"""Project-independent full/complete-CTA-derived catalog and bounded read-only verification."""
+import argparse,pathlib,json,hashlib,os,shutil,time
+B=pathlib.Path('/root/workspace/assets/traces/rtx4080_sm89/bulk_20261024_v1')
+KINDS={'FULL_APPLICATION_TRACE':'full','DERIVED_COMPLETE_CTA_TRACE':'trim'}
+def sha(p):
+ h=hashlib.sha256()
+ with p.open('rb') as f:
+  for data in iter(lambda:f.read(1048576),b''):
+   start=time.monotonic();h.update(data);time.sleep(max(0,len(data)/(15*1048576)-(time.monotonic()-start)))
+ return h.hexdigest()
+def qualification_overlay():
+ pointer=B/'catalog/CURRENT_RTX4080_QUALIFICATION_OVERLAY.json'
+ if not pointer.exists():return {},None
+ q=json.loads(pointer.read_text());rel=pathlib.PurePosixPath(q['relative_path']);assert not rel.is_absolute() and '..' not in rel.parts
+ p=B/'catalog'/rel;assert sha(p)==q['sha256'];return json.loads(p.read_text()),q['sha256']
+QUAL,QUAL_SHA=qualification_overlay()
+def static_row(a):
+ source_id=a.get('parent_asset_id',a['asset_id'])
+ row=QUAL.get('by_asset',{}).get(source_id,QUAL.get('by_binary',{}).get(a.get('binary_sha256',a.get('parent_binary_sha256')),{}))
+ return row
+def static_status(a):return static_row(a).get('status','STATIC_IMAGE_ENUMERATION_NOT_RECORDED')
+
+def catalogs(variant):
+ objects=[];revisions={}
+ for kind,filename,pointer in [('full','ASSETS.json','CURRENT_RTX4080_CATALOG.json'),('trim','DERIVED_ASSETS.json','CURRENT_RTX4080_DERIVED_CATALOG.json')]:
+  if variant not in ['all',kind]:continue
+  current=B/'catalog'/pointer;path=B/'catalog'/filename
+  if current.exists():
+   p=json.loads(current.read_text());rel=pathlib.PurePosixPath(p['relative_path']);assert not rel.is_absolute() and '..' not in rel.parts;path=B/'catalog'/rel;assert sha(path)==p['sha256']
+  if not path.exists():continue
+  raw=path.read_bytes();revisions[kind]=hashlib.sha256(raw).hexdigest();objects+=json.loads(raw)['objects']
+ if QUAL_SHA:revisions['static_enumeration_overlay']=QUAL_SHA
+ return objects,revisions
+def load(ident):
+ assert ident and all(c.isalnum() or c in '_.-' for c in ident) and ident not in ['.','..'],'invalid asset id'
+ root=B/'objects'/ident;assert not root.is_symlink() and (B/'objects').resolve() in root.resolve().parents
+ c=json.loads((root/'COMMIT.json').read_text());assert c['status']=='COMMITTED_VERIFIED' and c['kind'] in KINDS and c['asset_id']==ident
+ assert sha(root/'MANIFEST.json')==c['manifest_sha256'];m=json.loads((root/'MANIFEST.json').read_text());paths=[x['path']for x in m['files']];assert len(paths)==len(set(paths)) and m['asset_id']==ident
+ entry=next(x for x in m['files']if x['path']=='ASSET.json');assert sha(root/'ASSET.json')==entry['sha256'];a=json.loads((root/'ASSET.json').read_text());assert a['asset_id']==ident and a['kind']==c['kind']
+ return root,c,m,a
+def verify(ident):
+ root,c,m,a=load(ident);declared={x['path']for x in m['files']};actual={str(p.relative_to(root))for p in root.rglob('*')if p.is_file() or p.is_symlink()};assert actual==declared|{'MANIFEST.json','COMMIT.json'},'extra/missing object members'
+ for x in m['files']:
+  rel=pathlib.PurePosixPath(x['path']);assert not rel.is_absolute() and '..' not in rel.parts;p=root/rel;assert p.is_file() and not p.is_symlink() and root.resolve() in p.resolve().parents;assert p.stat().st_size==x['bytes'] and sha(p)==x['sha256'],x['path']
+ return {'asset_id':ident,'variant':KINDS[c['kind']],'status':'EXACT_MEMBER_SET_AND_FULL_SHA_PASS','files':len(m['files']),'bytes':sum(x['bytes']for x in m['files']),'manifest_sha256':c['manifest_sha256'],'scope':'exact declared members + COMMIT/MANIFEST envelope','numerical_status':a.get('numerical_status'),'producer_qualification':a.get('producer_semantic_qualification'),'consumer_qualification':a.get('consumer_qualification'),'full_application':a.get('full_application'),'selection':a.get('sampling'),'parent_asset_id':a.get('parent_asset_id')}
+def nclass(a):
+ s=a.get('numerical_status','').upper();return 'negative' if any(x in s for x in ['NEGATIVE','NOT_SCIENTIFICALLY','FAIL'])else 'pass' if 'PASS'in s else 'unchecked'
+def brief(a):
+ out={'asset_id':a['asset_id'],'trace_variant':KINDS[a['kind']],'suite':a.get('suite'),'source_version':a.get('source_version'),'program':a.get('program'),'variant':a.get('variant'),'numerical_class':nclass(a),'numerical_status':a.get('numerical_status'),'producer_qualification':a.get('producer_semantic_qualification'),'consumer_qualification':a.get('consumer_qualification'),'input_byte_identity_qualification':a.get('input_byte_identity_qualification','SOURCE_RULE_OR_PARENT_ONLY; actual byte snapshot not automatically granted'),'simulation_ready':False,'parent_asset_id':a.get('parent_asset_id'),'public_path':str(B/'objects'/a['asset_id'])}
+ out.update(archive_state='COMMITTED_VERIFIED',static_image_census_status=static_status(a),static_image_census_scope='Static overwrite axis: either no duplicate basename, or exact all-listed-images preserved with preceding empty-code proof. Actual-loaded/runtime/input/consumer/timing/science qualifications remain separate',static_image_evidence=static_row(a).get('static_image_parent_evidence'),numerical_qualification_limitations=a.get('numerical_qualification_limitations'),observed_input_snapshot_scope=a.get('input_snapshot_pair',{}).get('scope'))
+ if a['kind']=='DERIVED_COMPLETE_CTA_TRACE':
+  kept=sum(k['selected_ctas']for k in a['kernels']);total=sum(k['parent_ctas']for k in a['kernels']);out['selection']={'policy':a['sampling'],'selected_ctas':kept,'parent_ctas':total,'actual_fraction':kept/total,'no_cta_reduction_possible_for_one_cta':kept==total}
+ return out
+p=argparse.ArgumentParser();sub=p.add_subparsers(dest='cmd',required=True);l=sub.add_parser('list');l.add_argument('--variant',choices=['all','full','trim'],default='all');l.add_argument('--numerical',choices=['all','pass','negative','unchecked'],default='all');l.add_argument('--science-candidates',action='store_true');s=sub.add_parser('show');s.add_argument('asset_id');v=sub.add_parser('verify');v.add_argument('asset_id',nargs='?');v.add_argument('--all',action='store_true');v.add_argument('--variant',choices=['all','full','trim'],default='all');r=sub.add_parser('restore');r.add_argument('asset_id');r.add_argument('--dest',required=True);r.add_argument('--max-bytes',type=int,default=128*1024**2);a=p.parse_args()
+if a.cmd=='list':
+ objects,revisions=catalogs(a.variant);rows=[]
+ for entry in objects:
+  _,_,_,asset=load(entry['asset_id']);nc=nclass(asset)
+  if a.numerical!='all' and nc!=a.numerical:continue
+  if a.science_candidates and not(nc=='pass' and asset['kind']=='FULL_APPLICATION_TRACE' and asset.get('producer_semantic_qualification')=='ADA7_ORDINARY_FULL_RECORD_PASS' and static_status(asset) in ['NO_DUPLICATE_CUBIN_BASENAME_ENUMERATION_PASS','ALL_LISTED_IMAGES_PRESERVED_PRECEDING_EMPTY_CODE']):continue
+  rows.append(brief(asset))
+ print(json.dumps({'catalog_revisions':revisions,'objects':rows,'count':len(rows),'science_candidate_scope':'numerical+ordinary-producer+static-overwrite-axis-closed candidates only (no duplicate basename OR exact listed images preserved/preceding empty-code proof); not actual-loaded/full-runtime/input/consumer/timing/science acceptance; unresolved static cases and derived contexts excluded'},indent=2))
+elif a.cmd=='show':
+ root,c,m,asset=load(a.asset_id);print(json.dumps({'asset':asset,'commit':c,'manifest':m,'qualification_summary':brief(asset)},indent=2))
+elif a.cmd=='verify':
+ objects,revisions=catalogs(a.variant);ids=[x['asset_id']for x in objects]if a.all else[a.asset_id];assert all(ids),'asset id or --all required';print(json.dumps({'cwd':os.getcwd(),'catalog_revisions':revisions,'results':[verify(x)for x in ids]},indent=2))
+else:
+ root,c,m,asset=load(a.asset_id);envelope=['MANIFEST.json','COMMIT.json'];size=sum(x['bytes']for x in m['files'])+sum((root/n).stat().st_size for n in envelope);assert size<=a.max_bytes,('restore bound',size,a.max_bytes);dest=pathlib.Path(a.dest).resolve();assert not dest.exists(),'destination must be ABSENT';existing=dest.parent
+ while not existing.exists():existing=existing.parent
+ assert shutil.disk_usage(existing).free>=size+5*1024**3,'restore requires explicit size plus5GiB free';verify(a.asset_id);dest.mkdir(parents=True)
+ for x in m['files']+[{'path':n,'bytes':(root/n).stat().st_size,'sha256':sha(root/n)}for n in envelope]:
+  target=dest/x['path'];target.parent.mkdir(parents=True,exist_ok=True)
+  with (root/x['path']).open('rb')as inp,target.open('xb')as out:
+   for data in iter(lambda:inp.read(1048576),b''):
+    start=time.monotonic();out.write(data);time.sleep(max(0,len(data)/(15*1048576)-(time.monotonic()-start)))
+   out.flush();os.fsync(out.fileno())
+  assert target.stat().st_size==x['bytes'] and sha(target)==x['sha256']
+ receipt={'status':'BOUNDED_RESTORE_FULL_SHA_PASS','variant':KINDS[c['kind']],'asset_id':a.asset_id,'dest':str(dest),'bytes':size,'max_bytes':a.max_bytes,'source_untouched':True,'cwd':os.getcwd(),'unix':time.time()};(dest/'RESTORE_RECEIPT.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt,indent=2))

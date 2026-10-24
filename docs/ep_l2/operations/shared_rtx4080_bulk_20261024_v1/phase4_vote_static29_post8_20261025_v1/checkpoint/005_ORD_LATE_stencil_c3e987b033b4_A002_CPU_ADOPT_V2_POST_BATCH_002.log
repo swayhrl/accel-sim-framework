@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/root/data/shared_rtx4080_trace_library_20261024_v1/control/post_app_parallel_v2.py", line 93, in <module>
+    if __name__=='__main__':main()
+  File "/root/data/shared_rtx4080_trace_library_20261024_v1/control/post_app_parallel_v2.py", line 58, in main
+    used=sum(p.stat().st_size for p in dest.rglob('*')if p.is_file());peak_spill=max(peak_spill,used)
+  File "/root/data/shared_rtx4080_trace_library_20261024_v1/control/post_app_parallel_v2.py", line 58, in <genexpr>
+    used=sum(p.stat().st_size for p in dest.rglob('*')if p.is_file());peak_spill=max(peak_spill,used)
+  File "/usr/lib/python3.10/pathlib.py", line 1047, in rglob
+    for p in selector.select_from(self):
+  File "/usr/lib/python3.10/pathlib.py", line 493, in _select_from
+    for p in successor_select(starting_point, is_dir, exists, scandir):
+  File "/usr/lib/python3.10/pathlib.py", line 440, in _select_from
+    with scandir(parent_path) as scandir_it:
+FileNotFoundError: [Errno 2] No such file or directory: '/root/share/mnt164/huangrulin/traces/rtx4080_sm89/bulk_20261024_v1/inflight/ORD_LATE_stencil_c3e987b033b4_A002_CPU_ADOPT_V2/post_batches/002/kernel-4-ctx_0x559aa8cd3680.trace_work/sort-00000009'
