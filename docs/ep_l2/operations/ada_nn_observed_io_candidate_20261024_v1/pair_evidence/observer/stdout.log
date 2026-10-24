@@ -1,0 +1,35 @@
+------------- NVBit (NVidia Binary Instrumentation Tool v1.7.7.1) Loaded --------------
+NVBit core environment variables (mostly for nvbit-devs):
+ACK_CTX_INIT_LIMITATION = 0 - if set, no warning will be printed for nvbit_at_ctx_init()
+            NVDISASM = /usr/local/cuda-12.8/bin/nvdisasm - override default nvdisasm found in PATH
+            NOBANNER = 0 - if set, does not print this banner
+       NO_EAGER_LOAD = 1 - lazy module loading is now turned on by default. If you see deadlocks in your tool, set NO_EAGER_LOAD to 0
+---------------------------------------------------------------------------------
+         INSTR_BEGIN = 0 - Beginning of the instruction interval where to apply instrumentation
+           INSTR_END = 4294967295 - End of the instruction interval where to apply instrumentation
+    EXCLUDE_PRED_OFF = 0 - Exclude predicated off instruction from count
+      TRACE_LINEINFO = 0 - Include source code line info at the start of each traced line. The target binary must be compiled with -lineinfo or --generate-line-info
+DYNAMIC_KERNEL_RANGE =  - Specify kernel IDs or ranges to trace. Format:
+  - Single ID:       "2" traces only kernel 2.
+  - Range:           "5-8" traces kernels 5 through 8 (inclusive).
+  - Open-ended:      "10-" traces from kernel 10 onward.
+  - Multiple ranges: "2 5-8 10-" (space-separated).
+  - With regex:      "5-8@kernel_a.*,kernel_b.*" traces kernels 5–8 with matching names.
+If unset or empty, all kernels will be traced from the beginning.
+   ACTIVE_FROM_START = 1 - Start instruction tracing from start or wait for cuProfilerStart and cuProfilerStop. DYNAMIC_KERNEL_RANGE is always intersected with the active region.
+C16_EXACT_ROOT_FUNCTION_ONLY = 1 - Instrument only the launched root CUfunction, not related functions.
+C16_USE_NVBIT_STATIC_INDEX = 0 - Interpret INSTR_BEGIN/INSTR_END as NVBit Instr::getIdx values instead of the legacy filtered enumeration counter.
+        TOOL_VERBOSE = 0 - Enable verbosity inside the tool
+       TOOL_COMPRESS = 1 - Enable traces compression
+     TOOL_TRACE_CORE = 0 - write the core id in the traces
+TERMINATE_UPON_LIMIT = 0 - Stop the process once the current kernel > DYNAMIC_KERNEL_LIMIT_END
+USER_DEFINED_FOLDERS = 0 - Uses the user defined folder TRACES_FOLDER path environment
+ TRACE_FILE_COMPRESS = 1 - Create xz-compressed tracefile
+ENABLE_SPINLOCK_FAST_FORWARD = 0 - Enable spinlock fast forwarding
+SPINLOCK_ITER_TO_KEEP = 1 - Number of iterations to keep for spinlock fast forwarding
+----------------------------------------------------------------------------------------------------
+1988 12 27  0 18 TONY       30.0  89.8  113   39 --> Distance=0.199997
+1980 10 22 18  3 ISAAC      30.1  90.4  110  778 --> Distance=0.412312
+1997 11 14 12 24 HELENE     30.5  89.8  134  529 --> Distance=0.538515
+2003  8 27 12 10 TONY       29.9  89.4  160  286 --> Distance=0.608275
+1974 12 22 18 24 JOYCE      30.6  89.9   80  593 --> Distance=0.608276

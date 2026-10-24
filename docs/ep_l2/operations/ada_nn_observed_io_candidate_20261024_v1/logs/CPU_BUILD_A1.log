@@ -1,0 +1,9 @@
+/bin/sh: 1: nvcc: not found
+(standard_in) 1: syntax error
+/bin/sh: 1: ptxas: not found
+(standard_in) 1: syntax error
+/bin/sh: 1: nvcc: not found
+(standard_in) 1: syntax error
+nvcc -ccbin=g++ -D_FORCE_INLINES -I/data/c16/env/nvbit-1.7.7.1/core  -Xptxas -astoolspatch --keep-device-functions -arch=sm_89 -Xcompiler -Wall -Xcompiler -fPIC -c inject_funcs.cu -o inject_funcs.o
+make: nvcc: No such file or directory
+make: *** [Makefile:61: inject_funcs.o] Error 127

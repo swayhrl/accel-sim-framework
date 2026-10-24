@@ -1,0 +1,111 @@
+nvcc -ccbin=g++ -D_FORCE_INLINES -dc -c -std=c++17 -I/data/c16/env/nvbit-1.7.7.1/core -Xptxas -cloning=no -Xcompiler -Wall -arch=sm_89 -O3 -Xcompiler -fPIC tracer_tool.cu -o tracer_tool.o
+ada_input_snapshot.h: In function ‘void ada_input_event(CUcontext, int, const char*, void*, CUresult*)’:
+ada_input_snapshot.h:49:29: warning: ‘int SHA256_Init(SHA256_CTX*)’ is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   49 |   SHA256_CTX hash;SHA256_Init(&hash);const unsigned char*source=(const unsigned char*)c.src;
+      |                  ~~~~~~~~~~~^~~~~~~
+/usr/include/openssl/sha.h:73:52: note: declared here
+   73 | OSSL_DEPRECATEDIN_3_0 int SHA256_Init(SHA256_CTX *c);
+      |                                                    ^~         
+ada_input_snapshot.h:50:205: warning: ‘int SHA256_Update(SHA256_CTX*, const void*, size_t)’ is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   50 |   for(size_t off=0;off<c.bytes;){size_t n=std::min(size_t(1024*1024),c.bytes-off);if(fwrite(source+off,1,n,f)!=n)ada_input_fail("ADA_INPUT_WRITE_FAILED");SHA256_Update(&hash,source+off,n);off+=n;}
+      |                                                                                                                                                                                                ~~~~~        ^                       
+/usr/include/openssl/sha.h:74:52: note: declared here
+   74 | OSSL_DEPRECATEDIN_3_0 int SHA256_Update(SHA256_CTX *c,
+      |                                                    ^~~          
+ada_input_snapshot.h:51:13: warning: ‘int SHA256_Final(unsigned char*, SHA256_CTX*)’ is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   51 |   unsigned char digest[SHA256_DIGEST_LENGTH];SHA256_Final(digest,&hash);c.digest=ada_hex_digest(digest);
+      |   ~~~~~~~~~~^~~~~~~~~~~~~~~
+/usr/include/openssl/sha.h:76:52: note: declared here
+   76 | OSSL_DEPRECATEDIN_3_0 int SHA256_Final(unsigned char *md, SHA256_CTX *c);
+      |                                                    ^~~~~~~~~~~~
+ada_input_snapshot.h:62:74: warning: ‘int SHA256_Init(SHA256_CTX*)’ is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   62 |   std::array<unsigned char,65536> expected;SHA256_CTX hash;SHA256_Init(&hash);
+      |                                                               ~~~~~~~~~~~^~~~~  
+/usr/include/openssl/sha.h:73:52: note: declared here
+   73 | OSSL_DEPRECATEDIN_3_0 int SHA256_Init(SHA256_CTX *c);
+      |                                                    ^~         
+ada_input_snapshot.h:66:14: warning: ‘int SHA256_Update(SHA256_CTX*, const void*, size_t)’ is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   66 |    SHA256_Update(&hash,expected.data(),n);off+=n;
+      |    ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/openssl/sha.h:74:52: note: declared here
+   74 | OSSL_DEPRECATEDIN_3_0 int SHA256_Update(SHA256_CTX *c,
+      |                                                    ^~~          
+ada_input_snapshot.h:69:13: warning: ‘int SHA256_Final(unsigned char*, SHA256_CTX*)’ is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   69 |   unsigned char digest[SHA256_DIGEST_LENGTH];SHA256_Final(digest,&hash);if(ada_hex_digest(digest)!=c.digest)ada_input_fail("ADA_INPUT_REOPEN_HASH_MISMATCH");
+      |   ~~~~~~~~~~^~~~~~~~~~~~~~~
+/usr/include/openssl/sha.h:76:52: note: declared here
+   76 | OSSL_DEPRECATEDIN_3_0 int SHA256_Final(unsigned char *md, SHA256_CTX *c);
+      |                                                    ^~~~~~~~~~~~
+tracer_tool.cu: In function ‘void enter_kernel_launch(CUcontext, CUfunction, nvbit_api_cuda_t, void*, bool, bool)’:
+tracer_tool.cu:527:105: warning: comparison of integer expressions of different signedness: ‘std::unordered_map<CUctx_st*, int>::mapped_type’ {aka ‘int’} and ‘uint64_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+  527 |   if (terminate_after_limit_number_of_kernels_reached && g_max_kernel_id != 0 &&
+tracer_tool.cu:580:17: warning: format ‘%lx’ expects argument of type ‘long unsigned int’, but argument 5 has type ‘CUcontext’ {aka ‘CUctx_st*’} [-Wformat=]
+  580 |   sprintf(buffer, "%s/kernel-%d-ctx_0x%lx.trace", trace_filename.c_str(),
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                
+      |                                                                                            |
+      |                                                                                            CUcontext {aka CUctx_st*}
+tracer_tool.cu:628:17: warning: format ‘%lx’ expects argument of type ‘long unsigned int’, but argument 4 has type ‘CUcontext’ {aka ‘CUctx_st*’} [-Wformat=]
+  628 |   sprintf(buffer, "kernel-%d-ctx_0x%lx.trace%s", ctx_kernelid[ctx], ctx,
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~                     ~~~
+      |                                                                   |
+      |                                                                   CUcontext {aka CUctx_st*}
+tracer_tool.cu:631:22: warning: format not a string literal and no format arguments [-Wformat-security]
+  631 |     fprintf(kernelsFile, buffer);
+      |                      ^~~~~~
+tracer_tool.cu: In function ‘void leave_kernel_launch(CUcontext, CUfunction)’:
+tracer_tool.cu:681:14: warning: ‘int pthread_yield()’ is deprecated: pthread_yield is deprecated, use sched_yield instead [-Wdeprecated-declarations]
+  681 |     pthread_yield();
+      |     ~~~~~~~~~^~
+/usr/include/pthread.h:479:12: note: declared here
+  479 | extern int __REDIRECT_NTH (pthread_yield, (void), sched_yield)
+      |            ^~~~~~~~~~~~~
+tracer_tool.cu: In function ‘void nvbit_at_cuda_event(CUcontext, int, nvbit_api_cuda_t, const char*, void*, CUresult*)’:
+tracer_tool.cu:884:17: warning: format ‘%llu’ expects argument of type ‘long long unsigned int’, but argument 4 has type ‘size_t’ {aka ‘long unsigned int’} [-Wformat=]
+  884 |       sprintf(buffer, "MemcpyHtoD,0x%016llx,%llu", p->dstDevice, p->ByteCount);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~                ~~~~~~~~~~~~
+      |                                                               |
+      |                                                               size_t {aka long unsigned int}
+tracer_tool.cu:885:22: warning: format not a string literal and no format arguments [-Wformat-security]
+  885 |       fprintf(kernelsFile, buffer);
+      |                      ^~~~~~
+tracer_tool.cu: In function ‘bool base_stride_compress(const uint64_t*, const std::bitset<32>&, uint64_t&, int&)’:
+tracer_tool.cu:958:12: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+  958 |         if (stride != addrs[s] - addrs[s - 1]) {
+      |         ~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tracer_tool.cu: In function ‘void* recv_thread_fun(void*)’:
+tracer_tool.cu:1079:28: warning: comparison of integer expressions of different signedness: ‘std::map<unsigned int, long unsigned int>::mapped_type’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+ 1079 |             if (counter[ma->instr_idx] > spinlock_iter_to_keep) {
+tracer_tool.cu:1145:31: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 4 has type ‘uint64_t’ {aka ‘long unsigned int’} [-Wformat=]
+ 1145 |             fprintf(ctx_resultsFile[ctx], "%u 0x%llx %d ",
+      |                               ^~~~~~~~~~~~~~~                                        
+      |                                                                             |
+      |                                                                             uint64_t {aka long unsigned int}
+tracer_tool.cu:1149:31: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 4 has type ‘uint64_t’ {aka ‘long unsigned int’} [-Wformat=]
+ 1149 |             fprintf(ctx_resultsFile[ctx], "%u 0x%llx ",
+      |                               ^~~~~~~~~~~~                                       
+      |                                                                         |
+      |                                                                         uint64_t {aka long unsigned int}
+tracer_tool.cu:1151:19: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<long long int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 1151 |             for (int s = 0; s < deltas.size(); s++) {
+      |                 ~~^~~~~~~~~~~~~~~
+tracer_tool.cu: In function ‘void nvbit_at_ctx_init(CUcontext)’:
+tracer_tool.cu:1209:17: warning: format ‘%lx’ expects argument of type ‘long unsigned int’, but argument 3 has type ‘CUcontext’ {aka ‘CUctx_st*’} [-Wformat=]
+ 1209 |   sprintf(buffer, "kernelslist_ctx_0x%lx", ctx);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~  ~~~
+      |                                          |
+      |                                          CUcontext {aka CUctx_st*}
+tracer_tool.cu:1212:17: warning: format ‘%lx’ expects argument of type ‘long unsigned int’, but argument 3 has type ‘CUcontext’ {aka ‘CUctx_st*’} [-Wformat=]
+ 1212 |   sprintf(buffer, "stats_ctx_0x%lx", ctx);
+      |                 ^~~~~~~~~~~~~~~~~  ~~~
+      |                                    |
+      |                                    CUcontext {aka CUctx_st*}
+tracer_tool.cu: In function ‘void enter_kernel_launch(CUcontext, CUfunction, nvbit_api_cuda_t, void*, bool, bool)’:
+tracer_tool.cu:589:21: warning: ‘%s’ directive writing up to 2047 bytes into a region of size 1027 [-Wformat-overflow=]
+  589 |       sprintf(cmd_buffer, "xz -1 -T1 > %s.xz", buffer);
+      |                     ^~~~~~~~~~~~~~~~~~~  ~~~~~~
+In function ‘int sprintf(char*, const char*, ...)’,
+    inlined from ‘void enter_kernel_launch(CUcontext, CUfunction, nvbit_api_cuda_t, void*, bool, bool)’ at tracer_tool.cu:589:8:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:30:31: note: ‘__builtin___sprintf_chk’ output between 16 and 2063 bytes into a destination of size 1039
+   30 |   return __builtin___sprintf_chk (__s, __USE_FORTIFY_LEVEL - 1,
+      |        ~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                  
+nvcc -ccbin=g++ -D_FORCE_INLINES -arch=sm_89 -O3 inject_funcs.o tracer_tool.o -L/data/c16/env/nvbit-1.7.7.1/core -lnvbit -L /usr/local/cuda-12.8/lib64 -lcuda -lcudart_static -lcrypto -shared -o producer_A3.so

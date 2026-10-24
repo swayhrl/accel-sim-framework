@@ -1,0 +1,72 @@
+70480f285200	0	_Z6euclidP7latLongPfiff	MOV R1, c[0x0][0x28]	0	40	4	1	0	0		
+70480f285210	10	_Z6euclidP7latLongPfiff	S2R R0, SR_CTAID.Y	-1	0	0	1	0	0		
+70480f285220	20	_Z6euclidP7latLongPfiff	S2R R3, SR_CTAID.X	-1	0	0	1	0	0		
+70480f285230	30	_Z6euclidP7latLongPfiff	S2R R5, SR_TID.X	-1	0	0	1	0	0		
+70480f285240	40	_Z6euclidP7latLongPfiff	IMAD R0, R0, c[0x0][0xc], R3	0	12	4	1	0	0		
+70480f285250	50	_Z6euclidP7latLongPfiff	IMAD R0, R0, c[0x0][0x0], R5	0	0	4	1	0	0		
+70480f285260	60	_Z6euclidP7latLongPfiff	ISETP.GE.AND P0, PT, R0, c[0x0][0x170], PT	0	368	4	1	0	0		
+70480f285270	70	_Z6euclidP7latLongPfiff	@P0 EXIT	-1	0	0	1	0	0		
+70480f285280	80	_Z6euclidP7latLongPfiff	MOV R5, 0x8	-1	0	0	1	0	0		
+70480f285290	90	_Z6euclidP7latLongPfiff	ULDC.64 UR4, c[0x0][0x118]	0	280	8	1	0	0		
+70480f2852a0	a0	_Z6euclidP7latLongPfiff	IMAD.WIDE R4, R0, R5, c[0x0][0x160]	0	352	8	1	0	0		
+70480f2852b0	b0	_Z6euclidP7latLongPfiff	LDG.E R3, [R4.64+0x4]	-1	0	0	1	0	0		
+70480f2852c0	c0	_Z6euclidP7latLongPfiff	LDG.E R2, [R4.64]	-1	0	0	1	0	0		
+70480f2852d0	d0	_Z6euclidP7latLongPfiff	BSSY B0, 0x210	-1	0	0	1	0	0		
+70480f2852e0	e0	_Z6euclidP7latLongPfiff	FADD R3, -R3, c[0x0][0x178]	0	376	4	1	0	0		
+70480f2852f0	f0	_Z6euclidP7latLongPfiff	FADD R2, -R2, c[0x0][0x174]	0	372	4	1	0	0		
+70480f285300	100	_Z6euclidP7latLongPfiff	FMUL R3, R3, R3	-1	0	0	1	0	0		
+70480f285310	110	_Z6euclidP7latLongPfiff	FFMA R6, R2, R2, R3	-1	0	0	1	0	0		
+70480f285320	120	_Z6euclidP7latLongPfiff	MOV R3, 0x4	-1	0	0	1	0	0		
+70480f285330	130	_Z6euclidP7latLongPfiff	MUFU.RSQ R7, R6	-1	0	0	1	0	0		
+70480f285340	140	_Z6euclidP7latLongPfiff	IADD3 R2, R6, -0xd000000, RZ	-1	0	0	1	0	0		
+70480f285350	150	_Z6euclidP7latLongPfiff	ISETP.GT.U32.AND P0, PT, R2, 0x727fffff, PT	-1	0	0	1	0	0		
+70480f285360	160	_Z6euclidP7latLongPfiff	IMAD.WIDE R2, R0, R3, c[0x0][0x168]	0	360	8	1	0	0		
+70480f285370	170	_Z6euclidP7latLongPfiff	@!P0 BRA 0x1c0	-1	0	0	1	0	0		
+70480f285380	180	_Z6euclidP7latLongPfiff	MOV R9, 0x1a0	-1	0	0	1	0	0		
+70480f285390	190	_Z6euclidP7latLongPfiff	CALL.REL.NOINC 0x230	-1	0	0	1	1	560	0,1,	0,3,4,5,6,7,8,9,320,260,261,
+70480f2853a0	1a0	_Z6euclidP7latLongPfiff	MOV R5, R6	-1	0	0	1	0	0		
+70480f2853b0	1b0	_Z6euclidP7latLongPfiff	BRA 0x200	-1	0	0	1	0	0		
+70480f2853c0	1c0	_Z6euclidP7latLongPfiff	FMUL.FTZ R5, R6, R7	-1	0	0	1	0	0		
+70480f2853d0	1d0	_Z6euclidP7latLongPfiff	FMUL.FTZ R7, R7, 0.5	-1	0	0	1	0	0		
+70480f2853e0	1e0	_Z6euclidP7latLongPfiff	FFMA R6, -R5, R5, R6	-1	0	0	1	0	0		
+70480f2853f0	1f0	_Z6euclidP7latLongPfiff	FFMA R5, R6, R7, R5	-1	0	0	1	0	0		
+70480f285400	200	_Z6euclidP7latLongPfiff	BSYNC B0	-1	0	0	1	0	0		
+70480f285410	210	_Z6euclidP7latLongPfiff	STG.E [R2.64], R5	-1	0	0	1	0	0		
+70480f285420	220	_Z6euclidP7latLongPfiff	EXIT	-1	0	0	1	0	0		
+70480f285430	230	_Z6euclidP7latLongPfiff	LOP3.LUT P0, RZ, R6, 0x7fffffff, RZ, 0xc0, !PT	-1	0	0	1	0	0		
+70480f285440	240	_Z6euclidP7latLongPfiff	@!P0 BRA 0x360	-1	0	0	1	0	0		
+70480f285450	250	_Z6euclidP7latLongPfiff	FSETP.GEU.FTZ.AND P0, PT, R6, RZ, PT	-1	0	0	1	0	0		
+70480f285460	260	_Z6euclidP7latLongPfiff	MOV R0, R6	-1	0	0	1	0	0		
+70480f285470	270	_Z6euclidP7latLongPfiff	@!P0 MOV R6, 0x7fffffff	-1	0	0	1	0	0		
+70480f285480	280	_Z6euclidP7latLongPfiff	@!P0 BRA 0x360	-1	0	0	1	0	0		
+70480f285490	290	_Z6euclidP7latLongPfiff	FSETP.GTU.FTZ.AND P0, PT, |R0|, +INF , PT	-1	0	0	1	0	0		
+70480f2854a0	2a0	_Z6euclidP7latLongPfiff	@P0 FADD.FTZ R6, R0, 1	-1	0	0	1	0	0		
+70480f2854b0	2b0	_Z6euclidP7latLongPfiff	@P0 BRA 0x360	-1	0	0	1	0	0		
+70480f2854c0	2c0	_Z6euclidP7latLongPfiff	FSETP.NEU.FTZ.AND P0, PT, |R0|, +INF , PT	-1	0	0	1	0	0		
+70480f2854d0	2d0	_Z6euclidP7latLongPfiff	@P0 FFMA R4, R0, 1.84467440737095516160e+19, RZ	-1	0	0	1	0	0		
+70480f2854e0	2e0	_Z6euclidP7latLongPfiff	@P0 MUFU.RSQ R5, R4	-1	0	0	1	0	0		
+70480f2854f0	2f0	_Z6euclidP7latLongPfiff	@P0 FMUL.FTZ R7, R4, R5	-1	0	0	1	0	0		
+70480f285500	300	_Z6euclidP7latLongPfiff	@P0 FMUL.FTZ R5, R5, 0.5	-1	0	0	1	0	0		
+70480f285510	310	_Z6euclidP7latLongPfiff	@P0 FADD.FTZ R6, -R7, -RZ	-1	0	0	1	0	0		
+70480f285520	320	_Z6euclidP7latLongPfiff	@P0 FFMA R8, R7, R6, R4	-1	0	0	1	0	0		
+70480f285530	330	_Z6euclidP7latLongPfiff	@!P0 MOV R6, R0	-1	0	0	1	0	0		
+70480f285540	340	_Z6euclidP7latLongPfiff	@P0 FFMA R5, R8, R5, R7	-1	0	0	1	0	0		
+70480f285550	350	_Z6euclidP7latLongPfiff	@P0 FMUL.FTZ R6, R5, 2.3283064365386962891e-10	-1	0	0	1	0	0		
+70480f285560	360	_Z6euclidP7latLongPfiff	MOV R4, R9	-1	0	0	1	0	0		
+70480f285570	370	_Z6euclidP7latLongPfiff	MOV R5, 0x0	-1	0	0	1	0	0		
+70480f285580	380	_Z6euclidP7latLongPfiff	RET.REL.NODEC R4 0x0	-1	0	0	1	2	0		
+70480f285590	390	_Z6euclidP7latLongPfiff	BRA 0x390	-1	0	0	1	0	0		
+70480f2855a0	3a0	_Z6euclidP7latLongPfiff		-1	0	0	0	0	0		
+70480f2855b0	3b0	_Z6euclidP7latLongPfiff		-1	0	0	0	0	0		
+70480f2855c0	3c0	_Z6euclidP7latLongPfiff		-1	0	0	0	0	0		
+70480f2855d0	3d0	_Z6euclidP7latLongPfiff		-1	0	0	0	0	0		
+70480f2855e0	3e0	_Z6euclidP7latLongPfiff		-1	0	0	0	0	0		
+70480f2855f0	3f0	_Z6euclidP7latLongPfiff		-1	0	0	0	0	0		
+70480f285600	400	_Z6euclidP7latLongPfiff		-1	0	0	0	0	0		
+70480f285610	410	_Z6euclidP7latLongPfiff		-1	0	0	0	0	0		
+70480f285620	420	_Z6euclidP7latLongPfiff		-1	0	0	0	0	0		
+70480f285630	430	_Z6euclidP7latLongPfiff		-1	0	0	0	0	0		
+70480f285640	440	_Z6euclidP7latLongPfiff		-1	0	0	0	0	0		
+70480f285650	450	_Z6euclidP7latLongPfiff		-1	0	0	0	0	0		
+70480f285660	460	_Z6euclidP7latLongPfiff		-1	0	0	0	0	0		
+70480f285670	470	_Z6euclidP7latLongPfiff		-1	0	0	0	0	0		

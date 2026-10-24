@@ -1,0 +1,26 @@
+{
+  "schema": "NN_TYPED_CALL_OBSERVED_HTOD_SYNC_DTOH_HOST_CANDIDATE_V1",
+  "status": "CPU_BUILD_ONLY_NOT_GPU_QUALIFIED",
+  "device_base_sha256": "cebd9a6cc7277e43156e44a5bf528369bb4962a06a3ec89a3c7849c234d1aaf4",
+  "device_sources_byte_identical": [
+    "common.h",
+    "record_types.h",
+    "inject_funcs.cu",
+    "ada_semantics.h"
+  ],
+  "host_snapshot_base": "c8cfa41fcabc90ff962159b77cda4a7b6c3ba0dd12236bf5d41849d159ad1352",
+  "HtoD": "exact 342112B LatLong source snapshot, sourcebytes + successful API return, not device readback",
+  "DtoH": "original exact synchronous cuMemcpyDtoH_v2 successful return only,171056B full42764 distances, no added CUDA readback/sync; capture before host findLowest mutates distances",
+  "not_full_application_input": "lat30,lng90,numRecords42764 plus pointers/bank0 require source/kernel-argument rules",
+  "launch": "single modern kernel/default stream,one context lifetime/actor; legacy APIs rejected by inherited c8 gate",
+  "remaining_work": [
+    "actual loaded cubin identity",
+    "prelaunch NVBit full-PC instrumented closure vs static58",
+    "full finite42764 distance oracle + STG to actual DtoH source binding",
+    "CALL/RET actual dynamic coverage and physical operands",
+    "capsule/handlejoin new SO admission",
+    "directed CPU/GPU host failure cases"
+  ],
+  "simulator_application_attempts": 0,
+  "old_frozen_tools_modified": false
+}

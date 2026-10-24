@@ -1,0 +1,101 @@
+{
+  "schema": "NN_EXACT_ADA8_TYPED_CALL_C8_SOURCE_INPUT_SYNC_OUTPUT_PROFILE_V1",
+  "status": "LIMITED_REAL_PAIR_FULL_INPUT_OUTPUT_RAW_QUALIFIED_PENDING_PARENT_ADMISSION_NOT_FORMAL",
+  "exact_task_id": "rodinia_3_1_nn_d0e4b419837d",
+  "tool_sha256": "a4cd4d6a3fec4c61ea75f488cb0b55de4e8ef39cdb7a01ad7995f7fff6455784",
+  "device_grammar": "ADA8 unmodified cebd device prefix/control/typed/CBANK semantics; no ADA9 texture format or observer conversion",
+  "device_source_base": "cebd9a6cc7277e43156e44a5bf528369bb4962a06a3ec89a3c7849c234d1aaf4",
+  "byte_identical_device_files": [
+    "common.h",
+    "record_types.h",
+    "inject_funcs.cu",
+    "ada_semantics.h"
+  ],
+  "host_base": "Frozen c8 HtoD snapshot and lifecycle source copied byte-identically; exact NN new host guards and successful original DtoH return observation",
+  "scope": {
+    "records": 42764,
+    "grid": [
+      168,
+      1,
+      1
+    ],
+    "block": [
+      256,
+      1,
+      1
+    ],
+    "one_context_lifetime": true,
+    "one_host_actor": true,
+    "one_default_stream_launch": true,
+    "launch_API": "cuLaunchKernel",
+    "function": "_Z6euclidP7latLongPfiff",
+    "input_API": "cuMemcpyHtoD_v2",
+    "input_copy_count": 1,
+    "input_bytes": 342112,
+    "output_API": "cuMemcpyDtoH_v2",
+    "output_copy_count": 1,
+    "output_bytes": 171056,
+    "kernelParam_entry_values_observed": [
+      "input_device_pointer",
+      "output_device_pointer",
+      "numRecords42764",
+      "latitude30f bits41f00000",
+      "longitude90f bits42b40000"
+    ],
+    "param_origin": "Observed host kernelParams at original launch entry, not a full constant-bank snapshot",
+    "input_origin": "Original successful synchronous HtoD source bytes plus entry/return host stability, not device readback",
+    "output_origin": "Original successful synchronous DtoH return host bytes, captured before findLowest; hook adds no CUDA readback or synchronization",
+    "source_findLowest_alias_bug_preserved": true,
+    "input_initialization_coverage": "One LatLong array plus actual five parameter values; output allocated uninitialized but every42764 valid lane writes exactly once before DtoH. No complete arbitrary CUDA initialization claim.",
+    "unsupported": [
+      "Async or other copy APIs",
+      "extra input/output copies",
+      "nondefault/multiple streams",
+      "additional context/lifetime/actor/kernel",
+      "Graph/UM/GL/texture/surface/external resources",
+      "general legacy launch ABI",
+      "alternate inputs or launch shapes",
+      "full app embedded-image census",
+      "new generic consumer/SIM or performance qualification"
+    ]
+  },
+  "actual_evidence": {
+    "observer_and_trace_input_sha256": "bd176800507586e042b2d83c30b4356a7ead6dc8c06480037528b05f69f6d61e",
+    "observer_and_trace_output_sha256": "4311ed261c8697c37c47b4a43fcbd863c74d880775b1963ef2403b35c224df38",
+    "full42764_outputs_finite_and_bitwise_CPU_reference": true,
+    "CPU_reference_origin": "Observed FADD/FADD/FMUL/FFMA squared norm plus host libm fmaf/sqrtf RN; actual full32-bit equality, no tolerance fit. Separate source-expression top5 oracle also PASS.",
+    "libm_sha256": "fce00b6f25f459cf4ae0b7fae4257909a1a8a86f9149e7c029a5d617baf1ccd0",
+    "source_raw_sha256": "f5b81cee8b7319fd4c102b0d1a24b32e70a2d54cb8c062bc4f5d28bee52d66da",
+    "actual_loaded_sha256": "0f94c6b69d31d33047b5bf47be39a19e56f2d55b33b2f1649bdf2e74b8e290a0",
+    "static_NonNOP_instrumented_PC_closure": 58,
+    "source_sass_records": 41503,
+    "source_active_lane_instances": 1284872,
+    "STG_lane_bijection_to_actual_DtoH_source": 42764,
+    "LDG_lane_bijection_to_actual_HtoD_destination": 85528,
+    "physical_EXIT": 43008,
+    "physical_warps": 1344,
+    "dynamic_CALL_active_lanes": 0,
+    "dynamic_RET_active_lanes": 0,
+    "call_limit": "Static CALL/RET admitted for captured exact code; no dynamic CALL taken on this input. Prior separate CALL micro qualification is not new NN dynamic-call proof.",
+    "source_capsule_native_trace_identity": "MATCH",
+    "GPU_pair_scope": "Observer uses same NVBit tool snapshot-only mode; it is not pure uninstrumented native. Existing uninstrumented native top5 was separately finite-CPU audited."
+  },
+  "qualifications": {
+    "actual_host_header_positive": 1,
+    "actual_host_header_negative": 15,
+    "actual_pair_mutation_negative": 11,
+    "full_join_verifier_sha256": "bf3e1baab596b71f1e813c130b3b79c63f4c68854866dc7eca46f655eb730cae",
+    "full_join_receipt_sha256": "664e11b80c50017b1472496485e2da8add94c865e69ad25d59369cc0e3c485f1",
+    "negative_receipt_sha256": "9c4e3f08d47c01c884f7492aa3fefb248b8553ad5f4661665fecd8e079953f46",
+    "source_finite_top5_CLI_sha256": "b799ad6185fa4bfe8c1e114f6a59f0b4a65da8d3f17a61e32aff0b44acf8653e"
+  },
+  "simulation_campaign_consumed": 8,
+  "new_SIM_attempts": 0,
+  "no_foreign_process_killed": true,
+  "SourceKEEP": true,
+  "formal_bulk_admission": false,
+  "consumer_qualification": "PENDING_SEPARATE_SCOPE_NO_NEW_NN_SIM",
+  "hardware_performance_qualification": false,
+  "EP_scientific_promotion": false,
+  "official_float_contract_reference": "https://docs.nvidia.com/cuda/archive/12.8.0/cuda-c-programming-guide/index.html#mathematical-functions"
+}
