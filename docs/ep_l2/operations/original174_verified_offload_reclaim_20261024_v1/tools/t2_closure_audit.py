@@ -51,6 +51,10 @@ for aid,row in done.items():
    commands=bytes.fromhex(m['commandlist_bytes_hex']);assert (b/'tree'/m['entry_name']).read_bytes()==commands
    assert ordered==[z.strip() for z in commands.decode().splitlines() if z.strip().endswith(('.trace','.traceg'))]
   restore=js(T/'restore'/(aid+'.json'));helper=(b/'trace_copy.py').read_text();assert (b/'RESTORE.sh').is_file() and (b/'server_resources.py').is_file()
+  for rel in m.get('directory_metadata',{}):
+   d=b/'tree' if rel=='.' else b/'tree'/rel;assert d.is_dir() and not d.is_symlink()
+  for link in m.get('source_unselected_symlink_references',[]):
+   lp=b/'tree'/link['path'];assert lp.is_symlink() and os.readlink(lp)==link['target']
   committed.append(dict(asset_id=aid,source_root=scope['source_root'],kind=scope['kind'],bytes=scope['expected_bytes'],files=len(actual),commit_sha256=row['commit_sha256'],manifest_sha256=h(mr),object_id=m['object_id'],true164_bundle=m['new_true164_bundle'],restore_entry=m['new_true164_bundle']+'/RESTORE.sh',native_restore_status=restore['status'],full_native_restore_performed=restore['status']=='RESTORE_VERIFIED_NATIVE_TARGET',bounded_helper_limit_bytes=251658240,large_full_native_restore_requires_separate_admission=m['source_data_bytes']>251658240,raw_trace_files=sum(z.endswith('.trace') for z in actual),processed_traceg_files=sum(z.endswith('.traceg') for z in actual),ordered_kernel_members=ordered,missing_commandlist_members=missing,source_EOF_and_full_tree_SHA_receipts_verified=True,all_commit_links_verified=True,current_payload_rehash=False,scientific_acceptance_granted=c.get('scientific_acceptance_granted',False),unselected_symlink_metadata=m.get('source_unselected_symlink_references',[])))
  except Exception as e:errors.append(dict(asset_id=aid,error=str(e),exception=type(e).__name__))
 prior=[]
@@ -70,6 +74,9 @@ for old in PRIOR:
   b=P(old['true164_bundle'].replace('/home/shared','/root/share/mnt164',1));cr=(b/'COMMIT.json').read_bytes();c=json.loads(cr);m=js(b/'SOURCE_MANIFEST.json')
   assert h(cr)==old['actual_target_commit_sha256'] and c['object_id']==old['object_id'] and c['manifest_sha256']==h((b/'SOURCE_MANIFEST.json').read_bytes())
   assert c['range_index_sha256']==h((b/'RANGE_INDEX.json').read_bytes()) and c['tree_verification_sha256']==h((b/'TREE_VERIFICATION.json').read_bytes())
+  for member in m['members']:
+   p=b/'tree'/member['relative_path'];assert p.is_file() and not p.is_symlink() and p.stat().st_size==member['size']
+  assert m['ordered_kernel_members']==old['ordered_kernel_members']
   prior.append(dict(asset_id=old['asset_id'],selector_id=old['selector_id'],source_root=old['source_root'],bytes=old['original_bytes'],COMMIT_sha256=h(cr),true164_bundle=old['true164_bundle'],member_names=[x['relative_path'] for x in m['members']],control_readback='PASS',native_restore_status=old['RESTORE_VERIFIED_NATIVE_TARGET'],new_transfer_bytes=0))
  except Exception as e:prior.append(dict(asset_id=old['asset_id'],selector_id=old['selector_id'],source_root=old['source_root'],control_readback='HOLD',reason=str(e),new_transfer_bytes=0))
 release=js(T/'release/COMPLETE.json');package=js(T/'release/POLYBENCH_PACKAGE_COMPLETE.json');retire={}

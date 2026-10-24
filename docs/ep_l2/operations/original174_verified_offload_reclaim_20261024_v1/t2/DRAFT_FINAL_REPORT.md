@@ -1,12 +1,12 @@
 # Lane T2 archive report — DRAFT_IN_PROGRESS_NOT_GOAL_COMPLETION
 
-Evidence snapshot: 2026-10-25T02:19:45.229407+08:00. Original queue SHA256 `718f30ec3bc8e5ece20df02cd472ebee17eac320f7b5a9e5b5e69841cc63cc04`.
+Evidence snapshot: 2026-10-25T02:29:27.601083+08:00. Original queue SHA256 `718f30ec3bc8e5ece20df02cd472ebee17eac320f7b5a9e5b5e69841cc63cc04`.
 
-The original 115 scopes remain unchanged. **16 committed, 0 current HOLD, 99 pending/in-progress**. Content archived in this execution: 114,788,539,759 bytes. T2 adds 2 assets / 4,001,568,672 bytes after the 14-asset takeover baseline.
+The original 115 scopes remain unchanged. **34 committed, 0 current HOLD, 81 pending/in-progress**. Content archived in this execution: 115,095,478,300 bytes. T2 adds 20 assets / 4,308,507,213 bytes after the 14-asset takeover baseline.
 
 | Group | Frozen | Committed | HOLD | Pending | Committed logical bytes |
 |---|---:|---:|---:|---:|---:|
-| TRACE | 51 | 15 | 0 | 36 | 114,788,363,670 |
+| TRACE | 51 | 33 | 0 | 18 | 115,095,302,211 |
 | DTC_RAW | 63 | 1 | 0 | 62 | 176,089 |
 | Q05_FIXED10000 | 1 | 0 | 0 | 1 | 0 |
 
@@ -16,11 +16,11 @@ Prior 20 trace selectors: 20/20 metadata/COMMIT readbacks PASS; their 22,507,635
 
 `POLYBENCH_VARIANT_COVERAGE.csv` carries the 28 mandatory historical variants and four supplemental rows. Historical out-of-queue content or scientific HOLDs remain explicit and do not become new tasks or successful frozen-copy claims. `Q05_EXACT_SCOPE.json` binds fixed10000 run.log to SHA256 `06822c9fb9d2de0208eb51fb61c82f21150f509b8320662fd935efbac283843f`; natural R0 is a different object.
 
-Complete native Target recovery is verified for 2 scopes of this frozen115 execution / 176,480 bytes. These are not necessarily new T2 restorations. Other restoration states: `{"FULL_NATIVE_RESTORE_NOT_PERFORMED_EXCEEDS_BOUND": 14, "RESTORE_VERIFIED_NATIVE_TARGET": 2}`. Full native restores above the qualified 240 MiB window were not performed. Their immutable raw trees, complete file SHA, original numeric metadata and bounded recovery helpers are retained; unrestricted full native recovery and scientific runtime acceptance are not claimed.
+Complete native Target recovery is verified for 19 scopes of this frozen115 execution / 30,037,416 bytes. These are not necessarily new T2 restorations. Other restoration states: `{"FULL_NATIVE_RESTORE_NOT_PERFORMED_EXCEEDS_BOUND": 15, "RESTORE_VERIFIED_NATIVE_TARGET": 19}`. Full native restores above the qualified 240 MiB window were not performed. Their immutable raw trees, complete file SHA, original numeric metadata and bounded recovery helpers are retained; unrestricted full native recovery and scientific runtime acceptance are not claimed.
 
 Historical exact retirement: 8,423 T-owned test-copy files, 4 approved Source kernel files, plus the one cold polybench package. Allocated bytes unlinked: Target test copies 527,740,928; Source kernel files 476,585,984; Source package 17,944,014,848. Independently observed operation-interval SSD free-space deltas: pool 18,936,295,424; Source unlink intervals 18,420,580,352. These are distinct measures and are not added to archive volume. T2 has not replayed any retirement or performed a new Source retirement.
 
-Current shared SSD free: 19,300,945,920 bytes; Share/MD127 free: 36,589,363,200; genuine164 free: 49,336,448,221,184. Current free-space changes include other projects and are not attributed to this archiver.
+Current shared SSD free: 19,923,849,216 bytes; Share/MD127 free: 36,588,355,584; genuine164 free: 49,336,010,661,888. Current free-space changes include other projects and are not attributed to this archiver.
 
 All per-asset genuine164 bundle and recovery entries are in `CONTENT_AND_RESTORE_CLOSURE.json`; prior 20 reuse links are in the same file. The existing five-minute publication receipts remain `../checkpoint/recovery_20261025/PUBLICATION_RECEIPTS.jsonl`. Final process shutdown, partial-transaction accounting and GitHub remote readback must be independently closed before Goal completion.
 
