@@ -37,3 +37,7 @@ The first metadata controller acquired the global lease but self-blocked before 
 ## Diagnosed native deadlock continuation
 
 See [continuation_r3/README.md](continuation_r3/README.md) for the preserved ParboilBFS-DM deadlock and separately qualified successor. This is a classified unaccepted model failure,not a result or retry. All original unused cells remain in scope;final evidence must include every failed point.
+
+## Effective wall-bound correction
+
+The inherited PolicyB had an additional6h deadline despite the outer90day spec. See [continuation_r4_wall90/README.md](continuation_r4_wall90/README.md) for the independently qualified future-start-only operational profile and metadata-only cancellation of the never-startedR3. Existing105spent launches retain their actual original policy;no model was signalled or rerun.

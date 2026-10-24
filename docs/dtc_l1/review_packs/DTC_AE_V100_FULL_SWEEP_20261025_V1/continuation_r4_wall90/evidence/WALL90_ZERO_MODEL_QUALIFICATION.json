@@ -1,0 +1,116 @@
+{
+  "status": "PASS",
+  "test_count": 21,
+  "tests": [
+    {
+      "test": "exact_policy_source_difference_is_three_wall_tokens_only",
+      "status": "PASS"
+    },
+    {
+      "test": "all_non_wall_profile_bounds_identical",
+      "status": "PASS"
+    },
+    {
+      "test": "2159_synthetic_samples_before6h_have_identical_decisions",
+      "status": "PASS"
+    },
+    {
+      "test": "old6h_stop_preserved_and_new6h_continues_with_fresh_retirement",
+      "status": "PASS"
+    },
+    {
+      "test": "new_continues_after6h_not_just_at_boundary",
+      "status": "PASS"
+    },
+    {
+      "test": "new90day_boundary_stops_not_unbounded",
+      "status": "PASS"
+    },
+    {
+      "test": "cadence_above30s_still_stops",
+      "status": "PASS"
+    },
+    {
+      "test": "stale_producer_still_stops",
+      "status": "PASS"
+    },
+    {
+      "test": "600s_without_semantic_retirement_still_stops",
+      "status": "PASS"
+    },
+    {
+      "test": "new_host_OOM_still_stops",
+      "status": "PASS"
+    },
+    {
+      "test": "5GiB_floor_still_stops",
+      "status": "PASS"
+    },
+    {
+      "test": "wrong_output_device_still_stops",
+      "status": "PASS"
+    },
+    {
+      "test": "ownership_evidence_still_required",
+      "status": "PASS"
+    },
+    {
+      "test": "original_cgroup_stop_propagates",
+      "status": "PASS"
+    },
+    {
+      "test": "receiver_drain_sample_quickstop_methods_inherited_exactly",
+      "status": "PASS"
+    },
+    {
+      "test": "engine_profile_validates_without_live_authority_mutation",
+      "status": "PASS"
+    },
+    {
+      "test": "changed_engine_SHA_denied",
+      "status": "PASS"
+    },
+    {
+      "test": "arbitrary_wall_bound_denied",
+      "status": "PASS"
+    },
+    {
+      "test": "extra_source_membership_denied",
+      "status": "PASS"
+    },
+    {
+      "test": "budget_expansion_denied",
+      "status": "PASS"
+    },
+    {
+      "test": "original_launcher_policy_and_guard_sources_preserved",
+      "status": "PASS"
+    }
+  ],
+  "source_pins": [
+    {
+      "name": "runtime_policy_wall90_v1.py",
+      "sha256": "d1a3f21ce1c9eac89b8428f0732000d81936577d080b7bcf1c48ebe38980f187"
+    },
+    {
+      "name": "sweep_storage_guard_wall90_v1.py",
+      "sha256": "7c11ac4b0598495375b38a222fcd68154cb34e2dbd0ff0480ddf1179a7aa74c6"
+    },
+    {
+      "name": "sweep_native_wall90_v1.py",
+      "sha256": "0ee708d731ad65ef7d4d484832292e4743291e72c78379976449f68539fd6be6"
+    },
+    {
+      "name": "sweep_frontend_wall90_v1.py",
+      "sha256": "e197d95141d6e4a43a86f98940662d9e814fc23a6247264533235b7f00677b2f"
+    }
+  ],
+  "engine_sha256": "0ee708d731ad65ef7d4d484832292e4743291e72c78379976449f68539fd6be6",
+  "clock_provenance": "DECLARED_SYNTHETIC_RESOURCE_AND_MONOTONIC_TIME_FIXTURES;actual native guard always uses actual clocks. No altered runtime receipt is a scientific result.",
+  "scientific_starts": 0,
+  "actual_guard_process_starts": 0,
+  "live_authority_or_native_entry_changed": false,
+  "existing_models_changed": false,
+  "policy_delta": "three wall tokens only;all non-wall policy source identical",
+  "observed_utc": "2026-10-24T20:14:48.062769+00:00"
+}
