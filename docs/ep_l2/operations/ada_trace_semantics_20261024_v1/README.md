@@ -40,4 +40,4 @@ R0..254为GPR；256..318映射UR0..62；320..326映射P0..6；328..334映射UP0.
 
 大输入NAS暂存、2D/3D/跨桶等价和空间预算由bulk agent独立实现，参考64GiB scratch cap不直接用于80GiB展开输入。旧/新attempt保留；早期prototype若干旧ELF曾原地重建，未逐个保留，不能承诺这些失败版本逐字重现。最终55的源、ELF、map及回执已在独立目录冻结，旧prototype不作正式工具。
 
-当前109 final55与174new两个consumer root有完整本地证据；真164归档/独立读取仍待共享受管窗口，完成前不宣称durable交付完成。旧SM70及GPU来源未知资产与新4080资产分别标注；SM70 cubin不可直接跨major作为SM89证据，PTX可JIT也不能替代实际loaded-code/map证明。
+阶段一已归档真164 bulk_20261024_v1/objects：stage_evidence_ada7_109_20261024_v1为75571200B/208成员，archive SHA e4bf2a9a43696a92886428eb8bfbf23c32e7d498be72ab8ed6ac5cfcc3192213；stage_evidence_ada7_174new_20261024_v1为74526720B/143成员，archive SHA e281c3760ee20d9bced68d05c755623d38fd08722ed8b82873ce047badb5a6ed，包含两个consumer root、实际加载依赖pack72MB及Gitbundle。两个对象均close/reopen archive/逐成员SHA通过，174new另独立完整tar成员重读通过，COMMIT与读取回执附各子目录；来源KEEP，释放0。其kind是工程证据，不增加formal workload分母。旧SM70及GPU来源未知资产与新4080资产分别标注；SM70 cubin不可直接跨major作为SM89证据，PTX可JIT也不能替代实际loaded-code/map证明。
