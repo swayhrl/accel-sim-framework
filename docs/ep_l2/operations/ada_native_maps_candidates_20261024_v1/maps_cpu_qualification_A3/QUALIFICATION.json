@@ -1,0 +1,44 @@
+{
+  "CPU_ONLY_NOT_SIMULATOR_APPLICATION": true,
+  "observer_sha256": "3f187edf034f0d6d9f79f410ed6bbcdc0572df9a13db0c8b87cf62307d4a7c21",
+  "results": {
+    "positive_new_late_mapping": {
+      "status": "PASS",
+      "proof": {
+        "sample_count": 3,
+        "union_paths": 5,
+        "checkpoint_labels": [
+          "FIRST_ISSUE",
+          "TERMINAL"
+        ],
+        "primary_identity": {
+          "pid": 990722,
+          "start_ticks": 959454808,
+          "state": "R"
+        },
+        "scope": "SAMPLED_WITH_TWO_EXPLICIT_HOST_STOPS_NOT_ALL_TRANSIENT_DEPENDENCIES"
+      }
+    },
+    "negative_new_unpinned_mapping": {
+      "status": "REJECTED",
+      "reason": "unfrozen mapped dependency /usr/lib/x86_64-linux-gnu/libm.so.6"
+    },
+    "negative_late_hash_drift": {
+      "status": "REJECTED",
+      "reason": "mapped dependency hash drift /usr/lib/x86_64-linux-gnu/libm.so.6"
+    },
+    "negative_pid_identity": {
+      "status": "REJECTED",
+      "reason": "primary PID reused"
+    },
+    "negative_missing_terminal": {
+      "status": "REJECTED",
+      "reason": "missing/reordered explicit issue/terminal maps ['FIRST_ISSUE']"
+    },
+    "negative_observed_path_unreadable": {
+      "status": "REJECTED",
+      "reason": "observed mapped dependency unreadable /usr/lib/x86_64-linux-gnu/libm.so.6: CPU directed observed-path hash race"
+    }
+  },
+  "all_expected_reasons": true
+}
