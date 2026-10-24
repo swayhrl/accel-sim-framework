@@ -1,0 +1,56 @@
+{
+  "Root_supplied_post_COMMIT_MANIFEST_facts_not_reverified_as_trace_stat": true,
+  "Source_SM70_post_GPU_SIM_109_or_new_background": false,
+  "all22_review_member_SHA_checked": {
+    "bytes": 4536,
+    "path": "/root/data/rtx4080_stencil_cold_v3_independent_review_20261025_v1/ALL_REVIEW_MEMBER_SHA_READBACK.json",
+    "sha256": "4ee78881d4a991b866b64ceac0df8eaa878dd1208b56ee21e68565359546fa03"
+  },
+  "author_code_modified": false,
+  "blocking_gap": {
+    "issue": "finally publishes TERMINAL PASS before the final p.wait assertion; p.wait is outside try/except/finally. A failure of finalreap/returncode check does not set failure, write FAILURE or cover previously written COMPLETE/PASS/terminal success. Terminal writefailure insidefinally likewise escapes error-report/cleanup handling.",
+    "minimal_required_direction": "Keep complete success lifecycle protected, use WNOWAIT actualexit evidence, perform neededreap checks before final authoritative success publication; anymetadata/reap lateerror must result in failure-dominant state. Afterreap, broadenedSID scans remain disabled via leader exactidentity policy. No payload/largefixture needed.",
+    "source_final_wait_line": 138,
+    "source_terminal_PASS_line": 135,
+    "why_in_scope": "Root expressly requires any latefailure to override success qualification and no prematurely written terminalPASS. Existing two focusedcases inject atCOMPLETE before this section and do not cover this tail."
+  },
+  "exact_diff_matches_frozen_V2_and_V3": true,
+  "new_qualification": {
+    "bytes": 3385,
+    "path": "/root/data/rtx4080_stencil_cold_v3_independent_review_20261025_v1/QUALIFICATION_V3.json",
+    "sha256": "8775407023bf88bb712aef53de924ba34f6dd87e03c8d4352bb8ef311b8fc01c"
+  },
+  "not_covered": [
+    "Final terminalPASS then reap/returncode exception",
+    "Terminal write/close failure after output publication",
+    "Real workload/normalResource/NAS positive",
+    "Production cold/trim approval"
+  ],
+  "observed_unix": 1792880218.9416258,
+  "production_or_fixture_execution_by_reviewer": false,
+  "qualified_cases": 2,
+  "reader_trace_body_bytes_or_trace_stats": 0,
+  "review_package": {
+    "bytes": 7628,
+    "path": "/root/data/rtx4080_stencil_cold_v3_independent_review_20261025_v1/COLD_LIFECYCLE_V3_EXACT_REVIEW_PACKAGE.json",
+    "sha256": "4518a78b1aae47b9cf61aa7d97c88d25aff42aafc160843599608edf3a55c788"
+  },
+  "status": "HOLD_V3_FINAL_TERMINAL_AND_REAP_OUTSIDE_FAILURE_TRANSACTION",
+  "supervisor_v3": {
+    "bytes": 8503,
+    "path": "/root/data/rtx4080_stencil_cold_v3_independent_review_20261025_v1/supervise_rtx_full_windows_v3.py",
+    "sha256": "ddc399c04af5d907db5b6a215aa9e14ca2788caad016234fc1b3b62bf650b496"
+  },
+  "supported_fixes": [
+    "waitid(WNOWAIT) actual observedexit0 now supplies numeric worker_returncode before Popen.wait; candidate/COMPLETE/output happen while exact leader unreaped.",
+    "refresh now refuses broadsession discovery when original leader PID/ticks/SID/PGID absent or changed, preserving checks only on previously known exact process identities.",
+    "Original worker38e all-manifest/fullbyte/window/resource algorithms unchanged; original V2 9+4 qualification remains oldversion evidence.",
+    "Two new focusedcases are truthfully scoped: actual zombie exit0 before injected COMPLETE publishfailure, and reaped actualleader plus explicitly mocked collision observations. No actualOS PID reuse or realNAS/resourcepositive claim."
+  ],
+  "temporary_review_closed": true,
+  "worker_v2_unchanged": {
+    "bytes": 10653,
+    "path": "/root/data/shared_rtx4080_trace_library_20261024_v1/cold_lifecycle_v3_review_20261025_v1/restore_rtx_full_windows_v2_UNCHANGED.py",
+    "sha256": "38e82c093097440cb5f4521aa8add59d84d4dafff18c484393984f2656d536cb"
+  }
+}

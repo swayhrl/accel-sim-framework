@@ -1,0 +1,92 @@
+{
+  "GPU_SIM_109_or_new_data_readback_or_background_started": false,
+  "Root_decision": "Root accepted specific latefailure cleanup gap and will commission separate outerV3; workerV2 frozen unchanged. No V2 production approval.",
+  "existing_qualification_scope": {
+    "actual_fakeworker_processcases": 4,
+    "no_new_qualifications_reexecuted_by_reviewer": true,
+    "real_trace_or_realNAS_or_normalResource_positive": false,
+    "windowcases": 9
+  },
+  "observed_unix": 1792879907.4955723,
+  "positive_findings": [
+    {
+      "conclusion": "Rows come exclusively from actual MANIFEST.files and commit-pinned manifestSHA. Reject duplicate/unsafe names, file_count/byte sums and COMMIT count mismatch. Complete physical file set before+after must exactly equal everypayload plusCOMMIT/MANIFEST; directories are traversed but Source symlinks rejected. No496 or502 hard-coded payload count.",
+      "parent_current_metadata_not_independently_accessed": "Parent reports502payload/14748350881B -> code processes502+2metadata=504, including all retainedfailed history listed.",
+      "source": {
+        "line": 114,
+        "snapshot": "/root/data/rtx4080_stencil_cold_independent_review_20261025_v1/restore_rtx_full_windows_v2.py",
+        "source": "rows = manifest['files']"
+      },
+      "topic": "exact full manifest scope"
+    },
+    {
+      "conclusion": "Every member incl empty file and both metadata bodies reads declared EOF+extraEOF, SHA each closed/reopened Native window, accumulates all logical bytes and compares full-file SHA. Logical member size uncapped,64MiB windows;100members>64MiB therefore multiple windows, no skipped large members. COMMIT/MANIFEST bytes unchanged at end.",
+      "source": {
+        "line": 64,
+        "snapshot": "/root/data/rtx4080_stencil_cold_independent_review_20261025_v1/restore_rtx_full_windows_v2.py",
+        "source": "while offset < expected_bytes or windows == 0:"
+      },
+      "topic": "wholebyte Native identity"
+    },
+    {
+      "conclusion": "Worker normal pinnedV10+coherent epoch/registry snapshot compare, outer independentNative snapshot sum allrows with no state/consumed/owner filter. Floor5GiB+allreserved+1GiB+64MiB; admission addsremaining128MiB+128MiB hysteresis; cached snapshots refreshed<=10s. Flat ownwork+prefixed controls polled logical size128MiB, worker perfileRLIMIT_FSIZE128MiB, monitor capped4MiB; Source arrays/RSS whole private session+outer polled2GiB; deadline21600s.",
+      "qualification_limit": "These are polled guards/logical-size accounting, not hard aggregate disk/RSS quotas. Existing fixture explicitly does not qualify actualnormalResource/realNAS positive.",
+      "topic": "resource accounting"
+    },
+    {
+      "conclusion": "BOOTholds gated worker until PID/ticks/SID/PGID durable registration; parent deathTERM+deferredstop. Directchild is unreaped during normalworker wait. Outer monitor neverNASreads; pidfd signal checks PID/ticks/SID/PGID, stops creators, refreshes same private session+threads, thenTERM/CONT/KILL and reports unresolved without touchingforeignsentinel.",
+      "qualification_limit": "Kernel uninterruptibleNAS/Dstate cannot be guaranteed instantlyterminable; unresolved remains explicitfailure. Existing4processfixtures cover candidateexit23/deadline descendant/startjournal fail and ownforeign sentinel.",
+      "topic": "NAS blocked worker cleanup"
+    },
+    {
+      "conclusion": "Actual observedexit0 required beforeCONTROLLER_COMPLETE/output rename. Candidate alone does not qualify. Any exception writesFAILURE and TERMINAL FAILED, overriding candidate/COMPLETE; failures retained. Actualpostterminal SHA+PASS required beforeboot, worker authenticates actual COMMIT SHA+status and fullmanifest. SeparateRoot grant/receiverreadback/catalog matching still externalpreconditions.",
+      "topic": "actual exit vs candidate"
+    }
+  ],
+  "post_and_commit_preconditions": {
+    "parent_facts_not_relabelled_as_reviewer_data_or_trace_stat": true,
+    "parent_reports_actual_commit_sha256": "7d352239592c6cf91713b30b0654b7051573a68182592ed3db5e4ac25bb61d26",
+    "parent_reports_manifest_sha256": "95c3cbe67fb077ee98fc1a617d829cc9228a8557fc930ff2303f0047b11d2e79",
+    "parent_reports_post_terminal_PASS_controller0_unresolved_empty": true,
+    "separate_cold_grant_not_issued_by_reviewer": true
+  },
+  "post_or_SM70_Source2_touched": false,
+  "prior_report_preserved": {
+    "path": "/root/data/rtx4080_stencil_cold_independent_review_20261025_v1/STENCIL_COLD_V2_INDEPENDENT_CODE_REVIEW_V1.json",
+    "sha256": "a373f595fa1d9dc1a45b9549ef172a3264cc5200fffe491e67b8a9c323637bc7"
+  },
+  "production_or_trim_approval": false,
+  "qualification": {
+    "bytes": 2373,
+    "path": "/root/data/rtx4080_stencil_cold_independent_review_20261025_v1/QUALIFICATION.json",
+    "sha256": "73905caebf93823cb12f67fb67ea4b0903721c64bdfdeff01e079864277ff596"
+  },
+  "review_package": {
+    "bytes": 7599,
+    "path": "/root/data/rtx4080_stencil_cold_independent_review_20261025_v1/STENCIL_ALL_MEMBER_NATIVE_COLD_AND_TRIM_REVIEW_V2.json",
+    "sha256": "c3799cd6efc2457367c2b5c4a2af49463f5102bd94de29d420813b520263ddd0"
+  },
+  "reviewer_trace_payload_bytes_or_trace_stats": 0,
+  "specific_tail_gap": {
+    "issue": "Success path calls p.wait() before candidate read/status/hash and COMPLETE/output publication. If any of those subsequent Native metadata operations fails, except cleanup refreshes old SID/PGID even though leader PID has been reaped and can in principle be recycled. pidfd validates the newlyscanned process identity, not historicalsession creation after that reuse. NAS-blocked failure path itself keeps leader unreaped and is unaffected.",
+    "location": {
+      "line": 115,
+      "snapshot": "/root/data/rtx4080_stencil_cold_independent_review_20261025_v1/supervise_rtx_full_windows_v2.py",
+      "source": "refresh();assert not live();guard();assert p.wait(timeout=3)==0"
+    },
+    "minimal_remedy": "Keep exited directleader unreaped until candidate/control/output closure succeeds, or mark the session closed afterreap and restrict latefailure cleanup to alreadyregistered exactPID/ticks ratherthan fresh oldSID discovery. No large data test needed; retain actual rc0 derivation fromwaitid.",
+    "severity": "PRODUCTION_HOLD_UNTIL_NEW_OUTER_FIXED_AND_ROOT_REVIEWED"
+  },
+  "status": "HOLD_V2_PRODUCTION_LIFECYCLE_TAIL_GAP_DATA_AND_RESOURCE_CONTRACT_LIMITED_PASS",
+  "supervisor": {
+    "bytes": 7967,
+    "path": "/root/data/rtx4080_stencil_cold_independent_review_20261025_v1/supervise_rtx_full_windows_v2.py",
+    "sha256": "ed8b9eaddca5952e640943d98fbe0c649cfba0a76ba1d3dfc9bcc7f54caae2d7"
+  },
+  "temporary_review_state": "CLOSED_NO_STANDING_TASK_OR_BACKGROUND_PROCESS",
+  "worker": {
+    "bytes": 10653,
+    "path": "/root/data/rtx4080_stencil_cold_independent_review_20261025_v1/restore_rtx_full_windows_v2.py",
+    "sha256": "38e82c093097440cb5f4521aa8add59d84d4dafff18c484393984f2656d536cb"
+  }
+}

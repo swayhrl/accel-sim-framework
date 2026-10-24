@@ -1,0 +1,88 @@
+{
+  "status": "ONE_FOCUSED_LATE_FAILURE_QUALIFICATION_TWO_SUBCASES_PASS",
+  "supervisor_v4_sha256": "0a375106aa4466ed526f403807251023208923cb4d3c84981f111c5595b813f8",
+  "subcases": [
+    {
+      "subcase": "actual_reap0_then_wait_exception",
+      "PASS": true,
+      "actual_injected_boundary": {
+        "actual_wait_returncode": 0,
+        "actual_child_reaped": true,
+        "injected_boundary": "after actual successful p.wait, before caller receives result"
+      },
+      "supervisor_returncode": 1,
+      "final_terminal": {
+        "status": "FAILED_RETAINED",
+        "failure": "OSError('injected wait failure after actual child reap0')",
+        "unresolved": [],
+        "worker_rc": 0,
+        "Native_peak_bytes": 776,
+        "RSS_peak": 16777216,
+        "telemetry_dropped": 0,
+        "polled_not_quota": true,
+        "unqualified_success_history": [
+          "/root/data/shared_rtx4080_trace_library_20261024_v1/cold_lifecycle_v4_review_20261025_v1/qualification_A2/actual_reap0_then_wait_exception/control/ORD_LATE_stencil_c3e987b033b4_A002_CPU_ADOPT_V2_COLD_V2_CONTROLLER_COMPLETE.json.UNQUALIFIED_RETAINED",
+          "/root/data/shared_rtx4080_trace_library_20261024_v1/cold_lifecycle_v4_review_20261025_v1/qualification_A2/actual_reap0_then_wait_exception/control/ORD_LATE_stencil_c3e987b033b4_A002_CPU_ADOPT_V2_COLD_V2_PASS.json.UNQUALIFIED_RETAINED"
+        ]
+      },
+      "unqualified_history": [
+        {
+          "path": "/root/data/shared_rtx4080_trace_library_20261024_v1/cold_lifecycle_v4_review_20261025_v1/qualification_A2/actual_reap0_then_wait_exception/control/ORD_LATE_stencil_c3e987b033b4_A002_CPU_ADOPT_V2_COLD_V2_CONTROLLER_COMPLETE.json.UNQUALIFIED_RETAINED",
+          "sha256": "a5aa63371f2e3b591eaa3bc16d9c5f49e3b39f8ba02b7b32bc09019940809f47"
+        },
+        {
+          "path": "/root/data/shared_rtx4080_trace_library_20261024_v1/cold_lifecycle_v4_review_20261025_v1/qualification_A2/actual_reap0_then_wait_exception/control/ORD_LATE_stencil_c3e987b033b4_A002_CPU_ADOPT_V2_COLD_V2_PASS.json.UNQUALIFIED_RETAINED",
+          "sha256": "8ce0c8351ffe53e0afebb62d7138baa337a047ac970d37e9e92ab71fdedd07a9"
+        }
+      ],
+      "public_success_paths_absent": true,
+      "foreign_exact_process_unchanged": true,
+      "fixture_sha256": "063d4d4f92d97a78af70aab8f2c54f4fab4e64c2d97fdf7d61bf17366459e678"
+    },
+    {
+      "subcase": "PASS_terminal_written_then_exception",
+      "PASS": true,
+      "actual_injected_boundary": {
+        "actual_PASS_terminal_written": true,
+        "PASS_terminal_sha256": "1f01b16f2e055d8a31eaf69a2f3622a7d8ff4506d64b97f979e529619a2f4f54",
+        "injected_boundary": "after terminal atomic Native publish; before put returns"
+      },
+      "supervisor_returncode": 1,
+      "final_terminal": {
+        "status": "FAILED_RETAINED",
+        "failure": "PermissionError('injected terminal publication exception after actual PASS write')",
+        "unresolved": [],
+        "worker_rc": 0,
+        "Native_peak_bytes": 776,
+        "RSS_peak": 16777216,
+        "telemetry_dropped": 0,
+        "polled_not_quota": true,
+        "unqualified_success_history": [
+          "/root/data/shared_rtx4080_trace_library_20261024_v1/cold_lifecycle_v4_review_20261025_v1/qualification_A2/PASS_terminal_written_then_exception/control/ORD_LATE_stencil_c3e987b033b4_A002_CPU_ADOPT_V2_COLD_V2_CONTROLLER_COMPLETE.json.UNQUALIFIED_RETAINED",
+          "/root/data/shared_rtx4080_trace_library_20261024_v1/cold_lifecycle_v4_review_20261025_v1/qualification_A2/PASS_terminal_written_then_exception/control/ORD_LATE_stencil_c3e987b033b4_A002_CPU_ADOPT_V2_COLD_V2_PASS.json.UNQUALIFIED_RETAINED",
+          "/root/data/shared_rtx4080_trace_library_20261024_v1/cold_lifecycle_v4_review_20261025_v1/qualification_A2/PASS_terminal_written_then_exception/control/ORD_LATE_stencil_c3e987b033b4_A002_CPU_ADOPT_V2_COLD_V2_TERMINAL.json.UNQUALIFIED_RETAINED"
+        ]
+      },
+      "unqualified_history": [
+        {
+          "path": "/root/data/shared_rtx4080_trace_library_20261024_v1/cold_lifecycle_v4_review_20261025_v1/qualification_A2/PASS_terminal_written_then_exception/control/ORD_LATE_stencil_c3e987b033b4_A002_CPU_ADOPT_V2_COLD_V2_CONTROLLER_COMPLETE.json.UNQUALIFIED_RETAINED",
+          "sha256": "3ffdaa0539fdf51e1e39f3100e15882f0621b9cbd8b31b74393386c7f7426284"
+        },
+        {
+          "path": "/root/data/shared_rtx4080_trace_library_20261024_v1/cold_lifecycle_v4_review_20261025_v1/qualification_A2/PASS_terminal_written_then_exception/control/ORD_LATE_stencil_c3e987b033b4_A002_CPU_ADOPT_V2_COLD_V2_PASS.json.UNQUALIFIED_RETAINED",
+          "sha256": "8ce0c8351ffe53e0afebb62d7138baa337a047ac970d37e9e92ab71fdedd07a9"
+        },
+        {
+          "path": "/root/data/shared_rtx4080_trace_library_20261024_v1/cold_lifecycle_v4_review_20261025_v1/qualification_A2/PASS_terminal_written_then_exception/control/ORD_LATE_stencil_c3e987b033b4_A002_CPU_ADOPT_V2_COLD_V2_TERMINAL.json.UNQUALIFIED_RETAINED",
+          "sha256": "1f01b16f2e055d8a31eaf69a2f3622a7d8ff4506d64b97f979e529619a2f4f54"
+        }
+      ],
+      "public_success_paths_absent": true,
+      "foreign_exact_process_unchanged": true,
+      "fixture_sha256": "b4c1d59bd0aaa912c357470e71af1fbb03c55ccb7156eb964ac3d9d86a495f5a"
+    }
+  ],
+  "scope": "Tiny real CPU child/Native metadata writes with explicitly injected post-reap and post-PASS-terminal exceptions; no persistent filesystem-write-failure positive is claimed",
+  "real_trace_content_or_stat_GPU_SIM_109_science_mutations": 0,
+  "production_cold_or_trim_started": false
+}

@@ -1,0 +1,41 @@
+--- supervise_rtx_full_windows_v3.py
++++ supervise_rtx_full_windows_v4.py
+@@ -122,6 +122,9 @@
+   candidate=pathlib.Path(g['candidate']);result=json.loads(candidate.read_text());assert result['status']=='ALL_MANIFEST_MEMBERS_BOUNDED_NATIVE_COLD_RESTORE_PASS'
+   final=C/(PREFIX+'PASS.json');binding={'status':'OBSERVED_WORKER_EXIT0_ALL_MANIFEST_COLD_COMPLETE','worker_returncode':observed_returncode,'worker_identity':identity,'grant_sha256':sha(grantpath),'candidate_sha256':sha(candidate),'output_path':str(final),'output_sha256':sha(candidate),'no_GPU_SIM_109_or_record_validator':True}
+   put(C/(PREFIX+'CONTROLLER_COMPLETE.json'),binding);os.replace(candidate,final)
++  # Reap and every success-qualification write remain inside this protected try.
++  assert p.wait(timeout=3)==observed_returncode
++  put(C/(PREFIX+'TERMINAL.json'),dict(status='PASS',failure=None,unresolved=[],worker_rc=observed_returncode,Native_peak_bytes=peakdisk,RSS_peak=peakrss,telemetry_dropped=dropped,polled_not_quota=True))
+  except BaseException as e:
+   failure=repr(e)
+   for fd in [gatein,gateout]:
+@@ -130,10 +133,22 @@
+     except OSError:pass
+   try:unresolved=cleanup()
+   except BaseException as e:unresolved=[{'cleanup_error':repr(e)}]
+-  put(C/(PREFIX+'FAILURE.json'),dict(failure=failure,unresolved_exact_own=unresolved,source_KEEP=True))
+- finally:
+-  put(C/(PREFIX+'TERMINAL.json'),dict(status='FAILED_RETAINED'if failure else'PASS',failure=failure,unresolved=unresolved,worker_rc=(p.returncode if p is not None and p.returncode is not None else observed_returncode),Native_peak_bytes=peakdisk,RSS_peak=peakrss,telemetry_dropped=dropped,polled_not_quota=True))
+- if failure:raise SystemExit(1)
+- # Candidate, COMPLETE, output, and terminal metadata are closed before reaping.
+- assert p.wait(timeout=3)==observed_returncode
++  # Withdraw any unclosed public success artifacts, retaining their original
++  # bytes as explicitly unqualified history. Failure overrides all candidates.
++  retained=[];persistence_errors=[]
++  sources=[pathlib.Path(g['candidate'])]+[C/(PREFIX+n)for n in ['CONTROLLER_COMPLETE.json','PASS.json','TERMINAL.json']]
++  for source in sources:
++   for current in [source,source.with_name(source.name+'.tmp')]:
++    try:
++     if current.exists():
++      history=current.with_name(current.name+'.UNQUALIFIED_RETAINED')
++      assert not history.exists();os.replace(current,history);retained.append(str(history))
++    except BaseException as e:persistence_errors.append({'path':str(current),'error':repr(e)})
++  note=dict(status='FAILED_RETAINED',failure=failure,unresolved_exact_own=unresolved,source_KEEP=True,unqualified_success_history=retained,persistence_errors=persistence_errors)
++  for path,record in [(C/(PREFIX+'FAILURE.json'),note),(C/(PREFIX+'TERMINAL.json'),dict(status='FAILED_RETAINED',failure=failure,unresolved=unresolved,worker_rc=(p.returncode if p is not None and p.returncode is not None else observed_returncode),Native_peak_bytes=peakdisk,RSS_peak=peakrss,telemetry_dropped=dropped,polled_not_quota=True,unqualified_success_history=retained))]:
++   try:put(path,record)
++   except BaseException as e:persistence_errors.append({'path':str(path),'error':repr(e)})
++  if persistence_errors:sys.stderr.write(json.dumps({'failure_metadata_not_fully_persisted':persistence_errors})+'\n')
++  # Even if Native writes fail, this process never reports successful exit.
++  raise SystemExit(1)
+ if __name__=='__main__':main()

@@ -1,0 +1,73 @@
+{
+  "schema": "INDEPENDENT_COLD_LIFECYCLE_V4_DELTA_REVIEW_V1",
+  "status": "LIMITED_PASS_V4_PREVIOUS_TWO_LIFECYCLE_BLOCKERS_CLOSED_CODE_AND_EXISTING_SMALL_EVIDENCE_ONLY",
+  "unix": 1792880518.9592786,
+  "inputs": {
+    "package": {
+      "path": "/root/data/shared_rtx4080_trace_library_20261024_v1/cold_lifecycle_v4_review_20261025_v1/COLD_LIFECYCLE_V4_EXACT_REVIEW_PACKAGE.json",
+      "sha256": "a0c1558072dd54583b3cf1d1fd34342c53ff8d1d2ab1028308084cf2b32093e4"
+    },
+    "supervisor": {
+      "path": "/root/data/shared_rtx4080_trace_library_20261024_v1/cold_lifecycle_v4_review_20261025_v1/supervise_rtx_full_windows_v4.py",
+      "sha256": "0a375106aa4466ed526f403807251023208923cb4d3c84981f111c5595b813f8"
+    },
+    "diff_sha256": "dc861ca8256ab9afeb5a7fafa731d9945304bc5e123b9a2c432b8f66d58ae96a",
+    "qualification_A2_sha256": "da4c6930444f6266ced885cd10a18ca68f55f564ca4734124a9c613693ff1957",
+    "unchanged_worker_sha256": "38e82c093097440cb5f4521aa8add59d84d4dafff18c484393984f2656d536cb"
+  },
+  "independent_checks": {
+    "all_53_review_member_raw_SHA_and_sizes_match": true,
+    "small_review_members_bytes": 101600,
+    "V3_to_V4_exact_diff_matches_computed_diff": true,
+    "unchanged_AST_functions": [
+      "refresh",
+      "live",
+      "sig",
+      "cleanup",
+      "guard",
+      "usage",
+      "put",
+      "proc"
+    ],
+    "success_order": "Within one protected try: WNOWAIT observed exit0; exact known live-empty and guard; candidate parse; COMPLETE; candidate->PASS rename; actual p.wait result==observed0; final PASS terminal. No further success-qualification operation after that try.",
+    "late_failure_transaction": "Both actual wait failure and terminal publication exceptions reach the except cleanup; original candidate/COMPLETE/PASS/terminal and their tmp names are moved to explicit UNQUALIFIED_RETAINED; independent FAILURE and FAILED terminal writes are attempted; process exits nonzero even if persistence errors occur.",
+    "after_reap_cleanup": "refresh broad SID/PG membership scan still requires original PID/ticks/SID/PGID. After original leader is absent or changed it returns without expanding membership; live/sig inspect only known precise identities.",
+    "no_new_concrete_production_blocker_found_within_requested_delta": true
+  },
+  "existing_focused_evidence": [
+    {
+      "case": "actual_reap0_then_wait_exception",
+      "review": "Read stored executed fixture, injected boundary, failure/terminal and retained artifacts. Real wait returned0 and actual reaping was checked via ChildProcessError before synthetic exception. Stored supervisor rc1; FAILED_RETAINED/unresolved[]; public candidate/COMPLETE/PASS absent; retained COMPLETE/PASS hashes match. Fixture changes are only private paths/resource stub and explicit wait injection."
+    },
+    {
+      "case": "PASS_terminal_written_then_exception",
+      "review": "Read stored executed fixture and actual published PASS-terminal hash marker. Explicit put exception after atomic publish was caught; stored supervisor rc1; FAILED_RETAINED/unresolved[]; original COMPLETE/PASS/terminal preserved under UNQUALIFIED_RETAINED and full hashes match; public COMPLETE/PASS absent. Fixture changes are only private paths/resource stub and explicit post-publish exception."
+    }
+  ],
+  "evidence_attribution": {
+    "A2_engineering_only": "Tiny real CPU children and Native metadata with injected boundaries; fake resource snapshot, fake worker and fake post/grant. Not a real normalResources or actual NAS payload positive.",
+    "A1_failure_retained": "Original harness compared transient foreign process state R/S in identity equality; A1 failure and source remain. A2 checks PID/ticks/SID/PGID only; production V4 code unchanged. This is not hidden or reclassified as production failure.",
+    "old_13_cases": "V2 nine byte/manifest and four process cases are inherited unchanged, not rerun on V4.",
+    "V3_two_cases": "V3 two earlier lifecycle cases are inherited unchanged, not rerun on V4.",
+    "persistent_filesystem_write_failure": "Not experimentally qualified. If Native rename/write persistently fails, code records best-effort errors and exits nonzero; it cannot guarantee physical removal or a new FAILED marker on an unavailable filesystem. Consumers must require complete exact artifacts plus actual successful supervisor exit, not a lone PASS filename."
+  },
+  "limitations_and_parent_gate": [
+    "This is code/delta review, not production authorization or completed cold restore.",
+    "Root must independently validate fresh exact grant and pins, normal Resources/dynamic reservations, real COMMIT/MANIFEST and post terminal, catalog membership and actual runtime exit before cold admission.",
+    "Worker V2 full-manifest coverage/window and resource conclusions are inherited from prior independent review; no new data acceptance is claimed.",
+    "Power loss or forced SIGKILL crash atomicity is not proved by these exception-only tests."
+  ],
+  "scope_counters": {
+    "new_tests_or_data_tasks_started": 0,
+    "trace_payload_reads": 0,
+    "trace_stats": 0,
+    "GPU_SIM_109": 0,
+    "author_code_mutations": 0,
+    "background_processes_started": 0
+  },
+  "review_member_evidence": {
+    "path": "/root/data/rtx4080_stencil_cold_v4_independent_review_20261025_v1/ALL_REVIEW_MEMBER_SHA_READBACK.json",
+    "sha256": "90a96f9754cbc02ad57af5f24c735411bf4b1e78cc93d71a1aec64f00e085628"
+  },
+  "review_closed": true
+}
