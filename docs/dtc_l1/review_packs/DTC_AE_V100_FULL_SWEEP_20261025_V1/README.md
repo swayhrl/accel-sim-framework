@@ -49,3 +49,7 @@ MyocyteCH/DM exhausted the original8192packet exporter ceiling. The never-starte
 ## Cutcp current-source format adjudication
 
 [Cutcp generic global-store review](format_adjudications/CUTCP_GENERIC_GLOBAL_STORES_V1/README.md) independently verifiedall11whole membersand21,296genericstore records. A separate current-source qualified-input candidate retains the originalHOLD unchanged. The original unused four Cutcpcells require a precise closed-boundary admission continuation;no old model is rerun and no new input/configuration is introduced.
+
+## Finite reviewed Cutcp followup
+
+[continuation_r6_cutcp_format](continuation_r6_cutcp_format/README.md) prepares only the original four never-consumed Cutcpslots after full R5closure. It retains exact old phaseHOLD/sealing snapshots and all spent rows,within unchanged356maximum;no live R5code/runtime is edited.
