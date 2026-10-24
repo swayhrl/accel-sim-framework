@@ -1,0 +1,384 @@
+[
+  {
+    "suite": "CUDA SDK",
+    "version": "4.2-source-host-adapter-v2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "program": "BlackScholes",
+    "sources": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/BlackScholes/BlackScholes.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/BlackScholes/BlackScholes_gold.cpp"
+    ],
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v2",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/BlackScholes/BlackScholes.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/BlackScholes/BlackScholes_gold.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v2_BlackScholes"
+    ],
+    "build_exit": 0,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v2_BlackScholes"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/BlackScholes",
+    "native_timeout_sec": 600,
+    "native_status": "NOT_RUN",
+    "host_adapter": "compat_sdk42_v2; host-only QA/logging/CUDA device/error helpers; kernels unchanged",
+    "binary_sha256": "e0d548eaa53ff2411cf3bb75af1378086d904c01a7bfd6d98a0c9de3684575c3",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "cuobjdump_list_elf": "ELF file    1: BlackScholes-BlackScholes_gold-libcutil_x86_64.sm_89.cubin\nELF file    2: BlackScholes.sm_89.cubin\n"
+  },
+  {
+    "suite": "CUDA SDK",
+    "version": "4.2-source-host-adapter-v2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "program": "convolutionSeparable",
+    "sources": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/convolutionSeparable/convolutionSeparable.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/convolutionSeparable/main.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/convolutionSeparable/convolutionSeparable_gold.cpp"
+    ],
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v2",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/convolutionSeparable/convolutionSeparable.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/convolutionSeparable/main.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/convolutionSeparable/convolutionSeparable_gold.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v2_convolutionSeparable"
+    ],
+    "build_exit": 0,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v2_convolutionSeparable"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/convolutionSeparable",
+    "native_timeout_sec": 600,
+    "native_status": "NOT_RUN",
+    "host_adapter": "compat_sdk42_v2; host-only QA/logging/CUDA device/error helpers; kernels unchanged",
+    "binary_sha256": "2969eba43b1f501913272e775901b85336306699e0efab69ac9fa52fb09d75ab",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "cuobjdump_list_elf": "ELF file    1: convolutionSeparable-main-convolutionSeparable_gold-libcutil_x86_64.sm_89.cubin\nELF file    2: convolutionSeparable.sm_89.cubin\n"
+  },
+  {
+    "suite": "CUDA SDK",
+    "version": "4.2-source-host-adapter-v2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "program": "fastWalshTransform",
+    "sources": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/fastWalshTransform/fastWalshTransform.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/fastWalshTransform/fastWalshTransform_gold.cpp"
+    ],
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v2",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/fastWalshTransform/fastWalshTransform.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/fastWalshTransform/fastWalshTransform_gold.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v2_fastWalshTransform"
+    ],
+    "build_exit": 0,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v2_fastWalshTransform"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/fastWalshTransform",
+    "native_timeout_sec": 600,
+    "native_status": "NOT_RUN",
+    "host_adapter": "compat_sdk42_v2; host-only QA/logging/CUDA device/error helpers; kernels unchanged",
+    "binary_sha256": "61749294af5d1fb78b52e2f4e509630aee12c473847936579c9601dd8ad58ade",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "cuobjdump_list_elf": "ELF file    1: fastWalshTransform-fastWalshTransform_gold-libcutil_x86_64.sm_89.cubin\nELF file    2: fastWalshTransform.sm_89.cubin\n"
+  },
+  {
+    "suite": "CUDA SDK",
+    "version": "4.2-source-host-adapter-v2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "program": "histogram",
+    "sources": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/histogram/histogram64.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/histogram/histogram256.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/histogram/main.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/histogram/histogram_gold.cpp"
+    ],
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v2",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/histogram/histogram64.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/histogram/histogram256.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/histogram/main.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/histogram/histogram_gold.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v2_histogram"
+    ],
+    "build_exit": 1,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v2_histogram"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/histogram",
+    "native_timeout_sec": 600,
+    "native_status": "NOT_RUN",
+    "host_adapter": "compat_sdk42_v2; host-only QA/logging/CUDA device/error helpers; kernels unchanged"
+  },
+  {
+    "suite": "CUDA SDK",
+    "version": "4.2-source-host-adapter-v2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "program": "mergeSort",
+    "sources": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/mergeSort/bitonic.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/mergeSort/mergeSort.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/mergeSort/main.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/mergeSort/mergeSort_host.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/mergeSort/mergeSort_validate.cpp"
+    ],
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v2",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/mergeSort/bitonic.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/mergeSort/mergeSort.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/mergeSort/main.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/mergeSort/mergeSort_host.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/mergeSort/mergeSort_validate.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v2_mergeSort"
+    ],
+    "build_exit": 0,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v2_mergeSort"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/mergeSort",
+    "native_timeout_sec": 600,
+    "native_status": "NOT_RUN",
+    "host_adapter": "compat_sdk42_v2; host-only QA/logging/CUDA device/error helpers; kernels unchanged",
+    "binary_sha256": "f093790fc5365ef661254b496a4e29af801e72fb0eaf1f08a93c4f57d8892043",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "cuobjdump_list_elf": "ELF file    1: bitonic-mergeSort-main-mergeSort_host-mergeSort_validate-libcutil_x86_64.sm_89.cubin\nELF file    2: bitonic.sm_89.cubin\nELF file    3: mergeSort.sm_89.cubin\n"
+  },
+  {
+    "suite": "CUDA SDK",
+    "version": "4.2-source-host-adapter-v2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "program": "scalarProd",
+    "sources": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/scalarProd/scalarProd.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/scalarProd/scalarProd_gold.cpp"
+    ],
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v2",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/scalarProd/scalarProd.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/scalarProd/scalarProd_gold.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v2_scalarProd"
+    ],
+    "build_exit": 0,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v2_scalarProd"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/scalarProd",
+    "native_timeout_sec": 600,
+    "native_status": "NOT_RUN",
+    "host_adapter": "compat_sdk42_v2; host-only QA/logging/CUDA device/error helpers; kernels unchanged",
+    "binary_sha256": "9446bcb0947a5bc68ff863fdad1813524dbfe9b0a24bc26d5c0204259ca41925",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "cuobjdump_list_elf": "ELF file    1: scalarProd-scalarProd_gold-libcutil_x86_64.sm_89.cubin\nELF file    2: scalarProd.sm_89.cubin\n"
+  },
+  {
+    "suite": "CUDA SDK",
+    "version": "4.2-source-host-adapter-v2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "program": "scan",
+    "sources": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/scan/scan.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/scan/main.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/scan/scan_gold.cpp"
+    ],
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v2",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/scan/scan.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/scan/main.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/scan/scan_gold.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v2_scan"
+    ],
+    "build_exit": 0,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v2_scan"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/scan",
+    "native_timeout_sec": 600,
+    "native_status": "NOT_RUN",
+    "host_adapter": "compat_sdk42_v2; host-only QA/logging/CUDA device/error helpers; kernels unchanged",
+    "binary_sha256": "42b03e65485e32b1970b81a41a7d963687c6ced25c7143e3b40fc7931d858c64",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "cuobjdump_list_elf": "ELF file    1: scan-main-scan_gold-libcutil_x86_64.sm_89.cubin\nELF file    2: scan.sm_89.cubin\n"
+  },
+  {
+    "suite": "CUDA SDK",
+    "version": "4.2-source-host-adapter-v2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "program": "sortingNetworks",
+    "sources": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/sortingNetworks/bitonicSort.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/sortingNetworks/oddEvenMergeSort.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/sortingNetworks/main.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/sortingNetworks/sortingNetworks_validate.cpp"
+    ],
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v2",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/sortingNetworks/bitonicSort.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/sortingNetworks/oddEvenMergeSort.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/sortingNetworks/main.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/sortingNetworks/sortingNetworks_validate.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v2_sortingNetworks"
+    ],
+    "build_exit": 0,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v2_sortingNetworks"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/sortingNetworks",
+    "native_timeout_sec": 600,
+    "native_status": "NOT_RUN",
+    "host_adapter": "compat_sdk42_v2; host-only QA/logging/CUDA device/error helpers; kernels unchanged",
+    "binary_sha256": "4053b784350d7d0b70e337ab41a59f89c0c14dc4656b0169793c5e6ea969d850",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "cuobjdump_list_elf": "ELF file    1: bitonicSort-oddEvenMergeSort-main-sortingNetworks_validate-libcutil_x86_64.sm_89.cubin\nELF file    2: bitonicSort.sm_89.cubin\nELF file    3: oddEvenMergeSort.sm_89.cubin\n"
+  },
+  {
+    "suite": "CUDA SDK",
+    "version": "4.2-source-host-adapter-v2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "program": "transpose",
+    "sources": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/transpose/transpose.cu"
+    ],
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v2",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/transpose/transpose.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v2_transpose"
+    ],
+    "build_exit": 2,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v2_transpose"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/transpose",
+    "native_timeout_sec": 600,
+    "native_status": "NOT_RUN",
+    "host_adapter": "compat_sdk42_v2; host-only QA/logging/CUDA device/error helpers; kernels unchanged"
+  },
+  {
+    "suite": "CUDA SDK",
+    "version": "4.2-source-host-adapter-v2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "program": "vectorAdd",
+    "sources": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/vectorAdd/vectorAdd.cu"
+    ],
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v2",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/vectorAdd/vectorAdd.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v2_vectorAdd"
+    ],
+    "build_exit": 0,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v2_vectorAdd"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/vectorAdd",
+    "native_timeout_sec": 600,
+    "native_status": "NOT_RUN",
+    "host_adapter": "compat_sdk42_v2; host-only QA/logging/CUDA device/error helpers; kernels unchanged",
+    "binary_sha256": "826f846a5d26eb14c5953ddea188cb50f09205ca229ba4f47aa0d0e8d5920fdf",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "cuobjdump_list_elf": "ELF file    1: vectorAdd-libcutil_x86_64.sm_89.cubin\nELF file    2: vectorAdd.sm_89.cubin\n"
+  }
+]

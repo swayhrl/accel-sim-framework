@@ -1,0 +1,3383 @@
+[
+  {
+    "program": "cppIntegration",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "9c2e57484c5f3f078fc662a01fd345dab37100e931142f9e2672bdcb382f487b",
+    "makefile_flags": {
+      "EXECUTABLE": "cppIntegration",
+      "CUFILES": "cppIntegration.cu",
+      "CCFILES": "\\",
+      "OMIT_CUTIL_LIB": "1",
+      "OMIT_SHRUTIL_LIB": "1"
+    },
+    "headers": [
+      "cppIntegration_kernel.cu",
+      "cuda_runtime.h",
+      "iostream",
+      "math.h",
+      "sdkHelper.h",
+      "shrQATest.h",
+      "stdio.h",
+      "stdlib.h",
+      "string.h",
+      "vector_types.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/cppIntegration/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/cppIntegration",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v4",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/cppIntegration/cppIntegration.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/cppIntegration/main.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/cppIntegration/cppIntegration_gold.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/usr/local/cuda-12.8/lib64",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_cppIntegration"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.0909225940704346,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_cppIntegration"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/cppIntegration",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v4",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "9215793d23857c931c1c445513a566546d5ef893967c373510c60f352da71a94",
+    "cuobjdump_list_elf": "ELF file    1: cppIntegration-main-cppIntegration_gold-libcutil_x86_64.sm_89.cubin\nELF file    2: cppIntegration.sm_89.cubin\n",
+    "task_id": "sdk42_default_cppIntegration",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/cppIntegration/cppIntegration.cu",
+        "sha256": "ee92002850660c9d8ff6c7ff9e0ba93616ddf923831a2947196c768dbd44222d"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/cppIntegration/cppIntegration_gold.cpp",
+        "sha256": "6c67746cd26f3424d02b06804a722e3739c32e3b3fff5b005d14098f2b6a47c2"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/cppIntegration/cppIntegration_kernel.cu",
+        "sha256": "4780f819a1402c0ace03169701299b99851745dbd6ab43e5f488a5d8ad42de3c"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/cppIntegration/main.cpp",
+        "sha256": "31531ad14ea5e60fe0ea8220757f2e67b671087fb2a3e894952d63823e647a47"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "dct8x8",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "1ed1c8218d6ec3d93e06e90a98246775c07274a5eee87dd6dab11c24dff67652",
+    "makefile_flags": {
+      "EXECUTABLE": "dct8x8",
+      "CUFILES": "dct8x8.cu",
+      "CU_DEPS": "\\",
+      "CCFILES": "\\"
+    },
+    "headers": [
+      "BmpUtil.h",
+      "Common.h",
+      "DCT8x8_Gold.h",
+      "cutil_inline.h",
+      "dct8x8_kernel1.cu",
+      "dct8x8_kernel2.cu",
+      "dct8x8_kernel_quantization.cu",
+      "dct8x8_kernel_short.cu",
+      "math.h",
+      "shrQATest.h",
+      "shrUtils.h",
+      "stdio.h",
+      "stdlib.h"
+    ],
+    "bundled_noncode_assets": [
+      {
+        "path": "doc/barbara_md.png",
+        "bytes": 86121,
+        "sha256": "816bb0ca379cd7e5e1ba0b4fd5c053895dc8abebe10a785bc9cef3f6f7ae6052"
+      },
+      {
+        "path": "doc/barbara.bmp",
+        "bytes": 786488,
+        "sha256": "05bcb1822c1438afd5a7fbd128e5c8f55c0f878d896710fe21887e89c891d4a9"
+      },
+      {
+        "path": "doc/Cosines.xls",
+        "bytes": 35328,
+        "sha256": "a57795522d2c11d40d861c5fe5528853eab70d56aa27f4dd2aa97cd9b009dba6"
+      },
+      {
+        "path": "doc/DctJpeg.png",
+        "bytes": 17298,
+        "sha256": "56eebe88b6a87a78248ea97fd2d73c72abf3faa8a22449171e75dc14093a466b"
+      },
+      {
+        "path": "doc/BarbaraBlocks3.bmp",
+        "bytes": 346854,
+        "sha256": "f15744207bf689cb91742d800f26e9f3a0a41c9bd60b70e01266b64f7b49a20b"
+      },
+      {
+        "path": "doc/barbara_lg.png",
+        "bytes": 328383,
+        "sha256": "c1f22ff2f65dc8ebcb7a89d5376bbc4bc6bf286f1e67cc70920313e21c6606dd"
+      },
+      {
+        "path": "doc/BarbaraBlocks1.bmp",
+        "bytes": 346856,
+        "sha256": "10e0a5a12751563f4aee5aab88533a2d2e9d747083da8fa8d084596be4c9fbb7"
+      },
+      {
+        "path": "doc/CosineBasis.png",
+        "bytes": 45787,
+        "sha256": "430547c3f28513a82b6ab1ba242666926298c24671baa9fc6a0310e444a56541"
+      },
+      {
+        "path": "doc/barbara_sm.png",
+        "bytes": 22485,
+        "sha256": "7fcfc024bdbb8cf847ade105d01a1007d58d1e021527dfa4199d1f6cddb94acf"
+      },
+      {
+        "path": "doc/BarbaraBlocks2.bmp",
+        "bytes": 346854,
+        "sha256": "91c22261255c4efaa591b586b145e272c74a9fb772125ca4d0b077c328df2290"
+      }
+    ],
+    "graphics_dependency": false,
+    "texture_reference_legacy": true,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v3",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/dct8x8.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/BmpUtil.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/DCT8x8_Gold.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_dct8x8"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.8902561664581299,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_dct8x8"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v3",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "d9851e24bc792a9daa3d0f2b58b5c20c185350de89881158597cf9d3cd403ba1",
+    "cuobjdump_list_elf": "ELF file    1: dct8x8-BmpUtil-DCT8x8_Gold-libcutil_x86_64.sm_89.cubin\nELF file    2: dct8x8.sm_89.cubin\n",
+    "task_id": "sdk42_default_dct8x8",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/BmpUtil.cpp",
+        "sha256": "0ac64c333087c8f0890cbfef50f2cd7d47590cc55b9157f37825e44abf0092da"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/BmpUtil.h",
+        "sha256": "635c6e5efedd34615bb05cf6543e8b3ee8399dd716bfff1f09379a88d7ee8a59"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/Common.h",
+        "sha256": "6a9592eb8de0a68cc78f4c62432ed07b91d1606cd45f0e02bd1987881f89ff78"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/DCT8x8_Gold.cpp",
+        "sha256": "94fc14434f31c7543c31b174966fdeabbb6abab77764049ba88dfb5eae176fb4"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/DCT8x8_Gold.h",
+        "sha256": "b8e33cdbf008302febaa8efb3935992c5449fc5a62c28d5313b7ceace61789d7"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/dct8x8.cu",
+        "sha256": "1b901b142ee6b96d83658b2dd59a9ab02e309acb7961ca018b57012e5afcfc0c"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/dct8x8_kernel1.cu",
+        "sha256": "2521d331190d45a298ce1e8c7d192646ce93a1aa95e1842cf92be47417d2aa01"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/dct8x8_kernel2.cu",
+        "sha256": "f502c4b94ae36fab616a852a1e60614bf1b00eef0952baeeb1c20b6bca0f9062"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/dct8x8_kernel_quantization.cu",
+        "sha256": "d83f9a83d956f5963dba2ff88b5e2b1d9dbec70c7274c26791ae151c7962f4ff"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/dct8x8_kernel_short.cu",
+        "sha256": "e2d04bbb3c72e914e00fd4b7a44cd0b4c914ed7ddf6c1c5fde762ef8ac6eb8c2"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/dct8x8/data/teapot512.bmp",
+        "bytes": 786570,
+        "sha256": "638765cae2988fc7e47a9801fba013ba0d819b9f3a54fb2420febd3e12978891"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/dct8x8/data/teapot512.ppm",
+        "bytes": 786493,
+        "sha256": "287f1db78e3805d5aa060be19d9841c9d17b19a31a0ad73b9606eccbb83d692e"
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "data",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/dct8x8/data"
+      }
+    ],
+    "external_data_provenance": "Explicit new dataset dependency: official CUDA Samples v11.8 bundled data pinned81992093; not asserted original4.2 default data identity",
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "dwtHaar1D",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "9ac98488cfae08d0740ce93cc5ac96f348a5ff0bf3f701b74987898c6a9916bb",
+    "makefile_flags": {
+      "EXECUTABLE": "dwtHaar1D",
+      "CUFILES": "dwtHaar1D.cu",
+      "CCFILES": "\\"
+    },
+    "headers": [
+      "cutil_inline.h",
+      "dwtHaar1D_kernel.cu",
+      "math.h",
+      "shrQATest.h",
+      "stdio.h",
+      "stdlib.h",
+      "string.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dwtHaar1D/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dwtHaar1D",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v4",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dwtHaar1D/dwtHaar1D.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/usr/local/cuda-12.8/lib64",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_dwtHaar1D"
+    ],
+    "build_exit": 0,
+    "build_seconds": 0.9641180038452148,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_dwtHaar1D"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dwtHaar1D",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v4",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "677ffb8d70f744d0faf71915560b10a1767a1e6674518f36a886f20b61392924",
+    "cuobjdump_list_elf": "ELF file    1: dwtHaar1D-libcutil_x86_64.sm_89.cubin\nELF file    2: dwtHaar1D.sm_89.cubin\n",
+    "task_id": "sdk42_default_dwtHaar1D",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dwtHaar1D/dwtHaar1D.cu",
+        "sha256": "3385b5904a79ac12d5166f0707ecdc5657511f05369bb11e6084fce50697d775"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dwtHaar1D/dwtHaar1D_kernel.cu",
+        "sha256": "c46b9cc582d97b6a8e1295255a9e073e06da6a8eec2103ce96db53870c602793"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/dwtHaar1D/data/regression.gold.dat",
+        "bytes": 69632,
+        "sha256": "4ecd54b8a5eb6dcb74d721002c586df793bdc33f46355417bbf60c542158e52a"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/dwtHaar1D/data/regression_2_14.gold.dat",
+        "bytes": 278528,
+        "sha256": "02cf33e51bfde8e7e62b302955ae033d1bfdde525f2f2319932ceebdd3eb3340"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/dwtHaar1D/data/regression_2_18.gold.dat",
+        "bytes": 4456448,
+        "sha256": "9c60d6f2ab7ea02e6071b1f92ef6cbe1fefb46b897d500275cc4c5827ee5bbc1"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/dwtHaar1D/data/signal.dat",
+        "bytes": 69632,
+        "sha256": "45df03a24f221047911c9ecee270ab80f6ec061095d4f3159dd7f4df49def4f0"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/dwtHaar1D/data/signal_2_14.dat",
+        "bytes": 278528,
+        "sha256": "b5bab489c0ebf66f34ef06a20b674aac55d801d9bca6454fec0c0b94a1755417"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/dwtHaar1D/data/signal_2_18.dat",
+        "bytes": 4456448,
+        "sha256": "04c96c4f209b038b722ba6981349f536e8e01d027412767bf66425ab8b6eaa31"
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "data",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/dwtHaar1D/data"
+      }
+    ],
+    "external_data_provenance": "Explicit new dataset dependency: official CUDA Samples v11.8 bundled data pinned81992093; not asserted original4.2 default data identity",
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "dxtc",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "ab426fc703d8111a4d52fd54291b1547e935011806f2125c28ab60b1a05ad287",
+    "makefile_flags": {
+      "EXECUTABLE": "dxtc",
+      "CUFILES": "dxtc.cu"
+    },
+    "headers": [
+      "CudaMath.h",
+      "cutil_inline.h",
+      "cutil_math.h",
+      "dds.h",
+      "float.h",
+      "permutations.h",
+      "shrQATest.h",
+      "shrUtils.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dxtc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dxtc/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v5",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/cccl118/usr/local/cuda-11.8/targets/x86_64-linux/include",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/include",
+      "-I/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dxtc/dxtc.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v5_dxtc"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.29901123046875,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v5_dxtc"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dxtc",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v5",
+    "host_adapter": "compat_sdk42_v5; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu",
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "binary_sha256": "c00398c1b86d9e709a6400d9a16d4db607f5398bb77de560f8656db09cf0baad",
+    "cuobjdump_list_elf": "ELF file    1: dxtc-libcutil_x86_64.sm_89.cubin\nELF file    2: dxtc.sm_89.cubin\n",
+    "task_id": "sdk42_default_dxtc",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dxtc/CudaMath.h",
+        "sha256": "1324392b0ea472b9c5b1b80813e8f39e23ce838645231439c5f11e28c46d3709"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dxtc/dds.h",
+        "sha256": "4b34ac9d320187a6600fbde46388363e7a5bbe32f7dc561d4d39f1e7bac7a47c"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dxtc/dxtc.cu",
+        "sha256": "e3b2c2498917493e0ea523d67705d0d214c835a60ff2460ab6def8fb4b005d24"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dxtc/permutations.h",
+        "sha256": "c88fd1fe57f20a365677ee217c9ac0eccc94074166ee1a321150ed886fa864c5"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/dxtc/data/teapot512_ref.dds",
+        "bytes": 131200,
+        "sha256": "783d12c4c643959b854bc3f4de3ec471230c57ef866023fe07731016e65419a9"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/dxtc/data/teapot512_std.ppm",
+        "bytes": 786493,
+        "sha256": "0603710e97adfbc84633967dfc0b4e9d1df5235dda2bde4551446de74f8d4994"
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "data",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/dxtc/data"
+      }
+    ],
+    "external_data_provenance": "Explicit new dataset dependency: official CUDA Samples v11.8 bundled data pinned81992093; not asserted original4.2 default data identity",
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "eigenvalues",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "535ca4ca590be97a643f07a92a8093a89feb425f004332f83696bbb99042da55",
+    "makefile_flags": {
+      "EXECUTABLE": "eigenvalues",
+      "CUFILES": "\\",
+      "CCFILES": "\\",
+      "C_DEPS": "\\",
+      "CU_DEPS": "\\"
+    },
+    "headers": [
+      "algorithm",
+      "bisect_kernel_large.cu",
+      "bisect_kernel_large_multi.cu",
+      "bisect_kernel_large_onei.cu",
+      "bisect_kernel_small.cu",
+      "bisect_large.cuh",
+      "bisect_small.cuh",
+      "bisect_util.cu",
+      "cassert",
+      "cfloat",
+      "cmath",
+      "config.h",
+      "cstdio",
+      "cstdlib",
+      "cutil_inline.h",
+      "float.h",
+      "fstream",
+      "gerschgorin.h",
+      "iomanip",
+      "iostream",
+      "map",
+      "math.h",
+      "matlab.h",
+      "shrQATest.h",
+      "stdio.h",
+      "stdlib.h",
+      "string.h",
+      "structs.h",
+      "util.h",
+      "vector"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v4",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/main.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_small.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_large.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/matlab.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/gerschgorin.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/usr/local/cuda-12.8/lib64",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_eigenvalues"
+    ],
+    "build_exit": 0,
+    "build_seconds": 3.910107135772705,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_eigenvalues"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v4",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "ad6882dd3b87bb4f668749d8db3c789e5d09bd930a005484e32e2f5d553b63e1",
+    "cuobjdump_list_elf": "ELF file    1: main-bisect_small-bisect_large-matlab-gerschgorin-libcutil_x86_64.sm_89.cubin\nELF file    2: main.sm_89.cubin\nELF file    3: bisect_small.sm_89.cubin\nELF file    4: bisect_large.sm_89.cubin\n",
+    "task_id": "sdk42_default_eigenvalues",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_kernel_large.cu",
+        "sha256": "80e86047dd86b5bfd633f539dd9091182a88d083d3cf919aa7edc9c804fcfcb8"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_kernel_large_multi.cu",
+        "sha256": "a0dd0980a81c9e7350a7a710263acdb82247ff43efe136468fbf8b8ff9622fe0"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_kernel_large_onei.cu",
+        "sha256": "15424aacc31dfe477f633cd4b77cf1d9c26c2caff3003f1c0c240b92d78c0cba"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_kernel_small.cu",
+        "sha256": "a304ad9a951a2350d7cf89559a52015b688a1d72b74eda08fdd364215b533aa1"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_large.cu",
+        "sha256": "fdddd61871b99812ea64746f59ac4778ad1b6f0dc1ca9399a2fecc1e51a7f4c3"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_large.cuh",
+        "sha256": "0a4f2ad3943e35db7ae1b21f37ef1f833d76c575e4150da91bb3467ee15f1613"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_small.cu",
+        "sha256": "0ac0706488f2d1d860ed43760bf1cb76dabc17f5cf2a634e4ed684d80a659b7e"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_small.cuh",
+        "sha256": "15738769825b7b9f804d4afe50251325864d6f2d0d50c9b081ee32ada084a845"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_util.cu",
+        "sha256": "64a1a35b3c62882eae1c8181a36f5d76033d5eaddaa6f102a629084ae1f81159"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/config.h",
+        "sha256": "d638a1e21a466512bdcb6830ee00c241b351284aa24803246f6c136a482699e7"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/gerschgorin.cpp",
+        "sha256": "c759ae049dab7474b5adc3720411443bb75af66b2714a50edca44f3979520698"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/gerschgorin.h",
+        "sha256": "c43d571ddf120c3ab4a69b9c30879cba22b39e72501d45aa1aa77e9fa7da2c19"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/main.cu",
+        "sha256": "c4fef1a50d50cb434f8f7c36560636eb94cf25b5b381023f2fd1ea187ee6dac1"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/matlab.cpp",
+        "sha256": "6040f98269b3cca7dbad87b6c5c1f9199b1b382d0fc26430058927b259644bf2"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/matlab.h",
+        "sha256": "dade231516fe24d381c67d263adeabcb159973370308f2ecc6989c5a2dbfb379"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/structs.h",
+        "sha256": "f06177143036c9ae01b9f4785d02e411ee244a96cd1075cf16baa9499f5efdff"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/util.h",
+        "sha256": "e014c1ed153255b20f3260ae212cc402f175c5846e3770237c4fcf5ac071f58c"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/eigenvalues/data/diagonal.dat",
+        "bytes": 19441,
+        "sha256": "44af39713bcdf98bf00b9d9a1b171a6b51a3d07574f2bbe5c95e6b79b6b6e152"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/eigenvalues/data/reference.dat",
+        "bytes": 18563,
+        "sha256": "efa6296e0b2dd382e578bc2db4d44959e78c0cb7f95e3455659146f147a28646"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/eigenvalues/data/superdiagonal.dat",
+        "bytes": 19426,
+        "sha256": "a474cc3a7568ba830396132ec295d6ee9b0ab365dac4eee1b6342099259fe9d0"
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "data",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/eigenvalues/data"
+      }
+    ],
+    "external_data_provenance": "Explicit new dataset dependency: official CUDA Samples v11.8 bundled data pinned81992093; not asserted original4.2 default data identity",
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "fastWalshTransform",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "21ea9b8f6364a71fa22d4e2533c24c9ba75954ebcfdab463b796f48bbeadb05a",
+    "makefile_flags": {
+      "EXECUTABLE": "fastWalshTransform",
+      "CUFILES": "fastWalshTransform.cu",
+      "CU_DEPS": "fastWalshTransform_kernel.cu",
+      "CCFILES": "fastWalshTransform_gold.cpp"
+    },
+    "headers": [
+      "cutil_inline.h",
+      "fastWalshTransform_kernel.cu",
+      "shrQATest.h",
+      "stdio.h",
+      "stdlib.h",
+      "string.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v3",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/fastWalshTransform/fastWalshTransform.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/fastWalshTransform/fastWalshTransform_gold.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_fastWalshTransform"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.1164584159851074,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_fastWalshTransform"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/fastWalshTransform",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v3",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "9087103b2ef560238c863621c16cc7d37400f3d017ca047a7b4b60af98090c98",
+    "cuobjdump_list_elf": "ELF file    1: fastWalshTransform-fastWalshTransform_gold-libcutil_x86_64.sm_89.cubin\nELF file    2: fastWalshTransform.sm_89.cubin\n",
+    "task_id": "sdk42_default_fastWalshTransform",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/fastWalshTransform/fastWalshTransform.cu",
+        "sha256": "284332c572510b2415d23506f72e3d9f879c2c895ddb86e4e1d34b2033d2030e"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/fastWalshTransform/fastWalshTransform_gold.cpp",
+        "sha256": "a505c0c951ac03681d573edc76faaad79b5a50198cca4f77e251770da3461ab6"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/fastWalshTransform/fastWalshTransform_kernel.cu",
+        "sha256": "2814fd1baab947978a42fa7c0823492923e4e027e9fe2cf901ee6c628451d30f"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "inlinePTX",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "4ecc7087feafde6d49dfb274d749e3d9cf84ab5939254c8817195b6ac0887256",
+    "makefile_flags": {
+      "EXECUTABLE": "inlinePTX",
+      "CUFILES": "inlinePTX.cu",
+      "OMIT_CUTIL_LIB": "1",
+      "OMIT_SHRUTIL_LIB": "1"
+    },
+    "headers": [
+      "iostream",
+      "sdkHelper.h",
+      "shrQATest.h",
+      "stdio.h",
+      "stdlib.h",
+      "string.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v3",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/inlinePTX/inlinePTX.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_inlinePTX"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.032613754272461,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_inlinePTX"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/inlinePTX",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v3",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "60ee6d667ab4478c17974c7338c70c32a2611647a5adb51cc37f024b850b0a62",
+    "cuobjdump_list_elf": "ELF file    1: inlinePTX-libcutil_x86_64.sm_89.cubin\nELF file    2: inlinePTX.sm_89.cubin\n",
+    "task_id": "sdk42_default_inlinePTX",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/inlinePTX/inlinePTX.cu",
+        "sha256": "db68a5a709b39ac5c27a197c1f6dc2d9a4f3519e13a9f74fdb661eedf43ce794"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "lineOfSight",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "ae943c2936e050b2b322ce5453c612de205dd021ad111a5b6da515734ec96d32",
+    "makefile_flags": {
+      "EXECUTABLE": "lineOfSight",
+      "CUFILES": "lineOfSight.cu",
+      "CCFILES": "################################################################################"
+    },
+    "headers": [
+      "cutil_inline.h",
+      "cutil_math.h",
+      "float.h",
+      "math.h",
+      "shrQATest.h",
+      "stdio.h",
+      "stdlib.h",
+      "string.h",
+      "thrust/copy.h",
+      "thrust/device_vector.h",
+      "thrust/host_vector.h",
+      "thrust/scan.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": true,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/lineOfSight",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/lineOfSight/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v5",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/cccl118/usr/local/cuda-11.8/targets/x86_64-linux/include",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/include",
+      "-I/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/lineOfSight/lineOfSight.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v5_lineOfSight"
+    ],
+    "build_exit": 0,
+    "build_seconds": 2.8719611167907715,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v5_lineOfSight"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/lineOfSight",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v5",
+    "host_adapter": "compat_sdk42_v5; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu",
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "binary_sha256": "d96f9e8a9a1f0f1894180ac584ab4a492d1565a02a38403f177b44f1997e34ad",
+    "cuobjdump_list_elf": "ELF file    1: lineOfSight-libcutil_x86_64.sm_89.cubin\nELF file    2: lineOfSight.sm_89.cubin\n",
+    "task_id": "sdk42_default_lineOfSight",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/lineOfSight/lineOfSight.cu",
+        "sha256": "c7197c1cab3e7d171b11a49dbca3203974f4398398733ba812f6a29a31eab89a"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "matrixMul",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "753e9afe5afbd6db73629ce67d3cca03d551a2aa02de4dab97d108b5d72e12f2",
+    "makefile_flags": {
+      "EXECUTABLE": "matrixMul",
+      "CUFILES": "matrixMul.cu",
+      "CCFILES": "\\",
+      "USECUBLAS": "1",
+      "OMIT_CUTIL_LIB": "1"
+    },
+    "headers": [
+      "cublas_v2.h",
+      "cuda_runtime.h",
+      "matrixMul.h",
+      "matrixMul_kernel.cu",
+      "sdkHelper.h",
+      "shrQATest.h",
+      "shrUtils.h",
+      "stdio.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMul/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMul",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v4",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMul/matrixMul.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMul/matrixMul_gold.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/usr/local/cuda-12.8/lib64",
+      "-lcublas",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_matrixMul"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.3251304626464844,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_matrixMul"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMul",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v4",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "53c501028517ed8c09ed023e291131921c41b844a6a16a577c10cb7cd5f804ee",
+    "cuobjdump_list_elf": "ELF file    1: matrixMul-matrixMul_gold-libcutil_x86_64.sm_89.cubin\nELF file    2: matrixMul.sm_89.cubin\n",
+    "task_id": "sdk42_default_matrixMul",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMul/matrixMul.cu",
+        "sha256": "0c55f65d3d326bda42221f8d6d2bb082c9747ca27c4588a6875b9f4c89e61fa8"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMul/matrixMul.h",
+        "sha256": "63ba0dad62f2138b7e6f2960653342f362f2900793cafe15571ebd23d575c815"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMul/matrixMul_gold.cpp",
+        "sha256": "be99000a64357e199de524159399ddb14f21ba8b7203a3ec93bf54ec29c8246e"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMul/matrixMul_kernel.cu",
+        "sha256": "da8d5934b38cae328501da741ee866eccc824967cf6f3433f15f6bfa5da2d1b8"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "matrixMulDynlinkJIT",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "3ce3a5a86fb8e09b3c6361cbde18ad1dcabf65cba9b4d5330fc3e6ef1fefd847",
+    "makefile_flags": {
+      "EXECUTABLE": "matrixMulDynlinkJIT",
+      "CCFILES": "matrixMul_gold.cpp   matrixMulDynlinkJIT.cpp ",
+      "CFILES": "matrixMul_kernel_32_ptxdump.c matrixMul_kernel_64_ptxdump.c cuda_drvapi_dynlink.c",
+      "USECUDADYNLIB": "1",
+      "USEDRVAPI": "1",
+      "OMIT_CUTIL_LIB": "1",
+      "OMIT_SHRUTIL_LIB": "1"
+    },
+    "headers": [
+      "GL/freeglut.h",
+      "GL/glew.h",
+      "GL/wglext.h",
+      "GLUT/glut.h",
+      "Windows.h",
+      "cuda_drvapi_dynlink.h",
+      "cuda_drvapi_dynlink_cuda.h",
+      "cuda_drvapi_dynlink_d3d.h",
+      "cuda_drvapi_dynlink_gl.h",
+      "cutil_short.h",
+      "d3d10.h",
+      "d3d10_1.h",
+      "d3d11.h",
+      "d3dx10.h",
+      "d3dx11.h",
+      "d3dx9.h",
+      "dlfcn.h",
+      "dxgi.h",
+      "math.h",
+      "matrixMul.h",
+      "matrixMul_kernel_32_ptxdump.h",
+      "matrixMul_kernel_64_ptxdump.h",
+      "mmsystem.h",
+      "shrQATest.h",
+      "stdio.h",
+      "stdlib.h",
+      "string.h",
+      "strsafe.h",
+      "windows.h"
+    ],
+    "bundled_noncode_assets": [
+      {
+        "path": "extras/matrixMul_kernel_64.ptx",
+        "bytes": 26488,
+        "sha256": "f4ba3e317b18b0ae2e1c945d82f8a0aeab1dcb2363f0004edfb469dc0c5981cd"
+      },
+      {
+        "path": "extras/matrixMul_kernel_32.ptx",
+        "bytes": 25783,
+        "sha256": "da8c72187c67b336d571119a7253d1dce9f837a13be574c0b6e6e8550c6df561"
+      },
+      {
+        "path": "extras/README.TXT",
+        "bytes": 587,
+        "sha256": "8bd92d18dd7abb170524a37f01de285efed4a8bfc3844edf993743541b519370"
+      },
+      {
+        "path": "extras/ptx2c.py",
+        "bytes": 2473,
+        "sha256": "551287ac4f0a4dbd49673bbe29b0dc20e57a6fbcd875f5424b65d1186b791817"
+      }
+    ],
+    "graphics_dependency": true,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": true,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v5",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/cccl118/usr/local/cuda-11.8/targets/x86_64-linux/include",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/include",
+      "-I/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT/matrixMul_gold.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT/matrixMulDynlinkJIT.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT/matrixMul_kernel_32_ptxdump.c",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT/matrixMul_kernel_64_ptxdump.c",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT/cuda_drvapi_dynlink.c",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu",
+      "-lGL",
+      "-lGLU",
+      "-lglut",
+      "-lGLEW",
+      "-lX11",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v5_matrixMulDynlinkJIT"
+    ],
+    "build_exit": 0,
+    "build_seconds": 0.26526594161987305,
+    "version": "4.2-source-host-adapter-v5",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v5_matrixMulDynlinkJIT"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu",
+      "CUDA_FORCE_PTX_JIT": "0"
+    },
+    "host_adapter": "compat_sdk42_v5; source kernels unchanged",
+    "binary_sha256": "edd8f36672b6779573cf0eb7f3d8ec759ce04352ac6059364932a5cc02261555",
+    "cuobjdump_list_elf": "ELF file    1: matrixMul_gold-matrixMulDynlinkJIT-matrixMul_kernel_32_ptxdump-matrixMul_kernel_64_ptxdump-cuda_drvapi_dynlink-libcutil_x86_64.sm_89.cubin\n",
+    "task_id": "sdk42_default_matrixMulDynlinkJIT",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT/cuda_drvapi_dynlink.c",
+        "sha256": "4eae288185a0b721ee6ecf04ad6ea76ab0a496b425499d420e3f5eee93fe181f"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT/cuda_drvapi_dynlink.h",
+        "sha256": "96d62c5870dd7ac68478bd0f865b70316ebf08c06db509b1d9f958f93eb74772"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT/cuda_drvapi_dynlink_cuda.h",
+        "sha256": "c91c858fc0098a41db571a756cfcc9e97e15d03881c392e6f35b1e0ca7aef486"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT/cuda_drvapi_dynlink_d3d.h",
+        "sha256": "2eeefcfd1c835e8de5798044c5bb803a56a2c3e3c68ca7ab401c8b688580e519"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT/cuda_drvapi_dynlink_gl.h",
+        "sha256": "0e39a263ee784a78ab9e96c487aded6a96294c45b11fcf7c801a45c6d5a8db6b"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT/cutil_short.h",
+        "sha256": "ec3684dfc1cc348935f098a36f2e09755acae61d5287f71c6b204cb59ee0be52"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT/extras/matrixMul_kernel_32.ptx",
+        "sha256": "da8c72187c67b336d571119a7253d1dce9f837a13be574c0b6e6e8550c6df561"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT/extras/matrixMul_kernel_64.ptx",
+        "sha256": "f4ba3e317b18b0ae2e1c945d82f8a0aeab1dcb2363f0004edfb469dc0c5981cd"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT/matrixMul.h",
+        "sha256": "47e76df8be6d8f2d790f3049dc893b6f15b3b53bb3265af3fff60060059bd4ac"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT/matrixMulDynlinkJIT.cpp",
+        "sha256": "6887c8dbd2ed2c850a4de0a4c77b42a4aaf06128c1f2229abc2dad231244a992"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT/matrixMul_gold.cpp",
+        "sha256": "54cc34566ecea340fbc1c503062d966b442b5d9ba354a96678de724120b5b683"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT/matrixMul_kernel_32_ptxdump.c",
+        "sha256": "708ade6179b7299b67a4069b66185c385bc975aea26aed31764e016ab737c7d9"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT/matrixMul_kernel_32_ptxdump.h",
+        "sha256": "58434d3542f8bbf959de6baaf2018f845001a47d9e1fb4816794dedfd960e5dd"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT/matrixMul_kernel_64_ptxdump.c",
+        "sha256": "1e5616c5d18cab8fa726fa9933160fb3be36eb3a80e55db087047924d4176fc2"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/matrixMulDynlinkJIT/matrixMul_kernel_64_ptxdump.h",
+        "sha256": "2a19dad4608f6a868782dbfac33a8b0381679b3a677864b238eb7477b40b6c75"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "workload_kind": "RUNTIME_JIT_LOADED_CUBIN_IDENTITY_PENDING",
+    "capture_eligibility": "LOADED_JIT_CODE_MUST_BE_FROZEN",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "newdelete",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "62fe02df1cbde7b3f476d7edfdb98568cfa71f89a2fc75e4e40d7ebdc1e903f4",
+    "makefile_flags": {
+      "EXECUTABLE": "newdelete",
+      "CUFILES": "newdelete.cu",
+      "GENCODE_SM10": "GENCODE_SM13 := "
+    },
+    "headers": [
+      "algorithm",
+      "container.hpp",
+      "cutil_inline.h",
+      "shrQATest.h",
+      "shrUtils.h",
+      "stdio.h",
+      "stdlib.h",
+      "vector"
+    ],
+    "bundled_noncode_assets": [
+      {
+        "path": "container.hpp",
+        "bytes": 4415,
+        "sha256": "2588746f8123c10717e3213f6aad6ac81409aa91df1b999e6afaf31b3d5d3cfe"
+      }
+    ],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/newdelete/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/newdelete",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v4",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/newdelete/newdelete.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/usr/local/cuda-12.8/lib64",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_newdelete"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.0656092166900635,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_newdelete"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/newdelete",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v4",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "beb96cde3e5f2a10319454ef64da1ba9a2b828144eb254baf986f440ffb016ee",
+    "cuobjdump_list_elf": "ELF file    1: newdelete-libcutil_x86_64.sm_89.cubin\nELF file    2: newdelete.sm_89.cubin\n",
+    "task_id": "sdk42_default_newdelete",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/newdelete/newdelete.cu",
+        "sha256": "c35b35c1be34b9848f9b3969ec5e9964eea3ba067fec71deccc493fa343f7ba6"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "quasirandomGenerator",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "c91c2a1c85e0ba7b6a7fc30011ae09cc58cdde06e8972d6eb57040ff265ba43b",
+    "makefile_flags": {
+      "EXECUTABLE": "quasirandomGenerator",
+      "CUFILES": "quasirandomGenerator_SM13.cu quasirandomGenerator_SM10.cu",
+      "GENCODE_SM10": "# CUDA dependency files",
+      "CU_DEPS": "\\",
+      "CCFILES": "quasirandomGenerator.cpp quasirandomGenerator_gold.cpp"
+    },
+    "headers": [
+      "cuda_runtime.h",
+      "cutil_inline.h",
+      "math.h",
+      "quasirandomGenerator_common.h",
+      "quasirandomGenerator_kernel.cuh",
+      "realtype.h",
+      "shrQATest.h",
+      "shrUtils.h",
+      "stdio.h",
+      "stdlib.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v3",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/quasirandomGenerator_SM13.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/quasirandomGenerator_SM10.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/quasirandomGenerator.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/quasirandomGenerator_gold.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_quasirandomGenerator"
+    ],
+    "build_exit": 0,
+    "build_seconds": 2.5502381324768066,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_quasirandomGenerator"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v3",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "3fe974ef79896d93c94e223d3483f1d861df4f79f0f8db8992cf071a77a51bd3",
+    "cuobjdump_list_elf": "ELF file    1: quasirandomGenerator_SM13-quasirandomGenerator_SM10-quasirandomGenerator-quasirandomGenerator_gold-libcutil_x86_64.sm_89.cubin\nELF file    2: quasirandomGenerator_SM13.sm_89.cubin\nELF file    3: quasirandomGenerator_SM10.sm_89.cubin\n",
+    "task_id": "sdk42_default_quasirandomGenerator",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/quasirandomGenerator.cpp",
+        "sha256": "2899b57e59778ef6021b00d77586e8d4d1678c246c412c78cf79a67a74f476fe"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/quasirandomGenerator_SM10.cu",
+        "sha256": "aaf1e4f484e3870bf33b323ed696b1d3e6ebeb1a479d1cafaedb2b58ec0d2444"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/quasirandomGenerator_SM13.cu",
+        "sha256": "33a79b374130653ba90c210cdd03a908b5a21c8a1a455136f7fe27ab3c1b70da"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/quasirandomGenerator_common.h",
+        "sha256": "e9185057246ce7f259c9e8d98349703e0694a980d9179f982a7593d8117aef9f"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/quasirandomGenerator_gold.cpp",
+        "sha256": "767013caead9f4080811b13482d1fc8a83531ab8078ec4b1640339a962cf765e"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/quasirandomGenerator_kernel.cuh",
+        "sha256": "3115d9add8870a54545f5fe8b3bfbf5c23994ec37e6ee9d8f27733180b3818ad"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/quasirandomGenerator/realtype.h",
+        "sha256": "2924a2522add7ba22429ff35cfe3b1affb229bf21a5cbcb52ebfb7a6cd504916"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "radixSortThrust",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "a8f9a73c02a16d6fd362471f1328530432749537a4b185cb82748ca4ffe71467",
+    "makefile_flags": {
+      "EXECUTABLE": "radixSortThrust",
+      "CUFILES": "radixSortThrust.cu"
+    },
+    "headers": [
+      "algorithm",
+      "cutil_inline.h",
+      "limits.h",
+      "shrQATest.h",
+      "shrUtils.h",
+      "thrust/copy.h",
+      "thrust/detail/type_traits.h",
+      "thrust/device_vector.h",
+      "thrust/generate.h",
+      "thrust/host_vector.h",
+      "thrust/random.h",
+      "thrust/sequence.h",
+      "thrust/sort.h",
+      "time.h"
+    ],
+    "bundled_noncode_assets": [
+      {
+        "path": "doc/readme.txt",
+        "bytes": 1833,
+        "sha256": "976663ba5ab75cf7fedbf11bd401f596ca5557c84a146e8496a43bc7d657f8a9"
+      }
+    ],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/radixSortThrust/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/radixSortThrust",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v4",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/radixSortThrust/radixSortThrust.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/usr/local/cuda-12.8/lib64",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_radixSortThrust"
+    ],
+    "build_exit": 0,
+    "build_seconds": 14.382375001907349,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_radixSortThrust"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/radixSortThrust",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v4",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "975ff7672d7bc59da2469aaeeb343754d2d48dfcf4da4e8b20499ef5dbdd9e3b",
+    "cuobjdump_list_elf": "ELF file    1: radixSortThrust-libcutil_x86_64.sm_89.cubin\nELF file    2: radixSortThrust.sm_89.cubin\n",
+    "task_id": "sdk42_default_radixSortThrust",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/radixSortThrust/radixSortThrust.cu",
+        "sha256": "0fd3ae01f749320095e65d6adba50ce837fc8e2dffed7d4339ac1ab462c5fafe"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "reduction",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "4bc92bfe7cb641666e9247ed6abb4195f1e0c2aa2c3e83d2ab1924c61f6889d9",
+    "makefile_flags": {
+      "EXECUTABLE": "reduction",
+      "CUFILES": "reduction_kernel.cu",
+      "CCFILES": "reduction.cpp"
+    },
+    "headers": [
+      "algorithm",
+      "cutil_inline.h",
+      "reduction.h",
+      "shrQATest.h",
+      "shrUtils.h",
+      "stdio.h"
+    ],
+    "bundled_noncode_assets": [
+      {
+        "path": "readme.txt",
+        "bytes": 817,
+        "sha256": "be92484eb5d47e20c36b8aa69653618be9efd6c05686c25393e3aa6d532126a4"
+      },
+      {
+        "path": "doc/reduction.ppt",
+        "bytes": 1611776,
+        "sha256": "3a3fdf3dc0bbfc6cf4c19000a0711d57cc28f0d14bda047bcbbd3a919cad6bbb"
+      }
+    ],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/reduction/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/reduction",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v4",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/reduction/reduction_kernel.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/reduction/reduction.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/usr/local/cuda-12.8/lib64",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_reduction"
+    ],
+    "build_exit": 0,
+    "build_seconds": 2.006822347640991,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_reduction"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/reduction",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v4",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "cdcf7c2abc6cd73afadb2d4e6bce2eb0b06e22d4728b6e6b0df7c04be73cadcf",
+    "cuobjdump_list_elf": "ELF file    1: reduction_kernel-reduction-libcutil_x86_64.sm_89.cubin\nELF file    2: reduction_kernel.sm_89.cubin\n",
+    "task_id": "sdk42_default_reduction",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/reduction/reduction.cpp",
+        "sha256": "5acc7d5b14502b732496eda9dc885d584652cf39f4001352437a6047a0ac098e"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/reduction/reduction.h",
+        "sha256": "96342544e6fe851355b241013f673d4e5a4c1b250cb8fb70c0421106ebce8f41"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/reduction/reduction_kernel.cu",
+        "sha256": "9e19d156cfc10107df329d4dacc97adc6595be64beb90bf2d53bb43686c6a6d7"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "scalarProd",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "f91685742a0183723414741bf83d581778b011b88b7ed46f5989dbd320883bbb",
+    "makefile_flags": {
+      "EXECUTABLE": "scalarProd",
+      "CUFILES": "scalarProd.cu",
+      "CU_DEPS": "scalarProd_kernel.cu",
+      "CCFILES": "scalarProd_gold.cpp"
+    },
+    "headers": [
+      "cutil_inline.h",
+      "scalarProd_kernel.cu",
+      "shrQATest.h",
+      "stdio.h",
+      "stdlib.h",
+      "string.h",
+      "time.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v3",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/scalarProd/scalarProd.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/scalarProd/scalarProd_gold.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_scalarProd"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.1100189685821533,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_scalarProd"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/scalarProd",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v3",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "5b1f9d049ab40bd7d2a8efe65993b7bcbcfcc0f171a0ec2681c5d0c94fdab815",
+    "cuobjdump_list_elf": "ELF file    1: scalarProd-scalarProd_gold-libcutil_x86_64.sm_89.cubin\nELF file    2: scalarProd.sm_89.cubin\n",
+    "task_id": "sdk42_default_scalarProd",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/scalarProd/scalarProd.cu",
+        "sha256": "742008e11f8888c5521c913497a1b48fd8de104cbeff2dc6df24f667eab8ab8e"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/scalarProd/scalarProd_gold.cpp",
+        "sha256": "92ba199e8966651519e7e504cdb45c9a9cbf9498b100fb771898e159ec47f611"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/scalarProd/scalarProd_kernel.cu",
+        "sha256": "49a6709c6ceded5a52f0d1c965999f240defd855f9bf82e07d622516f12b2c76"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "segmentationTreeThrust",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "7284c00cd505f4378f3f132b18d97b84ac8ae8fca96d4daf42f6e10926caac52",
+    "makefile_flags": {
+      "EXECUTABLE": "segmentationTreeThrust",
+      "CUFILES": "segmentationTree.cu",
+      "CU_DEPS": "kernels.cu common.cuh",
+      "CCFILES": "\\",
+      "OMIT_CUTIL_LIB": "1",
+      "OMIT_SHRUTIL_LIB": "1"
+    },
+    "headers": [
+      "algorithm",
+      "common.cuh",
+      "deque",
+      "fstream",
+      "iostream",
+      "iterator",
+      "kernels.cu",
+      "list",
+      "math.h",
+      "sdkHelper.h",
+      "shrQATest.h",
+      "shrUtils.h",
+      "stdio.h",
+      "stdlib.h",
+      "string.h",
+      "string_helper.h",
+      "thrust/adjacent_difference.h",
+      "thrust/copy.h",
+      "thrust/device_free.h",
+      "thrust/device_malloc.h",
+      "thrust/fill.h",
+      "thrust/find.h",
+      "thrust/for_each.h",
+      "thrust/functional.h",
+      "thrust/iterator/counting_iterator.h",
+      "thrust/iterator/discard_iterator.h",
+      "thrust/iterator/transform_iterator.h",
+      "thrust/iterator/zip_iterator.h",
+      "thrust/reduce.h",
+      "thrust/scan.h",
+      "thrust/sequence.h",
+      "thrust/sort.h",
+      "thrust/unique.h",
+      "vector"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/segmentationTreeThrust",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/segmentationTreeThrust/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v5",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/cccl118/usr/local/cuda-11.8/targets/x86_64-linux/include",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/include",
+      "-I/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/segmentationTreeThrust/segmentationTree.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v5_segmentationTreeThrust"
+    ],
+    "build_exit": 0,
+    "build_seconds": 10.955214738845825,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v5_segmentationTreeThrust"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/segmentationTreeThrust",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v5",
+    "host_adapter": "compat_sdk42_v5; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu",
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "binary_sha256": "8c172f6c9353249d04899b4a64aaa08da8a911d1324a64773006d374ff3549bd",
+    "cuobjdump_list_elf": "ELF file    1: segmentationTree-libcutil_x86_64.sm_89.cubin\nELF file    2: segmentationTree.sm_89.cubin\n",
+    "task_id": "sdk42_default_segmentationTreeThrust",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/segmentationTreeThrust/common.cuh",
+        "sha256": "05bfae9c1b8902ce02b879d014e3e72f9aa1d0ad2a375b344cd582a6665693ae"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/segmentationTreeThrust/kernels.cu",
+        "sha256": "2941b161d4a8d645e0e10303e977c2c34afca0ed00e427928d2deefe77735084"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/segmentationTreeThrust/segmentationTree.cu",
+        "sha256": "fa536e6432cf7c89efbcd4ea406aedd24c93fb785c30b001eaab079738ed4f31"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/segmentationTreeThrust/data/ref_00.ppm",
+        "bytes": 3686416,
+        "sha256": "5a655350c8972f367278731bee5f85e979f991130cda73015c940abbd460a22a"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/segmentationTreeThrust/data/ref_09.ppm",
+        "bytes": 3686416,
+        "sha256": "727ca1c701f2008ea19447cf8224ed07f5a056d4c44fd073f2a1cafceb521dac"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/segmentationTreeThrust/data/test.ppm",
+        "bytes": 3686439,
+        "sha256": "25bacd018cfe63b4337935b65973567506535fe75cf31b669d7292b0d9e6f63b"
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "data",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/segmentationTreeThrust/data"
+      }
+    ],
+    "external_data_provenance": "Explicit new dataset dependency: official CUDA Samples v11.8 bundled data pinned81992093; not asserted original4.2 default data identity",
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "simpleAssert",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "dd6d7c2ee6b16a84948ee6cc33a1607d73a13a56a3189f9cb97479c4dcf9ea52",
+    "makefile_flags": {
+      "EXECUTABLE": "simpleAssert",
+      "CUFILES": "simpleAssert.cu",
+      "CCFILES": "\\",
+      "GENCODE_SM10": "GENCODE_SM13 := ",
+      "OMIT_CUTIL_LIB": "1",
+      "OMIT_SHRUTIL_LIB": "1"
+    },
+    "headers": [
+      "cassert",
+      "cuda_runtime.h",
+      "sdkHelper.h",
+      "shrQATest.h",
+      "shrUtils.h",
+      "stdio.h",
+      "sys/utsname.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v3",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleAssert/simpleAssert.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleAssert"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.0338890552520752,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleAssert"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleAssert",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v3",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "477bcbbe480a7c56c04767eeae8c7e0c3fa7fa91654a3d7946505b9effa67162",
+    "cuobjdump_list_elf": "ELF file    1: simpleAssert-libcutil_x86_64.sm_89.cubin\nELF file    2: simpleAssert.sm_89.cubin\n",
+    "task_id": "sdk42_default_simpleAssert",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleAssert/simpleAssert.cu",
+        "sha256": "8bbf95486fc237c6874a95c46679cae7b0dabcecb113f8a61cfb717f4b1bba06"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0"
+    },
+    "workload_kind": "EXPECTED_DEVICE_ASSERT_NEGATIVE_API_TEST",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "simpleAtomicIntrinsics",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "097bf826f7dbf1995df99a51ace507c3a464d0051c0629b956e106157ee0babe",
+    "makefile_flags": {
+      "EXECUTABLE": "simpleAtomicIntrinsics",
+      "CUFILES": "simpleAtomicIntrinsics.cu",
+      "GENCODE_SM10": "CUDEPS\t\t:= simpleAtomicIntrinsics_kernel.cu",
+      "CCFILES": "\\",
+      "OMIT_CUTIL_LIB": "1",
+      "OMIT_SHRUTIL_LIB": "1"
+    },
+    "headers": [
+      "cuda_runtime.h",
+      "math.h",
+      "sdkHelper.h",
+      "shrQATest.h",
+      "simpleAtomicIntrinsics_kernel.cu",
+      "stdio.h",
+      "stdlib.h",
+      "string.h"
+    ],
+    "bundled_noncode_assets": [
+      {
+        "path": "doc/readme.txt",
+        "bytes": 673,
+        "sha256": "be659c81c6db59a98ceb89027dafb6576c4f8525f126a87e714352b94e6a7ca3"
+      }
+    ],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleAtomicIntrinsics/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleAtomicIntrinsics",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v4",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleAtomicIntrinsics/simpleAtomicIntrinsics_gold.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/usr/local/cuda-12.8/lib64",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_simpleAtomicIntrinsics"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.0083038806915283,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_simpleAtomicIntrinsics"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleAtomicIntrinsics",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v4",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "ce601332faad0da8d6c336e707e3cbfef41552d6880e5e9ddab3678738c23731",
+    "cuobjdump_list_elf": "ELF file    1: simpleAtomicIntrinsics-simpleAtomicIntrinsics_gold-libcutil_x86_64.sm_89.cubin\nELF file    2: simpleAtomicIntrinsics.sm_89.cubin\n",
+    "task_id": "sdk42_default_simpleAtomicIntrinsics",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu",
+        "sha256": "fef2e39df53b2b8cbf5f38272a8caf6818d710a48decf804db2914d21db7bf69"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleAtomicIntrinsics/simpleAtomicIntrinsics_gold.cpp",
+        "sha256": "56b8a15d296b78df95418e80fafbbb67ddc6071c35a85c1bc675d7345655b6fb"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleAtomicIntrinsics/simpleAtomicIntrinsics_kernel.cu",
+        "sha256": "4aeb31e3158430379feb0a2d9d138856d5f10cedf4fad3e2375d8f7a9854313c"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "simpleCubemapTexture",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "1969cde33d1918196205627fc48d39456213623ada6851e9bcbec3abeb4c3bad",
+    "makefile_flags": {
+      "EXECUTABLE": "simpleCubemapTexture",
+      "CUFILES": "simpleCubemapTexture.cu",
+      "CCFILES": "\\",
+      "OMIT_CUTIL_LIB": "1",
+      "OMIT_SHRUTIL_LIB": "1",
+      "GENCODE_SM10": "GENCODE_SM13 := "
+    },
+    "headers": [
+      "math.h",
+      "sdkHelper.h",
+      "shrQATest.h",
+      "stdio.h",
+      "stdlib.h",
+      "string.h"
+    ],
+    "bundled_noncode_assets": [
+      {
+        "path": "ClassDiagram1.cd",
+        "bytes": 1,
+        "sha256": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068"
+      }
+    ],
+    "graphics_dependency": false,
+    "texture_reference_legacy": true,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v3",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleCubemapTexture/simpleCubemapTexture.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleCubemapTexture"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.0757145881652832,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleCubemapTexture"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleCubemapTexture",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v3",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "7ce48eb1be8c5d3c44b92e8ae2775e953bef7a18b8efb03af60df50bf9aa4215",
+    "cuobjdump_list_elf": "ELF file    1: simpleCubemapTexture-libcutil_x86_64.sm_89.cubin\nELF file    2: simpleCubemapTexture.sm_89.cubin\n",
+    "task_id": "sdk42_default_simpleCubemapTexture",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleCubemapTexture/simpleCubemapTexture.cu",
+        "sha256": "a23f882bd3b201c0c6c1d545024918bd1cf0334951f2b12dd96d6cfa274c0343"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "simpleLayeredTexture",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "fd555342eb6132ef922c549452daacf55e5ace9302f9ddba59e37fa400e1299a",
+    "makefile_flags": {
+      "EXECUTABLE": "simpleLayeredTexture",
+      "CUFILES": "simpleLayeredTexture.cu",
+      "CCFILES": "\\",
+      "OMIT_CUTIL_LIB": "1",
+      "OMIT_SHRUTIL_LIB": "1",
+      "GENCODE_SM10": "GENCODE_SM13 := "
+    },
+    "headers": [
+      "math.h",
+      "sdkHelper.h",
+      "shrQATest.h",
+      "stdio.h",
+      "stdlib.h",
+      "string.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": true,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v3",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleLayeredTexture/simpleLayeredTexture.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleLayeredTexture"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.0825068950653076,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleLayeredTexture"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleLayeredTexture",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v3",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "f57ae4ded660c138e0f902c2ac78281ec581fe092a145a9eea4481ae4c057986",
+    "cuobjdump_list_elf": "ELF file    1: simpleLayeredTexture-libcutil_x86_64.sm_89.cubin\nELF file    2: simpleLayeredTexture.sm_89.cubin\n",
+    "task_id": "sdk42_default_simpleLayeredTexture",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleLayeredTexture/simpleLayeredTexture.cu",
+        "sha256": "bbc219b4a3be2a32e993f7be50bab5c5bd82ce171f45a9374cfd497022582c6c"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "simpleMultiCopy",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "91e1baf13f71674175a8ccf045cbdac269497ffc2654396361adcd8682a5527f",
+    "makefile_flags": {
+      "EXECUTABLE": "simpleMultiCopy",
+      "CUFILES": "simpleMultiCopy.cu",
+      "OMIT_CUTIL_LIB": "1",
+      "OMIT_SHRUTIL_LIB": "1"
+    },
+    "headers": [
+      "sdkHelper.h",
+      "shrQATest.h",
+      "stdio.h"
+    ],
+    "bundled_noncode_assets": [
+      {
+        "path": "readme.txt",
+        "bytes": 941,
+        "sha256": "f872f1bb0808a44da47070c2576a02f9990f124c0e76a63f9ef16d24b29579db"
+      },
+      {
+        "path": "doc/C1060_CopyOverlap.cpj",
+        "bytes": 653,
+        "sha256": "bf74eb3ddab05a5a13fa35856ef439553b4dc5d6684c7cc22e6b1b7b3d2e4393"
+      },
+      {
+        "path": "doc/GTX480_CopyOverlap.cpj",
+        "bytes": 699,
+        "sha256": "c8f5528e609db08429b83f1eea06430009523637d147901dc7aee4103345cd44"
+      },
+      {
+        "path": "doc/GTX480_CopyOverlap_Session1_Context_0.csv",
+        "bytes": 14325,
+        "sha256": "68a22c6efbe56a02c2bc496182b220784595aea31a2a14355144df56ee4fe94f"
+      },
+      {
+        "path": "doc/C1060_CopyOverlap_Session1_Context_0.csv",
+        "bytes": 13614,
+        "sha256": "978db71d66a726ad23c25f751c9ba4dee79c32c125d76071e007e2fbf6002f84"
+      },
+      {
+        "path": "doc/GTX480_CopyOverlap.csv",
+        "bytes": 6813,
+        "sha256": "d1e9a70f9fccfdf6562245138f613c57a31d7e1735e4d1b5aab3e3a5284db923"
+      }
+    ],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v3",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleMultiCopy/simpleMultiCopy.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleMultiCopy"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.0697300434112549,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleMultiCopy"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleMultiCopy",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v3",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "ff346b93891a55598aaff5bf57bb1e7d195814d83f0ef0fd8b015208d05ca100",
+    "cuobjdump_list_elf": "ELF file    1: simpleMultiCopy-libcutil_x86_64.sm_89.cubin\nELF file    2: simpleMultiCopy.sm_89.cubin\n",
+    "task_id": "sdk42_default_simpleMultiCopy",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleMultiCopy/simpleMultiCopy.cu",
+        "sha256": "848c7232935abc04fbf5519ca155e89bcb7e8218eb0e80e12c889b1d60b89ddc"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "simpleMultiGPU",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "772fe2b4f4b191a209f0f116cd803a1a8e8815da9e8b6c0d1da00f17f7f79552",
+    "makefile_flags": {
+      "EXECUTABLE": "simpleMultiGPU",
+      "CUFILES": "simpleMultiGPU_kernel.cu",
+      "CCFILES": "simpleMultiGPU.cpp",
+      "OMIT_CUTIL_LIB": "1",
+      "OMIT_SHRUTIL_LIB": "1"
+    },
+    "headers": [
+      "cuda_runtime_api.h",
+      "math.h",
+      "sdkHelper.h",
+      "shrQATest.h",
+      "shrUtils.h",
+      "simpleMultiGPU.h",
+      "stdio.h",
+      "stdlib.h",
+      "string.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": true,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v3",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleMultiGPU/simpleMultiGPU_kernel.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleMultiGPU/simpleMultiGPU.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleMultiGPU"
+    ],
+    "build_exit": 0,
+    "build_seconds": 0.7632629871368408,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleMultiGPU"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleMultiGPU",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v3",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "3140e504d51efea90f0a6d1eee658ae33e40c1d20bcabe6215af99696d482906",
+    "cuobjdump_list_elf": "ELF file    1: simpleMultiGPU_kernel-simpleMultiGPU-libcutil_x86_64.sm_89.cubin\nELF file    2: simpleMultiGPU_kernel.sm_89.cubin\n",
+    "task_id": "sdk42_default_simpleMultiGPU",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleMultiGPU/simpleMultiGPU.cpp",
+        "sha256": "cd8e3fc10e81e5bd818a11552892b744e5c9f495ef6317ac0c997fd94221ebc2"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleMultiGPU/simpleMultiGPU.h",
+        "sha256": "34f420a2d8011da18fdd6ef42405fdacdc6e993b9680735c6a17622cf31aafd9"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleMultiGPU/simpleMultiGPU_kernel.cu",
+        "sha256": "3af36cb3006e145dce5b3f0d5bfbf1b96f4a137bbfe6fb1bc50dc575823b4d53"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "simpleP2P",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "379651e3ffc1fe7bb6163d48dd9fc70768b6975bfb0dc3da95af29bc43f7289f",
+    "makefile_flags": {
+      "EXECUTABLE": "simpleP2P",
+      "CUFILES": "simpleP2P.cu",
+      "OMIT_CUTIL_LIB": "1",
+      "OMIT_SHRUTIL_LIB": "1"
+    },
+    "headers": [
+      "cuda_runtime.h",
+      "sdkHelper.h",
+      "shrQATest.h",
+      "stdio.h",
+      "stdlib.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": true,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v3",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleP2P/simpleP2P.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleP2P"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.0729758739471436,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleP2P"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleP2P",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v3",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "fa2dda8291f998d735407ed0e5cc0df360d6f279340ea55404111d720fbe09cb",
+    "cuobjdump_list_elf": "ELF file    1: simpleP2P-libcutil_x86_64.sm_89.cubin\nELF file    2: simpleP2P.sm_89.cubin\n",
+    "task_id": "sdk42_default_simpleP2P",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleP2P/simpleP2P.cu",
+        "sha256": "a7d0ec5ff5b05863a6a5e809a441af70757d1f8b6dd582d474a8da959fc871a1"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0"
+    },
+    "platform_requirement": "Requires2GPUs;109one4080",
+    "workload_kind": "SINGLE_GPU_PLATFORM_UNAVAILABLE",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "simplePitchLinearTexture",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "f4050b27e3c44dc1319475b4796b692acb7459eee1b9d0c41102c6bb504faa2e",
+    "makefile_flags": {
+      "EXECUTABLE": "simplePitchLinearTexture",
+      "CUFILES": "simplePitchLinearTexture.cu",
+      "OMIT_CUTIL_LIB": "1",
+      "OMIT_SHRUTIL_LIB": "1"
+    },
+    "headers": [
+      "cuda_runtime.h",
+      "cutil.h",
+      "sdkHelper.h",
+      "shrQATest.h",
+      "stdio.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": true,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v3",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simplePitchLinearTexture/simplePitchLinearTexture.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simplePitchLinearTexture"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.0917932987213135,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simplePitchLinearTexture"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simplePitchLinearTexture",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v3",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "6119a2bdff2e01a61409052bff96bdf314d5ae634450b68cada0a06ff4ed28f9",
+    "cuobjdump_list_elf": "ELF file    1: simplePitchLinearTexture-libcutil_x86_64.sm_89.cubin\nELF file    2: simplePitchLinearTexture.sm_89.cubin\n",
+    "task_id": "sdk42_default_simplePitchLinearTexture",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simplePitchLinearTexture/simplePitchLinearTexture.cu",
+        "sha256": "6881cec1d9f8f1df4d92cefbad57b132321c9617601cb1613a11e9e5f7d7078e"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "simpleStreams",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "09dcdaa99f53bec892a54acfd3d1ed075bf519ecb2837edb79e7391bb263c9bf",
+    "makefile_flags": {
+      "EXECUTABLE": "simpleStreams",
+      "CUFILES": "simpleStreams.cu",
+      "OMIT_CUTIL_LIB": "1",
+      "OMIT_SHRUTIL_LIB": "1"
+    },
+    "headers": [
+      "cuda_runtime.h",
+      "sdkHelper.h",
+      "shrQATest.h",
+      "shrUtils.h",
+      "stdio.h",
+      "sys/mman.h"
+    ],
+    "bundled_noncode_assets": [
+      {
+        "path": "readme.txt",
+        "bytes": 941,
+        "sha256": "f872f1bb0808a44da47070c2576a02f9990f124c0e76a63f9ef16d24b29579db"
+      }
+    ],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v3",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleStreams/simpleStreams.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleStreams"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.1049549579620361,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleStreams"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleStreams",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v3",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "cbe3732351d6524f467579d8d66b2e358da34e2292fcc8dc0e1802e57406068c",
+    "cuobjdump_list_elf": "ELF file    1: simpleStreams-libcutil_x86_64.sm_89.cubin\nELF file    2: simpleStreams.sm_89.cubin\n",
+    "task_id": "sdk42_default_simpleStreams",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleStreams/simpleStreams.cu",
+        "sha256": "a19246bdd850278593fe5bfb9281edf6628e6b93a0779ee041e521285ffe3de0"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "simpleSurfaceWrite",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "4458598b9a8e6bb76e911f40e4ae4702f9fe2856fd411c5bdfd27fb83f1a81e0",
+    "makefile_flags": {
+      "EXECUTABLE": "simpleSurfaceWrite",
+      "CUFILES": "simpleSurfaceWrite.cu",
+      "CCFILES": "\\",
+      "OMIT_CUTIL_LIB": "1",
+      "OMIT_SHRUTIL_LIB": "1",
+      "GENCODE_SM10": "GENCODE_SM13 :="
+    },
+    "headers": [
+      "cuda_runtime.h",
+      "math.h",
+      "sdkHelper.h",
+      "shrQATest.h",
+      "shrUtils.h",
+      "simpleSurfaceWrite_kernel.cu",
+      "stdio.h",
+      "stdlib.h",
+      "string.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": true,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleSurfaceWrite/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleSurfaceWrite",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v4",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleSurfaceWrite/simpleSurfaceWrite.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_simpleSurfaceWrite"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.1670539379119873,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_simpleSurfaceWrite"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleSurfaceWrite",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v4",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "0a9f7ae734a736c7899d878aa2c4f1e0c63563ea0a4d6bfa4fd63c4274b3ab3b",
+    "cuobjdump_list_elf": "ELF file    1: simpleSurfaceWrite-libcutil_x86_64.sm_89.cubin\nELF file    2: simpleSurfaceWrite.sm_89.cubin\n",
+    "task_id": "sdk42_default_simpleSurfaceWrite",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleSurfaceWrite/simpleSurfaceWrite.cu",
+        "sha256": "2f4fa374ba433356876c8a917752a956f3fad3d5f142a3670a92c4855cf558c4"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleSurfaceWrite/simpleSurfaceWrite_kernel.cu",
+        "sha256": "610227459d7df765e4fe55e9fc053f09c2b28c3740a2c2a6b28e7c73478a744f"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleSurfaceWrite/data/ref_rotated.pgm",
+        "bytes": 262159,
+        "sha256": "8fae1ca161cbe1de2dde23c8f1980614887900de263f387afbacacae08c28282"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleSurfaceWrite/data/teapot512.pgm",
+        "bytes": 262205,
+        "sha256": "794edcba434d448e797c96a90f4dce9d27f14c1c321be46d22ce366736b45865"
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "data",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleSurfaceWrite/data"
+      }
+    ],
+    "external_data_provenance": "Explicit new dataset dependency: official CUDA Samples v11.8 bundled data pinned81992093; not asserted original4.2 default data identity",
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "simpleTemplates",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "0f6dfd96e10fa4d4c664a278ad329e3eba71106dfcad4260485f52e78dd6b90b",
+    "makefile_flags": {
+      "EXECUTABLE": "simpleTemplates",
+      "CUFILES": "simpleTemplates.cu",
+      "CUDEPS": "simpleTemplates_kernel.cu",
+      "CCFILES": "# Do not link with CUTIL and SHRUTIL",
+      "OMIT_CUTIL_LIB": "1",
+      "OMIT_SHRUTIL_LIB": "1"
+    },
+    "headers": [
+      "cuda_runtime.h",
+      "math.h",
+      "sdkHelper.h",
+      "sharedmem.cuh",
+      "shrQATest.h",
+      "shrUtils.h",
+      "simpleTemplates_kernel.cu",
+      "stdio.h",
+      "stdlib.h",
+      "string.h"
+    ],
+    "bundled_noncode_assets": [
+      {
+        "path": "doc/readme.txt",
+        "bytes": 4776,
+        "sha256": "722e8c67a3a40013ea470b8b43b554d89e9a7d6cf4c6e0ec013f5bf6c57afed6"
+      }
+    ],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v3",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleTemplates/simpleTemplates.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleTemplates"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.1331713199615479,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleTemplates"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleTemplates",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v3",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "24e15a483e3d1d8ec70dcdd6f8c601189148ee476db93e47c06e1162c1b55e47",
+    "cuobjdump_list_elf": "ELF file    1: simpleTemplates-libcutil_x86_64.sm_89.cubin\nELF file    2: simpleTemplates.sm_89.cubin\n",
+    "task_id": "sdk42_default_simpleTemplates",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleTemplates/sharedmem.cuh",
+        "sha256": "e65ce5568d30d1006227152cbe0724d57e650ac854a83c5b6ff97744c68530d0"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleTemplates/simpleTemplates.cu",
+        "sha256": "faf22ead30aa6ca29b85fed24033d3201c226699a43fd5eb2793bd9a3ff51a66"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleTemplates/simpleTemplates_kernel.cu",
+        "sha256": "6f29dbe886343446feb6bcf20a89ec4b01467d8c9234de5bc48ec8b062b53f70"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "simpleTexture",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "f6e17a894067a828aaed89c610df6b051bd3a7b5a28a89123c6904de34ff7306",
+    "makefile_flags": {
+      "EXECUTABLE": "simpleTexture",
+      "CUFILES": "simpleTexture.cu",
+      "CCFILES": "\\",
+      "OMIT_CUTIL_LIB": "1",
+      "OMIT_SHRUTIL_LIB": "1"
+    },
+    "headers": [
+      "math.h",
+      "sdkHelper.h",
+      "shrQATest.h",
+      "simpleTexture_kernel.cu",
+      "stdio.h",
+      "stdlib.h",
+      "string.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": true,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleTexture/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleTexture",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v4",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleTexture/simpleTexture.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_simpleTexture"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.195176601409912,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_simpleTexture"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleTexture",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v4",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "e42f24b3ec6d065ca2fc1a9ee411eaf444c969bb5048335d45631b9d5514b0dc",
+    "cuobjdump_list_elf": "ELF file    1: simpleTexture-libcutil_x86_64.sm_89.cubin\nELF file    2: simpleTexture.sm_89.cubin\n",
+    "task_id": "sdk42_default_simpleTexture",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleTexture/simpleTexture.cu",
+        "sha256": "54032175dc7deb20f2c813add116713b03004afadf61d3bfda7c7a636535b6ba"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleTexture/simpleTexture_kernel.cu",
+        "sha256": "c3b3e91346b5c78b1fab88487c6984fce844fa6363db38f697f12a2849310af9"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleTexture/data/ref_rotated.pgm",
+        "bytes": 262159,
+        "sha256": "8fae1ca161cbe1de2dde23c8f1980614887900de263f387afbacacae08c28282"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleTexture/data/teapot512.pgm",
+        "bytes": 262205,
+        "sha256": "794edcba434d448e797c96a90f4dce9d27f14c1c321be46d22ce366736b45865"
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "data",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleTexture/data"
+      }
+    ],
+    "external_data_provenance": "Explicit new dataset dependency: official CUDA Samples v11.8 bundled data pinned81992093; not asserted original4.2 default data identity",
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "simpleZeroCopy",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "332b5cece8d3d9cb56b513d28ee6c7f6188b24109b221d7895de0b6897b65f90",
+    "makefile_flags": {
+      "EXECUTABLE": "simpleZeroCopy",
+      "CUFILES": "simpleZeroCopy.cu",
+      "CCFILES": "# Do not link with CUTIL and SHRUTIL",
+      "OMIT_CUTIL_LIB": "1",
+      "OMIT_SHRUTIL_LIB": "1"
+    },
+    "headers": [
+      "cuda.h",
+      "cuda_runtime.h",
+      "sdkHelper.h",
+      "shrQATest.h",
+      "shrUtils.h",
+      "stdio.h",
+      "stdlib.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v3",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleZeroCopy/simpleZeroCopy.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleZeroCopy"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.0760493278503418,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleZeroCopy"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleZeroCopy",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v3",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "8542d5375c5821e17891112153865398842c848bfb40b1de303887a5205d2f01",
+    "cuobjdump_list_elf": "ELF file    1: simpleZeroCopy-libcutil_x86_64.sm_89.cubin\nELF file    2: simpleZeroCopy.sm_89.cubin\n",
+    "task_id": "sdk42_default_simpleZeroCopy",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleZeroCopy/simpleZeroCopy.cu",
+        "sha256": "a902393bc93a25a16c9b898253163447a5c1101168bb1e3c30b772192ce0e0fa"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "template",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "421948532530e88f3d49531411e1943c433911dad9dacd0895b194d2ff21b8f1",
+    "makefile_flags": {
+      "EXECUTABLE": "template",
+      "CUFILES": "template.cu",
+      "CU_DEPS": "\\",
+      "CCFILES": "\\",
+      "OMIT_CUTIL_LIB": "1",
+      "OMIT_SHRUTIL_LIB": "1"
+    },
+    "headers": [
+      "cuda_runtime.h",
+      "math.h",
+      "sdkHelper.h",
+      "shrQATest.h",
+      "shrUtils.h",
+      "stdio.h",
+      "stdlib.h",
+      "string.h",
+      "template_kernel.cu"
+    ],
+    "bundled_noncode_assets": [
+      {
+        "path": "doc/black_1x1.gif",
+        "bytes": 43,
+        "sha256": "5507919b78fe225cdd9f920a836326012e352e59cb5d872166e674d2ef98b769"
+      }
+    ],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/template/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/template",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v4",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/template/template.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/template/template_gold.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/usr/local/cuda-12.8/lib64",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_template"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.0856528282165527,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_template"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/template",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v4",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "da7e23a4c0d162e1e68ccc6643370ebf3292ca404f693e773b72dce3c238b2e2",
+    "cuobjdump_list_elf": "ELF file    1: template-template_gold-libcutil_x86_64.sm_89.cubin\nELF file    2: template.sm_89.cubin\n",
+    "task_id": "sdk42_default_template",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/template/template.cu",
+        "sha256": "e08d17c5bcd82007c1a8c3fd6cd2b7bc7e1eff4db5317f1bad8765a394e5bded"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/template/template_gold.cpp",
+        "sha256": "3bfd9fd62916bdc8a97979d9f79ea10a319702486b5f89297056f5f90aae1eb5"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/template/template_kernel.cu",
+        "sha256": "1a8febe06f5ad9dd2d07fe6da789d4b7c9e15502dfb60cbe051541164c881572"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "threadFenceReduction",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "dd1c762970183719a87a1e96f70b39b9d3a9aea2512c057f6c2881fd4fcd8d4c",
+    "makefile_flags": {
+      "EXECUTABLE": "threadFenceReduction",
+      "CUFILES": "threadFenceReduction.cu",
+      "CUDEPS": "threadFenceReduction_kernel.cu",
+      "CCFILES": "GENCODE_SM10 :="
+    },
+    "headers": [
+      "cutil_inline.h",
+      "device_functions.h",
+      "math.h",
+      "shrQATest.h",
+      "stdio.h",
+      "stdlib.h",
+      "string.h",
+      "threadFenceReduction_kernel.cu"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/threadFenceReduction/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/threadFenceReduction",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v4",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/threadFenceReduction/threadFenceReduction.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/usr/local/cuda-12.8/lib64",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_threadFenceReduction"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.4189777374267578,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_threadFenceReduction"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/threadFenceReduction",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v4",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "d64d84c588afd215fd3f1bccf3c149da50871a09a0f1a94562a4e91a1f9285e8",
+    "cuobjdump_list_elf": "ELF file    1: threadFenceReduction-libcutil_x86_64.sm_89.cubin\nELF file    2: threadFenceReduction.sm_89.cubin\n",
+    "task_id": "sdk42_default_threadFenceReduction",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/threadFenceReduction/threadFenceReduction.cu",
+        "sha256": "ed3e59eda08bad229b6e59d24dfcd2eb22aff571ec2827f0d39ccbdb54a4b7bb"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/threadFenceReduction/threadFenceReduction.h",
+        "sha256": "b1ef5966b532774debb3f9fc66ed21e3c50bf8ada2010159e32717de64ee03d9"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/threadFenceReduction/threadFenceReduction_kernel.cu",
+        "sha256": "fdf3c58097cad78cee40dcd2ae0705eab1fd54293bd412c811a8ca11f05729d0"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "transpose",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "379103796f2cea0a04d6532c2de60bf3b7ec05e38ce7feb174d9858ffa81dba8",
+    "makefile_flags": {
+      "EXECUTABLE": "transpose",
+      "CUFILES": "transpose.cu"
+    },
+    "headers": [
+      "sdkHelper.h",
+      "shrQATest.h",
+      "shrUtils.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v3",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/transpose/transpose.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_transpose"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.1978428363800049,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_transpose"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/transpose",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v3",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "5d2cc14fe3262f7cd615b83e4ac96a5c67738fee7f299bd39535ebbb3c7c5273",
+    "cuobjdump_list_elf": "ELF file    1: transpose-libcutil_x86_64.sm_89.cubin\nELF file    2: transpose.sm_89.cubin\n",
+    "task_id": "sdk42_default_transpose",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/transpose/transpose.cu",
+        "sha256": "d0817747b77fb9f70c24a2a342f0ff659ddf1ceefeda60a9c62f4ac0ff53c563"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  },
+  {
+    "program": "vectorAdd",
+    "suite": "CUDA SDK",
+    "source_version": "4.2",
+    "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+    "source_tree_sha256": "9d0a4c59b80fd20494f8c2a2bda0f06a8fdd334b38d8b2e8a5fd7317ab494e17",
+    "makefile_flags": {
+      "EXECUTABLE": "vectorAdd",
+      "CUFILES": "vectorAdd.cu",
+      "CCFILES": "\\",
+      "OMIT_CUTIL_LIB": "1"
+    },
+    "headers": [
+      "cuda_runtime.h",
+      "sdkHelper.h",
+      "shrQATest.h",
+      "shrUtils.h",
+      "stdio.h"
+    ],
+    "bundled_noncode_assets": [],
+    "graphics_dependency": false,
+    "texture_reference_legacy": false,
+    "driver_api_legacy": false,
+    "needs_multigpu": false,
+    "build_status": "BUILD_PASS_NATIVE_PENDING",
+    "native_status": "NOT_ATTEMPTED",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v3",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/vectorAdd/vectorAdd.cu",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_vectorAdd"
+    ],
+    "build_exit": 0,
+    "build_seconds": 1.0314393043518066,
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_vectorAdd"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/vectorAdd",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "version": "4.2-source-host-adapter-v3",
+    "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "binary_sha256": "46792c2d326171628cfcd01e3285d1840d917b4bb58c33dfa98c404518572507",
+    "cuobjdump_list_elf": "ELF file    1: vectorAdd-libcutil_x86_64.sm_89.cubin\nELF file    2: vectorAdd.sm_89.cubin\n",
+    "task_id": "sdk42_default_vectorAdd",
+    "variant": "SDK42_frozen_source_default_complete",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/vectorAdd/vectorAdd.cu",
+        "sha256": "14991a235ab811b5ff4cac639825a4e4238b2af3e3d1ca0a629134db5b5cd3d5"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+    "runtime_env": {
+      "CUDA_FORCE_PTX_JIT": "0",
+      "CUDA_DISABLE_PTX_JIT": "1"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "input_staging_policy": "independent regular-file copies, no directory symlink"
+  }
+]

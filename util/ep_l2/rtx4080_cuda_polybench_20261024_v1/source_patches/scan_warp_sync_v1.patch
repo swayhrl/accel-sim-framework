@@ -1,0 +1,19 @@
+--- a/scan.cu
++++ b/scan.cu
+@@ -58,8 +58,14 @@
+         pos += size;
+         s_Data[pos] = idata;
+ 
+-        for(uint offset = 1; offset < size; offset <<= 1)
+-            s_Data[pos] += s_Data[pos - offset];
++        const unsigned ep_mask = __activemask();
++        __syncwarp(ep_mask);
++        for(uint offset = 1; offset < size; offset <<= 1){
++            uint ep_value = s_Data[pos] + s_Data[pos - offset];
++            __syncwarp(ep_mask);
++            s_Data[pos] = ep_value;
++            __syncwarp(ep_mask);
++        }
+ 
+         return s_Data[pos];
+     }

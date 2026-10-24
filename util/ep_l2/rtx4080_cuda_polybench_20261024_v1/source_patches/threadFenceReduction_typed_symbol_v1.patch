@@ -1,0 +1,11 @@
+--- a/threadFenceReduction.cu
++++ b/threadFenceReduction.cu
+@@ -215,7 +215,7 @@
+     {
+         gpu_result = 0;
+         unsigned int retCnt = 0;
+-        cudaMemcpyToSymbol("retirementCount", &retCnt, sizeof(unsigned int), 0, cudaMemcpyHostToDevice);
++        cudaMemcpyToSymbol(retirementCount, &retCnt, sizeof(unsigned int), 0, cudaMemcpyHostToDevice);
+         cutilCheckMsg("MemcpyToSymbol failed");
+ 
+         cutilDeviceSynchronize();

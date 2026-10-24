@@ -1,0 +1,668 @@
+[
+  {
+    "suite": "PolyBench/GPU",
+    "version": "1.0",
+    "source_head": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+    "program": "2DCONV",
+    "variant": "source_default_complete_host_checks_v3",
+    "source": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/2DCONV/2DConvolution.cu",
+    "source_sha256": "9f5c892b1518dbea1bc1206f10bb34ae4fc79f29cf1f9b3153d2515413cad9a8",
+    "original_source_sha256": "5e12047cbe8cc8a21658d15df602434ee70ebf0b873d45119974fb49da63a192",
+    "parameters": {
+      "NI": "4096",
+      "NJ": "4096"
+    },
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/2DCONV_checked_v3"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/2DCONV",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/cuda_checks_v3.h",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/2DCONV/2DConvolution.cu",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/2DCONV_checked_v3"
+    ],
+    "build_exit": 0,
+    "build_seconds": 0.5356941223144531,
+    "native_status": "NOT_RUN",
+    "input_identity": "deterministic original init function; no external input",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "correctness": {
+      "returncode": 0,
+      "stdout_regex": "Non-Matching CPU-GPU Outputs Beyond Error Threshold of .* Percent: 0",
+      "nan_inf": "reject on compared output",
+      "all_cuda_api_checked": true
+    },
+    "kernel_patch": "NONE; host validation and error handling only",
+    "binary_sha256": "fa8949aca44d08aac5335a13ac47fbec7925b22b615710ba08af29a974f9e5f6"
+  },
+  {
+    "suite": "PolyBench/GPU",
+    "version": "1.0",
+    "source_head": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+    "program": "2MM",
+    "variant": "source_default_complete_host_checks_v3",
+    "source": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/2MM/2mm.cu",
+    "source_sha256": "7e637b6e0ddfe6f0e95adcd19caf75d20e43eeede2611bf90e74f6e2da651279",
+    "original_source_sha256": "30b6078ce7e1c6eb2da09268de96948c381465db5f6dd5204bd880122d6f1aef",
+    "parameters": {
+      "NI": "2048",
+      "NJ": "2048",
+      "NK": "2048",
+      "NL": "2048"
+    },
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/2MM_checked_v3"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/2MM",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/cuda_checks_v3.h",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/2MM/2mm.cu",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/2MM_checked_v3"
+    ],
+    "build_exit": 0,
+    "build_seconds": 0.5649919509887695,
+    "native_status": "NOT_RUN",
+    "input_identity": "deterministic original init function; no external input",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "correctness": {
+      "returncode": 0,
+      "stdout_regex": "Non-Matching CPU-GPU Outputs Beyond Error Threshold of .* Percent: 0",
+      "nan_inf": "reject on compared output",
+      "all_cuda_api_checked": true
+    },
+    "kernel_patch": "NONE; host validation and error handling only",
+    "binary_sha256": "2552e2d1b251bd42a007e841491fc8d8fee37e473ae27b7c96ddf8430f5e719f"
+  },
+  {
+    "suite": "PolyBench/GPU",
+    "version": "1.0",
+    "source_head": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+    "program": "3DCONV",
+    "variant": "source_default_complete_host_checks_v3",
+    "source": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/3DCONV/3DConvolution.cu",
+    "source_sha256": "4c055125a6287b93da4dc227ad80ab884252fb74b6a17c5eadb1480f6dd57206",
+    "original_source_sha256": "e789d5804a19fc637d57b03a9437488728ed462c1e4ed69a6325fbd32c037457",
+    "parameters": {
+      "NI": "256",
+      "NJ": "256",
+      "NK": "256"
+    },
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/3DCONV_checked_v3"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/3DCONV",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/cuda_checks_v3.h",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/3DCONV/3DConvolution.cu",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/3DCONV_checked_v3"
+    ],
+    "build_exit": 0,
+    "build_seconds": 0.5421068668365479,
+    "native_status": "NOT_RUN",
+    "input_identity": "deterministic original init function; no external input",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "correctness": {
+      "returncode": 0,
+      "stdout_regex": "Non-Matching CPU-GPU Outputs Beyond Error Threshold of .* Percent: 0",
+      "nan_inf": "reject on compared output",
+      "all_cuda_api_checked": true
+    },
+    "kernel_patch": "NONE; host validation and error handling only",
+    "binary_sha256": "dbd25e24dd1161a3fc1dd57b6154d90cf3609dead132004409e8c0d8499da817"
+  },
+  {
+    "suite": "PolyBench/GPU",
+    "version": "1.0",
+    "source_head": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+    "program": "3MM",
+    "variant": "source_default_complete_host_checks_v3",
+    "source": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/3MM/3mm.cu",
+    "source_sha256": "7343dd8f0c2e35650b7cc340fe0512ee8157b5f5e3a5a3e279f80c04971198f2",
+    "original_source_sha256": "23b6e114e96c0d85d58b01a49019856e67e9b42cc9db81eed05292862caaca5e",
+    "parameters": {
+      "NI": "512",
+      "NJ": "512",
+      "NK": "512",
+      "NL": "512",
+      "NM": "512"
+    },
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/3MM_checked_v3"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/3MM",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/cuda_checks_v3.h",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/3MM/3mm.cu",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/3MM_checked_v3"
+    ],
+    "build_exit": 0,
+    "build_seconds": 0.5802841186523438,
+    "native_status": "NOT_RUN",
+    "input_identity": "deterministic original init function; no external input",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "correctness": {
+      "returncode": 0,
+      "stdout_regex": "Non-Matching CPU-GPU Outputs Beyond Error Threshold of .* Percent: 0",
+      "nan_inf": "reject on compared output",
+      "all_cuda_api_checked": true
+    },
+    "kernel_patch": "NONE; host validation and error handling only",
+    "binary_sha256": "ba2301ab1c5f97c33a53301283eb9b5d7ccfcffb1b799410ba281a9443d76e86"
+  },
+  {
+    "suite": "PolyBench/GPU",
+    "version": "1.0",
+    "source_head": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+    "program": "ATAX",
+    "variant": "source_default_complete_host_checks_v3",
+    "source": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/ATAX/atax.cu",
+    "source_sha256": "e77d0427a3ccf17785d2e3bd0c4ac14b353bd7848f3dcf0aae0577be05fcc776",
+    "original_source_sha256": "bca826a6e4fbdad67b11400ef2193210f43d8181441a0b9883e19445db049cfb",
+    "parameters": {
+      "NX": "4096",
+      "NY": "4096"
+    },
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/ATAX_checked_v3"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/ATAX",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/cuda_checks_v3.h",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/ATAX/atax.cu",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/ATAX_checked_v3"
+    ],
+    "build_exit": 0,
+    "build_seconds": 0.558983325958252,
+    "native_status": "NOT_RUN",
+    "input_identity": "deterministic original init function; no external input",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "correctness": {
+      "returncode": 0,
+      "stdout_regex": "Non-Matching CPU-GPU Outputs Beyond Error Threshold of .* Percent: 0",
+      "nan_inf": "reject on compared output",
+      "all_cuda_api_checked": true
+    },
+    "kernel_patch": "NONE; host validation and error handling only",
+    "binary_sha256": "92689e52eedee065002981ba5e381f02be12de606311a7a17693bce9400c1bd7"
+  },
+  {
+    "suite": "PolyBench/GPU",
+    "version": "1.0",
+    "source_head": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+    "program": "BICG",
+    "variant": "source_default_complete_host_checks_v3",
+    "source": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/BICG/bicg.cu",
+    "source_sha256": "3544f89204bed26a0e114163a90a9145ed36dcb360f97294cc5a743a9aaf448c",
+    "original_source_sha256": "c38c3b0bb1a543ce37ee6d4d7abe433a36574f05b49574e6bf1004c45b68f6fe",
+    "parameters": {
+      "NX": "4096",
+      "NY": "4096"
+    },
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/BICG_checked_v3"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/BICG",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/cuda_checks_v3.h",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/BICG/bicg.cu",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/BICG_checked_v3"
+    ],
+    "build_exit": 0,
+    "build_seconds": 0.5443966388702393,
+    "native_status": "NOT_RUN",
+    "input_identity": "deterministic original init function; no external input",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "correctness": {
+      "returncode": 0,
+      "stdout_regex": "Non-Matching CPU-GPU Outputs Beyond Error Threshold of .* Percent: 0",
+      "nan_inf": "reject on compared output",
+      "all_cuda_api_checked": true
+    },
+    "kernel_patch": "NONE; host validation and error handling only",
+    "binary_sha256": "5a1079a69f1b0578ad8ab7d7c6461c1cea1bf00ca9feff41014b0e1485bdab80"
+  },
+  {
+    "suite": "PolyBench/GPU",
+    "version": "1.0",
+    "source_head": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+    "program": "CORR",
+    "variant": "source_default_complete_host_checks_v3",
+    "source": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/CORR/correlation.cu",
+    "source_sha256": "3e14b2779d7af76faf627ff09091260dcb207e83efc71dbb67ef97a80050707b",
+    "original_source_sha256": "2613f18450b4c34ac0d1dfc4db5e994a777f757972da9b22579e47ba8db9dfdb",
+    "parameters": {
+      "M": "2048",
+      "N": "2048"
+    },
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/CORR_checked_v3"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/CORR",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/cuda_checks_v3.h",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/CORR/correlation.cu",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/CORR_checked_v3"
+    ],
+    "build_exit": 0,
+    "build_seconds": 0.5979363918304443,
+    "native_status": "NOT_RUN",
+    "input_identity": "deterministic original init function; no external input",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "correctness": {
+      "returncode": 0,
+      "stdout_regex": "Non-Matching CPU-GPU Outputs Beyond Error Threshold of .* Percent: 0",
+      "nan_inf": "reject on compared output",
+      "all_cuda_api_checked": true
+    },
+    "kernel_patch": "NONE; host validation and error handling only",
+    "binary_sha256": "adb86d64208e8a56c9e2b2600b1d68952602500b7e050de6fc1812006b15c012"
+  },
+  {
+    "suite": "PolyBench/GPU",
+    "version": "1.0",
+    "source_head": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+    "program": "COVAR",
+    "variant": "source_default_complete_host_checks_v3",
+    "source": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/COVAR/covariance.cu",
+    "source_sha256": "2f411518bae4708751ba42cf67c7b7ab1e6a7f4d2ef0ad7f20e3d0f750e8aebd",
+    "original_source_sha256": "5b54b56680eac010dceaf20ace52db0ce2409f96c608aa4c0ddfbe3bd8291130",
+    "parameters": {
+      "M": "2048",
+      "N": "2048"
+    },
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/COVAR_checked_v3"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/COVAR",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/cuda_checks_v3.h",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/COVAR/covariance.cu",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/COVAR_checked_v3"
+    ],
+    "build_exit": 0,
+    "build_seconds": 0.5766265392303467,
+    "native_status": "NOT_RUN",
+    "input_identity": "deterministic original init function; no external input",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "correctness": {
+      "returncode": 0,
+      "stdout_regex": "Non-Matching CPU-GPU Outputs Beyond Error Threshold of .* Percent: 0",
+      "nan_inf": "reject on compared output",
+      "all_cuda_api_checked": true
+    },
+    "kernel_patch": "NONE; host validation and error handling only",
+    "binary_sha256": "83139e222ee04e0eacba62f1ce2c8c7ed9fe149923783f00a50e6d2111f31eee"
+  },
+  {
+    "suite": "PolyBench/GPU",
+    "version": "1.0",
+    "source_head": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+    "program": "FDTD-2D",
+    "variant": "source_default_complete_host_checks_v3",
+    "source": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/FDTD-2D/fdtd2d.cu",
+    "source_sha256": "0083d95dd5655d2b4a74eae063163a8b23478420fd9b8f8c3e6438a51d3de040",
+    "original_source_sha256": "c1b886fb161b314087ea79c01be3b9e34a1b7c1db403b20098bf6c4665f6657f",
+    "parameters": {
+      "tmax": "500",
+      "NX": "2048",
+      "NY": "2048"
+    },
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/FDTD-2D_checked_v3"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/FDTD-2D",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/cuda_checks_v3.h",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/FDTD-2D/fdtd2d.cu",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/FDTD-2D_checked_v3"
+    ],
+    "build_exit": 0,
+    "build_seconds": 0.5835728645324707,
+    "native_status": "NOT_RUN",
+    "input_identity": "deterministic original init function; no external input",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "correctness": {
+      "returncode": 0,
+      "stdout_regex": "Non-Matching CPU-GPU Outputs Beyond Error Threshold of .* Percent: 0",
+      "nan_inf": "reject on compared output",
+      "all_cuda_api_checked": true
+    },
+    "kernel_patch": "NONE; host validation and error handling only",
+    "binary_sha256": "9272d17079efeef6f662e6790bd40b21ddabd76124dacde9a4cfd3a92e90975c"
+  },
+  {
+    "suite": "PolyBench/GPU",
+    "version": "1.0",
+    "source_head": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+    "program": "GEMM",
+    "variant": "source_default_complete_host_checks_v3",
+    "source": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/GEMM/gemm.cu",
+    "source_sha256": "39b62b7ac94db98149557d14e86dd0beee65b43e42dd2b91c80eb68aa17c081f",
+    "original_source_sha256": "1728a0f34c0ef150be6e4ba481f43298753fbcc814e402f853fc0c63a3c3dfbb",
+    "parameters": {
+      "NI": "512",
+      "NJ": "512",
+      "NK": "512"
+    },
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/GEMM_checked_v3"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/GEMM",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/cuda_checks_v3.h",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/GEMM/gemm.cu",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/GEMM_checked_v3"
+    ],
+    "build_exit": 0,
+    "build_seconds": 0.5279026031494141,
+    "native_status": "NOT_RUN",
+    "input_identity": "deterministic original init function; no external input",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "correctness": {
+      "returncode": 0,
+      "stdout_regex": "Non-Matching CPU-GPU Outputs Beyond Error Threshold of .* Percent: 0",
+      "nan_inf": "reject on compared output",
+      "all_cuda_api_checked": true
+    },
+    "kernel_patch": "NONE; host validation and error handling only",
+    "binary_sha256": "9a519435ad7b5e686f589f116f5bb0d5a0dcdb63e77050d8b7b999fdc06ed2ff"
+  },
+  {
+    "suite": "PolyBench/GPU",
+    "version": "1.0",
+    "source_head": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+    "program": "GESUMMV",
+    "variant": "source_default_complete_host_checks_v3",
+    "source": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/GESUMMV/gesummv.cu",
+    "source_sha256": "b5ce21d8f1e6b3cef42c02f3d7805b854d3501d9775ee3a5588f2ee6b1c7a025",
+    "original_source_sha256": "29557f8c9c0d9de81180b26a7f3204dd9d8d1a10ef45faf7646123701d8d56f8",
+    "parameters": {
+      "N": "4096"
+    },
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/GESUMMV_checked_v3"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/GESUMMV",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/cuda_checks_v3.h",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/GESUMMV/gesummv.cu",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/GESUMMV_checked_v3"
+    ],
+    "build_exit": 0,
+    "build_seconds": 0.5237705707550049,
+    "native_status": "NOT_RUN",
+    "input_identity": "deterministic original init function; no external input",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "correctness": {
+      "returncode": 0,
+      "stdout_regex": "Non-Matching CPU-GPU Outputs Beyond Error Threshold of .* Percent: 0",
+      "nan_inf": "reject on compared output",
+      "all_cuda_api_checked": true
+    },
+    "kernel_patch": "NONE; host validation and error handling only",
+    "binary_sha256": "900cddbc810e736b85e053cb9d2510157a386c43d0539eb250a2459e9a8c7e1d"
+  },
+  {
+    "suite": "PolyBench/GPU",
+    "version": "1.0",
+    "source_head": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+    "program": "GRAMSCHM",
+    "variant": "source_default_complete_host_checks_v3",
+    "source": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/GRAMSCHM/gramschmidt.cu",
+    "source_sha256": "eb8bbc5913be23d7c3d2a95275b3ed8528419fa4f10d0d13c5019fa9c2e6df82",
+    "original_source_sha256": "63e457b3099ad460544dc1c5d1ade41a527cfa41bf831e3c2530d7a56d81db20",
+    "parameters": {
+      "M": "2048",
+      "N": "2048"
+    },
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/GRAMSCHM_checked_v3"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/GRAMSCHM",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/cuda_checks_v3.h",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/GRAMSCHM/gramschmidt.cu",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/GRAMSCHM_checked_v3"
+    ],
+    "build_exit": 0,
+    "build_seconds": 0.5905447006225586,
+    "native_status": "NOT_RUN",
+    "input_identity": "deterministic original init function; no external input",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "correctness": {
+      "returncode": 0,
+      "stdout_regex": "Non-Matching CPU-GPU Outputs Beyond Error Threshold of .* Percent: 0",
+      "nan_inf": "reject on compared output",
+      "all_cuda_api_checked": true
+    },
+    "kernel_patch": "NONE; host validation and error handling only",
+    "binary_sha256": "2707ea634c1b86cf49c5af8e7f907de80b1d6dd67467f452880df31111b7498d"
+  },
+  {
+    "suite": "PolyBench/GPU",
+    "version": "1.0",
+    "source_head": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+    "program": "MVT",
+    "variant": "source_default_complete_host_checks_v3",
+    "source": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/MVT/mvt.cu",
+    "source_sha256": "a36b8c16fead791d7d442c14376bd5b5f9c49490e5d958fbdec491ea5677848e",
+    "original_source_sha256": "83764e6633f3a0976423e0ba7ab351ac42b0eeb249bf59a9e3531c639d4923d6",
+    "parameters": {
+      "N": "4096"
+    },
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/MVT_checked_v3"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/MVT",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/cuda_checks_v3.h",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/MVT/mvt.cu",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/MVT_checked_v3"
+    ],
+    "build_exit": 0,
+    "build_seconds": 0.5445189476013184,
+    "native_status": "NOT_RUN",
+    "input_identity": "deterministic original init function; no external input",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "correctness": {
+      "returncode": 0,
+      "stdout_regex": "Non-Matching CPU-GPU Outputs Beyond Error Threshold of .* Percent: 0",
+      "nan_inf": "reject on compared output",
+      "all_cuda_api_checked": true
+    },
+    "kernel_patch": "NONE; host validation and error handling only",
+    "binary_sha256": "0f40244e98656944ead03d2f6e5d0f4a02311652be3d29913187ce1ff54ca5c9"
+  },
+  {
+    "suite": "PolyBench/GPU",
+    "version": "1.0",
+    "source_head": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+    "program": "SYR2K",
+    "variant": "source_default_complete_host_checks_v3",
+    "source": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/SYR2K/syr2k.cu",
+    "source_sha256": "91c377db88661effcb089df5e612bf0bdc4dbaae0c3304734184ba7f3a105f64",
+    "original_source_sha256": "9752c209ef95054331f0dcffa3be63c8bac94bc7f5e1f351b51236eff9a00017",
+    "parameters": {
+      "N": "2048",
+      "M": "2048"
+    },
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/SYR2K_checked_v3"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/SYR2K",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/cuda_checks_v3.h",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/SYR2K/syr2k.cu",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/SYR2K_checked_v3"
+    ],
+    "build_exit": 0,
+    "build_seconds": 0.5338122844696045,
+    "native_status": "NOT_RUN",
+    "input_identity": "deterministic original init function; no external input",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "correctness": {
+      "returncode": 0,
+      "stdout_regex": "Non-Matching CPU-GPU Outputs Beyond Error Threshold of .* Percent: 0",
+      "nan_inf": "reject on compared output",
+      "all_cuda_api_checked": true
+    },
+    "kernel_patch": "NONE; host validation and error handling only",
+    "binary_sha256": "ccb941315950219d75539eea6cc249cc98adab8d3ab8ecdca2fc9284d4f2357c"
+  },
+  {
+    "suite": "PolyBench/GPU",
+    "version": "1.0",
+    "source_head": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+    "program": "SYRK",
+    "variant": "source_default_complete_host_checks_v3",
+    "source": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/SYRK/syrk.cu",
+    "source_sha256": "ad2d955b014f6f0305cc687c882e8c572f0ab8394dfefc46ca3e318f9ea1c7f5",
+    "original_source_sha256": "976d43bddecf931f4abe38e1c554809d73d62881a53b1a78b590a094dcf47c7c",
+    "parameters": {
+      "N": "1024",
+      "M": "1024"
+    },
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/SYRK_checked_v3"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/SYRK",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/cuda_checks_v3.h",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/SYRK/syrk.cu",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/SYRK_checked_v3"
+    ],
+    "build_exit": 0,
+    "build_seconds": 0.5492885112762451,
+    "native_status": "NOT_RUN",
+    "input_identity": "deterministic original init function; no external input",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "correctness": {
+      "returncode": 0,
+      "stdout_regex": "Non-Matching CPU-GPU Outputs Beyond Error Threshold of .* Percent: 0",
+      "nan_inf": "reject on compared output",
+      "all_cuda_api_checked": true
+    },
+    "kernel_patch": "NONE; host validation and error handling only",
+    "binary_sha256": "431c8932088e8bf692c36c77e461e011d7625e6eee9375da4d15f39672886808"
+  }
+]

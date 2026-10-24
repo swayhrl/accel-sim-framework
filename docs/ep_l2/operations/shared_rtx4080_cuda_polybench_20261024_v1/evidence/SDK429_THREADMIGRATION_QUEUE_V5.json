@@ -1,0 +1,99 @@
+[
+  {
+    "program": "threadMigration",
+    "suite": "CUDA SDK",
+    "version": "4.2.9-official-source-compat-v9-driver-error-helper",
+    "release_installer_sha256": "b6a53afcf8f8422b5075aa37cec6730b0b9896d50867ee9105da05d62e95b8bb",
+    "build_command": [
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+      "-include",
+      "cuda.h",
+      "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+      "-ccbin",
+      "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/threadMigration",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v9",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/common/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/shared/inc",
+      "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/cccl118/usr/local/cuda-11.8/targets/x86_64-linux/include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/threadMigration/threadMigration.cpp",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+      "-lcuda",
+      "-lpthread",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk429_v5_threadMigration"
+    ],
+    "build_exit": 0,
+    "ptx_builds": [
+      {
+        "cmd": [
+          "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+          "-ccbin",
+          "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+          "-O3",
+          "-lineinfo",
+          "-arch=compute_89",
+          "-ptx",
+          "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/threadMigration",
+          "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v6",
+          "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+          "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+          "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/common/inc",
+          "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/shared/inc",
+          "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/cccl118/usr/local/cuda-11.8/targets/x86_64-linux/include",
+          "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/threadMigration/threadMigration.cu",
+          "-o",
+          "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_extra_inputs/threadMigration/threadMigration.ptx"
+        ],
+        "exit": 0,
+        "log": ""
+      }
+    ],
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk429_v5_threadMigration"
+    ],
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/threadMigration/threadMigration.cu",
+        "sha256": "bd902923d9bb655a1e216fdd11ba702354fb8e7f5a9c79bf92cbda217f5d2eb9"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/threadMigration/threadMigration.cpp",
+        "sha256": "035f6e4c4019409089348f17c599d1827dc07fe79f28b2ad7497e73bdf15e73f"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_extra_inputs/threadMigration/threadMigration.ptx",
+        "sha256": "0f4b476d15fc89e46de6f57c5c9422ae85b67d11461bca22f2fd3deb919f6ff3",
+        "bytes": 766
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "data",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_extra_inputs/threadMigration"
+      }
+    ],
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/usr/local/cuda-12.8/lib64"
+    },
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+    },
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "task_id": "sdk429_extra_threadMigration_v5",
+    "variant": "official429_default_complete",
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "capture_eligibility": "PENDING_NATIVE_AND_LOADED_CODE_IDENTITY",
+    "binary_sha256": "efd5fa166c00549693c8ed85b55b80533d0ed121b162e8e8d1938f67273371fa"
+  }
+]

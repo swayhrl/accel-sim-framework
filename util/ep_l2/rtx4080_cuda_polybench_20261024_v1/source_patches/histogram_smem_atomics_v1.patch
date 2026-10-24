@@ -1,0 +1,11 @@
+--- a/histogram256.cu
++++ b/histogram256.cu
+@@ -19,7 +19,7 @@
+ ////////////////////////////////////////////////////////////////////////////////
+ // Shortcut shared memory atomic addition functions
+ ////////////////////////////////////////////////////////////////////////////////
+-#define USE_SMEM_ATOMICS 0
++#define USE_SMEM_ATOMICS 1
+ 
+ #if(!USE_SMEM_ATOMICS)
+     #define TAG_MASK ( (1U << (UINT_BITS - LOG2_WARP_SIZE)) - 1U )

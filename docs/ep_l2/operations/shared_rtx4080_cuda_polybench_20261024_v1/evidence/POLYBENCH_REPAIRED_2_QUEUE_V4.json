@@ -1,0 +1,103 @@
+[
+  {
+    "suite": "PolyBench/GPU",
+    "version": "1.0",
+    "source_head": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+    "program": "FDTD-2D",
+    "variant": "deterministic_input_repair_v4_full_default_dimensions",
+    "source": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v4/polybench-gpu-1.0/CUDA/FDTD-2D/fdtd2d.cu",
+    "source_sha256": "a6d3bd718e6e2f3e075c1e34af11afe1aa449e149197cf93b2c8c09e6f87f098",
+    "original_source_sha256": "c1b886fb161b314087ea79c01be3b9e34a1b7c1db403b20098bf6c4665f6657f",
+    "parameters": {
+      "tmax": "500",
+      "NX": "2048",
+      "NY": "2048"
+    },
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/FDTD-2D_checked_v4"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/FDTD-2D",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "--fmad=false",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/cuda_checks_v3.h",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v4/polybench-gpu-1.0/CUDA/FDTD-2D/fdtd2d.cu",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/FDTD-2D_checked_v4"
+    ],
+    "build_exit": 0,
+    "build_seconds": 0.5835728645324707,
+    "native_status": "NOT_RUN",
+    "input_identity": "deterministic original init function; no external input",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "correctness": {
+      "returncode": 0,
+      "stdout_regex": "Non-Matching CPU-GPU Outputs Beyond Error Threshold of .* Percent: 0",
+      "nan_inf": "reject on compared output",
+      "all_cuda_api_checked": true
+    },
+    "kernel_patch": "NONE; host validation and error handling only",
+    "binary_sha256": "e7735362a1ae1c5d1328f3675fd86b2a084a364c09555a3cb27c30ccf5021b5a",
+    "repair_rationale": "Fix ex initialization stride to NY+1, deterministic zero ghost boundaries; float CPU coefficients match unchanged float GPU equations; -fmad=false matches operation rounding",
+    "relation_to_original": "Distinct repaired input; original failed baseline retained, not claimed identical",
+    "cwd_policy": "ABSENT native/capture attempt directory",
+    "kernel_source_sha256": "e409ea1f14c7924be1805099a98e929e0abd70d040bbebecba987c6da0308d5c",
+    "kernel_source_unchanged": true
+  },
+  {
+    "suite": "PolyBench/GPU",
+    "version": "1.0",
+    "source_head": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+    "program": "GRAMSCHM",
+    "variant": "deterministic_input_repair_v4_full_default_dimensions",
+    "source": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v4/polybench-gpu-1.0/CUDA/GRAMSCHM/gramschmidt.cu",
+    "source_sha256": "eced509002c15b36c1b7da6c76b4a1a0da54fd42498fc4d1c82fd9fdfc0679f7",
+    "original_source_sha256": "63e457b3099ad460544dc1c5d1ade41a527cfa41bf831e3c2530d7a56d81db20",
+    "parameters": {
+      "M": "2048",
+      "N": "2048"
+    },
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/GRAMSCHM_checked_v4"
+    ],
+    "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/GRAMSCHM",
+    "build_command": [
+      "/usr/local/cuda-12.8/bin/nvcc",
+      "--fmad=false",
+      "-O3",
+      "-lineinfo",
+      "-arch=sm_89",
+      "-include",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/cuda_checks_v3.h",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v4/polybench-gpu-1.0/CUDA/GRAMSCHM/gramschmidt.cu",
+      "-o",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/GRAMSCHM_checked_v4"
+    ],
+    "build_exit": 0,
+    "build_seconds": 0.5905447006225586,
+    "native_status": "NOT_RUN",
+    "input_identity": "deterministic original init function; no external input",
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "correctness": {
+      "returncode": 0,
+      "stdout_regex": "Non-Matching CPU-GPU Outputs Beyond Error Threshold of .* Percent: 0",
+      "nan_inf": "reject on compared output",
+      "all_cuda_api_checked": true
+    },
+    "kernel_patch": "NONE; host validation and error handling only",
+    "binary_sha256": "b2d788f0a8a62179a8ecf01b0de0bf98bc33f3d2ce6d78f9ea4df032d618be0c",
+    "repair_rationale": "Original deterministic matrix is rank1; replace with full-rank strictly diagonally dominant deterministic dense matrix, same2048x2048, unchanged classical Gram-Schmidt kernels; log first8 errors only",
+    "relation_to_original": "Distinct repaired input; original failed baseline retained, not claimed identical",
+    "cwd_policy": "ABSENT native/capture attempt directory",
+    "kernel_source_sha256": "b7c8cb170992fce6ccfa7f9b0fa5ed41fa80c27cefe08ffbe58757b835c0c7d0",
+    "kernel_source_unchanged": true
+  }
+]

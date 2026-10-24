@@ -1,0 +1,1495 @@
+[
+  {
+    "task": {
+      "program": "dct8x8",
+      "suite": "CUDA SDK",
+      "source_version": "4.2",
+      "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+      "source_tree_sha256": "1ed1c8218d6ec3d93e06e90a98246775c07274a5eee87dd6dab11c24dff67652",
+      "makefile_flags": {
+        "EXECUTABLE": "dct8x8",
+        "CUFILES": "dct8x8.cu",
+        "CU_DEPS": "\\",
+        "CCFILES": "\\"
+      },
+      "headers": [
+        "BmpUtil.h",
+        "Common.h",
+        "DCT8x8_Gold.h",
+        "cutil_inline.h",
+        "dct8x8_kernel1.cu",
+        "dct8x8_kernel2.cu",
+        "dct8x8_kernel_quantization.cu",
+        "dct8x8_kernel_short.cu",
+        "math.h",
+        "shrQATest.h",
+        "shrUtils.h",
+        "stdio.h",
+        "stdlib.h"
+      ],
+      "bundled_noncode_assets": [
+        {
+          "path": "doc/barbara_md.png",
+          "bytes": 86121,
+          "sha256": "816bb0ca379cd7e5e1ba0b4fd5c053895dc8abebe10a785bc9cef3f6f7ae6052"
+        },
+        {
+          "path": "doc/barbara.bmp",
+          "bytes": 786488,
+          "sha256": "05bcb1822c1438afd5a7fbd128e5c8f55c0f878d896710fe21887e89c891d4a9"
+        },
+        {
+          "path": "doc/Cosines.xls",
+          "bytes": 35328,
+          "sha256": "a57795522d2c11d40d861c5fe5528853eab70d56aa27f4dd2aa97cd9b009dba6"
+        },
+        {
+          "path": "doc/DctJpeg.png",
+          "bytes": 17298,
+          "sha256": "56eebe88b6a87a78248ea97fd2d73c72abf3faa8a22449171e75dc14093a466b"
+        },
+        {
+          "path": "doc/BarbaraBlocks3.bmp",
+          "bytes": 346854,
+          "sha256": "f15744207bf689cb91742d800f26e9f3a0a41c9bd60b70e01266b64f7b49a20b"
+        },
+        {
+          "path": "doc/barbara_lg.png",
+          "bytes": 328383,
+          "sha256": "c1f22ff2f65dc8ebcb7a89d5376bbc4bc6bf286f1e67cc70920313e21c6606dd"
+        },
+        {
+          "path": "doc/BarbaraBlocks1.bmp",
+          "bytes": 346856,
+          "sha256": "10e0a5a12751563f4aee5aab88533a2d2e9d747083da8fa8d084596be4c9fbb7"
+        },
+        {
+          "path": "doc/CosineBasis.png",
+          "bytes": 45787,
+          "sha256": "430547c3f28513a82b6ab1ba242666926298c24671baa9fc6a0310e444a56541"
+        },
+        {
+          "path": "doc/barbara_sm.png",
+          "bytes": 22485,
+          "sha256": "7fcfc024bdbb8cf847ade105d01a1007d58d1e021527dfa4199d1f6cddb94acf"
+        },
+        {
+          "path": "doc/BarbaraBlocks2.bmp",
+          "bytes": 346854,
+          "sha256": "91c22261255c4efaa591b586b145e272c74a9fb772125ca4d0b077c328df2290"
+        }
+      ],
+      "graphics_dependency": false,
+      "texture_reference_legacy": true,
+      "driver_api_legacy": false,
+      "needs_multigpu": false,
+      "build_status": "BUILD_PASS_NATIVE_PENDING",
+      "native_status": "NOT_ATTEMPTED",
+      "build_command": [
+        "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+        "-ccbin",
+        "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+        "-O3",
+        "-lineinfo",
+        "-arch=sm_89",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v3",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/dct8x8.cu",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/BmpUtil.cpp",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/DCT8x8_Gold.cpp",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+        "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+        "-o",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_dct8x8"
+      ],
+      "build_exit": 0,
+      "build_seconds": 1.8902561664581299,
+      "argv": [
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_dct8x8"
+      ],
+      "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8",
+      "native_timeout_sec": 600,
+      "capture_timeout_sec": 21600,
+      "capture_max_bytes": 85899345920,
+      "version": "4.2-source-host-adapter-v3",
+      "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+      "correctness": {
+        "exit": 0,
+        "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+      },
+      "binary_sha256": "d9851e24bc792a9daa3d0f2b58b5c20c185350de89881158597cf9d3cd403ba1",
+      "cuobjdump_list_elf": "ELF file    1: dct8x8-BmpUtil-DCT8x8_Gold-libcutil_x86_64.sm_89.cubin\nELF file    2: dct8x8.sm_89.cubin\n",
+      "task_id": "sdk42_dct8x8_official429_data_v1",
+      "variant": "same_default_argv_officialSDK429_original_data_v1",
+      "source_files": [
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/BmpUtil.cpp",
+          "sha256": "0ac64c333087c8f0890cbfef50f2cd7d47590cc55b9157f37825e44abf0092da"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/BmpUtil.h",
+          "sha256": "635c6e5efedd34615bb05cf6543e8b3ee8399dd716bfff1f09379a88d7ee8a59"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/Common.h",
+          "sha256": "6a9592eb8de0a68cc78f4c62432ed07b91d1606cd45f0e02bd1987881f89ff78"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/DCT8x8_Gold.cpp",
+          "sha256": "94fc14434f31c7543c31b174966fdeabbb6abab77764049ba88dfb5eae176fb4"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/DCT8x8_Gold.h",
+          "sha256": "b8e33cdbf008302febaa8efb3935992c5449fc5a62c28d5313b7ceace61789d7"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/dct8x8.cu",
+          "sha256": "1b901b142ee6b96d83658b2dd59a9ab02e309acb7961ca018b57012e5afcfc0c"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/dct8x8_kernel1.cu",
+          "sha256": "2521d331190d45a298ce1e8c7d192646ce93a1aa95e1842cf92be47417d2aa01"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/dct8x8_kernel2.cu",
+          "sha256": "f502c4b94ae36fab616a852a1e60614bf1b00eef0952baeeb1c20b6bca0f9062"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/dct8x8_kernel_quantization.cu",
+          "sha256": "d83f9a83d956f5963dba2ff88b5e2b1d9dbec70c7274c26791ae151c7962f4ff"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dct8x8/dct8x8_kernel_short.cu",
+          "sha256": "e2d04bbb3c72e914e00fd4b7a44cd0b4c914ed7ddf6c1c5fde762ef8ac6eb8c2"
+        }
+      ],
+      "input_files": [
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/dct8x8/data/barbara.bmp",
+          "bytes": 786488,
+          "sha256": "05bcb1822c1438afd5a7fbd128e5c8f55c0f878d896710fe21887e89c891d4a9"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/dct8x8/data/barbara.ppm",
+          "bytes": 786486,
+          "sha256": "085c95b11b6c12daa6898e4c96ff2f9a58316c5315e17f4eb3751f0403c77715"
+        }
+      ],
+      "runtime_links": [
+        {
+          "name": "data",
+          "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/dct8x8/data"
+        }
+      ],
+      "external_data_provenance": "Official NVIDIA GPU Computing SDK4.2.9 installer b6a53afcf8f8422b5075aa37cec6730b0b9896d50867ee9105da05d62e95b8bb; originaldata filename/content, no modernteapot substitution",
+      "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+      "runtime_env": {
+        "CUDA_FORCE_PTX_JIT": "0",
+        "CUDA_DISABLE_PTX_JIT": "1"
+      },
+      "workload_kind": "FINITE_GPU_WORKLOAD",
+      "source_keep": true
+    },
+    "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/sdk42_officialdata6_v1/sdk42_dct8x8_official429_data_v1/attempt001",
+    "index": 0,
+    "start_unix": 1792823106.0499687,
+    "lock_wait_seconds": 3.5408884286880493e-06,
+    "resident_baseline": {
+      "338712": {
+        "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+        "vram_mib": 238,
+        "start_ticks": "343978668",
+        "exe": "/usr/bin/python3.12",
+        "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+      }
+    },
+    "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 385 MiB, 15559 MiB",
+    "idle_gate": [
+      {
+        "unix": 1792823106.0988946,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823107.1345282,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823108.1662006,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823109.1992466,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823110.2323186,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823111.2642655,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823112.2980056,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823113.3305807,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823114.3636823,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823115.398673,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823116.429471,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823117.4650946,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823118.4976008,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823119.5319223,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823120.5624382,
+        "util": 0,
+        "free_mib": 15559
+      }
+    ],
+    "input_staging": "Private independent regular-file copies of manifest-listed inputs; writable outputs cannot follow a directory symlink into source",
+    "pid": 406589,
+    "start_ticks": "344601754",
+    "minimum_free_vram_mib": 15545,
+    "exit": 0,
+    "wall_seconds": 0.2900661528110504,
+    "status": "UPSTREAM_NATIVE_SELF_CHECK_PASS",
+    "stdout_sha256": "47d6093284c201b9aaa318b5757df4702b43b0c8d2451821ecf13736f43795c1",
+    "end_unix": 1792823121.8784833
+  },
+  {
+    "task": {
+      "program": "dxtc",
+      "suite": "CUDA SDK",
+      "source_version": "4.2",
+      "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+      "source_tree_sha256": "ab426fc703d8111a4d52fd54291b1547e935011806f2125c28ab60b1a05ad287",
+      "makefile_flags": {
+        "EXECUTABLE": "dxtc",
+        "CUFILES": "dxtc.cu"
+      },
+      "headers": [
+        "CudaMath.h",
+        "cutil_inline.h",
+        "cutil_math.h",
+        "dds.h",
+        "float.h",
+        "permutations.h",
+        "shrQATest.h",
+        "shrUtils.h"
+      ],
+      "bundled_noncode_assets": [],
+      "graphics_dependency": false,
+      "texture_reference_legacy": false,
+      "driver_api_legacy": false,
+      "needs_multigpu": false,
+      "build_status": "BUILD_PASS_NATIVE_PENDING",
+      "native_status": "NOT_ATTEMPTED",
+      "build_command": [
+        "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+        "-ccbin",
+        "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+        "-O3",
+        "-lineinfo",
+        "-arch=sm_89",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dxtc",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dxtc/inc",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v5",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/cccl118/usr/local/cuda-11.8/targets/x86_64-linux/include",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/include",
+        "-I/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/include",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dxtc/dxtc.cu",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+        "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+        "-L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu",
+        "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu",
+        "-o",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v5_dxtc"
+      ],
+      "build_exit": 0,
+      "build_seconds": 1.29901123046875,
+      "argv": [
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v5_dxtc"
+      ],
+      "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dxtc",
+      "native_timeout_sec": 600,
+      "capture_timeout_sec": 21600,
+      "capture_max_bytes": 85899345920,
+      "version": "4.2-source-host-adapter-v5",
+      "host_adapter": "compat_sdk42_v5; source kernels unchanged",
+      "correctness": {
+        "exit": 0,
+        "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+      },
+      "runtime_env": {
+        "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu",
+        "CUDA_FORCE_PTX_JIT": "0",
+        "CUDA_DISABLE_PTX_JIT": "1"
+      },
+      "binary_sha256": "c00398c1b86d9e709a6400d9a16d4db607f5398bb77de560f8656db09cf0baad",
+      "cuobjdump_list_elf": "ELF file    1: dxtc-libcutil_x86_64.sm_89.cubin\nELF file    2: dxtc.sm_89.cubin\n",
+      "task_id": "sdk42_dxtc_official429_data_v1",
+      "variant": "same_default_argv_officialSDK429_original_data_v1",
+      "source_files": [
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dxtc/CudaMath.h",
+          "sha256": "1324392b0ea472b9c5b1b80813e8f39e23ce838645231439c5f11e28c46d3709"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dxtc/dds.h",
+          "sha256": "4b34ac9d320187a6600fbde46388363e7a5bbe32f7dc561d4d39f1e7bac7a47c"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dxtc/dxtc.cu",
+          "sha256": "e3b2c2498917493e0ea523d67705d0d214c835a60ff2460ab6def8fb4b005d24"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/dxtc/permutations.h",
+          "sha256": "c88fd1fe57f20a365677ee217c9ac0eccc94074166ee1a321150ed886fa864c5"
+        }
+      ],
+      "input_files": [
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/dxtc/data/colors.ppm",
+          "bytes": 49167,
+          "sha256": "858d1259ef32949da8a51f0217cf267fc3a3051f1e72d12737a447f83502ca36"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/dxtc/data/lena-orig.ppm",
+          "bytes": 786447,
+          "sha256": "ee3f91b62a3eb6c2b89414d509aa6527a60a4f02c0a9aa3a13a51368c65945c3"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/dxtc/data/lena_ref.dds",
+          "bytes": 131200,
+          "sha256": "fd8c631ca387fbb906aa04257de97f24292491aada9c2442c9a30b88e4cf3afd"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/dxtc/data/lena_std.ppm",
+          "bytes": 786447,
+          "sha256": "be31e7aa1fea4a6d6e2cbb625fb7c13e9a4ad91a0c3fcfee6a9cf689b4841d6b"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/dxtc/data/lorikeet-orig.ppm",
+          "bytes": 786447,
+          "sha256": "91b39ec7787a3f8c6cb7dfcca3fa9d48fa65e4c6751a11205ce8bd9f58473bac"
+        }
+      ],
+      "runtime_links": [
+        {
+          "name": "data",
+          "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/dxtc/data"
+        }
+      ],
+      "external_data_provenance": "Official NVIDIA GPU Computing SDK4.2.9 installer b6a53afcf8f8422b5075aa37cec6730b0b9896d50867ee9105da05d62e95b8bb; originaldata filename/content, no modernteapot substitution",
+      "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+      "workload_kind": "FINITE_GPU_WORKLOAD",
+      "source_keep": true
+    },
+    "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/sdk42_officialdata6_v1/sdk42_dxtc_official429_data_v1/attempt001",
+    "index": 1,
+    "start_unix": 1792823121.8789518,
+    "lock_wait_seconds": 2.561137080192566e-06,
+    "resident_baseline": {
+      "338712": {
+        "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+        "vram_mib": 238,
+        "start_ticks": "343978668",
+        "exe": "/usr/bin/python3.12",
+        "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+      }
+    },
+    "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 385 MiB, 15559 MiB",
+    "idle_gate": [
+      {
+        "unix": 1792823121.9284062,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823122.9617996,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823123.995254,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823125.0252676,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823126.0592763,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823127.0924373,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823128.124532,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823129.158997,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823130.1918936,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823131.2238986,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823132.2570324,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823133.2932174,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823134.3284726,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823135.3653693,
+        "util": 0,
+        "free_mib": 15559
+      },
+      {
+        "unix": 1792823136.3974502,
+        "util": 0,
+        "free_mib": 15559
+      }
+    ],
+    "input_staging": "Private independent regular-file copies of manifest-listed inputs; writable outputs cannot follow a directory symlink into source",
+    "pid": 406833,
+    "start_ticks": "344603338",
+    "minimum_free_vram_mib": 15545,
+    "exit": 1,
+    "wall_seconds": 0.2884025457315147,
+    "status": "NATIVE_FAILURE_RETAINED",
+    "stdout_sha256": "8c352c9d0325a351bdaca4315423f9bf13bec0083d62b56a00ed693d3fec5723",
+    "end_unix": 1792823137.7124255
+  },
+  {
+    "task": {
+      "program": "simpleSurfaceWrite",
+      "suite": "CUDA SDK",
+      "source_version": "4.2",
+      "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+      "source_tree_sha256": "4458598b9a8e6bb76e911f40e4ae4702f9fe2856fd411c5bdfd27fb83f1a81e0",
+      "makefile_flags": {
+        "EXECUTABLE": "simpleSurfaceWrite",
+        "CUFILES": "simpleSurfaceWrite.cu",
+        "CCFILES": "\\",
+        "OMIT_CUTIL_LIB": "1",
+        "OMIT_SHRUTIL_LIB": "1",
+        "GENCODE_SM10": "GENCODE_SM13 :="
+      },
+      "headers": [
+        "cuda_runtime.h",
+        "math.h",
+        "sdkHelper.h",
+        "shrQATest.h",
+        "shrUtils.h",
+        "simpleSurfaceWrite_kernel.cu",
+        "stdio.h",
+        "stdlib.h",
+        "string.h"
+      ],
+      "bundled_noncode_assets": [],
+      "graphics_dependency": false,
+      "texture_reference_legacy": true,
+      "driver_api_legacy": false,
+      "needs_multigpu": false,
+      "build_status": "BUILD_PASS_NATIVE_PENDING",
+      "native_status": "NOT_ATTEMPTED",
+      "build_command": [
+        "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleSurfaceWrite/inc",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleSurfaceWrite",
+        "-ccbin",
+        "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+        "-O3",
+        "-lineinfo",
+        "-arch=sm_89",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v4",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleSurfaceWrite/simpleSurfaceWrite.cu",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+        "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+        "-o",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_simpleSurfaceWrite"
+      ],
+      "build_exit": 0,
+      "build_seconds": 1.1670539379119873,
+      "argv": [
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_simpleSurfaceWrite"
+      ],
+      "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleSurfaceWrite",
+      "native_timeout_sec": 600,
+      "capture_timeout_sec": 21600,
+      "capture_max_bytes": 85899345920,
+      "version": "4.2-source-host-adapter-v4",
+      "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+      "correctness": {
+        "exit": 0,
+        "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+      },
+      "binary_sha256": "0a9f7ae734a736c7899d878aa2c4f1e0c63563ea0a4d6bfa4fd63c4274b3ab3b",
+      "cuobjdump_list_elf": "ELF file    1: simpleSurfaceWrite-libcutil_x86_64.sm_89.cubin\nELF file    2: simpleSurfaceWrite.sm_89.cubin\n",
+      "task_id": "sdk42_simpleSurfaceWrite_official429_data_v1",
+      "variant": "same_default_argv_officialSDK429_original_data_v1",
+      "source_files": [
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleSurfaceWrite/simpleSurfaceWrite.cu",
+          "sha256": "2f4fa374ba433356876c8a917752a956f3fad3d5f142a3670a92c4855cf558c4"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleSurfaceWrite/simpleSurfaceWrite_kernel.cu",
+          "sha256": "610227459d7df765e4fe55e9fc053f09c2b28c3740a2c2a6b28e7c73478a744f"
+        }
+      ],
+      "input_files": [
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/simpleSurfaceWrite/data/lena_bw.pgm",
+          "bytes": 262182,
+          "sha256": "619cbf064077b59f5c766221374868690384d2c5d83e0de9f75f930989981146"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/simpleSurfaceWrite/data/lena_bw_out.pgm",
+          "bytes": 262159,
+          "sha256": "cd7578b1166bbb23313ce68cfd06afd1ade73aeedc0d53229786f0ebbebfa27a"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/simpleSurfaceWrite/data/ref_rotated.pgm",
+          "bytes": 262159,
+          "sha256": "0b6c4b0ad26dcc8501348a05569d3ddf2e2ca1192e52c2434937730a18142c17"
+        }
+      ],
+      "runtime_links": [
+        {
+          "name": "data",
+          "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/simpleSurfaceWrite/data"
+        }
+      ],
+      "external_data_provenance": "Official NVIDIA GPU Computing SDK4.2.9 installer b6a53afcf8f8422b5075aa37cec6730b0b9896d50867ee9105da05d62e95b8bb; originaldata filename/content, no modernteapot substitution",
+      "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+      "runtime_env": {
+        "CUDA_FORCE_PTX_JIT": "0",
+        "CUDA_DISABLE_PTX_JIT": "1"
+      },
+      "workload_kind": "FINITE_GPU_WORKLOAD",
+      "source_keep": true
+    },
+    "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/sdk42_officialdata6_v1/sdk42_simpleSurfaceWrite_official429_data_v1/attempt001",
+    "index": 2,
+    "start_unix": 1792823137.7130473,
+    "lock_wait_seconds": 20.001363161951303,
+    "resident_baseline": {
+      "338712": {
+        "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+        "vram_mib": 238,
+        "start_ticks": "343978668",
+        "exe": "/usr/bin/python3.12",
+        "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+      }
+    },
+    "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 383 MiB, 15561 MiB",
+    "idle_gate": [
+      {
+        "unix": 1792823157.7654593,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823158.799239,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823159.8320603,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823160.8679845,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823161.8996391,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823162.9361973,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823163.971088,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823165.0043616,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823166.0405629,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823167.0716398,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823168.1085396,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823169.1419518,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823170.1739304,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823171.2095072,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823172.2429028,
+        "util": 0,
+        "free_mib": 15561
+      }
+    ],
+    "input_staging": "Private independent regular-file copies of manifest-listed inputs; writable outputs cannot follow a directory symlink into source",
+    "pid": 406962,
+    "start_ticks": "344606922",
+    "minimum_free_vram_mib": 15547,
+    "exit": 0,
+    "wall_seconds": 0.30526003474369645,
+    "status": "UPSTREAM_NATIVE_SELF_CHECK_PASS",
+    "stdout_sha256": "bfa3623a8c9aa1dedcd70fcc7d595f2f355bd75f7c1913160a5d022c623f635a",
+    "end_unix": 1792823173.5715768
+  },
+  {
+    "task": {
+      "program": "simpleTexture",
+      "suite": "CUDA SDK",
+      "source_version": "4.2",
+      "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+      "source_tree_sha256": "f6e17a894067a828aaed89c610df6b051bd3a7b5a28a89123c6904de34ff7306",
+      "makefile_flags": {
+        "EXECUTABLE": "simpleTexture",
+        "CUFILES": "simpleTexture.cu",
+        "CCFILES": "\\",
+        "OMIT_CUTIL_LIB": "1",
+        "OMIT_SHRUTIL_LIB": "1"
+      },
+      "headers": [
+        "math.h",
+        "sdkHelper.h",
+        "shrQATest.h",
+        "simpleTexture_kernel.cu",
+        "stdio.h",
+        "stdlib.h",
+        "string.h"
+      ],
+      "bundled_noncode_assets": [],
+      "graphics_dependency": false,
+      "texture_reference_legacy": true,
+      "driver_api_legacy": false,
+      "needs_multigpu": false,
+      "build_status": "BUILD_PASS_NATIVE_PENDING",
+      "native_status": "NOT_ATTEMPTED",
+      "build_command": [
+        "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleTexture/inc",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleTexture",
+        "-ccbin",
+        "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+        "-O3",
+        "-lineinfo",
+        "-arch=sm_89",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v4",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleTexture/simpleTexture.cu",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+        "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+        "-o",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_simpleTexture"
+      ],
+      "build_exit": 0,
+      "build_seconds": 1.195176601409912,
+      "argv": [
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_simpleTexture"
+      ],
+      "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleTexture",
+      "native_timeout_sec": 600,
+      "capture_timeout_sec": 21600,
+      "capture_max_bytes": 85899345920,
+      "version": "4.2-source-host-adapter-v4",
+      "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+      "correctness": {
+        "exit": 0,
+        "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+      },
+      "binary_sha256": "e42f24b3ec6d065ca2fc1a9ee411eaf444c969bb5048335d45631b9d5514b0dc",
+      "cuobjdump_list_elf": "ELF file    1: simpleTexture-libcutil_x86_64.sm_89.cubin\nELF file    2: simpleTexture.sm_89.cubin\n",
+      "task_id": "sdk42_simpleTexture_official429_data_v1",
+      "variant": "same_default_argv_officialSDK429_original_data_v1",
+      "source_files": [
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleTexture/simpleTexture.cu",
+          "sha256": "54032175dc7deb20f2c813add116713b03004afadf61d3bfda7c7a636535b6ba"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleTexture/simpleTexture_kernel.cu",
+          "sha256": "c3b3e91346b5c78b1fab88487c6984fce844fa6363db38f697f12a2849310af9"
+        }
+      ],
+      "input_files": [
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/simpleTexture/data/lena_bw.pgm",
+          "bytes": 262182,
+          "sha256": "619cbf064077b59f5c766221374868690384d2c5d83e0de9f75f930989981146"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/simpleTexture/data/ref_rotated.pgm",
+          "bytes": 262159,
+          "sha256": "0b6c4b0ad26dcc8501348a05569d3ddf2e2ca1192e52c2434937730a18142c17"
+        }
+      ],
+      "runtime_links": [
+        {
+          "name": "data",
+          "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/simpleTexture/data"
+        }
+      ],
+      "external_data_provenance": "Official NVIDIA GPU Computing SDK4.2.9 installer b6a53afcf8f8422b5075aa37cec6730b0b9896d50867ee9105da05d62e95b8bb; originaldata filename/content, no modernteapot substitution",
+      "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+      "runtime_env": {
+        "CUDA_FORCE_PTX_JIT": "0",
+        "CUDA_DISABLE_PTX_JIT": "1"
+      },
+      "workload_kind": "FINITE_GPU_WORKLOAD",
+      "source_keep": true
+    },
+    "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/sdk42_officialdata6_v1/sdk42_simpleTexture_official429_data_v1/attempt001",
+    "index": 3,
+    "start_unix": 1792823173.5722356,
+    "lock_wait_seconds": 2.2603198885917664e-06,
+    "resident_baseline": {
+      "338712": {
+        "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+        "vram_mib": 238,
+        "start_ticks": "343978668",
+        "exe": "/usr/bin/python3.12",
+        "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+      }
+    },
+    "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 383 MiB, 15561 MiB",
+    "idle_gate": [
+      {
+        "unix": 1792823173.6213512,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823174.6533303,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823175.6862252,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823176.718349,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823177.752299,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823178.7850263,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823179.81936,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823180.8527586,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823181.8868217,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823182.9205873,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823183.9536662,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823184.9902747,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823186.0226595,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823187.0554154,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823188.0890784,
+        "util": 0,
+        "free_mib": 15561
+      }
+    ],
+    "input_staging": "Private independent regular-file copies of manifest-listed inputs; writable outputs cannot follow a directory symlink into source",
+    "pid": 407093,
+    "start_ticks": "344608507",
+    "minimum_free_vram_mib": 15547,
+    "exit": 0,
+    "wall_seconds": 0.287466187030077,
+    "status": "UPSTREAM_NATIVE_SELF_CHECK_PASS",
+    "stdout_sha256": "b60a90006c7d18f83648e9f366e886474a5d28ec967d189767354409fff89afb",
+    "end_unix": 1792823189.401158
+  },
+  {
+    "task": {
+      "program": "eigenvalues",
+      "suite": "CUDA SDK",
+      "source_version": "4.2",
+      "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+      "source_tree_sha256": "535ca4ca590be97a643f07a92a8093a89feb425f004332f83696bbb99042da55",
+      "makefile_flags": {
+        "EXECUTABLE": "eigenvalues",
+        "CUFILES": "\\",
+        "CCFILES": "\\",
+        "C_DEPS": "\\",
+        "CU_DEPS": "\\"
+      },
+      "headers": [
+        "algorithm",
+        "bisect_kernel_large.cu",
+        "bisect_kernel_large_multi.cu",
+        "bisect_kernel_large_onei.cu",
+        "bisect_kernel_small.cu",
+        "bisect_large.cuh",
+        "bisect_small.cuh",
+        "bisect_util.cu",
+        "cassert",
+        "cfloat",
+        "cmath",
+        "config.h",
+        "cstdio",
+        "cstdlib",
+        "cutil_inline.h",
+        "float.h",
+        "fstream",
+        "gerschgorin.h",
+        "iomanip",
+        "iostream",
+        "map",
+        "math.h",
+        "matlab.h",
+        "shrQATest.h",
+        "stdio.h",
+        "stdlib.h",
+        "string.h",
+        "structs.h",
+        "util.h",
+        "vector"
+      ],
+      "bundled_noncode_assets": [],
+      "graphics_dependency": false,
+      "texture_reference_legacy": false,
+      "driver_api_legacy": false,
+      "needs_multigpu": false,
+      "build_status": "BUILD_PASS_NATIVE_PENDING",
+      "native_status": "NOT_ATTEMPTED",
+      "build_command": [
+        "/usr/local/cuda-12.8/bin/nvcc",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/inc",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues",
+        "-O3",
+        "-lineinfo",
+        "-arch=sm_89",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v4",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/main.cu",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_small.cu",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_large.cu",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/matlab.cpp",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/gerschgorin.cpp",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+        "-L/usr/local/cuda-12.8/lib64",
+        "-o",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_eigenvalues"
+      ],
+      "build_exit": 0,
+      "build_seconds": 3.910107135772705,
+      "argv": [
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_eigenvalues",
+        "--matrix-size=16"
+      ],
+      "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues",
+      "native_timeout_sec": 600,
+      "capture_timeout_sec": 21600,
+      "capture_max_bytes": 85899345920,
+      "version": "4.2-source-host-adapter-v4",
+      "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+      "correctness": {
+        "exit": 0,
+        "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+      },
+      "binary_sha256": "ad6882dd3b87bb4f668749d8db3c789e5d09bd930a005484e32e2f5d553b63e1",
+      "cuobjdump_list_elf": "ELF file    1: main-bisect_small-bisect_large-matlab-gerschgorin-libcutil_x86_64.sm_89.cubin\nELF file    2: main.sm_89.cubin\nELF file    3: bisect_small.sm_89.cubin\nELF file    4: bisect_large.sm_89.cubin\n",
+      "task_id": "sdk42_eigenvalues_userdefined_16_v1",
+      "variant": "unmodified_source_userdefined_random_tridiagonal_16",
+      "source_files": [
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_kernel_large.cu",
+          "sha256": "80e86047dd86b5bfd633f539dd9091182a88d083d3cf919aa7edc9c804fcfcb8"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_kernel_large_multi.cu",
+          "sha256": "a0dd0980a81c9e7350a7a710263acdb82247ff43efe136468fbf8b8ff9622fe0"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_kernel_large_onei.cu",
+          "sha256": "15424aacc31dfe477f633cd4b77cf1d9c26c2caff3003f1c0c240b92d78c0cba"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_kernel_small.cu",
+          "sha256": "a304ad9a951a2350d7cf89559a52015b688a1d72b74eda08fdd364215b533aa1"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_large.cu",
+          "sha256": "fdddd61871b99812ea64746f59ac4778ad1b6f0dc1ca9399a2fecc1e51a7f4c3"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_large.cuh",
+          "sha256": "0a4f2ad3943e35db7ae1b21f37ef1f833d76c575e4150da91bb3467ee15f1613"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_small.cu",
+          "sha256": "0ac0706488f2d1d860ed43760bf1cb76dabc17f5cf2a634e4ed684d80a659b7e"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_small.cuh",
+          "sha256": "15738769825b7b9f804d4afe50251325864d6f2d0d50c9b081ee32ada084a845"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_util.cu",
+          "sha256": "64a1a35b3c62882eae1c8181a36f5d76033d5eaddaa6f102a629084ae1f81159"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/config.h",
+          "sha256": "d638a1e21a466512bdcb6830ee00c241b351284aa24803246f6c136a482699e7"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/gerschgorin.cpp",
+          "sha256": "c759ae049dab7474b5adc3720411443bb75af66b2714a50edca44f3979520698"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/gerschgorin.h",
+          "sha256": "c43d571ddf120c3ab4a69b9c30879cba22b39e72501d45aa1aa77e9fa7da2c19"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/main.cu",
+          "sha256": "c4fef1a50d50cb434f8f7c36560636eb94cf25b5b381023f2fd1ea187ee6dac1"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/matlab.cpp",
+          "sha256": "6040f98269b3cca7dbad87b6c5c1f9199b1b382d0fc26430058927b259644bf2"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/matlab.h",
+          "sha256": "dade231516fe24d381c67d263adeabcb159973370308f2ecc6989c5a2dbfb379"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/structs.h",
+          "sha256": "f06177143036c9ae01b9f4785d02e411ee244a96cd1075cf16baa9499f5efdff"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/util.h",
+          "sha256": "e014c1ed153255b20f3260ae212cc402f175c5846e3770237c4fcf5ac071f58c"
+        }
+      ],
+      "input_files": [],
+      "runtime_links": [],
+      "external_data_provenance": "NONE; source generator is original branch",
+      "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+      "runtime_env": {
+        "CUDA_FORCE_PTX_JIT": "0",
+        "CUDA_DISABLE_PTX_JIT": "1"
+      },
+      "workload_kind": "FINITE_GPU_WORKLOAD",
+      "input_identity": "Original4.2 source user_defined generator selected by explicit CLI, size16; originalbaddefault16-with2048file remainsFAILED"
+    },
+    "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/sdk42_officialdata6_v1/sdk42_eigenvalues_userdefined_16_v1/attempt001",
+    "index": 4,
+    "start_unix": 1792823189.4020345,
+    "lock_wait_seconds": 1.5702098608016968e-06,
+    "resident_baseline": {
+      "338712": {
+        "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+        "vram_mib": 238,
+        "start_ticks": "343978668",
+        "exe": "/usr/bin/python3.12",
+        "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+      }
+    },
+    "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 383 MiB, 15561 MiB",
+    "idle_gate": [
+      {
+        "unix": 1792823189.448378,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823190.4804275,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823191.5120332,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823192.544352,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823193.5797675,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823194.611136,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823195.6451669,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823196.678872,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823197.713176,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823198.7468214,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823199.78105,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823200.813478,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823201.8473556,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823202.8807676,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823203.914959,
+        "util": 0,
+        "free_mib": 15561
+      }
+    ],
+    "input_staging": "Private independent regular-file copies of manifest-listed inputs; writable outputs cannot follow a directory symlink into source",
+    "pid": 407176,
+    "start_ticks": "344610089",
+    "minimum_free_vram_mib": 15547,
+    "exit": 1,
+    "wall_seconds": 0.2855368610471487,
+    "status": "NATIVE_FAILURE_RETAINED",
+    "stdout_sha256": "262f46794a13ce5f373d97c3921fd90d703b34e0b53fdca80ca3d7619a7a6de5",
+    "end_unix": 1792823205.218969
+  },
+  {
+    "task": {
+      "program": "eigenvalues",
+      "suite": "CUDA SDK",
+      "source_version": "4.2",
+      "source_head": "b059fdae25c2aabf737486aada743fca114469ce",
+      "source_tree_sha256": "535ca4ca590be97a643f07a92a8093a89feb425f004332f83696bbb99042da55",
+      "makefile_flags": {
+        "EXECUTABLE": "eigenvalues",
+        "CUFILES": "\\",
+        "CCFILES": "\\",
+        "C_DEPS": "\\",
+        "CU_DEPS": "\\"
+      },
+      "headers": [
+        "algorithm",
+        "bisect_kernel_large.cu",
+        "bisect_kernel_large_multi.cu",
+        "bisect_kernel_large_onei.cu",
+        "bisect_kernel_small.cu",
+        "bisect_large.cuh",
+        "bisect_small.cuh",
+        "bisect_util.cu",
+        "cassert",
+        "cfloat",
+        "cmath",
+        "config.h",
+        "cstdio",
+        "cstdlib",
+        "cutil_inline.h",
+        "float.h",
+        "fstream",
+        "gerschgorin.h",
+        "iomanip",
+        "iostream",
+        "map",
+        "math.h",
+        "matlab.h",
+        "shrQATest.h",
+        "stdio.h",
+        "stdlib.h",
+        "string.h",
+        "structs.h",
+        "util.h",
+        "vector"
+      ],
+      "bundled_noncode_assets": [],
+      "graphics_dependency": false,
+      "texture_reference_legacy": false,
+      "driver_api_legacy": false,
+      "needs_multigpu": false,
+      "build_status": "BUILD_PASS_NATIVE_PENDING",
+      "native_status": "NOT_ATTEMPTED",
+      "build_command": [
+        "/usr/local/cuda-12.8/bin/nvcc",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/inc",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues",
+        "-O3",
+        "-lineinfo",
+        "-arch=sm_89",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v4",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/main.cu",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_small.cu",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_large.cu",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/matlab.cpp",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/gerschgorin.cpp",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+        "-L/usr/local/cuda-12.8/lib64",
+        "-o",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_eigenvalues"
+      ],
+      "build_exit": 0,
+      "build_seconds": 3.910107135772705,
+      "argv": [
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_eigenvalues",
+        "--matrix-size=2048"
+      ],
+      "cwd": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues",
+      "native_timeout_sec": 600,
+      "capture_timeout_sec": 21600,
+      "capture_max_bytes": 85899345920,
+      "version": "4.2-source-host-adapter-v4",
+      "host_adapter": "compat_sdk42_v3; QA/logging/device/error helper migration only; source kernels unchanged",
+      "correctness": {
+        "exit": 0,
+        "stdout_regex": "SDK42_HOST_ADAPTER_QA_PASSED"
+      },
+      "binary_sha256": "ad6882dd3b87bb4f668749d8db3c789e5d09bd930a005484e32e2f5d553b63e1",
+      "cuobjdump_list_elf": "ELF file    1: main-bisect_small-bisect_large-matlab-gerschgorin-libcutil_x86_64.sm_89.cubin\nELF file    2: main.sm_89.cubin\nELF file    3: bisect_small.sm_89.cubin\nELF file    4: bisect_large.sm_89.cubin\n",
+      "task_id": "sdk42_eigenvalues_userdefined_2048_v1",
+      "variant": "unmodified_source_userdefined_random_tridiagonal_2048",
+      "source_files": [
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_kernel_large.cu",
+          "sha256": "80e86047dd86b5bfd633f539dd9091182a88d083d3cf919aa7edc9c804fcfcb8"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_kernel_large_multi.cu",
+          "sha256": "a0dd0980a81c9e7350a7a710263acdb82247ff43efe136468fbf8b8ff9622fe0"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_kernel_large_onei.cu",
+          "sha256": "15424aacc31dfe477f633cd4b77cf1d9c26c2caff3003f1c0c240b92d78c0cba"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_kernel_small.cu",
+          "sha256": "a304ad9a951a2350d7cf89559a52015b688a1d72b74eda08fdd364215b533aa1"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_large.cu",
+          "sha256": "fdddd61871b99812ea64746f59ac4778ad1b6f0dc1ca9399a2fecc1e51a7f4c3"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_large.cuh",
+          "sha256": "0a4f2ad3943e35db7ae1b21f37ef1f833d76c575e4150da91bb3467ee15f1613"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_small.cu",
+          "sha256": "0ac0706488f2d1d860ed43760bf1cb76dabc17f5cf2a634e4ed684d80a659b7e"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_small.cuh",
+          "sha256": "15738769825b7b9f804d4afe50251325864d6f2d0d50c9b081ee32ada084a845"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/bisect_util.cu",
+          "sha256": "64a1a35b3c62882eae1c8181a36f5d76033d5eaddaa6f102a629084ae1f81159"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/config.h",
+          "sha256": "d638a1e21a466512bdcb6830ee00c241b351284aa24803246f6c136a482699e7"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/gerschgorin.cpp",
+          "sha256": "c759ae049dab7474b5adc3720411443bb75af66b2714a50edca44f3979520698"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/gerschgorin.h",
+          "sha256": "c43d571ddf120c3ab4a69b9c30879cba22b39e72501d45aa1aa77e9fa7da2c19"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/main.cu",
+          "sha256": "c4fef1a50d50cb434f8f7c36560636eb94cf25b5b381023f2fd1ea187ee6dac1"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/matlab.cpp",
+          "sha256": "6040f98269b3cca7dbad87b6c5c1f9199b1b382d0fc26430058927b259644bf2"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/matlab.h",
+          "sha256": "dade231516fe24d381c67d263adeabcb159973370308f2ecc6989c5a2dbfb379"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/structs.h",
+          "sha256": "f06177143036c9ae01b9f4785d02e411ee244a96cd1075cf16baa9499f5efdff"
+        },
+        {
+          "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/eigenvalues/util.h",
+          "sha256": "e014c1ed153255b20f3260ae212cc402f175c5846e3770237c4fcf5ac071f58c"
+        }
+      ],
+      "input_files": [],
+      "runtime_links": [],
+      "external_data_provenance": "NONE; source generator is original branch",
+      "cwd_policy": "ABSENT attempt directory with frozen explicit data symlink, never write source",
+      "runtime_env": {
+        "CUDA_FORCE_PTX_JIT": "0",
+        "CUDA_DISABLE_PTX_JIT": "1"
+      },
+      "workload_kind": "FINITE_GPU_WORKLOAD",
+      "input_identity": "Original4.2 source user_defined generator selected by explicit CLI, size2048; originalbaddefault16-with2048file remainsFAILED"
+    },
+    "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/sdk42_officialdata6_v1/sdk42_eigenvalues_userdefined_2048_v1/attempt001",
+    "index": 5,
+    "start_unix": 1792823205.2198606,
+    "lock_wait_seconds": 1.9436702132225037e-06,
+    "resident_baseline": {
+      "338712": {
+        "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+        "vram_mib": 238,
+        "start_ticks": "343978668",
+        "exe": "/usr/bin/python3.12",
+        "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+      }
+    },
+    "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 383 MiB, 15561 MiB",
+    "idle_gate": [
+      {
+        "unix": 1792823205.2679749,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823206.3001604,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823207.3353767,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823208.3682156,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823209.4014997,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823210.4367394,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823211.4685307,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823212.503701,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823213.538736,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823214.5703342,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823215.6036391,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823216.6367009,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823217.6730304,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823218.7066824,
+        "util": 0,
+        "free_mib": 15561
+      },
+      {
+        "unix": 1792823219.7380524,
+        "util": 0,
+        "free_mib": 15561
+      }
+    ],
+    "input_staging": "Private independent regular-file copies of manifest-listed inputs; writable outputs cannot follow a directory symlink into source",
+    "pid": 407254,
+    "start_ticks": "344611672",
+    "minimum_free_vram_mib": 15547,
+    "exit": 1,
+    "wall_seconds": 0.28817992471158504,
+    "status": "NATIVE_FAILURE_RETAINED",
+    "stdout_sha256": "8c3abdd75a2bfb77b585572ef3156a92af2b4431e554829275311981019439a4",
+    "end_unix": 1792823221.0475593
+  }
+]
