@@ -19,7 +19,7 @@ s=s.replace(needle,needle+"""  if len(ranges[row['relative_path']])==1:
    try:os.link(chunk,dest)
    except OSError:pass
    else:
-    need(dest.stat().st_ino==chunk.stat().st_ino and hash_file(dest,gate=g)==row['sha256'],'single-chunk immutable tree link verification');dest.chmod(0o444);continue
+    need(dest.stat().st_size==row['size'] and hash_file(dest,gate=g)==row['sha256'],'single-chunk immutable tree link verification');dest.chmod(0o444);continue
 """)
 s+='\n'+(R/'tools/copy_extensions.py').read_text()
 ast.parse(s)

@@ -1,15 +1,18 @@
-# Verified offload and SSD reclaim ? ACTIVE
+# Verified offload and SSD reclaim ? ACTIVE, ARCHIVING
 
-Initial exact user-approved retirement: **8,423 T-owned recovery-test files and four Source BICG/ATAX kernel files**. Shared /dev/sdf available9,691,762,688B before and10,684,043,264B after; observed net reclaim **992,280,576B**. Source four-file interval gain476,565,504B. Source original E057/AD_GEMM results, all genuine164 archives, C16 models and Git objects retained. Exact immutable INTENT/DONE are in release/ and genuine164 control/.
+Two admitted exact retirement stages have completed and are durable on genuine164:
 
-The original115-scope queue remains active, not complete. Actual new archived assets0; actual new data copied0.
+1. 8,423 T-owned native recovery-test files plus four Source BICG/ATAX files: shared SSD net gain992,280,576B. Source four-file interval476,565,504B.
+2. Source cold `polybench.tgz`: current complete genuine164 SHA PASS17,943,970,556B; unchanged Source identity, no current FD/mmap readers, no Source active scientific leases or current frozen-copy dependency, preserved recovery metadata. Exact one-file unlink measured **17,944,014,848B** real SSD gain. Genuine164 package retained.
 
-- 64 known-SHA preparations completed:63 DTC result scopes (774regular files,63 internal perf_counter symlinks,222,915,898B) plus exact Q05 log (1file,223,499B). Current fstat matches prior complete SHA evidence. No repeated whole-body SHA was performed for this preparation. Source-root metadata and symlink identities/targets were recorded. Draft manifests were upgraded before any archive transaction was published; no existing transaction was rebuilt.
-- Ordinary metadata preparation is distinct from copy admission: it reports the unchanged copy floor even when that floor fails and never starts a sender/receiver or reads a large payload. Actual data migration still requires full original Source/Target gates.
-- A different legitimate Source hash task held the only Source sender lease (PID1308364/start956911897), advancing from41GB to52GB. T did not stop it or start a second flow. Its PID is now absent; no success/exit-code claim is made for that external task.
-- Another owner registered128MiB additional EP write reserve. Latest inherited required shared SSD capacity10,670,309,376B, available10,605,465,600B, shortage64,843,776B. T did not edit the registry/reservations or scientific budgets.
-- Existing genuine164 PolyBench package is undergoing a bounded15MiB/s read-only current full SHA on a different NAS I/O path while serialized against actual Target receivers. This is existing-archive validation, not a new archive transfer, model hash, full native clone or Source deletion. Package identity, full SHA and future-reader admission are prerequisites to any further exact retirement.
+Summed net pool observations across these two operation intervals: **18,936,295,424B**. Summed Source unlink intervals:18,420,580,352B. Concurrent filesystem writes explain the distinction from allocated byte sums; these are not whole-day filesystem deltas. After the second retirement shared SSD available28,476,735,488B; all source/target data-copy thresholds were readmitted unchanged.
 
-The finite receiver is prepared from b93fc0db's qualified V9 raw-range implementation, with128MiB chunks,256MiB staging bound,15MiB/s sender and aggregate?30MiB/s; no Share payload data. Real frozen DTC pilot must pass before the zero-Share path is marked qualified. Its first attempt stopped before any Source data on legitimate external sender ownership.
+**Real DTC pilot completed:** RAW_DTC_ccd171d043dab567;14 regular files,1 internal perf_counter symlink,176,089B, complete Source/164 full SHA, numeric file/directory/link metadata and independent ABSENT native Target restoration PASS. Native test copy proof persisted before exact temporary cleanup. No native164 restore claim. Genuine164 COMMIT SHA036f982b1bfbb2f8641496ee26b5faf74b30caca4ee113d30eaf1739e743c4f9. The zero-Share route is now QUALIFIED; MD127 payload writes0; chunk?128MiB, staging?256MiB, single stream?30MiB/s aggregate.
 
-No new scientific application was started, stopped or signaled; no scientific result, controller, budget or protected model was changed. User approval remains active for exact fully verified cold local-copy retirement as necessary. Goal remains active during resource/lease waits.
+Pilot's first invocation delivered176,089B before an SSHFS projected-inode check was corrected. Same verified ranges were reused on retry with **zero repeated payload**. Last-invocation new_payload0 is not this-Goal transferred0; exact accounting clarification is in checkpoint/.
+
+The receiver has automatically entered first P0 SSD trace `TRACE_300274ed6041b087` (srad,21,565,199,284B), currently preparing Source full SHA. No second sender/receiver is running. The earlier unrelated Source hash PID1308364 exited and its lease became free; T did not signal it.
+
+Known-SHA metadata preparation:63 DTC raw scopes (774regular files,63 internal symlinks,222,915,898B) plus Q05 fixed-window223,499B. No repeated full-body Source hash for those preparations. Source file identities, original numeric directory/link metadata and internal perf_counter alias targets preserved.
+
+Original frozen115-scope queue:1 committed;114 pending. This Goal is not complete. All unretired Source originals, original E057/AD_GEMM result trees, models, Git objects and scientific state remain intact. Current original-source availability and exact recovery routes are in RESTORE_AND_SOURCE_AVAILABILITY.md and durable release intents.

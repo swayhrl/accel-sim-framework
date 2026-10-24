@@ -168,7 +168,7 @@ def migrate(manifest,testing=False,inject_after_ranges=None):
    try:os.link(chunk,dest)
    except OSError:pass
    else:
-    need(dest.stat().st_ino==chunk.stat().st_ino and hash_file(dest,gate=g)==row['sha256'],'single-chunk immutable tree link verification');dest.chmod(0o444);continue
+    need(dest.stat().st_size==row['size'] and hash_file(dest,gate=g)==row['sha256'],'single-chunk immutable tree link verification');dest.chmod(0o444);continue
   if partial.exists():need(partial.stat().st_size==row['size'] and hash_file(partial,gate=g)==row['sha256'],'owned tree partial needs range recovery; retained')
   else:
    offset=0;h=hashlib.sha256();start=time.monotonic();done=0
