@@ -1,0 +1,17 @@
+{
+  "status": "OWN_METADATA_CONTROLLER_STOPPED_BEFORE_REGISTRATION_OR_MODEL_FORK",
+  "controller": {
+    "pid": 1053721,
+    "start_ticks": 962032906,
+    "controller_sha256": "45c2b594e5dbfaf47d347ec4e0e1283c11e201d1af7e44a8725d3d8fa6ce153c",
+    "request": "DTC_AE_V100_FULL_SWEEP_20261025_V1",
+    "max_total_starts": 356,
+    "scope": "One finite native request and source-qualified measured-safe internal worker pool,no old request restart or model automatic retry"
+  },
+  "new_registered_request": false,
+  "INTENT_count": 0,
+  "model_starts": 0,
+  "cause": "Global text replacement also changed the existing writer-held registry hash check into a nested shared-lock authority read. Writer then self-blocked before mutation.",
+  "repair": "Inside the already exclusive authority writer,retain the original direct registry/epochSHA check;shared read locking remains for independent readers. Original entry restored before corrected preregistration.",
+  "prior_request_rows_unchanged": true
+}

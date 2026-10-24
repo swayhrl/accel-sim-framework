@@ -275,7 +275,7 @@ def update_authority(mutator):
  registry=NATIVE/'control/science_authority/NATIVE_SCIENCE_REGISTRY.json'
  epoch=NATIVE/'control/CURRENT_SCIENCE_EPOCH.json'
  r=read(registry);e=read(epoch)
- require(authority_consistent(),'native registry/epoch hash mismatch')
+ require(sha(registry)==e['native_registry_sha256'],'native registry/epoch hash mismatch')
  history=NATIVE/'control/science_authority/request_history';history.mkdir(exist_ok=True)
  for p in [registry,epoch]:
   backup=history/(p.stem+'.'+sha(p)+'.json')

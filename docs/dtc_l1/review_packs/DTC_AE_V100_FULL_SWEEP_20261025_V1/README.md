@@ -29,3 +29,7 @@ Closed points archive through the pinned immutable full-result/V9 protocol and s
 Goal completion requires all eligible rows closed,all unrun rows explicitly classified,whole raw/recovery evidence and scientific summary published. Native runs alone do not complete delivery. OriginalAG8R1,accepted/negative/HOLD histories,priorGEMM andshort3 requests remain. Englishv0.23 remains the last user-confirmed mother;actual package unavailable,no manuscript edit/promotion.
 
 Runtime:/root/data/dtc_main_v100_sweep_20261025_v1. Request:DTC_AE_V100_FULL_SWEEP_20261025_V1. Branch:hrl/dtc-ae-v100-full-sweep-174new-20261025-v1. At this preregistration:new model starts0,existing request budgets are all closed.
+
+## Pre-registration writer-lock correction
+
+The first metadata controller acquired the global lease but self-blocked before registry mutation because a broad source transformation also replaced the exclusive-writer directSHA check with a nested shared-lock read. No request row,INTENT,UUID/model or budget consumption was created. Its exact metadata generation was stopped and the previous shared frontend restored. R2 restores the original directSHA comparison inside the already exclusive writer;independent readers retain shared locking. An isolated copied authority test now exercises actual exclusive update plus subsequent shared read/hash validation,without touching live authority.13zero-model checks pass. All prior metadata and zero-start evidence remain. R2 uses a separate start marker and the same finite356candidate matrix,not additional credit.
