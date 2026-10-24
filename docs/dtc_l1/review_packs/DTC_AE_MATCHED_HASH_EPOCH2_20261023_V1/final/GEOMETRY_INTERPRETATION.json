@@ -1,0 +1,103 @@
+{
+  "schema": "DTC_AEFAIR_GEOMETRY_INTERPRETATION_V1",
+  "matched_scope": [
+    "same within-design geometry/resource settings except hash",
+    "same full GEMM and new binary/source/toolchain",
+    "same bank-preserving XOR family and4 banks",
+    "modeled data capacity96KiB per design"
+  ],
+  "Cplus": {
+    "mode": "PAPER_BASE=1",
+    "normal_cache_sets": 32,
+    "normal_cache_ways": 24,
+    "line_bytes": 128,
+    "modeled_data_bytes": 98304,
+    "active_baseline_PIB": 256,
+    "baseline_MSHR": 512,
+    "finite_service_flag": 0,
+    "unified_l1d_size_option_KiB": 96
+  },
+  "DTC": {
+    "mode": "PAPER_OO=3",
+    "logical_tag_sets": 64,
+    "logical_tag_ways": 8,
+    "physical_lines": 640,
+    "physical_line_bytes": 128,
+    "ordinary_sector_cache_sets": 32,
+    "ordinary_sector_cache_ways": 4,
+    "ordinary_cache_data_bytes": 16384,
+    "modeled_total_data_bytes": 98304,
+    "active_OO_PIB_and_slot_capacity": 128,
+    "generic_pib_option": 8,
+    "generic_mshr_option": 32,
+    "generic_options_are_not_OO_slot_capacity": true,
+    "finite_service_flag": 1,
+    "unified_l1d_size_option_KiB": 128
+  },
+  "adaptive_cache_config": {
+    "CM": [
+      "0"
+    ],
+    "DM": [
+      "0"
+    ]
+  },
+  "physical_L1_shared_budget_equal_claim": false,
+  "hardware_equal_area_claim": false,
+  "active_OO_capacity_source": {
+    "common_header_sha256": "dab2df3ec8e1fd1c8953ac146eba3c93906c84af8cce66051e5728afe9963fa1",
+    "shader_source_sha256": "b2bb326916c505e43f5d70cfd9d9adc998de1c08248d035581be02f96f7c1c45",
+    "constructors": "shader.cc:4399-4408; dtc-l1-common.h:522-546"
+  },
+  "cross_design_option_differences": {
+    "-gpgpu_dtc_l1_mode": {
+      "CM": [
+        "1"
+      ],
+      "DM": [
+        "3"
+      ]
+    },
+    "-gpgpu_cache:dl1": {
+      "CM": [
+        "N:32:128:24,L:T:m:L:L,A:512:8,16:0,32"
+      ],
+      "DM": [
+        "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32"
+      ]
+    },
+    "-gpgpu_unified_l1d_size": {
+      "CM": [
+        "96"
+      ],
+      "DM": [
+        "128"
+      ]
+    },
+    "-gpgpu_dtc_l1_mshr_entries": {
+      "CM": [
+        "512"
+      ],
+      "DM": [
+        "32"
+      ]
+    },
+    "-gpgpu_dtc_l1_pib_entries": {
+      "CM": [
+        "256"
+      ],
+      "DM": [
+        "8"
+      ]
+    },
+    "-gpgpu_dtc_l1_finite_service": {
+      "CM": [
+        "0"
+      ],
+      "DM": [
+        "1"
+      ]
+    }
+  },
+  "all_counter_populations_kept_design_specific": true
+}
