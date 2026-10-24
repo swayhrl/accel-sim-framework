@@ -12,8 +12,8 @@ The onboarding turn is read-only science plus isolated documentation; no simulat
 
 Future science executes only through the current 174-new native epoch2 sole entry after an exact new
 spec/cohort, native qualification, explicit fresh scoped budget and current resource admission.
-Existing launcher supports consumed migration cohorts only; extending it is a separate bounded
-engineering task, never permission to invoke an ELF directly.
+The native entry supports consumed migration cohorts and the exact closed Vector r5 cohort.
+Every further cohort needs bounded entry admission and a new exact spec/budget; never invoke an ELF directly.
 Hot output is local ext4; accepted immutable results go to genuine164 with full SHA and independent
 native restore. Source KEEP is the default. Never mutate the frozen native runtime or official ledgers
 while preparing this documentation branch.
@@ -21,3 +21,6 @@ Historical EN-v22 remains mother; EN-v24 is a candidate. Do not claim a manuscri
 mapping until the actual artifact has been supplied. Follow current user instructions if scope changes.
 No standing child lanes or background scanners. Finite temporary sublanes are for specifically approved
 large experiments, with isolated worktrees, exact merge/readback and closeout.
+
+Workload asset reference: docs/ep_l2/operations/ep_main_workload_inventory_20261024_v1/WORKLOAD_ASSET_INVENTORY.md.
+Count input variants, benchmark programs, accepted runs and native readiness separately.

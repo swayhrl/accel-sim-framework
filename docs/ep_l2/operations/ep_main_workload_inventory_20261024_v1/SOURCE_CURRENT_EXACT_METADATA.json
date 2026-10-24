@@ -1,0 +1,3077 @@
+{
+  "inputs": [
+    {
+      "all_bodies_metadata_present": true,
+      "body_logical_bytes": 2918140935,
+      "capture_script": "\nexport CUDA_VERSION=\"11.0\"; export CUDA_VISIBLE_DEVICES=\"6\" ; LD_PRELOAD=/scratch/tgrogers-disk01/a/tgrogers/accel-sim-framework/util/tracer_nvbit/tracer_tool/tracer_tool.so /home/tgrogers-raid/a/tgrogers/github/accel-sim/accel-sim-framework/gpu-app-collection/src/..//bin/11.0/release/polybench-3mm  ; /scratch/tgrogers-disk01/a/tgrogers/accel-sim-framework/util/tracer_nvbit/tracer_tool/traces-processing/post-traces-processing /scratch/tgrogers-disk01/a/tgrogers/accel-sim-framework/hw_run/traces/device-6/11.0/polybench-3mm/NO_ARGS/traces/kernelslist ; rm -f /scratch/tgrogers-disk01/a/tgrogers/accel-sim-framework/hw_run/traces/device-6/11.0/polybench-3mm/NO_ARGS/traces/*.trace ; rm -f /scratch/tgrogers-disk01/a/tgrogers/accel-sim-framework/hw_run/traces/device-6/11.0/polybench-3mm/NO_ARGS/traces/kernelslist ",
+      "capture_script_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/c2p-polybench-full-20260821/polybench/11.0/polybench-3mm/NO_ARGS/run.sh",
+      "capture_script_sha256": "2979919061c89aad86b6fa753c20612a319124c843d045972b3afffd8418d5eb",
+      "capture_script_stat": {
+        "bytes": 818,
+        "dev": 156,
+        "inode": 33845715,
+        "mode": 484,
+        "mtime_ns": 1596994120000000000
+      },
+      "commandlist": "MemcpyHtoD,0x00007f6b7b700000,1048576\nMemcpyHtoD,0x00007f6b63200000,1048576\nMemcpyHtoD,0x00007f6b63300000,1048576\nMemcpyHtoD,0x00007f6b63400000,1048576\nMemcpyHtoD,0x00007f6b63500000,1048576\nMemcpyHtoD,0x00007f6b63600000,1048576\nMemcpyHtoD,0x00007f6b63700000,1048576\nkernel-1.traceg\nkernel-2.traceg\nkernel-3.traceg\n",
+      "commandlist_sha256": "024b84b0fa33cfe4c63f026fd9be21469c7dd1d48ff4d6594ac613ee361d9fa8",
+      "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/c2p-polybench-full-20260821/polybench/11.0/polybench-3mm/NO_ARGS/traces/kernelslist.g",
+      "entry_stat": {
+        "bytes": 314,
+        "dev": 156,
+        "inode": 33845710,
+        "mode": 420,
+        "mtime_ns": 1596994300000000000
+      },
+      "exists": true,
+      "kernel_launches": 3,
+      "kernel_order": [
+        "kernel-1.traceg",
+        "kernel-2.traceg",
+        "kernel-3.traceg"
+      ],
+      "members": [
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-1.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/c2p-polybench-full-20260821/polybench/11.0/polybench-3mm/NO_ARGS/traces/kernel-1.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 972713645,
+            "dev": 156,
+            "inode": 33845711,
+            "mode": 420,
+            "mtime_ns": 1596994228000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-2.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/c2p-polybench-full-20260821/polybench/11.0/polybench-3mm/NO_ARGS/traces/kernel-2.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 972713645,
+            "dev": 156,
+            "inode": 33845712,
+            "mode": 420,
+            "mtime_ns": 1596994261000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-3.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/c2p-polybench-full-20260821/polybench/11.0/polybench-3mm/NO_ARGS/traces/kernel-3.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 972713645,
+            "dev": 156,
+            "inode": 33845713,
+            "mode": 420,
+            "mtime_ns": 1596994293000000000
+          }
+        }
+      ],
+      "memcpy_commands": [
+        "MemcpyHtoD,0x00007f6b7b700000,1048576",
+        "MemcpyHtoD,0x00007f6b63200000,1048576",
+        "MemcpyHtoD,0x00007f6b63300000,1048576",
+        "MemcpyHtoD,0x00007f6b63400000,1048576",
+        "MemcpyHtoD,0x00007f6b63500000,1048576",
+        "MemcpyHtoD,0x00007f6b63600000,1048576",
+        "MemcpyHtoD,0x00007f6b63700000,1048576"
+      ],
+      "readable": true,
+      "unique_kernel_files": 3
+    },
+    {
+      "all_bodies_metadata_present": true,
+      "body_logical_bytes": 415269567,
+      "capture_script": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"4\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/fastWalshTransform -logK 11 -logD 19 ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/fastWalshTransform/_logK_11__logD_19/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/fastWalshTransform/_logK_11__logD_19/traces/*.trace ",
+      "capture_script_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_11__logD_19/run.sh",
+      "capture_script_sha256": "1a6abbc8a16e016cef2928de4b6d3d9dfdafba24e65df9d795dd11c26579a280",
+      "capture_script_stat": {
+        "bytes": 827,
+        "dev": 156,
+        "inode": 34372232,
+        "mode": 484,
+        "mtime_ns": 1589810101000000000
+      },
+      "commandlist": "MemcpyHtoD,0x00007fe8f3600000,8192\nMemcpyHtoD,0x00007fe8f3800000,2097152\nkernel-1.traceg\nkernel-2.traceg\nkernel-3.traceg\nkernel-4.traceg\nkernel-5.traceg\nkernel-6.traceg\nkernel-7.traceg\nkernel-8.traceg\nkernel-9.traceg\nkernel-10.traceg\nkernel-11.traceg\nkernel-12.traceg\nkernel-13.traceg\nkernel-14.traceg\nkernel-15.traceg\nkernel-16.traceg\n",
+      "commandlist_sha256": "a91e2655cd672585257294d09834e7d6647350e6c9ece7769fea5cb38fb6d6f2",
+      "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_11__logD_19/traces/kernelslist.g",
+      "entry_stat": {
+        "bytes": 336,
+        "dev": 156,
+        "inode": 34372235,
+        "mode": 420,
+        "mtime_ns": 1589810101000000000
+      },
+      "exists": true,
+      "kernel_launches": 16,
+      "kernel_order": [
+        "kernel-1.traceg",
+        "kernel-2.traceg",
+        "kernel-3.traceg",
+        "kernel-4.traceg",
+        "kernel-5.traceg",
+        "kernel-6.traceg",
+        "kernel-7.traceg",
+        "kernel-8.traceg",
+        "kernel-9.traceg",
+        "kernel-10.traceg",
+        "kernel-11.traceg",
+        "kernel-12.traceg",
+        "kernel-13.traceg",
+        "kernel-14.traceg",
+        "kernel-15.traceg",
+        "kernel-16.traceg"
+      ],
+      "members": [
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-1.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_11__logD_19/traces/kernel-1.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 9575960,
+            "dev": 156,
+            "inode": 34372236,
+            "mode": 420,
+            "mtime_ns": 1589810101000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-2.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_11__logD_19/traces/kernel-2.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 9575960,
+            "dev": 156,
+            "inode": 34372237,
+            "mode": 420,
+            "mtime_ns": 1589810101000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-3.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_11__logD_19/traces/kernel-3.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 9575960,
+            "dev": 156,
+            "inode": 34372238,
+            "mode": 420,
+            "mtime_ns": 1589810101000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-4.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_11__logD_19/traces/kernel-4.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 9575960,
+            "dev": 156,
+            "inode": 34372239,
+            "mode": 420,
+            "mtime_ns": 1589810101000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-5.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_11__logD_19/traces/kernel-5.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 96452715,
+            "dev": 156,
+            "inode": 34372240,
+            "mode": 420,
+            "mtime_ns": 1589810101000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-6.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_11__logD_19/traces/kernel-6.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 9575960,
+            "dev": 156,
+            "inode": 34372241,
+            "mode": 420,
+            "mtime_ns": 1589810102000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-7.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_11__logD_19/traces/kernel-7.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 9575960,
+            "dev": 156,
+            "inode": 34372242,
+            "mode": 420,
+            "mtime_ns": 1589810102000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-8.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_11__logD_19/traces/kernel-8.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 9575960,
+            "dev": 156,
+            "inode": 34372243,
+            "mode": 420,
+            "mtime_ns": 1589810102000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-9.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_11__logD_19/traces/kernel-9.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 9575960,
+            "dev": 156,
+            "inode": 34372244,
+            "mode": 420,
+            "mtime_ns": 1589810102000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-10.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_11__logD_19/traces/kernel-10.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 96452716,
+            "dev": 156,
+            "inode": 34372245,
+            "mode": 420,
+            "mtime_ns": 1589810102000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-11.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_11__logD_19/traces/kernel-11.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 10999896,
+            "dev": 156,
+            "inode": 34372246,
+            "mode": 420,
+            "mtime_ns": 1589810102000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-12.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_11__logD_19/traces/kernel-12.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 9575961,
+            "dev": 156,
+            "inode": 34372247,
+            "mode": 420,
+            "mtime_ns": 1589810102000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-13.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_11__logD_19/traces/kernel-13.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 9575961,
+            "dev": 156,
+            "inode": 34372248,
+            "mode": 420,
+            "mtime_ns": 1589810102000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-14.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_11__logD_19/traces/kernel-14.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 9575961,
+            "dev": 156,
+            "inode": 34372249,
+            "mode": 420,
+            "mtime_ns": 1589810102000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-15.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_11__logD_19/traces/kernel-15.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 9575961,
+            "dev": 156,
+            "inode": 34372250,
+            "mode": 420,
+            "mtime_ns": 1589810103000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-16.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_11__logD_19/traces/kernel-16.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 96452716,
+            "dev": 156,
+            "inode": 34372251,
+            "mode": 420,
+            "mtime_ns": 1589810103000000000
+          }
+        }
+      ],
+      "memcpy_commands": [
+        "MemcpyHtoD,0x00007fe8f3600000,8192",
+        "MemcpyHtoD,0x00007fe8f3800000,2097152"
+      ],
+      "readable": true,
+      "unique_kernel_files": 16
+    },
+    {
+      "all_bodies_metadata_present": true,
+      "body_logical_bytes": 1785749388,
+      "capture_script": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"4\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/fastWalshTransform -logK 7 -logD 21 ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/fastWalshTransform/_logK_7__logD_21/traces/*.trace ",
+      "capture_script_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/run.sh",
+      "capture_script_sha256": "7efd1ac7f7381b421d629b9b5d8fca0f459c29e0f94bfe99a7d16bc559e80888",
+      "capture_script_stat": {
+        "bytes": 824,
+        "dev": 156,
+        "inode": 34290913,
+        "mode": 484,
+        "mtime_ns": 1589810095000000000
+      },
+      "commandlist": "MemcpyHtoD,0x00007f50e3600000,512\nMemcpyHtoD,0x00007f50e6000000,8388608\nkernel-1.traceg\nkernel-2.traceg\nkernel-3.traceg\nkernel-4.traceg\nkernel-5.traceg\nkernel-6.traceg\nkernel-7.traceg\nkernel-8.traceg\nkernel-9.traceg\nkernel-10.traceg\nkernel-11.traceg\nkernel-12.traceg\nkernel-13.traceg\nkernel-14.traceg\nkernel-15.traceg\nkernel-16.traceg\nkernel-17.traceg\nkernel-18.traceg\nkernel-19.traceg\n",
+      "commandlist_sha256": "9dfd2639f6660bef2feac69405597380835d4d08f1e0bdb9dd9b2022ed1a0f26",
+      "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernelslist.g",
+      "entry_stat": {
+        "bytes": 386,
+        "dev": 156,
+        "inode": 34372211,
+        "mode": 420,
+        "mtime_ns": 1589810095000000000
+      },
+      "exists": true,
+      "kernel_launches": 19,
+      "kernel_order": [
+        "kernel-1.traceg",
+        "kernel-2.traceg",
+        "kernel-3.traceg",
+        "kernel-4.traceg",
+        "kernel-5.traceg",
+        "kernel-6.traceg",
+        "kernel-7.traceg",
+        "kernel-8.traceg",
+        "kernel-9.traceg",
+        "kernel-10.traceg",
+        "kernel-11.traceg",
+        "kernel-12.traceg",
+        "kernel-13.traceg",
+        "kernel-14.traceg",
+        "kernel-15.traceg",
+        "kernel-16.traceg",
+        "kernel-17.traceg",
+        "kernel-18.traceg",
+        "kernel-19.traceg"
+      ],
+      "members": [
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-1.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-1.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 38800369,
+            "dev": 156,
+            "inode": 34372212,
+            "mode": 420,
+            "mtime_ns": 1589810095000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-2.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-2.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 38800369,
+            "dev": 156,
+            "inode": 34372213,
+            "mode": 420,
+            "mtime_ns": 1589810095000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-3.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-3.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 38800369,
+            "dev": 156,
+            "inode": 34372214,
+            "mode": 420,
+            "mtime_ns": 1589810096000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-4.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-4.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 38800369,
+            "dev": 156,
+            "inode": 34372215,
+            "mode": 420,
+            "mtime_ns": 1589810096000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-5.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-5.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 38800369,
+            "dev": 156,
+            "inode": 34372216,
+            "mode": 420,
+            "mtime_ns": 1589810096000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-6.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-6.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 387379204,
+            "dev": 156,
+            "inode": 34372217,
+            "mode": 420,
+            "mtime_ns": 1589810097000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-7.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-7.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 38800369,
+            "dev": 156,
+            "inode": 34372218,
+            "mode": 420,
+            "mtime_ns": 1589810097000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-8.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-8.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 38800369,
+            "dev": 156,
+            "inode": 34372219,
+            "mode": 420,
+            "mtime_ns": 1589810097000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-9.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-9.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 38800369,
+            "dev": 156,
+            "inode": 34372220,
+            "mode": 420,
+            "mtime_ns": 1589810097000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-10.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-10.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 38800370,
+            "dev": 156,
+            "inode": 34372221,
+            "mode": 420,
+            "mtime_ns": 1589810098000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-11.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-11.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 38800370,
+            "dev": 156,
+            "inode": 34372222,
+            "mode": 420,
+            "mtime_ns": 1589810098000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-12.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-12.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 387379205,
+            "dev": 156,
+            "inode": 34372223,
+            "mode": 420,
+            "mtime_ns": 1589810099000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-13.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-13.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 41606232,
+            "dev": 156,
+            "inode": 34372224,
+            "mode": 420,
+            "mtime_ns": 1589810099000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-14.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-14.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 38800370,
+            "dev": 156,
+            "inode": 34372225,
+            "mode": 420,
+            "mtime_ns": 1589810099000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-15.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-15.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 38800370,
+            "dev": 156,
+            "inode": 34372226,
+            "mode": 420,
+            "mtime_ns": 1589810099000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-16.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-16.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 38800370,
+            "dev": 156,
+            "inode": 34372227,
+            "mode": 420,
+            "mtime_ns": 1589810099000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-17.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-17.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 38800370,
+            "dev": 156,
+            "inode": 34372228,
+            "mode": 420,
+            "mtime_ns": 1589810100000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-18.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-18.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 38800370,
+            "dev": 156,
+            "inode": 34372229,
+            "mode": 420,
+            "mtime_ns": 1589810100000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-19.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/fastWalshTransform/_logK_7__logD_21/traces/kernel-19.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 387379205,
+            "dev": 156,
+            "inode": 34372230,
+            "mode": 420,
+            "mtime_ns": 1589810101000000000
+          }
+        }
+      ],
+      "memcpy_commands": [
+        "MemcpyHtoD,0x00007f50e3600000,512",
+        "MemcpyHtoD,0x00007f50e6000000,8388608"
+      ],
+      "readable": true,
+      "unique_kernel_files": 19
+    },
+    {
+      "all_bodies_metadata_present": true,
+      "body_logical_bytes": 809709439,
+      "capture_script": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"0\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/b+tree-rodinia-3.1 file ./data/mil.txt command ./data/command.txt ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/*.trace ",
+      "capture_script_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/run.sh",
+      "capture_script_sha256": "8dc255fac78d56fbce6568389d847b0e203cd0d3f4b3138c9493d22128945151",
+      "capture_script_stat": {
+        "bytes": 914,
+        "dev": 156,
+        "inode": 49298686,
+        "mode": 484,
+        "mtime_ns": 1589831808000000000
+      },
+      "commandlist": "MemcpyHtoD,0x00007f8ef0000000,16283432\nMemcpyHtoD,0x00007f8eed500000,48000\nMemcpyHtoD,0x00007f8eed50bc00,48000\nMemcpyHtoD,0x00007f8eed517800,48000\nMemcpyHtoD,0x00007f8eed523400,48000\nMemcpyHtoD,0x00007f8eed52f000,24000\nMemcpyHtoD,0x00007f8eed534e00,24000\nMemcpyHtoD,0x00007f8eed53ac00,24000\nMemcpyHtoD,0x00007f8eed540a00,24000\nkernel-1.traceg\nMemcpyHtoD,0x00007f8eed800000,4000000\nMemcpyHtoD,0x00007f8ef0000000,16283432\nMemcpyHtoD,0x00007f8eed500000,80000\nMemcpyHtoD,0x00007f8eed513a00,80000\nMemcpyHtoD,0x00007f8eed527400,40000\nMemcpyHtoD,0x00007f8eed531200,40000\nkernel-2.traceg\n",
+      "commandlist_sha256": "26315d4ae044e91094d54134ec94e25d70fd4eda8c0fe01767bc2a9437d73467",
+      "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/kernelslist.g",
+      "entry_stat": {
+        "bytes": 580,
+        "dev": 156,
+        "inode": 49298690,
+        "mode": 420,
+        "mtime_ns": 1589831808000000000
+      },
+      "exists": true,
+      "kernel_launches": 2,
+      "kernel_order": [
+        "kernel-1.traceg",
+        "kernel-2.traceg"
+      ],
+      "members": [
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-1.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/kernel-1.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 408700748,
+            "dev": 156,
+            "inode": 49298691,
+            "mode": 420,
+            "mtime_ns": 1589831809000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-2.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/b+tree-rodinia-3.1/file___data_mil_txt_command___data_command_txt/traces/kernel-2.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 401008691,
+            "dev": 156,
+            "inode": 49298692,
+            "mode": 420,
+            "mtime_ns": 1589831811000000000
+          }
+        }
+      ],
+      "memcpy_commands": [
+        "MemcpyHtoD,0x00007f8ef0000000,16283432",
+        "MemcpyHtoD,0x00007f8eed500000,48000",
+        "MemcpyHtoD,0x00007f8eed50bc00,48000",
+        "MemcpyHtoD,0x00007f8eed517800,48000",
+        "MemcpyHtoD,0x00007f8eed523400,48000",
+        "MemcpyHtoD,0x00007f8eed52f000,24000",
+        "MemcpyHtoD,0x00007f8eed534e00,24000",
+        "MemcpyHtoD,0x00007f8eed53ac00,24000",
+        "MemcpyHtoD,0x00007f8eed540a00,24000",
+        "MemcpyHtoD,0x00007f8eed800000,4000000",
+        "MemcpyHtoD,0x00007f8ef0000000,16283432",
+        "MemcpyHtoD,0x00007f8eed500000,80000",
+        "MemcpyHtoD,0x00007f8eed513a00,80000",
+        "MemcpyHtoD,0x00007f8eed527400,40000",
+        "MemcpyHtoD,0x00007f8eed531200,40000"
+      ],
+      "readable": true,
+      "unique_kernel_files": 2
+    },
+    {
+      "all_bodies_metadata_present": true,
+      "body_logical_bytes": 271744571,
+      "capture_script": "\nexport CUDA_VERSION=\"10.1\"; export CUDA_VISIBLE_DEVICES=\"1\" ; LD_PRELOAD=/local/scratch/a/shen203/github/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /local/scratch/a/shen203/github/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/cfd-rodinia-3.1 ./data/fvcorr.domn.097K ; /local/scratch/a/shen203/github/gpgpu-sim_simulations/util/correlation/../../../nvbit/traces-processing/post-traces-processing /local/scratch/a/shen203/github/gpgpu-sim_simulations/util/correlation/../../run_hw/device-1/10.1/cfd-rodinia-3.1/__data_fvcorr_domn_097K/traces/kernelslist ; rm /local/scratch/a/shen203/github/gpgpu-sim_simulations/util/correlation/../../run_hw/device-1/10.1/cfd-rodinia-3.1/__data_fvcorr_domn_097K/traces/*.trace ",
+      "capture_script_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/cfd-rodinia-3.1/__data_fvcorr_domn_097K/run.sh",
+      "capture_script_sha256": "be605cdd236c261fc7a81507a6475d40ba7ae95da942f5f1f5a257ac5cc54bd8",
+      "capture_script_stat": {
+        "bytes": 785,
+        "dev": 156,
+        "inode": 49308244,
+        "mode": 484,
+        "mtime_ns": 1589832199000000000
+      },
+      "commandlist": "kernel-1.traceg\nkernel-2.traceg\nkernel-3.traceg\nkernel-4.traceg\nkernel-5.traceg\n",
+      "commandlist_sha256": "ce71e70525c6299a6be1bae3790b0eeb0417e1f4608cbd10e706c0a14fdd6b46",
+      "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/cfd-rodinia-3.1/__data_fvcorr_domn_097K/traces/kernelslist.g",
+      "entry_stat": {
+        "bytes": 80,
+        "dev": 156,
+        "inode": 49322713,
+        "mode": 420,
+        "mtime_ns": 1589832232000000000
+      },
+      "exists": true,
+      "kernel_launches": 5,
+      "kernel_order": [
+        "kernel-1.traceg",
+        "kernel-2.traceg",
+        "kernel-3.traceg",
+        "kernel-4.traceg",
+        "kernel-5.traceg"
+      ],
+      "members": [
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-1.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/cfd-rodinia-3.1/__data_fvcorr_domn_097K/traces/kernel-1.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 4733420,
+            "dev": 156,
+            "inode": 49322714,
+            "mode": 420,
+            "mtime_ns": 1589832232000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-2.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/cfd-rodinia-3.1/__data_fvcorr_domn_097K/traces/kernel-2.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 4733420,
+            "dev": 156,
+            "inode": 49322715,
+            "mode": 420,
+            "mtime_ns": 1589832233000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-3.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/cfd-rodinia-3.1/__data_fvcorr_domn_097K/traces/kernel-3.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 4733420,
+            "dev": 156,
+            "inode": 49322716,
+            "mode": 420,
+            "mtime_ns": 1589832233000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-4.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/cfd-rodinia-3.1/__data_fvcorr_domn_097K/traces/kernel-4.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 32722175,
+            "dev": 156,
+            "inode": 49322717,
+            "mode": 420,
+            "mtime_ns": 1589832233000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-5.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/cfd-rodinia-3.1/__data_fvcorr_domn_097K/traces/kernel-5.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 224822136,
+            "dev": 156,
+            "inode": 49322718,
+            "mode": 420,
+            "mtime_ns": 1589832233000000000
+          }
+        }
+      ],
+      "memcpy_commands": [],
+      "readable": true,
+      "unique_kernel_files": 5
+    },
+    {
+      "all_bodies_metadata_present": true,
+      "body_logical_bytes": 6844895541,
+      "capture_script": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"4\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/convolutionSeparable --size 3072 ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/convolutionSeparable/__size_3072/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/convolutionSeparable/__size_3072/traces/*.trace ",
+      "capture_script_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/run.sh",
+      "capture_script_sha256": "d040556d659543fc21ebf11d7cf30feb30e05dc56b90f720b94d740ab74045a8",
+      "capture_script_stat": {
+        "bytes": 815,
+        "dev": 156,
+        "inode": 34290904,
+        "mode": 484,
+        "mtime_ns": 1589810079000000000
+      },
+      "commandlist": "MemcpyHtoD,0x00007f759fa00900,68\nMemcpyHtoD,0x00007f7590000000,37748736\nkernel-1.traceg\nkernel-2.traceg\n",
+      "commandlist_sha256": "ab2290810368438cabf35a3c0fcb9686473aaa2235607a6e2bc0347f651ff484",
+      "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernelslist.g",
+      "entry_stat": {
+        "bytes": 104,
+        "dev": 156,
+        "inode": 34290908,
+        "mode": 420,
+        "mtime_ns": 1589810079000000000
+      },
+      "exists": true,
+      "kernel_launches": 2,
+      "kernel_order": [
+        "kernel-1.traceg",
+        "kernel-2.traceg"
+      ],
+      "members": [
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-1.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernel-1.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 4072647057,
+            "dev": 156,
+            "inode": 34290909,
+            "mode": 420,
+            "mtime_ns": 1589810087000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-2.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/convolutionSeparable/__size_3072/traces/kernel-2.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 2772248484,
+            "dev": 156,
+            "inode": 34290910,
+            "mode": 420,
+            "mtime_ns": 1589810093000000000
+          }
+        }
+      ],
+      "memcpy_commands": [
+        "MemcpyHtoD,0x00007f759fa00900,68",
+        "MemcpyHtoD,0x00007f7590000000,37748736"
+      ],
+      "readable": true,
+      "unique_kernel_files": 2
+    },
+    {
+      "all_bodies_metadata_present": true,
+      "body_logical_bytes": 423214689,
+      "capture_script": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"0\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/dwt2d-rodinia-3.1 ./data/rgb.bmp -d 1024x1024 -f -5 -l 3 ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/*.trace ",
+      "capture_script_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/run.sh",
+      "capture_script_sha256": "11806f6e609ad193f37b524a7f47911db32e31d6cc48aedf4a07df9fe2c5dd58",
+      "capture_script_stat": {
+        "bytes": 887,
+        "dev": 156,
+        "inode": 49298824,
+        "mode": 484,
+        "mtime_ns": 1589831827000000000
+      },
+      "commandlist": "MemcpyHtoD,0x00007f6d35400000,3145728\nkernel-1.traceg\nkernel-2.traceg\nkernel-3.traceg\nkernel-4.traceg\nkernel-5.traceg\nkernel-6.traceg\nkernel-7.traceg\nkernel-8.traceg\nkernel-9.traceg\nkernel-10.traceg\n",
+      "commandlist_sha256": "337087fedad435cd92cbd7e0f962f90d567ec9e77038fd8150977b7c6beb7164",
+      "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernelslist.g",
+      "entry_stat": {
+        "bytes": 199,
+        "dev": 156,
+        "inode": 49298827,
+        "mode": 420,
+        "mtime_ns": 1589831827000000000
+      },
+      "exists": true,
+      "kernel_launches": 10,
+      "kernel_order": [
+        "kernel-1.traceg",
+        "kernel-2.traceg",
+        "kernel-3.traceg",
+        "kernel-4.traceg",
+        "kernel-5.traceg",
+        "kernel-6.traceg",
+        "kernel-7.traceg",
+        "kernel-8.traceg",
+        "kernel-9.traceg",
+        "kernel-10.traceg"
+      ],
+      "members": [
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-1.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernel-1.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 58212412,
+            "dev": 156,
+            "inode": 49298828,
+            "mode": 420,
+            "mtime_ns": 1589831827000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-2.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernel-2.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 95059024,
+            "dev": 156,
+            "inode": 49298829,
+            "mode": 420,
+            "mtime_ns": 1589831827000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-3.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernel-3.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 20665498,
+            "dev": 156,
+            "inode": 49298830,
+            "mode": 420,
+            "mtime_ns": 1589831827000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-4.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernel-4.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 5941338,
+            "dev": 156,
+            "inode": 49298831,
+            "mode": 420,
+            "mtime_ns": 1589831827000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-5.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernel-5.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 95059611,
+            "dev": 156,
+            "inode": 49298832,
+            "mode": 420,
+            "mtime_ns": 1589831828000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-6.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernel-6.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 20665498,
+            "dev": 156,
+            "inode": 49298833,
+            "mode": 420,
+            "mtime_ns": 1589831828000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-7.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernel-7.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 5941338,
+            "dev": 156,
+            "inode": 49298834,
+            "mode": 420,
+            "mtime_ns": 1589831828000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-8.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernel-8.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 95063133,
+            "dev": 156,
+            "inode": 49298835,
+            "mode": 420,
+            "mtime_ns": 1589831828000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-9.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernel-9.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 20665498,
+            "dev": 156,
+            "inode": 49298836,
+            "mode": 420,
+            "mtime_ns": 1589831828000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-10.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/dwt2d-rodinia-3.1/__data_rgb_bmp__d_1024x1024__f__5__l_3/traces/kernel-10.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 5941339,
+            "dev": 156,
+            "inode": 49298837,
+            "mode": 420,
+            "mtime_ns": 1589831828000000000
+          }
+        }
+      ],
+      "memcpy_commands": [
+        "MemcpyHtoD,0x00007f6d35400000,3145728"
+      ],
+      "readable": true,
+      "unique_kernel_files": 10
+    },
+    {
+      "all_bodies_metadata_present": true,
+      "body_logical_bytes": 1110675117,
+      "capture_script": "\nexport CUDA_VERSION=\"11.0\"; export CUDA_VISIBLE_DEVICES=\"6\" ; LD_PRELOAD=/scratch/tgrogers-disk01/a/tgrogers/accel-sim-framework/util/tracer_nvbit/tracer_tool/tracer_tool.so /home/tgrogers-raid/a/tgrogers/github/accel-sim/accel-sim-framework/gpu-app-collection/src/..//bin/11.0/release/polybench-gemm  ; /scratch/tgrogers-disk01/a/tgrogers/accel-sim-framework/util/tracer_nvbit/tracer_tool/traces-processing/post-traces-processing /scratch/tgrogers-disk01/a/tgrogers/accel-sim-framework/hw_run/traces/device-6/11.0/polybench-gemm/NO_ARGS/traces/kernelslist ; rm -f /scratch/tgrogers-disk01/a/tgrogers/accel-sim-framework/hw_run/traces/device-6/11.0/polybench-gemm/NO_ARGS/traces/*.trace ; rm -f /scratch/tgrogers-disk01/a/tgrogers/accel-sim-framework/hw_run/traces/device-6/11.0/polybench-gemm/NO_ARGS/traces/kernelslist ",
+      "capture_script_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/c2p-polybench-full-20260821/polybench/11.0/polybench-gemm/NO_ARGS/run.sh",
+      "capture_script_sha256": "90d683fa84dac3f0ff3bd8fd9c4a00039db13d7999d9502b1b22a0c79954de96",
+      "capture_script_stat": {
+        "bytes": 822,
+        "dev": 156,
+        "inode": 34006813,
+        "mode": 484,
+        "mtime_ns": 1597011684000000000
+      },
+      "commandlist": "MemcpyHtoD,0x00007f6d95700000,1048576\nMemcpyHtoD,0x00007f6d7b200000,1048576\nMemcpyHtoD,0x00007f6d7b300000,1048576\nkernel-1.traceg\n",
+      "commandlist_sha256": "fd9a9430fc95eb0af4c73b9710db271f8e32bff4ea2f5dd08a4e8e17c9b02057",
+      "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/c2p-polybench-full-20260821/polybench/11.0/polybench-gemm/NO_ARGS/traces/kernelslist.g",
+      "entry_stat": {
+        "bytes": 130,
+        "dev": 156,
+        "inode": 34006810,
+        "mode": 420,
+        "mtime_ns": 1597011757000000000
+      },
+      "exists": true,
+      "kernel_launches": 1,
+      "kernel_order": [
+        "kernel-1.traceg"
+      ],
+      "members": [
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-1.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/c2p-polybench-full-20260821/polybench/11.0/polybench-gemm/NO_ARGS/traces/kernel-1.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 1110675117,
+            "dev": 156,
+            "inode": 34006811,
+            "mode": 420,
+            "mtime_ns": 1597011746000000000
+          }
+        }
+      ],
+      "memcpy_commands": [
+        "MemcpyHtoD,0x00007f6d95700000,1048576",
+        "MemcpyHtoD,0x00007f6d7b200000,1048576",
+        "MemcpyHtoD,0x00007f6d7b300000,1048576"
+      ],
+      "readable": true,
+      "unique_kernel_files": 1
+    },
+    {
+      "all_bodies_metadata_present": true,
+      "body_logical_bytes": 223841862,
+      "capture_script_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sad/_i___data_default_input_reference_bin___data_default_input_frame_bin__o_out_bin/run.sh",
+      "commandlist": "MemcpyHtoD,0x00007f81cb700000,50688\nkernel-1.traceg\nkernel-2.traceg\nkernel-3.traceg\n",
+      "commandlist_sha256": "36c0931b5a7cd780dc16fd5466cba2ed31d4a2c1dbf062721f55bbcef1d7a2a8",
+      "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sad/_i___data_default_input_reference_bin___data_default_input_frame_bin__o_out_bin/traces/kernelslist.g",
+      "entry_stat": {
+        "bytes": 84,
+        "dev": 156,
+        "inode": 49427424,
+        "mode": 420,
+        "mtime_ns": 1596985462000000000
+      },
+      "exists": true,
+      "kernel_launches": 3,
+      "kernel_order": [
+        "kernel-1.traceg",
+        "kernel-2.traceg",
+        "kernel-3.traceg"
+      ],
+      "members": [
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-1.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sad/_i___data_default_input_reference_bin___data_default_input_frame_bin__o_out_bin/traces/kernel-1.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 209423472,
+            "dev": 156,
+            "inode": 49427425,
+            "mode": 420,
+            "mtime_ns": 1596985460000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-2.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sad/_i___data_default_input_reference_bin___data_default_input_frame_bin__o_out_bin/traces/kernel-2.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 11636313,
+            "dev": 156,
+            "inode": 49427426,
+            "mode": 420,
+            "mtime_ns": 1596985462000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-3.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sad/_i___data_default_input_reference_bin___data_default_input_frame_bin__o_out_bin/traces/kernel-3.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 2782077,
+            "dev": 156,
+            "inode": 49427427,
+            "mode": 420,
+            "mtime_ns": 1596985462000000000
+          }
+        }
+      ],
+      "memcpy_commands": [
+        "MemcpyHtoD,0x00007f81cb700000,50688"
+      ],
+      "readable": true,
+      "unique_kernel_files": 3
+    },
+    {
+      "all_bodies_metadata_present": true,
+      "body_logical_bytes": 5329077632,
+      "capture_script": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"4\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/scan  ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/scan/NO_ARGS/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/scan/NO_ARGS/traces/*.trace ",
+      "capture_script_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/run.sh",
+      "capture_script_sha256": "14235263bb23daf33f305b031a5a8a3cfa11404c9a62a3a384fc49a4503078c2",
+      "capture_script_stat": {
+        "bytes": 748,
+        "dev": 156,
+        "inode": 34372296,
+        "mode": 484,
+        "mtime_ns": 1589810116000000000
+      },
+      "commandlist": "MemcpyHtoD,0x00007f0a76000000,27262976\nkernel-1.traceg\nkernel-2.traceg\nkernel-3.traceg\nkernel-4.traceg\nkernel-5.traceg\nkernel-6.traceg\nkernel-7.traceg\nkernel-8.traceg\nkernel-9.traceg\nkernel-10.traceg\nkernel-11.traceg\nkernel-12.traceg\nkernel-13.traceg\nkernel-14.traceg\nkernel-15.traceg\nkernel-16.traceg\nkernel-17.traceg\nkernel-18.traceg\nkernel-19.traceg\nkernel-20.traceg\nkernel-21.traceg\nkernel-22.traceg\nkernel-23.traceg\nkernel-24.traceg\nkernel-25.traceg\nkernel-26.traceg\nkernel-27.traceg\nkernel-28.traceg\nkernel-29.traceg\nkernel-30.traceg\nkernel-31.traceg\nkernel-32.traceg\nkernel-33.traceg\n",
+      "commandlist_sha256": "6e8572dff8fa6ff912fce3f834009d2e62ace23e3671d083bd901d42af6bcee8",
+      "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernelslist.g",
+      "entry_stat": {
+        "bytes": 591,
+        "dev": 156,
+        "inode": 34372300,
+        "mode": 420,
+        "mtime_ns": 1589810116000000000
+      },
+      "exists": true,
+      "kernel_launches": 33,
+      "kernel_order": [
+        "kernel-1.traceg",
+        "kernel-2.traceg",
+        "kernel-3.traceg",
+        "kernel-4.traceg",
+        "kernel-5.traceg",
+        "kernel-6.traceg",
+        "kernel-7.traceg",
+        "kernel-8.traceg",
+        "kernel-9.traceg",
+        "kernel-10.traceg",
+        "kernel-11.traceg",
+        "kernel-12.traceg",
+        "kernel-13.traceg",
+        "kernel-14.traceg",
+        "kernel-15.traceg",
+        "kernel-16.traceg",
+        "kernel-17.traceg",
+        "kernel-18.traceg",
+        "kernel-19.traceg",
+        "kernel-20.traceg",
+        "kernel-21.traceg",
+        "kernel-22.traceg",
+        "kernel-23.traceg",
+        "kernel-24.traceg",
+        "kernel-25.traceg",
+        "kernel-26.traceg",
+        "kernel-27.traceg",
+        "kernel-28.traceg",
+        "kernel-29.traceg",
+        "kernel-30.traceg",
+        "kernel-31.traceg",
+        "kernel-32.traceg",
+        "kernel-33.traceg"
+      ],
+      "members": [
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-1.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-1.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 92390974,
+            "dev": 156,
+            "inode": 34372301,
+            "mode": 420,
+            "mtime_ns": 1589810116000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-2.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-2.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 308968286,
+            "dev": 156,
+            "inode": 34372302,
+            "mode": 420,
+            "mtime_ns": 1589810117000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-3.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-3.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 428909358,
+            "dev": 156,
+            "inode": 34372303,
+            "mode": 420,
+            "mtime_ns": 1589810118000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-4.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-4.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 548850430,
+            "dev": 156,
+            "inode": 34372304,
+            "mode": 420,
+            "mtime_ns": 1589810119000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-5.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-5.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 668791502,
+            "dev": 156,
+            "inode": 34372305,
+            "mode": 420,
+            "mtime_ns": 1589810121000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-6.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-6.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 226114206,
+            "dev": 156,
+            "inode": 34372306,
+            "mode": 420,
+            "mtime_ns": 1589810122000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-7.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-7.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 233206236,
+            "dev": 156,
+            "inode": 34372307,
+            "mode": 420,
+            "mtime_ns": 1589810122000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-8.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-8.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 239173334,
+            "dev": 156,
+            "inode": 34372308,
+            "mode": 420,
+            "mtime_ns": 1589810123000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-9.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-9.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 234670544,
+            "dev": 156,
+            "inode": 34372309,
+            "mode": 420,
+            "mtime_ns": 1589810124000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-10.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-10.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 234670545,
+            "dev": 156,
+            "inode": 34372310,
+            "mode": 420,
+            "mtime_ns": 1589810124000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-11.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-11.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 1227285,
+            "dev": 156,
+            "inode": 34372311,
+            "mode": 420,
+            "mtime_ns": 1589810124000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-12.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-12.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 57461446,
+            "dev": 156,
+            "inode": 34372312,
+            "mode": 420,
+            "mtime_ns": 1589810125000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-13.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-13.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 234670545,
+            "dev": 156,
+            "inode": 34372313,
+            "mode": 420,
+            "mtime_ns": 1589810125000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-14.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-14.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 1691029,
+            "dev": 156,
+            "inode": 34372314,
+            "mode": 420,
+            "mtime_ns": 1589810125000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-15.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-15.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 57461446,
+            "dev": 156,
+            "inode": 34372315,
+            "mode": 420,
+            "mtime_ns": 1589810125000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-16.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-16.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 234670545,
+            "dev": 156,
+            "inode": 34372316,
+            "mode": 420,
+            "mtime_ns": 1589810126000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-17.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-17.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 2154773,
+            "dev": 156,
+            "inode": 34372317,
+            "mode": 420,
+            "mtime_ns": 1589810126000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-18.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-18.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 57461446,
+            "dev": 156,
+            "inode": 34372318,
+            "mode": 420,
+            "mtime_ns": 1589810126000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-19.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-19.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 234670545,
+            "dev": 156,
+            "inode": 34372319,
+            "mode": 420,
+            "mtime_ns": 1589810127000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-20.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-20.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 2618517,
+            "dev": 156,
+            "inode": 34372320,
+            "mode": 420,
+            "mtime_ns": 1589810127000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-21.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-21.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 57461446,
+            "dev": 156,
+            "inode": 34372321,
+            "mode": 420,
+            "mtime_ns": 1589810127000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-22.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-22.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 234670545,
+            "dev": 156,
+            "inode": 34372322,
+            "mode": 420,
+            "mtime_ns": 1589810128000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-23.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-23.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 884533,
+            "dev": 156,
+            "inode": 34372323,
+            "mode": 420,
+            "mtime_ns": 1589810128000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-24.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-24.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 57461446,
+            "dev": 156,
+            "inode": 34372324,
+            "mode": 420,
+            "mtime_ns": 1589810128000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-25.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-25.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 234670545,
+            "dev": 156,
+            "inode": 34372325,
+            "mode": 420,
+            "mtime_ns": 1589810129000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-26.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-26.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 781335,
+            "dev": 156,
+            "inode": 34372326,
+            "mode": 420,
+            "mtime_ns": 1589810129000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-27.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-27.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 57461446,
+            "dev": 156,
+            "inode": 34372327,
+            "mode": 420,
+            "mtime_ns": 1589810129000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-28.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-28.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 234670545,
+            "dev": 156,
+            "inode": 34372328,
+            "mode": 420,
+            "mtime_ns": 1589810129000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-29.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-29.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 803865,
+            "dev": 156,
+            "inode": 34372329,
+            "mode": 420,
+            "mtime_ns": 1589810130000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-30.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-30.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 57461446,
+            "dev": 156,
+            "inode": 34372330,
+            "mode": 420,
+            "mtime_ns": 1589810130000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-31.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-31.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 234670545,
+            "dev": 156,
+            "inode": 34372331,
+            "mode": 420,
+            "mtime_ns": 1589810131000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-32.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-32.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 785497,
+            "dev": 156,
+            "inode": 34372332,
+            "mode": 420,
+            "mtime_ns": 1589810131000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-33.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-33.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 57461446,
+            "dev": 156,
+            "inode": 34372333,
+            "mode": 420,
+            "mtime_ns": 1589810131000000000
+          }
+        }
+      ],
+      "memcpy_commands": [
+        "MemcpyHtoD,0x00007f0a76000000,27262976"
+      ],
+      "readable": true,
+      "unique_kernel_files": 33
+    },
+    {
+      "all_bodies_metadata_present": true,
+      "body_logical_bytes": 2216170035,
+      "capture_script_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sgemm/_i___data_medium_input_matrix1_txt___data_medium_input_matrix2t_txt___data_medium_input_matrix2t_txt__o_matrix3_txt/run.sh",
+      "commandlist": "MemcpyHtoD,0x00007f34a3200000,4063232\nMemcpyHtoD,0x00007f34a3600000,4190208\nkernel-1.traceg\n",
+      "commandlist_sha256": "0a0d21711ff3f3de1604fc0a243d5be2df5155147bb09bc4533bd017b62f5913",
+      "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sgemm/_i___data_medium_input_matrix1_txt___data_medium_input_matrix2t_txt___data_medium_input_matrix2t_txt__o_matrix3_txt/traces/kernelslist.g",
+      "entry_stat": {
+        "bytes": 92,
+        "dev": 156,
+        "inode": 49427429,
+        "mode": 420,
+        "mtime_ns": 1596985598000000000
+      },
+      "exists": true,
+      "kernel_launches": 1,
+      "kernel_order": [
+        "kernel-1.traceg"
+      ],
+      "members": [
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-1.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sgemm/_i___data_medium_input_matrix1_txt___data_medium_input_matrix2t_txt___data_medium_input_matrix2t_txt__o_matrix3_txt/traces/kernel-1.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 2216170035,
+            "dev": 156,
+            "inode": 49427430,
+            "mode": 420,
+            "mtime_ns": 1596985585000000000
+          }
+        }
+      ],
+      "memcpy_commands": [
+        "MemcpyHtoD,0x00007f34a3200000,4063232",
+        "MemcpyHtoD,0x00007f34a3600000,4190208"
+      ],
+      "readable": true,
+      "unique_kernel_files": 1
+    },
+    {
+      "all_bodies_metadata_present": true,
+      "body_logical_bytes": 34529277,
+      "capture_script_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-spmv/_i___data_large_input_Dubcova3_mtx_bin___data_large_input_vector_bin__o_Dubcova3_mtx_out/run.sh",
+      "commandlist": "MemcpyHtoD,0x00007f1bbb200000,14550656\nMemcpyHtoD,0x00007f1bc2000000,14550656\nMemcpyHtoD,0x00007f1bd5700200,586756\nMemcpyHtoD,0x00007f1bd5e00000,586756\nMemcpyHtoD,0x00007f1be7a00800,200\nMemcpyHtoD,0x00007f1be7a05620,18340\nkernel-1.traceg\n",
+      "commandlist_sha256": "da1065944705e52eb270304233f0865cf80f7618b5597f73af7096d20a194394",
+      "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-spmv/_i___data_large_input_Dubcova3_mtx_bin___data_large_input_vector_bin__o_Dubcova3_mtx_out/traces/kernelslist.g",
+      "entry_stat": {
+        "bytes": 238,
+        "dev": 156,
+        "inode": 49427432,
+        "mode": 420,
+        "mtime_ns": 1596986921000000000
+      },
+      "exists": true,
+      "kernel_launches": 1,
+      "kernel_order": [
+        "kernel-1.traceg"
+      ],
+      "members": [
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-1.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-spmv/_i___data_large_input_Dubcova3_mtx_bin___data_large_input_vector_bin__o_Dubcova3_mtx_out/traces/kernel-1.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 34529277,
+            "dev": 156,
+            "inode": 49427433,
+            "mode": 420,
+            "mtime_ns": 1596986920000000000
+          }
+        }
+      ],
+      "memcpy_commands": [
+        "MemcpyHtoD,0x00007f1bbb200000,14550656",
+        "MemcpyHtoD,0x00007f1bc2000000,14550656",
+        "MemcpyHtoD,0x00007f1bd5700200,586756",
+        "MemcpyHtoD,0x00007f1bd5e00000,586756",
+        "MemcpyHtoD,0x00007f1be7a00800,200",
+        "MemcpyHtoD,0x00007f1be7a05620,18340"
+      ],
+      "readable": true,
+      "unique_kernel_files": 1
+    },
+    {
+      "all_bodies_metadata_present": true,
+      "body_logical_bytes": 103535866,
+      "capture_script": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"4\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/vectorAdd --size 4000000 ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/vectorAdd/__size_4000000/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/vectorAdd/__size_4000000/traces/*.trace ",
+      "capture_script_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/run.sh",
+      "capture_script_sha256": "29cd3087c3ec8de538cd64dcbe68c57d7253f1c1e60ace29ede2cd49702a14df",
+      "capture_script_stat": {
+        "bytes": 791,
+        "dev": 156,
+        "inode": 34290892,
+        "mode": 484,
+        "mtime_ns": 1589810078000000000
+      },
+      "commandlist": "MemcpyHtoD,0x00007f5f38000000,16000000\nMemcpyHtoD,0x00007f5f39000000,16000000\nkernel-1.traceg\n",
+      "commandlist_sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a",
+      "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernelslist.g",
+      "entry_stat": {
+        "bytes": 94,
+        "dev": 156,
+        "inode": 34290895,
+        "mode": 420,
+        "mtime_ns": 1589810078000000000
+      },
+      "exists": true,
+      "kernel_launches": 1,
+      "kernel_order": [
+        "kernel-1.traceg"
+      ],
+      "members": [
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-1.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernel-1.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 103535866,
+            "dev": 156,
+            "inode": 34290896,
+            "mode": 420,
+            "mtime_ns": 1589810078000000000
+          }
+        }
+      ],
+      "memcpy_commands": [
+        "MemcpyHtoD,0x00007f5f38000000,16000000",
+        "MemcpyHtoD,0x00007f5f39000000,16000000"
+      ],
+      "readable": true,
+      "unique_kernel_files": 1
+    },
+    {
+      "all_bodies_metadata_present": true,
+      "body_logical_bytes": 2894504647,
+      "capture_script": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"0\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/bfs-rodinia-3.1 ./data/graph1MW_6.txt ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/*.trace ",
+      "capture_script_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/run.sh",
+      "capture_script_sha256": "1c481e161debaf1cb3f1d87214370ce62033854ed38cb9477bf801bb47fedae8",
+      "capture_script_stat": {
+        "bytes": 830,
+        "dev": 156,
+        "inode": 49298752,
+        "mode": 484,
+        "mtime_ns": 1589831816000000000
+      },
+      "commandlist": "MemcpyHtoD,0x00007fb875600000,8000000\nMemcpyHtoD,0x00007fb878000000,23999880\nMemcpyHtoD,0x00007fb875500000,1000000\nMemcpyHtoD,0x00007fb875e00000,1000000\nMemcpyHtoD,0x00007fb875ef4400,1000000\nMemcpyHtoD,0x00007fb887c00000,4000000\nMemcpyHtoD,0x00007fb8755f4400,1\nkernel-1.traceg\nkernel-2.traceg\nMemcpyHtoD,0x00007fb8755f4400,1\nkernel-3.traceg\nkernel-4.traceg\nMemcpyHtoD,0x00007fb8755f4400,1\nkernel-5.traceg\nkernel-6.traceg\nMemcpyHtoD,0x00007fb8755f4400,1\nkernel-7.traceg\nkernel-8.traceg\nMemcpyHtoD,0x00007fb8755f4400,1\nkernel-9.traceg\nkernel-10.traceg\nMemcpyHtoD,0x00007fb8755f4400,1\nkernel-11.traceg\nkernel-12.traceg\nMemcpyHtoD,0x00007fb8755f4400,1\nkernel-13.traceg\nkernel-14.traceg\nMemcpyHtoD,0x00007fb8755f4400,1\nkernel-15.traceg\nkernel-16.traceg\nMemcpyHtoD,0x00007fb8755f4400,1\nkernel-17.traceg\nkernel-18.traceg\nMemcpyHtoD,0x00007fb8755f4400,1\nkernel-19.traceg\nkernel-20.traceg\nMemcpyHtoD,0x00007fb8755f4400,1\nkernel-21.traceg\nkernel-22.traceg\nMemcpyHtoD,0x00007fb8755f4400,1\nkernel-23.traceg\nkernel-24.traceg\n",
+      "commandlist_sha256": "16e9f563214a29ff60436734cfae14fa3b164bc82e039b9466c443c9ee976b2b",
+      "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernelslist.g",
+      "entry_stat": {
+        "bytes": 1012,
+        "dev": 156,
+        "inode": 49298755,
+        "mode": 420,
+        "mtime_ns": 1589831816000000000
+      },
+      "exists": true,
+      "kernel_launches": 24,
+      "kernel_order": [
+        "kernel-1.traceg",
+        "kernel-2.traceg",
+        "kernel-3.traceg",
+        "kernel-4.traceg",
+        "kernel-5.traceg",
+        "kernel-6.traceg",
+        "kernel-7.traceg",
+        "kernel-8.traceg",
+        "kernel-9.traceg",
+        "kernel-10.traceg",
+        "kernel-11.traceg",
+        "kernel-12.traceg",
+        "kernel-13.traceg",
+        "kernel-14.traceg",
+        "kernel-15.traceg",
+        "kernel-16.traceg",
+        "kernel-17.traceg",
+        "kernel-18.traceg",
+        "kernel-19.traceg",
+        "kernel-20.traceg",
+        "kernel-21.traceg",
+        "kernel-22.traceg",
+        "kernel-23.traceg",
+        "kernel-24.traceg"
+      ],
+      "members": [
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-1.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-1.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 19098303,
+            "dev": 156,
+            "inode": 49298756,
+            "mode": 420,
+            "mtime_ns": 1589831816000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-2.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-2.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 20902601,
+            "dev": 156,
+            "inode": 49298757,
+            "mode": 420,
+            "mtime_ns": 1589831816000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-3.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-3.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 19132510,
+            "dev": 156,
+            "inode": 49298758,
+            "mode": 420,
+            "mtime_ns": 1589831816000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-4.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-4.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 20918455,
+            "dev": 156,
+            "inode": 49298759,
+            "mode": 420,
+            "mtime_ns": 1589831817000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-5.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-5.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 19315384,
+            "dev": 156,
+            "inode": 49298760,
+            "mode": 420,
+            "mtime_ns": 1589831817000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-6.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-6.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 20995834,
+            "dev": 156,
+            "inode": 49298761,
+            "mode": 420,
+            "mtime_ns": 1589831817000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-7.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-7.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 20324536,
+            "dev": 156,
+            "inode": 49298762,
+            "mode": 420,
+            "mtime_ns": 1589831817000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-8.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-8.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 21476959,
+            "dev": 156,
+            "inode": 49298763,
+            "mode": 420,
+            "mtime_ns": 1589831817000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-9.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-9.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 26291997,
+            "dev": 156,
+            "inode": 49298764,
+            "mode": 420,
+            "mtime_ns": 1589831817000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-10.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-10.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 24034408,
+            "dev": 156,
+            "inode": 49298765,
+            "mode": 420,
+            "mtime_ns": 1589831817000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-11.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-11.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 58238333,
+            "dev": 156,
+            "inode": 49298766,
+            "mode": 420,
+            "mtime_ns": 1589831818000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-12.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-12.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 34796240,
+            "dev": 156,
+            "inode": 49298768,
+            "mode": 420,
+            "mtime_ns": 1589831818000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-13.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-13.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 199206106,
+            "dev": 156,
+            "inode": 49298772,
+            "mode": 420,
+            "mtime_ns": 1589831818000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-14.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-14.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 53835995,
+            "dev": 156,
+            "inode": 49298781,
+            "mode": 420,
+            "mtime_ns": 1589831819000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-15.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-15.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 495086022,
+            "dev": 156,
+            "inode": 49298782,
+            "mode": 420,
+            "mtime_ns": 1589831820000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-16.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-16.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 78574133,
+            "dev": 156,
+            "inode": 49298783,
+            "mode": 420,
+            "mtime_ns": 1589831820000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-17.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-17.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 837683715,
+            "dev": 156,
+            "inode": 49298784,
+            "mode": 420,
+            "mtime_ns": 1589831822000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-18.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-18.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 72396664,
+            "dev": 156,
+            "inode": 49298785,
+            "mode": 420,
+            "mtime_ns": 1589831823000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-19.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-19.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 665149810,
+            "dev": 156,
+            "inode": 49298786,
+            "mode": 420,
+            "mtime_ns": 1589831824000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-20.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-20.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 31478766,
+            "dev": 156,
+            "inode": 49298800,
+            "mode": 420,
+            "mtime_ns": 1589831825000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-21.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-21.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 94554473,
+            "dev": 156,
+            "inode": 49298801,
+            "mode": 420,
+            "mtime_ns": 1589831825000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-22.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-22.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 20923175,
+            "dev": 156,
+            "inode": 49298802,
+            "mode": 420,
+            "mtime_ns": 1589831826000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-23.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-23.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 19190065,
+            "dev": 156,
+            "inode": 49298803,
+            "mode": 420,
+            "mtime_ns": 1589831826000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-24.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph1MW_6_txt/traces/kernel-24.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 20900163,
+            "dev": 156,
+            "inode": 49298804,
+            "mode": 420,
+            "mtime_ns": 1589831826000000000
+          }
+        }
+      ],
+      "memcpy_commands": [
+        "MemcpyHtoD,0x00007fb875600000,8000000",
+        "MemcpyHtoD,0x00007fb878000000,23999880",
+        "MemcpyHtoD,0x00007fb875500000,1000000",
+        "MemcpyHtoD,0x00007fb875e00000,1000000",
+        "MemcpyHtoD,0x00007fb875ef4400,1000000",
+        "MemcpyHtoD,0x00007fb887c00000,4000000",
+        "MemcpyHtoD,0x00007fb8755f4400,1",
+        "MemcpyHtoD,0x00007fb8755f4400,1",
+        "MemcpyHtoD,0x00007fb8755f4400,1",
+        "MemcpyHtoD,0x00007fb8755f4400,1",
+        "MemcpyHtoD,0x00007fb8755f4400,1",
+        "MemcpyHtoD,0x00007fb8755f4400,1",
+        "MemcpyHtoD,0x00007fb8755f4400,1",
+        "MemcpyHtoD,0x00007fb8755f4400,1",
+        "MemcpyHtoD,0x00007fb8755f4400,1",
+        "MemcpyHtoD,0x00007fb8755f4400,1",
+        "MemcpyHtoD,0x00007fb8755f4400,1",
+        "MemcpyHtoD,0x00007fb8755f4400,1"
+      ],
+      "readable": true,
+      "unique_kernel_files": 24
+    },
+    {
+      "all_bodies_metadata_present": true,
+      "body_logical_bytes": 11373519,
+      "capture_script": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"0\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/bfs-rodinia-3.1 ./data/graph4096.txt ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/bfs-rodinia-3.1/__data_graph4096_txt/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/bfs-rodinia-3.1/__data_graph4096_txt/traces/*.trace ",
+      "capture_script_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph4096_txt/run.sh",
+      "capture_script_sha256": "84bf39c911686687f051b5ab2cfa8cd3a3d9e3dc3443db6fad5df4468c2b0501",
+      "capture_script_stat": {
+        "bytes": 827,
+        "dev": 156,
+        "inode": 49298702,
+        "mode": 484,
+        "mtime_ns": 1589831813000000000
+      },
+      "commandlist": "MemcpyHtoD,0x00007ff781500000,32768\nMemcpyHtoD,0x00007ff781508000,98304\nMemcpyHtoD,0x00007ff781520000,4096\nMemcpyHtoD,0x00007ff781521000,4096\nMemcpyHtoD,0x00007ff781522000,4096\nMemcpyHtoD,0x00007ff781523000,16384\nMemcpyHtoD,0x00007ff781527000,1\nkernel-1.traceg\nkernel-2.traceg\nMemcpyHtoD,0x00007ff781527000,1\nkernel-3.traceg\nkernel-4.traceg\nMemcpyHtoD,0x00007ff781527000,1\nkernel-5.traceg\nkernel-6.traceg\nMemcpyHtoD,0x00007ff781527000,1\nkernel-7.traceg\nkernel-8.traceg\nMemcpyHtoD,0x00007ff781527000,1\nkernel-9.traceg\nkernel-10.traceg\nMemcpyHtoD,0x00007ff781527000,1\nkernel-11.traceg\nkernel-12.traceg\nMemcpyHtoD,0x00007ff781527000,1\nkernel-13.traceg\nkernel-14.traceg\nMemcpyHtoD,0x00007ff781527000,1\nkernel-15.traceg\nkernel-16.traceg\n",
+      "commandlist_sha256": "0058cad791610aadb1c16e1d9f34fd9bb100f90f11440e2726c0148db26fafdf",
+      "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph4096_txt/traces/kernelslist.g",
+      "entry_stat": {
+        "bytes": 732,
+        "dev": 156,
+        "inode": 49298705,
+        "mode": 420,
+        "mtime_ns": 1589831814000000000
+      },
+      "exists": true,
+      "kernel_launches": 16,
+      "kernel_order": [
+        "kernel-1.traceg",
+        "kernel-2.traceg",
+        "kernel-3.traceg",
+        "kernel-4.traceg",
+        "kernel-5.traceg",
+        "kernel-6.traceg",
+        "kernel-7.traceg",
+        "kernel-8.traceg",
+        "kernel-9.traceg",
+        "kernel-10.traceg",
+        "kernel-11.traceg",
+        "kernel-12.traceg",
+        "kernel-13.traceg",
+        "kernel-14.traceg",
+        "kernel-15.traceg",
+        "kernel-16.traceg"
+      ],
+      "members": [
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-1.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph4096_txt/traces/kernel-1.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 88477,
+            "dev": 156,
+            "inode": 49298706,
+            "mode": 420,
+            "mtime_ns": 1589831814000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-2.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph4096_txt/traces/kernel-2.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 89713,
+            "dev": 156,
+            "inode": 49298707,
+            "mode": 420,
+            "mtime_ns": 1589831814000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-3.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph4096_txt/traces/kernel-3.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 173561,
+            "dev": 156,
+            "inode": 49298708,
+            "mode": 420,
+            "mtime_ns": 1589831814000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-4.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph4096_txt/traces/kernel-4.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 121251,
+            "dev": 156,
+            "inode": 49298709,
+            "mode": 420,
+            "mtime_ns": 1589831814000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-5.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph4096_txt/traces/kernel-5.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 589130,
+            "dev": 156,
+            "inode": 49298710,
+            "mode": 420,
+            "mtime_ns": 1589831814000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-6.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph4096_txt/traces/kernel-6.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 194524,
+            "dev": 156,
+            "inode": 49298711,
+            "mode": 420,
+            "mtime_ns": 1589831814000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-7.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph4096_txt/traces/kernel-7.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 1724812,
+            "dev": 156,
+            "inode": 49298712,
+            "mode": 420,
+            "mtime_ns": 1589831814000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-8.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph4096_txt/traces/kernel-8.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 283695,
+            "dev": 156,
+            "inode": 49298713,
+            "mode": 420,
+            "mtime_ns": 1589831814000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-9.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph4096_txt/traces/kernel-9.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 3217939,
+            "dev": 156,
+            "inode": 49298714,
+            "mode": 420,
+            "mtime_ns": 1589831814000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-10.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph4096_txt/traces/kernel-10.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 323672,
+            "dev": 156,
+            "inode": 49298715,
+            "mode": 420,
+            "mtime_ns": 1589831814000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-11.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph4096_txt/traces/kernel-11.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 3298184,
+            "dev": 156,
+            "inode": 49298716,
+            "mode": 420,
+            "mtime_ns": 1589831814000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-12.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph4096_txt/traces/kernel-12.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 178489,
+            "dev": 156,
+            "inode": 49298717,
+            "mode": 420,
+            "mtime_ns": 1589831814000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-13.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph4096_txt/traces/kernel-13.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 844852,
+            "dev": 156,
+            "inode": 49298718,
+            "mode": 420,
+            "mtime_ns": 1589831814000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-14.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph4096_txt/traces/kernel-14.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 83390,
+            "dev": 156,
+            "inode": 49298719,
+            "mode": 420,
+            "mtime_ns": 1589831814000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-15.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph4096_txt/traces/kernel-15.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 80006,
+            "dev": 156,
+            "inode": 49298720,
+            "mode": 420,
+            "mtime_ns": 1589831814000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-16.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph4096_txt/traces/kernel-16.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 81824,
+            "dev": 156,
+            "inode": 49298721,
+            "mode": 420,
+            "mtime_ns": 1589831814000000000
+          }
+        }
+      ],
+      "memcpy_commands": [
+        "MemcpyHtoD,0x00007ff781500000,32768",
+        "MemcpyHtoD,0x00007ff781508000,98304",
+        "MemcpyHtoD,0x00007ff781520000,4096",
+        "MemcpyHtoD,0x00007ff781521000,4096",
+        "MemcpyHtoD,0x00007ff781522000,4096",
+        "MemcpyHtoD,0x00007ff781523000,16384",
+        "MemcpyHtoD,0x00007ff781527000,1",
+        "MemcpyHtoD,0x00007ff781527000,1",
+        "MemcpyHtoD,0x00007ff781527000,1",
+        "MemcpyHtoD,0x00007ff781527000,1",
+        "MemcpyHtoD,0x00007ff781527000,1",
+        "MemcpyHtoD,0x00007ff781527000,1",
+        "MemcpyHtoD,0x00007ff781527000,1",
+        "MemcpyHtoD,0x00007ff781527000,1"
+      ],
+      "readable": true,
+      "unique_kernel_files": 16
+    },
+    {
+      "all_bodies_metadata_present": true,
+      "body_logical_bytes": 187716988,
+      "capture_script": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"0\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/bfs-rodinia-3.1 ./data/graph65536.txt ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/*.trace ",
+      "capture_script_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph65536_txt/run.sh",
+      "capture_script_sha256": "27222b41acdfa0aa9ac0195a24b2b9d0286d5ea35be1287857d34781c52e39fe",
+      "capture_script_stat": {
+        "bytes": 830,
+        "dev": 156,
+        "inode": 49298725,
+        "mode": 484,
+        "mtime_ns": 1589831815000000000
+      },
+      "commandlist": "MemcpyHtoD,0x00007fb515500000,524288\nMemcpyHtoD,0x00007fb515600000,1572864\nMemcpyHtoD,0x00007fb515580000,65536\nMemcpyHtoD,0x00007fb515590000,65536\nMemcpyHtoD,0x00007fb5155a0000,65536\nMemcpyHtoD,0x00007fb5155b0000,262144\nMemcpyHtoD,0x00007fb5155f0000,1\nkernel-1.traceg\nkernel-2.traceg\nMemcpyHtoD,0x00007fb5155f0000,1\nkernel-3.traceg\nkernel-4.traceg\nMemcpyHtoD,0x00007fb5155f0000,1\nkernel-5.traceg\nkernel-6.traceg\nMemcpyHtoD,0x00007fb5155f0000,1\nkernel-7.traceg\nkernel-8.traceg\nMemcpyHtoD,0x00007fb5155f0000,1\nkernel-9.traceg\nkernel-10.traceg\nMemcpyHtoD,0x00007fb5155f0000,1\nkernel-11.traceg\nkernel-12.traceg\nMemcpyHtoD,0x00007fb5155f0000,1\nkernel-13.traceg\nkernel-14.traceg\nMemcpyHtoD,0x00007fb5155f0000,1\nkernel-15.traceg\nkernel-16.traceg\nMemcpyHtoD,0x00007fb5155f0000,1\nkernel-17.traceg\nkernel-18.traceg\nMemcpyHtoD,0x00007fb5155f0000,1\nkernel-19.traceg\nkernel-20.traceg\n",
+      "commandlist_sha256": "c903c6a8876373a32f212e34a9026759076c1728a1629cded59555552c65940a",
+      "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/kernelslist.g",
+      "entry_stat": {
+        "bytes": 871,
+        "dev": 156,
+        "inode": 49298728,
+        "mode": 420,
+        "mtime_ns": 1589831815000000000
+      },
+      "exists": true,
+      "kernel_launches": 20,
+      "kernel_order": [
+        "kernel-1.traceg",
+        "kernel-2.traceg",
+        "kernel-3.traceg",
+        "kernel-4.traceg",
+        "kernel-5.traceg",
+        "kernel-6.traceg",
+        "kernel-7.traceg",
+        "kernel-8.traceg",
+        "kernel-9.traceg",
+        "kernel-10.traceg",
+        "kernel-11.traceg",
+        "kernel-12.traceg",
+        "kernel-13.traceg",
+        "kernel-14.traceg",
+        "kernel-15.traceg",
+        "kernel-16.traceg",
+        "kernel-17.traceg",
+        "kernel-18.traceg",
+        "kernel-19.traceg",
+        "kernel-20.traceg"
+      ],
+      "members": [
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-1.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/kernel-1.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 1230525,
+            "dev": 156,
+            "inode": 49298729,
+            "mode": 420,
+            "mtime_ns": 1589831815000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-2.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/kernel-2.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 1341598,
+            "dev": 156,
+            "inode": 49298730,
+            "mode": 420,
+            "mtime_ns": 1589831815000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-3.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/kernel-3.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 1300222,
+            "dev": 156,
+            "inode": 49298731,
+            "mode": 420,
+            "mtime_ns": 1589831815000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-4.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/kernel-4.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 1372419,
+            "dev": 156,
+            "inode": 49298732,
+            "mode": 420,
+            "mtime_ns": 1589831815000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-5.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/kernel-5.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 1706768,
+            "dev": 156,
+            "inode": 49298733,
+            "mode": 420,
+            "mtime_ns": 1589831815000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-6.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/kernel-6.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 1553135,
+            "dev": 156,
+            "inode": 49298734,
+            "mode": 420,
+            "mtime_ns": 1589831815000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-7.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/kernel-7.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 4111171,
+            "dev": 156,
+            "inode": 49298735,
+            "mode": 420,
+            "mtime_ns": 1589831815000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-8.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/kernel-8.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 2343149,
+            "dev": 156,
+            "inode": 49298736,
+            "mode": 420,
+            "mtime_ns": 1589831815000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-9.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/kernel-9.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 14928664,
+            "dev": 156,
+            "inode": 49298737,
+            "mode": 420,
+            "mtime_ns": 1589831815000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-10.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/kernel-10.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 3558579,
+            "dev": 156,
+            "inode": 49298738,
+            "mode": 420,
+            "mtime_ns": 1589831815000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-11.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/kernel-11.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 36008963,
+            "dev": 156,
+            "inode": 49298739,
+            "mode": 420,
+            "mtime_ns": 1589831815000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-12.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/kernel-12.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 5243168,
+            "dev": 156,
+            "inode": 49298740,
+            "mode": 420,
+            "mtime_ns": 1589831815000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-13.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/kernel-13.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 59131269,
+            "dev": 156,
+            "inode": 49298741,
+            "mode": 420,
+            "mtime_ns": 1589831816000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-14.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/kernel-14.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 4422520,
+            "dev": 156,
+            "inode": 49298742,
+            "mode": 420,
+            "mtime_ns": 1589831816000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-15.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/kernel-15.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 39279102,
+            "dev": 156,
+            "inode": 49298743,
+            "mode": 420,
+            "mtime_ns": 1589831816000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-16.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/kernel-16.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 1917808,
+            "dev": 156,
+            "inode": 49298744,
+            "mode": 420,
+            "mtime_ns": 1589831816000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-17.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/kernel-17.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 4359704,
+            "dev": 156,
+            "inode": 49298745,
+            "mode": 420,
+            "mtime_ns": 1589831816000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-18.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/kernel-18.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 1340018,
+            "dev": 156,
+            "inode": 49298746,
+            "mode": 420,
+            "mtime_ns": 1589831816000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-19.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/kernel-19.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 1233066,
+            "dev": 156,
+            "inode": 49298747,
+            "mode": 420,
+            "mtime_ns": 1589831816000000000
+          }
+        },
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-20.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/bfs-rodinia-3.1/__data_graph65536_txt/traces/kernel-20.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 1335140,
+            "dev": 156,
+            "inode": 49298748,
+            "mode": 420,
+            "mtime_ns": 1589831816000000000
+          }
+        }
+      ],
+      "memcpy_commands": [
+        "MemcpyHtoD,0x00007fb515500000,524288",
+        "MemcpyHtoD,0x00007fb515600000,1572864",
+        "MemcpyHtoD,0x00007fb515580000,65536",
+        "MemcpyHtoD,0x00007fb515590000,65536",
+        "MemcpyHtoD,0x00007fb5155a0000,65536",
+        "MemcpyHtoD,0x00007fb5155b0000,262144",
+        "MemcpyHtoD,0x00007fb5155f0000,1",
+        "MemcpyHtoD,0x00007fb5155f0000,1",
+        "MemcpyHtoD,0x00007fb5155f0000,1",
+        "MemcpyHtoD,0x00007fb5155f0000,1",
+        "MemcpyHtoD,0x00007fb5155f0000,1",
+        "MemcpyHtoD,0x00007fb5155f0000,1",
+        "MemcpyHtoD,0x00007fb5155f0000,1",
+        "MemcpyHtoD,0x00007fb5155f0000,1",
+        "MemcpyHtoD,0x00007fb5155f0000,1",
+        "MemcpyHtoD,0x00007fb5155f0000,1"
+      ],
+      "readable": true,
+      "unique_kernel_files": 20
+    },
+    {
+      "all_bodies_metadata_present": true,
+      "body_logical_bytes": 1041309456,
+      "capture_script": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"0\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/hotspot-rodinia-3.1 1024 2 2 ./data/temp_1024 ./data/power_1024 output.out ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/hotspot-rodinia-3.1/1024_2_2___data_temp_1024___data_power_1024_output_out/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/hotspot-rodinia-3.1/1024_2_2___data_temp_1024___data_power_1024_output_out/traces/*.trace ",
+      "capture_script_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/hotspot-rodinia-3.1/1024_2_2___data_temp_1024___data_power_1024_output_out/run.sh",
+      "capture_script_sha256": "0345aac1afba1be78d47ce23aa6423cf799335d705e9d26fa38c6186fc9ef0a4",
+      "capture_script_stat": {
+        "bytes": 941,
+        "dev": 156,
+        "inode": 49300432,
+        "mode": 484,
+        "mtime_ns": 1589831858000000000
+      },
+      "commandlist": "MemcpyHtoD,0x00007f6005600000,4194304\nMemcpyHtoD,0x00007f6017c00000,4194304\nkernel-1.traceg\n",
+      "commandlist_sha256": "a731bfc2cbb90b51888e92f3fb188ff4fceb123612a7b1ceb1817bc752e89461",
+      "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/hotspot-rodinia-3.1/1024_2_2___data_temp_1024___data_power_1024_output_out/traces/kernelslist.g",
+      "entry_stat": {
+        "bytes": 92,
+        "dev": 156,
+        "inode": 49300435,
+        "mode": 420,
+        "mtime_ns": 1589831858000000000
+      },
+      "exists": true,
+      "kernel_launches": 1,
+      "kernel_order": [
+        "kernel-1.traceg"
+      ],
+      "members": [
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-1.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/hotspot-rodinia-3.1/1024_2_2___data_temp_1024___data_power_1024_output_out/traces/kernel-1.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 1041309456,
+            "dev": 156,
+            "inode": 49300436,
+            "mode": 420,
+            "mtime_ns": 1589831860000000000
+          }
+        }
+      ],
+      "memcpy_commands": [
+        "MemcpyHtoD,0x00007f6005600000,4194304",
+        "MemcpyHtoD,0x00007f6017c00000,4194304"
+      ],
+      "readable": true,
+      "unique_kernel_files": 1
+    },
+    {
+      "all_bodies_metadata_present": true,
+      "body_logical_bytes": 259435310,
+      "capture_script": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"0\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/hotspot-rodinia-3.1 512 2 2 ./data/temp_512 ./data/power_512 output.out ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/hotspot-rodinia-3.1/512_2_2___data_temp_512___data_power_512_output_out/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-0/9.1/hotspot-rodinia-3.1/512_2_2___data_temp_512___data_power_512_output_out/traces/*.trace ",
+      "capture_script_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/hotspot-rodinia-3.1/512_2_2___data_temp_512___data_power_512_output_out/run.sh",
+      "capture_script_sha256": "a95dab1777adf04e6e447763a2e5b19669e59a4b6217b87879489eaa163c15e6",
+      "capture_script_stat": {
+        "bytes": 932,
+        "dev": 156,
+        "inode": 49300424,
+        "mode": 484,
+        "mtime_ns": 1589831857000000000
+      },
+      "commandlist": "MemcpyHtoD,0x00007f5175500000,1048576\nMemcpyHtoD,0x00007f5175700000,1048576\nkernel-1.traceg\n",
+      "commandlist_sha256": "4895346071bd81739eacc94f108f758c4b4591edf4f92758c0297556d3626aed",
+      "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/hotspot-rodinia-3.1/512_2_2___data_temp_512___data_power_512_output_out/traces/kernelslist.g",
+      "entry_stat": {
+        "bytes": 92,
+        "dev": 156,
+        "inode": 49300427,
+        "mode": 420,
+        "mtime_ns": 1589831857000000000
+      },
+      "exists": true,
+      "kernel_launches": 1,
+      "kernel_order": [
+        "kernel-1.traceg"
+      ],
+      "members": [
+        {
+          "content_read_or_rehashed": false,
+          "exists": true,
+          "name": "kernel-1.traceg",
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/hotspot-rodinia-3.1/512_2_2___data_temp_512___data_power_512_output_out/traces/kernel-1.traceg",
+          "readable": true,
+          "stat": {
+            "bytes": 259435310,
+            "dev": 156,
+            "inode": 49300428,
+            "mode": 420,
+            "mtime_ns": 1589831858000000000
+          }
+        }
+      ],
+      "memcpy_commands": [
+        "MemcpyHtoD,0x00007f5175500000,1048576",
+        "MemcpyHtoD,0x00007f5175700000,1048576"
+      ],
+      "readable": true,
+      "unique_kernel_files": 1
+    }
+  ],
+  "schema": "EP_MAIN_EXACT_18_INPUT_READONLY_METADATA_V1",
+  "simulator_or_compiler_invocations": 0,
+  "source_host": "huangrulin-174",
+  "source_mutations": 0,
+  "source_namespace": "mnt:[4026534768]",
+  "source_new_files": 0,
+  "trace_body_bytes_read": 0,
+  "utc": "2026-10-24T01:14:28.716420+00:00"
+}

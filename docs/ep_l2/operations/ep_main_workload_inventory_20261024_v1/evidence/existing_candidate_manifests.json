@@ -1,0 +1,447 @@
+{
+  "prior_D_selection_publication": "313c0f2c7abfac4826a8c07c10355d3819774146",
+  "prior_selection_utc": "2026-10-19T12:54:24.303578+00:00",
+  "original_first_fallback": "spmv",
+  "new_full_scheme_performance_used_for_choice": false,
+  "reviewed_at_utc": "2026-10-20T00:42:25.211538+00:00",
+  "candidates": [
+    {
+      "workload": "spmv",
+      "input": "Dubcova3 large",
+      "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-spmv/_i___data_large_input_Dubcova3_mtx_bin___data_large_input_vector_bin__o_Dubcova3_mtx_out/traces/kernelslist.g",
+      "commandlist_literal": "MemcpyHtoD,0x00007f1bbb200000,14550656\nMemcpyHtoD,0x00007f1bc2000000,14550656\nMemcpyHtoD,0x00007f1bd5700200,586756\nMemcpyHtoD,0x00007f1bd5e00000,586756\nMemcpyHtoD,0x00007f1be7a00800,200\nMemcpyHtoD,0x00007f1be7a05620,18340\nkernel-1.traceg\n",
+      "commandlist_sha256": "da1065944705e52eb270304233f0865cf80f7618b5597f73af7096d20a194394",
+      "body_count": 1,
+      "body_bytes": 34529277,
+      "capture_script": null,
+      "capture_script_literal": "UNKNOWN",
+      "directory_version_label": "11.0",
+      "toolchain_version": "UNKNOWN",
+      "application_source_revision": "UNKNOWN",
+      "expected_full_application_instructions": 21131849,
+      "historical_baseline_cycles": 23453,
+      "baseline_pressure": {
+        "tag_set_block": "0",
+        "line_mshr_full_block": "0",
+        "descriptor_pool_full_block": "361635",
+        "per_address_cap_block": "8598",
+        "wad_full": "0",
+        "scheduler_causal_block": "411"
+      },
+      "historical_runtime_core": "ece1a3a77c5628763e0a4605bfd1c639ee6a1495",
+      "historical_runtime_framework": "f08d2ce857972fad73c4e1ab7162ba94c6336507",
+      "historical_config": "85562fce759876616806d32791ea3b7d1b13ee68cf20a84e48c63c96f67b8c0d",
+      "historical_raw_log": "/workspace/worktrees/accel-sim-ep-l2-c7e/docs/ep_l2/target_baseline_results_final_850/B0-Legacy/spmv/raw.log.gz",
+      "historical_raw_sha256": "50fb2cca35014c40fa5b4df83d9bef11c08eb50c1a6291a73cddfe2c636ffba1",
+      "selection_reason": "Predeclared first fallback only if a selected input fails real completeness/eligibility or budget; small34.5MB complete input, old descriptor pressure361635. Not auto-added.",
+      "files": [
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-spmv/_i___data_large_input_Dubcova3_mtx_bin___data_large_input_vector_bin__o_Dubcova3_mtx_out/traces/kernel-1.traceg",
+          "published_sha256": "55f2ef8da4d5b235ae8359e7ee012a2e51e74e682b6abae930af6a0400615546",
+          "published_bytes": 34529277,
+          "exists": true,
+          "current_bytes": 34529277,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        }
+      ],
+      "commandlist_current_sha256": "da1065944705e52eb270304233f0865cf80f7618b5597f73af7096d20a194394",
+      "commandlist_matches_prior": true,
+      "review_scope": "Existing original trace replay only; no source recompile, capture, download, row rewriting or host application execution",
+      "source_provenance_scope": "Frozen trace bodies and complete commandlist permit trace replay only if native grammar/closure/E admission pass; original app source revision/toolchain remain UNKNOWN where not disclosed",
+      "formal_E_qualification": false,
+      "current_native_execution_cost_seconds": "UNKNOWN_NO_APP_LAUNCHED",
+      "old_pressure_scope": "Old B0 1152 payload/256 descriptors, different runtime; not measured opportunity of new final1168/512",
+      "new_victim_RO_trigger": "UNKNOWN",
+      "replacement_registered": false
+    },
+    {
+      "workload": "scan",
+      "input": "NO_ARGS",
+      "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernelslist.g",
+      "commandlist_literal": "MemcpyHtoD,0x00007f0a76000000,27262976\nkernel-1.traceg\nkernel-2.traceg\nkernel-3.traceg\nkernel-4.traceg\nkernel-5.traceg\nkernel-6.traceg\nkernel-7.traceg\nkernel-8.traceg\nkernel-9.traceg\nkernel-10.traceg\nkernel-11.traceg\nkernel-12.traceg\nkernel-13.traceg\nkernel-14.traceg\nkernel-15.traceg\nkernel-16.traceg\nkernel-17.traceg\nkernel-18.traceg\nkernel-19.traceg\nkernel-20.traceg\nkernel-21.traceg\nkernel-22.traceg\nkernel-23.traceg\nkernel-24.traceg\nkernel-25.traceg\nkernel-26.traceg\nkernel-27.traceg\nkernel-28.traceg\nkernel-29.traceg\nkernel-30.traceg\nkernel-31.traceg\nkernel-32.traceg\nkernel-33.traceg\n",
+      "commandlist_sha256": "6e8572dff8fa6ff912fce3f834009d2e62ace23e3671d083bd901d42af6bcee8",
+      "body_count": 33,
+      "body_bytes": 5329077632,
+      "capture_script": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/run.sh",
+      "capture_script_literal": "\nexport CUDA_VERSION=\"9.1\"; export CUDA_VISIBLE_DEVICES=\"4\" ; LD_PRELOAD=/home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traceall.so /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../benchmarks/bin/$CUDA_VERSION/release/scan  ; /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../../nvbit/tools/traceall/traces-processing/post-traces-processing /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/scan/NO_ARGS/traces/kernelslist ; rm /home/tgrogers-raid/a/abdallm/traces/gpgpu-sim_simulations/util/correlation/../../run_hw/traces/device-4/9.1/scan/NO_ARGS/traces/*.trace ",
+      "directory_version_label": "9.1",
+      "toolchain_version": "capture CUDA_VERSION=9.1 declaration, not directory inference",
+      "application_source_revision": "UNKNOWN",
+      "expected_full_application_instructions": 1963460720,
+      "historical_baseline_cycles": 2157997,
+      "baseline_pressure": {
+        "tag_set_block": "222849",
+        "line_mshr_full_block": "0",
+        "descriptor_pool_full_block": "60513316",
+        "per_address_cap_block": "0",
+        "wad_full": "2318944",
+        "scheduler_causal_block": "37119745"
+      },
+      "historical_runtime_core": "ece1a3a77c5628763e0a4605bfd1c639ee6a1495",
+      "historical_runtime_framework": "f08d2ce857972fad73c4e1ab7162ba94c6336507",
+      "historical_config": "85562fce759876616806d32791ea3b7d1b13ee68cf20a84e48c63c96f67b8c0d",
+      "historical_raw_log": "/workspace/worktrees/accel-sim-ep-l2-c7e/docs/ep_l2/target_baseline_results_final_850/B0-Legacy/scan/raw.log.gz",
+      "historical_raw_sha256": "4ea70581fb549e877390be084653a142f37b9878bd0616724a31fd957f5c5136",
+      "selection_reason": "Not selected:5.329GB/33kernels and much larger historical cycles; real old tag/descriptor pressure noted, but greater input/runtime cost. Not a zero-pressure claim.",
+      "files": [
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-1.traceg",
+          "published_sha256": "fa6a3f11fc486b7bd5b31ff8ee12a8fb6d9fdf7a6dc767738e127475f17e8825",
+          "published_bytes": 92390974,
+          "exists": true,
+          "current_bytes": 92390974,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-2.traceg",
+          "published_sha256": "2429c51db48fce4d54b1bf1988ab126c76645195da1dfd5b079e4f79123bd17f",
+          "published_bytes": 308968286,
+          "exists": true,
+          "current_bytes": 308968286,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-3.traceg",
+          "published_sha256": "70e72b42cadffa19e1ea7e945e148733fc961a04ba605aaebcb93aae605a4137",
+          "published_bytes": 428909358,
+          "exists": true,
+          "current_bytes": 428909358,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-4.traceg",
+          "published_sha256": "8245c02edf5d4185a554c28bed9347ad663f89003d132c1fa6d06b27b383ab30",
+          "published_bytes": 548850430,
+          "exists": true,
+          "current_bytes": 548850430,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-5.traceg",
+          "published_sha256": "1411d8d62e4563d27a617f2b5638cd39678461506bc80219db5515747b893b41",
+          "published_bytes": 668791502,
+          "exists": true,
+          "current_bytes": 668791502,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-6.traceg",
+          "published_sha256": "adfb2ce0a2b57971883e69f5694866d99489da0e2eac0de4d1a6cdd6d1c99884",
+          "published_bytes": 226114206,
+          "exists": true,
+          "current_bytes": 226114206,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-7.traceg",
+          "published_sha256": "87d9db39fb5f17ff0c15e58ecaef5b58e866a1c890d11950a9f7b5786af322bc",
+          "published_bytes": 233206236,
+          "exists": true,
+          "current_bytes": 233206236,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-8.traceg",
+          "published_sha256": "dc49e78dd4374196e30f1bfc31dc71748117f5db8b8d2ea96c2ee20a4ffc4188",
+          "published_bytes": 239173334,
+          "exists": true,
+          "current_bytes": 239173334,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-9.traceg",
+          "published_sha256": "dee52e14d2d3de6fd3c07a3b54bcee6344b90dfccdcce1a5e3aa12e314392f99",
+          "published_bytes": 234670544,
+          "exists": true,
+          "current_bytes": 234670544,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-10.traceg",
+          "published_sha256": "845886900d3db541267665eb46f11998a2d32f483056cd5118c05dd08d67f136",
+          "published_bytes": 234670545,
+          "exists": true,
+          "current_bytes": 234670545,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-11.traceg",
+          "published_sha256": "bb002f367021d031fad63887809d90c05a28febdc9609179cdcfd7b1bc4806c5",
+          "published_bytes": 1227285,
+          "exists": true,
+          "current_bytes": 1227285,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-12.traceg",
+          "published_sha256": "38ce564fea0a761af1305a1956f86ed7796d467b61cf18c58a07c9baa8200ced",
+          "published_bytes": 57461446,
+          "exists": true,
+          "current_bytes": 57461446,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-13.traceg",
+          "published_sha256": "48394fd4c3a66caec89607eeb7c5009eaf617b74d981e914b284ff9be8975307",
+          "published_bytes": 234670545,
+          "exists": true,
+          "current_bytes": 234670545,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-14.traceg",
+          "published_sha256": "643e92649330ab3b1dc50ca3a62b0ad69a136e8ad4c7c7eab8783d6bcacb1796",
+          "published_bytes": 1691029,
+          "exists": true,
+          "current_bytes": 1691029,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-15.traceg",
+          "published_sha256": "b2038af4df3e200dcd5ff669600333cc3ab79db7ebcb1c7b64cd7c79f24c87b2",
+          "published_bytes": 57461446,
+          "exists": true,
+          "current_bytes": 57461446,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-16.traceg",
+          "published_sha256": "7b27f9d8d51adba5e55b945d20d7809b375065d9719846933003986e2b7a0401",
+          "published_bytes": 234670545,
+          "exists": true,
+          "current_bytes": 234670545,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-17.traceg",
+          "published_sha256": "e0be2e8d3e98aaea22aec1acea19a472e66bd37c9eeb1ce9a0d24c46cd8ab732",
+          "published_bytes": 2154773,
+          "exists": true,
+          "current_bytes": 2154773,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-18.traceg",
+          "published_sha256": "bcbc00d324c08aea6b6290dbd88b8121d8b6009583c165bea1cd9c049ab32cd5",
+          "published_bytes": 57461446,
+          "exists": true,
+          "current_bytes": 57461446,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-19.traceg",
+          "published_sha256": "06745697864ffaa8d0a8d0982bd0b7041e39cdc8b887f29db9bfb9a136ab53b1",
+          "published_bytes": 234670545,
+          "exists": true,
+          "current_bytes": 234670545,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-20.traceg",
+          "published_sha256": "98ad123fdb9629667f6ec758db0291a90897c175121c6f5a9367c1428f1cdb86",
+          "published_bytes": 2618517,
+          "exists": true,
+          "current_bytes": 2618517,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-21.traceg",
+          "published_sha256": "c9162c2784a6afbce5c775ba42081d92583bc76ff4969c6004fac7a6633fd80f",
+          "published_bytes": 57461446,
+          "exists": true,
+          "current_bytes": 57461446,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-22.traceg",
+          "published_sha256": "979cd6433882890138b9dd9d1da56e28f3399fbc8dd41605291375b6c15f41fd",
+          "published_bytes": 234670545,
+          "exists": true,
+          "current_bytes": 234670545,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-23.traceg",
+          "published_sha256": "17672e5939fde2366fe0b3cf4e12411efe97275ddea8f2c6e7b62bf1755ac479",
+          "published_bytes": 884533,
+          "exists": true,
+          "current_bytes": 884533,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-24.traceg",
+          "published_sha256": "067a6afc067c585f8a91f9966c890177219d00b472bc652644b000fc7ec0dceb",
+          "published_bytes": 57461446,
+          "exists": true,
+          "current_bytes": 57461446,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-25.traceg",
+          "published_sha256": "d41d455a8df417661b53f8f555a8a3d8f962107cbd3101da58cde1bf568b9edb",
+          "published_bytes": 234670545,
+          "exists": true,
+          "current_bytes": 234670545,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-26.traceg",
+          "published_sha256": "34c90922fb1e81ac5842a34d80249e5a5c2021e32af091beb6ab16ab6394b7ef",
+          "published_bytes": 781335,
+          "exists": true,
+          "current_bytes": 781335,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-27.traceg",
+          "published_sha256": "37da9cc4ae7d62ef850af6db3622653780d7078f77a9e2de1effe9e12da22532",
+          "published_bytes": 57461446,
+          "exists": true,
+          "current_bytes": 57461446,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-28.traceg",
+          "published_sha256": "6ae7d39bd40307bf73b0df0a187a3c217f383105abdcaa0d2eb25d6ca972d667",
+          "published_bytes": 234670545,
+          "exists": true,
+          "current_bytes": 234670545,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-29.traceg",
+          "published_sha256": "94e532f01b77579921f1744216cb78df9f43d77e191ac552b2568e3209bf3d0f",
+          "published_bytes": 803865,
+          "exists": true,
+          "current_bytes": 803865,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-30.traceg",
+          "published_sha256": "6f44bf36a8b673523185507323a7e9e8510a543f4d81660ed01af0d927e6a228",
+          "published_bytes": 57461446,
+          "exists": true,
+          "current_bytes": 57461446,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-31.traceg",
+          "published_sha256": "d1c4db576f68dd96562587a2beff0e3ec3f134c9d05cec711ad17298352e5c8d",
+          "published_bytes": 234670545,
+          "exists": true,
+          "current_bytes": 234670545,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-32.traceg",
+          "published_sha256": "d4644fbe18176ee9fc1c44252c9a756677c7c1c76846283c71077325cb0d854d",
+          "published_bytes": 785497,
+          "exists": true,
+          "current_bytes": 785497,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        },
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/scan/NO_ARGS/traces/kernel-33.traceg",
+          "published_sha256": "93f10cc8842b7ffb48192d67182ceab3b83b72d2cf498ecdbe71c98bd5f80213",
+          "published_bytes": 57461446,
+          "exists": true,
+          "current_bytes": 57461446,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        }
+      ],
+      "commandlist_current_sha256": "6e8572dff8fa6ff912fce3f834009d2e62ace23e3671d083bd901d42af6bcee8",
+      "commandlist_matches_prior": true,
+      "review_scope": "Existing original trace replay only; no source recompile, capture, download, row rewriting or host application execution",
+      "source_provenance_scope": "Frozen trace bodies and complete commandlist permit trace replay only if native grammar/closure/E admission pass; original app source revision/toolchain remain UNKNOWN where not disclosed",
+      "formal_E_qualification": false,
+      "current_native_execution_cost_seconds": "UNKNOWN_NO_APP_LAUNCHED",
+      "old_pressure_scope": "Old B0 1152 payload/256 descriptors, different runtime; not measured opportunity of new final1168/512",
+      "new_victim_RO_trigger": "UNKNOWN",
+      "replacement_registered": false
+    },
+    {
+      "workload": "sgemm",
+      "input": "medium",
+      "entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sgemm/_i___data_medium_input_matrix1_txt___data_medium_input_matrix2t_txt___data_medium_input_matrix2t_txt__o_matrix3_txt/traces/kernelslist.g",
+      "commandlist_literal": "MemcpyHtoD,0x00007f34a3200000,4063232\nMemcpyHtoD,0x00007f34a3600000,4190208\nkernel-1.traceg\n",
+      "commandlist_sha256": "0a0d21711ff3f3de1604fc0a243d5be2df5155147bb09bc4533bd017b62f5913",
+      "body_count": 1,
+      "body_bytes": 2216170035,
+      "capture_script": null,
+      "capture_script_literal": "UNKNOWN",
+      "directory_version_label": "11.0",
+      "toolchain_version": "UNKNOWN",
+      "application_source_revision": "UNKNOWN",
+      "expected_full_application_instructions": 1658916864,
+      "historical_baseline_cycles": 353756,
+      "baseline_pressure": {
+        "tag_set_block": "0",
+        "line_mshr_full_block": "0",
+        "descriptor_pool_full_block": "0",
+        "per_address_cap_block": "1409",
+        "wad_full": "0",
+        "scheduler_causal_block": "0"
+      },
+      "historical_runtime_core": "ece1a3a77c5628763e0a4605bfd1c639ee6a1495",
+      "historical_runtime_framework": "f08d2ce857972fad73c4e1ab7162ba94c6336507",
+      "historical_config": "85562fce759876616806d32791ea3b7d1b13ee68cf20a84e48c63c96f67b8c0d",
+      "historical_raw_log": "/workspace/worktrees/accel-sim-ep-l2-c7e/docs/ep_l2/target_baseline_results_final_850/B0-Legacy/sgemm/raw.log.gz",
+      "historical_raw_sha256": "ed67a42e1963b61d8e44fd144e700fe2844d76bfacbb0c9f575e3f3747a22f16",
+      "selection_reason": "Not selected:2.216GB,1.659B instructions; old per-address-cap1409 but no measured tag/MSHR-full; literal capture script absent. Can rebuild wrapper from provenance if needed, no blanket halt.",
+      "files": [
+        {
+          "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-extract/parboil.current.small8.stage/parboil/11.0/parboil-sgemm/_i___data_medium_input_matrix1_txt___data_medium_input_matrix2t_txt___data_medium_input_matrix2t_txt__o_matrix3_txt/traces/kernel-1.traceg",
+          "published_sha256": "1b0739908e3aef52cedea68962172ccac55f0c2d4c651623cb8fb0655475db06",
+          "published_bytes": 2216170035,
+          "exists": true,
+          "current_bytes": 2216170035,
+          "current_size_matches_published": true,
+          "new_full_hash": "not completed by a failed grammar scan; complete audit embeds hash when successful"
+        }
+      ],
+      "commandlist_current_sha256": "0a0d21711ff3f3de1604fc0a243d5be2df5155147bb09bc4533bd017b62f5913",
+      "commandlist_matches_prior": true,
+      "review_scope": "Existing original trace replay only; no source recompile, capture, download, row rewriting or host application execution",
+      "source_provenance_scope": "Frozen trace bodies and complete commandlist permit trace replay only if native grammar/closure/E admission pass; original app source revision/toolchain remain UNKNOWN where not disclosed",
+      "formal_E_qualification": false,
+      "current_native_execution_cost_seconds": "UNKNOWN_NO_APP_LAUNCHED",
+      "old_pressure_scope": "Old B0 1152 payload/256 descriptors, different runtime; not measured opportunity of new final1168/512",
+      "new_victim_RO_trigger": "UNKNOWN",
+      "replacement_registered": false
+    }
+  ]
+}

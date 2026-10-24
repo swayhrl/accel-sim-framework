@@ -2,6 +2,8 @@
 
 本轮Vector r5 Goal已完成，当前没有获准的新完整应用，remaining0。原启动设计与精确来源保留在37fbc6c3ef38ccd7c288771daa3f5afdd1f82705的本文件，以及本轮FROZEN_SPEC/USER_AUTHORIZATION中；不恢复旧Goal、controller或未启动的旧额度。
 
+资产依据：2026-10-24只读清点已完成，18个输入变体/14个benchmark程序；见[workload资产主表](../ep_main_workload_inventory_20261024_v1/WORKLOAD_ASSET_INVENTORY.md)。文件存在、历史接受、native准备和启动授权分别记录。
+
 ## 已完成的首要问题
 
 Vector单端真实原生应用接受：250118个RO事务、749882个RO合并请求、1000000个RO请求/响应；687311次structural-eligible head-cycle，其中2385次与新Tag需求真正共现。covered新Tag需求915784次，目标set RESERVED最大3/16；实际生产FT/RO调用域TagFAIL、relieve、detach、detached退休均0。375000次TVD skip的raw维度保持NA。
