@@ -1,0 +1,71 @@
+{
+  "GPU_calls": false,
+  "command": [
+    "g++",
+    "-O2",
+    "-std=c++17",
+    "-I/data/c16/env/nvbit-1.7.7.1/core",
+    "-I/usr/local/cuda-12.8/targets/x86_64-linux/include",
+    "-I/data/c16/ada_linear_texture_producer_v9_20261024_v1/producer_A2",
+    "/data/c16/ada_linear_texture_producer_v9_20261024_v1/control/resolve_CPU_harness_A2.cpp",
+    "-o",
+    "/data/c16/ada_linear_texture_producer_v9_20261024_v1/control/resolve_CPU_harness_A2"
+  ],
+  "cases": [
+    {
+      "case": "valid3",
+      "exit": 0,
+      "stdout": "100c\n",
+      "stderr": ""
+    },
+    {
+      "case": "valid127",
+      "exit": 0,
+      "stdout": "11fc\n",
+      "stderr": ""
+    },
+    {
+      "case": "negative",
+      "exit": -6,
+      "stdout": "",
+      "stderr": "ADA9_LINEAR_TEXTURE_REJECT DYNAMIC_HANDLE_OR_SIGNED_INDEX_SCOPE\n"
+    },
+    {
+      "case": "oob",
+      "exit": -6,
+      "stdout": "",
+      "stderr": "ADA9_LINEAR_TEXTURE_REJECT DYNAMIC_HANDLE_OR_SIGNED_INDEX_SCOPE\n"
+    },
+    {
+      "case": "wrong_handle",
+      "exit": -6,
+      "stdout": "",
+      "stderr": "ADA9_LINEAR_TEXTURE_REJECT DYNAMIC_HANDLE_OR_SIGNED_INDEX_SCOPE\n"
+    },
+    {
+      "case": "handle_high",
+      "exit": -6,
+      "stdout": "",
+      "stderr": "ADA9_LINEAR_TEXTURE_REJECT DYNAMIC_HANDLE_OR_SIGNED_INDEX_SCOPE\n"
+    },
+    {
+      "case": "overflow",
+      "exit": -6,
+      "stdout": "",
+      "stderr": "ADA9_LINEAR_TEXTURE_REJECT TEXTURE_ADDRESS_OVERFLOW\n"
+    },
+    {
+      "case": "dead",
+      "exit": -6,
+      "stdout": "",
+      "stderr": "ADA9_LINEAR_TEXTURE_REJECT DYNAMIC_HANDLE_OR_SIGNED_INDEX_SCOPE\n"
+    },
+    {
+      "case": "generation2",
+      "exit": -6,
+      "stdout": "",
+      "stderr": "ADA9_LINEAR_TEXTURE_REJECT DYNAMIC_HANDLE_OR_SIGNED_INDEX_SCOPE\n"
+    }
+  ],
+  "no_CUDA_driver_runtime_linked": true
+}

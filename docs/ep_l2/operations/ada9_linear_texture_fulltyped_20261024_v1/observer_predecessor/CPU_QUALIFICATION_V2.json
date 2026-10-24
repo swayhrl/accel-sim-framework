@@ -1,0 +1,82 @@
+{
+  "schema": "linear_texture_CPU_negative_v2",
+  "qualifier_sha256": "9ab33442c246096c642097df96860ce6915c6909bac4b1e3d3be4b0c49198da6",
+  "positive": "/data/c16/linear_texture_semantics_proto_20261024_v1/evidence/positive_qualification_v2/QUALIFICATION.json",
+  "negative_count": 12,
+  "negative_cases": [
+    {
+      "case": "coord_OOB",
+      "exit": 2,
+      "qualification_created": false,
+      "reason": "AssertionError('signed dynamic index in bounds')"
+    },
+    {
+      "case": "coord_negative",
+      "exit": 2,
+      "qualification_created": false,
+      "reason": "AssertionError('signed dynamic index in bounds')"
+    },
+    {
+      "case": "handle_mismatch",
+      "exit": 2,
+      "qualification_created": false,
+      "reason": "AssertionError('dynamic full-supported handle join')"
+    },
+    {
+      "case": "handle_high32",
+      "exit": 2,
+      "qualification_created": false,
+      "reason": "AssertionError('full API handle high bits unsupported')"
+    },
+    {
+      "case": "mask_loss",
+      "exit": 2,
+      "qualification_created": false,
+      "reason": "AssertionError('physical/guard masks including partial warp')"
+    },
+    {
+      "case": "drop_record",
+      "exit": 2,
+      "qualification_created": false,
+      "reason": "AssertionError('unique dynamic ordinal and exact count')"
+    },
+    {
+      "case": "duplicate_record",
+      "exit": 2,
+      "qualification_created": false,
+      "reason": "AssertionError('unique dynamic ordinal and exact count')"
+    },
+    {
+      "case": "nonlinear_resource",
+      "exit": 2,
+      "qualification_created": false,
+      "reason": "AssertionError('app descriptor/query scope')"
+    },
+    {
+      "case": "vector_component",
+      "exit": 2,
+      "qualification_created": false,
+      "reason": "AssertionError('linear-u32-point descriptor scope')"
+    },
+    {
+      "case": "native_mref_masquerade",
+      "exit": 2,
+      "qualification_created": false,
+      "reason": "AssertionError('TLD must not masquerade as native MREF')"
+    },
+    {
+      "case": "input_corrupt",
+      "exit": 2,
+      "qualification_created": false,
+      "reason": "AssertionError('actual HtoD snapshot bytes')"
+    },
+    {
+      "case": "output_corrupt",
+      "exit": 2,
+      "qualification_created": false,
+      "reason": "AssertionError('unloaded native/instrumented input-output equivalence')"
+    }
+  ],
+  "GPU_calls": false,
+  "original_positive_source_KEEP": true
+}

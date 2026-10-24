@@ -1,0 +1,14 @@
+_Z14linear_tex_u32PKyPKiPj	0	1	-	MOV R1, c[0x0][0x28]
+_Z14linear_tex_u32PKyPKiPj	10	6	-	S2R R6, SR_TID.X
+_Z14linear_tex_u32PKyPKiPj	20	7	-	MOV R7, 0x4
+_Z14linear_tex_u32PKyPKiPj	30	260,261	-	ULDC.64 UR4, c[0x0][0x118]
+_Z14linear_tex_u32PKyPKiPj	40	2	-	MOV R2, c[0x0][0x160]
+_Z14linear_tex_u32PKyPKiPj	50	3	-	MOV R3, c[0x0][0x164]
+_Z14linear_tex_u32PKyPKiPj	60	2	2,3,260,261	LDG.E R2, [R2.64]
+_Z14linear_tex_u32PKyPKiPj	70	4,5	6,7	IMAD.WIDE R4, R6, R7, c[0x0][0x168]
+_Z14linear_tex_u32PKyPKiPj	80	5	4,5,260,261	LDG.E R5, [R4.64]
+_Z14linear_tex_u32PKyPKiPj	90	9	2,5	TLD.SCR.B.LZ RZ, R9, R5, R2, 1D, 0x1
+_Z14linear_tex_u32PKyPKiPj	a0	6,7	6,7	IMAD.WIDE R6, R6, R7, c[0x0][0x170]
+_Z14linear_tex_u32PKyPKiPj	b0	-	6,7,9,260,261	STG.E [R6.64], R9
+_Z14linear_tex_u32PKyPKiPj	c0	-	-	EXIT
+_Z14linear_tex_u32PKyPKiPj	d0	-	-	BRA 0xd0
