@@ -27,3 +27,7 @@ Each workload runs DM(DTC AE0),DH(DTC AE1),CM(conventional linear),CH(convention
 At this preregistration no model has started. Final result and reusable operational notes will be appended after the finite campaign. Englishv0.23 remains the last user-confirmed paper mother; the actual package is unavailable. Original44, old accepted/negative/HOLD, old AG8R1 and completed GEMM identities remain preserved.
 
 Runtime:/root/data/dtc_main_short3_20261024_v1. Sole entry:/root/data/ep_l2_dtc_l1_native_v2/bin/native. Request:DTC_AEFAIR_SHORT3_EPOCH2_20261024_V1. Branch:hrl/dtc-aefair-short3-174new-20261024-v1.
+
+## Prelaunch engineering correction
+
+The first metadata controller stopped before INTENT/UUID/model fork because the new workspace lacked its central-registry path mapping. Zero scientific starts were consumed. An exact symlink now resolves to the same central authority. The stopped controller, CLI and sealed-unused state are retained. R2 is a separately identified finite metadata worker for the original12 never-started cells; this is no scientific retry/refund or added budget. No simulator/config/strict/resource policy byte changed.
