@@ -1,0 +1,13 @@
+# Exact ADA9 texture native result
+
+The eighth and final authorized engineering application attempt passed both the lane's join and a separate parent raw/group/parser/counter/mapping review. UUID5553b55c08224280afefe139c9c9333c exited0 in1.9585s, with no stop reason. The native raw SHA is f80dcae774251b1a90f471fc6fe5d2461c72acd9c7d24b2a95b50d0bc873b33a. All174 frozen pins were verified. The original raw events and grouped source match per-warp bytes, and all26 source PC/mask/op tuples match consumer decode records.
+
+There are481 active-lane source instances and185 serialized embedded-constant auxiliary instances:666 model uops in36 internal warp records. Constant memory has222 lane operations. Its12 decoded warp memory records retain six width4 and six width8 accesses; direct ULDC64 and8-byte embedded operands are not split into artificial word instructions.
+
+The37 texture lanes use tex_space and actual L1T:6 accesses,4 misses,2 pending/HIT_RESERVED hits and0 reservation failures. Four texture requests reach the interconnect; the sector-cache L2 reports16 accesses comprising4 misses and12 sector misses. These are model counters, not GPU hardware transaction or timing measurements. Constant accesses are12 with6 misses and3 interconnect requests. The74 global-load lanes and37 global-store lanes complete with5 core write requests. One CTA is issued and completed. Physical EXIT masks are32 full lanes and5 tail lanes, exactly37.
+
+The primary PID/startticks-bound observer saved44 samples and an8-path SHA union, including real stopped FIRST_ISSUE and TERMINAL checkpoints. It covers sampled primary and main-thread-child observations; it does not prove every transient mapping, process or DSO. The frozen Core is unchanged.
+
+This accepts only the exact measured single512-byte linear u32 object, single kernel/grid1/block37 and TLD.SCR.B.LZ operand/resource contract. General texture/filter/array/surface/interop or multiple-resource/lifetime workloads remain outside this result. The texture addresses come from measured API resource base plus captured signed index, explicitly not NVBit native MREF. Numerical acceptance is the real producer's same-process37-element CPU reference; the simulator does not recompute values. No EP V100 hardware configuration or scientific performance qualification is promoted.
+
+The campaign is now8/8 consumed. The earlier zero-issue CALL attempt remains failed and consumed. No further simulator application attempt is authorized under this campaign. A native output reservation may be retired only after true164 member-level closure and independent parent cold restore; this result does not retire it.

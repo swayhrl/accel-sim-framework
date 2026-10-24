@@ -1,0 +1,109 @@
+{
+  "status": "SCOPED_ADA9_LINEAR_U32_EXACT37_NATIVE_TERMINAL_JOIN_PASS",
+  "uuid": "5553b55c08224280afefe139c9c9333c",
+  "raw_sha256": "f80dcae774251b1a90f471fc6fe5d2461c72acd9c7d24b2a95b50d0bc873b33a",
+  "all_spec_pins_verified": 174,
+  "source_sass_records": 26,
+  "source_active_lanes": 481,
+  "aux_uops": 10,
+  "aux_active_lanes": 185,
+  "total_model_lane_uops": 666,
+  "all_original_pc_mask_opcode_multiset_matches": true,
+  "source_trace_sha256": "87a86a91b128a05e8453bab928ec27b42c191aa3e6e2ac0937f94069074b55ed",
+  "stats": {
+    "gpu_tot_sim_insn": 666,
+    "const_lane_instances": 222,
+    "actual_const_requests": 3,
+    "actual_texture_interconnect_requests": 4,
+    "L1C_accesses": 12,
+    "L1C_misses": 6,
+    "L1T_accesses": 6,
+    "L1T_misses": 4,
+    "L1T_hits": 0,
+    "L1T_cache_misses": 4,
+    "L2_TEX_hit": 0,
+    "L2_TEX_miss": 4,
+    "global_write_requests": 5,
+    "issued_ctas": 1,
+    "completed_ctas": 1
+  },
+  "constant_warp_widths": {
+    "4": 6,
+    "8": 6
+  },
+  "constant_space": "symbolic bank/context + byte offset, not GPU VA",
+  "TLD_lane_accesses": 37,
+  "texture_address_origin": "API_RESOURCE_LINEAR_SIGNED_INDEX_RESOLUTION_NOT_NVBIT_NATIVE_MREF",
+  "global_load_lanes": 74,
+  "global_store_lanes": 37,
+  "physical_EXIT_lanes": 37,
+  "physical_nonzero_EXIT_masks": [
+    "0xffffffff",
+    "0x1f"
+  ],
+  "maps_samples": 44,
+  "map_union_paths": 8,
+  "live_stopped_checkpoints": [
+    {
+      "monotonic": 9606206.89674542,
+      "pid": 1016706,
+      "start_ticks": 960620603,
+      "state": "T",
+      "label": "FIRST_ISSUE",
+      "maps_sha256": "0f4ddcafb00e6f63235db02dfcb9aed3ae389cbf63c9c2dbf4025c0769677845",
+      "mapped_files": 8,
+      "primary": true,
+      "saved_maps": "maps_000041_pid1016706_FIRST_ISSUE.txt",
+      "paths": [
+        "/root/data/ada_native_extensions_stage4_20261024_v1/core/lib/gcc-11.4.0/cuda-12040/release/libcudart.so",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/ld-linux-x86-64.so.2",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libc.so.6",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libgcc_s.so.1",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libm.so.6",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libstdc++.so.6.0.30",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libz.so.1.2.11",
+        "/root/data/ep_l2_main_ada_tex37_ada9_compat_20261024_v1/bin/accel-sim.out"
+      ]
+    },
+    {
+      "monotonic": 9606207.457452027,
+      "pid": 1016706,
+      "start_ticks": 960620603,
+      "state": "T",
+      "label": "TERMINAL",
+      "maps_sha256": "f130c3e07d7ab528c8d2baaade2f5a5bb29904d595681b98e034024d26a36517",
+      "mapped_files": 8,
+      "primary": true,
+      "saved_maps": "maps_000043_pid1016706_TERMINAL.txt",
+      "paths": [
+        "/root/data/ada_native_extensions_stage4_20261024_v1/core/lib/gcc-11.4.0/cuda-12040/release/libcudart.so",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/ld-linux-x86-64.so.2",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libc.so.6",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libgcc_s.so.1",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libm.so.6",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libstdc++.so.6.0.30",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libz.so.1.2.11",
+        "/root/data/ep_l2_main_ada_tex37_ada9_compat_20261024_v1/bin/accel-sim.out"
+      ]
+    }
+  ],
+  "maps_discovery_scope": {
+    "module": "/root/data/ada_native_extensions_stage4_20261024_v1/native_maps_observer_v2.py",
+    "period_seconds": 0.02,
+    "primary_and_sampled_descendants": true,
+    "PID_start_ticks_monotonic_samples": true,
+    "new_seen_paths_immediate_full_SHA_vs_pins": true,
+    "explicit_SIGSTOP_SIGCONT_at": [
+      "FIRST_ISSUE",
+      "TERMINAL"
+    ],
+    "scope": "Sampled live mappings plus explicit stopped primary issue and post-simulation checkpoints. Does not prove every transient DSO/process. Host wall-time observation stops are explicit; simulated cycles unaffected.",
+    "observed_path_read_failure": "Fail closed RuntimeError even if path disappears between maps and hash; only explicit proc exit races may be skipped",
+    "child_discovery_scope": "Recursive /proc/PID/task/PID/children main-thread child lists only; not all thread children, reparented children or every transient process"
+  },
+  "numeric_reference": "same-process actual GPU full37 CPU check; trace consumer does not recompute values",
+  "hardware_timing_qualification": false,
+  "EP_scientific_promotion": false,
+  "campaign_consumed_after": 8,
+  "campaign_ceiling": 8
+}
