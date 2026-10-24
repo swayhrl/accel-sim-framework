@@ -1,0 +1,47 @@
+{
+  "status": "PASS",
+  "asset_id": "SDK42_VECTOR_4000000_ADA7_A002_CTA_STRIDE_40_V1",
+  "argv": [
+    "/root/workspace/assets/bin/trace-assets-rtx4080",
+    "verify",
+    "SDK42_VECTOR_4000000_ADA7_A002_CTA_STRIDE_40_V1",
+    "--variant",
+    "trim"
+  ],
+  "public_reader_sha256": "4a3f64801f76e24a3084a31a9c667d85c5431e98e6190dfa2be50ab8a1b97389",
+  "cwd": "/root/data/ep_l2_main_20261023_v1/worktree",
+  "exit_code": 0,
+  "stdout": {
+    "cwd": "/root/data/ep_l2_main_20261023_v1/worktree",
+    "catalog_revisions": {
+      "trim": "41542421e84cae531b04993b56ba3482993ef585ffbf5157e7bfcb3dcaee881b"
+    },
+    "results": [
+      {
+        "asset_id": "SDK42_VECTOR_4000000_ADA7_A002_CTA_STRIDE_40_V1",
+        "variant": "trim",
+        "status": "EXACT_MEMBER_SET_AND_FULL_SHA_PASS",
+        "files": 8,
+        "bytes": 133378,
+        "manifest_sha256": "d9a8c17342d56b41606682ae9f4311ba0c8c801e9f426b4ebb52aab3f377ad9c",
+        "scope": "exact declared members + COMMIT/MANIFEST envelope",
+        "numerical_status": "INHERITED_PARENT_ONLY: NATIVE_AND_CAPTURE_QA_PASS",
+        "producer_qualification": "PARENT_ADA7_FULL_RECORD_PASS_WITH_EXACT_SELECTED_BODY_EQUALITY",
+        "consumer_qualification": "NOT_GRANTED; sparse CTA grid remap and cache-context profile require explicit qualification",
+        "full_application": null,
+        "selection": {
+          "kind": "DETERMINISTIC_COMPLETE_CTA_STRIDE",
+          "stride": 40,
+          "selection": "all kernels retained; original CUDA linear CTA index % stride == 0",
+          "linear_index": "x + Nx*(y + Ny*z)",
+          "coordinate_remap": "selected original indices in ascending CUDA order -> (j,0,0); original block shape and all SASS/masks/addresses/dependencies retained",
+          "historical_crop_equivalence": "NOT_CLAIMED; independent explicit policy"
+        },
+        "parent_asset_id": "SDK42_VECTOR_4000000_ADA7_A002"
+      }
+    ]
+  },
+  "stderr": "",
+  "observed_unix": 1792840152.5725808,
+  "scientific_or_consumer_upgrade": false
+}
