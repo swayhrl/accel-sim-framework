@@ -1,0 +1,21 @@
+--- original/vulkanImageCUDA.cu
++++ finite4/vulkanImageCUDA.cu
+@@ -563,12 +563,17 @@
+ 
+   void mainLoop() {
+     updateUniformBuffer();
+-    while (!glfwWindowShouldClose(window)) {
++    unsigned ep_finite_frames = 0;
++    while (!glfwWindowShouldClose(window) && ep_finite_frames < 4) {
+       glfwPollEvents();
+       drawFrame();
++      ++ep_finite_frames;
+     }
+ 
+     vkDeviceWaitIdle(device);
++    checkCudaErrors(cudaDeviceSynchronize());
++    if (ep_finite_frames != 4) throw std::runtime_error("finite Vulkan run closed early");
++    printf("EP_FINITE_FRAMES_COMPLETE 4\n");
+   }
+ 
+   void cleanupSwapChain() {

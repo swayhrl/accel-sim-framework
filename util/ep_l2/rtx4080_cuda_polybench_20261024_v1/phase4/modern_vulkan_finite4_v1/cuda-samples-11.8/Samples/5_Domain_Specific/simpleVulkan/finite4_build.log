@@ -1,0 +1,18 @@
+>>> GCC Version is greater or equal to 4.7.0 <<<
+/usr/local/cuda-12.8/bin/nvcc -ccbin g++ -I../../../Common `pkg-config --static --cflags glfw3` -I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/include -m64 -include limits --std=c++11 --threads 0 -gencode arch=compute_89,code=sm_89 -o SineWaveSimulation.o -c SineWaveSimulation.cu
+/usr/local/cuda-12.8/bin/nvcc -ccbin g++ -I../../../Common `pkg-config --static --cflags glfw3` -I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/include -m64 -include limits --std=c++11 --threads 0 -gencode arch=compute_89,code=sm_89 -o VulkanBaseApp.o -c VulkanBaseApp.cpp
+Package glfw3 was not found in the pkg-config search path.
+Perhaps you should add the directory containing `glfw3.pc'
+to the PKG_CONFIG_PATH environment variable
+Package 'glfw3', required by 'virtual:world', not found
+Package glfw3 was not found in the pkg-config search path.
+Perhaps you should add the directory containing `glfw3.pc'
+to the PKG_CONFIG_PATH environment variable
+Package 'glfw3', required by 'virtual:world', not found
+In file included from VulkanBaseApp.cpp:47:
+/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/include/GLFW/glfw3.h:241:12: fatal error: GL/gl.h: No such file or directory
+  241 |   #include <GL/gl.h>
+      |            ^~~~~~~~~
+compilation terminated.
+make: *** [Makefile:386: VulkanBaseApp.o] Error 255
+make: *** Waiting for unfinished jobs....

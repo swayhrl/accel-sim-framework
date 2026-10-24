@@ -1,0 +1,104 @@
+[
+  {
+    "task_id": "sdk429_histogram_upstream_shared_atomic_variant_v1",
+    "suite": "NVIDIA GPU Computing SDK",
+    "version": "official4.2.9 explicit upstream shared atomic GPU variant",
+    "program": "histogram",
+    "source_archive_sha256": "b6a53afcf8f8422b5075aa37cec6730b0b9896d50867ee9105da05d62e95b8bb",
+    "variant": "upstream provided USE_SMEM_ATOMICS branch enabled; replaces unsynchronized warp tag retry in 256-bin histogram only; 64-bin algorithm unchanged",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_histogram_shared_atomic_v1/sdk429_histogram_shared_atomic"
+    ],
+    "binary_sha256": "5cf256121880779ab793b56dffd21c344016ff4c35f7a8ac34ccb6525d8b6a0b",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_histogram_shared_atomic_v1/histogram_common.h",
+        "sha256": "e201cb6550b6dbd6504dc24cc78eee50e359bbfc569cdc8ed40ebd65ab8ff384"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_histogram_shared_atomic_v1/histogram64.cu",
+        "sha256": "f99f0109dd239970a4f653d690b5358ffb27eef3698a9d480bbabf15ae65debe"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_histogram_shared_atomic_v1/main.cpp",
+        "sha256": "24fd2e0118bbf3f9dd76ca5d2677e91b37eb931a61a5ad2b0d2f1685ad802031"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_histogram_shared_atomic_v1/histogram256.cu",
+        "sha256": "6627565beeef6b80f05f3301d74af1d6187a4721677857412a29f6411eb5b58a"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_histogram_shared_atomic_v1/histogram_gold.cpp",
+        "sha256": "3810784bc76f0bcbad99cada0db06454a49a7d06318af58b29b49eb821912d56"
+      }
+    ],
+    "input_files": [],
+    "runtime_links": [],
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/math_cuda118_v1/prefix/usr/local/cuda-11.8/targets/x86_64-linux/lib:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/mpi/usr/lib/x86_64-linux-gnu/openmpi/lib:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/mpi/usr/lib/x86_64-linux-gnu",
+      "OPAL_PREFIX": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/mpi/usr"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "native_timeout_sec": 600,
+    "correctness": {
+      "exit": 0,
+      "note": "Upstream numerical/self-check strength to be reviewed separately; raw exit0 cannot establish native science acceptance"
+    },
+    "readiness": "NATIVE_PENDING_SPECIAL_SHARED_ATOMIC_GPU_VARIANT",
+    "profile_flags": [
+      "EXPLICIT_GPU_SOURCE_CHANGED_UPSTREAM_SHARED_ATOMIC_BRANCH",
+      "SHARED_ATOMIC_SEMANTICS_REQUIRES_QUALIFICATION"
+    ],
+    "GPU_source_modified": true,
+    "build_receipt": {
+      "program": "histogram",
+      "source_version": "official GPU Computing SDK4.2.9",
+      "variant": "upstream provided USE_SMEM_ATOMICS branch enabled; replaces unsynchronized warp tag retry in 256-bin histogram only; 64-bin algorithm unchanged",
+      "GPU_source_modified": true,
+      "canonical_failure_retained": true,
+      "source_original_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/histogram",
+      "modified_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_histogram_shared_atomic_v1/histogram256.cu",
+      "original_sha256": "804662ba54c329f197590588e6e288520f0673815aa55722f5ca2c46b05e58e3",
+      "new_sha256": "6627565beeef6b80f05f3301d74af1d6187a4721677857412a29f6411eb5b58a",
+      "patch_sha256": "5ad539818c62751acc0203c55d79c2b1c85930458cd05bac61ebef4472878869",
+      "command": [
+        "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/bin/nvcc",
+        "-ccbin",
+        "/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/gcc11/usr/bin/g++-11",
+        "-O3",
+        "-lineinfo",
+        "-arch=sm_89",
+        "-include",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14/cutil_inline.h",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_histogram_shared_atomic_v1",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_histogram_shared_atomic_v1/inc",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/math_cuda118_v1/prefix/usr/local/cuda-11.8/targets/x86_64-linux/include",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/cccl118/usr/local/cuda-11.8/targets/x86_64-linux/include",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/inc",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/common/inc",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Common",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/include",
+        "-I/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/include",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/mpi/usr/lib/x86_64-linux-gnu/openmpi/include",
+        "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/mpi/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi",
+        "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/cuda11.8/lib",
+        "-L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/math_cuda118_v1/prefix/usr/local/cuda-11.8/targets/x86_64-linux/lib",
+        "-L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu",
+        "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu",
+        "-L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/mpi/usr/lib/x86_64-linux-gnu/openmpi/lib",
+        "-L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/mpi/usr/lib/x86_64-linux-gnu",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_histogram_shared_atomic_v1/histogram64.cu",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_histogram_shared_atomic_v1/histogram256.cu",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_histogram_shared_atomic_v1/main.cpp",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_histogram_shared_atomic_v1/histogram_gold.cpp",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/common/lib/libcutil_x86_64.a",
+        "-o",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_histogram_shared_atomic_v1/sdk429_histogram_shared_atomic"
+      ],
+      "exit": 0,
+      "wall_seconds": 2.6725120544433594,
+      "binary_sha256": "5cf256121880779ab793b56dffd21c344016ff4c35f7a8ac34ccb6525d8b6a0b"
+    }
+  }
+]

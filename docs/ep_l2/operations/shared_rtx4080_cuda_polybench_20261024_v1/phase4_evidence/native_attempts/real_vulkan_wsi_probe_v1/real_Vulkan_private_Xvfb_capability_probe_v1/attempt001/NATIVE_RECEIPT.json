@@ -1,0 +1,158 @@
+{
+  "task": {
+    "task_id": "real_Vulkan_private_Xvfb_capability_probe_v1",
+    "suite": "PLATFORM_CAPABILITY_QUALIFICATION",
+    "version": "v1",
+    "program": "VULKAN_WSI_CAPABILITY_PROBE_NOT_WORKLOAD",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/run_private_vulkan_wsi_probe_v1.py"
+    ],
+    "binary_sha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/run_private_vulkan_wsi_probe_v1.py",
+        "sha256": "26cfffb083a6371d92d5be0bf83d44c40f7dcfbfede87b1c4b9df4c82af59661"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/run_private_vulkan_wsi_probe_v1.py",
+        "sha256": "26cfffb083a6371d92d5be0bf83d44c40f7dcfbfede87b1c4b9df4c82af59661",
+        "bytes": 2555
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/optional_platform_v1/prefix/usr/bin/Xvfb",
+        "sha256": "0081b27338b510ec5e2068a93c6db31480872de9bb082f347f3747ef1648e794",
+        "bytes": 2064864
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/optional_platform_v1/prefix/usr/bin/xauth",
+        "sha256": "ffcb5f569bf9fce94cbf37f5d61790d463508c6122511a5f4c6e280d3633086e",
+        "bytes": 56280
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/optional_platform_v1/prefix/usr/bin/vulkaninfo",
+        "sha256": "f850851cd176c646851f42287902d5ee737849f275c1a64cb319b4985bdfbb4c",
+        "bytes": 649712
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/optional_platform_v1/prefix/usr/bin/vkcube",
+        "sha256": "14785e71ea04584c4ef4b29b8ea17e7d8f988755d144feefa86e711f201a2b1d",
+        "bytes": 280920
+      }
+    ],
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/optional_platform_v1/prefix/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu"
+    },
+    "runtime_links": [],
+    "native_timeout_sec": 180,
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "REAL_NVIDIA_RTX4080_VULKAN_PRIVATE_XVFB_PRESENT_PASSED"
+    },
+    "workload_kind": "CAPABILITY_PROBE_NO_CUDA_KERNEL_EXPECTED",
+    "note": "Private owned Xvfb for display transport only, force NVIDIA Vulkan ICD and exact physical UUID then actual2-frame Vulkan GPU render/present. No GDM/Xauthority access or global service change. Capability probe is never counted as an asset workload trace."
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/real_vulkan_wsi_probe_v1/real_Vulkan_private_Xvfb_capability_probe_v1/attempt001",
+  "index": 0,
+  "start_unix": 1792840781.4507074,
+  "lock_wait_seconds": 1570.039618239738,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 303 MiB, 15641 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792842351.5368555,
+      "util": 0,
+      "free_mib": 15641
+    },
+    {
+      "unix": 1792842352.5675073,
+      "util": 0,
+      "free_mib": 15641
+    },
+    {
+      "unix": 1792842353.6027143,
+      "util": 0,
+      "free_mib": 15641
+    },
+    {
+      "unix": 1792842354.635023,
+      "util": 0,
+      "free_mib": 15641
+    },
+    {
+      "unix": 1792842355.667726,
+      "util": 0,
+      "free_mib": 15641
+    },
+    {
+      "unix": 1792842356.7007215,
+      "util": 0,
+      "free_mib": 15641
+    },
+    {
+      "unix": 1792842357.73263,
+      "util": 0,
+      "free_mib": 15641
+    },
+    {
+      "unix": 1792842358.7657785,
+      "util": 0,
+      "free_mib": 15641
+    },
+    {
+      "unix": 1792842359.7989302,
+      "util": 0,
+      "free_mib": 15641
+    },
+    {
+      "unix": 1792842360.832701,
+      "util": 0,
+      "free_mib": 15641
+    },
+    {
+      "unix": 1792842361.8653665,
+      "util": 0,
+      "free_mib": 15641
+    },
+    {
+      "unix": 1792842362.899766,
+      "util": 0,
+      "free_mib": 15641
+    },
+    {
+      "unix": 1792842363.9332845,
+      "util": 0,
+      "free_mib": 15641
+    },
+    {
+      "unix": 1792842364.9666443,
+      "util": 0,
+      "free_mib": 15641
+    },
+    {
+      "unix": 1792842365.9980876,
+      "util": 0,
+      "free_mib": 15641
+    }
+  ],
+  "input_staging": "Private independent regular-file copies of manifest-listed inputs; writable outputs cannot follow a directory symlink into source",
+  "pid": 534685,
+  "start_ticks": "346526298",
+  "minimum_free_vram_mib": 15634,
+  "exit": 0,
+  "wall_seconds": 1.0988193480297923,
+  "status": "UPSTREAM_NATIVE_SELF_CHECK_PASS",
+  "stdout_sha256": "7ebe8e7769264488936466906018d98c9da02bda15e24928e2588a531ddbe9d9",
+  "end_unix": 1792842368.1252098
+}

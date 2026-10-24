@@ -1,0 +1,48 @@
+{
+  "status": "INDEPENDENT_FULL_1024_SQUARED_TEXTURE_ROTATE_GRAYSCALE_EPSILON4_PASS",
+  "task_id": "cuda118_cudaNvSci_original_default_public_x86_sdk_v1",
+  "task_manifest_sha256": "c4b492dec079fe4fd6af593d809a143feeb864f45b1397f674f36bd75f0d5dba",
+  "runtime": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/cudaNvSci_original_default_public_x86_v1/cuda118_cudaNvSci_original_default_public_x86_sdk_v1/attempt001",
+  "source_files": [
+    {
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cudaNvSci/main.cpp",
+      "sha256": "97306b52d8934e44352106316933940cf31ef50b115a6970c37135e57381fdae"
+    },
+    {
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cudaNvSci/cudaNvSci.cpp",
+      "sha256": "db069343b4b68fe6bba4482b8da0c68e9259e5ff44d22fb821cec2a02d29d8a8"
+    },
+    {
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cudaNvSci/imageKernels.cu",
+      "sha256": "495e2eb2b886588f9a7eafea41cbafbfaac0c121379d49dfa72c0218c47b38ae"
+    },
+    {
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cudaNvSci/cudaNvSci.h",
+      "sha256": "27357228a0f725c5c5ede484765b76e24830f53cf9eb461011ea0deffd09ce56"
+    }
+  ],
+  "input_sha256": "3f3bbd869417828daa568a8ae090c153f471f8dba3c8b5b58eaa08114ca65bb7",
+  "actual_output_sha256": "0bc1b815c5bf3049acbf5aac2e6a691d5ff360dda18da7af6f6419b69abc18ff",
+  "prediction_payload_sha256": "3ca9729bc95b96c3959de38933e9e18ac8064c98036a4415da11a6ba6924703a",
+  "checker_sha256": "5122a6d39853824179b66e3a3ffc7ba9ae732b6c83ce4df65ba1d4209239def8",
+  "width": 1024,
+  "height": 1024,
+  "checked_pixels": 1048576,
+  "checked_channels": 3145728,
+  "max_abs_channel_error": 1,
+  "channels_over_fixed4": 0,
+  "non_grayscale_pixels": 0,
+  "abs_error_histogram": {
+    "0": 3123684,
+    "1": 22044
+  },
+  "all_pixels_required": true,
+  "mismatch_fraction_relaxation": false,
+  "tolerance_fixed_before_observation": 4,
+  "math_reference": "Independent scalar bilinear wrap texture lookup with half-texel centers after theta0.5 normalized rotation, uchar channel truncation, then double 0.3/0.59/0.11 grayscale truncation; original shape1024^2",
+  "texture_fraction_reference": "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-c-programming-guide/index.html#linear-filtering",
+  "tolerance_basis": "Two 8-fractional-bit texture axes (<2 byte interpolation perturbation), uchar and grayscale truncation margins; every RGB channel <=4; float coordinate error at theta.5 size1024 is small compared with byte margin. This is bounded image agreement, not bit-exact texture implementation or trace producer qualification.",
+  "GPU_calls": false,
+  "source_and_runtime_read_only": true,
+  "elapsed_cpu_s": 3.5958616733551025
+}

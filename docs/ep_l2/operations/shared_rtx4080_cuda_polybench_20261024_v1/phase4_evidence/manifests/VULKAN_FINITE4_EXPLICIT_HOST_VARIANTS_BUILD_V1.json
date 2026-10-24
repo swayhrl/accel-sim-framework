@@ -1,0 +1,41 @@
+[
+  {
+    "program": "simpleVulkan",
+    "variant": "explicit finite 4 displayed frames; original simulation/image/window sizes; simple wave/MonteCarlo host simulation time fixed at frame_index/60; CUDA kernels unchanged; final device completion checked",
+    "original_interactive_program_retained": true,
+    "GPU_kernel_bodies_modified": false,
+    "source_patches": [
+      {
+        "file": "VulkanBaseApp.cpp",
+        "original_sha256": "a0ee63f759a0d2e8e1d72d122277eb561a9599c81514b9734459bb4cbeeb4b54",
+        "new_sha256": "35141751e1bf05698a48ff5f084f3005a02e6a0774283cd233e526f624e96f23",
+        "patch_sha256": "09fd9cd2eca1ab606175f9bcc1cd7a4032c9ecb6802f70c828e740a5ac77eee2"
+      },
+      {
+        "file": "main.cpp",
+        "original_sha256": "6fb87017fc7217e802546b03c95776302f63a29a37c989b3d454d99af0a9e7ab",
+        "new_sha256": "9767ebc47bd64b9c6abea30ba0e5630dbff8c9c97ce999f358042da030b990dd",
+        "patch_sha256": "c51f1f10d18d750b7ae8640990961c57303ff48804fd9530c608ddd0ad87d5a3"
+      }
+    ],
+    "command": [
+      "make",
+      "-j2",
+      "CUDA_PATH=/usr/local/cuda-12.8",
+      "SMS=89",
+      "GENCODE_FLAGS=-gencode arch=compute_89,code=sm_89",
+      "GLPATH=/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu /data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu",
+      "HEADER_SEARCH_PATH=/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/include /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/include /home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/include /data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/include",
+      "VULKAN_SDK_PATH=/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr",
+      "EXTRA_NVCCFLAGS=-include limits"
+    ],
+    "exit": 2,
+    "wall_seconds": 0.8153340816497803,
+    "log": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_vulkan_finite4_v1/cuda-samples-11.8/Samples/5_Domain_Specific/simpleVulkan/finite4_build.log",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/modern_complete_deps_v1/prefix/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu"
+    },
+    "binary": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_vulkan_finite4_v1/cuda-samples-11.8/Samples/5_Domain_Specific/simpleVulkan/simpleVulkan",
+    "binary_sha256": null
+  }
+]

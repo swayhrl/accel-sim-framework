@@ -1,0 +1,14 @@
+--- original/main.cpp
++++ finite4/main.cpp
+@@ -465,9 +465,8 @@
+     static chrono_tp startTime = std::chrono::high_resolution_clock::now();
+ 
+     chrono_tp currentTime = std::chrono::high_resolution_clock::now();
+-    float time = std::chrono::duration<float, std::chrono::seconds::period>(
+-                     currentTime - startTime)
+-                     .count();
++    static unsigned ep_sim_frame = 0;
++    float time = static_cast<float>(ep_sim_frame++) / 60.0f;
+ 
+     if (m_currentFrame == 0) {
+       m_lastTime = startTime;

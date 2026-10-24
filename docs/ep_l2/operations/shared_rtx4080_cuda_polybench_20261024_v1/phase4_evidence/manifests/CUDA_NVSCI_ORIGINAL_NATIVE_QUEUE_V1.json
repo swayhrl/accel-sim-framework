@@ -1,0 +1,64 @@
+[
+  {
+    "task_id": "cuda118_cudaNvSci_original_default_public_x86_sdk_v1",
+    "suite": "CUDA Samples",
+    "version": "v11.8 original unchanged source + official NvSci7.0.4 x86_64 libs",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "source_archive_sha256": "1bc02c0ca42a323f3c7a05b5682eae703681a91e95b135bfe81f848b2d6a2c51",
+    "program": "cudaNvSci",
+    "variant": "SOURCE_DECLARED_DEFAULT_NO_VARIANT_FIELD",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cudaNvSci/cudaNvSci"
+    ],
+    "binary_sha256": "91ff163aa03ccdda1e596f7fcf9ea928218d6106fcab9f0c83002e1e96d49bc6",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cudaNvSci/main.cpp",
+        "sha256": "97306b52d8934e44352106316933940cf31ef50b115a6970c37135e57381fdae"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cudaNvSci/cudaNvSci.cpp",
+        "sha256": "db069343b4b68fe6bba4482b8da0c68e9259e5ff44d22fb821cec2a02d29d8a8"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cudaNvSci/imageKernels.cu",
+        "sha256": "495e2eb2b886588f9a7eafea41cbafbfaac0c121379d49dfa72c0218c47b38ae"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cudaNvSci/cudaNvSci.h",
+        "sha256": "27357228a0f725c5c5ede484765b76e24830f53cf9eb461011ea0deffd09ce56"
+      }
+    ],
+    "input_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cudaNvSci/teapot1024.ppm",
+        "sha256": "3f3bbd869417828daa568a8ae090c153f471f8dba3c8b5b58eaa08114ca65bb7",
+        "bytes": 3145791
+      }
+    ],
+    "runtime_links": [
+      {
+        "name": "teapot1024.ppm",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/4_CUDA_Libraries/cudaNvSci/teapot1024.ppm"
+      }
+    ],
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/nvsci_official_x86_v1/prefix/usr/lib/x86_64-linux-gnu"
+    },
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "native_timeout_sec": 600,
+    "correctness": {
+      "exit": 0,
+      "note": "Original default creates external NvSci buffer/image/semaphores; output PPM alone no independent full reference. Numerical review pending."
+    },
+    "readiness": "NATIVE_PENDING_SPECIAL_NVSCI_EXTERNAL_RESOURCE_PROFILE",
+    "profile_flags": [
+      "NVSCI_EXTERNAL_MEMORY_SEMAPHORE_INITIALIZATION_NOT_HTOD_ONLY",
+      "TEXTURE_IMAGE_INPUT",
+      "MULTI_HOST_THREAD_MULTI_STREAM",
+      "SINGLE_GPU_SOURCE_SUPPORTED_DEFAULT",
+      "NO_SERVICE_OR_KERNEL_INSTALLATION_PERFORMED"
+    ],
+    "dependency_manifest": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/manifests/PRIVATE_NVSCI_OFFICIAL_X86_DEPENDENCY_V1.json"
+  }
+]
