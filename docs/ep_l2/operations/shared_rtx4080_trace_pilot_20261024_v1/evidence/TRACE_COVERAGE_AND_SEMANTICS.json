@@ -1,0 +1,86 @@
+{
+  "status": "FULL_SINGLE_KERNEL_STRUCTURAL_COVERAGE_PASS",
+  "headers": [
+    "-kernel name = _Z9vectorAddPKfS0_Pfi",
+    "-kernel id = 1",
+    "-grid dim = (15625,1,1)",
+    "-block dim = (256,1,1)",
+    "-shmem = 0",
+    "-nregs = 12",
+    "-binary version = 89",
+    "-cuda stream id = 0",
+    "-shmem base_addr = 0x0000725cbd000000",
+    "-local mem base_addr = 0x0000725cbb000000",
+    "-nvbit version = 1.7.5",
+    "-accelsim tracer version = 5",
+    "-enable lineinfo = 0"
+  ],
+  "ctas": 15625,
+  "warps": 125000,
+  "trace_records": 2125000,
+  "active_lane_instruction_instances": 64000000,
+  "memory_payload_bytes_sum": 48000000,
+  "opcode_record_counts": {
+    "MOV": 250000,
+    "S2R": 250000,
+    "IMAD": 125000,
+    "ISETP.GE.AND": 125000,
+    "EXIT": 250000,
+    "ULDC.64": 125000,
+    "IMAD.WIDE": 375000,
+    "LDG.E": 250000,
+    "FADD": 250000,
+    "STG.E": 125000
+  },
+  "pc_counts": {
+    "0000": 125000,
+    "0010": 125000,
+    "0020": 125000,
+    "0030": 125000,
+    "0040": 125000,
+    "0050": 125000,
+    "0060": 125000,
+    "0070": 125000,
+    "0080": 125000,
+    "0090": 125000,
+    "00a0": 125000,
+    "00b0": 125000,
+    "00c0": 125000,
+    "00d0": 125000,
+    "00e0": 125000,
+    "00f0": 125000,
+    "0100": 125000
+  },
+  "mask_counts": {
+    "ffffffff": 2000000,
+    "00000000": 125000
+  },
+  "warp_instruction_length_histogram": {
+    "17": 125000
+  },
+  "terminal_exit_warps": 125000,
+  "terminal_exit_count_histogram": {
+    "1": 125000
+  },
+  "kernel_members": 1,
+  "htod_copies": 2,
+  "htod_bytes": 32000000,
+  "expected": {
+    "ctas": 15625,
+    "warps": 125000,
+    "records": 2125000,
+    "warp_records_each": 17
+  },
+  "semantic_qualification": "NOT_GRANTED",
+  "semantic_gaps": [
+    "ULDC.64 UR4 constant access has no destination/source/address in trace",
+    "ISETP writes P0 but predicate destination/dependency is not explicit",
+    "IMAD.WIDE high destination and 64-bit address high-register dependencies are not fully explicit",
+    "no Ada/EP performance or runtime qualification inferred"
+  ],
+  "failed_attempts": {
+    "capture_attempt1": "native correct, tool loads, no callbacks/traces; log overwritten by attempt2 due wrapper-script path bug, receipt retained",
+    "capture_attempt2": "native correct, explicit device init does not fix; no callbacks/traces",
+    "capture_attempt3": "direct binary launch fixes wrapper LD_PRELOAD issue; successful"
+  }
+}

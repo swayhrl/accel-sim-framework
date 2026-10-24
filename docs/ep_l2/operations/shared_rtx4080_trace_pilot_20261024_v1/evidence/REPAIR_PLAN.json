@@ -1,0 +1,14 @@
+{
+  "failure": "NVBit loaded but no CUDA context callbacks or traces; exit0 native does not imply capture",
+  "repair": "explicit cudaSetDevice(0), cudaFree(0), and same nvcc -arch=sm_89 form as successful DTC; no device kernel changes",
+  "build_command": [
+    "/usr/local/cuda-12.8/bin/nvcc",
+    "-O3",
+    "-lineinfo",
+    "-arch=sm_89",
+    "/data/c16/rtx4080_asset_pilot_20261024_v1/source/vectorAdd.cu",
+    "-o",
+    "/data/c16/rtx4080_asset_pilot_20261024_v1/bin/vectorAdd"
+  ],
+  "retry_scope": "same workload only; recheck correctness and recapture once"
+}

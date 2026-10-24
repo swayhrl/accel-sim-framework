@@ -1,0 +1,55 @@
+--- vectorAdd.upstream.cu
++++ vectorAdd.cu
+@@ -38,7 +38,10 @@
+ // For the CUDA runtime routines (prefixed with "cuda_")
+ #include <cuda_runtime.h>
+ 
+-#include <helper_cuda.h>
++#include <cmath>
++#include <cstdlib>
++#include <cstdint>
++#include <cstring>
+ /**
+  * CUDA Kernel Device code
+  *
+@@ -61,8 +64,14 @@
+   // Error code to check return values for CUDA calls
+   cudaError_t err = cudaSuccess;
+ 
++  err = cudaSetDevice(0);
++  if (err != cudaSuccess) { fprintf(stderr, "cudaSetDevice failed\n"); return 2; }
++  err = cudaFree(0);
++  if (err != cudaSuccess) { fprintf(stderr, "cudaFree(0) failed\n"); return 2; }
++
+   // Print the vector length to be used, and compute its size
+-  int numElements = 50000;
++  int numElements = 4000000;
++  srand(1);
+   size_t size = numElements * sizeof(float);
+   printf("[Vector addition of %d elements]\n", numElements);
+ 
+@@ -165,15 +174,21 @@
+     exit(EXIT_FAILURE);
+   }
+ 
+-  // Verify that the result vector is correct
++  // Verify all elements and report exact numerical error.
++  double max_abs_error = 0.0;
++  uint64_t digest = 1469598103934665603ULL;
+   for (int i = 0; i < numElements; ++i) {
+-    if (fabs(h_A[i] + h_B[i] - h_C[i]) > 1e-5) {
++    double error = fabs(h_A[i] + h_B[i] - h_C[i]);
++    if (error > max_abs_error) max_abs_error = error;
++    uint32_t bits; memcpy(&bits, &h_C[i], sizeof(bits));
++    digest = (digest ^ bits) * 1099511628211ULL;
++    if (error > 1e-5) {
+       fprintf(stderr, "Result verification failed at element %d!\n", i);
+       exit(EXIT_FAILURE);
+     }
+   }
+ 
+-  printf("Test PASSED\n");
++  printf("Test PASSED elements=%d max_abs_error=%.17g output_digest_fnv64=%016llx\n", numElements, max_abs_error, (unsigned long long)digest);
+ 
+   // Free device global memory
+   err = cudaFree(d_A);

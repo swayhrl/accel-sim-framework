@@ -1,0 +1,22 @@
+{
+  "suite": "CUDA Samples",
+  "upstream_repository": "NVIDIA/cuda-samples",
+  "upstream_commit": "db3eea23946bca2e90a75eca2b5b3e07158a9e11",
+  "upstream_path": "Samples/0_Introduction/vectorAdd/vectorAdd.cu",
+  "upstream_blob_sha": "284b0f0e332f022ed6789456182238fc2fc6af54",
+  "capture_arch": "sm_89",
+  "input": {
+    "elements": 4000000,
+    "seed": 1,
+    "prng": "glibc rand()/RAND_MAX",
+    "threads_per_block": 256
+  },
+  "changes": [
+    "replace helper_cuda header with standard headers",
+    "set N=4000000 and explicit srand(1)",
+    "report max absolute error and FNV64 output digest; retain exhaustive tolerance check"
+  ],
+  "kernel_change": "none",
+  "old_SM70_input_equivalence": "not asserted; old capture source/input numeric identity unknown",
+  "identity": "CUDA_SAMPLES_DB3EEA_VECTORADD_4M_SM89_PILOT_V1"
+}
