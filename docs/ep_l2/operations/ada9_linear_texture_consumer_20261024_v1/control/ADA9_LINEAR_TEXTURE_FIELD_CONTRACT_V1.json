@@ -1,0 +1,90 @@
+{
+  "schema": "ADA9_LINEAR_TEXTURE_FIELD_CONTRACT_V1",
+  "state": "FROZEN_SHARED_ENGINEERING_FIELD_CONTRACT_NOT_APPLICATION_RELEASE",
+  "source_SASS_policy": "One record per original SASS; unchanged original SM89 header and full64 NVBit original function PC. Existing source trace prefix remains, no fake opcode or PC.",
+  "prefix": "PC mask dst_count typed_dsts opcode src_count typed_srcs memory_width compressed_memory_addresses immediate",
+  "suffix": [
+    "ADA9",
+    "active_mask_hex",
+    "predicate_mask_hex",
+    "constant_bank",
+    "static_constant_offset",
+    "qualified_1",
+    "constant_width",
+    "constant_address_mode",
+    "per-effective-lane dynamic constant offsets when bank>=0",
+    "control_kind_0_to_3",
+    "per-effective-lane control_targets when control_kind!=0",
+    "texture_kind_0_or_1"
+  ],
+  "texture_kind_0": "No trailing texture fields; all non-texture instructions use original ADA8 typed/constant/control semantics.",
+  "texture_kind_1_fields": [
+    "resource_base_gpu_VA_u64",
+    "resource_bytes_u64",
+    "API_texture_handle_u64",
+    "resource_generation_u64",
+    "effective_lane_count_u32",
+    "per-effective-lane packed_u64=(observed_handle32<<32)|uint32(observed_signed_index32)"
+  ],
+  "texture_kind_1_origin": "API_RESOURCE_LINEAR_SIGNED_INDEX_RESOLUTION_NOT_NVBIT_NATIVE_MREF",
+  "texture_kind_1_rules": [
+    "Exact opcode TLD.SCR.B.LZ only; full static SASS and PLR operand classes/widths must match actual loaded module.",
+    "Single context/lifetime, one texture generation1, one kernel/grid1/block37 in this initial candidate; distinct scope from general texture assets.",
+    "Actual API descriptor resType LINEAR, unsigned32x1,point filter,flags0,null view; full raw resource/texture descriptor bytes and named fields retained.",
+    "API entire handle >0 and <=UINT32, each observed handle32 equals entire API handle; no invented high-half read.",
+    "Each effective lane signed index >=0 and index <resource_bytes/4; no address arithmetic overflow; resolved prefix address exactly base+4*index.",
+    "Width4 for an effective texture request; no constant bank or control kind on TLD. Zero effective mask generates no memory request and no texture destination write.",
+    "Implicit UR descriptor/high-half and all ordinary CBANK/dynamic offsets remain the complete frozen-v8 typed contract. Observer PRE snapshots are not substituted for missing operands or load results."
+  ],
+  "consumer_route": {
+    "op": "LOAD_OP",
+    "memory_op": "memory_load",
+    "space": "tex_space",
+    "cache_path": "Existing Core L1T/texture cache with actual TEXTURE_ACC_R requests; no global LDG rewrite",
+    "timing": "ENGINEERING_PROFILE_UNCALIBRATED_NOT_HARDWARE_EQUIVALENT",
+    "numerical": "Same-process actual GPU reference; trace-driven consumer does not recompute numerical values"
+  },
+  "producer_ABI_plan": "Keep existing common record/call ABI dimensions; private is_mem4 packs dynamic index/handle in existing address64 slot. New inject source/SO/version9 is frozen independently; old55,c8,v8 unchanged.",
+  "required_negative_fixtures": [
+    "missing_implicit_dependency",
+    "wrong_tex_kind",
+    "wrong_opcode",
+    "missing_dynamic_lane_pair",
+    "negative_index",
+    "oob_index",
+    "API_handle_high32_nonzero",
+    "packed_handle_mismatch",
+    "resolved_address_mismatch",
+    "width8",
+    "nonlinear_descriptor",
+    "extra_or_missing_object_lifetime",
+    "unknown_SCR_no_B",
+    "zero_mask_memory_side_effect",
+    "unexpected_trailing_fields"
+  ],
+  "existing_qualifications": "Source observer full-descriptor V2 SHA830701... provides narrow address proof only; not convertible to a complete standard trace.",
+  "zero_effective_mask": {
+    "texture_kind": 1,
+    "prefix_memory_width": 0,
+    "prefix_address_or_compression_fields": "ABSENT",
+    "resource_base_bytes_handle_generation": "Retain actual nonzero API descriptor values unchanged; metadata does not imply a request",
+    "effective_lane_count": 0,
+    "packed_lane_pairs": "ABSENT",
+    "memory_requests": 0,
+    "destination_register_writes": 0
+  },
+  "integer_contract": {
+    "pair_high32": "Entire actual API handle; <=UINT32_MAX,not a VA",
+    "pair_low32": "Two-complement signed int32 index encoding; high-bit set is negative and rejected for effective lanes",
+    "offset_arithmetic": "Validate signed index inbounds before zero-extending to uint64 and multiplying by4. Do not use overflowing signed32 multiplication. Require base+offset and base+resource_bytes to remain representable uint64.",
+    "initial_actual_resource_bytes": 512
+  },
+  "initial_qualification_scope": {
+    "source_binary_sha256": "9d5ccda8de79be73a9b5278ebf5c3c4176543e530f7301c45ca4344030d33937",
+    "actual_loaded_cubin_sha256": "83f26c01fbf4ccfd580e6f1aab5f036cf0b988378ecd739a548aefea4eafb255",
+    "geometry": "grid1 block37",
+    "resource_bytes": 512,
+    "one_texture_context_generation": true,
+    "scientific_hardware_or_bulk_promotion": false
+  }
+}

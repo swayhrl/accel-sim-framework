@@ -1,0 +1,47 @@
+In file included from /root/data/ada_linear_texture_consumer_v9_20261024_v1/ada9_cpu_probe_v1.cc:3:
+/root/data/ada_linear_texture_consumer_v9_20261024_v1/consumer/trace-driven/trace_driven.h:45:36: error: invalid use of incomplete type ‘class function_info’
+   45 | class trace_function_info : public function_info {
+      |                                    ^~~~~~~~~~~~~
+In file included from /root/data/ada_linear_texture_consumer_v9_20261024_v1/consumer/trace-driven/../ISA_Def/trace_opcode.h:9,
+                 from /root/data/ada_linear_texture_consumer_v9_20261024_v1/consumer/trace-driven/trace_driven.h:40,
+                 from /root/data/ada_linear_texture_consumer_v9_20261024_v1/ada9_cpu_probe_v1.cc:3:
+/root/data/ada_native_extensions_stage4_20261024_v1/core/src/abstract_hardware_model.h:236:52: note: forward declaration of ‘class function_info’
+  236 |   kernel_info_t(dim3 gridDim, dim3 blockDim, class function_info *entry,
+      |                                                    ^~~~~~~~~~~~~
+In file included from /root/data/ada_linear_texture_consumer_v9_20261024_v1/ada9_cpu_probe_v1.cc:3:
+/root/data/ada_linear_texture_consumer_v9_20261024_v1/consumer/trace-driven/trace_driven.h: In constructor ‘trace_function_info::trace_function_info(const gpgpu_ptx_sim_info&, gpgpu_context*)’:
+/root/data/ada_linear_texture_consumer_v9_20261024_v1/consumer/trace-driven/trace_driven.h:49:9: error: type ‘function_info’ is not a direct base of ‘trace_function_info’
+   49 |       : function_info(0, m_gpgpu_context) {
+      |         ^~~~~~~~~~~~~
+/root/data/ada_linear_texture_consumer_v9_20261024_v1/consumer/trace-driven/trace_driven.h:50:5: error: ‘m_kernel_info’ was not declared in this scope; did you mean ‘get_kernel_info’?
+   50 |     m_kernel_info = info;
+      |     ^~~~~~~~~~~~~
+      |     get_kernel_info
+/root/data/ada_linear_texture_consumer_v9_20261024_v1/consumer/trace-driven/trace_driven.h: In member function ‘virtual const gpgpu_ptx_sim_info* trace_function_info::get_kernel_info() const’:
+/root/data/ada_linear_texture_consumer_v9_20261024_v1/consumer/trace-driven/trace_driven.h:54:13: error: ‘m_kernel_info’ was not declared in this scope; did you mean ‘get_kernel_info’?
+   54 |     return &m_kernel_info;
+      |             ^~~~~~~~~~~~~
+      |             get_kernel_info
+/root/data/ada_linear_texture_consumer_v9_20261024_v1/consumer/trace-driven/trace_driven.h: In member function ‘virtual const void trace_function_info::set_kernel_info(const gpgpu_ptx_sim_info&)’:
+/root/data/ada_linear_texture_consumer_v9_20261024_v1/consumer/trace-driven/trace_driven.h:58:5: error: ‘m_kernel_info’ was not declared in this scope; did you mean ‘get_kernel_info’?
+   58 |     m_kernel_info = info;
+      |     ^~~~~~~~~~~~~
+      |     get_kernel_info
+/root/data/ada_linear_texture_consumer_v9_20261024_v1/consumer/trace-driven/trace_driven.h: At global scope:
+/root/data/ada_linear_texture_consumer_v9_20261024_v1/consumer/trace-driven/trace_driven.h:165:32: error: invalid use of incomplete type ‘class gpgpu_sim’
+  165 | class trace_gpgpu_sim : public gpgpu_sim {
+      |                                ^~~~~~~~~
+In file included from /root/data/ada_linear_texture_consumer_v9_20261024_v1/consumer/trace-driven/../ISA_Def/trace_opcode.h:9,
+                 from /root/data/ada_linear_texture_consumer_v9_20261024_v1/consumer/trace-driven/trace_driven.h:40,
+                 from /root/data/ada_linear_texture_consumer_v9_20261024_v1/ada9_cpu_probe_v1.cc:3:
+/root/data/ada_native_extensions_stage4_20261024_v1/core/src/abstract_hardware_model.h:36:7: note: forward declaration of ‘class gpgpu_sim’
+   36 | class gpgpu_sim;
+      |       ^~~~~~~~~
+In file included from /root/data/ada_linear_texture_consumer_v9_20261024_v1/ada9_cpu_probe_v1.cc:3:
+/root/data/ada_linear_texture_consumer_v9_20261024_v1/consumer/trace-driven/trace_driven.h:167:25: error: ‘gpgpu_sim_config’ does not name a type
+  167 |   trace_gpgpu_sim(const gpgpu_sim_config &config, gpgpu_context *ctx)
+      |                         ^~~~~~~~~~~~~~~~
+/root/data/ada_linear_texture_consumer_v9_20261024_v1/consumer/trace-driven/trace_driven.h: In constructor ‘trace_gpgpu_sim::trace_gpgpu_sim(const int&, gpgpu_context*)’:
+/root/data/ada_linear_texture_consumer_v9_20261024_v1/consumer/trace-driven/trace_driven.h:168:9: error: type ‘gpgpu_sim’ is not a direct base of ‘trace_gpgpu_sim’
+  168 |       : gpgpu_sim(config, ctx) {
+      |         ^~~~~~~~~
