@@ -1,0 +1,11 @@
+# Codex supervision resource blocker ? 2026-10-25T03:34:17.710515+08:00
+
+The full115 objective remains incomplete:34 committed,80 pending and1 nonterminal resource HOLD. The driver exited safely at a range boundary. Its12,646,146,120 indexed verified bytes and one framed134,217,728-byte unindexed range remain in the original CUTLASS object. The original supervisor still owns automatic continuation.
+
+Repeated fresh checks show SSD available22,452,228,096B, required23,420,993,536B, deficit968,765,440B. An independent authorized scientific sweep has12GiB reserved writes and verified live simulator processes. The active-science I/O gate also fails. Neither scientific reservation nor I/O policy can be altered by this task. An established safe reclaim whitelist sufficient to resolve the gates is absent; no Source data has been deleted.
+
+Codex supervisory work is at an external resource barrier, rather than a completed Goal. This notice does not stop any background process. Supervisor1035068 / ticks961351867 retains its original deadline1792947947.377078, rechecks6 and resumes0. Publisher32272 / creation2026-10-25T01:06:02+08:00 remains the sole five-minute publisher. They may continue or automatically resume the original queue without the Codex chat loop. Their bounds are not reset.
+
+After resources change, resume Codex supervision from real execution state, not this snapshot: SOURCE and TARGET admission, exact PID/start_ticks, locks/leases, current driver/supervisor, ledger and genuine164 COMMITs. An advancing original/successor driver is reused. No duplicate executor, queue, transfer or retirement is created. Remaining work includes all frozen states, ordinary exception repair, content/restoration/scientific status separation, final recovery/SHA/reclaim mappings, independent GitHub readback and task-owned process shutdown only after closure.
+
+Authoritative evidence:CURRENT_RESOURCE_WAIT_PROOF.json, RUNTIME_AND_PARTIAL_TRANSACTION_AUDIT.json, HOLD_CLASSIFICATIONS.json, RECLAIM_EVIDENCE_SCREENING.json and the original control/STATE.json, LEDGER.jsonl and CONTINUATION_SUPERVISOR.json. The existing Github summaries continue independently on their normal cycle.
