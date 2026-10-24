@@ -31,3 +31,5 @@ Vector单端真实原生应用接受：250118个RO事务、749882个RO合并请�
 | P4 | 面积/时序和稿件 | 依准确source/工具/网表出处推进，未测仍UNKNOWN，不把容量oracle当作有限硬件收益 |
 
 只有EP-MAIN常驻。T-OPS按确切资产/存储/入口任务按需调用；大型已批准实验才设置有限临时子Lane，并合并回读关闭。本轮无子Lane、后台扫描或后续实验。
+
+SM70统计补充：四套当前展开资产逐成员header均为70，53程序家族有trace（46常规、7仅裁剪），174-new可读27。逐程序全表、缺口及SDK版本边界见[SM70资产统计](../ep_main_sm70_trace_statistics_20261024_v3/SM70_TRACE_STATISTICS.md)。当前EP仍为Volta基础研究配置，AWMA4080限定基线不自动迁入。

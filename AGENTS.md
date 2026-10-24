@@ -27,3 +27,6 @@ Count input variants, benchmark programs, accepted runs and native readiness sep
 
 Expanded account asset audit: docs/ep_l2/operations/ep_main_account_workload_audit_20261024_v2/ACCOUNT_WORKLOAD_AUDIT.md.
 This supersedes the old inventory only for present asset scope/readiness; scientific qualification and budgets do not inherit.
+
+Latest SM70 member-header statistics: docs/ep_l2/operations/ep_main_sm70_trace_statistics_20261024_v3/SM70_TRACE_STATISTICS.md.
+53 suite-program families with trace, not 53 EP-qualified workloads; regular and fraction-only are distinct.
