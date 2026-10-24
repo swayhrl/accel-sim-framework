@@ -51,4 +51,8 @@ CPU资格保持有界：1,048,576地址观察、917,504 set移动、32个分离�
 
 ## 交付状态
 
-科学矩阵及全量审计已完成。此提交将作为最终审阅/恢复包的固定源，随后把该包、当前配置/控制和精确运行时字节以 COPY_ONLY方式归档164并独立恢复，再发布交付回读凭证。该数据操作不启动模型、不增加或退还预算。Goal 仅在交付链核实后标记完成；四次启动已用完。
+科学矩阵、完整审计、最终审阅/控制/精确运行时恢复包已完成。四个原始结果不可变归档共60个 native 恢复条目通过校验；最终恢复包为23,664,640字节、313个恢复条目，归档 SHA为 `e6dd90a5f5f956dfd4688b3dc093b9b54a073fd0364fdab394ba76521402b1de`，源提交固定为1ee699ae42cbb9a2e04ee6a0e3b51946775bae03。该 COPY_ONLY操作新增0模型、未改科学登记表，全部原件 SOURCE_KEEP。
+
+恢复包 true164 根为 `/home/shared/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_dtc_aefair_epoch2_results/FINAL_REVIEW_EVIDENCE/a6b62fb21b24ad96da493d419cc330e8bed0344dc48e2d6963c355b8807e4231`。独立恢复位于 `/root/data/dtc_main_20261023_v1/ae_fair_v1/analysis/final_review_recovery/a6b62fb21b24ad96da493d419cc330e8bed0344dc48e2d6963c355b8807e4231`。完整凭证见 [FINAL_REVIEW_ARCHIVE_RECEIPT.json](FINAL_REVIEW_ARCHIVE_RECEIPT.json) 和 [最终交付审计](FINAL_DELIVERY_REQUIREMENT_AUDIT.json)。包内报告的待交付段落是源提交1ee699ae的时点快照；本次后续交付收据明确关闭该链，避免自包含/自引用归档。
+
+科学启动4/4已用完、剩余0；所有模型及原有限控制器均结束。本次完整结果支持给定配置下更大的 DTC 组内 hash 改善，所有跨组物理/因果/论文范围限制保留。未启动额外模拟。
