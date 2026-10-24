@@ -24,7 +24,7 @@ try:
  except FileNotFoundError:pass
  commit=b/'COMMIT.json';visible=commit.exists()
  status='COMMIT_VISIBLE_RECHECK_LEDGER_FOR_FINALIZATION' if visible else 'DRIVER_EXIT_EVENT_RECHECK_FINAL_STATE' if not alive else 'VERIFIED_WAIT_SAME_DRIVER_LIVE'
- print(json.dumps(dict(status=status,unix=time.time(),waited_seconds=time.monotonic()-started,events=events,pid=pid,start_ticks=ticks,same_driver_alive=alive,observed_asset=aid,current_asset=current.get('asset_id'),current_phase=current['phase'],completed=current['completed_assets'],held_this_pass=current['held_assets'],current_new_transferred_bytes=current['current_asset_new_transferred_bytes'],COMMIT_visible=visible,COMMIT_sha256=hashlib.sha256(commit.read_bytes()).hexdigest() if visible else None,new_processes_started=0,locks_or_data_modified=False)))
+ print(json.dumps(dict(status=status,unix=time.time(),waited_seconds=time.monotonic()-started,events=events,pid=pid,start_ticks=ticks,same_driver_alive=alive,observed_asset=aid,current_asset=current.get('asset_id'),current_phase=current['phase'],completed=current['completed_assets'],held_this_pass=current['held_assets'],current_new_transferred_bytes=current['current_asset_new_transferred_bytes'],COMMIT_visible=visible,COMMIT_sha256=hashlib.sha256(commit.read_bytes()).hexdigest() if visible else None,new_execution_or_supervision_processes_started=0,observer_is_one_shot_read_only_metadata_process=True,locks_or_data_modified=False)))
 finally:os.close(fd);os.close(pidfd)
 '''
 
