@@ -1,48 +1,56 @@
 {
-  "unix": 1792868782.400194,
+  "unix": 1792869094.039792,
   "state": {
-    "SSD_available_bytes": 20708405248,
+    "SSD_available_bytes": 20707786752,
     "SSD_required_bytes": 10536091648,
     "asset_expected_bytes": 21660993774,
     "asset_id": "TRACE_7a2ceb3a0f9b32b5",
     "asset_kind": "TRACE",
     "completed_assets": 34,
     "current_asset_new_hashed_bytes": 21531938924,
-    "current_asset_new_transferred_bytes": 12511928392,
+    "current_asset_new_transferred_bytes": 12646146120,
     "current_file_hashed_bytes": 2965372928,
     "current_host_io": {
       "full": {
-        "avg10": 6.66,
-        "avg300": 6.13,
-        "avg60": 6.82,
-        "total": 202779013650.0
+        "avg10": 6.97,
+        "avg300": 6.16,
+        "avg60": 6.85,
+        "total": 202779770934.0
       },
       "some": {
-        "avg10": 6.66,
-        "avg300": 6.2,
-        "avg60": 6.83,
-        "total": 223746159364.0
+        "avg10": 6.97,
+        "avg300": 6.23,
+        "avg60": 6.86,
+        "total": 223746920138.0
       }
     },
+    "driver_exit_code": 0,
+    "driver_exit_observed": true,
     "driver_pid": 1033480,
     "driver_start_ticks": 961292693,
     "file": "kernel-5.traceg",
-    "held_assets": 0,
-    "phase": "TRANSFER_RANGE_VERIFIED",
+    "held_assets": 1,
+    "last_hold": {
+      "asset_id": "TRACE_7a2ceb3a0f9b32b5",
+      "elapsed_seconds": 2391.0106868743896,
+      "kind": "TRACE",
+      "new_scientific_starts": 0,
+      "reason": "RESOURCE_HOLD_SSD_ALL_DECLARED_RESERVATIONS",
+      "source_disposition": "KEEP",
+      "status": "HOLD_EXACT_ASSET",
+      "traceback": "Traceback (most recent call last):\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 103, in main\n    result=c.migrate(m)\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/copy_engine.py\", line 156, in migrate\n    need(h.hexdigest()==event['sha256'],'streamed chunk full SHA mismatch');v.rename_noreplace(partial,dest);need(hash_file(dest,gate=g)==event['sha256'],'published range reopen SHA');publish_bytes(folder/(leaf+'.json'),canon(c),v);ranges[name].append(c);newbytes+=event['size'];count_ranges+=1;emit({'event':'RANGE_VERIFIED','asset':manifest['primary_asset_id'],'file':name,'verified_end':event['offset']+event['size'],'new_payload_bytes':newbytes})\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/copy_engine.py\", line 250, in hash_file\n    return _qualified_hash_file(path,rate=rate,gate=gate)\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/copy_engine.py\", line 49, in hash_file\n    if gate:gate()\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 27, in __call__\n    x=super().__call__(force);update(SSD_available_bytes=x['SSD_available_bytes'],SSD_required_bytes=x['SSD_required_bytes'],current_host_io=x['IO']);return x\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/copy_engine.py\", line 242, in __call__\n    value=rr.admission('TARGET',include_activity=False,allowed_lock_pids=own_sender)\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/server_resources.py\", line 60, in admission\n    if not metadata_only:need(copy_space_pass,'RESOURCE_HOLD_SSD_ALL_DECLARED_RESERVATIONS')\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/server_resources.py\", line 6, in need\n    if not v:raise RuntimeError(m)\nRuntimeError: RESOURCE_HOLD_SSD_ALL_DECLARED_RESERVATIONS\n",
+      "unix": 1792868788.7787404
+    },
+    "phase": "COMMON_RESOURCE_HOLD",
     "queue_index": 35,
     "total_assets": 115,
     "total_new_transferred_bytes": 114021560387,
-    "unix": 1792868778.3276062,
-    "verified_end": 134217728
+    "unix": 1792868788.7908862,
+    "verified_end": 268435456
   },
-  "live_process": {
-    "pid": 1033480,
-    "start_ticks": 961292693,
-    "state": "S",
-    "command": "/usr/bin/python3 -B /root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py "
-  },
-  "SSD_available_bytes": 20707459072,
-  "true164_available_bytes": 49305754456064,
+  "live_process": null,
+  "SSD_available_bytes": 20606251008,
+  "true164_available_bytes": 49305394057216,
   "native_registry_observation": {
     "DTC_AEFAIR_EPOCH2_V1": {
       "state": "COMPLETE",
@@ -55,6 +63,12 @@
       "reserved_write_bytes": 1073741824,
       "budget": 12,
       "remaining": 0
+    },
+    "DTC_AE_V100_FULL_SWEEP_20261025_V1": {
+      "state": "RUNNING",
+      "reserved_write_bytes": 12884901888,
+      "budget": 356,
+      "remaining": 312
     },
     "EP_ADA_TRACE_COMPAT_CALL65_PC64_V8_20261024_V1": {
       "state": "COMPAT_PARTIAL_COMPLETE",
