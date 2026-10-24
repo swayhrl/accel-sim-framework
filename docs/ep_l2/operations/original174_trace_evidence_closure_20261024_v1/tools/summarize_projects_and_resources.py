@@ -1,0 +1,53 @@
+from closure_local import *
+from closure_resources import checkpoint,UTIL
+import collections,io,posixpath
+checkpoint('FINAL_READONLY_PROTECTION_CHECK')
+rows_out=[]
+index=load(T/'TRUE164_TRACE_RECOVERY_INDEX.json')['records']
+groups=collections.defaultdict(list)
+for r in index:groups['+'.join(r['projects'])].append(r)
+for project,rs in groups.items():
+ v=[r for r in rs if r['RESTORE_VERIFIED_NATIVE_TARGET']=='RESTORE_VERIFIED_NATIVE_TARGET']
+ rows_out.append(dict(project=project,scope='EXACT_TRACE_FROZEN_SELECTORS; shared EP+DTC once',archived_assets=len(rs),archived_logical_bytes=sum(r['original_bytes'] for r in rs),full_native_restored_assets=len(v),full_native_restored_logical_bytes=sum(r['original_bytes'] for r in v),content_archived_not_full_native=len(rs)-len(v),new_copy_auth_bytes=0,reused_existing_content_bytes=sum(r['original_bytes'] for r in rs),dedup_rule='Object IDs exact member sets; shared scientific refs counted once; no compressed package equivalence inferred'))
+for asset,project,n in [('EP_L2_E057','EP_L2_RESULTS',181366652),('DTC_L1_AD_GEMM','DTC_L1_RESULTS',331854241)]:rows_out.append(dict(project=project,scope='FULL_OWNER_ACCEPTED_RESULT_TREE',archived_assets=1,archived_logical_bytes=n,full_native_restored_assets=1,full_native_restored_logical_bytes=n,reused_existing_content_bytes=n,dedup_rule='Nine earlier sidecars reused inside full result, no extra count'))
+rows_out.append(dict(project='POLYBENCH_PACKAGE',scope='COMPRESSED_REPRESENTATION_ONLY; NONADDITIVE TO DECODED DATA WITHOUT CONTENT MAP',archived_assets=1,archived_logical_bytes=17943970556,full_native_restored_assets=0,partial_restore_scope='11 data+2 markers validated; no complete package expansion',reused_existing_content_bytes=17943970556,dedup_rule='Package is not added as independent scientific original bytes to decoded variants'))
+legacy=load(R/'evidence/LEGACY_VM_ALL494_FILE_METADATA_VS_HISTORICAL_COMPLETE_SHA_RECORDS.json')
+docs=load(R/'evidence/LEGACY_VM_TRUE164_CURRENT_CANONICAL_RECEIPTS.json')['documents'];h=next(z for z in docs if z['path'].endswith('PRIVATE_DESTINATION_FILE_HASHES.tsv'))
+uniq={}
+for line in h['text'].splitlines():
+ aid,rel,n,sha=line.split('\t');uniq[(sha,int(n))]=int(n)
+rows_out.append(dict(project='AWMA_C12_C15_HISTORICAL_RAW',scope='494 regular archived files across5 lineage groups; links/runtime separate',archived_assets=5,archived_logical_bytes=sum(r['logical_bytes'] for r in legacy['groups'].values()),full_native_restored_assets=0,evidence_gap='External trace symlinks/original metadata/full native replay not established',unique_content_hash_objects=len(uniq),unique_content_hash_bytes=sum(uniq.values()),repeated_file_content_logical_bytes=sum(r['logical_bytes'] for r in legacy['groups'].values())-sum(uniq.values()),dedup_rule='Known complete per-file SHA+size dedup; scientific stage identities retained, no new disk freeing'))
+rows_out.append(dict(project='AWMA_CURRENT_RAW_CATALOG',scope='96 raw run catalog declarations, not freshly rehashed payload',declared_assets=96,declared_logical_bytes=122592246070,archived_assets='NOT_RECOUNTED_AS_FULL_CURRENT_CONTENT_PASS',manifest_verified_count=96,manifest_gap_closed_count=6,full_native_restored_assets=0,evidence_gap='Manifest current SHA / prior transfer ACK does not imply full native recovery; raw full-current checksum not repeated'))
+rows_out.append(dict(project='AWMA_Q05_NATURAL',scope='ONE RAW LOG ONLY',archived_assets=1,archived_logical_bytes=166223,native_content_sample_restored_assets=1,native_content_sample_restored_bytes=166223,full_original_numeric_metadata_restore='HOLD'))
+rows_out.append(dict(project='AWMA_Q05_FIXED10000',scope='Different SIM_EVIDENCE_c8 accepted raw',archived_assets=0,local_and_Git_full_SHA_bytes=223499,evidence_gap='Exact164 locator unresolved; Source local/Git copy is verified'))
+rows_out.append(dict(project='C16_PROTECTED_MODELS',scope='Six unique existing model contents, not outbound duplicate layouts',archived_assets=6,archived_logical_bytes=20802101648,full_native_restored_assets=0,reused_existing_content_bytes=20802101648,source_state='ACTIVE_KEEP',evidence_gap='No full large native model restore; SSHFS inode projection is not data mutation proof'))
+rows_out.append(dict(project='TLS_P9',scope='Original transaction only, no restart',partial_archive_assets=1,partial_verified_range_bytes=2505862788,missing_formal_archive_bytes=391334023,full_native_restored_assets=0,evidence_gap='Remaining original windows and full141-file/4-dir restore missing; no copy authorization assumed'))
+dtc=load(R/'evidence/P2_DTC_ORIGINAL44_AND_SG3_RAW_CURRENT_METADATA.json')['records']
+for stage in ['ORIGINAL44','SG3_INDEPENDENT_COHORT']:
+ rs=[r for r in dtc if r['stage']==stage]
+ rows_out.append(dict(project='DTC_L1_'+stage,scope='Owner-specific executed result roots; no original3 admission-HOLD cwd fallback',observed_raw_scope_assets=len(rs),observed_raw_scope_file_entries=sum(r['files'] for r in rs),observed_raw_scope_regular_bytes=sum(r['logical_bytes'] for r in rs),archived_assets='UNKNOWN_EXACT_RESULT_JOIN_NOT_FOUND',full_native_restored_assets=0,evidence_gap='Input archive does not archive output; exact Source/164 result manifest and restore proof needed',scientific_status='Owner historical scope only; cohort distinctions preserved'))
+# Only baseline measured research containers: never rename all code/config bytes raw results.
+base_inv=rows(B/'INVENTORY.csv');mixed=[]
+for r in base_inv:
+ if r.get('scope')=='DISJOINT_SCAN_ROOT_REGULAR_FILES_ONLY' and (any(z in r['source_path'].lower() for z in ['dtc-ag','fast64','dtc-ae','ep_l2_ms20261019_e_results']) or r.get('project') in ['C2P','M2D','TLS','C16_AI','AWMA_VM_LEGACY']):
+  mixed.append(dict(source=r['source_path'],project=r['project'],measurement=r['measurement'],container_files=r['files'],container_regular_logical_bytes=r['logical_bytes'],raw_only_bytes='UNKNOWN_NOT_INFERRED_FROM_EXTENSION_OR_CONTAINER_TOTAL',archive_or_restore='HOLD unless an exact proven selector is separately referenced',baseline=BASE))
+csvout('P2_MIXED_CONTAINER_AND_AG_AE_FAST64_SCOPE_GAPS.csv',mixed)
+actions=rows(R/'ARCHIVE_ACTION_QUEUE.csv');plan=[a for a in actions if a['status']=='REQUIRES_COPY_AUTHORIZATION'];byendpoint=collections.defaultdict(lambda:dict(roots=0,files=0,logical=0))
+for a in plan:
+ v=byendpoint[a['source_endpoint']];v['roots']+=1;v['files']+=int(a['source_regular_files']);v['logical']+=int(a['unique_source_logical_bytes'])
+for end,v in byendpoint.items():rows_out.append(dict(project='FOLLOWUP_'+end,scope='Exact metadata-ready unique file selections; Top30/PolyBench parents+children not duplicated',new_copy_authorization_asset_roots=v['roots'],new_copy_auth_unique_file_count=v['files'],new_copy_auth_representation_bytes=v['logical'],archived_assets=0,evidence_gap='Separate authorization, Source fullSHA/writer/reader/identity and current resource admission required; proposed target ABSENT',dedup_rule='Current Source dev/inode dedup and path containment; no semantic compression/fraction equivalence inferred'))
+
+for aid in ['C2P1','C2P2','M2D','R1','R1R','R2']:
+ z=next(r for r in rows(B/'references/OLD174_ALREADY_ARCHIVED_RECOVERY_OPPORTUNITIES.csv') if r['asset_id']==aid)
+ rows_out.append(dict(project=aid+'_BUILD_OR_RTL_SELECTOR',scope='Historical full-content build/RTL snapshot, not all project simulator raw',archived_assets=1,archived_file_entries=z['historical_file_count'],archived_logical_bytes=z['historical_logical_bytes'],full_native_restored_assets=0,restore_qualifier=z['numeric_native_metadata_scope'],evidence_gap='Native numeric metadata subsets only; wider project raw and current Source equivalence not asserted'))
+v3=load(B/'references/V3_BOTH_BATCHES_RECOVERY_INDEX_20261020.json')['assets']
+rows_out.append(dict(project='EP_L2_V3_RTL_POSTCHECK',scope='Two historical complete frozen validation trees; already Source-released',archived_assets=2,archived_file_entries=sum(r['regular_files'] for r in v3),archived_logical_bytes=sum(r['logical_bytes'] for r in v3),full_native_restored_assets=0,restore_qualifier='Full stream member/content/metadata verification and3native samples/tree, no full native tree; PASS/TIMEOUT evidence preserved',current_Source_reclaim_bytes=0))
+csvout('PROJECT_CLOSURE_SUMMARY.csv',rows_out)
+# Current activity/resource records; no historical PID is promoted as currently running.
+snaps=[]
+for p in sorted((R/'resource').glob('*.json')):
+ x=load(p);snaps.append(dict(evidence='resource/'+p.name,**x))
+start_src=next(x for x in snaps if x['evidence']=='resource/START_SOURCE.json');end_src=next(x for x in snaps if x['evidence']=='resource/FINAL_READONLY_PROTECTION_CHECK_SOURCE.json')
+old_src={(r['pid'],r['start_ticks']) for r in start_src['processes']};new_src={(r['pid'],r['start_ticks']) for r in end_src['processes']}
+save('RESOURCE_AND_ACTIVE_SCIENCE_AUDIT.json',dict(schema='CONTINUOUS_BOUNDED_READONLY_AND_TINY_NATIVE_RESTORE_AUDIT_V1',snapshots=snaps,source_start_process_identities=len(old_src),source_same_pid_start_ticks_observed_end=len(old_src&new_src),source_missing_identities=[dict(pid=p,start_ticks=t) for p,t in sorted(old_src-new_src)],activity_interpretation='Source research cwd/PID identities observed; Native AEFAIR model processes absent in current bounded snapshots, not an auditor stop or owner acceptance. No stale prior model PID is asserted live.',actual_source_namespace='mnt:[4026534768]',actual_target_namespace='mnt:[4026535153]',true164_identity='admin-wcx@10.208.130.164:/home/shared fuse.sshfs',source_same_named_mount='MD127_LOCAL_SHADOW_NEVER_REMOTE164',native164_underlying_block_device='UNOBSERVED_NO_NATIVE164_EXEC_ENTRY',big_trace_or_model_full_SHA_passes=0,AWMA_six_small_manifest_SHA_bytes=sum(r['before']['size'] for r in load(R/'evidence/AWMA_SIX_MANIFEST_EXACT_DIGEST_AND_CURRENT_ARTIFACT_STAT_CLOSURE.json')['records']),small_native_restore=load(R/'evidence/Q05_TRUE164_NATURAL_R0_NATIVE_TARGET_CONTENT_SAMPLE_RESTORE.json'),new_archive_transfer_bytes=0,new_Source_writes_or_deletes=0,new_receiver_or_daemon_count=0,new_scientific_starts_stops_or_budget_mutations=0,resource_policy='Finite exact metadata operations nice19/ionice idle; no large SHA during early transient IO>10. Future copies retain original admission; Share<40GiB is reported, no transfer waiver invented. Tiny2MiB-cap native restore used7GiB+all current reservations and64GiB RAM gate, no Share writes.',metadata_api_boundary='Remote Python -B stdin only; no Source scripts/probes installed; proposed164 copy root remains ABSENT'))
+print('project summary rows',len(rows_out),'mixed scopes',len(mixed),'snapshots',len(snaps),'Source same identities',len(old_src&new_src),'/',len(old_src))
