@@ -1,0 +1,27 @@
+[
+  {
+    "task_id": "egl_cuda_interop_canary_v1",
+    "suite": "GPU_OFFSCREEN_QUALIFICATION",
+    "version": "v1",
+    "program": "egl_cuda_interop_canary",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/egl_cuda_interop_canary_v1"
+    ],
+    "binary_sha256": "33e9b38eef5e7d081a65bbe28d3143c4de24c7c09d4300615565b5817fd8c3b9",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/egl_cuda_interop_canary.cu",
+        "sha256": "9b682ded22eb6f01ab223d0ec5599d7a734db807ddae965520bff7b20bc25ee2"
+      }
+    ],
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu",
+      "__EGL_VENDOR_LIBRARY_FILENAMES": "/usr/share/glvnd/egl_vendor.d/10_nvidia.json"
+    },
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "REAL_GPU_EGL_CUDA_GL_INTEROP_PASSED words=4096"
+    },
+    "native_timeout_sec": 120
+  }
+]

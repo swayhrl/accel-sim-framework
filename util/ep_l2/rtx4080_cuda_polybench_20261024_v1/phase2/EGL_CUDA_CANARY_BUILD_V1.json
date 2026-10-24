@@ -1,0 +1,20 @@
+{
+  "command": [
+    "/usr/local/cuda-12.8/bin/nvcc",
+    "-O2",
+    "-lineinfo",
+    "-arch=sm_89",
+    "-I/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/include",
+    "-I/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/include",
+    "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/egl_cuda_interop_canary.cu",
+    "-L/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu",
+    "-L/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu",
+    "-lEGL",
+    "-lGL",
+    "-o",
+    "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/egl_cuda_interop_canary_v1"
+  ],
+  "exit": 0,
+  "stdout": "",
+  "stderr": ""
+}

@@ -1,0 +1,178 @@
+{
+  "task": {
+    "suite": "CUDA Samples",
+    "version": "v11.8",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "fluidsGL",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/fluidsGL",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluids_v1/fluidsGL.cpp",
+        "sha256": "fbc48b2d3b1f602402bb6e6f8ff827cf8f54c2cacfc9f435d1d496ca04386277"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluids_v1/fluidsGL_kernels.cu",
+        "sha256": "d1b5ed2495e04f6f8c1d7906acbc7d8676b2e274b490835753a532d6d9f62b17"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluids_v1/defines.h",
+        "sha256": "c0bdc9d5e69c5372570af1ba7fd20584ee1a98988c905370ad9c08105f7d3504"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluids_v1/fluidsGL_kernels.h",
+        "sha256": "88eec565590ae38533dca0143ca2bb9709d556b8d0bee2ad21b81597c8c13634"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluids_v1/fluidsGL_kernels.cuh",
+        "sha256": "31b76808c6bd36a61fb6b0477732bc00d73259926adbb6cc574b8e865763ec48"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/egl_glut_fluids_adapter_v1.h",
+        "sha256": "fa37e4927902ccc6cbb62e8df35a2fbe79f86daad0ef29c577c07bbae897068a"
+      }
+    ],
+    "input_files": [
+      {
+        "relative_path": "data/ref_fluidsGL.ppm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/fluidsGL/data/ref_fluidsGL.ppm",
+        "bytes": 786447,
+        "sha256": "e76e3dd8d69a9ace0414bbef87fd604cd9e109bdedc5b8994c441029e55a3bf6"
+      }
+    ],
+    "task_id": "cuda118_fluidsGL_EGL_real_gpu_v1",
+    "variant": "distinct_host_EGL_pbuffer_context_no_kernel_or_QA_input_change",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluids_v1/fluidsGL",
+      "-file=ref_fluidsGL.ppm"
+    ],
+    "binary_sha256": "699d7f4b3ac9f34247b95987566358f432831bd4c886f5d5b9f5c63da1db1766",
+    "binary_cubin_listing": "ELF file    1: fluidsGL.1.sm_89.cubin\nELF file    2: fluidsGL.2.sm_89.cubin\n",
+    "build_status": "PASS_FIXED_ELF",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu",
+      "__EGL_VENDOR_LIBRARY_FILENAMES": "/usr/share/glvnd/egl_vendor.d/10_nvidia.json"
+    },
+    "cwd_policy": "Create ABSENT attempt directory; link data/ read-only to fixed input directory, outputs stay in attempt",
+    "runtime_links": [
+      {
+        "name": "data",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/fluidsGL/data"
+      }
+    ],
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "(?i)(passed|test.*pass|result.*pass)"
+    },
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL GPU kernels, no warmup removal, no iteration truncation, no sampling",
+    "historical_relation": "Independently frozen official CUDA Samples v11.8 migration; not claimed original SDK4.2 or historic capture9.1 binary",
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "producer_profile_flags": [
+      "CUDA_GL_INTEROP",
+      "LIBRARY_KERNEL_CUFFT",
+      "EGL_REAL_GPU_HOST_ADAPTER"
+    ]
+  },
+  "output": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/native_attempts/egl_fluids_v1/cuda118_fluidsGL_EGL_real_gpu_v1/attempt001",
+  "index": 0,
+  "start_unix": 1792829779.4994364,
+  "lock_wait_seconds": 3.851950168609619e-06,
+  "resident_baseline": {
+    "338712": {
+      "name": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python",
+      "vram_mib": 238,
+      "start_ticks": "343978668",
+      "exe": "/usr/bin/python3.12",
+      "cmdline": "/home/huangrulin/workspace/image-lab/envs/comfyui/bin/python /home/huangrulin/workspace/image-lab/app/ComfyUI/main.py --listen 127.0.0.1 --port 8188 --input-directory /home/huangrulin/workspace/image-lab/inputs --output-directory /home/huangrulin/workspace/image-lab/outputs --user-directory /home/huangrulin/workspace/image-lab/cache/user --temp-directory /home/huangrulin/workspace/image-lab/cache/tmp --extra-model-paths-config /home/huangrulin/workspace/image-lab/extra_model_paths.yaml --disable-all-custom-nodes --whitelist-custom-nodes lane_b_metrics ComfyUI-MiniMaxH3-Prompt-Writer image_lab_local_inpaint image_lab_gptimage25 image_lab_seedream_bridge image_lab_social_watermark_v2 image_lab_generation_history image_lab_image_export image_lab_local_tts --cache-none --offline --disable-auto-launch --reserve-vram 1.5 "
+    }
+  },
+  "gpu": "name, uuid, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB]\nNVIDIA GeForce RTX 4080, GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59, 580.178.04, 16376 MiB, 375 MiB, 15569 MiB",
+  "idle_gate": [
+    {
+      "unix": 1792829779.5489452,
+      "util": 0,
+      "free_mib": 15569
+    },
+    {
+      "unix": 1792829780.5836332,
+      "util": 0,
+      "free_mib": 15569
+    },
+    {
+      "unix": 1792829781.6183712,
+      "util": 0,
+      "free_mib": 15569
+    },
+    {
+      "unix": 1792829782.6553257,
+      "util": 0,
+      "free_mib": 15569
+    },
+    {
+      "unix": 1792829783.6871316,
+      "util": 0,
+      "free_mib": 15569
+    },
+    {
+      "unix": 1792829784.7214146,
+      "util": 0,
+      "free_mib": 15569
+    },
+    {
+      "unix": 1792829785.7577195,
+      "util": 0,
+      "free_mib": 15569
+    },
+    {
+      "unix": 1792829786.7894793,
+      "util": 0,
+      "free_mib": 15569
+    },
+    {
+      "unix": 1792829787.8245447,
+      "util": 0,
+      "free_mib": 15569
+    },
+    {
+      "unix": 1792829788.8577077,
+      "util": 0,
+      "free_mib": 15569
+    },
+    {
+      "unix": 1792829789.8927531,
+      "util": 0,
+      "free_mib": 15569
+    },
+    {
+      "unix": 1792829790.927953,
+      "util": 0,
+      "free_mib": 15569
+    },
+    {
+      "unix": 1792829791.9645996,
+      "util": 0,
+      "free_mib": 15569
+    },
+    {
+      "unix": 1792829793.000649,
+      "util": 0,
+      "free_mib": 15569
+    },
+    {
+      "unix": 1792829794.032257,
+      "util": 0,
+      "free_mib": 15569
+    }
+  ],
+  "input_staging": "Private independent regular-file copies of manifest-listed inputs; writable outputs cannot follow a directory symlink into source",
+  "pid": 427005,
+  "start_ticks": "345269101",
+  "minimum_free_vram_mib": 15563,
+  "exit": 0,
+  "wall_seconds": 0.30003440007567406,
+  "status": "NATIVE_FAILURE_RETAINED",
+  "stdout_sha256": "3e10ae0c30640b5b256a0a3770cd1316d939114d10efb54a7f6a206273307cb2",
+  "end_unix": 1792829795.3538835
+}

@@ -1,0 +1,78 @@
+[
+  {
+    "suite": "CUDA Samples",
+    "version": "v11.8",
+    "source_head": "81992093d2b8c33cab22dbf6852c070c330f1715",
+    "program": "fluidsGL",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/fluidsGL",
+    "source_files": [
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluids_v1/fluidsGL.cpp",
+        "sha256": "fbc48b2d3b1f602402bb6e6f8ff827cf8f54c2cacfc9f435d1d496ca04386277"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluids_v1/fluidsGL_kernels.cu",
+        "sha256": "d1b5ed2495e04f6f8c1d7906acbc7d8676b2e274b490835753a532d6d9f62b17"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluids_v1/defines.h",
+        "sha256": "c0bdc9d5e69c5372570af1ba7fd20584ee1a98988c905370ad9c08105f7d3504"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluids_v1/fluidsGL_kernels.h",
+        "sha256": "88eec565590ae38533dca0143ca2bb9709d556b8d0bee2ad21b81597c8c13634"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluids_v1/fluidsGL_kernels.cuh",
+        "sha256": "31b76808c6bd36a61fb6b0477732bc00d73259926adbb6cc574b8e865763ec48"
+      },
+      {
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/build/egl_glut_fluids_adapter_v1.h",
+        "sha256": "fa37e4927902ccc6cbb62e8df35a2fbe79f86daad0ef29c577c07bbae897068a"
+      }
+    ],
+    "input_files": [
+      {
+        "relative_path": "data/ref_fluidsGL.ppm",
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/fluidsGL/data/ref_fluidsGL.ppm",
+        "bytes": 786447,
+        "sha256": "e76e3dd8d69a9ace0414bbef87fd604cd9e109bdedc5b8994c441029e55a3bf6"
+      }
+    ],
+    "task_id": "cuda118_fluidsGL_EGL_real_gpu_v1",
+    "variant": "distinct_host_EGL_pbuffer_context_no_kernel_or_QA_input_change",
+    "argv": [
+      "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_egl_fluids_v1/fluidsGL",
+      "-file=ref_fluidsGL.ppm"
+    ],
+    "binary_sha256": "699d7f4b3ac9f34247b95987566358f432831bd4c886f5d5b9f5c63da1db1766",
+    "binary_cubin_listing": "ELF file    1: fluidsGL.1.sm_89.cubin\nELF file    2: fluidsGL.2.sm_89.cubin\n",
+    "build_status": "PASS_FIXED_ELF",
+    "runtime_env": {
+      "LD_LIBRARY_PATH": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/gl/usr/lib/x86_64-linux-gnu:/data/c16/rtx4080_suite_fill_20261024_v1/toolchains/opengl_headers/usr/lib/x86_64-linux-gnu:/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/egl/usr/lib/x86_64-linux-gnu",
+      "__EGL_VENDOR_LIBRARY_FILENAMES": "/usr/share/glvnd/egl_vendor.d/10_nvidia.json"
+    },
+    "cwd_policy": "Create ABSENT attempt directory; link data/ read-only to fixed input directory, outputs stay in attempt",
+    "runtime_links": [
+      {
+        "name": "data",
+        "target": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/fluidsGL/data"
+      }
+    ],
+    "correctness": {
+      "exit": 0,
+      "stdout_regex": "(?i)(passed|test.*pass|result.*pass)"
+    },
+    "native_timeout_sec": 600,
+    "capture_timeout_sec": 21600,
+    "capture_max_bytes": 85899345920,
+    "capture_scope": "ALL GPU kernels, no warmup removal, no iteration truncation, no sampling",
+    "historical_relation": "Independently frozen official CUDA Samples v11.8 migration; not claimed original SDK4.2 or historic capture9.1 binary",
+    "workload_kind": "FINITE_GPU_WORKLOAD",
+    "producer_profile_flags": [
+      "CUDA_GL_INTEROP",
+      "LIBRARY_KERNEL_CUFFT",
+      "EGL_REAL_GPU_HOST_ADAPTER"
+    ]
+  }
+]

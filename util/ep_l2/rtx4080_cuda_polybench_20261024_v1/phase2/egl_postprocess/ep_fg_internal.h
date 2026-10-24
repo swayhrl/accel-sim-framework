@@ -1,0 +1,5 @@
+#include <math.h>
+#include <string.h>
+#define FREEGLUT_EXIT_IF_NOT_INITIALISED(x) ((void)0)
+static void fghDrawGeometrySolid(GLfloat*v,GLfloat*n,GLfloat*t,GLsizei nv,GLushort*idx,GLsizei np,GLsizei ni){glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);glEnableClientState(GL_VERTEX_ARRAY);glEnableClientState(GL_NORMAL_ARRAY);glVertexPointer(3,GL_FLOAT,0,v);glNormalPointer(GL_FLOAT,0,n);if(t){glEnableClientState(GL_TEXTURE_COORD_ARRAY);glTexCoordPointer(2,GL_FLOAT,0,t);}for(int p=0;p<np;p++)glDrawElements(GL_TRIANGLES,ni,GL_UNSIGNED_SHORT,idx+p*ni);glPopClientAttrib();}
+static void fghDrawGeometryWire(GLfloat*v,GLfloat*n,GLsizei nv,GLushort*idx,GLsizei np,GLsizei ni,GLenum mode,GLushort*idx2,GLsizei np2,GLsizei ni2){glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);glEnableClientState(GL_VERTEX_ARRAY);glEnableClientState(GL_NORMAL_ARRAY);glVertexPointer(3,GL_FLOAT,0,v);glNormalPointer(GL_FLOAT,0,n);for(int p=0;p<np;p++)glDrawElements(mode,ni,GL_UNSIGNED_SHORT,idx+p*ni);for(int p=0;p<np2;p++)glDrawElements(mode,ni2,GL_UNSIGNED_SHORT,idx2+p*ni2);glPopClientAttrib();}
