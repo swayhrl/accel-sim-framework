@@ -1,0 +1,1 @@
+extern "C" __global__ void jit_leaf(unsigned *p, unsigned n) { unsigned i=blockIdx.x*blockDim.x+threadIdx.x; if(i<n)p[i]=17*i+5; }

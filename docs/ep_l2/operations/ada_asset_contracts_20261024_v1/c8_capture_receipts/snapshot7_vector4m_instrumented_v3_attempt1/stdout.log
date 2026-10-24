@@ -1,0 +1,37 @@
+------------- NVBit (NVidia Binary Instrumentation Tool v1.7.5) Loaded --------------
+NVBit core environment variables (mostly for nvbit-devs):
+ACK_CTX_INIT_LIMITATION = 0 - if set, no warning will be printed for nvbit_at_ctx_init()
+            NVDISASM = /usr/local/cuda-12.8/bin/nvdisasm - override default nvdisasm found in PATH
+            NOBANNER = 0 - if set, does not print this banner
+       NO_EAGER_LOAD = 0 - eager module loading is turned on by NVBit to prevent potential NVBit tool deadlock, turn it off if you want to use the lazy module loading feature
+---------------------------------------------------------------------------------
+         INSTR_BEGIN = 0 - Beginning of the instruction interval where to apply instrumentation
+           INSTR_END = 4294967295 - End of the instruction interval where to apply instrumentation
+    EXCLUDE_PRED_OFF = 1 - Exclude predicated off instruction from count
+      TRACE_LINEINFO = 0 - Include source code line info at the start of each traced line. The target binary must be compiled with -lineinfo or --generate-line-info
+DYNAMIC_KERNEL_RANGE =  - Specify kernel IDs or ranges to trace. Format:
+  - Single ID:       "2" traces only kernel 2.
+  - Range:           "5-8" traces kernels 5 through 8 (inclusive).
+  - Open-ended:      "10-" traces from kernel 10 onward.
+  - Multiple ranges: "2 5-8 10-" (space-separated).
+  - With regex:      "5-8@kernel_a.*,kernel_b.*" traces kernels 5–8 with matching names.
+If unset or empty, all kernels will be traced from the beginning.
+   ACTIVE_FROM_START = 1 - Start instruction tracing from start or wait for cuProfilerStart and cuProfilerStop. DYNAMIC_KERNEL_RANGE is always intersected with the active region.
+C16_EXACT_ROOT_FUNCTION_ONLY = 0 - Instrument only the launched root CUfunction, not related functions.
+C16_USE_NVBIT_STATIC_INDEX = 0 - Interpret INSTR_BEGIN/INSTR_END as NVBit Instr::getIdx values instead of the legacy filtered enumeration counter.
+        TOOL_VERBOSE = 0 - Enable verbosity inside the tool
+       TOOL_COMPRESS = 1 - Enable traces compression
+     TOOL_TRACE_CORE = 0 - write the core id in the traces
+TERMINATE_UPON_LIMIT = 0 - Stop the process once the current kernel > DYNAMIC_KERNEL_LIMIT_END
+USER_DEFINED_FOLDERS = 0 - Uses the user defined folder TRACES_FOLDER path environment
+ TRACE_FILE_COMPRESS = 1 - Create xz-compressed tracefile
+ENABLE_SPINLOCK_FAST_FORWARD = 0 - Enable spinlock fast forwarding
+SPINLOCK_ITER_TO_KEEP = 1 - Number of iterations to keep for spinlock fast forwarding
+----------------------------------------------------------------------------------------------------
+[Vector addition of 4000000 elements]
+Copy input data from the host memory to the CUDA device
+CUDA kernel launch with 15625 blocks of 256 threads
+Writing results to /data/c16/ada_trace_extensions_v8_20261024_v1/attempts/snapshot7_vector4m_instrumented_v3_attempt1/traces//kernel-1-ctx_0x584e7058b6d0.trace.xz
+Copy output data from the CUDA device to the host memory
+Test PASSED elements=4000000 max_abs_error=0 output_digest_fnv64=0a8162dae8a16ac5
+Done

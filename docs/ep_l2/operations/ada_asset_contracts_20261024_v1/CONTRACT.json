@@ -1,0 +1,63 @@
+{
+  "schema": "ADA7_ORDINARY_OBSERVED_HTOD_INPUT_PROFILE_C8_V2",
+  "status": "FROZEN_CANDIDATE_PENDING_PARENT_FINAL_REVIEW_AND_DURABLE_RESTORE",
+  "producer_sha256": "c8cfa41fcabc90ff962159b77cda4a7b6c3ba0dd12236bf5d41849d159ad1352",
+  "capsule_validator_sha256": "7d00cf3524389ec5f9bfd28ec931cd9c88c45b3deaa4fb9ea0368c7cc0b58388",
+  "capsule_validator_output": "INPUT_CAPSULE_QUALIFICATION_V4R2.json",
+  "full_trace_validator_sha256": "175943e30d6c89daa9d8ec65c526029a6d7d689c40567c73933a1b5ca53df2e8",
+  "original_producer_55_unchanged": true,
+  "unchanged_device_source_files": {
+    "common.h": "556d91743ba7b64645a2cd30118c6152edf131d56c458a879fa781d89ac57a78",
+    "inject_funcs.cu": "bae5450e7ea0c0d0bcf927d0fd9d43614faba66cad6fefadefdf2a98a5ed15f2",
+    "ada_semantics.h": "3fa185141abdd3512aae1686a4524d201028c73c526c7704a0da361a65f1e6a3"
+  },
+  "header": {
+    "binary_version": 89,
+    "tracer_version": 7,
+    "ADA7_field_grammar_unchanged": true
+  },
+  "scope": "Only observed supported HtoD source bytes; no device readback, no full CUDA initialization snapshot, no numerical or ISA-domain promotion from capsule success.",
+  "supported_copy_apis": [
+    "cuMemcpyHtoD_v2",
+    "cuMemcpyHtoD_v2_ptds",
+    "cuMemcpyHtoDAsync_v2",
+    "cuMemcpyHtoDAsync_v2_ptsz"
+  ],
+  "single_context_lifetime_guard": "Process init count must be1, even identical CUcontext pointer reuse aborts before header/name counter reset. Multi-lifetime is unsupported rather than silently overwritten.",
+  "launch_gate": "Modern direct kernel API allowlist; one launch host thread and stream; paired successful callbacks+PROCESS_END recorded. Raw header count/function/context/stream identities joined by V4R2. Source launch-count/API oracle remains mandatory to exclude unobservable launch mechanisms.",
+  "pre_kernel_completion": "cudaDeviceSynchronize direct returned cudaError_t saved and checked success before completion record, independently of last-error state. No new snapshot-only synchronization inserted.",
+  "async_lifetime": "Mandatory per-asset source proof: host source remains unchanged and allocated from API return through recorded completion. API-return recheck alone does not prove DMA lifetime.",
+  "initialization_rules": "bank0 explicit arguments, Memset, D2D, symbol initialization each need source/argv/provenance rule; UM/mapped/GL/external data and unknown copy mechanisms excluded. Captured symbol bytes only if actually lowered to observed supported HtoD API.",
+  "observer": "NVBit loaded with SASS instrumentation disabled, retaining producer launch synchronization; not a pure unloaded or timing baseline. Compare actual bytes, preserve INPUT_DIFF.",
+  "limits": {
+    "tool_default_max_copy_bytes": 8388608,
+    "tool_default_max_total_bytes": 33554432,
+    "qualification_job_explicit_max_copy_bytes": 33554432,
+    "qualification_job_explicit_max_total_bytes": 67108864,
+    "validator_limits_must_match_frozen_dispatcher_job": true,
+    "source_free_floor_bytes": 5368709120
+  },
+  "required_fields": [
+    "source/binary/argv pins and initialization coverage flags",
+    "source known expected launch count and allowed launch API",
+    "same instrumented numerical proof separate from capsule success",
+    "existing async host-buffer lifetime source proof",
+    "per-copy raw bytes+closed SHA and source-byte scope label",
+    "full ordinary all-kernel/warp validation and independent consumer scope"
+  ],
+  "unsupported": [
+    "Graph/capture",
+    "legacy/unknown launch API",
+    "multiple context lifetimes",
+    "multiple launch threads/streams",
+    "multiple async copy streams including default+nondefault",
+    "TEX/surface/CALL/RET/async-memory ISA outside original55 ordinary domain",
+    "UM/mapped/GL/external initializer routes",
+    "unobserved API mechanisms"
+  ],
+  "validation_sha256": "a9b0203ab7f8f1bcadf77b8d524ee8ef2f6468ecfa0f4e297c584d14eec68143",
+  "negative_qualification_sha256": "0891ee32e0f2126562f7d35b5380c22e688db38a8291656ad729bb29d3ebcbec",
+  "initialization_scope_addendum_sha256": "f7196678b81715dda1c2d45ebeed5b94351b29925f6450dbaa7bbab66dfc870a",
+  "supersedes": "All earlier snapshot candidates462/b772/V3 and c8 V4A1 remain preserved; use this exact producer+V4R2 pair only after parent release.",
+  "metadata_binding_revision": "Bind initialization addendum explicitly to final c8 producer; old49a metadata candidate preserved, SO/validator/device code/measurements unchanged."
+}

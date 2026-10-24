@@ -1,0 +1,32 @@
+{
+  "schema": "ADA7_INPUT_SNAPSHOT_INITIALIZATION_SCOPE_C8_V2",
+  "producer_sha256": "c8cfa41fcabc90ff962159b77cda4a7b6c3ba0dd12236bf5d41849d159ad1352",
+  "claim": "Only observed supported HtoD source byte copies + successful API/unchanged host bytes + observed completion boundary. This is not a full CUDA initial-state snapshot.",
+  "coverage": {
+    "supported_HtoD": "CAPTURED_RAW_CLOSED_SHA_PER_OBSERVED_COPY",
+    "kernel_argument_bank0_bytes": "NOT_CAPTURED; source/argv/declared launch-argument initialization rule required. Trace captures symbolic bank0 accesses, not scalar argument values.",
+    "cuMemset": "NOT_CAPTURED; fixed pattern/size source rule required, otherwise INITIALIZATION_COVERAGE_PENDING",
+    "D2D": "NOT_CAPTURED_AS_EXTERNAL_BYTES; complete device dataflow and initial-source rules required; no content claim from source-byte capsule alone",
+    "managed_or_mapped_host_memory": "UNSUPPORTED; no observed HtoD cannot prove its host writes",
+    "GL_or_external_device_interop": "UNSUPPORTED",
+    "symbol_upload": "Only when lowered to an actually observed supported HtoD v2 call; raw bytes and destination pointer recorded. Constant65 proves its256B table upload, not all symbol mechanisms. Source/global-symbol rule needed; destination VA is not symbolic constant bank identity.",
+    "array_2D_3D_generic_batch_copy": "UNSUPPORTED_INPUT_API_OR_CALLBACK_COVERAGE; source preflight must exclude even APIs not observable by NVBit1.7.5",
+    "preexisting_device_memory": "UNSUPPORTED_AS_UNDECLARED_EXTERNAL_INITIAL_STATE"
+  },
+  "mandatory_asset_metadata": [
+    "input_capture_scope=OBSERVED_SUPPORTED_HTOD_SOURCE_BYTES_ONLY",
+    "kernel_argument_initialization_rule/source pins",
+    "memset_initialization_rule or NONE_IN_SOURCE",
+    "D2D initialization provenance or NONE_IN_SOURCE",
+    "UM/mapped/GL/external initialization flags must be ABSENT for this profile",
+    "symbol upload lowering/provenance rule or NONE_IN_SOURCE",
+    "unknown initialization coverage => INITIALIZATION_COVERAGE_PENDING, no full-input qualification",
+    "async host-source unchanged/allocated from API return to completion: per-asset source rule",
+    "single context lifetime and source launch-count oracle; journal count is not proof of unobservable mechanisms"
+  ],
+  "numerical_and_identity": "Same instrumented application reference is independent; source-byte capsule alone gives no numerical qualification. Native-observer comparison uses actual per-copy SHA and reports INPUT_DIFF, never assumed equivalence.",
+  "observer_timing": "Native observer loads NVBit and retains original producer prelaunch synchronization; it is not a pure unloaded or timing-equivalent baseline.",
+  "device_readback": false,
+  "async_extra_synchronization": false,
+  "historical_base_contract_sha256": "7ec6371fc69e2c4dc68762b5fd784676db1c8b202ef929172f1adf422a302f27"
+}

@@ -1,0 +1,65 @@
+{
+  "status": "QUALIFIED_STATIC_MAPPER_NOT_RUNTIME_DOMAIN_RELEASE",
+  "mapper_sha256": "a2e7ee38aa722465250c53096aea50bcd93623fea5b60114486538429dce1f6e",
+  "positive_binary_maps": {
+    "reduction": {
+      "binary_sha256": "f18e220db87582629744827488a81495717555cc31458e1062ee61982add2dac",
+      "instructions": 21841,
+      "manifest_sha256": "002e4392eeae5ce48519364226f8b869719dded8a50cb68fd356c00858d38909"
+    },
+    "BlackScholes": {
+      "binary_sha256": "5f7db5419745fa0478cffc3b8706b22a313ef3e0f808e9e2a406db8bd3081b0d",
+      "instructions": 649,
+      "manifest_sha256": "0e0efc4dfe56948fb9243ceb08822cb61ac09e5519012459ed63ca5ad57582cf"
+    },
+    "mri-gridding": {
+      "binary_sha256": "f84436b29d56236174ad8413ce219e45ea0d6b78ae989c71938c9ada3aeffcb1",
+      "instructions": 1179,
+      "manifest_sha256": "86f3b841e3c98326a68d936973e497df5e0b5dbb928e9a4375e1bf46032e3a88"
+    },
+    "streamcluster": {
+      "binary_sha256": "0d065ec372b5a74297f104aa9cc33d049b2b7208272ec3c9117c4718c83b177e",
+      "instructions": 347,
+      "manifest_sha256": "104277125d7a443b8e0c722f7c33683c50469e8fa403cc9c46f44c26acb7c21a"
+    },
+    "empty_cubin_api_guard": {
+      "binary_sha256": "2517810967131d77a58c1d5bd241ce958fa887b97b5fa15792398dad5b49f3b1",
+      "instructions": 9,
+      "manifest_sha256": "9ac40710dc2e4b5d40aab623d5227bd2dad5204bce3d960dbbc1007ae9018a7d"
+    }
+  },
+  "v2_streamcluster_typed_rows_exactly_equal": true,
+  "negative_cases": [
+    {
+      "case": "bad_symbol_start",
+      "status": "REJECTED",
+      "reason": "JSON start != ELF section-relative symbol value"
+    },
+    {
+      "case": "missing_embedded_alias",
+      "status": "REJECTED",
+      "reason": "JSON views do not close full executable owner section"
+    },
+    {
+      "case": "alias_opcode_corruption",
+      "status": "REJECTED",
+      "reason": "opcode mismatch"
+    },
+    {
+      "case": "out_of_section_extent",
+      "status": "REJECTED",
+      "reason": "JSON extent outside executable section"
+    },
+    {
+      "case": "unknown_symbol",
+      "status": "REJECTED",
+      "reason": "('JSON function missing ELF symbol', 'not_an_ELF_symbol')"
+    },
+    {
+      "case": "missing_actual_PLR_instruction",
+      "status": "REJECTED",
+      "reason": "missing nonNOP in PLR"
+    }
+  ],
+  "contract": "JSON actual ELF symbol section/value identity; root+embedded symbol views close every physical 16byte instruction in executable owner sections; every nonNOP present in PLR and all PLR PC/opcodes match JSON; no synthesized operand rows; CALL/WARPSYNC/etc remain ordinary runtime/domain HOLD"
+}
