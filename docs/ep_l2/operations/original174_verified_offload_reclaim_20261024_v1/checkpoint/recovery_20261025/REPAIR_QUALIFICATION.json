@@ -1,0 +1,91 @@
+{
+  "status": "PASS",
+  "cases": [
+    {
+      "case": "terminal_integer_consumed",
+      "result": "PASS"
+    },
+    {
+      "case": "active_integer_consumed",
+      "result": "FAIL_CLOSED_EXPECTED",
+      "reason": "RESOURCE_HOLD_ACTIVE_SCIENCE_UNSUPPORTED_PROGRESS_SCHEMA active_int"
+    },
+    {
+      "case": "active_mapping_unknown_intent",
+      "result": "FAIL_CLOSED_EXPECTED",
+      "reason": "CURRENT_SCIENCE_INTENT_IDENTITY_HOLD"
+    }
+  ],
+  "actual_target_admission": {
+    "unix": 1792860953.0428593,
+    "host": "huangrulin-sshfs-174",
+    "mount_namespace": "mnt:[4026535153]",
+    "role": "TARGET",
+    "SSD_available_bytes": 22094479360,
+    "SSD_required_bytes": 10536091648,
+    "copy_SSD_admission_pass": true,
+    "metadata_only": false,
+    "native_registered_reserved_bytes": 1879048192,
+    "source_registry": null,
+    "outside_registered_project_headroom_bytes": 1073741824,
+    "own_controls_reserve_bytes": 67108864,
+    "MemAvailable_bytes": 308062556160,
+    "cgroup_memory_current": 93085511680,
+    "cgroup_memory_max": "274877906944",
+    "IO": {
+      "some": {
+        "avg10": 11.41,
+        "avg60": 12.5,
+        "avg300": 12.01,
+        "total": 223112816842.0
+      },
+      "full": {
+        "avg10": 11.05,
+        "avg60": 12.32,
+        "avg300": 11.92,
+        "total": 202151023848.0
+      }
+    },
+    "CPU_pressure": {
+      "some": {
+        "avg10": 0.01,
+        "avg60": 0.04,
+        "avg300": 0.03,
+        "total": 538531155192.0
+      },
+      "full": {
+        "avg10": 0.0,
+        "avg60": 0.0,
+        "avg300": 0.0,
+        "total": 0.0
+      }
+    },
+    "active_AEFAIR": [],
+    "science_processes": [
+      {
+        "pid": 728735,
+        "start_ticks": 890442556,
+        "comm": "bash",
+        "cwd": "/root/workspace/accel-sim-framework",
+        "state": "S",
+        "cpu_ticks": 7
+      }
+    ],
+    "old_archive_locks_observed": [],
+    "Share_available_bytes": 36593475584,
+    "Share_global40GiB_policy_changed": false,
+    "route_exception": "TASK_QUALIFIED_ZERO_SHARE_PAYLOAD_STAGING_ONLY",
+    "Share_payload_write_budget_bytes": 0,
+    "true164": {
+      "mount": {
+        "target": "/root/share/mnt164",
+        "source": "admin-wcx@10.208.130.164:/home/shared",
+        "fstype": "fuse.sshfs",
+        "options": "rw,nosuid,nodev,relatime,user_id=0,group_id=0,allow_other"
+      },
+      "available_bytes": 49460593823744,
+      "reserved_peak_bytes": 0
+    }
+  },
+  "registry_modified": false
+}

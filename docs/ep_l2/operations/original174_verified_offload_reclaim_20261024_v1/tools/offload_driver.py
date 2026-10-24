@@ -13,6 +13,7 @@ def persist(path,x):
 def update(force=False,**kw):
     global last_state
     stage.update(kw);stage['unix']=time.time();stage['driver_pid']=os.getpid()
+    stage['driver_start_ticks']=int(P('/proc/self/stat').read_text().rsplit(')',1)[1].split()[19])
     if force or time.monotonic()-last_state>=5:persist(STATE,stage);last_state=time.monotonic()
 
 def event(x):
@@ -95,7 +96,7 @@ def main():
     update(force=True,phase='QUEUE_START',total_assets=115,completed_assets=complete,held_assets=0,total_new_transferred_bytes=transferred)
     for index,scope in enumerate(ordered):
         if scope['asset_id'] in previous:continue
-        update(force=True,asset_id=scope['asset_id'],asset_kind=scope['kind'],queue_index=index+1,asset_expected_bytes=scope['expected_bytes'],phase='ASSET_ADMISSION')
+        update(force=True,asset_id=scope['asset_id'],asset_kind=scope['kind'],queue_index=index+1,asset_expected_bytes=scope['expected_bytes'],phase='ASSET_ADMISSION',file=None,verified_end=0,current_asset_new_hashed_bytes=0,current_file_hashed_bytes=0,current_asset_new_transferred_bytes=0)
         started=time.time()
         try:
             m,prep=prepare(scope);bundle=P(m['new_true164_bundle'].replace('/home/shared','/root/share/mnt164',1));update(force=True,phase='TRUE164_RANGE_TRANSFER')
@@ -108,11 +109,11 @@ def main():
                 qualification=dict(status='QUALIFIED_ZERO_SHARE_PATH',pilot_asset=scope['asset_id'],manifest_sha256=record['manifest_sha256'],commit_sha256=record['commit_sha256'],true164_bundle=m['new_true164_bundle'],Source_new_payload_writes=0,Share_new_payload_writes=0,Source_sender='readonly files to verified direct SSH socket',Target_receiver='bounded memory to genuine164 only',native_restore=restoration['status'],old_Share40GiB_policy_changed=False,SSD_RAM_identity_and_live_science_gates='independently enforced on both ends',raw_chunk_max_bytes=c.CHUNK,staging_max_bytes=256*c.MIB,single_stream=True,sender_rate_bytes_per_second=c.RATE,aggregate_data_rate_limit_bytes_per_second=30*c.MIB)
                 persist(TASK/'control/ZERO_SHARE_QUALIFICATION.json',qualification);c.publish_bytes(NAS/'control/ZERO_SHARE_QUALIFICATION.json',c.canon(qualification),c.v9())
         except Exception as e:
-            holds+=1;record=dict(status='HOLD_EXACT_ASSET',asset_id=scope['asset_id'],kind=scope['kind'],reason=str(e),elapsed_seconds=time.time()-started,unix=time.time(),source_disposition='KEEP',new_scientific_starts=0)
+            holds+=1;record=dict(status='HOLD_EXACT_ASSET',asset_id=scope['asset_id'],kind=scope['kind'],reason=str(e),traceback=traceback.format_exc(),elapsed_seconds=time.time()-started,unix=time.time(),source_disposition='KEEP',new_scientific_starts=0)
             append(record);update(force=True,phase='ASSET_HOLD',last_hold=record,held_assets=holds)
             print(json.dumps(record),flush=True)
             if index==0:raise RuntimeError('ZERO_SHARE_PILOT_NOT_QUALIFIED '+str(e))
-            if 'RESOURCE_HOLD' in str(e):
+            if isinstance(e,BlockingIOError) or any(x in str(e) for x in ['RESOURCE_HOLD','OTHER_EXISTING_ARCHIVE_LOCK_HELD','CURRENT_SCIENCE_','SOURCE_LIVE_DTC_OWNER','UNKNOWN_SOURCE_ACTIVE_WRITE_RESERVATION','SOURCE_POLICY_IDENTITY_HOLD','NOT_TRUE164_TARGET_HOLD','ENDPOINT_IDENTITY_HOLD']):
                 # Do not turn a transient common gate into115 repeated failed
                 # attempts. Preserve the finite runner state for same-identity
                 # resource repair or authorized verified-copy retirement.
@@ -120,5 +121,12 @@ def main():
     update(force=True,phase='FINITE_QUEUE_PASS_ENDED',completed_assets=complete,held_assets=holds,total_new_transferred_bytes=transferred)
 
 if __name__=='__main__':
-    try:main()
-    except Exception as e:update(force=True,phase='DRIVER_HOLD',error=str(e),traceback=traceback.format_exc());raise
+    # Extra process exclusion only; existing transfer locks and transaction
+    # identities remain authoritative. Never replace or unlink lock files.
+    driver_lock=(TASK/'control/DRIVER.lock').open('a+b')
+    fcntl.flock(driver_lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+    try:
+        main()
+        update(force=True,driver_exit_observed=True,driver_exit_code=0)
+    except Exception as e:
+        update(force=True,phase='DRIVER_HOLD',driver_exit_observed=True,driver_exit_code=1,error=str(e),traceback=traceback.format_exc());raise

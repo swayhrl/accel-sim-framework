@@ -236,7 +236,10 @@ class Resources:
     def __init__(self,testing=False):self.last=0;self.last_value=None;self.samples=[]
     def __call__(self,force=False):
         if not force and self.last_value and time.monotonic()-self.last<10:return self.last_value
-        value=rr.admission('TARGET',include_activity=False)
+        own_sender=()
+        if ACTIVE_SENDER is not None and ACTIVE_SENDER.poll() is None:
+            own_sender=(ACTIVE_SENDER.pid,)
+        value=rr.admission('TARGET',include_activity=False,allowed_lock_pids=own_sender)
         self.last=time.monotonic();self.last_value=value;self.samples.append(value)
         self.samples=self.samples[-100:]
         return value
@@ -361,6 +364,9 @@ def source_send(request,testing=False):
                     frame(dict(event='CHUNK',path=row['relative_path'],offset=offset,size=len(b),sha256=digest(b)))
                     for j in range(0,len(b),MIB):
                         part=memoryview(b)[j:j+MIB];time.sleep(len(part)/RATE);sys.stdout.buffer.write(part);sys.stdout.buffer.flush();source_gate(role,last)
+                else:
+                    # Reused ranges still need Source EOF SHA, at bounded I/O.
+                    time.sleep(len(b)/(30*MIB));source_gate(role,last)
                 offset+=len(b)
         need(offset==row['size'] and same_source(a,identity(path)) and h.hexdigest()==row['sha256'],'SOURCE_EOF_SHA_OR_IDENTITY_MISMATCH')
         frame(dict(event='FILE_END',path=row['relative_path'],size=offset,sha256=h.hexdigest(),source_before_after_identity_unchanged=True,source_disposition='SOURCE_KEEP'))

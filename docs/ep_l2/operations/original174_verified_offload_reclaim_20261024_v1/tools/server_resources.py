@@ -67,7 +67,12 @@ def admission(role,remote_peak=0,include_activity=True,allowed_lock_pids=(),meta
  if role=='TARGET':
   for request_id,req in reg.get('registered_future_requests',{}).items():
    if req.get('state')!='RUNNING':continue
-   for cohort,item in (req.get('consumed') or {}).items():
+   consumed=req.get('consumed')
+   # Other science owners use an integer counter plus case_consumption.
+   # An unfamiliar RUNNING schema is a common resource HOLD, never an idle
+   # science claim or a parser crash followed by 106 repeated asset attempts.
+   need(isinstance(consumed,dict),'RESOURCE_HOLD_ACTIVE_SCIENCE_UNSUPPORTED_PROGRESS_SCHEMA '+request_id)
+   for cohort,item in consumed.items():
     if not isinstance(item,dict) or item.get('execution_receipt'):continue
     ip=item.get('intent')
     need(ip and ip.startswith(str(NATIVE/'control')+'/'),'CURRENT_SCIENCE_INTENT_IDENTITY_HOLD')
