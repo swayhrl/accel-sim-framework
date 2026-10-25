@@ -1,0 +1,33 @@
+{
+  "schema": "LANE_T2_PERFORMANCE_BOTTLENECK_AUDIT_V1",
+  "observed_unix": 1792900068.7567146,
+  "completed": 36,
+  "pending": 79,
+  "active_asset": "TRACE_f254bec10d7a65a7",
+  "active_phase": "TRANSFER_RANGE_VERIFIED",
+  "active_pass_verified_bytes": 3502653776,
+  "last_completed_asset": "TRACE_b3e3f652d0983650",
+  "last_completed_bytes": 7971532807,
+  "last_completed_elapsed_seconds": 2194.801937818527,
+  "measured_effective_MB_per_second": 3.632,
+  "current_source_limit_MiB_per_second": 15,
+  "current_total_limit_MiB_per_second": 30,
+  "active_science_avg10_gate": "USER_AUTHORIZED_MONITOR_ONLY",
+  "severe_avg60_pressure_guard": "RETAINED; not blocking in observed sample",
+  "serialized_passes": [
+    "Source full prehash at 30 MiB/s",
+    "Source payload stream at 15 MiB/s",
+    "Each received chunk closed-reopen SHA at 15 MiB/s while Sender active",
+    "Whole-file assembly over SSHFS at logical 15 MiB/s; remote read plus remote write",
+    "Assembled whole-file closed-reopen SHA at 30 MiB/s"
+  ],
+  "idealized_large_file_effective_MiB_per_second": 3.75,
+  "idealization_limitations": "Excludes metadata, fsync, SSHFS latency, membership distribution and resource sampling overhead",
+  "parallel_metadata_preflight": "Completed; 16 scopes / 9200 files; advisory identity checks only, no measured payload throughput benefit claimed",
+  "direct_164_native_execution_probe": "BatchMode SSH as existing admin-wcx identity denied; existing SSHFS remains usable",
+  "proposed_rate_change": "30 MiB/s Source, 60 MiB/s total; awaiting explicit resource-contract authorization",
+  "rate_change_applied": false,
+  "live_copy_engine_modified": false,
+  "existing_execution_continues": true,
+  "full_SHA_checks_removed": false
+}
