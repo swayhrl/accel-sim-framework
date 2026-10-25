@@ -1,0 +1,136 @@
+{
+  "actual_main_scenarios": [
+    "default readonly exactbytes",
+    "apply using actual original update_authority AST function and fakeRoot",
+    "repeat rejection"
+  ],
+  "check_count": 27,
+  "checks": [
+    {
+      "name": "18 independent archives plus 5 future writers gives exactly 3.5GiB",
+      "status": "PASS"
+    },
+    {
+      "name": "barrier covers only unconsumed eligible; preserves HOLD and live cohort",
+      "status": "PASS"
+    },
+    {
+      "name": "R1 remaining mismatch rejects",
+      "status": "PASS"
+    },
+    {
+      "name": "R1 budget mismatch rejects",
+      "status": "PASS"
+    },
+    {
+      "name": "missing consumed identity rejects",
+      "status": "PASS"
+    },
+    {
+      "name": "unspent R1 claim rejects",
+      "status": "PASS"
+    },
+    {
+      "name": "unspent original claim rejects",
+      "status": "PASS"
+    },
+    {
+      "name": "archived closed unsafe rejects",
+      "status": "PASS"
+    },
+    {
+      "name": "archived model_live unsafe rejects",
+      "status": "PASS"
+    },
+    {
+      "name": "all unarchived grow to output cap still covered",
+      "status": "PASS"
+    },
+    {
+      "name": "ceil64MiB covers size+16MiB branch",
+      "status": "PASS"
+    },
+    {
+      "name": "mutation whitelist preserves state budgets history sources and live consumed",
+      "status": "PASS"
+    },
+    {
+      "name": "legacy EP integer consumed row without remaining preserved exactly",
+      "status": "PASS"
+    },
+    {
+      "name": "repeat apply rejects",
+      "status": "PASS"
+    },
+    {
+      "name": "prefix changed rejects before mutation",
+      "status": "PASS"
+    },
+    {
+      "name": "R16 pure release restores exact prior HOLD and eligibility without budget change",
+      "status": "PASS"
+    },
+    {
+      "name": "repeat release rejects",
+      "status": "PASS"
+    },
+    {
+      "name": "wrong barrier hash rejects",
+      "status": "PASS"
+    },
+    {
+      "name": "already CLOSED consumer q byte-semantic unchanged; zero not raised to floor",
+      "status": "PASS"
+    },
+    {
+      "name": "CLOSED with unarchived writers rejects",
+      "status": "PASS"
+    },
+    {
+      "name": "V2 UUID mismatch rejects",
+      "status": "PASS"
+    },
+    {
+      "name": "proof SHA mismatch rejects",
+      "status": "PASS"
+    },
+    {
+      "name": "actual main default leaves exact registry and epoch bytes unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "actual main apply + original writer registry/epoch atomic replace and SHA readback",
+      "status": "PASS"
+    },
+    {
+      "name": "exact registry epoch q preimages saved before mutation",
+      "status": "PASS"
+    },
+    {
+      "name": "global budget and scientific histories unchanged across real writer",
+      "status": "PASS"
+    },
+    {
+      "name": "actual main repeat apply rejects without changing committed authority",
+      "status": "PASS"
+    }
+  ],
+  "driver_path": "/root/data/dtc_failure_repair_20261025_v1/ops/qualify_admission_barrier_cpu_v1.py",
+  "driver_sha256": "3e00b1722c3fdffad4d8a4b9e1971c39ac2fe22c6fc630341b912f40b16d1e63",
+  "fixture_root": "/root/data/dtc_failure_repair_20261025_v1/control/ADMISSION_BARRIER_CPU_c48tu1cb",
+  "limitations": [
+    "Registry and epoch replacements follow original sequential fsync/hash protocol, not a cross-file atomic transaction; interrupted pair stays fail-closed.",
+    "Claims are checked twice under registry EX; the old dispatcher writes its claim sidecar separately. A racing unconsumed attempt is rejected by native sealed check before scientific consume; no claim or model is fabricated.",
+    "No actual production apply, register, model start, signal, entry edit or ledger edit."
+  ],
+  "original_authority_writer_path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_native_cap1m.py",
+  "original_authority_writer_sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d",
+  "real_authority_writes": 0,
+  "real_model_starts": 0,
+  "schema": "ADMISSION_BARRIER_AND_R1_RECONCILIATION_CPU_QUALIFICATION_V1",
+  "signals": 0,
+  "source_path": "/root/data/dtc_failure_repair_20261025_v1/ops/reconcile_r1_admission_barrier_v1.py",
+  "source_sha256": "ede4cd2bad0345c9fb6e8b9ac0b09f941dafa4b77820179515d1b56b67169828",
+  "status": "PASS",
+  "utc": "2026-10-25T17:58:41.896532+00:00"
+}

@@ -1,0 +1,49 @@
+{
+  "schema": "HYBRIDSORT_E911_FIRST_KERNEL_ZERO_DEST_ATOMIC_FULL_AUDIT_V1",
+  "observed_utc": "2026-10-25T17:39:54.219823+00:00",
+  "path": "/root/workspace/assets/traces/bundles/a016d74c8f1d309ba09bf5b349eefa9dc2c03819a4cdfb3abd54c38c300effbe/tree/kernel-1.traceg",
+  "bytes": 64155951,
+  "sha256": "d3fffb6186662e8ef3c7d107451dd0cba88967d84f6da5b35f06b156d7caac76",
+  "input_stat_stable": true,
+  "prior_full_body_audit_path": "/root/data/dtc_main_v100_sweep_20261025_v1/qualification/e9110566572e0e0dd3c00afc3aba533fa14ca3bb53a52cb44ffb4262b67be967/kernel_1.json",
+  "prior_full_body_audit_sha256": "033f612cdcdea3c0acca51ca4fcf46e293a85b394d5c320aac4be1ce50e1b2e5",
+  "first_kernel": "_Z19histogram1024KernelPjPfffi",
+  "first_kernel_CTA": 64,
+  "first_kernel_warp_records": 758668,
+  "RED_records": 2048,
+  "reg_dest_count_histogram": {
+    "0": 2048
+  },
+  "active_mask_histogram": {
+    "ffffffff": 2048
+  },
+  "width_histogram": {
+    "4": 2048
+  },
+  "address_mode_histogram": {
+    "1": 2048
+  },
+  "stride_histogram": {
+    "4": 2048
+  },
+  "base_mod128_histogram": {
+    "0": 2048
+  },
+  "examples": [
+    {
+      "line": 3881,
+      "text": "0 0 0 0 04b0 ffffffff 0 RED.E.ADD.STRONG.GPU 1 R5 4 1 0x00007f9c657ef600 4"
+    },
+    {
+      "line": 3894,
+      "text": "0 0 0 0 04b0 ffffffff 0 RED.E.ADD.STRONG.GPU 1 R5 4 1 0x00007f9c657ef780 4"
+    },
+    {
+      "line": 3907,
+      "text": "0 0 0 0 04b0 ffffffff 0 RED.E.ADD.STRONG.GPU 1 R5 4 1 0x00007f9c657ef900 4"
+    }
+  ],
+  "source_path_implication": "All2048captured RED records are zero-destination global atomics, the exact path repaired in Core9eed completion tracking. Both old DM/DH failed first-kernel terminal OO PIB assertion before kernel2; this audit supports repair applicability but does not reconstruct each remaining PIB UID or assert its exact count.",
+  "scientific_models_started": 0,
+  "source_or_ledger_modified": false
+}
