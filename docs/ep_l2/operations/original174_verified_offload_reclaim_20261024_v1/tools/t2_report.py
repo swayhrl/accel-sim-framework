@@ -29,6 +29,11 @@ def main():
         by_kind.append(dict(kind=kind,total=total,committed=sum(r['status']=='COMMITTED' for r in group),HOLD=sum(r['status']=='HOLD' for r in group),pending=sum(r['status'] not in ['COMMITTED','HOLD'] for r in group),committed_bytes=sum(int(r['expected_bytes']) for r in group if r['status']=='COMMITTED')))
     restore_counts=dict(collections.Counter(z['native_restore_status'] for z in done));native=[z for z in done if z['full_native_restore_performed']];new=[z for z in done if z['asset_id'] not in baseline['committed_asset_ids']]
     rc=x['retirement'];initial_alloc={k:v['unlinked_file_allocated_bytes'] for k,v in rc['initial'].items()};package=rc['package'];pool_delta=rc['initial_pool_observed_interval_delta']+package['actual_observed_SSD_increase_bytes'];source_delta=rc['initial_Source_observed_interval_delta']+package['actual_observed_SSD_increase_bytes']
+    extra_path=OUT/'reclaim_174new/DONE.json'
+    extra=load(extra_path) if extra_path.exists() else None
+    if args.final and extra:
+        verification=load(OUT/'reclaim_174new/INDEPENDENT_CLOSURE.json')
+        assert verification['status']=='PASS' and verification['unclosed_file_intents']==0,'NEW_174NEW_RETIREMENT_NOT_CLOSED'
     status=('FINAL_WITH_CLASSIFIED_HOLDS' if holds else 'FINAL_ALL_FROZEN_SCOPES_COMMITTED') if args.final else 'DRAFT_IN_PROGRESS_NOT_GOAL_COMPLETION'
     proof=dict(schema='LANE_T2_REQUIREMENT_CLOSURE_AUDIT_V1',status=status,unix=x['unix'],scope=115,groups=by_kind,committed=len(done),pending=len(pending),HOLD=len(holds),content_audit_errors=x['audit_errors'],prior20_control_readbacks_PASS=sum(z['control_readback']=='PASS' for z in x['prior20_reuse']),T2_new_committed_assets=len(new),T2_new_logical_bytes=sum(z['bytes'] for z in new),native_restore_status_counts=restore_counts,full_native_restore_verified_assets=len(native),full_native_restore_verified_bytes=sum(z['bytes'] for z in native),scientific_acceptance_changed=False,retirements_replayed=False,new_T2_Source_retirement_bytes=0,requirements={
         'all115_have_final_state':not pending,'all_committed_match_frozen_identity_range_SHA_and_COMMIT':not x['audit_errors'] and len(done)==x['committed_ledger_count'],
@@ -36,6 +41,7 @@ def main():
         'prior20_not_counted_as_new_transfer':True,'Trace51_DTC63_Q05_1_denominators_preserved':True,'Source_retirement_INTENT_DONE_all_closed':all(not z['unclosed'] for z in rc['initial'].values()),
         'Q05_exact223499B_acceptance_identity':any(z['asset_id']=='AWMA_Q05_FIXED10000_EXACT_RAW' for z in done),
         'partial_transactions_explained':'REQUIRES_FINAL_STOPPED_EXECUTION_AUDIT','task_owned_processes_stopped':'REQUIRES_FINAL_SHUTDOWN_AUDIT','final_GitHub_publication_and_independent_readback':'REQUIRES_FINAL_REMOTE_READBACK'})
+    proof['additional_174new_verified_copy_retirement']=extra
     dump('REQUIREMENT_CLOSURE_AUDIT.json',proof)
     when=datetime.datetime.fromtimestamp(x['unix'],datetime.timezone(datetime.timedelta(hours=8))).isoformat()
     lines=[f'# Lane T2 archive report — {status}',f'\nEvidence snapshot: {when}. Original queue SHA256 `{x["frozen_sha256"]}`.',
@@ -49,6 +55,8 @@ def main():
         f'\nHistorical exact retirement: {rc["initial"]["TARGET"]["done"]:,} T-owned test-copy files, {rc["initial"]["SOURCE"]["done"]} approved Source kernel files, plus the one cold polybench package. Allocated bytes unlinked: Target test copies {initial_alloc["TARGET"]:,}; Source kernel files {initial_alloc["SOURCE"]:,}; Source package {package["source_allocated_before_bytes"]:,}. Independently observed operation-interval SSD free-space deltas: pool {pool_delta:,}; Source unlink intervals {source_delta:,}. These are distinct measures and are not added to archive volume. T2 has not replayed any retirement or performed a new Source retirement.',
         f'\nCurrent shared SSD free: {x["resources"]["/root/data"]["available_bytes"]:,} bytes; Share/MD127 free: {x["resources"]["/root/share"]["available_bytes"]:,}; genuine164 free: {x["resources"]["/root/share/mnt164"]["available_bytes"]:,}. Current free-space changes include other projects and are not attributed to this archiver.',
         '\nAll per-asset genuine164 bundle and recovery entries are in `CONTENT_AND_RESTORE_CLOSURE.json`; prior 20 reuse links are in the same file. The existing five-minute publication receipts remain `../checkpoint/recovery_20261025/PUBLICATION_RECEIPTS.jsonl`. Final process shutdown, partial-transaction accounting and GitHub remote readback must be independently closed before Goal completion.']
+    if extra:
+        lines.append(f'\nAdditional user-authorized 174-new cold compiler-copy retirement: {extra["files"]:,} exact files; logical bytes {extra["logical_bytes_unlinked"]:,}; allocated file bytes unlinked {extra["allocated_bytes_unlinked"]:,}; independently observed SSD free-space interval delta {extra["observed_SSD_free_interval_delta"]:,}. Concurrent project writes prevent exclusive causal attribution of that interval delta. These measures are separate from each other, the historical releases and frozen115 archive bytes. Exact whitelist, SHA/metadata, COMMIT, INTENT/DONE, recovery test and restore entry are under `reclaim_174new/`. No old174 Source files were deleted by this additional retirement.')
     if holds:
         lines.append('\nCurrent explicit HOLDs:')
         lines.extend(f'- `{r["asset_id"]}`: {categories.get(r["asset_id"],{}).get("category","UNCLASSIFIED")} — {r["reason"]}' for r in holds)

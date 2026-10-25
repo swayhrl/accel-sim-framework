@@ -121,7 +121,9 @@ def summarize(x):
         rows.append(dict(asset_id=aid,kind=a['kind'],source_root=a['source_root'],expected_bytes=a['expected_bytes'],status=status,reason=p.get('reason','') if status=='HOLD' else '',prior_historical_hold=p.get('reason','') if status!='COMMITTED' and p.get('status')=='HOLD_EXACT_ASSET' else '',true164_bundle=v['true164_bundle'] if v else '',commit_sha256=v['commit_sha256'] if v else '',native_restore_status=v['native_restore_status'] if v else '',scientific_acceptance='UNCHANGED_NO_NEW_SCIENTIFIC_QUALIFICATION',new_in_T2=aid not in baseline['committed_asset_ids'] and bool(v)))
     table('FROZEN115_FINAL_STATE_TABLE.csv',rows,list(rows[0]));dump('PROGRESS_SUMMARY.json',dict(unix=x['unix'],scope=115,counts=dict(collections.Counter(z['status'] for z in rows)),committed_bytes=sum(z['bytes'] for z in done.values()),new_T2_committed_assets=sum(z['new_in_T2'] for z in rows),new_T2_committed_bytes=sum(z['expected_bytes'] for z in rows if z['new_in_T2']),audit_errors=x['audit_errors'],driver=state,supervisor=x['supervisor'],resources=x['resources']))
     table('NEW_T2_COMMITTED_ASSETS.csv',[z for z in rows if z['new_in_T2']],list(rows[0]))
-    dump('RECLAIM_ACCOUNTING.json',dict(unix=x['unix'],**x['retirement'],current_resources=x['resources'],archived_logical_bytes_counted_as_reclaimed_space=False,Source_new_retirement_by_T2=0))
+    additional_path=OUT/'reclaim_174new/DONE.json'
+    additional=load(additional_path) if additional_path.exists() else None
+    dump('RECLAIM_ACCOUNTING.json',dict(unix=x['unix'],**x['retirement'],additional_174new_verified_copy_retirement=additional,current_resources=x['resources'],archived_logical_bytes_counted_as_reclaimed_space=False,Source_new_retirement_by_T2=0))
     variants=[];row_by_id={z['asset_id']:z for z in rows};prior_by_root={z['source_root']:z for z in x['prior20_reuse']};trace_rows=[]
     for a in q:
         if a['kind']!='TRACE':continue
