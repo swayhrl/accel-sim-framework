@@ -5,7 +5,7 @@ science. It finalizes only 115/115 COMMITTED. Any other terminal state leaves
 a review receipt and exits without claiming completion.
 """
 from local_common import *
-import ctypes,datetime,urllib.request,urllib.parse
+import ctypes,datetime,urllib.request,urllib.parse,traceback
 
 BRANCH='hrl/ops-original174-verified-offload-reclaim-exec-20261024-v1'
 MUTEX='Local\\LaneT2Frozen115BackgroundFinalizer20261025'
