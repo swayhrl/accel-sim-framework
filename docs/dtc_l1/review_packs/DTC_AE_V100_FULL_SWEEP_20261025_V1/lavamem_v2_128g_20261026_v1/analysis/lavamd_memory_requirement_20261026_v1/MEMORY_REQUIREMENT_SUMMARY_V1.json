@@ -1,0 +1,58 @@
+{
+  "status": "FULL_DECLARED_HEADER_INDEX_SHA_AND_POPULATION_JOIN_PASS",
+  "source_read_result": "/root/data/dtc_failure_repair_20261025_v1/analysis/lavamd_memory_requirement_20261026_v1/HEADER_INDEX_READ_RESULT.json",
+  "input_sha256": "ccbd8ff9ff00c6b5a2fc49e982c652e12259b59378f2853593f36df8ae24701f",
+  "complete_CTAs": 1000,
+  "complete_warps": 4000,
+  "warp_record_sum": 420346376,
+  "warp_record_histogram": {
+    "38329": 24,
+    "38346": 8,
+    "57465": 288,
+    "57490": 96,
+    "86169": 1152,
+    "86206": 384,
+    "129225": 1536,
+    "129280": 512
+  },
+  "CTA_record_histogram": {
+    "153333": 8,
+    "229885": 96,
+    "344713": 384,
+    "516955": 512
+  },
+  "max_records_per_local_warp_index": {
+    "0": 129225,
+    "1": 129225,
+    "2": 129225,
+    "3": 129280
+  },
+  "max_CTA_records_sum": 516955,
+  "minimum_CTA_records": 153333,
+  "max_CTA_per_SM_from_actual_config_and_raw": 9,
+  "SMs": 64,
+  "maximum_simultaneous_CTA_bound": 576,
+  "maximum_ever_used_physical_warp_slots_for_this_one_kernel": 2304,
+  "sizeof_inst_trace_t": 248,
+  "sizeof_inst_memadd_info_t": 264,
+  "all_capacity_max_vector_bytes_bound": 73845987840,
+  "all_capacity_max_vector_GiB_bound": 68.77443552017212,
+  "conservative_entire_grid_memory_record_heap_bytes_272B_each": 6480119296,
+  "conservative_entire_grid_memory_record_heap_GiB": 6.035081386566162,
+  "vector_plus_conservative_heap_GiB": 74.80951690673828,
+  "first_173_complete_CTA_declared_records": 63577777,
+  "first_173_vector_bytes": 15767288696,
+  "first_173_vector_GiB": 14.684431903064251,
+  "actual_active_CTA_count_at_crash": "NOT_CAPTURED; do not equate header173 with exactly173 currently active; source initializes CTA traces on admission and has a576slot maximum.",
+  "capacity_is_not_RSS": "std::vector capacity is virtual storage; committed/touched pages, allocator retention and current object size determine actual RSS; this is a conservative capacity accounting bound, not measured physical RSS.",
+  "new_request_recommendation": {
+    "hard_AS_RSS_cap_GiB": 128,
+    "estimated_peak_model_RAM_GiB": 96,
+    "parallel_target_max": 2,
+    "current_fresh_resource_gate_likely_one": "Actual admission must reserve96GiB per pending model plus48GiB cgroup/64GiB host floor and other pending envelopes; do not allocate two merely because hard cap128 is address space.",
+    "32GiB": "Not defensibly sufficient. The576-slot vector-capacity upper bound alone exceeds32GiB.",
+    "64GiB": "Not guaranteed by the upper bound:68.774GiB vectors before heap/platform overhead.",
+    "128_96_basis": "~68.8GiB conservative vector-capacity bound plus<=6.04GiB entire-input memory-object malloc-chunk bound, plus transient single vector reallocation and runtime/allocator allowance fits beneath96GiB estimated physical;128GiB AS adds additional virtual mapping safety margin. Actual peak must still be measured on new separate attempts."
+  },
+  "scientific_models_started": 0
+}
