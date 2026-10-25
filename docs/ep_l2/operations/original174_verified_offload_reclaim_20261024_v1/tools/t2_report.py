@@ -6,7 +6,8 @@ from t2_closure_audit import OUT,table,dump
 import argparse,csv,collections,datetime
 
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument('--final',action='store_true');args=ap.parse_args()
+    ap=argparse.ArgumentParser();ap.add_argument('--final',action='store_true');ap.add_argument('--pre-publication',action='store_true');args=ap.parse_args()
+    assert not args.pre_publication or args.final,'PRE_PUBLICATION_ONLY_VALID_WITH_FINAL'
     x=load(OUT/'CONTENT_AND_RESTORE_CLOSURE.json');baseline=load(OUT/'TAKEOVER_BASELINE.json');progress=load(OUT/'PROGRESS_SUMMARY.json')
     with (OUT/'FROZEN115_FINAL_STATE_TABLE.csv').open(encoding='utf-8',newline='') as f:rows=list(csv.DictReader(f))
     assert len(rows)==115 and len({r['asset_id'] for r in rows})==115
@@ -69,6 +70,13 @@ def main():
     proof['transfer_rate_user_authorization']=rate_auth
     proof['transfer_rate_handoff_closed']=rate_closed
     proof['last_observed_transfer_rate_policy']=rate_controls.get('TRANSFER_RATE_POLICY.json')
+    github_readback_path=OUT/'FINAL_GITHUB_REMOTE_READBACK.json'
+    github_readback=load(github_readback_path) if github_readback_path.exists() else None
+    if args.final and not args.pre_publication:
+        assert github_readback and github_readback.get('status')=='PASS','FINAL_GITHUB_REMOTE_READBACK_MISSING'
+        assert github_readback.get('all_exact_bytes_match') is True,'FINAL_GITHUB_REMOTE_READBACK_NOT_EXACT'
+    proof['final_GitHub_remote_readback']=github_readback
+    proof['requirements']['final_GitHub_publication_and_independent_readback']=True if github_readback and github_readback.get('status')=='PASS' and github_readback.get('all_exact_bytes_match') is True else 'PENDING_POST_PUBLICATION_READBACK'
     dependency_path=OUT/'RESTORE_IMPORT_DEPENDENCY_AUDIT.json'
     dependencies=load(dependency_path) if dependency_path.exists() else None
     proof['restore_entry_dependency_audit']=({k:dependencies[k] for k in ['unix','scopes','PASS','scope_limit','true164_receipt']} if dependencies else None)
@@ -94,6 +102,10 @@ def main():
         lines.append(f'\nA later explicit authorization in `TRANSFER_RATE_USER_AUTHORIZATION.json` permits staged Source/aggregate transfer limits up to 60/120 MiB/s, initially 30/60. Cooperative post-COMMIT rate handoff closed: {rate_closed}. Last observed active policy: `{json.dumps(rate_controls.get("TRANSFER_RATE_POLICY.json"),sort_keys=True)}`. `rate_transition/` retains qualification, normal lock-release and Driver-exit evidence, original Supervisor identity and cumulative budgets, and rate observations. Single-stream, SHA, staging, space/RAM, severe pressure and scientific identity requirements remain in force. Existing immutable bundle helpers retain their published versions.')
     if dependencies:
         lines.append(f'\nPublished restore-entry dependency audit: {dependencies["PASS"]}/{dependencies["scopes"]} scopes passed shell syntax, standalone module loading, co-located resource-module checks and pinned existing-controller V9 dependency loading. `RESTORE_IMPORT_DEPENDENCY_AUDIT.json` retains exact helper/resource hashes and external controller paths. This is not a native payload-restoration test, independent-host portability proof or an override of frozen helper resource checks.')
+    if github_readback:
+        lines.append(f'\nThe closure publication at GitHub commit `{github_readback["closure_commit"]}` was independently fetched over HTTPS. All {len(github_readback["files"])} selected final control/report files matched the local bytes and recorded SHA256 values. The following publication adds this readback receipt; its remote ref and receipt bytes are verified separately and persisted on genuine164.')
+    elif args.final:
+        lines.append('\nThis pre-publication final report is ready for the first closure commit. Independent GitHub HTTPS readback is intentionally pending until that immutable commit exists; a second publication will carry the readback receipt.')
     if holds:
         lines.append('\nCurrent explicit HOLDs:')
         lines.extend(f'- `{r["asset_id"]}`: {categories.get(r["asset_id"],{}).get("category","UNCLASSIFIED")} — {r["reason"]}' for r in holds)
