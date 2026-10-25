@@ -22,7 +22,9 @@ Historical exact retirement: 8,423 T-owned test-copy files, 4 approved Source ke
 
 Current shared SSD free: 23,460,798,464 bytes; Share/MD127 free: 36,581,072,896; genuine164 free: 48,301,648,097,280. Current free-space changes include other projects and are not attributed to this archiver.
 
-All per-asset genuine164 bundle and recovery entries are in `CONTENT_AND_RESTORE_CLOSURE.json`; prior 20 reuse links are in the same file. The existing five-minute publication receipts remain `../checkpoint/recovery_20261025/PUBLICATION_RECEIPTS.jsonl`. Final process shutdown, partial-transaction accounting and GitHub remote readback must be independently closed before Goal completion.
+All per-asset genuine164 bundle and recovery entries are in `CONTENT_AND_RESTORE_CLOSURE.json`; prior 20 reuse links are in the same file. The existing five-minute publication receipts remain `../checkpoint/recovery_20261025/PUBLICATION_RECEIPTS.jsonl`.
+
+Final process shutdown, two-namespace sender/receiver checks, partial-transaction accounting and GitHub remote readback are closed. `FINAL_PROCESS_SHUTDOWN_AUDIT.json`, `REQUIREMENT_CLOSURE_AUDIT.json` and `FINAL_GITHUB_REMOTE_READBACK.json` contain the evidence.
 
 Additional user-authorized 174-new cold compiler-copy retirement: 2,341 exact files; logical bytes 1,834,022,818; allocated file bytes unlinked 1,838,903,296; independently observed SSD free-space interval delta 1,816,342,528. Concurrent project writes prevent exclusive causal attribution of that interval delta. These measures are separate from each other, the historical releases and frozen115 archive bytes. Exact whitelist, SHA/metadata, COMMIT, INTENT/DONE, recovery test and restore entry are under `reclaim_174new/`. No old174 Source files were deleted by this additional retirement.
 
@@ -36,4 +38,4 @@ Published restore-entry dependency audit: 115/115 scopes passed shell syntax, st
 
 The closure publication at GitHub commit `7125a94521428d6520451326127fc5749d3585c8` was independently fetched over HTTPS. All 5 selected final control/report files matched the local bytes and recorded SHA256 values. The following publication adds this readback receipt; its remote ref and receipt bytes are verified separately and persisted on genuine164.
 
-No current classified terminal HOLD has been established in this snapshot. Remaining pending work is not counted as successful completion.
+No terminal HOLD remains. All 115 frozen scopes are committed.
