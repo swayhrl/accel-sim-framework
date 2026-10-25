@@ -1,0 +1,646 @@
+{
+  "schema": "DTC_VECTORADD_MEMORY_HEADROOM_ROOT_CAUSE_DIAGNOSIS_V1",
+  "cohort": "E2-AEV100-e7bb67e63e3c3847-DH",
+  "uuid": "b15d3469-ed1b-4979-b7fa-9ba864c8630e",
+  "program": "vectorAdd",
+  "arm": "DH",
+  "diagnosed_utc": "2026-10-25T14:21:37.198924+00:00",
+  "status": "OFFLINE_READONLY_DIAGNOSIS_COMPLETE_NO_RETRY",
+  "summary_zh": "该点不是因自身RSS达到上限或被内核OOM killer终止；旧外层守护把5个在场模型未来可能增长到16GiB的差额全部预留，在共享cgroup原始memory.current波动后仅差28.09375MiB越线，主动向原模型发送SIGTERM。确认的是资源预算策略触发；当时缓存/其它共享占用的具体组成未记录，不能断言缓存是唯一根因。",
+  "direct_trigger": {
+    "sample_utc": "2026-10-25T05:56:44.286358+00:00",
+    "sample_china_time": "2026-10-25 13:56:44.286358 +08:00",
+    "elapsed_seconds": 1241.8707359973341,
+    "stop_reason": "MEMORY_HEADROOM",
+    "launcher_returncode": -15,
+    "signal": "SIGTERM, SI_USER",
+    "signal_sender_frontend_pid": 1192124,
+    "model_pid": 1192249,
+    "all_outer_RAM_samples": 125,
+    "failed_outer_RAM_samples": 1,
+    "all_original_BA_decisions": "125 CONTINUE",
+    "hard_RSS_AS_cap_bytes": 17179869184,
+    "observed_peak_process_tree_RSS_bytes": 599785472,
+    "raw_uncompressed_sha256": "7c7bfa90d681d55aae0e432119eb93db22fce8c0adc47eff55c6abbb9cba68b1",
+    "raw_full_bytes_checked": 535074
+  },
+  "exact_recorded_budget_replay": {
+    "formula_zh": "host MemAvailable >= 64GiB + Σmax(0,16GiB−各未结束模型VmRSS)；cgroup memory.max−memory.current >= 48GiB + 同一预留；本次无待INTENT claim。",
+    "host_MemAvailable_bytes": 297489358848,
+    "host_required_bytes": 147433979904,
+    "host_margin_bytes": 150055378944,
+    "cgroup_memory_max_bytes": 274877906944,
+    "cgroup_memory_current_bytes": 144653254656,
+    "cgroup_actual_free_bytes": 130224652288,
+    "reserved_future_growth_bytes": 78714503168,
+    "required_cgroup_free_bytes": 130254110720,
+    "shortage_bytes": 29458432,
+    "shortage_MiB": 28.09375,
+    "previous_sample_margin_bytes": 316706816,
+    "five_active_hard_caps_sum_bytes": 85899345920,
+    "aggregate_model_RSS_implied_by_original_reservation_bytes": 7184842752,
+    "aggregate_scope_caveat_zh": "由5个原始SPEC硬上限与已记录聚合预留反算；不是对每个模型瞬时RSS的独立采样。逐项RSS只有相邻10秒样本，且process-tree与原公式model VmRSS口径不同。",
+    "peer_nearest_process_tree_RSS_sum_bytes_informational_only": 6677331968,
+    "entries": [
+      {
+        "cohort": "E2-AEV100-ae34174fbbdf83b2-CM",
+        "program": "BICG",
+        "arm": "CM",
+        "uuid": "62cc8846-1055-4d38-91af-1c5c4baaf13c",
+        "hard_RSS_AS_cap_bytes": 17179869184,
+        "recorded_write_reservation_bytes": 1107140706,
+        "output": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/62cc8846-1055-4d38-91af-1c5c4baaf13c",
+        "nearest_recorded_process_tree_RSS_bytes": 2420113408,
+        "nearest_sample_time": "2026-10-25T05:56:44.530059+00:00",
+        "nearest_sample_offset_seconds": 0.243701,
+        "last_sample_at_or_before": {
+          "utc": "2026-10-25T05:56:34.511350+00:00",
+          "elapsed_seconds": 1021.4732233397663,
+          "host_MemAvailable_bytes": 298131951616,
+          "cgroup_memory_current": 143552659456,
+          "cgroup_memory_max": "274877906944",
+          "reserved_additional_live_and_candidate_RAM_bytes": 79477866496,
+          "physical_RAM_pass": true,
+          "physical_disk_pass": true,
+          "process_tree_observed_rss_bytes": 2420113408
+        },
+        "eventual_observed_peak_RSS_bytes_not_known_at_failure": 2420113408,
+        "RSS_scope_caveat": "peer stream is 10-second process-tree RSS;original reservation reads only model VmRSS at its own sampling instant;per-peer exact contemporaneous model RSS was not recorded",
+        "resource_samples_sha256": "5b7c83d47dc98b2c450827eb813d798c8e558f77859ecb74aa54e9a8fde7dc56",
+        "original_spec_sha256": "fcb87127b907a2cfd0e87be49eef43836c4b01ac5eff8a3b0f2b28effe75843b",
+        "intent_sha256": "9fc9caa057d6d57edde5e5c892efdc50d002b2590d22eadb85dfa598fdd070a9",
+        "done_sha256": "c218354f2769ddfd2c6b890aca9e9b21855a1625d182f7fc97982c1b71fadcb2"
+      },
+      {
+        "cohort": "E2-AEV100-ae34174fbbdf83b2-DH",
+        "program": "BICG",
+        "arm": "DH",
+        "uuid": "b49e0e19-c1d1-44e3-a089-fb8ef98ed0a8",
+        "hard_RSS_AS_cap_bytes": 17179869184,
+        "recorded_write_reservation_bytes": 1107186932,
+        "output": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/b49e0e19-c1d1-44e3-a089-fb8ef98ed0a8",
+        "nearest_recorded_process_tree_RSS_bytes": 1438646272,
+        "nearest_sample_time": "2026-10-25T05:56:44.501181+00:00",
+        "nearest_sample_offset_seconds": 0.214823,
+        "last_sample_at_or_before": {
+          "utc": "2026-10-25T05:56:34.492330+00:00",
+          "elapsed_seconds": 560.7869283016771,
+          "host_MemAvailable_bytes": 298131021824,
+          "cgroup_memory_current": 143550820352,
+          "cgroup_memory_max": "274877906944",
+          "reserved_additional_live_and_candidate_RAM_bytes": 79477866496,
+          "physical_RAM_pass": true,
+          "physical_disk_pass": true,
+          "process_tree_observed_rss_bytes": 1438646272
+        },
+        "eventual_observed_peak_RSS_bytes_not_known_at_failure": 2478833664,
+        "RSS_scope_caveat": "peer stream is 10-second process-tree RSS;original reservation reads only model VmRSS at its own sampling instant;per-peer exact contemporaneous model RSS was not recorded",
+        "resource_samples_sha256": "f8d86cea72ede1928ea67bd2d81806ba3f599d1c295c68e7e82588f1deda582a",
+        "original_spec_sha256": "16a77dceb3340a53eb5e61bd12317d13e0f58b759f3b68bff2348f138bfa5ad2",
+        "intent_sha256": "9c1f44c160f49fb13ff315fa42c541265cee4403b173615f62959654db9dbcdf",
+        "done_sha256": "77484a1ad085e263a123beb6c52594b808820cc87492244a26eba738f2fb652b"
+      },
+      {
+        "cohort": "E2-AEV100-ae34174fbbdf83b2-DM",
+        "program": "BICG",
+        "arm": "DM",
+        "uuid": "d9860916-664f-436d-b1e2-09a00b10eaec",
+        "hard_RSS_AS_cap_bytes": 17179869184,
+        "recorded_write_reservation_bytes": 1107172330,
+        "output": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/d9860916-664f-436d-b1e2-09a00b10eaec",
+        "nearest_recorded_process_tree_RSS_bytes": 1694498816,
+        "nearest_sample_time": "2026-10-25T05:56:41.829239+00:00",
+        "nearest_sample_offset_seconds": -2.457119,
+        "last_sample_at_or_before": {
+          "utc": "2026-10-25T05:56:41.829239+00:00",
+          "elapsed_seconds": 580.8744992315769,
+          "host_MemAvailable_bytes": 297951690752,
+          "cgroup_memory_current": 143990628352,
+          "cgroup_memory_max": "274877906944",
+          "reserved_additional_live_and_candidate_RAM_bytes": 79222013952,
+          "physical_RAM_pass": true,
+          "physical_disk_pass": true,
+          "process_tree_observed_rss_bytes": 1694498816
+        },
+        "eventual_observed_peak_RSS_bytes_not_known_at_failure": 2478833664,
+        "RSS_scope_caveat": "peer stream is 10-second process-tree RSS;original reservation reads only model VmRSS at its own sampling instant;per-peer exact contemporaneous model RSS was not recorded",
+        "resource_samples_sha256": "6798d2af3b698389ac6ceee62168ed672ec46a4ebe8779aaa797c03e7433cd22",
+        "original_spec_sha256": "87d9cf409c04d98ba5c568c24e3a2171b7a632c9ffafa14bfaf6849c84f7a028",
+        "intent_sha256": "e9c8150d4924affccfb64791dec0e2cdecf2ef8a24f3b582adf355dd7f0768ef",
+        "done_sha256": "1d06528733453047cddf30ba84b1e03fb646b949578e050b9dd8a5048ae2c8e4"
+      },
+      {
+        "cohort": "E2-AEV100-cf569ed4fa54b5f1-DM",
+        "program": "nw",
+        "arm": "DM",
+        "uuid": "50bbe9f5-95d4-41c2-b077-414643fe9ef9",
+        "hard_RSS_AS_cap_bytes": 17179869184,
+        "recorded_write_reservation_bytes": 1238413531,
+        "output": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/50bbe9f5-95d4-41c2-b077-414643fe9ef9",
+        "nearest_recorded_process_tree_RSS_bytes": 524288000,
+        "nearest_sample_time": "2026-10-25T05:56:45.725538+00:00",
+        "nearest_sample_offset_seconds": 1.43918,
+        "last_sample_at_or_before": {
+          "utc": "2026-10-25T05:56:35.714529+00:00",
+          "elapsed_seconds": 1231.77087017335,
+          "host_MemAvailable_bytes": 298033446912,
+          "cgroup_memory_current": 143595474944,
+          "cgroup_memory_max": "274877906944",
+          "reserved_additional_live_and_candidate_RAM_bytes": 79477866496,
+          "physical_RAM_pass": true,
+          "physical_disk_pass": true,
+          "process_tree_observed_rss_bytes": 524288000
+        },
+        "eventual_observed_peak_RSS_bytes_not_known_at_failure": 532676608,
+        "RSS_scope_caveat": "peer stream is 10-second process-tree RSS;original reservation reads only model VmRSS at its own sampling instant;per-peer exact contemporaneous model RSS was not recorded",
+        "resource_samples_sha256": "792de3f5121f689f1dc8ed3a582feeee8237c9a97bd19654f9a34d96cb86657b",
+        "original_spec_sha256": "2ab9981169c5489aa392ff0843bd9393ff137bf1a91ec61fa1f2f4cd8bbd2078",
+        "intent_sha256": "5d56f84da2005f0c277ac050e94200272bbaeb9e293a46523454ba0f53e66ee6",
+        "done_sha256": "5fd083e432d44e8338b7db38d72255d35089089d71b1d3cfe4f1b1980bcc0d76"
+      },
+      {
+        "cohort": "E2-AEV100-e7bb67e63e3c3847-DH",
+        "program": "vectorAdd",
+        "arm": "DH",
+        "uuid": "b15d3469-ed1b-4979-b7fa-9ba864c8630e",
+        "hard_RSS_AS_cap_bytes": 17179869184,
+        "recorded_write_reservation_bytes": 1105131903,
+        "output": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/b15d3469-ed1b-4979-b7fa-9ba864c8630e",
+        "nearest_recorded_process_tree_RSS_bytes": 599785472,
+        "nearest_sample_time": "2026-10-25T05:56:44.286358+00:00",
+        "nearest_sample_offset_seconds": 0.0,
+        "last_sample_at_or_before": {
+          "utc": "2026-10-25T05:56:44.286358+00:00",
+          "elapsed_seconds": 1241.8011527396739,
+          "host_MemAvailable_bytes": 297489358848,
+          "cgroup_memory_current": 144653254656,
+          "cgroup_memory_max": "274877906944",
+          "reserved_additional_live_and_candidate_RAM_bytes": 78714503168,
+          "physical_RAM_pass": false,
+          "physical_disk_pass": true,
+          "process_tree_observed_rss_bytes": 599785472
+        },
+        "eventual_observed_peak_RSS_bytes_not_known_at_failure": 599785472,
+        "RSS_scope_caveat": "peer stream is 10-second process-tree RSS;original reservation reads only model VmRSS at its own sampling instant;per-peer exact contemporaneous model RSS was not recorded",
+        "resource_samples_sha256": "d91872fc74ec1fa4934756462aa6fbaca841e96cc6110e37937b3805af9471f5",
+        "original_spec_sha256": "bf65fbb1cc7bb1a35e2748aec7c1039530d339d73b022c903ccabcefa990ad88",
+        "intent_sha256": "72b8513b11ec95caa4de3aef277497b64ecff3ca0c9ee67b91820702f270fdae",
+        "done_sha256": "ec54d92fe1e2a80418a16b7b6323fb3a3241ec3f9b820a606682ef3eb0350b15"
+      }
+    ],
+    "disk_free_bytes": 23467507712,
+    "disk_required_bytes": 12107496346,
+    "disk_margin_bytes": 11360011366,
+    "disk_pass": true,
+    "all125_source_predicate_replays_pass": true
+  },
+  "confirmed_causes_zh": [
+    "旧source中resources对所有未结束点按每点16GiB硬上限减已见模型RSS预留；运行期也使用同一未来增长预算。该点INTENT没有host_execution_binding，使用原cap1m资源算式。",
+    "唯一失败样本的host条件通过，cgroup条件只缺29,458,432字节；source随后明确把reason设为MEMORY_HEADROOM并killpg(SIGTERM)，trace记录frontend PID1192124发送SI_USER SIGTERM给model PID1192249。",
+    "末段自身RSS保持599,785,472字节，峰值仅0.558594GiB；5个在场模型总硬上限80GiB，而本次聚合预留仍73.308594GiB。相对于已见工作集，运行期预算明显偏保守。",
+    "同样的已记录计数用于R12的实际余量判定，即使cache credit取0，也满足64GiB host/48GiB cgroup余量；这是离线判定反事实，不是该点已重跑通过的证据。"
+  ],
+  "excluded_direct_causes_zh": [
+    "本点内核OOM kill：trace为用户态frontend发送SIGTERM而非SIGKILL；全部125个BA采样cgroup oom/oom_kill/oom_group_kill为0，host oom_kill累计值366无新增。",
+    "本点触及16GiB RSS硬上限：记录峰值0.558594GiB，source stop_reason不是PROCESS_RSS_CAP。",
+    "swap抖动或原BA资源策略STOP：cgroup swap恒为15,400,960字节，host swapin/out累计页数全程无变化，own major fault delta全0，125个BA决定均CONTINUE。",
+    "磁盘或5GiB安全余量触发：失败样本disk pass=true，实际free高于所需预算；没有USER_LOCAL_OUTPUT_AT_OR_BELOW_5GiB或CONCURRENT_WRITE_RESERVATIONS。",
+    "实际deadlock/断言崩溃：完整raw没有相关崩溃签名；唯一deadlock检索命中是配置项gpgpu_deadlock_detect=1，不是运行期deadlock报告。"
+  ],
+  "candidate_causes_and_limits_zh": [
+    {
+      "candidate": "共享cgroup中非本点内存或文件缓存增长推动raw memory.current过线",
+      "evidence": "最后10秒memory.current增加1,109,528,576字节，同时未来预留减少763,363,328字节，净预算余量减少346,165,248字节；本点RSS不变。",
+      "status": "共享池计数变化已记录；不能把残余增量专属归因到缓存、其它Lane或某个peer，计数也非严格原子快照。"
+    },
+    {
+      "candidate": "原16GiB未来增长预留比实际工作集大",
+      "evidence": "5点共80GiB上限，对应聚合隐含已见model RSS6.691406GiB；未来预留73.308594GiB。",
+      "status": "预算计算和已见占用差额可证；不能以此证明所有未来输入峰值均小于4GiB，也不能缩小16GiB硬上限。"
+    }
+  ],
+  "historical_OOM_swap_PSI_evidence": {
+    "cgroup_events": {
+      "low": {
+        "first": 0,
+        "last": 0,
+        "min": 0,
+        "max": 0,
+        "net_change": 0
+      },
+      "high": {
+        "first": 0,
+        "last": 0,
+        "min": 0,
+        "max": 0,
+        "net_change": 0
+      },
+      "max": {
+        "first": 0,
+        "last": 0,
+        "min": 0,
+        "max": 0,
+        "net_change": 0
+      },
+      "oom": {
+        "first": 0,
+        "last": 0,
+        "min": 0,
+        "max": 0,
+        "net_change": 0
+      },
+      "oom_kill": {
+        "first": 0,
+        "last": 0,
+        "min": 0,
+        "max": 0,
+        "net_change": 0
+      },
+      "oom_group_kill": {
+        "first": 0,
+        "last": 0,
+        "min": 0,
+        "max": 0,
+        "net_change": 0
+      }
+    },
+    "host_oom_kill": {
+      "first": 366,
+      "last": 366,
+      "min": 366,
+      "max": 366,
+      "net_change": 0
+    },
+    "cgroup_swap_current_bytes": {
+      "first": 15400960,
+      "last": 15400960,
+      "min": 15400960,
+      "max": 15400960,
+      "net_change": 0
+    },
+    "host_pswpin_pages": {
+      "first": 3742045,
+      "last": 3742045,
+      "min": 3742045,
+      "max": 3742045,
+      "net_change": 0
+    },
+    "host_pswpout_pages": {
+      "first": 11010455,
+      "last": 11010455,
+      "min": 11010455,
+      "max": 11010455,
+      "net_change": 0
+    },
+    "policy_decision_counts": {
+      "CONTINUE": 125
+    },
+    "host_and_cgroup_memory_PSI": {
+      "host": {
+        "some": {
+          "avg10": {
+            "first": 0.0,
+            "last": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "net_change": 0.0
+          },
+          "avg60": {
+            "first": 0.0,
+            "last": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "net_change": 0.0
+          },
+          "avg300": {
+            "first": 0.0,
+            "last": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "net_change": 0.0
+          },
+          "total": {
+            "first": 41684880827.0,
+            "last": 41684969717.0,
+            "min": 41684880827.0,
+            "max": 41684969717.0,
+            "net_change": 88890.0
+          }
+        },
+        "full": {
+          "avg10": {
+            "first": 0.0,
+            "last": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "net_change": 0.0
+          },
+          "avg60": {
+            "first": 0.0,
+            "last": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "net_change": 0.0
+          },
+          "avg300": {
+            "first": 0.0,
+            "last": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "net_change": 0.0
+          },
+          "total": {
+            "first": 41307255690.0,
+            "last": 41307344443.0,
+            "min": 41307255690.0,
+            "max": 41307344443.0,
+            "net_change": 88753.0
+          }
+        }
+      },
+      "cgroup": {
+        "some": {
+          "avg10": {
+            "first": 0.0,
+            "last": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "net_change": 0.0
+          },
+          "avg60": {
+            "first": 0.0,
+            "last": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "net_change": 0.0
+          },
+          "avg300": {
+            "first": 0.0,
+            "last": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "net_change": 0.0
+          },
+          "total": {
+            "first": 688911318.0,
+            "last": 688911318.0,
+            "min": 688911318.0,
+            "max": 688911318.0,
+            "net_change": 0.0
+          }
+        },
+        "full": {
+          "avg10": {
+            "first": 0.0,
+            "last": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "net_change": 0.0
+          },
+          "avg60": {
+            "first": 0.0,
+            "last": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "net_change": 0.0
+          },
+          "avg300": {
+            "first": 0.0,
+            "last": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "net_change": 0.0
+          },
+          "total": {
+            "first": 685146929.0,
+            "last": 685146930.0,
+            "min": 685146929.0,
+            "max": 685146930.0,
+            "net_change": 1.0
+          }
+        }
+      }
+    },
+    "own_major_fault_delta": {
+      "first": 0,
+      "last": 0,
+      "min": 0,
+      "max": 0,
+      "net_change": 0
+    },
+    "historical_memory_stat_cache_inputs_recorded": false
+  },
+  "unknown_zh": [
+    "当时未保存memory.stat中的file、inactive_file、shmem、file_mapped、file_dirty、file_writeback；不能重建R7 cache credit，更不能用当前值代替历史值。",
+    "相邻peer样本与本次采样相差−2.457至+1.439秒，逐项精确瞬时model VmRSS未知；不能把相邻process-tree RSS直接当作原公式逐项输入。",
+    "共享cgroup memory.current包括哪些匿名页、文件缓存、内核页和其它任务，历史快照不足以分解。",
+    "若没有这次守护终止，该模拟最终是否自然完成、是否出现其它科学问题、最终cycles及数值正确性均未知。"
+  ],
+  "mechanism_fixes_review_zh": {
+    "R7": "引入保守clean inactive file cache credit，仍保留原full-hard未来预留。对本次样本只需credit>=29,458,432字节便可消除预算缺口；按R7先扣8GiB余量的公式，需可用clean/inactive交集至少8,619,393,024字节。历史cache六项未录，不能证明当时R7一定通过。",
+    "R12_R12B": "在现存目标前端只替换外层physical_RAM_pass的实际余量判定，保留原结果及新鲜独立计数；新V4在准入用4GiB初始预留、运行期用实际64GiB host/48GiB有效cgroup余量，16GiB hard cap、BA、原始日志及模型不变。该vectorAdd失败早已结束，不在R12目标中，未重跑。",
+    "counterfactual_R12_no_cache_credit_pass": true
+  },
+  "scientific_disposition": {
+    "accepted_cycles": null,
+    "progress_records": 130,
+    "last_completed_instructions_diagnostic_only": 72625760,
+    "expected_instructions": 84000768,
+    "last_end": "NONE",
+    "last_progress_fraction_diagnostic_only": 0.8645844761800273,
+    "old_classification_and_ledger_unchanged": true,
+    "archive_kept": true,
+    "model_retries": 0,
+    "new_models_started": 0
+  },
+  "next_minimal_validation_zh": [
+    "保留原失败及归档，使用这125个既有样本作离线旧判定/R12实际余量判定对照；无需先运行新模拟。",
+    "后续已授权正常队列持续记录fresh memory.stat六项、OOM/swap/PSI及逐项RSS预算，验证actual-only保护与4GiB初始准入，而不回填历史数据。",
+    "若未来另行批准重测本点，必须建立新的明确实验身份和单独预算，预注册相同科学配置、完整自然结束及strict/archive验证；本轮不发起重试。"
+  ],
+  "evidence": [
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-e7bb67e63e3c3847-DH.INTENT.json",
+      "sha256": "72b8513b11ec95caa4de3aef277497b64ecff3ca0c9ee67b91820702f270fdae",
+      "bytes": 4659
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-e7bb67e63e3c3847-DH.DONE.json",
+      "sha256": "ec54d92fe1e2a80418a16b7b6323fb3a3241ec3f9b820a606682ef3eb0350b15",
+      "bytes": 1116
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-e7bb67e63e3c3847-DH_SPEC.json",
+      "sha256": "bf65fbb1cc7bb1a35e2748aec7c1039530d339d73b022c903ccabcefa990ad88",
+      "bytes": 23321
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/b15d3469-ed1b-4979-b7fa-9ba864c8630e/NATIVE_LAUNCH.json",
+      "sha256": "e84b8aeeaf247dac8a43b64db5a1cbaf83b0e1f3fe0c499fd8e67ef0c537a0c5",
+      "bytes": 20982
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/b15d3469-ed1b-4979-b7fa-9ba864c8630e/NATIVE_SIMULATOR_PID_AND_MAPS.json",
+      "sha256": "c13521bee556e2ae15e4dd9f9c1634406adc856bde0d9c8f9f619617f6d39a4d",
+      "bytes": 8306
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/b15d3469-ed1b-4979-b7fa-9ba864c8630e/NATIVE_EXIT.json",
+      "sha256": "ec54d92fe1e2a80418a16b7b6323fb3a3241ec3f9b820a606682ef3eb0350b15",
+      "bytes": 1116
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/b15d3469-ed1b-4979-b7fa-9ba864c8630e/raw.log.gz",
+      "sha256": "4cd9640338b4590424a510a953409a1a76ae1eb3c1aee7fa11cfce43cd7c52b6",
+      "bytes": 64189
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/b15d3469-ed1b-4979-b7fa-9ba864c8630e/progress.jsonl.gz",
+      "sha256": "903b2486cbad1e5e8211e59fd9d99c28dfbbfd74ac1a3a53ecb4c16697728eb2",
+      "bytes": 4786
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/b15d3469-ed1b-4979-b7fa-9ba864c8630e/RESOURCE_SAMPLES.jsonl.gz",
+      "sha256": "d91872fc74ec1fa4934756462aa6fbaca841e96cc6110e37937b3805af9471f5",
+      "bytes": 36277
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/b15d3469-ed1b-4979-b7fa-9ba864c8630e/actual_file_process_network.log",
+      "sha256": "02d7b63a059ae96a8813344108c26d114707d284291b510a79dc6c447788d086",
+      "bytes": 2048249
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/E2-AEV100-e7bb67e63e3c3847-DH.FAILURE_CLASSIFICATION_R5.json",
+      "sha256": "9acf7bc020988c145d36374af7241fe7e5812d5d122a16ef14ef9a07d8d4663c",
+      "bytes": 3700
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/E2-AEV100-e7bb67e63e3c3847-DH.RESULT.json",
+      "sha256": "361904850a3035394f2d9b942daa4300e166699fd0c0d86358c607785aafaa0d",
+      "bytes": 5479
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-e7bb67e63e3c3847-DH_ARCHIVE_RECEIPT.json",
+      "sha256": "230c9cf471e9188d533e32b86666444e456e096f1e0309a20c1cccd0733e55d1",
+      "bytes": 1247
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_native_cap1m.py",
+      "sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d",
+      "bytes": 45060
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_frontend_cap1m.py",
+      "sha256": "5c269152d4b67ddb1b7fb209f676bf8238b24375496bfded2b3af3e443d4f01d",
+      "bytes": 1275
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_failure_review_host_v1.py",
+      "sha256": "be9fef8ebf7f7231b3277990d54f7ac97767cfb1b080cd4584234bf06eb1d0e0",
+      "bytes": 4388
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_host_execution_v1.py",
+      "sha256": "210594a4f9fc700c4a934e18d6808d57e0e47599cc3abfed7489895178fc63f6",
+      "bytes": 5047
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_host_execution_v4.py",
+      "sha256": "5456bcf34174d16679d99805556fea621cc6c1d2ae64f059523ace5185937c33",
+      "bytes": 7022
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_live_ram_override_v1.py",
+      "sha256": "313bbb7f9a34cb514842132af8f0f43e0342994a96806f30d636052b9905e1b3",
+      "bytes": 8504
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/effective_specs/E2-AEV100-e7bb67e63e3c3847-DH.json",
+      "sha256": "25c7f49013b84871e2e3bbb7c760620d37e5ce5473a02f4eda17ea4f96f20adb",
+      "bytes": 23728
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-ae34174fbbdf83b2-CM_SPEC.json",
+      "sha256": "fcb87127b907a2cfd0e87be49eef43836c4b01ac5eff8a3b0f2b28effe75843b",
+      "bytes": 23441
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-ae34174fbbdf83b2-CM.INTENT.json",
+      "sha256": "9fc9caa057d6d57edde5e5c892efdc50d002b2590d22eadb85dfa598fdd070a9",
+      "bytes": 4659
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-ae34174fbbdf83b2-CM.DONE.json",
+      "sha256": "c218354f2769ddfd2c6b890aca9e9b21855a1625d182f7fc97982c1b71fadcb2",
+      "bytes": 1099
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/62cc8846-1055-4d38-91af-1c5c4baaf13c/RESOURCE_SAMPLES.jsonl.gz",
+      "sha256": "5b7c83d47dc98b2c450827eb813d798c8e558f77859ecb74aa54e9a8fde7dc56",
+      "bytes": 174588
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-ae34174fbbdf83b2-DH_SPEC.json",
+      "sha256": "16a77dceb3340a53eb5e61bd12317d13e0f58b759f3b68bff2348f138bfa5ad2",
+      "bytes": 23315
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-ae34174fbbdf83b2-DH.INTENT.json",
+      "sha256": "9c1f44c160f49fb13ff315fa42c541265cee4403b173615f62959654db9dbcdf",
+      "bytes": 4659
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-ae34174fbbdf83b2-DH.DONE.json",
+      "sha256": "77484a1ad085e263a123beb6c52594b808820cc87492244a26eba738f2fb652b",
+      "bytes": 1100
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/b49e0e19-c1d1-44e3-a089-fb8ef98ed0a8/RESOURCE_SAMPLES.jsonl.gz",
+      "sha256": "f8d86cea72ede1928ea67bd2d81806ba3f599d1c295c68e7e82588f1deda582a",
+      "bytes": 243254
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-ae34174fbbdf83b2-DM_SPEC.json",
+      "sha256": "87d9cf409c04d98ba5c568c24e3a2171b7a632c9ffafa14bfaf6849c84f7a028",
+      "bytes": 23315
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-ae34174fbbdf83b2-DM.INTENT.json",
+      "sha256": "e9c8150d4924affccfb64791dec0e2cdecf2ef8a24f3b582adf355dd7f0768ef",
+      "bytes": 4659
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-ae34174fbbdf83b2-DM.DONE.json",
+      "sha256": "1d06528733453047cddf30ba84b1e03fb646b949578e050b9dd8a5048ae2c8e4",
+      "bytes": 1101
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/d9860916-664f-436d-b1e2-09a00b10eaec/RESOURCE_SAMPLES.jsonl.gz",
+      "sha256": "6798d2af3b698389ac6ceee62168ed672ec46a4ebe8779aaa797c03e7433cd22",
+      "bytes": 342402
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-cf569ed4fa54b5f1-DM_SPEC.json",
+      "sha256": "2ab9981169c5489aa392ff0843bd9393ff137bf1a91ec61fa1f2f4cd8bbd2078",
+      "bytes": 23312
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-cf569ed4fa54b5f1-DM.INTENT.json",
+      "sha256": "5d56f84da2005f0c277ac050e94200272bbaeb9e293a46523454ba0f53e66ee6",
+      "bytes": 4659
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-cf569ed4fa54b5f1-DM.DONE.json",
+      "sha256": "5fd083e432d44e8338b7db38d72255d35089089d71b1d3cfe4f1b1980bcc0d76",
+      "bytes": 1103
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/50bbe9f5-95d4-41c2-b077-414643fe9ef9/RESOURCE_SAMPLES.jsonl.gz",
+      "sha256": "792de3f5121f689f1dc8ed3a582feeee8237c9a97bd19654f9a34d96cb86657b",
+      "bytes": 121003
+    }
+  ],
+  "source_extracted_evidence_sha256": "0f98e6592963162e70e3e23b142677fd13a044e28a6b4c2702ae3fbf679e71e6",
+  "no_live_or_historical_scientific_asset_mutated": true,
+  "historical_host_adapter_applied": false
+}
