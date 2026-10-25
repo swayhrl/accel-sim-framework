@@ -1,7 +1,9 @@
 """Scoped COPY_ONLY admission. Never edits scientific policies/controllers."""
-import os,json,time,pathlib,subprocess,stat,re
+import os,json,time,pathlib,subprocess,stat,re,hashlib
 P=pathlib.Path;MIB=1024**2;GIB=1024**3
 TASK=P('/root/data/research_asset_verified_offload_20261024_v1');NATIVE=P('/root/data/ep_l2_dtc_l1_native_v2');NAS=P('/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_verified_offload_reclaim_v1/assets')
+IO_AUTHORIZATION=TASK/'control/ACTIVE_SCIENCE_IO_GATE_USER_AUTHORIZATION.json'
+IO_AUTHORIZATION_SHA256='4e412e2a57d8d23e7c844cfb42b08ed8a512e7fcfaec97663ca0dc06b8c933dd'
 def need(v,m):
  if not v:raise RuntimeError(m)
 def js(p):return json.loads(P(p).read_bytes())
@@ -9,6 +11,17 @@ def ident(p):
  s=P(p).lstat();return dict(dev=s.st_dev,inode=s.st_ino,size=s.st_size,allocated=s.st_blocks*512,mtime_ns=s.st_mtime_ns,ctime_ns=s.st_ctime_ns,uid=s.st_uid,gid=s.st_gid,mode=stat.S_IMODE(s.st_mode),nlink=s.st_nlink,type='file' if stat.S_ISREG(s.st_mode) else 'directory' if stat.S_ISDIR(s.st_mode) else 'symlink' if stat.S_ISLNK(s.st_mode) else 'special')
 def pressure(kind='io'):
  return {line.split()[0]:{t.split('=')[0]:float(t.split('=')[1]) for t in line.split()[1:]} for line in P('/proc/pressure/'+kind).read_text().splitlines()}
+def active_science_io_authorization():
+ if not IO_AUTHORIZATION.exists():return None
+ raw=IO_AUTHORIZATION.read_bytes();need(hashlib.sha256(raw).hexdigest()==IO_AUTHORIZATION_SHA256,'ACTIVE_SCIENCE_IO_AUTHORIZATION_IDENTITY_HOLD')
+ value=json.loads(raw)
+ need(value['goal']=='LANE_T2_FROZEN115_ARCHIVE_COMPLETE_V1' and value['gate_id']=='RESOURCE_HOLD_ACTUAL_ACTIVE_AEFAIR_IO' and value['new_active_science_io_mode']=='MONITOR_ONLY','ACTIVE_SCIENCE_IO_AUTHORIZATION_SCOPE_HOLD')
+ return dict(path=str(IO_AUTHORIZATION),sha256=IO_AUTHORIZATION_SHA256,mode='USER_AUTHORIZED_MONITOR_ONLY')
+def active_science_io_admission(io,active):
+ authorization=active_science_io_authorization()
+ threshold_pass=io.get('some',{}).get('avg10',0)<=5 and io.get('full',{}).get('avg10',0)<=1
+ if active and not authorization:need(threshold_pass,'RESOURCE_HOLD_ACTUAL_ACTIVE_AEFAIR_IO')
+ return dict(mode=authorization['mode'] if authorization else 'ENFORCED',authorization=authorization,active_science_observed=bool(active),original_avg10_thresholds_pass=threshold_pass,original_some_max=5,original_full_max=1,pressure_observation_retained=True)
 def old_lock_holders():
  names=['.TARGET_RECEIVER.lock','.TLS_V10_SOURCE_SENDER.lock'];root=P('/root/share/host174_storage_recovery_bridge/20261016_storageops_02');out=[]
  for name in names:
@@ -82,13 +95,13 @@ def admission(role,remote_peak=0,include_activity=True,allowed_lock_pids=(),meta
     try:tick=int((proc/'stat').read_text().rsplit(')',1)[1].split()[19])
     except OSError:continue
     if tick==int(v['start_ticks']):active.append(dict(request_id=request_id,cohort=cohort,pid=v['pid'],start_ticks=tick))
- if active:need(io.get('some',{}).get('avg10',0)<=5 and io.get('full',{}).get('avg10',0)<=1,'RESOURCE_HOLD_ACTUAL_ACTIVE_AEFAIR_IO')
+ active_io=active_science_io_admission(io,active)
  nas=None
  if role=='TARGET':
   m=json.loads(subprocess.check_output(['findmnt','-J','-T',str(NAS.parent)],text=True))['filesystems'][0];need(m.get('source')=='admin-wcx@10.208.130.164:/home/shared' and m.get('fstype')=='fuse.sshfs','NOT_TRUE164_TARGET_HOLD')
   f=os.statvfs(NAS.parent);avail=f.f_bavail*f.f_frsize;need(avail>=remote_peak+GIB,'RESOURCE_HOLD_TRUE164_PEAK_CAPACITY');nas=dict(mount=m,available_bytes=avail,reserved_peak_bytes=remote_peak)
  share=os.statvfs('/root/share');sfree=share.f_bavail*share.f_frsize
- return dict(unix=time.time(),host=host,mount_namespace=ns,role=role,SSD_available_bytes=free,SSD_required_bytes=required,copy_SSD_admission_pass=copy_space_pass,metadata_only=metadata_only,native_registered_reserved_bytes=native_reserved,source_registry=src,outside_registered_project_headroom_bytes=GIB,own_controls_reserve_bytes=64*MIB,MemAvailable_bytes=mem,cgroup_memory_current=cur,cgroup_memory_max=mx,IO=io,CPU_pressure=pressure('cpu'),active_AEFAIR=active,science_processes=current_science() if include_activity else [],old_archive_locks_observed=locks,Share_available_bytes=sfree,Share_global40GiB_policy_changed=False,route_exception='TASK_QUALIFIED_ZERO_SHARE_PAYLOAD_STAGING_ONLY',Share_payload_write_budget_bytes=0,true164=nas)
+ return dict(unix=time.time(),host=host,mount_namespace=ns,role=role,SSD_available_bytes=free,SSD_required_bytes=required,copy_SSD_admission_pass=copy_space_pass,metadata_only=metadata_only,native_registered_reserved_bytes=native_reserved,source_registry=src,outside_registered_project_headroom_bytes=GIB,own_controls_reserve_bytes=64*MIB,MemAvailable_bytes=mem,cgroup_memory_current=cur,cgroup_memory_max=mx,IO=io,active_science_IO_gate=active_io,CPU_pressure=pressure('cpu'),active_AEFAIR=active,science_processes=current_science() if include_activity else [],old_archive_locks_observed=locks,Share_available_bytes=sfree,Share_global40GiB_policy_changed=False,route_exception='TASK_QUALIFIED_ZERO_SHARE_PAYLOAD_STAGING_ONLY',Share_payload_write_budget_bytes=0,true164=nas)
 def selected_readers_writers(files,dirs):
  selected={(x['dev'],x['inode']) for x in files+dirs};readers=[];writers=[]
  for proc in P('/proc').iterdir():

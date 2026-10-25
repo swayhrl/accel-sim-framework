@@ -5,7 +5,7 @@ It observes the existing driver without intervention. Only after verified exit
 at COMMON_RESOURCE_HOLD does it attempt fresh independent endpoint admission.
 All other terminal failures stop for engineering review. No unlinks are used.
 """
-import os,sys,time,json,pathlib,subprocess,fcntl,hashlib,traceback
+import os,sys,time,json,pathlib,subprocess,fcntl,hashlib,traceback,argparse
 import copy_engine as c
 T=c.TASK;P=pathlib.Path
 CONTROL=T/'control/CONTINUATION_SUPERVISOR.json'
@@ -32,6 +32,19 @@ def count():
     rows=[json.loads(z) for z in (T/'control/LEDGER.jsonl').read_text().splitlines()]
     return len({x['asset_id'] for x in rows if x['status']=='ARCHIVED_CONTENT_VERIFIED'})
 
+def preserved_start(handoff,now=None):
+    """Load a verified old supervisor boundary without granting a fresh budget."""
+    now=time.time() if now is None else now
+    c.need(handoff['schema']=='LANE_T2_IO_POLICY_SUPERVISOR_HANDOFF_V1','HANDOFF_SCHEMA_CHANGED')
+    c.need(handoff['io_authorization_sha256']==c.rr.IO_AUTHORIZATION_SHA256,'HANDOFF_AUTHORIZATION_CHANGED')
+    old=handoff['previous_supervisor_state']
+    c.need(old['max_resource_rechecks']==288 and old['max_driver_restarts']==96,'HANDOFF_LIMITS_CHANGED')
+    c.need(type(old['resource_rechecks']) is int and 0<=old['resource_rechecks']<=288,'HANDOFF_RECHECK_COUNTER_INVALID')
+    c.need(type(old['driver_restarts']) is int and 0<=old['driver_restarts']<96,'HANDOFF_RESTART_COUNTER_INVALID')
+    c.need(now<old['deadline_unix'],'ORIGINAL_SUPERVISION_DEADLINE_EXPIRED')
+    c.need(old['frozen_scopes']==115 and old['phase']=='WAIT_COMMON_RESOURCE_ADMISSION','HANDOFF_NOT_COMMON_RESOURCE_BOUNDARY')
+    return dict(deadline=old['deadline_unix'],rechecks=old['resource_rechecks'],restarts=old['driver_restarts'],current=dict(old['driver']))
+
 def admission():
     target=c.rr.admission('TARGET',include_activity=False)
     code=P(c.rr.__file__).read_text()+'\nprint(json.dumps(admission("SOURCE",include_activity=False)))\n'
@@ -41,12 +54,29 @@ def admission():
     return dict(source=json.loads(r.stdout),target=target)
 
 def main():
+    ap=argparse.ArgumentParser();ap.add_argument('--resume-preserved-supervision',type=pathlib.Path);args=ap.parse_args()
     c.need((os.uname().nodename,os.readlink('/proc/self/ns/mnt'))==('huangrulin-sshfs-174','mnt:[4026535153]'),'SUPERVISOR_ENDPOINT_CHANGED')
     lock=(T/'control/CONTINUATION_SUPERVISOR.lock').open('a+b');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     c.need(hashlib.sha256((T/'control/FROZEN_SCOPES.json.gz').read_bytes()).hexdigest()=='718f30ec3bc8e5ece20df02cd472ebee17eac320f7b5a9e5b5e69841cc63cc04','FROZEN_QUEUE_CHANGED')
-    identity=c.read(T/'control/RESUMED_DRIVER_PROCESS.json');current=dict(pid=identity['pid'],start_ticks=identity['start_ticks'],log=identity['log'])
-    c.need(process(current['pid'],current['start_ticks']),'INITIAL_DRIVER_NOT_ALIVE_NO_BLIND_START')
-    started=time.time();deadline=started+24*3600;own_ticks=int(P('/proc/self/stat').read_text().rsplit(')',1)[1].split()[19]);restarts=0;rechecks=0;last_event=None;child=None
+    if args.resume_preserved_supervision:
+        hp=args.resume_preserved_supervision
+        c.need(hp.parent==T/'control' and not hp.is_symlink(),'HANDOFF_OUTSIDE_OWN_CONTROL')
+        handoff=c.read(hp);resume=preserved_start(handoff)
+        c.need(c.rr.active_science_io_authorization() is not None,'POLICY_RELOAD_AUTHORIZATION_MISSING')
+        old=handoff['previous_supervisor_state'];oldproc=P('/proc',str(old['pid']))
+        try:old_live=int((oldproc/'stat').read_text().rsplit(')',1)[1].split()[19])==old['start_ticks']
+        except OSError:old_live=False
+        c.need(not old_live,'PREVIOUS_SUPERVISOR_STILL_ALIVE_NO_SECOND_START')
+        current=resume['current'];final=c.read(T/'control/STATE.json')
+        c.need(not process(current['pid'],current['start_ticks']),'HANDOFF_DRIVER_UNEXPECTEDLY_RUNNING')
+        c.need((final.get('driver_pid'),final.get('driver_start_ticks'))==(current['pid'],current['start_ticks']) and final['phase']=='COMMON_RESOURCE_HOLD' and final.get('driver_exit_observed'),'HANDOFF_DRIVER_BOUNDARY_CHANGED')
+        deadline=resume['deadline'];restarts=resume['restarts'];rechecks=resume['rechecks']
+        record('USER_AUTHORIZED_IO_POLICY_RELOAD_PRESERVED_SUPERVISION',handoff_path=str(hp),handoff_sha256=hashlib.sha256(hp.read_bytes()).hexdigest(),previous_supervisor_pid=old['pid'],preserved_deadline_unix=deadline,preserved_resource_rechecks=rechecks,preserved_driver_restarts=restarts)
+    else:
+        identity=c.read(T/'control/RESUMED_DRIVER_PROCESS.json');current=dict(pid=identity['pid'],start_ticks=identity['start_ticks'],log=identity['log'])
+        c.need(process(current['pid'],current['start_ticks']),'INITIAL_DRIVER_NOT_ALIVE_NO_BLIND_START')
+        deadline=time.time()+24*3600;restarts=0;rechecks=0
+    own_ticks=int(P('/proc/self/stat').read_text().rsplit(')',1)[1].split()[19]);last_event=None;child=None
     def state(phase,running=True,**extra):
         x=dict(schema='LANE_T_FINITE_CONTINUATION_SUPERVISOR_V1',unix=time.time(),pid=os.getpid(),start_ticks=own_ticks,running=running,phase=phase,deadline_unix=deadline,max_resource_rechecks=288,max_driver_restarts=96,resource_rechecks=rechecks,driver_restarts=restarts,driver=current,frozen_scopes=115,Source_deletions=0,scientific_actions=0,**extra)
         durable(CONTROL,x)
