@@ -143,6 +143,41 @@ def spawn_sender(manifest,skip,testing=False):
  source=P(__file__).read_text();boot='import sys,json;code=sys.stdin.buffer.readline();exec(compile(json.loads(code),"frozen_readonly_trace_export.py","exec"),{"__name__":"trace_source"})';payload=source+'\nsource_send(json.loads(sys.stdin.buffer.readline()))\n'
  ssh=['ssh','-i','/root/.ssh/id_ed25519_old174','-o','IdentitiesOnly=yes','-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','UserKnownHostsFile=/root/data/result_offload_pilot_20261023_v1/controls/OLD174_VERIFIED_KNOWN_HOSTS','-p','2233','root@10.208.130.174'];p=subprocess.Popen(ssh+['python3 -B -c '+shlex.quote(boot)],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE);p.stdin.write((json.dumps(payload)+'\n').encode()+canon(request));p.stdin.close();return p
 
+def materialize_tree_from_ranges(partial,bundle,row,member_ranges,gate):
+ """Resume an owned tree partial only after exact immutable-prefix proof."""
+ folder=P(bundle)/'chunks'/digest(row['relative_path'].encode());expected=0
+ for c in member_ranges:
+  need(c['offset']==expected and 0<c['size']<=CHUNK,'assembly gap');expected+=c['size']
+ need(expected==row['size'],'incomplete immutable ranges for tree materialization')
+ partial_exists=partial.exists();prefix=partial.stat().st_size if partial_exists else 0
+ need(0<=prefix<=row['size'],'owned tree partial larger than frozen member')
+ h=hashlib.sha256();before=identity(partial) if prefix else None;remaining=prefix
+ if prefix:
+  with partial.open('rb') as existing:
+   for c in member_ranges:
+    if not remaining:break
+    chunk=folder/c['name'];take=min(remaining,c['size'])
+    with chunk.open('rb') as src:
+     left=take
+     while left:
+      b=src.read(min(MIB,left));old=existing.read(len(b));need(b and old==b,'owned tree partial prefix differs from immutable ranges; retained')
+      h.update(b);remaining-=len(b);left-=len(b);pace_bytes(len(b),payload_rate);gate()
+   need(remaining==0 and existing.read(1)==b'','owned tree partial prefix length changed')
+  need(same_source(before,identity(partial)),'owned tree partial identity changed during prefix proof')
+ with partial.open('ab' if partial_exists else 'xb') as out:
+  consumed=0
+  for c in member_ranges:
+   chunk=folder/c['name'];skip=min(c['size'],max(0,prefix-consumed));consumed+=c['size']
+   with chunk.open('rb') as src:
+    if skip:src.seek(skip)
+    while True:
+     b=src.read(MIB)
+     if not b:break
+     out.write(b);h.update(b);pace_bytes(len(b),payload_rate);gate()
+  out.flush();os.fsync(out.fileno())
+ need(partial.stat().st_size==row['size'] and h.hexdigest()==row['sha256'],'materialized whole content mismatch')
+ return prefix
+
 def migrate(manifest,testing=False,inject_after_ranges=None):
  need(manifest['freeze_status'].startswith('FROZEN'),'source scope held');g=Resources(testing);before=g(True);bundle=P(manifest['new_true164_bundle'].replace('/home/shared','/root/share/mnt164',1));need(bundle.is_relative_to(NAS),'wrong new NAS scope');need(not manifest.get('reuse'),'reuse must not enter new payload path')
  available=os.statvfs(NAS.parent).f_bavail*os.statvfs(NAS.parent).f_frsize;need(available>=3*manifest['source_data_bytes']+64*MIB,'RESOURCE_HOLD_NAS_CAPACITY')
@@ -191,6 +226,7 @@ def migrate(manifest,testing=False,inject_after_ranges=None):
   if p.poll() is None:p.terminate();p.wait(timeout=10)
   p.stdout.close();p.stderr.close()
  need([x['path'] for x in ends]==[x['relative_path'] for x in manifest['members']],'incomplete/unordered source EOF proof')
+ tree_partial_resumes=[]
  for row,end in zip(manifest['members'],ends):
   need((end['sha256'],end['size'])==(row['sha256'],row['size']),'source member proof mismatch');dest=safe(bundle/'tree',row['relative_path']);dest.parent.mkdir(exist_ok=True,parents=True);partial=dest.with_name(dest.name+'.writing')
   if dest.exists():need(dest.stat().st_size==row['size'] and hash_file(dest,gate=g)==row['sha256'],'existing tree file collision');continue
@@ -200,23 +236,12 @@ def migrate(manifest,testing=False,inject_after_ranges=None):
    except OSError:pass
    else:
     need(dest.stat().st_size==row['size'] and hash_file(dest,gate=g)==row['sha256'],'single-chunk immutable tree link verification');dest.chmod(0o444);continue
-  if partial.exists():need(partial.stat().st_size==row['size'] and hash_file(partial,gate=g)==row['sha256'],'owned tree partial needs range recovery; retained')
-  else:
-   offset=0;h=hashlib.sha256();start=time.monotonic();done=0
-   with partial.open('xb') as f:
-    for c in ranges[row['relative_path']]:
-     need(c['offset']==offset,'assembly gap');chunk=bundle/'chunks'/digest(row['relative_path'].encode())/c['name']
-     with chunk.open('rb') as src:
-      while True:
-       b=src.read(MIB)
-       if not b:break
-       f.write(b);h.update(b);done+=len(b);pace_bytes(len(b),payload_rate);g()
-     offset+=c['size']
-    f.flush();os.fsync(f.fileno())
-   need(offset==row['size'] and h.hexdigest()==row['sha256'],'materialized whole content mismatch')
+  resumed_prefix=materialize_tree_from_ranges(partial,bundle,row,ranges[row['relative_path']],g)
+  if resumed_prefix:
+   tree_partial_resumes.append({'relative_path':row['relative_path'],'verified_owned_prefix_bytes':resumed_prefix,'recovery':'EXACT_PREFIX_MATCHED_IMMUTABLE_RANGES_THEN_APPENDED'})
   need(hash_file(partial,gate=g)==row['sha256'],'closed-reopened materialized whole SHA');v.rename_noreplace(partial,dest);dest.chmod(0o444)
  treeproof=verify_tree(bundle/'tree',manifest,g,rehash=False);publish_bytes(bundle/'SOURCE_CURRENT_EOF_SHA_PROOFS.json',canon(ends),v);publish_bytes(bundle/'RANGE_INDEX.json',canon(ranges),v);publish_bytes(bundle/'TREE_VERIFICATION.json',canon(treeproof),v)
- result={'status':'TRUE164_DIRECT_READ_READY','asset_id':manifest['primary_asset_id'],'object_id':manifest['object_id'],'bundle':str(bundle),'true164_bundle':manifest['new_true164_bundle'],'true164_tree':manifest['new_true164_bundle']+'/tree','mount_tree':str(bundle/'tree'),'manifest_sha256':digest(canon(manifest)),'original_bytes':manifest['source_data_bytes'],'members':len(manifest['members']),'kernels':len(manifest['ordered_kernel_members']),'new_payload_bytes':newbytes,'reused_verified_range_bytes':resumed,'Source_full_SHA_matches':True,'true164_closed_reopen_whole_SHA_matches':True,'RESTORE_VERIFIED_NATIVE_TARGET':'NOT_PERFORMED_BY_TRANSFER; independent bounded check is separate','before':before,'after':g(True),'resource_samples':g.samples,'source_disposition':'SOURCE_KEEP','Source_simulator_starts':0,'Share_new_bytes':0}
+ result={'status':'TRUE164_DIRECT_READ_READY','asset_id':manifest['primary_asset_id'],'object_id':manifest['object_id'],'bundle':str(bundle),'true164_bundle':manifest['new_true164_bundle'],'true164_tree':manifest['new_true164_bundle']+'/tree','mount_tree':str(bundle/'tree'),'manifest_sha256':digest(canon(manifest)),'original_bytes':manifest['source_data_bytes'],'members':len(manifest['members']),'kernels':len(manifest['ordered_kernel_members']),'new_payload_bytes':newbytes,'reused_verified_range_bytes':resumed,'tree_partial_resumes':tree_partial_resumes,'Source_full_SHA_matches':True,'true164_closed_reopen_whole_SHA_matches':True,'RESTORE_VERIFIED_NATIVE_TARGET':'NOT_PERFORMED_BY_TRANSFER; independent bounded check is separate','before':before,'after':g(True),'resource_samples':g.samples,'source_disposition':'SOURCE_KEEP','Source_simulator_starts':0,'Share_new_bytes':0}
  publish_bytes(bundle/'RECEIPT.json',canon({k:x for k,x in result.items() if k not in ['before','after','resource_samples','new_payload_bytes','reused_verified_range_bytes']}),v)
  publish_bytes(bundle/'trace_copy.py',P(__file__).read_bytes(),v);publish_bytes(bundle/'RESTORE.sh',b'#!/bin/sh\nset -eu\n: "${1:?Pass a NEW ABSENT task-native recovery directory}"\nHERE=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)\nexec /usr/bin/python3 -B "$HERE/trace_copy.py" restore "$HERE" "$1"\n',v)
  commit={'schema':'IMMUTABLE_MULTI_MEMBER_TRACE_INPUT_COMMIT_V1','object_id':manifest['object_id'],'manifest_sha256':digest(canon(manifest)),'range_index_sha256':digest(canon(ranges)),'tree_verification_sha256':digest(canon(treeproof)),'Source_disposition':'SOURCE_KEEP','scientific_acceptance_granted':False};publish_bytes(bundle/'COMMIT.json',canon(commit),v)

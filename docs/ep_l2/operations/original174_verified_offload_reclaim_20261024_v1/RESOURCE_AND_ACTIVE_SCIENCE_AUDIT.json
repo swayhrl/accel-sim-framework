@@ -1,7 +1,7 @@
 {
-  "unix": 1792908750.3887374,
+  "unix": 1792909069.4397125,
   "state": {
-    "SSD_available_bytes": 23464345600,
+    "SSD_available_bytes": 23462027264,
     "SSD_required_bytes": 23420993536,
     "archive_transfer_rate_policy": {
       "authorization_sha256": "08a52b3fb8dc865d85fe9f805de96ebb8714eda8a7e95fcac13c02b5de6d060a",
@@ -10,30 +10,32 @@
       "tier_receipt": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_verified_offload_reclaim_v1/control/staged_transfer_rates_v1/TIER_60_120_INTENT_1792901803619400203.json",
       "total_MiB_per_second": 120
     },
-    "asset_expected_bytes": 1753368,
-    "asset_id": "RAW_DTC_65e08c9de1fdc4c1",
-    "asset_kind": "DTC_RAW",
-    "completed_assets": 57,
+    "asset_expected_bytes": 223499,
+    "asset_id": "AWMA_Q05_FIXED10000_EXACT_RAW",
+    "asset_kind": "Q05_FIXED10000",
+    "completed_assets": 114,
     "current_asset_new_hashed_bytes": 0,
-    "current_asset_new_transferred_bytes": 0,
+    "current_asset_new_transferred_bytes": 223499,
     "current_file_hashed_bytes": 0,
     "current_host_io": {
       "full": {
-        "avg10": 9.85,
-        "avg300": 13.52,
-        "avg60": 11.2,
-        "total": 206134019586.0
+        "avg10": 10.38,
+        "avg300": 11.84,
+        "avg60": 10.43,
+        "total": 206157895612.0
       },
       "some": {
-        "avg10": 10.19,
-        "avg300": 13.62,
-        "avg60": 11.36,
-        "total": 227304590254.0
+        "avg10": 10.65,
+        "avg300": 11.96,
+        "avg60": 10.6,
+        "total": 227328716838.0
       }
     },
+    "driver_exit_code": 0,
+    "driver_exit_observed": true,
     "driver_pid": 1197443,
     "driver_start_ticks": 966057572,
-    "file": null,
+    "file": "run.log",
     "held_assets": 1,
     "last_hold": {
       "archive_lock_observation": null,
@@ -47,21 +49,16 @@
       "traceback": "Traceback (most recent call last):\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 103, in main\n    result=c.migrate(m)\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/copy_engine.py\", line 203, in migrate\n    if partial.exists():need(partial.stat().st_size==row['size'] and hash_file(partial,gate=g)==row['sha256'],'owned tree partial needs range recovery; retained')\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/copy_engine.py\", line 48, in need\n    if not ok:raise RuntimeError(msg)\nRuntimeError: owned tree partial needs range recovery; retained\n",
       "unix": 1792908671.7976897
     },
-    "phase": "TRUE164_RANGE_TRANSFER",
-    "queue_index": 59,
+    "phase": "FINITE_QUEUE_PASS_ENDED",
+    "queue_index": 115,
     "total_assets": 115,
-    "total_new_transferred_bytes": 184021531224,
-    "unix": 1792908745.8459158,
-    "verified_end": 0
+    "total_new_transferred_bytes": 184241161452,
+    "unix": 1792908967.3358355,
+    "verified_end": 223499
   },
-  "live_process": {
-    "pid": 1197443,
-    "start_ticks": 966057572,
-    "state": "S",
-    "command": "/usr/bin/python3 -B /root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py "
-  },
-  "SSD_available_bytes": 23464292352,
-  "true164_available_bytes": 48323556941824,
+  "live_process": null,
+  "SSD_available_bytes": 23461851136,
+  "true164_available_bytes": 48307219451904,
   "native_registry_observation": {
     "DTC_AEFAIR_EPOCH2_V1": {
       "state": "COMPLETE",
