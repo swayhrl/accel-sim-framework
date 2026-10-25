@@ -102,7 +102,10 @@ def main():
             raw=(PRIOR/item['all_original_numeric_metadata_and_SHA']).read_bytes()
             assert hashlib.sha256(raw).hexdigest()==item['source_manifest_Git_file_sha256']
             item['_reuse_manifest']=json.loads(raw)
-    result=remote('hrl-174-new','PRIOR='+repr(prior)+'\n'+AUDIT,240)
+    # Large valid scopes can contain thousands of small members. SSHFS metadata
+    # reopen latency, rather than payload hashing, can exceed the original
+    # four-minute observer bound. Keep the same finite audit and allow 15 min.
+    result=remote('hrl-174-new','PRIOR='+repr(prior)+'\n'+AUDIT,900)
     dump('CONTENT_AND_RESTORE_CLOSURE.json',{k:v for k,v in result.items() if k not in ['ledger','member_SHA_rows']})
     rows=result['member_SHA_rows'];s=io.StringIO(newline='');w=csv.DictWriter(s,fieldnames=list(rows[0]) if rows else ['asset_id']);w.writeheader();w.writerows(rows);raw=s.getvalue().encode();(OUT/'MEMBER_SHA_INDEX.csv.gz').write_bytes(gzip.compress(raw,mtime=0))
     dump('MEMBER_SHA_INDEX.json',dict(rows=len(rows),uncompressed_sha256=hashlib.sha256(raw).hexdigest(),uncompressed_bytes=len(raw),compressed_file='MEMBER_SHA_INDEX.csv.gz',payload_bodies_rehashed=False))

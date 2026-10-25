@@ -74,9 +74,9 @@ def main():
         time.sleep(120)
     else:log('FINALIZER_BOUND_REACHED_NO_COMPLETION',last=remote('hrl-174-new',REMOTE,90));return
     assert not publishers(),'Publisher reappeared before final audit'
-    run_tool('t2_closure_audit.py',timeout=600)
+    run_tool('t2_closure_audit.py',timeout=1800)
     run_tool('audit_restore_dependencies.py',timeout=900)
-    run_tool('t2_runtime_audit.py','--final',timeout=900)
+    run_tool('t2_runtime_audit.py','--final',timeout=1800)
     run_tool('t2_report.py','--final','--pre-publication',timeout=600)
     closure_commit=publish_once()
     files=[
