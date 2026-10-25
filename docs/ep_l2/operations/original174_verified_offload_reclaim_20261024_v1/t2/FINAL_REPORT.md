@@ -34,6 +34,6 @@ A later explicit authorization in `TRANSFER_RATE_USER_AUTHORIZATION.json` permit
 
 Published restore-entry dependency audit: 115/115 scopes passed shell syntax, standalone module loading, co-located resource-module checks and pinned existing-controller V9 dependency loading. `RESTORE_IMPORT_DEPENDENCY_AUDIT.json` retains exact helper/resource hashes and external controller paths. This is not a native payload-restoration test, independent-host portability proof or an override of frozen helper resource checks.
 
-This pre-publication final report is ready for the first closure commit. Independent GitHub HTTPS readback is intentionally pending until that immutable commit exists; a second publication will carry the readback receipt.
+The closure publication at GitHub commit `7125a94521428d6520451326127fc5749d3585c8` was independently fetched over HTTPS. All 5 selected final control/report files matched the local bytes and recorded SHA256 values. The following publication adds this readback receipt; its remote ref and receipt bytes are verified separately and persisted on genuine164.
 
 No current classified terminal HOLD has been established in this snapshot. Remaining pending work is not counted as successful completion.
