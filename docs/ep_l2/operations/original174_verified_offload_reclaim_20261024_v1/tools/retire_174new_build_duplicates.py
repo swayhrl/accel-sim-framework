@@ -48,6 +48,13 @@ print('Exact compiler copies restored; ctime is historical provenance only.')
 def free():
     v=os.statvfs('/root/data');return v.f_bavail*v.f_frsize
 
+def admit_restore_test(size):
+    import server_resources as resources
+    gate=resources.admission('TARGET',allowed_lock_pids=(os.getpid(),))
+    assert 0<size<=128*1024**2
+    assert free()>=gate['SSD_required_bytes']+size,'full reserved SSD admission plus test allocation required'
+    return gate
+
 def blob(x):return (json.dumps(x,sort_keys=True,indent=2)+'\n').encode()
 
 def put(p,b):
@@ -93,7 +100,7 @@ def main():
     # <=256MiB staging contract; it is removed only after closed SHA/metadata.
     x=max(files,key=lambda x:x['identity']['size']);a=P(x['archive']['path'])
     test=OUT/'INDEPENDENT_RESTORE_TEST.payload';assert not test.exists()
-    assert x['identity']['size']<=128*1024**2 and before>=7*1024**3+256*1024**2
+    admit_restore_test(x['identity']['size'])
     h=hashlib.sha256()
     with a.open('rb') as src,test.open('xb') as dst:
         while True:

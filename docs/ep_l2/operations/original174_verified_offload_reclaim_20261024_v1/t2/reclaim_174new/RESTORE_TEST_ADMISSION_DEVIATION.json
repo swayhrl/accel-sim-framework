@@ -1,0 +1,16 @@
+{
+  "schema": "174NEW_RESTORE_TEST_ADMISSION_DEVIATION_V1",
+  "observed_unix": 1792890204.9739695,
+  "executed_script_sha256": "2cfc49a978ff77dff6d690c0a1533634b07af3e3ba2f924733b5675630c84b45",
+  "temporary_restore_test_logical_bytes": 84346374,
+  "temporary_restore_test_allocated_bytes": 84353024,
+  "original_full_reserved_SSD_required_bytes": 23420993536,
+  "issue": "Executed helper checked 7GiB base +256MiB instead of full registered reservations and active-science admission before one SSD restore test. This was an implementation error, not an authorized contract exception.",
+  "temporary_test_closed_SHA_and_numeric_metadata_verified": true,
+  "temporary_test_removed_and_done_receipt_exists": true,
+  "temporary_test_bytes_counted_as_new_original_reclaim": false,
+  "science_files_processes_reservations_modified": false,
+  "ongoing_retirement_after_test": "Only exact SHA-verified compiler duplicate unlink and bounded audit metadata; no additional SSD payload writes.",
+  "correction": "Full server_resources.admission(TARGET) plus test size is now mandatory before creating a future test payload. Existing executed version retained separately; do not replay this completed retirement.",
+  "resource_contract_lowered_or_user_permission_requested": false
+}

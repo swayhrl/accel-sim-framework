@@ -31,7 +31,8 @@ def main():
     rc=x['retirement'];initial_alloc={k:v['unlinked_file_allocated_bytes'] for k,v in rc['initial'].items()};package=rc['package'];pool_delta=rc['initial_pool_observed_interval_delta']+package['actual_observed_SSD_increase_bytes'];source_delta=rc['initial_Source_observed_interval_delta']+package['actual_observed_SSD_increase_bytes']
     extra_path=OUT/'reclaim_174new/DONE.json'
     extra=load(extra_path) if extra_path.exists() else None
-    if args.final and extra:
+    if args.final and (OUT/'reclaim_174new/QUALIFIED.json.gz').exists():
+        assert extra,'ADDITIONAL_174NEW_RETIREMENT_NOT_FINISHED'
         verification=load(OUT/'reclaim_174new/INDEPENDENT_CLOSURE.json')
         assert verification['status']=='PASS' and verification['unclosed_file_intents']==0,'NEW_174NEW_RETIREMENT_NOT_CLOSED'
     status=('FINAL_WITH_CLASSIFIED_HOLDS' if holds else 'FINAL_ALL_FROZEN_SCOPES_COMMITTED') if args.final else 'DRAFT_IN_PROGRESS_NOT_GOAL_COMPLETION'
