@@ -24,7 +24,7 @@ c.emit=event
 BaseResources=c.Resources
 class DriverResources(BaseResources):
     def __call__(self,force=False):
-        x=super().__call__(force);update(SSD_available_bytes=x['SSD_available_bytes'],SSD_required_bytes=x['SSD_required_bytes'],current_host_io=x['IO']);return x
+        x=super().__call__(force);update(SSD_available_bytes=x['SSD_available_bytes'],SSD_required_bytes=x['SSD_required_bytes'],current_host_io=x['IO'],archive_transfer_rate_policy=x.get('archive_transfer_rate_policy'));return x
 c.Resources=DriverResources
 
 def append(x):

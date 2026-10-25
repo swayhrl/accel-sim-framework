@@ -7,6 +7,37 @@ primitives. Data buffers are bounded; no source modification or Share staging.
 import pathlib,os,sys,json,hashlib,struct,time,fcntl,subprocess,shlex,importlib.util,stat
 P=pathlib.Path;MIB=1024**2;GIB=1024**3;CHUNK=128*MIB;RATE=15*MIB
 TASK=P('/root/data/research_asset_verified_offload_20261024_v1')
+RATE_AUTH_SHA256='08a52b3fb8dc865d85fe9f805de96ebb8714eda8a7e95fcac13c02b5de6d060a'
+_rate_cache=None
+_rate_cache_mono=0
+
+def rate_limits(force=False):
+ """Task-local user-authorized tiers; no change to content/range protocol."""
+ global _rate_cache,_rate_cache_mono
+ now=time.monotonic()
+ if not force and _rate_cache is not None and now-_rate_cache_mono<1:return dict(_rate_cache)
+ path=TASK/'control/TRANSFER_RATE_POLICY.json'
+ if not path.exists():
+  value=dict(source_MiB_per_second=15,total_MiB_per_second=30,mode='ORIGINAL_LIMITS')
+ else:
+  auth=TASK/'control/TRANSFER_RATE_USER_AUTHORIZATION.json'
+  need(auth.is_file() and not auth.is_symlink() and digest(auth.read_bytes())==RATE_AUTH_SHA256,'TRANSFER_RATE_AUTHORIZATION_CHANGED')
+  need(not path.is_symlink(),'TRANSFER_RATE_POLICY_SYMLINK')
+  x=read(path);pair=(x.get('source_MiB_per_second'),x.get('total_MiB_per_second'))
+  need(all(type(z) is int for z in pair) and pair in [(15,30),(30,60),(60,120)],'TRANSFER_RATE_UNAUTHORIZED_TIER')
+  need(x.get('schema')=='LANE_T2_ACTIVE_TRANSFER_RATE_TIER_V1' and x.get('authorization_sha256')==RATE_AUTH_SHA256,'TRANSFER_RATE_POLICY_IDENTITY_CHANGED')
+  value=dict(source_MiB_per_second=pair[0],total_MiB_per_second=pair[1],mode='USER_AUTHORIZED_STAGED_RATE',authorization_sha256=RATE_AUTH_SHA256,tier_receipt=x.get('tier_receipt'))
+ _rate_cache=value;_rate_cache_mono=now
+ return dict(value)
+
+def payload_rate():return rate_limits()['source_MiB_per_second']*MIB
+def io_rate():return rate_limits()['total_MiB_per_second']*MIB
+
+def pace_bytes(count,rate):
+ """Conservative per-buffer pacing; tier increases cannot cause catch-up bursts."""
+ cap=rate() if callable(rate) else rate
+ if cap:time.sleep(count/cap)
+
 NATIVE=P('/root/data/ep_l2_dtc_l1_native_v2')
 NAS=P('/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_verified_offload_reclaim_v1/assets')
 BRIDGE=P('/root/share/host174_storage_recovery_bridge/20261016_storageops_02')
@@ -45,7 +76,7 @@ def hash_file(p,rate=30*MIB,gate=None):
    b=f.read(MIB)
    if not b:break
    h.update(b);count+=len(b)
-   if rate:time.sleep(max(0,count/rate-(time.monotonic()-start)))
+   pace_bytes(len(b),rate)
    if gate:gate()
  return h.hexdigest()
 
@@ -179,7 +210,7 @@ def migrate(manifest,testing=False,inject_after_ranges=None):
       while True:
        b=src.read(MIB)
        if not b:break
-       f.write(b);h.update(b);done+=len(b);time.sleep(max(0,done/RATE-(time.monotonic()-start)));g()
+       f.write(b);h.update(b);done+=len(b);pace_bytes(len(b),payload_rate);g()
      offset+=c['size']
     f.flush();os.fsync(f.fileno())
    need(offset==row['size'] and h.hexdigest()==row['sha256'],'materialized whole content mismatch')
@@ -240,13 +271,14 @@ class Resources:
         if ACTIVE_SENDER is not None and ACTIVE_SENDER.poll() is None:
             own_sender=(ACTIVE_SENDER.pid,)
         value=rr.admission('TARGET',include_activity=False,allowed_lock_pids=own_sender)
+        value['archive_transfer_rate_policy']=rate_limits()
         self.last=time.monotonic();self.last_value=value;self.samples.append(value)
         self.samples=self.samples[-100:]
         return value
 
 _qualified_hash_file=hash_file
 def hash_file(path,rate=None,gate=None):
-    if rate is None:rate=15*MIB if ACTIVE_SENDER is not None and ACTIVE_SENDER.poll() is None else 30*MIB
+    if rate is None:rate=payload_rate if ACTIVE_SENDER is not None and ACTIVE_SENDER.poll() is None else io_rate
     return _qualified_hash_file(path,rate=rate,gate=gate)
 
 _qualified_publish_bytes=publish_bytes
@@ -331,7 +363,7 @@ def prepare_source(request):
                     if not b:break
                     if not prefix:prefix=b[:128]
                     h.update(b);count+=len(b);new_sha_bytes+=len(b)
-                    time.sleep(max(0,count/(30*MIB)-(time.monotonic()-begin)));source_gate(role,last,metadata_only)
+                    pace_bytes(len(b),io_rate);source_gate(role,last,metadata_only)
                     if time.monotonic()-last_progress>=10:
                         emit(dict(event='PREHASH_PROGRESS',asset=scope['asset_id'],file=row['relative_path'],current_file_bytes=count,new_hashed_bytes=new_sha_bytes));last_progress=time.monotonic()
         need(same_source(a,identity(path)) and (known or count==row['size']),'SOURCE_CHANGED_DURING_PREHASH')
@@ -363,10 +395,10 @@ def source_send(request,testing=False):
                 if offset>=request['skip'][row['relative_path']]:
                     frame(dict(event='CHUNK',path=row['relative_path'],offset=offset,size=len(b),sha256=digest(b)))
                     for j in range(0,len(b),MIB):
-                        part=memoryview(b)[j:j+MIB];time.sleep(len(part)/RATE);sys.stdout.buffer.write(part);sys.stdout.buffer.flush();source_gate(role,last)
+                        part=memoryview(b)[j:j+MIB];pace_bytes(len(part),payload_rate);sys.stdout.buffer.write(part);sys.stdout.buffer.flush();source_gate(role,last)
                 else:
                     # Reused ranges still need Source EOF SHA, at bounded I/O.
-                    time.sleep(len(b)/(30*MIB));source_gate(role,last)
+                    pace_bytes(len(b),io_rate);source_gate(role,last)
                 offset+=len(b)
         need(offset==row['size'] and same_source(a,identity(path)) and h.hexdigest()==row['sha256'],'SOURCE_EOF_SHA_OR_IDENTITY_MISMATCH')
         frame(dict(event='FILE_END',path=row['relative_path'],size=offset,sha256=h.hexdigest(),source_before_after_identity_unchanged=True,source_disposition='SOURCE_KEEP'))
