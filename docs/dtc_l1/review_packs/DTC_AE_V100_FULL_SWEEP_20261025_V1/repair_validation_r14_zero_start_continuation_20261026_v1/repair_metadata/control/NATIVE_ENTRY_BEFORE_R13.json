@@ -1,0 +1,4 @@
+{
+  "text": "#!/bin/sh\nset -eu\n# COPY_ONLY asset queries only; scientific argv delegate remains unchanged.\nif [ \"$#\" -ge 2 ]; then\n  case \"$1:$2\" in\n    asset:ensure|project:assets)\n      exec /usr/bin/python3 -B /root/data/ep_dtc_trace_migration_20261024_v1/tools/trace_assets.py \"$@\"\n      ;;\n  esac\nfi\nexec /usr/bin/python3 -B /root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_frontend_host_v4.py \"$@\"\n",
+  "sha256": "8496aa9e60119443731ea3975ceba8d8173a32d2c58ab6012540245a348a5aed"
+}
