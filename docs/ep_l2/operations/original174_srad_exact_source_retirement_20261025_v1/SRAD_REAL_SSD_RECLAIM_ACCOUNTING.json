@@ -1,0 +1,34 @@
+{
+  "accounting_rule": "Logical bytes, allocated bytes and df available-byte change are separate measures and are not added together.",
+  "asset_id": "TRACE_300274ed6041b087",
+  "attribution_limit": "The df interval delta is the observed filesystem change during the retirement window. Concurrent allocations or frees can make it differ from the exact unlinked allocation total.",
+  "controlled_small_file_test": {
+    "allocated_bytes": 352256,
+    "df_after": 23149494272,
+    "df_before": 23149150208,
+    "df_delta": 344064,
+    "logical_bytes": 348967,
+    "relative_path": "kernel-4.traceg",
+    "result": "PASS_POSITIVE_PHYSICAL_RECLAIM"
+  },
+  "filesystem": "/dev/sdf mounted at /root/data",
+  "full_operation": {
+    "allocated_bytes_unlinked": 21566582784,
+    "df_available_after": 44680536064,
+    "df_available_before": 23149150208,
+    "df_available_interval_delta": 21531385856,
+    "df_available_post_independent_audit": 44675596288,
+    "files_unlinked": 502,
+    "logical_bytes_unlinked": 21565127570
+  },
+  "gib": {
+    "allocated_unlinked": 20.085445404052734,
+    "df_interval_delta": 20.05266571044922,
+    "logical_unlinked": 20.084090130403638,
+    "post_audit_available": 41.607391357421875
+  },
+  "schema": "ORIGINAL174_SRAD_REAL_SSD_RECLAIM_ACCOUNTING_V1",
+  "source_layer_conclusion": "The positive controlled test and sustained df growth prove that unlink reclaimed physical /root/data capacity; this was not a whiteout-only result.",
+  "status": "DONE",
+  "true164_available_bytes_post_audit": 48105617268736
+}
