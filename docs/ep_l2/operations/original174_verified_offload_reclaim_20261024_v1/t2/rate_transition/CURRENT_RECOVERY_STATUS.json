@@ -1,15 +1,15 @@
 {
   "schema": "LANE_T2_RATE_TRANSITION_LIVE_OBSERVATION_V1",
-  "unix": 1792901101.1193295,
-  "completed": 36,
-  "pending": 79,
-  "committed_original_bytes": 144728004881,
+  "unix": 1792901369.370413,
+  "completed": 37,
+  "pending": 78,
+  "committed_original_bytes": 152417813017,
   "driver": {
     "pid": 1167901,
     "start_ticks": 965132573,
-    "alive": true,
-    "process_state": "S",
-    "wait_channel": "do_select"
+    "alive": false,
+    "process_state": "Z",
+    "wait_channel": "0"
   },
   "supervisor": {
     "pid": 1147175,
@@ -21,44 +21,55 @@
   "coordinator": {
     "pid": 1172004,
     "start_ticks": 965259616,
-    "alive": true,
-    "process_state": "S",
-    "wait_channel": "locks_lock_inode_wait"
+    "alive": false
   },
   "state": {
-    "SSD_available_bytes": 23686037504,
+    "SSD_available_bytes": 23683944448,
     "SSD_required_bytes": 23420993536,
-    "asset_expected_bytes": 7689808136,
-    "asset_id": "TRACE_f254bec10d7a65a7",
+    "asset_expected_bytes": 7684181136,
+    "asset_id": "TRACE_cae2f20bacad84d5",
     "asset_kind": "TRACE",
-    "completed_assets": 36,
-    "current_asset_new_hashed_bytes": 7598391632,
-    "current_asset_new_transferred_bytes": 7689808136,
-    "current_file_hashed_bytes": 7585398784,
+    "completed_assets": 37,
+    "current_asset_new_hashed_bytes": 0,
+    "current_asset_new_transferred_bytes": 0,
+    "current_file_hashed_bytes": 0,
     "current_host_io": {
       "full": {
-        "avg10": 10.5,
-        "avg300": 10.98,
-        "avg60": 11.77,
-        "total": 205274724538.0
+        "avg10": 9.93,
+        "avg300": 10.56,
+        "avg60": 10.08,
+        "total": 205302952422.0
       },
       "some": {
-        "avg10": 10.51,
-        "avg300": 11.05,
-        "avg60": 11.81,
-        "total": 226438933501.0
+        "avg10": 10.0,
+        "avg300": 10.63,
+        "avg60": 10.14,
+        "total": 226467326874.0
       }
     },
+    "driver_exit_code": 0,
+    "driver_exit_observed": true,
     "driver_pid": 1167901,
     "driver_start_ticks": 965132573,
-    "file": "kernelslist.g",
-    "held_assets": 0,
-    "phase": "TRANSFER_RANGE_VERIFIED",
-    "queue_index": 37,
+    "file": null,
+    "held_assets": 1,
+    "last_hold": {
+      "asset_id": "TRACE_cae2f20bacad84d5",
+      "elapsed_seconds": 0.0365290641784668,
+      "kind": "TRACE",
+      "new_scientific_starts": 0,
+      "reason": "OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER",
+      "source_disposition": "KEEP",
+      "status": "HOLD_EXACT_ASSET",
+      "traceback": "Traceback (most recent call last):\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 102, in main\n    m,prep=prepare(scope);bundle=P(m['new_true164_bundle'].replace('/home/shared','/root/share/mnt164',1));update(force=True,phase='TRUE164_RANGE_TRANSFER')\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 37, in prepare\n    c.Resources()(True)\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 27, in __call__\n    x=super().__call__(force);update(SSD_available_bytes=x['SSD_available_bytes'],SSD_required_bytes=x['SSD_required_bytes'],current_host_io=x['IO']);return x\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/copy_engine.py\", line 242, in __call__\n    value=rr.admission('TARGET',include_activity=False,allowed_lock_pids=own_sender)\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/server_resources.py\", line 77, in admission\n    if not metadata_only:need(not foreign_locks,'OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER')\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/server_resources.py\", line 8, in need\n    if not v:raise RuntimeError(m)\nRuntimeError: OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER\n",
+      "unix": 1792901358.330483
+    },
+    "phase": "COMMON_RESOURCE_HOLD",
+    "queue_index": 38,
     "total_assets": 115,
-    "total_new_transferred_bytes": 130873723120,
-    "unix": 1792901100.2569165,
-    "verified_end": 244
+    "total_new_transferred_bytes": 138563531256,
+    "unix": 1792901358.3442621,
+    "verified_end": 0
   },
   "supervisor_state": {
     "Source_deletions": 0,
@@ -80,14 +91,9 @@
     "schema": "LANE_T_FINITE_CONTINUATION_SUPERVISOR_V1",
     "scientific_actions": 0,
     "start_ticks": 964494301,
-    "unix": 1792901071.0562465
+    "unix": 1792901341.9862676
   },
-  "active_tree_writing": [
-    {
-      "relative_path": "tree/kernel-4.traceg.writing",
-      "size": 7493124096
-    }
-  ],
+  "active_tree_writing": [],
   "controls": {
     "RATE_POLICY_TRANSITION_INTENT.json": {
       "authorization_sha256": "08a52b3fb8dc865d85fe9f805de96ebb8714eda8a7e95fcac13c02b5de6d060a",
@@ -165,7 +171,139 @@
       "schema": "LANE_T2_COOPERATIVE_RATE_RELOAD_INTENT_V1",
       "signals_sent": 0,
       "unix": 1792900624.903922
+    },
+    "RATE_POLICY_POST_COMMIT_LOCK_BOUNDARY.json": {
+      "COMMIT_sha256": "9773a223d167751e2ed6f90f71c3f92d2da3d5c7e0f1b4bda00d6b746181dedc",
+      "coordinator_pid": 1172004,
+      "current_asset": "TRACE_f254bec10d7a65a7",
+      "normal_owner_release": true,
+      "receiver_lock_inode": 103546992,
+      "signals_sent": 0,
+      "unix": 1792901358.2478042
+    },
+    "RATE_POLICY_TRANSITION_DONE.json": {
+      "completed": 37,
+      "counters_before": {
+        "driver_restarts": 2,
+        "resource_rechecks": 83
+      },
+      "current_asset": "TRACE_f254bec10d7a65a7",
+      "current_asset_COMMIT_sha256": "9773a223d167751e2ed6f90f71c3f92d2da3d5c7e0f1b4bda00d6b746181dedc",
+      "duplicate_driver_or_supervisor_started": 0,
+      "lock_held_seconds_before_release": 0.19909095764160156,
+      "lock_inode_unchanged": true,
+      "new_tools_sha256": {
+        "copy_engine.py": "af64dbaf907250d63fdc9765df9681046bc9c631bc8494cb924ee70637b1b9c2",
+        "offload_driver.py": "51a23811f3d4fbc687a812b290eca68fa999909e996845fcda716ea7a1c9b543"
+      },
+      "old_driver_normal_exit": true,
+      "old_driver_pid": 1167901,
+      "old_driver_start_ticks": 965132573,
+      "original_deadline_unix": 1792947947.377078,
+      "original_driver_final_state": {
+        "SSD_available_bytes": 23683944448,
+        "SSD_required_bytes": 23420993536,
+        "asset_expected_bytes": 7684181136,
+        "asset_id": "TRACE_cae2f20bacad84d5",
+        "asset_kind": "TRACE",
+        "completed_assets": 37,
+        "current_asset_new_hashed_bytes": 0,
+        "current_asset_new_transferred_bytes": 0,
+        "current_file_hashed_bytes": 0,
+        "current_host_io": {
+          "full": {
+            "avg10": 9.93,
+            "avg300": 10.56,
+            "avg60": 10.08,
+            "total": 205302952422.0
+          },
+          "some": {
+            "avg10": 10.0,
+            "avg300": 10.63,
+            "avg60": 10.14,
+            "total": 226467326874.0
+          }
+        },
+        "driver_exit_code": 0,
+        "driver_exit_observed": true,
+        "driver_pid": 1167901,
+        "driver_start_ticks": 965132573,
+        "file": null,
+        "held_assets": 1,
+        "last_hold": {
+          "asset_id": "TRACE_cae2f20bacad84d5",
+          "elapsed_seconds": 0.0365290641784668,
+          "kind": "TRACE",
+          "new_scientific_starts": 0,
+          "reason": "OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER",
+          "source_disposition": "KEEP",
+          "status": "HOLD_EXACT_ASSET",
+          "traceback": "Traceback (most recent call last):\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 102, in main\n    m,prep=prepare(scope);bundle=P(m['new_true164_bundle'].replace('/home/shared','/root/share/mnt164',1));update(force=True,phase='TRUE164_RANGE_TRANSFER')\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 37, in prepare\n    c.Resources()(True)\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 27, in __call__\n    x=super().__call__(force);update(SSD_available_bytes=x['SSD_available_bytes'],SSD_required_bytes=x['SSD_required_bytes'],current_host_io=x['IO']);return x\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/copy_engine.py\", line 242, in __call__\n    value=rr.admission('TARGET',include_activity=False,allowed_lock_pids=own_sender)\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/server_resources.py\", line 77, in admission\n    if not metadata_only:need(not foreign_locks,'OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER')\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/server_resources.py\", line 8, in need\n    if not v:raise RuntimeError(m)\nRuntimeError: OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER\n",
+          "unix": 1792901358.330483
+        },
+        "phase": "COMMON_RESOURCE_HOLD",
+        "queue_index": 38,
+        "total_assets": 115,
+        "total_new_transferred_bytes": 138563531256,
+        "unix": 1792901358.3442621,
+        "verified_end": 0
+      },
+      "policy": {
+        "authorization_sha256": "08a52b3fb8dc865d85fe9f805de96ebb8714eda8a7e95fcac13c02b5de6d060a",
+        "schema": "LANE_T2_ACTIVE_TRANSFER_RATE_TIER_V1",
+        "source_MiB_per_second": 30,
+        "tier_receipt": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_verified_offload_reclaim_v1/control/staged_transfer_rates_v1/TIER_30_60_INTENT.json",
+        "total_MiB_per_second": 60
+      },
+      "publisher_restarts": 0,
+      "schema": "LANE_T2_COOPERATIVE_RATE_RELOAD_DONE_V1",
+      "signals_sent": 0,
+      "supervisor_pid_unchanged": 1147175,
+      "supervisor_start_ticks_unchanged": 964494301,
+      "unix": 1792901358.445349
+    },
+    "TRANSFER_RATE_POLICY.json": {
+      "authorization_sha256": "08a52b3fb8dc865d85fe9f805de96ebb8714eda8a7e95fcac13c02b5de6d060a",
+      "schema": "LANE_T2_ACTIVE_TRANSFER_RATE_TIER_V1",
+      "source_MiB_per_second": 30,
+      "tier_receipt": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_verified_offload_reclaim_v1/control/staged_transfer_rates_v1/TIER_30_60_INTENT.json",
+      "total_MiB_per_second": 60
+    },
+    "TIER_30_60_INTENT.json": {
+      "policy": {
+        "authorization_sha256": "08a52b3fb8dc865d85fe9f805de96ebb8714eda8a7e95fcac13c02b5de6d060a",
+        "schema": "LANE_T2_ACTIVE_TRANSFER_RATE_TIER_V1",
+        "source_MiB_per_second": 30,
+        "tier_receipt": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_verified_offload_reclaim_v1/control/staged_transfer_rates_v1/TIER_30_60_INTENT.json",
+        "total_MiB_per_second": 60
+      },
+      "previous_completed": 37,
+      "previous_supervisor_state": {
+        "Source_deletions": 0,
+        "completed": 36,
+        "deadline_unix": 1792947947.377078,
+        "driver": {
+          "log": "/root/data/research_asset_verified_offload_20261024_v1/control/driver_continue_1792899354391047520.log",
+          "pid": 1167901,
+          "start_ticks": 965132573
+        },
+        "driver_restarts": 2,
+        "frozen_scopes": 115,
+        "max_driver_restarts": 96,
+        "max_resource_rechecks": 288,
+        "phase": "OBSERVING_EXISTING_DRIVER",
+        "pid": 1147175,
+        "resource_rechecks": 83,
+        "running": true,
+        "schema": "LANE_T_FINITE_CONTINUATION_SUPERVISOR_V1",
+        "scientific_actions": 0,
+        "start_ticks": 964494301,
+        "unix": 1792901341.9862676
+      },
+      "unix": 1792901358.385639
     }
   },
-  "coordinator_log_tail": ""
+  "coordinator_log_tail": "}, \"supervisor_pid_unchanged\": 1147175, \"supervisor_start_ticks_unchanged\": 964494301, \"original_deadline_unix\": 1792947947.377078, \"counters_before\": {\"resource_rechecks\": 83, \"driver_restarts\": 2}, \"policy\": {\"schema\": \"LANE_T2_ACTIVE_TRANSFER_RATE_TIER_V1\", \"source_MiB_per_second\": 30, \"total_MiB_per_second\": 60, \"authorization_sha256\": \"08a52b3fb8dc865d85fe9f805de96ebb8714eda8a7e95fcac13c02b5de6d060a\", \"tier_receipt\": \"/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_verified_offload_reclaim_v1/control/staged_transfer_rates_v1/TIER_30_60_INTENT.json\"}, \"new_tools_sha256\": {\"copy_engine.py\": \"af64dbaf907250d63fdc9765df9681046bc9c631bc8494cb924ee70637b1b9c2\", \"offload_driver.py\": \"51a23811f3d4fbc687a812b290eca68fa999909e996845fcda716ea7a1c9b543\"}, \"signals_sent\": 0, \"duplicate_driver_or_supervisor_started\": 0, \"publisher_restarts\": 0, \"lock_inode_unchanged\": true, \"lock_held_seconds_before_release\": 0.19909095764160156}\n",
+  "observed_stage": "COMMON_RESOURCE_HOLD",
+  "tree_IO": []
 }
