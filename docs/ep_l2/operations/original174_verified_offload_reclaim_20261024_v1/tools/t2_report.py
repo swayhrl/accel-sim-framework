@@ -27,6 +27,7 @@ def main():
         source_stop=stop['original174_source_namespace']
         assert not source_stop['own_execution_processes'] and not source_stop['unreadable_proc_entries'],'ORIGINAL174_SENDER_OR_VISIBILITY_REQUIRES_REVIEW'
         assert not stop['transaction_metadata_errors'],'UNEXPLAINED_TRANSACTION_METADATA_ERRORS'
+        assert set(stop['committed_bundle_ids'])=={z['asset_id'] for z in done},'SHUTDOWN_AUDIT_COMMITTED_SET_IS_STALE'
         for part in stop['partial_transactions']:
             c=categories[part['asset_id']];assert c.get('terminal') is True and c.get('partial_transaction_explanation') and c.get('evidence'),'UNEXPLAINED_PARTIAL_TRANSACTION'
         assert stop['unrelated_processes_signaled']==0

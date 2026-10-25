@@ -10,6 +10,20 @@ import pathlib,json,os,time,gzip,hashlib,subprocess
 P=pathlib.Path;T=P('/root/data/research_asset_verified_offload_20261024_v1');N=P('/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_verified_offload_reclaim_v1/assets')
 m=json.loads(subprocess.check_output(['findmnt','-J','-T',str(N)],text=True))['filesystems'][0];assert m['source']=='admin-wcx@10.208.130.164:/home/shared' and m['fstype']=='fuse.sshfs'
 q=json.loads(gzip.decompress((T/'control/FROZEN_SCOPES.json.gz').read_bytes()))['scopes'];byid={z['asset_id']:z for z in q};state=json.loads((T/'control/STATE.json').read_bytes());sup=json.loads((T/'control/CONTINUATION_SUPERVISOR.json').read_bytes());own=[];unreadable=[]
+def committed_artifact_audit(bundle,manifest):
+ expected_tree={x['relative_path'] for x in manifest['members']}|{x['path'] for x in manifest.get('source_unselected_symlink_references',[])};out=[]
+ for base,dirs,names in os.walk(bundle,followlinks=False):
+  folder=P(base);available=set(names)
+  for name in names:
+   p=folder/name;rel=p.relative_to(bundle).as_posix()
+   if rel.startswith('tree/') and rel[5:] in expected_tree:continue
+   reason=None
+   if name.endswith('.writing'):reason='COMMITTED_OWNED_WRITING_PARTIAL'
+   elif rel.startswith('chunks/') and name.endswith('.part') and name+'.json' not in available:reason='COMMITTED_UNINDEXED_RANGE'
+   elif rel.startswith('chunks/') and name.endswith('.part.frame') and name[:-6] not in available:reason='COMMITTED_FRAME_WITHOUT_RANGE'
+   elif rel.startswith('chunks/') and name.endswith('.part.json') and name[:-5] not in available:reason='COMMITTED_RANGE_INDEX_WITHOUT_DATA'
+   if reason:out.append(dict(relative_path=rel,reason=reason))
+ return out
 ledger=[json.loads(z) for z in (T/'control/LEDGER.jsonl').read_text().splitlines()];ledger_done={z['asset_id'] for z in ledger if z['status']=='ARCHIVED_CONTENT_VERIFIED'}
 paths=[str(T/'tools'/n).encode() for n in ['offload_driver.py','continuation_supervisor.py','copy_engine.py','apply_staged_transfer_rates.py','parallel_metadata_preflight.py']]
 for proc in P('/proc').iterdir():
@@ -27,6 +41,11 @@ for b in N.iterdir():
  if (b/'COMMIT.json').exists():
   commits.append(b.name)
   if b.name not in ledger_done:errors.append(dict(asset_id=b.name,reason='COMMIT_EXISTS_WITHOUT_LEDGER_FINALIZATION; recheck live transition before repair'))
+  if FINAL_MODE:
+   try:
+    raw=(b/'SOURCE_MANIFEST.json').read_bytes();mf=json.loads(raw);commit=json.loads((b/'COMMIT.json').read_bytes());assert hashlib.sha256(raw).hexdigest()==commit['manifest_sha256']
+    for artifact in committed_artifact_audit(b,mf):errors.append(dict(asset_id=b.name,**artifact))
+   except Exception as e:errors.append(dict(asset_id=b.name,reason='FINAL_COMMITTED_ARTIFACT_AUDIT_FAILED '+str(e)))
   continue
  try:
   raw=(b/'SOURCE_MANIFEST.json').read_bytes();mf=json.loads(raw);local=(T/'manifests'/(b.name+'.json')).read_bytes();assert raw==local
@@ -82,7 +101,7 @@ print(json.dumps(dict(unix=time.time(),host=os.uname().nodename,mount_namespace=
 
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--final',action='store_true');args=ap.parse_args()
-    x=remote('hrl-174-new',REMOTE,240)
+    x=remote('hrl-174-new','FINAL_MODE='+repr(args.final)+'\n'+REMOTE,240)
     x['original174_source_namespace']=remote('hrl',SOURCE_REMOTE,90)
     command="Get-CimInstance Win32_Process | Where-Object { $_.Name -match '^python' -and $_.CommandLine -like '*original174-verified-offload-reclaim-exec-20261024-v1*publish_continuation.py*' } | Select-Object ProcessId,CreationDate,CommandLine | ConvertTo-Json -Compress"
     r=subprocess.run(['powershell','-NoProfile','-Command',command],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,timeout=30)
