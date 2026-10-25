@@ -30,6 +30,8 @@ Recorded execution-admission error: the one 84,346,374-byte native restore test 
 
 The subsequent explicit user authorization in `ACTIVE_SCIENCE_IO_GATE_USER_AUTHORIZATION.json` changes only the active-science avg10 I/O check to monitor-only. It does not retroactively authorize the earlier restore-test admission error. Sustained severe host-I/O protection, SSD/RAM reservations, locks, rate/staging limits and scientific identity checks remain unchanged. `io_policy_transition/` retains directed qualification, the exact old/new supervisor identities and proof that the original deadline and cumulative counters were preserved during the single policy reload; the Publisher was not restarted.
 
+Published restore-entry dependency audit: 34/34 scopes passed shell syntax, standalone module loading, co-located resource-module checks and pinned existing-controller V9 dependency loading. `RESTORE_IMPORT_DEPENDENCY_AUDIT.json` retains exact helper/resource hashes and external controller paths. This is not a native payload-restoration test, independent-host portability proof or an override of frozen helper resource checks.
+
 No current classified terminal HOLD has been established in this snapshot. Remaining pending work is not counted as successful completion.
 
 This is an in-progress report. Execution and bounded supervision continue; no user decision is currently requested by this draft.

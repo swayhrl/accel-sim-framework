@@ -46,6 +46,9 @@ def main():
     io_policy_path=OUT/'ACTIVE_SCIENCE_IO_GATE_USER_AUTHORIZATION.json'
     io_policy=load(io_policy_path) if io_policy_path.exists() else None
     proof['active_science_IO_gate_user_authorization']=io_policy
+    dependency_path=OUT/'RESTORE_IMPORT_DEPENDENCY_AUDIT.json'
+    dependencies=load(dependency_path) if dependency_path.exists() else None
+    proof['restore_entry_dependency_audit']=({k:dependencies[k] for k in ['unix','scopes','PASS','scope_limit','true164_receipt']} if dependencies else None)
     dump('REQUIREMENT_CLOSURE_AUDIT.json',proof)
     when=datetime.datetime.fromtimestamp(x['unix'],datetime.timezone(datetime.timedelta(hours=8))).isoformat()
     lines=[f'# Lane T2 archive report — {status}',f'\nEvidence snapshot: {when}. Original queue SHA256 `{x["frozen_sha256"]}`.',
@@ -64,6 +67,8 @@ def main():
         lines.append('\nRecorded execution-admission error: the one 84,346,374-byte native restore test used a base-only SSD check instead of all declared reservations and the active-science gate. It passed SHA/metadata verification and its 84,353,024 allocated bytes were removed, without counting them as original-copy reclaim. `reclaim_174new/RESTORE_TEST_ADMISSION_DEVIATION.json` preserves the executed version and correction. Future test allocations now require the original full admission plus complete test-file capacity; directed checks include reservation shortfall and active-science I/O rejection. Content/receipt closure PASS does not erase this admission deviation.')
     if io_policy:
         lines.append('\nThe subsequent explicit user authorization in `ACTIVE_SCIENCE_IO_GATE_USER_AUTHORIZATION.json` changes only the active-science avg10 I/O check to monitor-only. It does not retroactively authorize the earlier restore-test admission error. Sustained severe host-I/O protection, SSD/RAM reservations, locks, rate/staging limits and scientific identity checks remain unchanged. `io_policy_transition/` retains directed qualification, the exact old/new supervisor identities and proof that the original deadline and cumulative counters were preserved during the single policy reload; the Publisher was not restarted.')
+    if dependencies:
+        lines.append(f'\nPublished restore-entry dependency audit: {dependencies["PASS"]}/{dependencies["scopes"]} scopes passed shell syntax, standalone module loading, co-located resource-module checks and pinned existing-controller V9 dependency loading. `RESTORE_IMPORT_DEPENDENCY_AUDIT.json` retains exact helper/resource hashes and external controller paths. This is not a native payload-restoration test, independent-host portability proof or an override of frozen helper resource checks.')
     if holds:
         lines.append('\nCurrent explicit HOLDs:')
         lines.extend(f'- `{r["asset_id"]}`: {categories.get(r["asset_id"],{}).get("category","UNCLASSIFIED")} — {r["reason"]}' for r in holds)
