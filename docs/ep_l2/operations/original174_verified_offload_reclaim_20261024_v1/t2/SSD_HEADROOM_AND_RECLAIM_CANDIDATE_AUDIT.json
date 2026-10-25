@@ -1,0 +1,29 @@
+{
+  "schema": "LANE_T2_SSD_HEADROOM_AND_RECLAIM_CANDIDATE_AUDIT_V1",
+  "observed_unix": 1792906933.484414,
+  "completed_at_observation": 44,
+  "SSD_available_bytes": 23478697984,
+  "SSD_required_bytes": 23420993536,
+  "SSD_contract_headroom_bytes": 57704448,
+  "copy_admission_passed": true,
+  "committed_frozen_assets_with_174new_source": 0,
+  "committed_frozen_174new_existing_logical_bytes": 0,
+  "committed_frozen_174new_existing_allocated_bytes": 0,
+  "new_retirement_candidates_admitted": 0,
+  "new_unlinks_performed": 0,
+  "reason_no_new_retirement": "No completed frozen115 asset currently has source_alias hrl-174-new. The active DTC project is a foreign writer/lock owner and remains protected. No unrelated or unverified files were considered eligible.",
+  "previous_174new_retirement": {
+    "files": 2341,
+    "allocated_bytes_unlinked": 1838903296,
+    "replayed": false
+  },
+  "protected": [
+    "active scientific inputs and results",
+    "C16 models",
+    "Git objects",
+    "controllers and registries",
+    "runtime binaries and shared libraries",
+    "unknown or unrelated files"
+  ],
+  "next_behavior": "Keep original admission threshold. If free space drops below it, retain verified ranges and let the original Supervisor wait; do not lower the threshold or delete unqualified data."
+}
