@@ -14,10 +14,12 @@
 #include <cstdio>
 #include <cstring>
 #include <string>
+#include <stdexcept>
 #include <thread>
 #include <vector>
 
 #include "trace_parser.h"
+#include "../ag7_policyb_progress.h"
 #include "tracez_format.h"
 
 using tracez::tb_index_t;
@@ -27,6 +29,7 @@ using tracez::warp_index_t;
 static inline void pread_exact(int fd, void *buf, size_t count, off_t offset) {
   size_t total = 0;
   while (total < count) {
+    dtc_ag7::cooperative_heartbeat();
     ssize_t n = pread(fd, (char *)buf + total, count - total, offset + total);
     if (n <= 0) {
       fprintf(stderr,
@@ -63,6 +66,7 @@ class TracezReader {
     std::string header;
     int ch;
     while ((ch = fgetc(fp)) != EOF && ch != '\0') {
+      dtc_ag7::cooperative_heartbeat();
       header += (char)ch;
     }
 
@@ -89,6 +93,7 @@ class TracezReader {
     fread(&num_tbs, sizeof(num_tbs), 1, fp);
     tb_index_.resize(num_tbs);
     for (uint32_t i = 0; i < num_tbs; ++i) {
+      dtc_ag7::cooperative_heartbeat();
       auto &tb = tb_index_[i];
       fread(&tb.tb_id_x, sizeof(uint32_t), 1, fp);
       fread(&tb.tb_id_y, sizeof(uint32_t), 1, fp);
@@ -103,11 +108,13 @@ class TracezReader {
       fread(&tb.warp_count, sizeof(uint32_t), 1, fp);
       tb.warps.resize(tb.warp_count);
       for (uint32_t j = 0; j < tb.warp_count; ++j) {
+      dtc_ag7::cooperative_heartbeat();
         fread(&tb.warps[j].inst_count, sizeof(uint32_t), 1, fp);
         fread(&tb.warps[j].num_subchunks, sizeof(uint32_t), 1, fp);
         fread(&tb.warps[j].file_offset, sizeof(uint64_t), 1, fp);
         tb.warps[j].subchunk_inst_counts.resize(tb.warps[j].num_subchunks);
         for (uint32_t k = 0; k < tb.warps[j].num_subchunks; ++k) {
+      dtc_ag7::cooperative_heartbeat();
           fread(&tb.warps[j].subchunk_inst_counts[k], sizeof(uint32_t), 1, fp);
         }
       }
@@ -182,6 +189,7 @@ class WarpTraceStream {
     sc_cumulative_.resize(num_sc + 1);
     sc_cumulative_[0] = 0;
     for (uint32_t i = 0; i < num_sc; i++) {
+      dtc_ag7::cooperative_heartbeat();
       sc_cumulative_[i + 1] =
           sc_cumulative_[i] + w_idx_.subchunk_inst_counts[i];
     }
@@ -196,6 +204,7 @@ class WarpTraceStream {
 
     subchunk_offsets_.resize(num_subchunks_file);
     for (uint32_t sc = 0; sc < num_subchunks_file; ++sc) {
+      dtc_ag7::cooperative_heartbeat();
       subchunk_offsets_[sc] = pos;
       uint32_t comp_size;
       pread_exact(fd_, &comp_size, sizeof(comp_size), pos);
@@ -271,6 +280,7 @@ class WarpTraceStream {
     std::vector<char> comp_buf(comp_size);
     pread_exact(fd_, comp_buf.data(), comp_size, pos);
 
+    dtc_ag7::cooperative_heartbeat_now();
     // Decompress
     unsigned long long decomp_size =
         ZSTD_getFrameContentSize(comp_buf.data(), comp_size);
@@ -298,12 +308,14 @@ class WarpTraceStream {
       abort();
     }
 
+    dtc_ag7::cooperative_heartbeat_now();
     // Split into lines
     decomp_buf[actual_size] = '\0';
     std::vector<std::string> lines;
     char *p = decomp_buf.data();
     char *end = p + actual_size;
     while (p < end) {
+      dtc_ag7::cooperative_heartbeat();
       char *nl = (char *)memchr(p, '\n', end - p);
       if (nl) {
         lines.emplace_back(p, nl - p);
@@ -318,6 +330,7 @@ class WarpTraceStream {
     buf.insts.clear();
     buf.insts.resize(lines.size());
     for (unsigned i = 0; i < lines.size(); ++i) {
+      dtc_ag7::cooperative_heartbeat();
       buf.insts[i].parse_from_string(lines[i], trace_version_, enable_lineinfo_,
                                      block_id_, cluster_cta_id_, cluster_id_,
                                      cluster_rank_);

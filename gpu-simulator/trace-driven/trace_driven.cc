@@ -57,6 +57,7 @@
 #include "gpgpusim_entrypoint.h"
 #include "option_parser.h"
 #include "trace_driven.h"
+#include "../ag7_policyb_progress.h"
 
 bool trace_shd_warp_t::handle_replay_region_exit() {
   if (!get_trywait_acquired()) {
@@ -1065,6 +1066,7 @@ void trace_shader_core_ctx::updateSIMTStack(unsigned warpId,
 
 void trace_shader_core_ctx::init_traces(unsigned start_warp, unsigned end_warp,
                                         kernel_info_t &kernel) {
+  dtc_ag7::cooperative_heartbeat_now();
   trace_kernel_info_t &trace_kernel =
       static_cast<trace_kernel_info_t &>(kernel);
   kernel_trace_t *kt = trace_kernel.get_trace_info();
@@ -1111,6 +1113,8 @@ void trace_shader_core_ctx::init_traces(unsigned start_warp, unsigned end_warp,
     }
     trace_kernel.get_next_threadblock_traces(threadblock_traces);
   }
+
+  dtc_ag7::cooperative_heartbeat_now();
 
   // set the pc from the traces and ignore the functional model
   for (unsigned i = start_warp; i < end_warp; ++i) {

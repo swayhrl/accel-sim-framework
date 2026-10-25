@@ -56,6 +56,14 @@ class ProgressProducer {
 
   bool enabled() const { return enabled_; }
 
+  // Called only by the owning simulation thread at real parser/CTA work
+  // boundaries. Reuse the last coherent retirement observation; parsing is
+  // producer liveness, never an instruction retirement or a terminal claim.
+  void heartbeat() {
+    if (enabled_ && emitted_ && !terminal_emitted_)
+      observe(phase_, last_completed_, true, false);
+  }
+
   // epoch=0 is the whole-input cumulative instruction epoch. phase_epoch only
   // identifies phase transitions; it NEVER resets a receiver's finite deadline.
   // stream_id=-1 means whole-input/multiple-or-no-active-stream, not stream zero.
@@ -116,6 +124,7 @@ class ProgressProducer {
     ++sequence_;
     emitted_ = true;
     last_emitted_ns_ = now;
+    if (std::strcmp(terminal, "NONE") != 0) terminal_emitted_ = true;
   }
 
  private:
@@ -172,6 +181,7 @@ class ProgressProducer {
   }
   bool enabled_ = false;
   bool emitted_ = false;
+  bool terminal_emitted_ = false;
   int fd_ = -1;
   pid_t pid_ = 0;
   uint64_t start_ticks_ = 0, sequence_ = 0;
@@ -179,5 +189,39 @@ class ProgressProducer {
   uint64_t phase_epoch_ = 0;
   char input_[65]{}, roi_[65]{}, generation_[65]{}, phase_[32]{};
 };
+// One slot across translation units, isolated per thread. Background tracez
+// prefetch workers deliberately have no observer and cannot fabricate liveness
+// while the simulation thread is blocked or deadlocked.
+inline ProgressProducer *&progress_slot() {
+  static thread_local ProgressProducer *producer = nullptr;
+  return producer;
+}
+
+class ScopedProgressProducer {
+ public:
+  explicit ScopedProgressProducer(ProgressProducer &producer)
+      : previous_(progress_slot()) {
+    progress_slot() = producer.enabled() ? &producer : nullptr;
+  }
+  ~ScopedProgressProducer() { progress_slot() = previous_; }
+  ScopedProgressProducer(const ScopedProgressProducer &) = delete;
+  ScopedProgressProducer &operator=(const ScopedProgressProducer &) = delete;
+
+ private:
+  ProgressProducer *previous_;
+};
+
+inline void cooperative_heartbeat_now() {
+  if (auto *producer = progress_slot()) producer->heartbeat();
+}
+
+// Bound clock work on hot text/decode loops. At most one clock check per 1024
+// work units, with actual packets still throttled by the original 10s cadence.
+inline void cooperative_heartbeat() {
+  auto *producer = progress_slot();
+  if (!producer || !producer->enabled()) return;
+  static thread_local unsigned work_units = 0;
+  if ((++work_units & 1023U) == 0) producer->heartbeat();
+}
 }  // namespace dtc_ag7
 #endif

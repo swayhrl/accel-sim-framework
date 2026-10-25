@@ -8,6 +8,7 @@ dtc_ag7::ProgressProducer ag7_progress;
 
 accel_sim_framework::accel_sim_framework(std::string config_file,
                                           std::string trace_file) {
+  dtc_ag7::ScopedProgressProducer progress_scope(ag7_progress);
   std::cout << "Accel-Sim [build " << g_accelsim_version << "]";
   m_gpgpu_context = new gpgpu_context();
 
@@ -32,6 +33,7 @@ accel_sim_framework::accel_sim_framework(std::string config_file,
 }
 
 accel_sim_framework::accel_sim_framework(int argc, const char **argv) {
+  dtc_ag7::ScopedProgressProducer progress_scope(ag7_progress);
   std::cout << "Accel-Sim [build " << g_accelsim_version << "]";
   m_gpgpu_context = new gpgpu_context();
 
@@ -51,6 +53,7 @@ accel_sim_framework::accel_sim_framework(int argc, const char **argv) {
 }
 
 void accel_sim_framework::simulation_loop() {
+  dtc_ag7::ScopedProgressProducer progress_scope(ag7_progress);
   // for each kernel
   // load file
   // parse and create kernel info

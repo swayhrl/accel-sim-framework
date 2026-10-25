@@ -1,3 +1,4 @@
+#include "../ag7_policyb_progress.h"
 // developed by Mahmoud Khairy, Purdue Univ
 // abdallm@purdue.edu
 
@@ -155,6 +156,7 @@ bool inst_trace_t::parse_from_string(std::string trace, unsigned trace_version,
                                      dim3 header_cluster_cta_id,
                                      dim3 header_cluster_id,
                                      unsigned header_cluster_rank) {
+  dtc_ag7::cooperative_heartbeat();
   std::stringstream ss;
   ss.str(trace);
 
@@ -250,6 +252,7 @@ bool inst_trace_t::parse_from_string(std::string trace, unsigned trace_version,
     if (address_mode == address_format::tma_list_all) {
       ss >> std::dec >> transfer_count;
       for (int s = 0; s < transfer_count; s++) {
+        dtc_ag7::cooperative_heartbeat();
         uint64_t addr = 0;
         ss >> std::hex >> addr;
         tma_memadd_info->addrs.push_back(addr);
@@ -262,6 +265,7 @@ bool inst_trace_t::parse_from_string(std::string trace, unsigned trace_version,
       // If there are actual accesses, need to parse the deltas
       if (transfer_count > 0) {
         for (int s = 1; s < transfer_count; s++) {
+        dtc_ag7::cooperative_heartbeat();
           long long delta = 0;
           ss >> std::dec >> delta;
           deltas.push_back(delta);
@@ -560,6 +564,7 @@ void trace_parser::get_next_threadblock_traces(
   unsigned inst_count = 0;
   std::string line;
   while (pipeReader.readLine(line)) {
+    dtc_ag7::cooperative_heartbeat();
     std::stringstream ss;
     std::string string1, string2;
 
@@ -640,6 +645,7 @@ void PipeReader::OpenFile(const std::string &filePath) {
 }
 
 bool PipeReader::readLine(std::string &line) {
+  dtc_ag7::cooperative_heartbeat();
   char *buffer = nullptr;
   size_t len = 0;
   ssize_t nread;
