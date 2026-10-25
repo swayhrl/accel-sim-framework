@@ -28,7 +28,7 @@ except Exception as e:gate=dict(status='HOLD',reason=str(e))
 sup=json.loads((T/'control/CONTINUATION_SUPERVISOR.json').read_bytes());proc=P('/proc',str(sup['pid']));live_sup=False
 try:live_sup=int((proc/'stat').read_text().rsplit(')',1)[1].split()[19])==sup['start_ticks'] and str(T/'tools/continuation_supervisor.py').encode() in (proc/'cmdline').read_bytes().split(b'\0')
 except OSError:pass
-print(json.dumps(dict(schema='LANE_T2_RESOURCE_WAIT_PROOF_V1',unix=time.time(),SSD_available_bytes=free,SSD_required_bytes=required,SSD_deficit_bytes=max(0,required-free),native_registered_reserved_bytes=reserved,request_summaries=requests,registry_sha256=hashlib.sha256(raw).hexdigest(),metadata_only_gate=gate,IO_pressure=rr.pressure(),supervisor=sup,supervisor_identity_verified_live=live_sup,held_global_locks=rr.old_lock_holders(),state=json.loads((T/'control/STATE.json').read_bytes()),resource_contract_modified=False,science_processes_stopped=False,Source_files_unlinked=0)))
+print(json.dumps(dict(schema='LANE_T2_RESOURCE_WAIT_PROOF_V1',unix=time.time(),SSD_available_bytes=free,SSD_required_bytes=required,SSD_deficit_bytes=max(0,required-free),native_registered_reserved_bytes=reserved,request_summaries=requests,registry_sha256=hashlib.sha256(raw).hexdigest(),metadata_only_gate=gate,IO_pressure=rr.pressure(),supervisor=sup,supervisor_identity_verified_live=live_sup,held_global_locks=rr.old_lock_holders(),state=json.loads((T/'control/STATE.json').read_bytes()),resource_contract_modified=rr.active_science_io_authorization() is not None,user_authorized_IO_policy=rr.active_science_io_authorization(),science_processes_stopped=False,Source_files_unlinked=0)))
 '''
 
 if __name__=='__main__':
