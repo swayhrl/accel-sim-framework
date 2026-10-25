@@ -1,0 +1,323 @@
+{
+  "schema": "R16_INDEPENDENT_ACTUAL_MAIN_CPU_RESULT_V1",
+  "status": "PASS",
+  "utc": "2026-10-25T17:55:48.218854+00:00",
+  "controller_sha256": "32ebd671924d4e23eda7960c5957708e5a71f225ceb0887edcbe3249f25f65d3",
+  "driver_sha256": "0a3e3363e7ab91385949ecc566f9c8d61680366420ead6e7fa1ff7b7f7e259d4",
+  "checks": [
+    "actual main original40 lava2 late4 with 16 adopted original and five untouched old23 models",
+    "registers only exact new2+new4 budgets once",
+    "barrier exact original HOLD restoration; qremaining/consumed unchanged",
+    "entry exactly replaces R1 router with combined late router; fallback unchanged",
+    "lease includes old23 lava2 late4",
+    "late4 dispatch may proceed while large RAM waiting; original waits until large active",
+    "resource recovery prioritizes large before original",
+    "single large active allows original fill",
+    "zero-start engineering blocked large does not starve original",
+    "claims and slots caps40+2+4; CPUs disjoint old23",
+    "unknown postINTENT identity retains claim until subsequent independent receipt",
+    "finite closures require all DONE and valid archived terminal results",
+    "archived failure not all-PASS; engineering spent not closed",
+    "oldplan SHA and CPU collisions rejected before worker",
+    "barrier drift/spent/wrong alias rejected before registration",
+    "benign concurrent original receipt preserved",
+    "preINTENT prior result preserved with exact SHA before unused launch",
+    "direct real guardian never infers death from missing identity",
+    "live identity requires exact PID generation; absent PID does not match",
+    "admit helper respects sealed consumed claim cooldown blocked and stable order",
+    "safe call engineering failure never grants automatic retry",
+    "actual main one-shot rejects before second registration worker or entry edit",
+    "new pool collision with out-of-plan old actual claim rejects before worker"
+  ],
+  "check_count": 23,
+  "main_mock_scenarios": [
+    {
+      "scenario": "caps",
+      "status": "PASS",
+      "max_claims": {
+        "DTC_AE_V100_FULL_SWEEP_20261025_V1": 40,
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2": 2,
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1": 4
+      },
+      "actual_fake_workers": 76,
+      "registrations": 1,
+      "closures": [
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2",
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1"
+      ],
+      "old23_q_and_files_unchanged": true,
+      "real_model_starts": 0
+    },
+    {
+      "scenario": "resources",
+      "status": "PASS",
+      "max_claims": {
+        "DTC_AE_V100_FULL_SWEEP_20261025_V1": 0,
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2": 0,
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1": 4
+      },
+      "actual_fake_workers": 4,
+      "registrations": 1,
+      "closures": [
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1"
+      ],
+      "old23_q_and_files_unchanged": true,
+      "real_model_starts": 0
+    },
+    {
+      "scenario": "priority",
+      "status": "PASS",
+      "max_claims": {
+        "DTC_AE_V100_FULL_SWEEP_20261025_V1": 1,
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2": 2,
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1": 4
+      },
+      "actual_fake_workers": 7,
+      "registrations": 1,
+      "closures": [
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1",
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2"
+      ],
+      "old23_q_and_files_unchanged": true,
+      "real_model_starts": 0
+    },
+    {
+      "scenario": "one_lava",
+      "status": "PASS",
+      "max_claims": {
+        "DTC_AE_V100_FULL_SWEEP_20261025_V1": 1,
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2": 1,
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1": 4
+      },
+      "actual_fake_workers": 7,
+      "registrations": 1,
+      "closures": [
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1",
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2"
+      ],
+      "old23_q_and_files_unchanged": true,
+      "real_model_starts": 0
+    },
+    {
+      "scenario": "blocked_new",
+      "status": "PASS",
+      "max_claims": {
+        "DTC_AE_V100_FULL_SWEEP_20261025_V1": 1,
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2": 2,
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1": 4
+      },
+      "actual_fake_workers": 7,
+      "registrations": 1,
+      "closures": [
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1"
+      ],
+      "old23_q_and_files_unchanged": true,
+      "real_model_starts": 0
+    },
+    {
+      "scenario": "blocked_original",
+      "status": "PASS",
+      "max_claims": {
+        "DTC_AE_V100_FULL_SWEEP_20261025_V1": 1,
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2": 2,
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1": 4
+      },
+      "actual_fake_workers": 7,
+      "registrations": 1,
+      "closures": [
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2",
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1"
+      ],
+      "old23_q_and_files_unchanged": true,
+      "real_model_starts": 0
+    },
+    {
+      "scenario": "guardian",
+      "status": "PASS",
+      "max_claims": {
+        "DTC_AE_V100_FULL_SWEEP_20261025_V1": 1,
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2": 2,
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1": 4
+      },
+      "actual_fake_workers": 7,
+      "registrations": 1,
+      "closures": [
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2",
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1"
+      ],
+      "old23_q_and_files_unchanged": true,
+      "real_model_starts": 0
+    },
+    {
+      "scenario": "archived_failure",
+      "status": "PASS",
+      "max_claims": {
+        "DTC_AE_V100_FULL_SWEEP_20261025_V1": 1,
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2": 2,
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1": 4
+      },
+      "actual_fake_workers": 7,
+      "registrations": 1,
+      "closures": [
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2",
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1"
+      ],
+      "old23_q_and_files_unchanged": true,
+      "real_model_starts": 0
+    },
+    {
+      "scenario": "engineering_spent",
+      "status": "PASS",
+      "max_claims": {
+        "DTC_AE_V100_FULL_SWEEP_20261025_V1": 1,
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2": 2,
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1": 4
+      },
+      "actual_fake_workers": 7,
+      "registrations": 1,
+      "closures": [
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2"
+      ],
+      "old23_q_and_files_unchanged": true,
+      "real_model_starts": 0
+    },
+    {
+      "scenario": "collision_old",
+      "status": "PASS",
+      "max_claims": {
+        "DTC_AE_V100_FULL_SWEEP_20261025_V1": 0,
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2": 0,
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1": 0
+      },
+      "actual_fake_workers": 0,
+      "registrations": 1,
+      "closures": [],
+      "old23_q_and_files_unchanged": true,
+      "real_model_starts": 0
+    },
+    {
+      "scenario": "collision_old_claim",
+      "status": "PASS",
+      "max_claims": {
+        "DTC_AE_V100_FULL_SWEEP_20261025_V1": 0,
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2": 0,
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1": 0
+      },
+      "actual_fake_workers": 0,
+      "registrations": 1,
+      "closures": [],
+      "old23_q_and_files_unchanged": true,
+      "real_model_starts": 0
+    },
+    {
+      "scenario": "collision_new",
+      "status": "PASS",
+      "max_claims": {
+        "DTC_AE_V100_FULL_SWEEP_20261025_V1": 0,
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2": 0,
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1": 0
+      },
+      "actual_fake_workers": 0,
+      "registrations": 1,
+      "closures": [],
+      "old23_q_and_files_unchanged": true,
+      "real_model_starts": 0
+    },
+    {
+      "scenario": "oldplan_sha",
+      "status": "PASS",
+      "max_claims": {
+        "DTC_AE_V100_FULL_SWEEP_20261025_V1": 0,
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2": 0,
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1": 0
+      },
+      "actual_fake_workers": 0,
+      "registrations": 1,
+      "closures": [],
+      "old23_q_and_files_unchanged": true,
+      "real_model_starts": 0
+    },
+    {
+      "scenario": "barrier_drift",
+      "status": "PASS",
+      "max_claims": {
+        "DTC_AE_V100_FULL_SWEEP_20261025_V1": 0,
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2": 0,
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1": 0
+      },
+      "actual_fake_workers": 0,
+      "registrations": 0,
+      "closures": [],
+      "old23_q_and_files_unchanged": true,
+      "real_model_starts": 0
+    },
+    {
+      "scenario": "barrier_spent",
+      "status": "PASS",
+      "max_claims": {
+        "DTC_AE_V100_FULL_SWEEP_20261025_V1": 0,
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2": 0,
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1": 0
+      },
+      "actual_fake_workers": 0,
+      "registrations": 0,
+      "closures": [],
+      "old23_q_and_files_unchanged": true,
+      "real_model_starts": 0
+    },
+    {
+      "scenario": "wrong_alias",
+      "status": "PASS",
+      "max_claims": {
+        "DTC_AE_V100_FULL_SWEEP_20261025_V1": 0,
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2": 0,
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1": 0
+      },
+      "actual_fake_workers": 0,
+      "registrations": 0,
+      "closures": [],
+      "old23_q_and_files_unchanged": true,
+      "real_model_starts": 0
+    },
+    {
+      "scenario": "benign_receipt",
+      "status": "PASS",
+      "max_claims": {
+        "DTC_AE_V100_FULL_SWEEP_20261025_V1": 2,
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2": 2,
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1": 4
+      },
+      "actual_fake_workers": 7,
+      "registrations": 1,
+      "closures": [
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2",
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1"
+      ],
+      "old23_q_and_files_unchanged": true,
+      "real_model_starts": 0
+    },
+    {
+      "scenario": "preexisting_zero_start",
+      "status": "PASS",
+      "max_claims": {
+        "DTC_AE_V100_FULL_SWEEP_20261025_V1": 1,
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2": 2,
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1": 4
+      },
+      "actual_fake_workers": 7,
+      "registrations": 1,
+      "closures": [
+        "DTC_AE_LAVAMEM_REPAIR_20261026_V2",
+        "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1"
+      ],
+      "old23_q_and_files_unchanged": true,
+      "real_model_starts": 0
+    }
+  ],
+  "scientific_simulator_starts": 0,
+  "real_authority_writes": 0,
+  "real_entry_changes": 0,
+  "real_signals": 0,
+  "scope": "Real main against isolated metadata trees; mocked authority/resources/workers. Capacity-collision checks occur after registration but before workers, matching source order; negative fixture registration is not production authorization.",
+  "closure_contract_limit": "New2/new4 closure relies on pinned ops returning scoped PASS or FAIL_ARCHIVED states; arbitrary foreign positive states are not claimed rejected."
+}

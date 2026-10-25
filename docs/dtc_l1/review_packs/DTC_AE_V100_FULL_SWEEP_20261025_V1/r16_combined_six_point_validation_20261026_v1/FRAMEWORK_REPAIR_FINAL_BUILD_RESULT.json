@@ -1,0 +1,167 @@
+{
+  "status": "FRAMEWORK_REPAIR_FINAL_BUILD_PASS_NOT_YET_SCIENCE_VALIDATED",
+  "framework_worktree": "/root/data/dtc_failure_repair_20261025_v1/framework",
+  "framework_base": "3b362ab5c0934fdcea9697b10244c6de5c4a14ae",
+  "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+  "framework_branch": "hrl/dtc-failure-repair-20261025-v1",
+  "framework_binary": {
+    "path": "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+    "actual_realpath": "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+    "sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d",
+    "bytes": 309880
+  },
+  "version_string": "accelsim-repair-commit-02775fd795cde5aae1480d81cee6eb481d0a08f4",
+  "source_tree_clean": true,
+  "Core_worktree": "/root/data/dtc_failure_repair_20261025_v1/core",
+  "Core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+  "Core_library": {
+    "path": "/root/data/dtc_failure_repair_20261025_v1/core-build/libcudart.so",
+    "actual_realpath": "/root/data/dtc_failure_repair_20261025_v1/core-build/libcudart.so",
+    "sha256": "694f05ce97fe3e1552d94803c2202d8d037769c61624cde5f6a832622ed60c56",
+    "bytes": 4999968
+  },
+  "Core_build_profile": {
+    "path": "/root/data/dtc_failure_repair_20261025_v1/control/CORE_BUILD_PROFILE.json",
+    "sha256": "4547cb4f9362c9c33f2e87502920284c4ecb61208f9ced4d6fd65169497a8029"
+  },
+  "framework_source_and_CPU_receipt": {
+    "path": "/root/data/dtc_failure_repair_20261025_v1/FRAMEWORK_SOURCE_AND_CPU_RECEIPT.json",
+    "sha256": "7060deb54f30e695ab36131a7284abceb9902a8aef683505e934dc6d26d1169f"
+  },
+  "compile_receipt": {
+    "path": "/root/data/dtc_failure_repair_20261025_v1/FRAMEWORK_COMPILE_RESULT.json",
+    "sha256": "fdb250384a4ac55386d0892df38f7e8b35b8c7a28b034702d9d03e16a6639dec"
+  },
+  "link_command": [
+    "/usr/bin/g++",
+    "-O3",
+    "-std=c++17",
+    "-o",
+    "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+    "/root/data/dtc_failure_repair_20261025_v1/framework-build/trace_driven.o",
+    "/root/data/dtc_failure_repair_20261025_v1/framework-build/trace_parser.o",
+    "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.o",
+    "/root/data/dtc_failure_repair_20261025_v1/framework-build/main.o",
+    "-L/root/data/dtc_failure_repair_20261025_v1/core-build",
+    "-lcudart",
+    "-lm",
+    "-lz",
+    "-lGL",
+    "-lzstd",
+    "-pthread"
+  ],
+  "link_log": {
+    "path": "/root/data/dtc_failure_repair_20261025_v1/framework-build-logs/link-final.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "elapsed_seconds": 0.12878787890076637
+  },
+  "source_bundle": {
+    "path": "/root/data/dtc_failure_repair_20261025_v1/framework-repair-source.bundle",
+    "sha256": "dbe63df3fc68fe5fe7cccfab4674eebfd89a59db239017d52cb76fd26d08f71e"
+  },
+  "CPU_tests": [
+    {
+      "name": "more_than_8192_exact_authenticated_records",
+      "PASS": true,
+      "details": {
+        "records": 8196
+      }
+    },
+    {
+      "name": "text_xz_tracez_and_all_memory_address_decoders_off_on_identical",
+      "PASS": true,
+      "details": {
+        "checksum": 40980,
+        "records": 3,
+        "background_thread_isolated": true,
+        "no_late_packets_after_terminal": true,
+        "scope_restored": true
+      }
+    },
+    {
+      "name": "exception_unwind_scope_and_error_terminal_no_fake_natural",
+      "PASS": true,
+      "details": {
+        "records": 2
+      }
+    },
+    {
+      "name": "broken_socket_disables_producer_without_reconnect",
+      "PASS": true,
+      "details": {
+        "enabled": 0,
+        "checksum": 0,
+        "iterations": 0
+      }
+    },
+    {
+      "name": "real_33_second_parser_window_fresh_without_retirement",
+      "PASS": true,
+      "details": {
+        "records": 6,
+        "max_gap_seconds": 10.001044878,
+        "all_completed": 17,
+        "decoded_iterations": 28549188
+      }
+    },
+    {
+      "name": "freshness_30s_still_STOP_and_failure_latches",
+      "PASS": true,
+      "details": {
+        "reason": "MISSING_OR_STALE_PRODUCER"
+      }
+    },
+    {
+      "name": "same_value_fresh_packets_cannot_renew_600s_retirement_cap",
+      "PASS": true,
+      "details": {
+        "decision": "STOP",
+        "stop_reasons": [
+          "NO_SEMANTIC_RETIREMENT_600S"
+        ],
+        "warnings": [],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    }
+  ],
+  "assertions_enabled": true,
+  "NDEBUG_defined": false,
+  "producer_protocol_changed": false,
+  "new_configuration_options": false,
+  "same_DTC_AG7_environment_protocol": true,
+  "record_cap": 1048576,
+  "freshness_seconds": 30,
+  "no_semantic_retirement_seconds": 600,
+  "completed_counter_fabricated_or_incremented_by_heartbeat": false,
+  "old_active_runtime_source_SHA_unchanged": {
+    "/root/data/dtc_main_v100_sweep_20261025_v1/telemetry_v2/framework-build/accel-sim.out": "b963139b72ea1fe5000c35803386f3a5b5eaf4905e127f1bdb12f16e13486329",
+    "/root/data/dtc_main_20261023_v1/ae_fair_v1/core-build/libcudart.so": "59a35a6f8a9e3534c037e0b55f368f0d601744112b5d3bccbd5b53ae3de05537",
+    "/root/data/dtc_main_v100_sweep_20261025_v1/telemetry_v2/framework/gpu-simulator/ag7_policyb_progress.h": "1ac79290097868939720ea167404102981b2c08209b87176ee535b793874dea2"
+  },
+  "compiled_simulator_executed": false,
+  "scientific_starts": 0,
+  "observed_utc": "2026-10-25T15:18:33.523879+00:00",
+  "limitation": "Single blocking syscall/allocation/decompression/prefetch join >30s still fails closed; actual failed-input replays belong to separate new repair generations."
+}

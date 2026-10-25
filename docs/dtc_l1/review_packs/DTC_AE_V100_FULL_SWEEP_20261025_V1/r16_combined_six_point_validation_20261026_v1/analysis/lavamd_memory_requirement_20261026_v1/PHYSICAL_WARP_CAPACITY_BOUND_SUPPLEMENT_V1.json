@@ -1,0 +1,768 @@
+{
+  "schema": "LAVAMD_PHYSICAL_WARP_CAPACITY_BOUND_SUPPLEMENT_V1",
+  "observed_utc": "2026-10-25T17:12:53.743611+00:00",
+  "Core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+  "Framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+  "fixed_input_facts": {
+    "kernels": 1,
+    "CTA_threads": 128,
+    "warp_size": 32,
+    "warps_per_CTA": 4,
+    "nregs": 56,
+    "SMs": 64,
+    "concurrent_kernel_SM": 0,
+    "raw_observed_CTA_per_core": 9
+  },
+  "proof": [
+    "shader_core_config::max_cta computes result_regs=floor(65536/(128*((56+3)&~3)))=9, and returns the minimum with all other limits. Therefore kernel_max_cta_per_shader never exceeds9 for this fixed kernel.",
+    "With concurrent_kernel_sm=0, issue_block2core sets max_cta_per_core=kernel_max_cta_per_shader, then chooses free_cta_hw_id only in the loop i=0..max_cta_per_core-1. Every possible CTA slot is thus0..8, on every admission including reuse.",
+    "The same branch maps start_thread=free_cta_hw_id*padded_cta_size (128), end_thread=start_thread+128. Reinit and init_warps receive those exact bounds.",
+    "trace_shader_core_ctx::init_warps derives start_warp=start_thread/32 and end_warp=end_thread/32, then calls init_traces(start_warp,end_warp,kernel). Hence text trace loads touch only warps4*slot..4*slot+3, collectively0..35, never36..63.",
+    "init_traces writes warp_traces only through m_warp[i] with i in that passed range. clear() destroys objects but retaining vector capacity cannot create a new physical warp index. Repeated CTA slot reuse preserves the0..35 invariant by induction.",
+    "The audited full input has exactly one kernel. No preceding different kernel can populate slots36..63 in this simulator process; other simulator processes have separate address spaces and do not share these vectors."
+  ],
+  "conclusion": {
+    "ever_populated_text_trace_vectors_per_SM_bound": 36,
+    "ever_populated_vectors_all64SM_bound": 2304,
+    "simultaneous_CTA_bound": 576,
+    "all_physical_warps_4096_is_not_needed_for_this_single_kernel": true,
+    "known_actual_active_CTA_at_abort": "NOT_CAPTURED; source indexing proof does not claim header173 equals exact active count."
+  },
+  "evidence": [
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/shader.cc",
+      "sha256": "e67a486ef18abf2b8515bc5bb887812c058d29fe9fed8544320cc008e3b4ca11",
+      "first_line": 6571,
+      "lines": [
+        {
+          "line": 6571,
+          "text": "unsigned int shader_core_config::max_cta(const kernel_info_t &k) const {"
+        },
+        {
+          "line": 6572,
+          "text": "  unsigned threads_per_cta = k.threads_per_cta();"
+        },
+        {
+          "line": 6573,
+          "text": "  const class function_info *kernel = k.entry();"
+        },
+        {
+          "line": 6574,
+          "text": "  unsigned int padded_cta_size = threads_per_cta;"
+        },
+        {
+          "line": 6575,
+          "text": "  if (padded_cta_size % warp_size)"
+        },
+        {
+          "line": 6576,
+          "text": "    padded_cta_size = ((padded_cta_size / warp_size) + 1) * (warp_size);"
+        },
+        {
+          "line": 6577,
+          "text": ""
+        },
+        {
+          "line": 6578,
+          "text": "  // Limit by n_threads/shader"
+        },
+        {
+          "line": 6579,
+          "text": "  unsigned int result_thread = n_thread_per_shader / padded_cta_size;"
+        },
+        {
+          "line": 6580,
+          "text": ""
+        },
+        {
+          "line": 6581,
+          "text": "  const struct gpgpu_ptx_sim_info *kernel_info = ptx_sim_kernel_info(kernel);"
+        },
+        {
+          "line": 6582,
+          "text": ""
+        },
+        {
+          "line": 6583,
+          "text": "  // Limit by shmem/shader"
+        },
+        {
+          "line": 6584,
+          "text": "  unsigned int result_shmem = (unsigned)-1;"
+        },
+        {
+          "line": 6585,
+          "text": "  if (kernel_info->smem > 0)"
+        },
+        {
+          "line": 6586,
+          "text": "    result_shmem = gpgpu_shmem_size / kernel_info->smem;"
+        },
+        {
+          "line": 6587,
+          "text": ""
+        },
+        {
+          "line": 6588,
+          "text": "  // Limit by register count, rounded up to multiple of 4."
+        },
+        {
+          "line": 6589,
+          "text": "  unsigned int result_regs = (unsigned)-1;"
+        },
+        {
+          "line": 6590,
+          "text": "  if (kernel_info->regs > 0)"
+        },
+        {
+          "line": 6591,
+          "text": "    result_regs = gpgpu_shader_registers /"
+        },
+        {
+          "line": 6592,
+          "text": "                  (padded_cta_size * ((kernel_info->regs + 3) & ~3));"
+        },
+        {
+          "line": 6593,
+          "text": ""
+        },
+        {
+          "line": 6594,
+          "text": "  // Limit by CTA"
+        },
+        {
+          "line": 6595,
+          "text": "  unsigned int result_cta = max_cta_per_core;"
+        },
+        {
+          "line": 6596,
+          "text": ""
+        },
+        {
+          "line": 6597,
+          "text": "  unsigned result = result_thread;"
+        },
+        {
+          "line": 6598,
+          "text": "  result = gs_min2(result, result_shmem);"
+        },
+        {
+          "line": 6599,
+          "text": "  result = gs_min2(result, result_regs);"
+        },
+        {
+          "line": 6600,
+          "text": "  result = gs_min2(result, result_cta);"
+        },
+        {
+          "line": 6601,
+          "text": ""
+        },
+        {
+          "line": 6602,
+          "text": "  static const struct gpgpu_ptx_sim_info *last_kinfo = NULL;"
+        },
+        {
+          "line": 6603,
+          "text": "  if (last_kinfo !="
+        },
+        {
+          "line": 6604,
+          "text": "      kernel_info) {  // Only print out stats if kernel_info struct changes"
+        },
+        {
+          "line": 6605,
+          "text": "    last_kinfo = kernel_info;"
+        }
+      ]
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+      "first_line": 2206,
+      "lines": [
+        {
+          "line": 2206,
+          "text": "void shader_core_ctx::issue_block2core(kernel_info_t &kernel) {"
+        },
+        {
+          "line": 2207,
+          "text": "  if (!m_config->gpgpu_concurrent_kernel_sm)"
+        },
+        {
+          "line": 2208,
+          "text": "    set_max_cta(kernel);"
+        },
+        {
+          "line": 2209,
+          "text": "  else"
+        },
+        {
+          "line": 2210,
+          "text": "    assert(occupy_shader_resource_1block(kernel, true));"
+        },
+        {
+          "line": 2211,
+          "text": ""
+        },
+        {
+          "line": 2212,
+          "text": "  kernel.inc_running();"
+        },
+        {
+          "line": 2213,
+          "text": ""
+        },
+        {
+          "line": 2214,
+          "text": "  // find a free CTA context"
+        },
+        {
+          "line": 2215,
+          "text": "  unsigned free_cta_hw_id = (unsigned)-1;"
+        },
+        {
+          "line": 2216,
+          "text": ""
+        },
+        {
+          "line": 2217,
+          "text": "  unsigned max_cta_per_core;"
+        },
+        {
+          "line": 2218,
+          "text": "  if (!m_config->gpgpu_concurrent_kernel_sm)"
+        },
+        {
+          "line": 2219,
+          "text": "    max_cta_per_core = kernel_max_cta_per_shader;"
+        },
+        {
+          "line": 2220,
+          "text": "  else"
+        },
+        {
+          "line": 2221,
+          "text": "    max_cta_per_core = m_config->max_cta_per_core;"
+        },
+        {
+          "line": 2222,
+          "text": "  for (unsigned i = 0; i < max_cta_per_core; i++) {"
+        },
+        {
+          "line": 2223,
+          "text": "    if (m_cta_status[i] == 0) {"
+        },
+        {
+          "line": 2224,
+          "text": "      free_cta_hw_id = i;"
+        },
+        {
+          "line": 2225,
+          "text": "      break;"
+        },
+        {
+          "line": 2226,
+          "text": "    }"
+        },
+        {
+          "line": 2227,
+          "text": "  }"
+        },
+        {
+          "line": 2228,
+          "text": "  assert(free_cta_hw_id != (unsigned)-1);"
+        },
+        {
+          "line": 2229,
+          "text": ""
+        },
+        {
+          "line": 2230,
+          "text": "  // determine hardware threads and warps that will be used for this CTA"
+        },
+        {
+          "line": 2231,
+          "text": "  int cta_size = kernel.threads_per_cta();"
+        },
+        {
+          "line": 2232,
+          "text": ""
+        },
+        {
+          "line": 2233,
+          "text": "  // hw warp id = hw thread id mod warp size, so we need to find a range"
+        },
+        {
+          "line": 2234,
+          "text": "  // of hardware thread ids corresponding to an integral number of hardware"
+        },
+        {
+          "line": 2235,
+          "text": "  // thread ids"
+        },
+        {
+          "line": 2236,
+          "text": "  int padded_cta_size = cta_size;"
+        },
+        {
+          "line": 2237,
+          "text": "  if (cta_size % m_config->warp_size)"
+        },
+        {
+          "line": 2238,
+          "text": "    padded_cta_size ="
+        },
+        {
+          "line": 2239,
+          "text": "        ((cta_size / m_config->warp_size) + 1) * (m_config->warp_size);"
+        },
+        {
+          "line": 2240,
+          "text": ""
+        },
+        {
+          "line": 2241,
+          "text": "  unsigned int start_thread, end_thread;"
+        },
+        {
+          "line": 2242,
+          "text": ""
+        },
+        {
+          "line": 2243,
+          "text": "  if (!m_config->gpgpu_concurrent_kernel_sm) {"
+        },
+        {
+          "line": 2244,
+          "text": "    start_thread = free_cta_hw_id * padded_cta_size;"
+        },
+        {
+          "line": 2245,
+          "text": "    end_thread = start_thread + cta_size;"
+        },
+        {
+          "line": 2246,
+          "text": "  } else {"
+        },
+        {
+          "line": 2247,
+          "text": "    start_thread = find_available_hwtid(padded_cta_size, true);"
+        },
+        {
+          "line": 2248,
+          "text": "    assert((int)start_thread != -1);"
+        },
+        {
+          "line": 2249,
+          "text": "    end_thread = start_thread + cta_size;"
+        },
+        {
+          "line": 2250,
+          "text": "    assert(m_occupied_cta_to_hwtid.find(free_cta_hw_id) =="
+        },
+        {
+          "line": 2251,
+          "text": "           m_occupied_cta_to_hwtid.end());"
+        },
+        {
+          "line": 2252,
+          "text": "    m_occupied_cta_to_hwtid[free_cta_hw_id] = start_thread;"
+        },
+        {
+          "line": 2253,
+          "text": "  }"
+        },
+        {
+          "line": 2254,
+          "text": ""
+        },
+        {
+          "line": 2255,
+          "text": "  // reset the microarchitecture state of the selected hardware thread and warp"
+        },
+        {
+          "line": 2256,
+          "text": "  // contexts"
+        },
+        {
+          "line": 2257,
+          "text": "  reinit(start_thread, end_thread, false);"
+        }
+      ]
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+      "first_line": 2308,
+      "lines": [
+        {
+          "line": 2308,
+          "text": "  // initialize the SIMT stacks and fetch hardware"
+        },
+        {
+          "line": 2309,
+          "text": "  init_warps(free_cta_hw_id, start_thread, end_thread, ctaid, cta_size, kernel);"
+        },
+        {
+          "line": 2310,
+          "text": "  m_n_active_cta++;"
+        },
+        {
+          "line": 2311,
+          "text": ""
+        },
+        {
+          "line": 2312,
+          "text": "  shader_CTA_count_log(m_sid, 1);"
+        },
+        {
+          "line": 2313,
+          "text": "  SHADER_DPRINTF(LIVENESS,"
+        }
+      ]
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/trace-driven/trace_driven.cc",
+      "sha256": "3c4930da781e7ab95828a51fac5c642556ec0c4526144e1436936db1dcc5be5a",
+      "first_line": 1020,
+      "lines": [
+        {
+          "line": 1020,
+          "text": "void trace_shader_core_ctx::init_warps(unsigned cta_id, unsigned start_thread,"
+        },
+        {
+          "line": 1021,
+          "text": "                                       unsigned end_thread, unsigned ctaid,"
+        },
+        {
+          "line": 1022,
+          "text": "                                       int cta_size, kernel_info_t &kernel) {"
+        },
+        {
+          "line": 1023,
+          "text": "  // call base class"
+        },
+        {
+          "line": 1024,
+          "text": "  shader_core_ctx::init_warps(cta_id, start_thread, end_thread, ctaid, cta_size,"
+        },
+        {
+          "line": 1025,
+          "text": "                              kernel);"
+        },
+        {
+          "line": 1026,
+          "text": ""
+        },
+        {
+          "line": 1027,
+          "text": "  // then init traces"
+        },
+        {
+          "line": 1028,
+          "text": "  unsigned start_warp = start_thread / m_config->warp_size;"
+        },
+        {
+          "line": 1029,
+          "text": "  unsigned end_warp = end_thread / m_config->warp_size +"
+        },
+        {
+          "line": 1030,
+          "text": "                      ((end_thread % m_config->warp_size) ? 1 : 0);"
+        },
+        {
+          "line": 1031,
+          "text": ""
+        },
+        {
+          "line": 1032,
+          "text": "  init_traces(start_warp, end_warp, kernel);"
+        },
+        {
+          "line": 1033,
+          "text": "}"
+        },
+        {
+          "line": 1034,
+          "text": ""
+        },
+        {
+          "line": 1035,
+          "text": "const warp_inst_t *trace_shader_core_ctx::get_next_inst(unsigned warp_id,"
+        }
+      ]
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/trace-driven/trace_driven.cc",
+      "sha256": "3c4930da781e7ab95828a51fac5c642556ec0c4526144e1436936db1dcc5be5a",
+      "first_line": 1067,
+      "lines": [
+        {
+          "line": 1067,
+          "text": "void trace_shader_core_ctx::init_traces(unsigned start_warp, unsigned end_warp,"
+        },
+        {
+          "line": 1068,
+          "text": "                                        kernel_info_t &kernel) {"
+        },
+        {
+          "line": 1069,
+          "text": "  dtc_ag7::cooperative_heartbeat_now();"
+        },
+        {
+          "line": 1070,
+          "text": "  trace_kernel_info_t &trace_kernel ="
+        },
+        {
+          "line": 1071,
+          "text": "      static_cast<trace_kernel_info_t &>(kernel);"
+        },
+        {
+          "line": 1072,
+          "text": "  kernel_trace_t *kt = trace_kernel.get_trace_info();"
+        },
+        {
+          "line": 1073,
+          "text": ""
+        },
+        {
+          "line": 1074,
+          "text": "  if (kt->is_tracez) {"
+        },
+        {
+          "line": 1075,
+          "text": "    // .tracez path: create per-warp WarpTraceStream with sliding window"
+        },
+        {
+          "line": 1076,
+          "text": "    TracezReader *reader = kt->tracez_reader;"
+        },
+        {
+          "line": 1077,
+          "text": "    const tb_index_t *tb_idx = reader->get_next_tb_index();"
+        },
+        {
+          "line": 1078,
+          "text": "    if (!tb_idx) return;"
+        },
+        {
+          "line": 1079,
+          "text": ""
+        },
+        {
+          "line": 1080,
+          "text": "    dim3 block_id(tb_idx->tb_id_x, tb_idx->tb_id_y, tb_idx->tb_id_z);"
+        },
+        {
+          "line": 1081,
+          "text": "    dim3 cluster_id(tb_idx->cluster_id_x, tb_idx->cluster_id_y,"
+        },
+        {
+          "line": 1082,
+          "text": "                    tb_idx->cluster_id_z);"
+        },
+        {
+          "line": 1083,
+          "text": "    dim3 cluster_cta_id(tb_idx->cluster_cta_id_x, tb_idx->cluster_cta_id_y,"
+        },
+        {
+          "line": 1084,
+          "text": "                        tb_idx->cluster_cta_id_z);"
+        },
+        {
+          "line": 1085,
+          "text": "    unsigned cluster_rank = tb_idx->cluster_rank;"
+        },
+        {
+          "line": 1086,
+          "text": ""
+        },
+        {
+          "line": 1087,
+          "text": "    std::cout << \"thread block = \" << block_id.x << \",\" << block_id.y << \",\""
+        },
+        {
+          "line": 1088,
+          "text": "              << block_id.z << std::endl;"
+        },
+        {
+          "line": 1089,
+          "text": ""
+        },
+        {
+          "line": 1090,
+          "text": "    for (unsigned i = start_warp; i < end_warp; ++i) {"
+        },
+        {
+          "line": 1091,
+          "text": "      trace_shd_warp_t *m_trace_warp ="
+        },
+        {
+          "line": 1092,
+          "text": "          static_cast<trace_shd_warp_t *>(m_warp[i]);"
+        },
+        {
+          "line": 1093,
+          "text": "      m_trace_warp->clear();"
+        },
+        {
+          "line": 1094,
+          "text": ""
+        },
+        {
+          "line": 1095,
+          "text": "      unsigned warp_local = i - start_warp;"
+        },
+        {
+          "line": 1096,
+          "text": "      if (warp_local < tb_idx->warp_count) {"
+        },
+        {
+          "line": 1097,
+          "text": "        const warp_index_t &w_idx = tb_idx->warps[warp_local];"
+        },
+        {
+          "line": 1098,
+          "text": "        m_trace_warp->m_stream = new WarpTraceStream();"
+        },
+        {
+          "line": 1099,
+          "text": "        m_trace_warp->m_stream->init(reader->fd(), w_idx, reader->ddict(),"
+        },
+        {
+          "line": 1100,
+          "text": "                                     kt->trace_verion, kt->enable_lineinfo,"
+        },
+        {
+          "line": 1101,
+          "text": "                                     block_id, cluster_cta_id, cluster_id,"
+        },
+        {
+          "line": 1102,
+          "text": "                                     cluster_rank);"
+        },
+        {
+          "line": 1103,
+          "text": "      }"
+        },
+        {
+          "line": 1104,
+          "text": "    }"
+        },
+        {
+          "line": 1105,
+          "text": "  } else {"
+        },
+        {
+          "line": 1106,
+          "text": "    // Text path: bulk load via get_next_threadblock_traces"
+        },
+        {
+          "line": 1107,
+          "text": "    std::vector<std::vector<inst_trace_t> *> threadblock_traces;"
+        },
+        {
+          "line": 1108,
+          "text": "    for (unsigned i = start_warp; i < end_warp; ++i) {"
+        },
+        {
+          "line": 1109,
+          "text": "      trace_shd_warp_t *m_trace_warp ="
+        },
+        {
+          "line": 1110,
+          "text": "          static_cast<trace_shd_warp_t *>(m_warp[i]);"
+        },
+        {
+          "line": 1111,
+          "text": "      m_trace_warp->clear();"
+        },
+        {
+          "line": 1112,
+          "text": "      threadblock_traces.push_back(&(m_trace_warp->warp_traces));"
+        },
+        {
+          "line": 1113,
+          "text": "    }"
+        },
+        {
+          "line": 1114,
+          "text": "    trace_kernel.get_next_threadblock_traces(threadblock_traces);"
+        },
+        {
+          "line": 1115,
+          "text": "  }"
+        },
+        {
+          "line": 1116,
+          "text": ""
+        },
+        {
+          "line": 1117,
+          "text": "  dtc_ag7::cooperative_heartbeat_now();"
+        },
+        {
+          "line": 1118,
+          "text": ""
+        },
+        {
+          "line": 1119,
+          "text": "  // set the pc from the traces and ignore the functional model"
+        }
+      ]
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/trace-driven/trace_driven.cc",
+      "sha256": "3c4930da781e7ab95828a51fac5c642556ec0c4526144e1436936db1dcc5be5a",
+      "first_line": 157,
+      "lines": [
+        {
+          "line": 157,
+          "text": "void trace_shd_warp_t::clear() {"
+        },
+        {
+          "line": 158,
+          "text": "  trace_pc = 0;"
+        },
+        {
+          "line": 159,
+          "text": "  warp_traces.clear();"
+        },
+        {
+          "line": 160,
+          "text": "  delete m_stream;"
+        },
+        {
+          "line": 161,
+          "text": "  m_stream = nullptr;"
+        },
+        {
+          "line": 162,
+          "text": "  m_replay_active = false;"
+        },
+        {
+          "line": 163,
+          "text": "  m_replay_start_trace_pc = 0;"
+        },
+        {
+          "line": 164,
+          "text": "  m_replay_iterations = 0;"
+        },
+        {
+          "line": 165,
+          "text": "}"
+        },
+        {
+          "line": 166,
+          "text": ""
+        }
+      ]
+    }
+  ],
+  "memory_summary_path": "/root/data/dtc_failure_repair_20261025_v1/analysis/lavamd_memory_requirement_20261026_v1/MEMORY_REQUIREMENT_SUMMARY_V1.json",
+  "memory_summary_sha256": "79f30503034e63e4626b0e74575994c87e021cba19269d318c00c7b23c5c6655",
+  "existing_memory_summary_modified": false,
+  "scientific_starts": 0,
+  "source_mutations": 0
+}
