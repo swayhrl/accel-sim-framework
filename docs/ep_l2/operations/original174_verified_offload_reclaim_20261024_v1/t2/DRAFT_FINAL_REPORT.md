@@ -24,6 +24,10 @@ Current shared SSD free: 20,543,815,680 bytes; Share/MD127 free: 36,582,469,632;
 
 All per-asset genuine164 bundle and recovery entries are in `CONTENT_AND_RESTORE_CLOSURE.json`; prior 20 reuse links are in the same file. The existing five-minute publication receipts remain `../checkpoint/recovery_20261025/PUBLICATION_RECEIPTS.jsonl`. Final process shutdown, partial-transaction accounting and GitHub remote readback must be independently closed before Goal completion.
 
+Additional user-authorized 174-new cold compiler-copy retirement: 2,341 exact files; logical bytes 1,834,022,818; allocated file bytes unlinked 1,838,903,296; independently observed SSD free-space interval delta 1,816,342,528. Concurrent project writes prevent exclusive causal attribution of that interval delta. These measures are separate from each other, the historical releases and frozen115 archive bytes. Exact whitelist, SHA/metadata, COMMIT, INTENT/DONE, recovery test and restore entry are under `reclaim_174new/`. No old174 Source files were deleted by this additional retirement.
+
+Recorded execution-admission error: the one 84,346,374-byte native restore test used a base-only SSD check instead of all declared reservations and the active-science gate. It passed SHA/metadata verification and its 84,353,024 allocated bytes were removed, without counting them as original-copy reclaim. `reclaim_174new/RESTORE_TEST_ADMISSION_DEVIATION.json` preserves the executed version and correction. Future test allocations now require the original full admission plus complete test-file capacity; directed checks include reservation shortfall and active-science I/O rejection. Content/receipt closure PASS does not erase this admission deviation.
+
 Current explicit HOLDs:
 - `TRACE_7a2ceb3a0f9b32b5`: RESOURCE — RESOURCE_HOLD_SSD_ALL_DECLARED_RESERVATIONS
 

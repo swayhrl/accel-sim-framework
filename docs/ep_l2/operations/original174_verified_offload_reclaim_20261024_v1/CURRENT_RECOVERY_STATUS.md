@@ -1,3 +1,5 @@
+> Latest 174-new retirement and continuation audit: [CURRENT_RECOVERY_STATUS_174NEW_RECLAIM.md](t2/CURRENT_RECOVERY_STATUS_174NEW_RECLAIM.md). The original recovery snapshot below is historical; use current live STATE, Supervisor and publication receipts.
+
 # Current Lane T recovery status ? 2026-10-25 Asia/Shanghai
 
 Read-only recovery found the original driver exited after a finite pass at 2026-10-24 20:37:29 +08:00. PID 934578 / start_ticks 957334805 does not exist in either endpoint namespace; no replacement sender or receiver was found. The operating-system exit code was not retained. Persistent STATE and LEDGER show 9 committed, 106 pending (all 106 last recorded HOLD), and 0 currently in progress. Committed unique payload is 95,297,328,530 bytes. GitHub and the existing Windows execution worktree both remain at c1a14e51c07743ad674669adb54a4519336034ab. Existing untracked hybridsort checkpoints are preserved.
