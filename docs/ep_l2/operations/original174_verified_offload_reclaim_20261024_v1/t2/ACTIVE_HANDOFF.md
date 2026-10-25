@@ -1,3 +1,5 @@
+> Live range progress and actual process identities: [ACTIVE_EXECUTION_PROGRESS.json](ACTIVE_EXECUTION_PROGRESS.json). The transition snapshot below is historical; inspect current STATE/LEDGER before acting.
+
 # Lane T2 active handoff after user-authorized I/O policy change
 
 Snapshot 2026-10-25T09:54:06.939630+08:00. The Goal is active and incomplete. Frozen115 has 34 COMMITTED, one IN_PROGRESS and 80 other pending scopes (81 unfinished), 115,095,478,300 committed bytes. The scope/asset identities and existing archive receipts are unchanged.
