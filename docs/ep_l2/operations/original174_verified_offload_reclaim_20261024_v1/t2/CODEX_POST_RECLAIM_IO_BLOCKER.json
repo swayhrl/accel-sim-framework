@@ -1,0 +1,89 @@
+{
+  "unix": 1792891213.78555,
+  "completed": 34,
+  "unfinished": 81,
+  "driver": {
+    "pid": 1033480,
+    "start_ticks": 961292693,
+    "same_identity": false
+  },
+  "supervisor": {
+    "pid": 1035068,
+    "start_ticks": 961351867,
+    "same_identity": true,
+    "state": "S",
+    "cmdline": "/usr/bin/python3 -B /root/data/research_asset_verified_offload_20261024_v1/tools/continuation_supervisor.py "
+  },
+  "supervisor_state": {
+    "Source_deletions": 0,
+    "completed": 34,
+    "deadline_unix": 1792947947.377078,
+    "driver": {
+      "log": "/root/data/research_asset_verified_offload_20261024_v1/control/driver_resume_20261025.log",
+      "pid": 1033480,
+      "start_ticks": 961292693
+    },
+    "driver_restarts": 0,
+    "frozen_scopes": 115,
+    "max_driver_restarts": 96,
+    "max_resource_rechecks": 288,
+    "phase": "WAIT_COMMON_RESOURCE_ADMISSION",
+    "pid": 1035068,
+    "reason": "RESOURCE_HOLD_ACTUAL_ACTIVE_AEFAIR_IO",
+    "resource_rechecks": 75,
+    "running": true,
+    "schema": "LANE_T_FINITE_CONTINUATION_SUPERVISOR_V1",
+    "scientific_actions": 0,
+    "start_ticks": 961351867,
+    "unix": 1792891008.089262
+  },
+  "full_copy_gate": {
+    "status": "HOLD",
+    "reason": "RESOURCE_HOLD_ACTUAL_ACTIVE_AEFAIR_IO"
+  },
+  "SSD_available_bytes": 23865417728,
+  "IO_pressure": {
+    "some": {
+      "avg10": 7.64,
+      "avg60": 7.83,
+      "avg300": 7.86,
+      "total": 225533574113.0
+    },
+    "full": {
+      "avg10": 7.64,
+      "avg60": 7.83,
+      "avg300": 7.86,
+      "total": 204378571741.0
+    }
+  },
+  "held_global_locks": [],
+  "schema": "LANE_T2_POST_RECLAIM_EXTERNAL_IO_BLOCKER_V1",
+  "goal": "LANE_T2_FROZEN115_ARCHIVE_COMPLETE_V1",
+  "condition_key": "TARGET_ACTIVE_SCIENCE_IO_ADMISSION",
+  "consecutive_post_resume_goal_turns_with_condition": 3,
+  "prior_turn_evidence": [
+    "reclaim_174new/POST_RECLAIM_STATUS.json",
+    "POST_RECLAIM_RESOURCE_WAIT_AUDIT.json",
+    "VERIFIED_SCIENCE_AND_SUPERVISOR_WAIT.json"
+  ],
+  "current_gate_proof": "CURRENT_RESOURCE_WAIT_PROOF.json",
+  "SSD_required_bytes": 23420993536,
+  "SSD_deficit_bytes": 0,
+  "publisher_pid": 32272,
+  "publisher_creation_epoch_ms": 1792861562329,
+  "publisher_verified_live": true,
+  "latest_GitHub_HEAD": "b62a332407d2ca8176f818cdf4c95861679f6d77",
+  "GitHub_live_status_independent_blob_readback": "25632001a0a81f67aec2aa3bb1ae1d5925a0f899",
+  "engineering_liveness_error_excluded": true,
+  "remaining_DTC_SHA_preparation_already_present": true,
+  "new_driver_supervisor_receiver_publisher_started": false,
+  "resource_contract_or_science_modified": false,
+  "background_execution_or_supervision_stopped": false,
+  "retirement_replayed": false,
+  "additional_174new_retirement_closed": true,
+  "archived_assets_added_this_wait_turn": 0,
+  "goal_complete": false,
+  "asset_HOLDs_still_nonterminal": true,
+  "required_external_change": "Target active-science I/O admission must pass without changing its existing some<=5/full<=1 avg10 bounds. Original live supervisor retains automatic same-queue continuation until its unchanged deadline/counter limits.",
+  "blocked_action": "Mark only the Codex Goal blocked after three consecutive post-resume turns with the same external I/O barrier. Keep original supervisor/publisher and all range/COMMIT identities; do not convert unfinished assets to final success or terminal HOLD solely for this temporary wait."
+}
