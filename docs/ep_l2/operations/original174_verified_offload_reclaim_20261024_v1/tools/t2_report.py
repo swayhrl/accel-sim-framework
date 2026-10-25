@@ -46,6 +46,16 @@ def main():
     io_policy_path=OUT/'ACTIVE_SCIENCE_IO_GATE_USER_AUTHORIZATION.json'
     io_policy=load(io_policy_path) if io_policy_path.exists() else None
     proof['active_science_IO_gate_user_authorization']=io_policy
+    rate_auth_path=OUT/'TRANSFER_RATE_USER_AUTHORIZATION.json'
+    rate_auth=load(rate_auth_path) if rate_auth_path.exists() else None
+    rate_status_path=OUT/'rate_transition/CURRENT_RECOVERY_STATUS.json'
+    rate_status=load(rate_status_path) if rate_status_path.exists() else None
+    rate_controls=rate_status.get('controls',{}) if rate_status else {}
+    rate_closed=not rate_auth or 'RATE_POLICY_TRANSITION_DONE.json' in rate_controls
+    if args.final:assert rate_closed,'AUTHORIZED_RATE_HANDOFF_NOT_CLOSED'
+    proof['transfer_rate_user_authorization']=rate_auth
+    proof['transfer_rate_handoff_closed']=rate_closed
+    proof['last_observed_transfer_rate_policy']=rate_controls.get('TRANSFER_RATE_POLICY.json')
     dependency_path=OUT/'RESTORE_IMPORT_DEPENDENCY_AUDIT.json'
     dependencies=load(dependency_path) if dependency_path.exists() else None
     proof['restore_entry_dependency_audit']=({k:dependencies[k] for k in ['unix','scopes','PASS','scope_limit','true164_receipt']} if dependencies else None)
@@ -66,7 +76,9 @@ def main():
         lines.append(f'\nAdditional user-authorized 174-new cold compiler-copy retirement: {extra["files"]:,} exact files; logical bytes {extra["logical_bytes_unlinked"]:,}; allocated file bytes unlinked {extra["allocated_bytes_unlinked"]:,}; independently observed SSD free-space interval delta {extra["observed_SSD_free_interval_delta"]:,}. Concurrent project writes prevent exclusive causal attribution of that interval delta. These measures are separate from each other, the historical releases and frozen115 archive bytes. Exact whitelist, SHA/metadata, COMMIT, INTENT/DONE, recovery test and restore entry are under `reclaim_174new/`. No old174 Source files were deleted by this additional retirement.')
         lines.append('\nRecorded execution-admission error: the one 84,346,374-byte native restore test used a base-only SSD check instead of all declared reservations and the active-science gate. It passed SHA/metadata verification and its 84,353,024 allocated bytes were removed, without counting them as original-copy reclaim. `reclaim_174new/RESTORE_TEST_ADMISSION_DEVIATION.json` preserves the executed version and correction. Future test allocations now require the original full admission plus complete test-file capacity; directed checks include reservation shortfall and active-science I/O rejection. Content/receipt closure PASS does not erase this admission deviation.')
     if io_policy:
-        lines.append('\nThe subsequent explicit user authorization in `ACTIVE_SCIENCE_IO_GATE_USER_AUTHORIZATION.json` changes only the active-science avg10 I/O check to monitor-only. It does not retroactively authorize the earlier restore-test admission error. Sustained severe host-I/O protection, SSD/RAM reservations, locks, rate/staging limits and scientific identity checks remain unchanged. `io_policy_transition/` retains directed qualification, the exact old/new supervisor identities and proof that the original deadline and cumulative counters were preserved during the single policy reload; the Publisher was not restarted.')
+        lines.append('\nThe subsequent explicit user authorization in `ACTIVE_SCIENCE_IO_GATE_USER_AUTHORIZATION.json` changes only the active-science avg10 I/O check to monitor-only. It does not retroactively authorize the earlier restore-test admission error. At that transition sustained severe host-I/O protection, SSD/RAM reservations, locks, rate/staging limits and scientific identity checks remained unchanged. `io_policy_transition/` retains directed qualification, the exact old/new supervisor identities and proof that the original deadline and cumulative counters were preserved during that policy reload; the Publisher was not restarted.')
+    if rate_auth:
+        lines.append(f'\nA later explicit authorization in `TRANSFER_RATE_USER_AUTHORIZATION.json` permits staged Source/aggregate transfer limits up to 60/120 MiB/s, initially 30/60. Cooperative post-COMMIT rate handoff closed: {rate_closed}. Last observed active policy: `{json.dumps(rate_controls.get("TRANSFER_RATE_POLICY.json"),sort_keys=True)}`. `rate_transition/` retains qualification, normal lock-release and Driver-exit evidence, original Supervisor identity and cumulative budgets, and rate observations. Single-stream, SHA, staging, space/RAM, severe pressure and scientific identity requirements remain in force. Existing immutable bundle helpers retain their published versions.')
     if dependencies:
         lines.append(f'\nPublished restore-entry dependency audit: {dependencies["PASS"]}/{dependencies["scopes"]} scopes passed shell syntax, standalone module loading, co-located resource-module checks and pinned existing-controller V9 dependency loading. `RESTORE_IMPORT_DEPENDENCY_AUDIT.json` retains exact helper/resource hashes and external controller paths. This is not a native payload-restoration test, independent-host portability proof or an override of frozen helper resource checks.')
     if holds:

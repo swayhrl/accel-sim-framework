@@ -25,7 +25,20 @@ for name in ['RATE_POLICY_TRANSITION_INTENT.json','RATE_POLICY_POST_COMMIT_LOCK_
  if p.exists():controls[name]=json.loads(p.read_bytes())
 for p in (T/'control').glob('RATE_POLICY_TRANSITION_FAILURE_*.json'):controls[p.name]=json.loads(p.read_bytes())
 N=P('/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_verified_offload_reclaim_v1/assets');b=N/s['asset_id'];writing=[dict(relative_path=p.relative_to(b).as_posix(),size=p.stat().st_size) for p in (b/'tree').rglob('*.writing')]
+tree_IO=[]
+try:
+ for fd in P('/proc',str(s['driver_pid']),'fd').iterdir():
+  try:
+   path=os.readlink(fd)
+   if not path.startswith(str(b/'tree')+'/'):continue
+   info={line.split(':',1)[0]:line.split(':',1)[1].strip() for line in (fd.parent.parent/'fdinfo'/fd.name).read_text().splitlines() if ':' in line}
+   mode=int(info['flags'],8)&os.O_ACCMODE
+   tree_IO.append(dict(relative_path=P(path).relative_to(b).as_posix(),fd=int(fd.name),position=int(info['pos']),mode='READ_SHA' if mode==os.O_RDONLY else 'WRITE_ASSEMBLY'))
+  except (OSError,ValueError,KeyError):pass
+except OSError:pass
+observed_stage='TREE_ASSEMBLY' if any(z['mode']=='WRITE_ASSEMBLY' for z in tree_IO) else 'TREE_CLOSED_REOPEN_SHA' if tree_IO else s['phase']
 x=dict(schema='LANE_T2_RATE_TRANSITION_LIVE_OBSERVATION_V1',unix=time.time(),completed=len(done),pending=115-len(done),committed_original_bytes=sum(z['original_bytes'] for z in done.values()),driver=proc(s['driver_pid'],s['driver_start_ticks'],'offload_driver.py'),supervisor=proc(sup['pid'],sup['start_ticks'],'continuation_supervisor.py'),coordinator=proc(pid,ticks,'apply_staged_transfer_rates.py') if pid else None,state=s,supervisor_state=sup,active_tree_writing=writing,controls=controls,coordinator_log_tail=(T/'control/rate_policy_transition.log').read_text()[-1000:])
+x.update(observed_stage=observed_stage,tree_IO=tree_IO)
 print(json.dumps(x))
 '''
 
@@ -34,5 +47,5 @@ if __name__=='__main__':
     x=remote('hrl-174-new','SECONDS='+str(args.seconds)+'\n'+CODE,args.seconds+35)
     save('t2/rate_transition/CURRENT_RECOVERY_STATUS.json',x)
     for name,value in x['controls'].items():save('t2/rate_transition/'+name,value)
-    print(json.dumps({k:x[k] for k in ['unix','completed','pending','driver','supervisor','coordinator','active_tree_writing','coordinator_log_tail']}))
+    print(json.dumps({k:x[k] for k in ['unix','completed','pending','driver','supervisor','coordinator','active_tree_writing','observed_stage','tree_IO','coordinator_log_tail']}))
     print(json.dumps(dict(asset=x['state']['asset_id'],phase=x['state']['phase'],rates=x['state'].get('archive_transfer_rate_policy'),control_receipts=list(x['controls']))))

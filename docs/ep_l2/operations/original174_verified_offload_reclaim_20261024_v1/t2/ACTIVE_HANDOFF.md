@@ -1,3 +1,5 @@
+Rate authorization and cooperative reload: `TRANSFER_RATE_USER_AUTHORIZATION.json`; current verified process/transition snapshot: `rate_transition/CURRENT_RECOVERY_STATUS.json`. Inspect this snapshot and native process handles before any further action; a waiting coordinator must not be duplicated. The original Supervisor/Publisher remain authoritative.
+
 > Live range progress and actual process identities: [ACTIVE_EXECUTION_PROGRESS.json](ACTIVE_EXECUTION_PROGRESS.json). The transition snapshot below is historical; inspect current STATE/LEDGER before acting.
 
 # Lane T2 active handoff after user-authorized I/O policy change
