@@ -1,0 +1,117 @@
+{
+  "asset": {
+    "architecture": "SM70",
+    "commandlist_sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a",
+    "kernel_launches": 1,
+    "kind": "REUSED_ORIGINAL_FULL_TRACE_NOT_TRIMMED",
+    "logical_bytes": 103535960,
+    "members": [
+      {
+        "relative_path": "kernelslist.g",
+        "sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a",
+        "size": 94
+      },
+      {
+        "relative_path": "kernel-1.traceg",
+        "sha256": "94e13da58ea335219851fa0b03b759a848017155d3bade6ac32a64623eaf460d",
+        "size": 103535866
+      }
+    ],
+    "program": "VECTORADD_ORIGINAL4M",
+    "scientific_qualification_granted": false,
+    "source_version_evidence": "/root/data/ep_l2_dtc_l1_native_v2/control/EP_VECTORADD_S_TRACE_RECEIPT.json",
+    "suite": "COMPONENT_SENTINEL_NOT_FORMAL",
+    "trace_directory": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_native_v2_inputs/EP_VECTORADD_S/tree",
+    "trace_entry": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_native_v2_inputs/EP_VECTORADD_S/tree/kernelslist.g"
+  },
+  "body_parser_sha256": "c20da7dc12a92d4c2cc4da7dd7425cc1a410a58cedd382155de7108711d3f779",
+  "capture_status": "REUSED_ORIGINAL_FULL_TRACE_NOT_TRIMMED",
+  "classification": "COMPONENT_SENTINEL_NOT_FORMAL",
+  "current_source_scope": "NEW_SEPARATE_REPAIR_COMPONENT_TEST_ONLY",
+  "input_digest": "3375b4a8feb883fc39f2a7777d224f921a1ecd9ff3d624654a0c69efab0a0d09",
+  "new_formal_workload": false,
+  "prior_scientific_statuses": [
+    "ORIGINAL_CAPTURE_IDENTITY_PRESERVED_NO_NEW_FORMAL_CLAIM"
+  ],
+  "qualification": {
+    "classification": "REUSED_ORIGINAL_FULL_TRACE_NOT_TRIMMED",
+    "expected_CTA": 15625,
+    "expected_commands": [
+      "MemcpyHtoD,0x00007f5f38000000,16000000",
+      "MemcpyHtoD,0x00007f5f39000000,16000000",
+      "kernel-1.traceg"
+    ],
+    "expected_instructions": 56000000,
+    "expected_kernels": 1,
+    "input_digest": "3375b4a8feb883fc39f2a7777d224f921a1ecd9ff3d624654a0c69efab0a0d09",
+    "issues": [],
+    "model_starts": 0,
+    "native_numerical_correctness": "UNPROVEN",
+    "program": "VECTORADD_ORIGINAL4M",
+    "rows": [
+      {
+        "active_thread_instructions": 56000000,
+        "binary_version": 70,
+        "cacheable_local_max_width": 0,
+        "complete_ctas": 15625,
+        "complete_warps": 125000,
+        "coverage": "ALL_DECLARED_WARPS_AND_FULL_GRID_WITH_TERMINAL_EXIT",
+        "full_SHA_current_size_mtime": [
+          103535866,
+          1792728764000000000
+        ],
+        "global_reference_histogram": {
+          "1": 250000
+        },
+        "kernel": "_Z6VecAddPKfS0_Pfi",
+        "max_global_128b_line_references": 1,
+        "memory_instruction_paths": {
+          "CACHEABLE_GLOBAL_LOAD": 250000,
+          "ORDINARY_STORE": 125000
+        },
+        "opcodes": {
+          "EXIT": 250000,
+          "FADD": 125000,
+          "IMAD": 125000,
+          "IMAD.WIDE": 375000,
+          "ISETP.GE.AND": 125000,
+          "LDG.E.SYS": 250000,
+          "MOV": 250000,
+          "S2R": 250000,
+          "SHFL.IDX": 125000,
+          "STG.E.SYS": 125000
+        },
+        "ordinal": 1,
+        "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_native_v2_inputs/EP_VECTORADD_S/tree/kernel-1.traceg",
+        "sha256": "94e13da58ea335219851fa0b03b759a848017155d3bade6ac32a64623eaf460d",
+        "source_input_shape": "NOT_INFERRED_FROM_TRACE_OR_FILENAME",
+        "sparse_mask_base_stride_records": 0,
+        "steady_interval": "NOT_PROVEN_BY_TRACE_GEOMETRY",
+        "trace_version": 0,
+        "unaligned_lane_memory_addresses": 0,
+        "warp_instruction_records": 2000000,
+        "width_counts": [
+          {
+            "opcode": "LDG.E.SYS",
+            "parser_width": 4,
+            "records": 250000,
+            "trace_width": 4
+          },
+          {
+            "opcode": "STG.E.SYS",
+            "parser_width": 4,
+            "records": 125000,
+            "trace_width": 4
+          }
+        ],
+        "workload": "3375b4a8feb883fc39f2a7777d224f921a1ecd9ff3d624654a0c69efab0a0d09",
+        "zero_active_memory_records": 0
+      }
+    ],
+    "schema": "DTC_COMPONENT_SENTINEL_FULL_BODY_QUALIFICATION_V1",
+    "status": "BODY_COMPLETE_SHA_AND_BASIC_FORMAT_PASS",
+    "suite": "COMPONENT_SENTINEL_NOT_FORMAL",
+    "trace_entry": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_native_v2_inputs/EP_VECTORADD_S/tree/kernelslist.g"
+  },
+  "schema": "DTC_REPAIR_COMPONENT_INPUT_BINDING_V1"
+}

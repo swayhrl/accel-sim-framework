@@ -1,0 +1,137 @@
+{
+  "asset": {
+    "architecture": "SM70",
+    "commandlist_sha256": "3830b28039aa3c7994bfd3ccddfaee253f597f91800b2aa19ebfc8882fca5c9c",
+    "kernel_launches": 1,
+    "kind": "ENGINEERING_SYNTHETIC_COMPONENT_SENTINEL_NOT_FORMAL",
+    "logical_bytes": 932,
+    "members": [
+      {
+        "relative_path": "kernelslist.g",
+        "sha256": "3830b28039aa3c7994bfd3ccddfaee253f597f91800b2aa19ebfc8882fca5c9c",
+        "size": 132
+      },
+      {
+        "relative_path": "kernel-1.traceg",
+        "sha256": "f7c0e9e57aa3ad556ebc50b2efdcfd3c9f8c42b00cbf303b62c07ec9e0fb020f",
+        "size": 800
+      }
+    ],
+    "program": "M4_MIXED_AUTHORED",
+    "scientific_qualification_granted": false,
+    "source_version_evidence": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/MIXED_ENGINEERING_TRACE_AUTHORSHIP_AND_SOURCE_CONTRACT.json",
+    "suite": "COMPONENT_SENTINEL_NOT_FORMAL",
+    "trace_directory": "/root/share/mnt164/huangrulin/dtc_failure_repair_20261025_v1/component_sentinels/mixed_v1",
+    "trace_entry": "/root/share/mnt164/huangrulin/dtc_failure_repair_20261025_v1/component_sentinels/mixed_v1/kernelslist.g"
+  },
+  "body_parser_sha256": "c20da7dc12a92d4c2cc4da7dd7425cc1a410a58cedd382155de7108711d3f779",
+  "capture_status": "ENGINEERING_SYNTHETIC_COMPONENT_SENTINEL_NOT_FORMAL",
+  "classification": "COMPONENT_SENTINEL_NOT_FORMAL",
+  "current_source_scope": "NEW_SEPARATE_REPAIR_COMPONENT_TEST_ONLY",
+  "input_digest": "a24dde1bad963516ca1bb24a809c5c624e0c18ed216bc75711e3ebe20630cc6b",
+  "new_formal_workload": false,
+  "prior_scientific_statuses": [
+    "AUTHORED_ENGINEERING_TRACE_NO_CAPTURE_CLAIM"
+  ],
+  "qualification": {
+    "classification": "ENGINEERING_SYNTHETIC_COMPONENT_SENTINEL_NOT_FORMAL",
+    "expected_CTA": 1,
+    "expected_commands": [
+      "MemcpyHtoD,0x100000,128",
+      "MemcpyHtoD,0x200000,128",
+      "MemcpyHtoD,0x400000,4",
+      "MemcpyHtoD,0x500000,4",
+      "MemcpyHtoD,0x600000,128",
+      "kernel-1.traceg"
+    ],
+    "expected_instructions": 288,
+    "expected_kernels": 1,
+    "input_digest": "a24dde1bad963516ca1bb24a809c5c624e0c18ed216bc75711e3ebe20630cc6b",
+    "issues": [],
+    "model_starts": 0,
+    "native_numerical_correctness": "UNPROVEN",
+    "program": "M4_MIXED_AUTHORED",
+    "rows": [
+      {
+        "active_thread_instructions": 288,
+        "binary_version": 70,
+        "cacheable_local_max_width": 0,
+        "complete_ctas": 1,
+        "complete_warps": 1,
+        "coverage": "ALL_DECLARED_WARPS_AND_FULL_GRID_WITH_TERMINAL_EXIT",
+        "full_SHA_current_size_mtime": [
+          800,
+          1792942196000000000
+        ],
+        "global_reference_histogram": {
+          "1": 2
+        },
+        "kernel": "DTC_REPAIR_COMPONENT_MIXED_V1",
+        "max_global_128b_line_references": 1,
+        "memory_instruction_paths": {
+          "ATOMIC_L2": 2,
+          "BYPASS_LOAD": 1,
+          "CACHEABLE_GLOBAL_LOAD": 2,
+          "ORDINARY_STORE": 1
+        },
+        "opcodes": {
+          "ATOMG.E.ADD.STRONG.GPU": 1,
+          "EXIT": 1,
+          "LDG.E.STRONG.GPU": 1,
+          "LDG.E.SYS": 2,
+          "MOV": 2,
+          "RED.E.ADD.STRONG.GPU": 1,
+          "STG.E.SYS": 1
+        },
+        "ordinal": 1,
+        "path": "/root/share/mnt164/huangrulin/dtc_failure_repair_20261025_v1/component_sentinels/mixed_v1/kernel-1.traceg",
+        "sha256": "f7c0e9e57aa3ad556ebc50b2efdcfd3c9f8c42b00cbf303b62c07ec9e0fb020f",
+        "source_input_shape": "NOT_INFERRED_FROM_TRACE_OR_FILENAME",
+        "sparse_mask_base_stride_records": 0,
+        "steady_interval": "NOT_PROVEN_BY_TRACE_GEOMETRY",
+        "trace_version": 3,
+        "unaligned_lane_memory_addresses": 0,
+        "warp_instruction_records": 9,
+        "width_counts": [
+          {
+            "opcode": "LDG.E.SYS",
+            "parser_width": 4,
+            "records": 2,
+            "trace_width": 4
+          },
+          {
+            "opcode": "LDG.E.STRONG.GPU",
+            "parser_width": 4,
+            "records": 1,
+            "trace_width": 4
+          },
+          {
+            "opcode": "STG.E.SYS",
+            "parser_width": 4,
+            "records": 1,
+            "trace_width": 4
+          },
+          {
+            "opcode": "ATOMG.E.ADD.STRONG.GPU",
+            "parser_width": 4,
+            "records": 1,
+            "trace_width": 4
+          },
+          {
+            "opcode": "RED.E.ADD.STRONG.GPU",
+            "parser_width": 4,
+            "records": 1,
+            "trace_width": 4
+          }
+        ],
+        "workload": "a24dde1bad963516ca1bb24a809c5c624e0c18ed216bc75711e3ebe20630cc6b",
+        "zero_active_memory_records": 0
+      }
+    ],
+    "schema": "DTC_COMPONENT_SENTINEL_FULL_BODY_QUALIFICATION_V1",
+    "status": "BODY_COMPLETE_SHA_AND_BASIC_FORMAT_PASS",
+    "suite": "COMPONENT_SENTINEL_NOT_FORMAL",
+    "trace_entry": "/root/share/mnt164/huangrulin/dtc_failure_repair_20261025_v1/component_sentinels/mixed_v1/kernelslist.g"
+  },
+  "schema": "DTC_REPAIR_COMPONENT_INPUT_BINDING_V1"
+}

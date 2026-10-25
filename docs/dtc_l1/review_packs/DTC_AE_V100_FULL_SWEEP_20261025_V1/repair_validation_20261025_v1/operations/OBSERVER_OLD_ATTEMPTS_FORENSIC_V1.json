@@ -1,0 +1,3330 @@
+{
+  "schema": "OBSERVER_OLD_ATTEMPTS_FORENSIC_V1",
+  "observed_utc": "2026-10-25T15:42:15.564520+00:00",
+  "original_request": "DTC_AE_V100_FULL_SWEEP_20261025_V1",
+  "registry_snapshot_before_sha256": "2e771de0d63c021c0ee2026eb2c5dcf96c6e93fb14ca27458cb7493727fc6bd0",
+  "registry_snapshot_after_sha256": "2e771de0d63c021c0ee2026eb2c5dcf96c6e93fb14ca27458cb7493727fc6bd0",
+  "registry_request_summary_before": {
+    "budget": 356,
+    "remaining": 126,
+    "sealed_unused": 0,
+    "state": "RUNNING"
+  },
+  "registry_request_summary_after": {
+    "budget": 356,
+    "remaining": 126,
+    "sealed_unused": 0,
+    "state": "RUNNING"
+  },
+  "target_consumed_rows_unchanged": true,
+  "source_pins": [
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_native_cap1m.py",
+      "bytes": 45060,
+      "sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d"
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_host_execution_v4.py",
+      "bytes": 7022,
+      "sha256": "5456bcf34174d16679d99805556fea621cc6c1d2ae64f059523ace5185937c33"
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_read_cache.py",
+      "bytes": 3187,
+      "sha256": "5172b6ac7b00f8ea80fdb0dc807180a530f2a155003badbb0a86758e3db7eaa6"
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_frontend_host_v4.py",
+      "bytes": 1211,
+      "sha256": "cb99dde56a68c2962e1ec30f2a198106b2b8457d4eebe396c24086ad2157e3a3"
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_io.py",
+      "bytes": 999,
+      "sha256": "8bb49b82b4a0e0e72de3d4ca5a35475200bd30833735c6a5af1df4e14e478539"
+    }
+  ],
+  "cases": [
+    {
+      "cohort": "E2-AEV100-85700545918390d7-DM",
+      "program": "cfd",
+      "arm": "DM",
+      "uuid": "97c43b01-9628-490f-839e-4a2a8126122e",
+      "input_digest": "85700545918390d7a5cb33340f2043b13bf86a86d6141de238916cc60eb941cd",
+      "original_INTENT": {
+        "authorization_sha256": "d84e40ff4a222070171ec66a29022ce2e9baa445b274bad495cb162a935f03b9",
+        "automatic_retry": false,
+        "batch_lease_pid": 1261423,
+        "batch_lease_start_ticks": 968881318,
+        "cohort": "E2-AEV100-85700545918390d7-DM",
+        "consumed_before_launcher_fork": 1,
+        "host_execution_binding": {
+          "actual_host_cpu": 70,
+          "adapter_sha256": "5456bcf34174d16679d99805556fea621cc6c1d2ae64f059523ace5185937c33",
+          "hard_cap_bytes": 17179869184,
+          "original_host_cpu": 5,
+          "original_spec_sha256": "5c4009713bfeaae90efc7666c73c8c372380340eeae401f9513f520193b5d622",
+          "outer_RAM_accounting_changed": true,
+          "plan_sha256": "1375fec2dfb0d023cd53daa8a4f953aa8d62966142281d4578cb6d244e20d100",
+          "profile": "HOST_ACTUAL4G40_V4",
+          "reservation_not_hard_cap": true,
+          "scientific_fields_changed": false,
+          "unchanged_original_native_function_source_sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d",
+          "working_set_floor_bytes": 4294967296
+        },
+        "old_ledger_mutations": 0,
+        "operational_resource_profile": {
+          "CPU_protocol_qualification_sha256": "6f0dc6a66ca189a3be3c992b78c2408e2aaa3f36efffa0efd5238e555eb6e373",
+          "Core_commit": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+          "activation_prior_consumed": 105,
+          "build_receipt_sha256": "ad95b2bc0a882c671062a1b78d7326b78ca00f3ef2a2d5033242adf9d5a1a768",
+          "candidate_sha256": "a1f28608025eba346abf83eb76d085bcc3e8fff6ce64b5bb0ed2f78910642728",
+          "engine_sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d",
+          "finite_budget": 356,
+          "framework_binary": {
+            "bytes": 301432,
+            "path": "/root/data/dtc_main_v100_sweep_20261025_v1/telemetry_v2/framework-build/accel-sim.out",
+            "sha256": "b963139b72ea1fe5000c35803386f3a5b5eaf4905e127f1bdb12f16e13486329"
+          },
+          "framework_commit": "3b362ab5c0934fdcea9697b10244c6de5c4a14ae",
+          "framework_parent": "cfd3ff56d7ba6642dab6c7710ec4f6065168174e",
+          "framework_publication_sha256": "2475abf4f7bbc7a39e02304963b752cb416f4ea7fa743163621c4ba1671e7f7b",
+          "max_records": 1048576,
+          "model_retries": 0,
+          "observational_source_delta": "Framework exactly one header record-limit constant;receiver total-limit plus unchanged original drain budget;Core/cache/performance options/input/config unchanged",
+          "old_authority_and_original_specs_preserved": true,
+          "per_drain_records": 8193,
+          "profile_id": "OBSERVABILITY_CAP1M_WALL90_V1",
+          "publication_commit": "6fc438fa9b4e0567c8e22a81ee44bd3aa3917a07",
+          "qualification_sha256": "ef510dec9f0447f8adb32d73ffe4aadf8869dea92cef825f1552c97e0fa9f79c",
+          "runtime_spec_producer_sha256": "b87a5ff4a6fbf590932a71a1654372a2d64f29b4f443c72312b0d3c4919a1d05",
+          "source_pins": [
+            {
+              "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_native_cap1m.py",
+              "sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d"
+            },
+            {
+              "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_strict_cap1m.py",
+              "sha256": "87ee4025dce16a909a30c9e94a10dcaad14d3e71b3846371edd3be15a9b0bac5"
+            },
+            {
+              "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_guard_cap1m.py",
+              "sha256": "51c02e46b3af91bfb4f76d44f39aac6ad0a02cf62302a3790632bc77df7c0055"
+            },
+            {
+              "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_cap1m_specs.py",
+              "sha256": "b87a5ff4a6fbf590932a71a1654372a2d64f29b4f443c72312b0d3c4919a1d05"
+            },
+            {
+              "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_admission_cap1m.py",
+              "sha256": "9c5e37fc8f50677d3bb557c1991e7831ca0f371df9b63bcd1b7fe6ba563af7cc"
+            },
+            {
+              "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_failure_review_cap1m.py",
+              "sha256": "bc4d0a5bc78ee421f111dac806c43360bbffbf3fee4a435e6f23a048a7b93341"
+            },
+            {
+              "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_frontend_cap1m.py",
+              "sha256": "5c269152d4b67ddb1b7fb209f676bf8238b24375496bfded2b3af3e443d4f01d"
+            },
+            {
+              "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/runtime_policy_wall90_v1.py",
+              "sha256": "d1a3f21ce1c9eac89b8428f0732000d81936577d080b7bcf1c48ebe38980f187"
+            },
+            {
+              "path": "/root/data/dtc_main_v100_sweep_20261025_v1/telemetry_v2/telemetry_receiver_cap1m.py",
+              "sha256": "f523975b9780b498b988e2b3145ba5b4aebdef4d0e9b0146392d3a31a99a4ec1"
+            },
+            {
+              "path": "/root/data/dtc_main_v100_sweep_20261025_v1/telemetry_v2/framework/gpu-simulator/ag7_policyb_progress.h",
+              "sha256": "1ac79290097868939720ea167404102981b2c08209b87176ee535b793874dea2"
+            }
+          ],
+          "source_worktrees": {
+            "core": "/root/data/dtc_main_20261023_v1/ae_fair_v1/core",
+            "framework": "/root/data/dtc_main_v100_sweep_20261025_v1/telemetry_v2/framework"
+          },
+          "status": "REGISTERED_FOR_ORIGINAL_UNUSED_CELLS",
+          "strict_sha256": "87ee4025dce16a909a30c9e94a10dcaad14d3e71b3846371edd3be15a9b0bac5",
+          "wall_seconds": 7776000
+        },
+        "output": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/97c43b01-9628-490f-839e-4a2a8126122e",
+        "spec_sha256": "5c4009713bfeaae90efc7666c73c8c372380340eeae401f9513f520193b5d622",
+        "utc": "2026-10-25T14:07:46.870026+00:00",
+        "uuid": "97c43b01-9628-490f-839e-4a2a8126122e"
+      },
+      "INTENT_evidence": {
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/science_authority/requests/DTC_AE_V100_FULL_SWEEP_20261025_V1/E2-AEV100-85700545918390d7-DM.INTENT.json",
+        "bytes": 5380,
+        "sha256": "ad534b376c24f100194076fffed54a18e71fef298235f5ff60052b673b327993"
+      },
+      "registry_consumed_row": {
+        "charged": 1,
+        "intent": "/root/data/ep_l2_dtc_l1_native_v2/control/science_authority/requests/DTC_AE_V100_FULL_SWEEP_20261025_V1/E2-AEV100-85700545918390d7-DM.INTENT.json",
+        "intent_sha256": "ad534b376c24f100194076fffed54a18e71fef298235f5ff60052b673b327993",
+        "uuid": "97c43b01-9628-490f-839e-4a2a8126122e"
+      },
+      "original_controller_error": {
+        "state": "RESOLVING_ISSUE_NO_MODEL_RETRY",
+        "cohort": "E2-AEV100-85700545918390d7-DM",
+        "error": "CalledProcessError(2, ['/root/data/ep_l2_dtc_l1_native_v2/bin/experiment', 'run-native', 'E2-AEV100-85700545918390d7-DM', '--project', 'DTC_L1'], '', '{\"status\": \"HOLD\", \"reason\": \"[Errno 2] No such file or directory: \\'/proc/1263485/stat\\'\", \"error_type\": \"FileNotFoundError\", \"errno\": 2, \"model_retry\": false}\\n')",
+        "partial_cycles_accepted": false
+      },
+      "launch": {
+        "utc": "2026-10-25T14:07:46.920154+00:00",
+        "launcher_pid": 1263480,
+        "scientific_qualification_uuid": "97c43b01-9628-490f-839e-4a2a8126122e",
+        "finite_native_launcher_sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d",
+        "host_execution_binding": {
+          "actual_host_cpu": 70,
+          "adapter_sha256": "5456bcf34174d16679d99805556fea621cc6c1d2ae64f059523ace5185937c33",
+          "hard_cap_bytes": 17179869184,
+          "original_host_cpu": 5,
+          "original_spec_sha256": "5c4009713bfeaae90efc7666c73c8c372380340eeae401f9513f520193b5d622",
+          "outer_RAM_accounting_changed": true,
+          "plan_sha256": "1375fec2dfb0d023cd53daa8a4f953aa8d62966142281d4578cb6d244e20d100",
+          "profile": "HOST_ACTUAL4G40_V4",
+          "reservation_not_hard_cap": true,
+          "scientific_fields_changed": false,
+          "unchanged_original_native_function_source_sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d",
+          "working_set_floor_bytes": 4294967296
+        }
+      },
+      "captured_model_identity": {
+        "pid": 1263485,
+        "start_ticks": 968923826,
+        "cmdline": "/root/data/dtc_main_v100_sweep_20261025_v1/common-lib/ld-linux-x86-64.so.2 --inhibit-cache --library-path /root/data/dtc_main_v100_sweep_20261025_v1/DTC/env/lib /root/data/dtc_main_v100_sweep_20261025_v1/telemetry_v2/framework-build/accel-sim.out -trace /root/workspace/assets/traces/bundles/b1078876afe93f28615201619796b9f79ba617a44271c365c516dabbbc59c3b4/tree/kernelslist.g -config /root/data/dtc_main_v100_sweep_20261025_v1/DTC/env/DM/config-0.config -config /root/data/dtc_main_v100_sweep_20261025_v1/DTC/env/DM/config-1.config -config /root/data/dtc_main_v100_sweep_20261025_v1/DTC/env/DM/config-2.config -config /root/data/dtc_main_v100_sweep_20261025_v1/DTC/env/DM/config-3.config ",
+        "exe": "/root/data/ep_l2_dtc_l1_native_v2/common-lib/ld-linux-x86-64.so.2",
+        "mnt_namespace": "mnt:[4026535153]",
+        "pid_namespace": "pid:[4026535156]"
+      },
+      "current_actual_generations": {
+        "model": {
+          "pid": 1263485,
+          "expected_start_ticks": 968923826,
+          "observed_utc": "2026-10-25T15:42:15.468640+00:00",
+          "proc_present": false,
+          "expected_generation_matches": false,
+          "error": "[Errno 2] No such file or directory: '/proc/1263485/stat'"
+        },
+        "launcher_strace": {
+          "pid": 1263480,
+          "expected_start_ticks": null,
+          "observed_utc": "2026-10-25T15:42:15.468713+00:00",
+          "proc_present": false,
+          "expected_generation_matches": false,
+          "error": "[Errno 2] No such file or directory: '/proc/1263480/stat'"
+        },
+        "batch_controller": {
+          "pid": 1261423,
+          "expected_start_ticks": 968881318,
+          "observed_utc": "2026-10-25T15:42:15.468737+00:00",
+          "proc_present": true,
+          "state": "S",
+          "start_ticks": 968881318,
+          "expected_generation_matches": true,
+          "cmdline": "/usr/bin/python3 -B -u /root/data/dtc_main_v100_sweep_20261025_v1/tools/revision12b/sweep_controller.py "
+        }
+      },
+      "last_output_evidence": {
+        "raw_full_gzip_stream_read_and_CRC_validated": true,
+        "raw_compressed_sha256": "dae3d4d758f3c84aff94b931928e8961ff5a7e13dd17a7ce4b7de0af2660e88c",
+        "raw_uncompressed_bytes": 787545,
+        "raw_uncompressed_sha256": "9bee349ee7b473e1254558dd591d1752ded55e29d29380c847cde26ccd3fc0aa",
+        "raw_last_20_lines": [
+          "",
+          "Reply_Network_injected_packets_num = 5578716",
+          "Reply_Network_cycles = 316736",
+          "Reply_Network_injected_packets_per_cycle =       17.6131",
+          "Reply_Network_conflicts_per_cycle =        9.9051",
+          "Reply_Network_conflicts_per_cycle_util =      11.2523",
+          "Reply_Bank_Level_Parallism =      20.0088",
+          "Reply_Network_in_buffer_full_per_cycle =       5.0074",
+          "Reply_Network_in_buffer_avg_util =     225.1690",
+          "Reply_Network_out_buffer_full_per_cycle =       0.0000",
+          "Reply_Network_out_buffer_avg_util =       0.2752",
+          "----------------------------END-of-Interconnect-DETAILS-------------------------",
+          "",
+          "",
+          "gpgpu_simulation_time = 0 days, 0 hrs, 32 min, 48 sec (1968 sec)",
+          "gpgpu_simulation_rate = 174464 (inst/sec)",
+          "gpgpu_simulation_rate = 160 (cycle/sec)",
+          "gpgpu_silicon_slowdown = 8812500x",
+          "GPGPU-Sim: *** simulation thread exiting ***",
+          "GPGPU-Sim: *** exit detected ***"
+        ],
+        "raw_last_line": "GPGPU-Sim: *** exit detected ***",
+        "progress_records": 220,
+        "progress_sequences_exact_contiguous": true,
+        "progress_first": {
+          "v": 1,
+          "pid": 1263485,
+          "start_ticks": 968923826,
+          "generation": "97c43b01-9628-490f-839e-4a2a8126122e",
+          "input": "85700545918390d7a5cb33340f2043b13bf86a86d6141de238916cc60eb941cd",
+          "roi": "131453dbcdacad8b447776f98fabcdc68a82735e0481e1e79a5527c0835b3dec",
+          "seq": 1,
+          "mono_ns": 9689238593449778,
+          "epoch": 0,
+          "phase_epoch": 1,
+          "phase": "INIT",
+          "stream_id": -1,
+          "stream_scope": "whole_input",
+          "completed": 0,
+          "end": "NONE"
+        },
+        "progress_last": {
+          "v": 1,
+          "pid": 1263485,
+          "start_ticks": 968923826,
+          "generation": "97c43b01-9628-490f-839e-4a2a8126122e",
+          "input": "85700545918390d7a5cb33340f2043b13bf86a86d6141de238916cc60eb941cd",
+          "roi": "131453dbcdacad8b447776f98fabcdc68a82735e0481e1e79a5527c0835b3dec",
+          "seq": 220,
+          "mono_ns": 9691199296235177,
+          "epoch": 0,
+          "phase_epoch": 21,
+          "phase": "SIMULATE",
+          "stream_id": 0,
+          "stream_scope": "whole_input",
+          "completed": 341281796,
+          "end": "NONE"
+        },
+        "captured_terminal_NATURAL": false,
+        "expected_population": {
+          "CTA": 6060,
+          "instructions": 343346212,
+          "kernels": 5
+        },
+        "raw_instruction_totals_unaccepted": [
+          6515712,
+          13031424,
+          19547136,
+          66087936,
+          343346212
+        ],
+        "raw_CTA_totals_unaccepted": [
+          1212,
+          2424,
+          3636,
+          4848,
+          6060
+        ],
+        "raw_cycle_totals_DIAGNOSTIC_ONLY_UNACCEPTED": [
+          10636,
+          21362,
+          35938,
+          89576,
+          316736
+        ],
+        "raw_final_instruction_population_matches": true,
+        "raw_final_CTA_population_matches": true,
+        "fatal_diagnostic_lines_excluding_options": []
+      },
+      "original_strace_evidence": {
+        "trace_scope": "%file,process,network; default truncated packet payloads; no syscall timestamp/duration or parent frontend wait evidence.",
+        "model_send_count": 222,
+        "stored_progress_count": 220,
+        "successful_sends_not_in_progress_count": 2,
+        "all_model_send_calls_full_success": true,
+        "send_failures": [],
+        "model_exit_lines": [
+          "1263485 exit_group(0)                   = ?",
+          "1263485 +++ exited with 0 +++"
+        ],
+        "model_exit_group_zero_requested": true,
+        "model_strace_explicit_exited_zero": true,
+        "last_15_lines": [
+          "1263485 sendto(6, \"{\\\"v\\\":1,\\\"pid\\\":1263485,\\\"start_tick\"..., 407, MSG_DONTWAIT|MSG_NOSIGNAL, NULL, 0) = 407",
+          "1263485 sendto(6, \"{\\\"v\\\":1,\\\"pid\\\":1263485,\\\"start_tick\"..., 407, MSG_DONTWAIT|MSG_NOSIGNAL, NULL, 0) = 407",
+          "1263485 sendto(6, \"{\\\"v\\\":1,\\\"pid\\\":1263485,\\\"start_tick\"..., 407, MSG_DONTWAIT|MSG_NOSIGNAL, NULL, 0) = 407",
+          "1263485 sendto(6, \"{\\\"v\\\":1,\\\"pid\\\":1263485,\\\"start_tick\"..., 407, MSG_DONTWAIT|MSG_NOSIGNAL, NULL, 0) = 407",
+          "1263485 sendto(6, \"{\\\"v\\\":1,\\\"pid\\\":1263485,\\\"start_tick\"..., 407, MSG_DONTWAIT|MSG_NOSIGNAL, NULL, 0) = 407",
+          "1263485 sendto(6, \"{\\\"v\\\":1,\\\"pid\\\":1263485,\\\"start_tick\"..., 407, MSG_DONTWAIT|MSG_NOSIGNAL, NULL, 0) = 407",
+          "1263485 sendto(6, \"{\\\"v\\\":1,\\\"pid\\\":1263485,\\\"start_tick\"..., 407, MSG_DONTWAIT|MSG_NOSIGNAL, NULL, 0) = 407",
+          "1263485 wait4(1265571, [{WIFEXITED(s) && WEXITSTATUS(s) == 0}], 0, NULL) = 1265571",
+          "1263485 openat(AT_FDCWD, \"gpgpu_inst_stats.txt\", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3",
+          "1263485 newfstatat(3, \"\", {st_mode=S_IFREG|0644, st_size=0, ...}, AT_EMPTY_PATH) = 0",
+          "1263485 openat(AT_FDCWD, \"perf_counter_2026-10-25_14-07-46.csv.gz\", O_WRONLY|O_CREAT|O_APPEND, 0666) = 3",
+          "1263485 sendto(6, \"{\\\"v\\\":1,\\\"pid\\\":1263485,\\\"start_tick\"..., 408, MSG_DONTWAIT|MSG_NOSIGNAL, NULL, 0) = 408",
+          "1263485 sendto(6, \"{\\\"v\\\":1,\\\"pid\\\":1263485,\\\"start_tick\"..., 411, MSG_DONTWAIT|MSG_NOSIGNAL, NULL, 0) = 411",
+          "1263485 exit_group(0)                   = ?",
+          "1263485 +++ exited with 0 +++"
+        ],
+        "terminal_packet_payload_known": false,
+        "model_exit_evidence_does_not_supply_frontend_p_wait_rc": true
+      },
+      "resource_evidence": {
+        "normal_sample_count": 193,
+        "last_normal_samples": [
+          {
+            "utc": "2026-10-25T14:40:15.320560+00:00",
+            "native_free_bytes": 41301684224,
+            "free_inodes": 216499549,
+            "host_MemAvailable_bytes": 208950661120,
+            "cgroup_memory_current": 133828308992,
+            "cgroup_memory_max": "274877906944",
+            "required_free_bytes": 41013366508,
+            "local_safety_floor_bytes": 5368709120,
+            "bounded_own_remaining_write_and_restore_bytes": 35644657388,
+            "own_reservations": [
+              {
+                "cohort": "E2-AEV100-09f94fcc7494a03b-CM",
+                "remaining_write_and_restore_bytes": 1140506097
+              },
+              {
+                "cohort": "E2-AEV100-2315d0e612ee7cd4-CH",
+                "remaining_write_and_restore_bytes": 1107051878
+              },
+              {
+                "cohort": "E2-AEV100-2c506bf13c81ff5d-CM",
+                "remaining_write_and_restore_bytes": 1138118304
+              },
+              {
+                "cohort": "E2-AEV100-4114a3dc0d06b55b-DH",
+                "remaining_write_and_restore_bytes": 1104388325
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CH",
+                "remaining_write_and_restore_bytes": 1105860429
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CM",
+                "remaining_write_and_restore_bytes": 1105879016
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CH",
+                "remaining_write_and_restore_bytes": 1106996396
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CM",
+                "remaining_write_and_restore_bytes": 1106995551
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DH",
+                "remaining_write_and_restore_bytes": 1107018714
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DM",
+                "remaining_write_and_restore_bytes": 1106783806
+              },
+              {
+                "cohort": "E2-AEV100-79f8ab6241faeed6-CM",
+                "remaining_write_and_restore_bytes": 1240268217
+              },
+              {
+                "cohort": "E2-AEV100-85700545918390d7-DM",
+                "remaining_write_and_restore_bytes": 1106343364
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-CH",
+                "remaining_write_and_restore_bytes": 1107139403
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-DH",
+                "remaining_write_and_restore_bytes": 1106566975
+              },
+              {
+                "cohort": "E2-AEV100-b51811aca9dc70cf-DM",
+                "remaining_write_and_restore_bytes": 1107009671
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-CH",
+                "remaining_write_and_restore_bytes": 1140611268
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-DM",
+                "remaining_write_and_restore_bytes": 1139079833
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-CH",
+                "remaining_write_and_restore_bytes": 1106957081
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-DH",
+                "remaining_write_and_restore_bytes": 1107029972
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-CH",
+                "remaining_write_and_restore_bytes": 1105552283
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-CM",
+                "remaining_write_and_restore_bytes": 1105782823
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-DH",
+                "remaining_write_and_restore_bytes": 1106216012
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-DM",
+                "remaining_write_and_restore_bytes": 1107044020
+              },
+              {
+                "cohort": "E2-AEV100-e9110566572e0e0d-CH",
+                "remaining_write_and_restore_bytes": 1107136836
+              },
+              {
+                "cohort": "E2-AEV100-f437190767aaed49-DM",
+                "remaining_write_and_restore_bytes": 1106234768
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CH",
+                "remaining_write_and_restore_bytes": 1107191789
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CM",
+                "remaining_write_and_restore_bytes": 1106607811
+              },
+              {
+                "cohort": "E2-AEV100-fc0705ae3721e999-CM",
+                "remaining_write_and_restore_bytes": 1107146321
+              },
+              {
+                "cohort": "E2-AEV100-fd0772a865199cad-DH",
+                "remaining_write_and_restore_bytes": 1107142268
+              },
+              {
+                "cohort": "E2-AEV100-fd0772a865199cad-DM",
+                "remaining_write_and_restore_bytes": 1107142444
+              },
+              {
+                "cohort": "E2-AEV100-ffc8a89493c8a211-DM",
+                "remaining_write_and_restore_bytes": 1107113889
+              }
+            ],
+            "peer_reservations": [],
+            "other_outstanding_write_reservations_bytes": 0,
+            "reserved_additional_live_and_candidate_RAM_bytes": 65654792192,
+            "physical_RAM_pass": true,
+            "physical_disk_pass": true,
+            "fresh_local_resource_sample": true,
+            "storage_basis": "5GiB fast-tier margin plus known pending writes only;genuine164 bulk inputs/cold assets not duplicated;each new job admitted separately",
+            "host_execution_accounting": "HOST_ACTUAL4G40_V4",
+            "original_raw_cgroup_RAM_pass": false,
+            "original_full_hard_cap_RAM_reservation_bytes": 442567532544,
+            "cgroup_reclaimable_clean_inactive_file_credit_bytes": 25807679488,
+            "cgroup_effective_headroom_bytes": 166857277440,
+            "cgroup_memory_stat_for_credit": {
+              "file": 41511055360,
+              "inactive_file": 34397614080,
+              "shmem": 2500132864,
+              "file_mapped": 27992064,
+              "file_dirty": 0,
+              "file_writeback": 20480
+            },
+            "RAM_reservation_entries": [
+              {
+                "cohort": "E2-AEV100-09f94fcc7494a03b-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 4265607168,
+                "largest_member_bytes": 753500646,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 29360128
+              },
+              {
+                "cohort": "E2-AEV100-2315d0e612ee7cd4-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1077936128,
+                "largest_member_bytes": 965738377,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3217031168
+              },
+              {
+                "cohort": "E2-AEV100-2c506bf13c81ff5d-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 2195083264,
+                "largest_member_bytes": 112690838,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2099884032
+              },
+              {
+                "cohort": "E2-AEV100-4114a3dc0d06b55b-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1128267776,
+                "largest_member_bytes": 4072647057,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3166699520
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1077936128,
+                "largest_member_bytes": 387379205,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3217031168
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1077936128,
+                "largest_member_bytes": 387379205,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3217031168
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3061841920,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1233125376
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3053453312,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1241513984
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3112173568,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1182793728
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3116367872,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1178599424
+              },
+              {
+                "cohort": "E2-AEV100-79f8ab6241faeed6-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 515899392,
+                "largest_member_bytes": 4265350,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3779067904
+              },
+              {
+                "cohort": "E2-AEV100-85700545918390d7-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1631584256,
+                "largest_member_bytes": 541899526,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2663383040
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 4567597056,
+                "largest_member_bytes": 972713645,
+                "working_set_envelope_bytes": 4567597056,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 4638900224,
+                "largest_member_bytes": 972713645,
+                "working_set_envelope_bytes": 4638900224,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-b51811aca9dc70cf-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 9814671360,
+                "largest_member_bytes": 8701427470,
+                "working_set_envelope_bytes": 9814671360,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 708837376,
+                "largest_member_bytes": 37722054,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3586129920
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 713031680,
+                "largest_member_bytes": 37722054,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3581935616
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 511705088,
+                "largest_member_bytes": 840990934,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3783262208
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 595591168,
+                "largest_member_bytes": 840990934,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3699376128
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 641728512,
+                "largest_member_bytes": 405160748,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3653238784
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 645922816,
+                "largest_member_bytes": 405160748,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3649044480
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 654311424,
+                "largest_member_bytes": 405160748,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3640655872
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 629145600,
+                "largest_member_bytes": 405160748,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3665821696
+              },
+              {
+                "cohort": "E2-AEV100-e9110566572e0e0d-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 847249408,
+                "largest_member_bytes": 88824519,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3447717888
+              },
+              {
+                "cohort": "E2-AEV100-f437190767aaed49-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 2432696320,
+                "largest_member_bytes": 119991923,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1862270976
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1870659584,
+                "largest_member_bytes": 208386332,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2424307712
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1859457024,
+                "largest_member_bytes": 208386332,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2435510272
+              },
+              {
+                "cohort": "E2-AEV100-fc0705ae3721e999-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 5087690752,
+                "largest_member_bytes": 1110675117,
+                "working_set_envelope_bytes": 5087690752,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-fd0772a865199cad-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 6052380672,
+                "largest_member_bytes": 1195831612,
+                "working_set_envelope_bytes": 6052380672,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-fd0772a865199cad-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 6052380672,
+                "largest_member_bytes": 1195831612,
+                "working_set_envelope_bytes": 6052380672,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-ffc8a89493c8a211-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 16370368512,
+                "largest_member_bytes": 2216170035,
+                "working_set_envelope_bytes": 16370368512,
+                "additional_reserved_bytes": 0
+              }
+            ],
+            "legacy_host_V1_live_cells": [],
+            "legacy_full_hard_cap_predicate_pass": false,
+            "RAM_decision_scope": "RUNTIME_ACTUAL_HEADROOM",
+            "working_set_reservation_is_not_a_hard_cap": true,
+            "elapsed_seconds": 1948.6336615607142,
+            "process_tree_observed_rss_bytes": 1631584256
+          },
+          {
+            "utc": "2026-10-25T14:40:25.571817+00:00",
+            "native_free_bytes": 41301176320,
+            "free_inodes": 216499549,
+            "host_MemAvailable_bytes": 208983359488,
+            "cgroup_memory_current": 133967892480,
+            "cgroup_memory_max": "274877906944",
+            "required_free_bytes": 41013238740,
+            "local_safety_floor_bytes": 5368709120,
+            "bounded_own_remaining_write_and_restore_bytes": 35644529620,
+            "own_reservations": [
+              {
+                "cohort": "E2-AEV100-09f94fcc7494a03b-CM",
+                "remaining_write_and_restore_bytes": 1140505423
+              },
+              {
+                "cohort": "E2-AEV100-2315d0e612ee7cd4-CH",
+                "remaining_write_and_restore_bytes": 1107051216
+              },
+              {
+                "cohort": "E2-AEV100-2c506bf13c81ff5d-CM",
+                "remaining_write_and_restore_bytes": 1138117556
+              },
+              {
+                "cohort": "E2-AEV100-4114a3dc0d06b55b-DH",
+                "remaining_write_and_restore_bytes": 1104385605
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CH",
+                "remaining_write_and_restore_bytes": 1105859760
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CM",
+                "remaining_write_and_restore_bytes": 1105877556
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CH",
+                "remaining_write_and_restore_bytes": 1106995732
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CM",
+                "remaining_write_and_restore_bytes": 1106994885
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DH",
+                "remaining_write_and_restore_bytes": 1107018049
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DM",
+                "remaining_write_and_restore_bytes": 1106783086
+              },
+              {
+                "cohort": "E2-AEV100-79f8ab6241faeed6-CM",
+                "remaining_write_and_restore_bytes": 1240267575
+              },
+              {
+                "cohort": "E2-AEV100-85700545918390d7-DM",
+                "remaining_write_and_restore_bytes": 1106342709
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-CH",
+                "remaining_write_and_restore_bytes": 1107138747
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-DH",
+                "remaining_write_and_restore_bytes": 1106566230
+              },
+              {
+                "cohort": "E2-AEV100-b51811aca9dc70cf-DM",
+                "remaining_write_and_restore_bytes": 1107009005
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-CH",
+                "remaining_write_and_restore_bytes": 1140610598
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-DM",
+                "remaining_write_and_restore_bytes": 1139061096
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-CH",
+                "remaining_write_and_restore_bytes": 1106949492
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-DH",
+                "remaining_write_and_restore_bytes": 1107017121
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-CH",
+                "remaining_write_and_restore_bytes": 1105536861
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-CM",
+                "remaining_write_and_restore_bytes": 1105762650
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-DH",
+                "remaining_write_and_restore_bytes": 1106193948
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-DM",
+                "remaining_write_and_restore_bytes": 1107032589
+              },
+              {
+                "cohort": "E2-AEV100-e9110566572e0e0d-CH",
+                "remaining_write_and_restore_bytes": 1107136165
+              },
+              {
+                "cohort": "E2-AEV100-f437190767aaed49-DM",
+                "remaining_write_and_restore_bytes": 1106233650
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CH",
+                "remaining_write_and_restore_bytes": 1107191144
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CM",
+                "remaining_write_and_restore_bytes": 1106607058
+              },
+              {
+                "cohort": "E2-AEV100-fc0705ae3721e999-CM",
+                "remaining_write_and_restore_bytes": 1107145658
+              },
+              {
+                "cohort": "E2-AEV100-fd0772a865199cad-DH",
+                "remaining_write_and_restore_bytes": 1107141631
+              },
+              {
+                "cohort": "E2-AEV100-fd0772a865199cad-DM",
+                "remaining_write_and_restore_bytes": 1107141785
+              },
+              {
+                "cohort": "E2-AEV100-ffc8a89493c8a211-DM",
+                "remaining_write_and_restore_bytes": 1107113216
+              }
+            ],
+            "peer_reservations": [],
+            "other_outstanding_write_reservations_bytes": 0,
+            "reserved_additional_live_and_candidate_RAM_bytes": 65650597888,
+            "physical_RAM_pass": true,
+            "physical_disk_pass": true,
+            "fresh_local_resource_sample": true,
+            "storage_basis": "5GiB fast-tier margin plus known pending writes only;genuine164 bulk inputs/cold assets not duplicated;each new job admitted separately",
+            "host_execution_accounting": "HOST_ACTUAL4G40_V4",
+            "original_raw_cgroup_RAM_pass": false,
+            "original_full_hard_cap_RAM_reservation_bytes": 442563338240,
+            "cgroup_reclaimable_clean_inactive_file_credit_bytes": 25946423296,
+            "cgroup_effective_headroom_bytes": 166856437760,
+            "cgroup_memory_stat_for_credit": {
+              "file": 41649827840,
+              "inactive_file": 34536357888,
+              "shmem": 2500132864,
+              "file_mapped": 27992064,
+              "file_dirty": 249856,
+              "file_writeback": 36864
+            },
+            "RAM_reservation_entries": [
+              {
+                "cohort": "E2-AEV100-09f94fcc7494a03b-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 4265607168,
+                "largest_member_bytes": 753500646,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 29360128
+              },
+              {
+                "cohort": "E2-AEV100-2315d0e612ee7cd4-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1077936128,
+                "largest_member_bytes": 965738377,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3217031168
+              },
+              {
+                "cohort": "E2-AEV100-2c506bf13c81ff5d-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 2195083264,
+                "largest_member_bytes": 112690838,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2099884032
+              },
+              {
+                "cohort": "E2-AEV100-4114a3dc0d06b55b-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1128267776,
+                "largest_member_bytes": 4072647057,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3166699520
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1077936128,
+                "largest_member_bytes": 387379205,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3217031168
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1077936128,
+                "largest_member_bytes": 387379205,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3217031168
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3061841920,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1233125376
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3053453312,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1241513984
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3112173568,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1182793728
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3116367872,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1178599424
+              },
+              {
+                "cohort": "E2-AEV100-79f8ab6241faeed6-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 515899392,
+                "largest_member_bytes": 4265350,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3779067904
+              },
+              {
+                "cohort": "E2-AEV100-85700545918390d7-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1631584256,
+                "largest_member_bytes": 541899526,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2663383040
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 4567597056,
+                "largest_member_bytes": 972713645,
+                "working_set_envelope_bytes": 4567597056,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 4638900224,
+                "largest_member_bytes": 972713645,
+                "working_set_envelope_bytes": 4638900224,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-b51811aca9dc70cf-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 9814671360,
+                "largest_member_bytes": 8701427470,
+                "working_set_envelope_bytes": 9814671360,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 708837376,
+                "largest_member_bytes": 37722054,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3586129920
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 713031680,
+                "largest_member_bytes": 37722054,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3581935616
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 511705088,
+                "largest_member_bytes": 840990934,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3783262208
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 595591168,
+                "largest_member_bytes": 840990934,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3699376128
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 641728512,
+                "largest_member_bytes": 405160748,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3653238784
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 645922816,
+                "largest_member_bytes": 405160748,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3649044480
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 658505728,
+                "largest_member_bytes": 405160748,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3636461568
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 629145600,
+                "largest_member_bytes": 405160748,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3665821696
+              },
+              {
+                "cohort": "E2-AEV100-e9110566572e0e0d-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 847249408,
+                "largest_member_bytes": 88824519,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3447717888
+              },
+              {
+                "cohort": "E2-AEV100-f437190767aaed49-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 2432696320,
+                "largest_member_bytes": 119991923,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1862270976
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1870659584,
+                "largest_member_bytes": 208386332,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2424307712
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1859457024,
+                "largest_member_bytes": 208386332,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2435510272
+              },
+              {
+                "cohort": "E2-AEV100-fc0705ae3721e999-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 5087690752,
+                "largest_member_bytes": 1110675117,
+                "working_set_envelope_bytes": 5087690752,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-fd0772a865199cad-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 6052380672,
+                "largest_member_bytes": 1195831612,
+                "working_set_envelope_bytes": 6052380672,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-fd0772a865199cad-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 6052380672,
+                "largest_member_bytes": 1195831612,
+                "working_set_envelope_bytes": 6052380672,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-ffc8a89493c8a211-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 16370368512,
+                "largest_member_bytes": 2216170035,
+                "working_set_envelope_bytes": 16370368512,
+                "additional_reserved_bytes": 0
+              }
+            ],
+            "legacy_host_V1_live_cells": [],
+            "legacy_full_hard_cap_predicate_pass": false,
+            "RAM_decision_scope": "RUNTIME_ACTUAL_HEADROOM",
+            "working_set_reservation_is_not_a_hard_cap": true,
+            "elapsed_seconds": 1958.893345143646,
+            "process_tree_observed_rss_bytes": 1631584256
+          },
+          {
+            "utc": "2026-10-25T14:40:35.839779+00:00",
+            "native_free_bytes": 41300922368,
+            "free_inodes": 216499549,
+            "host_MemAvailable_bytes": 209072783360,
+            "cgroup_memory_current": 134086414336,
+            "cgroup_memory_max": "274877906944",
+            "required_free_bytes": 41012956087,
+            "local_safety_floor_bytes": 5368709120,
+            "bounded_own_remaining_write_and_restore_bytes": 35644246967,
+            "own_reservations": [
+              {
+                "cohort": "E2-AEV100-09f94fcc7494a03b-CM",
+                "remaining_write_and_restore_bytes": 1140504778
+              },
+              {
+                "cohort": "E2-AEV100-2315d0e612ee7cd4-CH",
+                "remaining_write_and_restore_bytes": 1107050574
+              },
+              {
+                "cohort": "E2-AEV100-2c506bf13c81ff5d-CM",
+                "remaining_write_and_restore_bytes": 1138116818
+              },
+              {
+                "cohort": "E2-AEV100-4114a3dc0d06b55b-DH",
+                "remaining_write_and_restore_bytes": 1104384067
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CH",
+                "remaining_write_and_restore_bytes": 1105796049
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CM",
+                "remaining_write_and_restore_bytes": 1105871368
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CH",
+                "remaining_write_and_restore_bytes": 1106995079
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CM",
+                "remaining_write_and_restore_bytes": 1106991635
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DH",
+                "remaining_write_and_restore_bytes": 1107017407
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DM",
+                "remaining_write_and_restore_bytes": 1106782373
+              },
+              {
+                "cohort": "E2-AEV100-79f8ab6241faeed6-CM",
+                "remaining_write_and_restore_bytes": 1240201251
+              },
+              {
+                "cohort": "E2-AEV100-85700545918390d7-DM",
+                "remaining_write_and_restore_bytes": 1106309898
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-CH",
+                "remaining_write_and_restore_bytes": 1107138093
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-DH",
+                "remaining_write_and_restore_bytes": 1106565505
+              },
+              {
+                "cohort": "E2-AEV100-b51811aca9dc70cf-DM",
+                "remaining_write_and_restore_bytes": 1107008356
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-CH",
+                "remaining_write_and_restore_bytes": 1140609954
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-DM",
+                "remaining_write_and_restore_bytes": 1139060358
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-CH",
+                "remaining_write_and_restore_bytes": 1106942408
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-DH",
+                "remaining_write_and_restore_bytes": 1107002708
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-CH",
+                "remaining_write_and_restore_bytes": 1105516813
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-CM",
+                "remaining_write_and_restore_bytes": 1105743385
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-DH",
+                "remaining_write_and_restore_bytes": 1106172400
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-DM",
+                "remaining_write_and_restore_bytes": 1107018837
+              },
+              {
+                "cohort": "E2-AEV100-e9110566572e0e0d-CH",
+                "remaining_write_and_restore_bytes": 1107135514
+              },
+              {
+                "cohort": "E2-AEV100-f437190767aaed49-DM",
+                "remaining_write_and_restore_bytes": 1106233014
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CH",
+                "remaining_write_and_restore_bytes": 1107190477
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CM",
+                "remaining_write_and_restore_bytes": 1106606346
+              },
+              {
+                "cohort": "E2-AEV100-fc0705ae3721e999-CM",
+                "remaining_write_and_restore_bytes": 1107145010
+              },
+              {
+                "cohort": "E2-AEV100-fd0772a865199cad-DH",
+                "remaining_write_and_restore_bytes": 1107140962
+              },
+              {
+                "cohort": "E2-AEV100-fd0772a865199cad-DM",
+                "remaining_write_and_restore_bytes": 1107141136
+              },
+              {
+                "cohort": "E2-AEV100-ffc8a89493c8a211-DM",
+                "remaining_write_and_restore_bytes": 1107112570
+              }
+            ],
+            "peer_reservations": [],
+            "other_outstanding_write_reservations_bytes": 0,
+            "reserved_additional_live_and_candidate_RAM_bytes": 67282182144,
+            "physical_RAM_pass": true,
+            "physical_disk_pass": true,
+            "fresh_local_resource_sample": true,
+            "storage_basis": "5GiB fast-tier margin plus known pending writes only;genuine164 bulk inputs/cold assets not duplicated;each new job admitted separately",
+            "host_execution_accounting": "HOST_ACTUAL4G40_V4",
+            "original_raw_cgroup_RAM_pass": false,
+            "original_full_hard_cap_RAM_reservation_bytes": 444194922496,
+            "cgroup_reclaimable_clean_inactive_file_credit_bytes": 26064900096,
+            "cgroup_effective_headroom_bytes": 166856392704,
+            "cgroup_memory_stat_for_credit": {
+              "file": 41768243200,
+              "inactive_file": 34654834688,
+              "shmem": 2500132864,
+              "file_mapped": 28426240,
+              "file_dirty": 90112,
+              "file_writeback": 0
+            },
+            "RAM_reservation_entries": [
+              {
+                "cohort": "E2-AEV100-09f94fcc7494a03b-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 4265607168,
+                "largest_member_bytes": 753500646,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 29360128
+              },
+              {
+                "cohort": "E2-AEV100-2315d0e612ee7cd4-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1077936128,
+                "largest_member_bytes": 965738377,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3217031168
+              },
+              {
+                "cohort": "E2-AEV100-2c506bf13c81ff5d-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 2195083264,
+                "largest_member_bytes": 112690838,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2099884032
+              },
+              {
+                "cohort": "E2-AEV100-4114a3dc0d06b55b-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1128267776,
+                "largest_member_bytes": 4072647057,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3166699520
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1077936128,
+                "largest_member_bytes": 387379205,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3217031168
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1077936128,
+                "largest_member_bytes": 387379205,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3217031168
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3061841920,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1233125376
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3053453312,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1241513984
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3112173568,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1182793728
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3116367872,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1178599424
+              },
+              {
+                "cohort": "E2-AEV100-79f8ab6241faeed6-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 515899392,
+                "largest_member_bytes": 4265350,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3779067904
+              },
+              {
+                "cohort": "E2-AEV100-85700545918390d7-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 0,
+                "largest_member_bytes": 541899526,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 4294967296
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 4567597056,
+                "largest_member_bytes": 972713645,
+                "working_set_envelope_bytes": 4567597056,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 4638900224,
+                "largest_member_bytes": 972713645,
+                "working_set_envelope_bytes": 4638900224,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-b51811aca9dc70cf-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 9814671360,
+                "largest_member_bytes": 8701427470,
+                "working_set_envelope_bytes": 9814671360,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 708837376,
+                "largest_member_bytes": 37722054,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3586129920
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 713031680,
+                "largest_member_bytes": 37722054,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3581935616
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 511705088,
+                "largest_member_bytes": 840990934,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3783262208
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 595591168,
+                "largest_member_bytes": 840990934,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3699376128
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 641728512,
+                "largest_member_bytes": 405160748,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3653238784
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 645922816,
+                "largest_member_bytes": 405160748,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3649044480
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 658505728,
+                "largest_member_bytes": 405160748,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3636461568
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 629145600,
+                "largest_member_bytes": 405160748,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3665821696
+              },
+              {
+                "cohort": "E2-AEV100-e9110566572e0e0d-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 847249408,
+                "largest_member_bytes": 88824519,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3447717888
+              },
+              {
+                "cohort": "E2-AEV100-f437190767aaed49-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 2432696320,
+                "largest_member_bytes": 119991923,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1862270976
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1870659584,
+                "largest_member_bytes": 208386332,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2424307712
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1859457024,
+                "largest_member_bytes": 208386332,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2435510272
+              },
+              {
+                "cohort": "E2-AEV100-fc0705ae3721e999-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 5087690752,
+                "largest_member_bytes": 1110675117,
+                "working_set_envelope_bytes": 5087690752,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-fd0772a865199cad-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 6052380672,
+                "largest_member_bytes": 1195831612,
+                "working_set_envelope_bytes": 6052380672,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-fd0772a865199cad-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 6052380672,
+                "largest_member_bytes": 1195831612,
+                "working_set_envelope_bytes": 6052380672,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-ffc8a89493c8a211-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 16370368512,
+                "largest_member_bytes": 2216170035,
+                "working_set_envelope_bytes": 16370368512,
+                "additional_reserved_bytes": 0
+              }
+            ],
+            "legacy_host_V1_live_cells": [],
+            "legacy_full_hard_cap_predicate_pass": false,
+            "RAM_decision_scope": "RUNTIME_ACTUAL_HEADROOM",
+            "working_set_reservation_is_not_a_hard_cap": true,
+            "elapsed_seconds": 1969.155744040385,
+            "process_tree_observed_rss_bytes": 0
+          }
+        ],
+        "original_policy_decision_counts": {
+          "CONTINUE": 188,
+          "WARN": 4
+        },
+        "original_policy_STOP_samples": [],
+        "all_observed_RAM_and_disk_pass": true
+      },
+      "absent_original_receipts": {
+        "NATIVE_EXIT": true,
+        "DONE": true,
+        "SCIENCE_QUALIFICATION": true
+      },
+      "forensic_status": "ENGINEERING_OBSERVER_PROC_EXIT_RACE_GENERATIONS_GONE_CLOSURE_MISSING_UNACCEPTED",
+      "proven_facts": [
+        "原INTENT与registry charged=1/UUID/SHA吻合，启动与PID generation证据完整。",
+        "原controller RESULT记录FileNotFoundError于已绑定模型/proc路径，未记录可接受完整科学退出。",
+        "完整raw已输出simulation thread exiting/exit detected与人口终值；真实strace末尾出现该模型exit_group(0)。",
+        "progress仅存连续非terminal记录；另2个send成功但payload被strace截断，不能当成已认证NATURAL。",
+        "当前绑定模型与strace launcher PID均不存在，原generation已结束。",
+        "旧NATIVE_EXIT、DONE、SCIENCE_QUALIFICATION均缺失。"
+      ],
+      "source_causal_analysis": {
+        "observer_source_sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d",
+        "candidate_call_sites": [
+          {
+            "line": 106,
+            "site": "child_info: /proc/<pid>/stat read"
+          },
+          {
+            "line": 219,
+            "site": "full sample: own-major-fault /proc/<pid>/stat read"
+          }
+        ],
+        "consistent_failure_path": "while-loop poll can observe launcher alive, then full resource/identity sampling races model natural teardown; uncaught ENOENT unwinds finally before p.wait, final telemetry drain and receipt construction.",
+        "proof_limit": "No original Python traceback/call-stack or frontend p.wait returncode survived. CFD exact stat read line cannot be uniquely selected between live checks. b+tree exe path matches child_info field read. This is not a manufactured original exit receipt."
+      },
+      "scientific_disposition": {
+        "state": "UNACCEPTED_PRESERVE_ORIGINAL_ATTEMPT",
+        "accepted_cycles": null,
+        "performance_PASS": false,
+        "old_budget_charged": 1,
+        "old_budget_refund_or_reset": false,
+        "original_done_or_exit_fabricated": false,
+        "original_matrix_complete": false,
+        "source_disposition": "SOURCE_KEEP",
+        "may_skip_wait_for_old_receipt_for_R13_dispatch_only": true,
+        "skip_scope": "Explicit reviewed engineering disposition permits later never-started cells to dispatch; it does not satisfy final matrix/consumer/strict gates.",
+        "new_repair_generation_separate": true,
+        "same_attempt_retry": false,
+        "further_validation": "Separate repair request includes a new UUID/attempt for this exact full input/config under repaired observer/runtime; keep original attempts and all evidence."
+      },
+      "evidence": [
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/97c43b01-9628-490f-839e-4a2a8126122e/progress.jsonl.gz",
+          "bytes": 7986,
+          "sha256": "d3d66191bed8c69a5f3f2f5815b77a2dc2ca050cbcf8f9e3201e473a6ddfc0d4"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/97c43b01-9628-490f-839e-4a2a8126122e/NATIVE_LAUNCH.json",
+          "bytes": 50920,
+          "sha256": "b7b08a8e26a2d05def845099c786319857a5bfece073f54330d71e215d4e337d"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/97c43b01-9628-490f-839e-4a2a8126122e/perf_counter_2026-10-25_14-07-46.csv.gz",
+          "bytes": 27275,
+          "sha256": "c30b04a70d76b988e9a91c515dd1ef7d1adf4f1a8f4cc5b3a9dca6a7960cbb28"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/97c43b01-9628-490f-839e-4a2a8126122e/perf_counter.csv.gz",
+          "bytes": 27275,
+          "sha256": "c30b04a70d76b988e9a91c515dd1ef7d1adf4f1a8f4cc5b3a9dca6a7960cbb28"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/97c43b01-9628-490f-839e-4a2a8126122e/NATIVE_SIMULATOR_PID_AND_MAPS.json",
+          "bytes": 9221,
+          "sha256": "2e01fa68d97bc64f0d6b855448d3cb80e3db551fedb09365263bdbd91678129e"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/97c43b01-9628-490f-839e-4a2a8126122e/raw.log.gz",
+          "bytes": 89955,
+          "sha256": "dae3d4d758f3c84aff94b931928e8961ff5a7e13dd17a7ce4b7de0af2660e88c"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/97c43b01-9628-490f-839e-4a2a8126122e/RESOURCE_SAMPLES.jsonl.gz",
+          "bytes": 109655,
+          "sha256": "1d32315cd16accbee95afc11d50d9b9eafa1631595d5fb4c48a08dd1088a3481"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/97c43b01-9628-490f-839e-4a2a8126122e/actual_file_process_network.log",
+          "bytes": 678050,
+          "sha256": "bcd9b639b3c4104b18ad4901f79a8fb8129f85744b022bfea4ae130fee282618"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/97c43b01-9628-490f-839e-4a2a8126122e/gpgpu_inst_stats.txt",
+          "bytes": 133,
+          "sha256": "bb21a46c51c2cab168764097ace9a99a20b455a56bd49fe2c1eb78696a32a0b8"
+        },
+        {
+          "path": "/root/data/ep_l2_dtc_l1_native_v2/control/science_authority/requests/DTC_AE_V100_FULL_SWEEP_20261025_V1/E2-AEV100-85700545918390d7-DM.INTENT.json",
+          "bytes": 5380,
+          "sha256": "ad534b376c24f100194076fffed54a18e71fef298235f5ff60052b673b327993"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/E2-AEV100-85700545918390d7-DM.RESULT.json",
+          "bytes": 478,
+          "sha256": "10c197f2940a0650cca6c3d30c5e199cae6becb37038bba3f06d9d3567608164"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-85700545918390d7-DM_SPEC.json",
+          "bytes": 23310,
+          "sha256": "5c4009713bfeaae90efc7666c73c8c372380340eeae401f9513f520193b5d622"
+        }
+      ],
+      "signals_sent": 0,
+      "simulations_started": 0,
+      "historical_file_SHA_unchanged_over_forensic_read": true
+    },
+    {
+      "cohort": "E2-AEV100-e7c791ce2e4b09ee-DM",
+      "program": "b+tree",
+      "arm": "DM",
+      "uuid": "f6c79f5f-6b0e-42d7-a5be-c3013fa7aaba",
+      "input_digest": "e7c791ce2e4b09eea844428fdf220e0d3f095783c022a60aa9186c6146ddd83c",
+      "original_INTENT": {
+        "authorization_sha256": "d84e40ff4a222070171ec66a29022ce2e9baa445b274bad495cb162a935f03b9",
+        "automatic_retry": false,
+        "batch_lease_pid": 1261423,
+        "batch_lease_start_ticks": 968881318,
+        "cohort": "E2-AEV100-e7c791ce2e4b09ee-DM",
+        "consumed_before_launcher_fork": 1,
+        "host_execution_binding": {
+          "actual_host_cpu": 84,
+          "adapter_sha256": "5456bcf34174d16679d99805556fea621cc6c1d2ae64f059523ace5185937c33",
+          "hard_cap_bytes": 17179869184,
+          "original_host_cpu": 8,
+          "original_spec_sha256": "10ba98b449abd5a371da664fe8748e72ea2aeb48cab8cd001bb28ca1fd73f284",
+          "outer_RAM_accounting_changed": true,
+          "plan_sha256": "1375fec2dfb0d023cd53daa8a4f953aa8d62966142281d4578cb6d244e20d100",
+          "profile": "HOST_ACTUAL4G40_V4",
+          "reservation_not_hard_cap": true,
+          "scientific_fields_changed": false,
+          "unchanged_original_native_function_source_sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d",
+          "working_set_floor_bytes": 4294967296
+        },
+        "old_ledger_mutations": 0,
+        "operational_resource_profile": {
+          "CPU_protocol_qualification_sha256": "6f0dc6a66ca189a3be3c992b78c2408e2aaa3f36efffa0efd5238e555eb6e373",
+          "Core_commit": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+          "activation_prior_consumed": 105,
+          "build_receipt_sha256": "ad95b2bc0a882c671062a1b78d7326b78ca00f3ef2a2d5033242adf9d5a1a768",
+          "candidate_sha256": "a1f28608025eba346abf83eb76d085bcc3e8fff6ce64b5bb0ed2f78910642728",
+          "engine_sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d",
+          "finite_budget": 356,
+          "framework_binary": {
+            "bytes": 301432,
+            "path": "/root/data/dtc_main_v100_sweep_20261025_v1/telemetry_v2/framework-build/accel-sim.out",
+            "sha256": "b963139b72ea1fe5000c35803386f3a5b5eaf4905e127f1bdb12f16e13486329"
+          },
+          "framework_commit": "3b362ab5c0934fdcea9697b10244c6de5c4a14ae",
+          "framework_parent": "cfd3ff56d7ba6642dab6c7710ec4f6065168174e",
+          "framework_publication_sha256": "2475abf4f7bbc7a39e02304963b752cb416f4ea7fa743163621c4ba1671e7f7b",
+          "max_records": 1048576,
+          "model_retries": 0,
+          "observational_source_delta": "Framework exactly one header record-limit constant;receiver total-limit plus unchanged original drain budget;Core/cache/performance options/input/config unchanged",
+          "old_authority_and_original_specs_preserved": true,
+          "per_drain_records": 8193,
+          "profile_id": "OBSERVABILITY_CAP1M_WALL90_V1",
+          "publication_commit": "6fc438fa9b4e0567c8e22a81ee44bd3aa3917a07",
+          "qualification_sha256": "ef510dec9f0447f8adb32d73ffe4aadf8869dea92cef825f1552c97e0fa9f79c",
+          "runtime_spec_producer_sha256": "b87a5ff4a6fbf590932a71a1654372a2d64f29b4f443c72312b0d3c4919a1d05",
+          "source_pins": [
+            {
+              "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_native_cap1m.py",
+              "sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d"
+            },
+            {
+              "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_strict_cap1m.py",
+              "sha256": "87ee4025dce16a909a30c9e94a10dcaad14d3e71b3846371edd3be15a9b0bac5"
+            },
+            {
+              "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_guard_cap1m.py",
+              "sha256": "51c02e46b3af91bfb4f76d44f39aac6ad0a02cf62302a3790632bc77df7c0055"
+            },
+            {
+              "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_cap1m_specs.py",
+              "sha256": "b87a5ff4a6fbf590932a71a1654372a2d64f29b4f443c72312b0d3c4919a1d05"
+            },
+            {
+              "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_admission_cap1m.py",
+              "sha256": "9c5e37fc8f50677d3bb557c1991e7831ca0f371df9b63bcd1b7fe6ba563af7cc"
+            },
+            {
+              "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_failure_review_cap1m.py",
+              "sha256": "bc4d0a5bc78ee421f111dac806c43360bbffbf3fee4a435e6f23a048a7b93341"
+            },
+            {
+              "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_frontend_cap1m.py",
+              "sha256": "5c269152d4b67ddb1b7fb209f676bf8238b24375496bfded2b3af3e443d4f01d"
+            },
+            {
+              "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/runtime_policy_wall90_v1.py",
+              "sha256": "d1a3f21ce1c9eac89b8428f0732000d81936577d080b7bcf1c48ebe38980f187"
+            },
+            {
+              "path": "/root/data/dtc_main_v100_sweep_20261025_v1/telemetry_v2/telemetry_receiver_cap1m.py",
+              "sha256": "f523975b9780b498b988e2b3145ba5b4aebdef4d0e9b0146392d3a31a99a4ec1"
+            },
+            {
+              "path": "/root/data/dtc_main_v100_sweep_20261025_v1/telemetry_v2/framework/gpu-simulator/ag7_policyb_progress.h",
+              "sha256": "1ac79290097868939720ea167404102981b2c08209b87176ee535b793874dea2"
+            }
+          ],
+          "source_worktrees": {
+            "core": "/root/data/dtc_main_20261023_v1/ae_fair_v1/core",
+            "framework": "/root/data/dtc_main_v100_sweep_20261025_v1/telemetry_v2/framework"
+          },
+          "status": "REGISTERED_FOR_ORIGINAL_UNUSED_CELLS",
+          "strict_sha256": "87ee4025dce16a909a30c9e94a10dcaad14d3e71b3846371edd3be15a9b0bac5",
+          "wall_seconds": 7776000
+        },
+        "output": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/f6c79f5f-6b0e-42d7-a5be-c3013fa7aaba",
+        "spec_sha256": "10ba98b449abd5a371da664fe8748e72ea2aeb48cab8cd001bb28ca1fd73f284",
+        "utc": "2026-10-25T14:37:52.290718+00:00",
+        "uuid": "f6c79f5f-6b0e-42d7-a5be-c3013fa7aaba"
+      },
+      "INTENT_evidence": {
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/science_authority/requests/DTC_AE_V100_FULL_SWEEP_20261025_V1/E2-AEV100-e7c791ce2e4b09ee-DM.INTENT.json",
+        "bytes": 5380,
+        "sha256": "a3c18dded86de716609ecab0003c9530d4628bcd9bce8b080f0f910d6f7fa0a2"
+      },
+      "registry_consumed_row": {
+        "charged": 1,
+        "intent": "/root/data/ep_l2_dtc_l1_native_v2/control/science_authority/requests/DTC_AE_V100_FULL_SWEEP_20261025_V1/E2-AEV100-e7c791ce2e4b09ee-DM.INTENT.json",
+        "intent_sha256": "a3c18dded86de716609ecab0003c9530d4628bcd9bce8b080f0f910d6f7fa0a2",
+        "uuid": "f6c79f5f-6b0e-42d7-a5be-c3013fa7aaba"
+      },
+      "original_controller_error": {
+        "state": "RESOLVING_ISSUE_NO_MODEL_RETRY",
+        "cohort": "E2-AEV100-e7c791ce2e4b09ee-DM",
+        "error": "CalledProcessError(2, ['/root/data/ep_l2_dtc_l1_native_v2/bin/experiment', 'run-native', 'E2-AEV100-e7c791ce2e4b09ee-DM', '--project', 'DTC_L1'], '', '{\"status\": \"HOLD\", \"reason\": \"[Errno 2] No such file or directory: \\'/proc/1270448/exe\\'\", \"error_type\": \"FileNotFoundError\", \"errno\": 2, \"model_retry\": false}\\n')",
+        "partial_cycles_accepted": false
+      },
+      "launch": {
+        "utc": "2026-10-25T14:37:52.389605+00:00",
+        "launcher_pid": 1270443,
+        "scientific_qualification_uuid": "f6c79f5f-6b0e-42d7-a5be-c3013fa7aaba",
+        "finite_native_launcher_sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d",
+        "host_execution_binding": {
+          "actual_host_cpu": 84,
+          "adapter_sha256": "5456bcf34174d16679d99805556fea621cc6c1d2ae64f059523ace5185937c33",
+          "hard_cap_bytes": 17179869184,
+          "original_host_cpu": 8,
+          "original_spec_sha256": "10ba98b449abd5a371da664fe8748e72ea2aeb48cab8cd001bb28ca1fd73f284",
+          "outer_RAM_accounting_changed": true,
+          "plan_sha256": "1375fec2dfb0d023cd53daa8a4f953aa8d62966142281d4578cb6d244e20d100",
+          "profile": "HOST_ACTUAL4G40_V4",
+          "reservation_not_hard_cap": true,
+          "scientific_fields_changed": false,
+          "unchanged_original_native_function_source_sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d",
+          "working_set_floor_bytes": 4294967296
+        }
+      },
+      "captured_model_identity": {
+        "pid": 1270448,
+        "start_ticks": 969104373,
+        "cmdline": "/root/data/dtc_main_v100_sweep_20261025_v1/common-lib/ld-linux-x86-64.so.2 --inhibit-cache --library-path /root/data/dtc_main_v100_sweep_20261025_v1/DTC/env/lib /root/data/dtc_main_v100_sweep_20261025_v1/telemetry_v2/framework-build/accel-sim.out -trace /root/workspace/assets/traces/bundles/d3bbd8d5d7dc67ab426e2373d8fe95a9690dfeef18e789f8657e3e723fb971f4/tree/kernelslist.g -config /root/data/dtc_main_v100_sweep_20261025_v1/DTC/env/DM/config-0.config -config /root/data/dtc_main_v100_sweep_20261025_v1/DTC/env/DM/config-1.config -config /root/data/dtc_main_v100_sweep_20261025_v1/DTC/env/DM/config-2.config -config /root/data/dtc_main_v100_sweep_20261025_v1/DTC/env/DM/config-3.config ",
+        "exe": "/root/data/ep_l2_dtc_l1_native_v2/common-lib/ld-linux-x86-64.so.2",
+        "mnt_namespace": "mnt:[4026535153]",
+        "pid_namespace": "pid:[4026535156]"
+      },
+      "current_actual_generations": {
+        "model": {
+          "pid": 1270448,
+          "expected_start_ticks": 969104373,
+          "observed_utc": "2026-10-25T15:42:15.557053+00:00",
+          "proc_present": false,
+          "expected_generation_matches": false,
+          "error": "[Errno 2] No such file or directory: '/proc/1270448/stat'"
+        },
+        "launcher_strace": {
+          "pid": 1270443,
+          "expected_start_ticks": null,
+          "observed_utc": "2026-10-25T15:42:15.557123+00:00",
+          "proc_present": false,
+          "expected_generation_matches": false,
+          "error": "[Errno 2] No such file or directory: '/proc/1270443/stat'"
+        },
+        "batch_controller": {
+          "pid": 1261423,
+          "expected_start_ticks": 968881318,
+          "observed_utc": "2026-10-25T15:42:15.557162+00:00",
+          "proc_present": true,
+          "state": "S",
+          "start_ticks": 968881318,
+          "expected_generation_matches": true,
+          "cmdline": "/usr/bin/python3 -B -u /root/data/dtc_main_v100_sweep_20261025_v1/tools/revision12b/sweep_controller.py "
+        }
+      },
+      "last_output_evidence": {
+        "raw_full_gzip_stream_read_and_CRC_validated": true,
+        "raw_compressed_sha256": "221466bedec198671dc75a15ba83d7c36fbc012594210d7a609e46948ebdc3b6",
+        "raw_uncompressed_bytes": 615241,
+        "raw_uncompressed_sha256": "c3ba240039ee23929d26905af9b3978c61c7fd3ece3886d6e2ed971d403e1dae",
+        "raw_last_20_lines": [
+          "",
+          "Reply_Network_injected_packets_num = 1842232",
+          "Reply_Network_cycles = 153155",
+          "Reply_Network_injected_packets_per_cycle =       12.0285",
+          "Reply_Network_conflicts_per_cycle =        2.8710",
+          "Reply_Network_conflicts_per_cycle_util =       3.1125",
+          "Reply_Bank_Level_Parallism =      13.0402",
+          "Reply_Network_in_buffer_full_per_cycle =       0.0000",
+          "Reply_Network_in_buffer_avg_util =       5.0492",
+          "Reply_Network_out_buffer_full_per_cycle =       0.0000",
+          "Reply_Network_out_buffer_avg_util =       0.1879",
+          "----------------------------END-of-Interconnect-DETAILS-------------------------",
+          "",
+          "",
+          "gpgpu_simulation_time = 0 days, 0 hrs, 14 min, 50 sec (890 sec)",
+          "gpgpu_simulation_rate = 499402 (inst/sec)",
+          "gpgpu_simulation_rate = 172 (cycle/sec)",
+          "gpgpu_silicon_slowdown = 8197674x",
+          "GPGPU-Sim: *** simulation thread exiting ***",
+          "GPGPU-Sim: *** exit detected ***"
+        ],
+        "raw_last_line": "GPGPU-Sim: *** exit detected ***",
+        "progress_records": 99,
+        "progress_sequences_exact_contiguous": true,
+        "progress_first": {
+          "v": 1,
+          "pid": 1270448,
+          "start_ticks": 969104373,
+          "generation": "f6c79f5f-6b0e-42d7-a5be-c3013fa7aaba",
+          "input": "e7c791ce2e4b09eea844428fdf220e0d3f095783c022a60aa9186c6146ddd83c",
+          "roi": "8f59084b27fec3d0ac21338e9359953babf594dd5e95b5f92cdfe8910a6c8ab5",
+          "seq": 1,
+          "mono_ns": 9691044084504947,
+          "epoch": 0,
+          "phase_epoch": 1,
+          "phase": "INIT",
+          "stream_id": -1,
+          "stream_scope": "whole_input",
+          "completed": 0,
+          "end": "NONE"
+        },
+        "progress_last": {
+          "v": 1,
+          "pid": 1270448,
+          "start_ticks": 969104373,
+          "generation": "f6c79f5f-6b0e-42d7-a5be-c3013fa7aaba",
+          "input": "e7c791ce2e4b09eea844428fdf220e0d3f095783c022a60aa9186c6146ddd83c",
+          "roi": "8f59084b27fec3d0ac21338e9359953babf594dd5e95b5f92cdfe8910a6c8ab5",
+          "seq": 99,
+          "mono_ns": 9691926913458486,
+          "epoch": 0,
+          "phase_epoch": 9,
+          "phase": "SIMULATE",
+          "stream_id": 0,
+          "stream_scope": "whole_input",
+          "completed": 441924205,
+          "end": "NONE"
+        },
+        "captured_terminal_NATURAL": false,
+        "expected_population": {
+          "CTA": 16000,
+          "instructions": 444467849,
+          "kernels": 2
+        },
+        "raw_instruction_totals_unaccepted": [
+          217350912,
+          444467849
+        ],
+        "raw_CTA_totals_unaccepted": [
+          6000,
+          16000
+        ],
+        "raw_cycle_totals_DIAGNOSTIC_ONLY_UNACCEPTED": [
+          77498,
+          153155
+        ],
+        "raw_final_instruction_population_matches": true,
+        "raw_final_CTA_population_matches": true,
+        "fatal_diagnostic_lines_excluding_options": []
+      },
+      "original_strace_evidence": {
+        "trace_scope": "%file,process,network; default truncated packet payloads; no syscall timestamp/duration or parent frontend wait evidence.",
+        "model_send_count": 101,
+        "stored_progress_count": 99,
+        "successful_sends_not_in_progress_count": 2,
+        "all_model_send_calls_full_success": true,
+        "send_failures": [],
+        "model_exit_lines": [
+          "1270448 exit_group(0)                   = ?"
+        ],
+        "model_exit_group_zero_requested": true,
+        "model_strace_explicit_exited_zero": false,
+        "last_15_lines": [
+          "1271507 <... wait4 resumed>[{WIFEXITED(s) && WEXITSTATUS(s) == 0}], 0, NULL) = 1271508",
+          "1271507 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=1271508, si_uid=0, si_status=0, si_utime=0, si_stime=63} ---",
+          "1271507 wait4(-1, 0x7ffd2b82461c, WNOHANG, NULL) = -1 ECHILD (No child processes)",
+          "1271507 exit_group(0)                   = ?",
+          "1271507 +++ exited with 0 +++",
+          "1270448 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=1271507, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---",
+          "1270448 newfstatat(AT_FDCWD, \"checkpoint_files\", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0",
+          "1270448 sendto(6, \"{\\\"v\\\":1,\\\"pid\\\":1270448,\\\"start_tick\"..., 405, MSG_DONTWAIT|MSG_NOSIGNAL, NULL, 0) = 405",
+          "1270448 wait4(1271507, [{WIFEXITED(s) && WEXITSTATUS(s) == 0}], 0, NULL) = 1271507",
+          "1270448 openat(AT_FDCWD, \"gpgpu_inst_stats.txt\", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3",
+          "1270448 newfstatat(3, \"\", {st_mode=S_IFREG|0644, st_size=0, ...}, AT_EMPTY_PATH) = 0",
+          "1270448 openat(AT_FDCWD, \"perf_counter_2026-10-25_14-37-52.csv.gz\", O_WRONLY|O_CREAT|O_APPEND, 0666) = 3",
+          "1270448 sendto(6, \"{\\\"v\\\":1,\\\"pid\\\":1270448,\\\"start_tick\"..., 408, MSG_DONTWAIT|MSG_NOSIGNAL, NULL, 0) = 408",
+          "1270448 sendto(6, \"{\\\"v\\\":1,\\\"pid\\\":1270448,\\\"start_tick\"..., 411, MSG_DONTWAIT|MSG_NOSIGNAL, NULL, 0) = 411",
+          "1270448 exit_group(0)                   = ?"
+        ],
+        "terminal_packet_payload_known": false,
+        "model_exit_evidence_does_not_supply_frontend_p_wait_rc": true
+      },
+      "resource_evidence": {
+        "normal_sample_count": 88,
+        "last_normal_samples": [
+          {
+            "utc": "2026-10-25T14:52:22.318619+00:00",
+            "native_free_bytes": 41273118720,
+            "free_inodes": 216499246,
+            "host_MemAvailable_bytes": 226509582336,
+            "cgroup_memory_current": 120395161600,
+            "cgroup_memory_max": "274877906944",
+            "required_free_bytes": 34364904615,
+            "local_safety_floor_bytes": 5368709120,
+            "bounded_own_remaining_write_and_restore_bytes": 28996195495,
+            "own_reservations": [
+              {
+                "cohort": "E2-AEV100-09f94fcc7494a03b-CM",
+                "remaining_write_and_restore_bytes": 1140308239
+              },
+              {
+                "cohort": "E2-AEV100-2315d0e612ee7cd4-CH",
+                "remaining_write_and_restore_bytes": 1107006514
+              },
+              {
+                "cohort": "E2-AEV100-2c506bf13c81ff5d-CM",
+                "remaining_write_and_restore_bytes": 1137681089
+              },
+              {
+                "cohort": "E2-AEV100-4114a3dc0d06b55b-DH",
+                "remaining_write_and_restore_bytes": 1104238362
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CH",
+                "remaining_write_and_restore_bytes": 1104739393
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CM",
+                "remaining_write_and_restore_bytes": 1104901270
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CH",
+                "remaining_write_and_restore_bytes": 1106936753
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CM",
+                "remaining_write_and_restore_bytes": 1106937095
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DH",
+                "remaining_write_and_restore_bytes": 1106970030
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DM",
+                "remaining_write_and_restore_bytes": 1106728047
+              },
+              {
+                "cohort": "E2-AEV100-79f8ab6241faeed6-CM",
+                "remaining_write_and_restore_bytes": 1238244600
+              },
+              {
+                "cohort": "E2-AEV100-85700545918390d7-DM",
+                "remaining_write_and_restore_bytes": 1106295786
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-CH",
+                "remaining_write_and_restore_bytes": 1107093864
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-DH",
+                "remaining_write_and_restore_bytes": 1106516525
+              },
+              {
+                "cohort": "E2-AEV100-b51811aca9dc70cf-DM",
+                "remaining_write_and_restore_bytes": 1106964412
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-CH",
+                "remaining_write_and_restore_bytes": 1140239053
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-DM",
+                "remaining_write_and_restore_bytes": 1138808350
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-CH",
+                "remaining_write_and_restore_bytes": 1106378885
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-DH",
+                "remaining_write_and_restore_bytes": 1106104164
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-DM",
+                "remaining_write_and_restore_bytes": 1105498874
+              },
+              {
+                "cohort": "E2-AEV100-e9110566572e0e0d-CH",
+                "remaining_write_and_restore_bytes": 1106001811
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CH",
+                "remaining_write_and_restore_bytes": 1107145743
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CM",
+                "remaining_write_and_restore_bytes": 1106545857
+              },
+              {
+                "cohort": "E2-AEV100-fc0705ae3721e999-CM",
+                "remaining_write_and_restore_bytes": 1107100693
+              },
+              {
+                "cohort": "E2-AEV100-ffc8a89493c8a211-DM",
+                "remaining_write_and_restore_bytes": 1107068262
+              }
+            ],
+            "peer_reservations": [],
+            "other_outstanding_write_reservations_bytes": 0,
+            "reserved_additional_live_and_candidate_RAM_bytes": 53608751104,
+            "physical_RAM_pass": true,
+            "physical_disk_pass": true,
+            "fresh_local_resource_sample": true,
+            "storage_basis": "5GiB fast-tier margin plus known pending writes only;genuine164 bulk inputs/cold assets not duplicated;each new job admitted separately",
+            "host_execution_accounting": "HOST_ACTUAL4G40_V4",
+            "original_raw_cgroup_RAM_pass": false,
+            "original_full_hard_cap_RAM_reservation_bytes": 356575911936,
+            "cgroup_reclaimable_clean_inactive_file_credit_bytes": 29628608512,
+            "cgroup_effective_headroom_bytes": 184111353856,
+            "cgroup_memory_stat_for_credit": {
+              "file": 45332271104,
+              "inactive_file": 38218543104,
+              "shmem": 2500132864,
+              "file_mapped": 27992064,
+              "file_dirty": 237568,
+              "file_writeback": 0
+            },
+            "RAM_reservation_entries": [
+              {
+                "cohort": "E2-AEV100-09f94fcc7494a03b-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 4437573632,
+                "largest_member_bytes": 753500646,
+                "working_set_envelope_bytes": 4437573632,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-2315d0e612ee7cd4-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1077936128,
+                "largest_member_bytes": 965738377,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3217031168
+              },
+              {
+                "cohort": "E2-AEV100-2c506bf13c81ff5d-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 2266386432,
+                "largest_member_bytes": 112690838,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2028580864
+              },
+              {
+                "cohort": "E2-AEV100-4114a3dc0d06b55b-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1128267776,
+                "largest_member_bytes": 4072647057,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3166699520
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1077936128,
+                "largest_member_bytes": 387379205,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3217031168
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1077936128,
+                "largest_member_bytes": 387379205,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3217031168
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3061841920,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1233125376
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3053453312,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1241513984
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3112173568,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1182793728
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3116367872,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1178599424
+              },
+              {
+                "cohort": "E2-AEV100-79f8ab6241faeed6-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 520093696,
+                "largest_member_bytes": 4265350,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3774873600
+              },
+              {
+                "cohort": "E2-AEV100-85700545918390d7-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 0,
+                "largest_member_bytes": 541899526,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 4294967296
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 4567597056,
+                "largest_member_bytes": 972713645,
+                "working_set_envelope_bytes": 4567597056,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 4638900224,
+                "largest_member_bytes": 972713645,
+                "working_set_envelope_bytes": 4638900224,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-b51811aca9dc70cf-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 9814671360,
+                "largest_member_bytes": 8701427470,
+                "working_set_envelope_bytes": 9814671360,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 708837376,
+                "largest_member_bytes": 37722054,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3586129920
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 713031680,
+                "largest_member_bytes": 37722054,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3581935616
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 511705088,
+                "largest_member_bytes": 840990934,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3783262208
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 603979776,
+                "largest_member_bytes": 840990934,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3690987520
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 658505728,
+                "largest_member_bytes": 405160748,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3636461568
+              },
+              {
+                "cohort": "E2-AEV100-e9110566572e0e0d-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1572864000,
+                "largest_member_bytes": 88824519,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2722103296
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1874853888,
+                "largest_member_bytes": 208386332,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2420113408
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1859457024,
+                "largest_member_bytes": 208386332,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2435510272
+              },
+              {
+                "cohort": "E2-AEV100-fc0705ae3721e999-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 5096079360,
+                "largest_member_bytes": 1110675117,
+                "working_set_envelope_bytes": 5096079360,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-ffc8a89493c8a211-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 16370368512,
+                "largest_member_bytes": 2216170035,
+                "working_set_envelope_bytes": 16370368512,
+                "additional_reserved_bytes": 0
+              }
+            ],
+            "legacy_host_V1_live_cells": [],
+            "legacy_full_hard_cap_predicate_pass": false,
+            "RAM_decision_scope": "RUNTIME_ACTUAL_HEADROOM",
+            "working_set_reservation_is_not_a_hard_cap": true,
+            "elapsed_seconds": 870.12644273974,
+            "process_tree_observed_rss_bytes": 658505728
+          },
+          {
+            "utc": "2026-10-25T14:52:32.530564+00:00",
+            "native_free_bytes": 41272991744,
+            "free_inodes": 216499246,
+            "host_MemAvailable_bytes": 226580508672,
+            "cgroup_memory_current": 120517038080,
+            "cgroup_memory_max": "274877906944",
+            "required_free_bytes": 34364767834,
+            "local_safety_floor_bytes": 5368709120,
+            "bounded_own_remaining_write_and_restore_bytes": 28996058714,
+            "own_reservations": [
+              {
+                "cohort": "E2-AEV100-09f94fcc7494a03b-CM",
+                "remaining_write_and_restore_bytes": 1140307461
+              },
+              {
+                "cohort": "E2-AEV100-2315d0e612ee7cd4-CH",
+                "remaining_write_and_restore_bytes": 1107005884
+              },
+              {
+                "cohort": "E2-AEV100-2c506bf13c81ff5d-CM",
+                "remaining_write_and_restore_bytes": 1137680367
+              },
+              {
+                "cohort": "E2-AEV100-4114a3dc0d06b55b-DH",
+                "remaining_write_and_restore_bytes": 1104235781
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CH",
+                "remaining_write_and_restore_bytes": 1104719257
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CM",
+                "remaining_write_and_restore_bytes": 1104896103
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CH",
+                "remaining_write_and_restore_bytes": 1106936116
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CM",
+                "remaining_write_and_restore_bytes": 1106936460
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DH",
+                "remaining_write_and_restore_bytes": 1106969401
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DM",
+                "remaining_write_and_restore_bytes": 1106727357
+              },
+              {
+                "cohort": "E2-AEV100-79f8ab6241faeed6-CM",
+                "remaining_write_and_restore_bytes": 1238192914
+              },
+              {
+                "cohort": "E2-AEV100-85700545918390d7-DM",
+                "remaining_write_and_restore_bytes": 1106295786
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-CH",
+                "remaining_write_and_restore_bytes": 1107093225
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-DH",
+                "remaining_write_and_restore_bytes": 1106515818
+              },
+              {
+                "cohort": "E2-AEV100-b51811aca9dc70cf-DM",
+                "remaining_write_and_restore_bytes": 1106963636
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-CH",
+                "remaining_write_and_restore_bytes": 1140238415
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-DM",
+                "remaining_write_and_restore_bytes": 1138807647
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-CH",
+                "remaining_write_and_restore_bytes": 1106370731
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-DH",
+                "remaining_write_and_restore_bytes": 1106093441
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-DM",
+                "remaining_write_and_restore_bytes": 1105477387
+              },
+              {
+                "cohort": "E2-AEV100-e9110566572e0e0d-CH",
+                "remaining_write_and_restore_bytes": 1105995747
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CH",
+                "remaining_write_and_restore_bytes": 1107145106
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CM",
+                "remaining_write_and_restore_bytes": 1106545174
+              },
+              {
+                "cohort": "E2-AEV100-fc0705ae3721e999-CM",
+                "remaining_write_and_restore_bytes": 1107100055
+              },
+              {
+                "cohort": "E2-AEV100-ffc8a89493c8a211-DM",
+                "remaining_write_and_restore_bytes": 1107067621
+              }
+            ],
+            "peer_reservations": [],
+            "other_outstanding_write_reservations_bytes": 0,
+            "reserved_additional_live_and_candidate_RAM_bytes": 53596168192,
+            "physical_RAM_pass": true,
+            "physical_disk_pass": true,
+            "fresh_local_resource_sample": true,
+            "storage_basis": "5GiB fast-tier margin plus known pending writes only;genuine164 bulk inputs/cold assets not duplicated;each new job admitted separately",
+            "host_execution_accounting": "HOST_ACTUAL4G40_V4",
+            "original_raw_cgroup_RAM_pass": false,
+            "original_full_hard_cap_RAM_reservation_bytes": 356563329024,
+            "cgroup_reclaimable_clean_inactive_file_credit_bytes": 29741604864,
+            "cgroup_effective_headroom_bytes": 184102473728,
+            "cgroup_memory_stat_for_credit": {
+              "file": 45445234688,
+              "inactive_file": 38331539456,
+              "shmem": 2500132864,
+              "file_mapped": 27992064,
+              "file_dirty": 184320,
+              "file_writeback": 0
+            },
+            "RAM_reservation_entries": [
+              {
+                "cohort": "E2-AEV100-09f94fcc7494a03b-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 4437573632,
+                "largest_member_bytes": 753500646,
+                "working_set_envelope_bytes": 4437573632,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-2315d0e612ee7cd4-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1077936128,
+                "largest_member_bytes": 965738377,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3217031168
+              },
+              {
+                "cohort": "E2-AEV100-2c506bf13c81ff5d-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 2266386432,
+                "largest_member_bytes": 112690838,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2028580864
+              },
+              {
+                "cohort": "E2-AEV100-4114a3dc0d06b55b-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1128267776,
+                "largest_member_bytes": 4072647057,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3166699520
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1077936128,
+                "largest_member_bytes": 387379205,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3217031168
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1077936128,
+                "largest_member_bytes": 387379205,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3217031168
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3061841920,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1233125376
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3053453312,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1241513984
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3112173568,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1182793728
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3116367872,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1178599424
+              },
+              {
+                "cohort": "E2-AEV100-79f8ab6241faeed6-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 520093696,
+                "largest_member_bytes": 4265350,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3774873600
+              },
+              {
+                "cohort": "E2-AEV100-85700545918390d7-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 0,
+                "largest_member_bytes": 541899526,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 4294967296
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 4567597056,
+                "largest_member_bytes": 972713645,
+                "working_set_envelope_bytes": 4567597056,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 4638900224,
+                "largest_member_bytes": 972713645,
+                "working_set_envelope_bytes": 4638900224,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-b51811aca9dc70cf-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 9814671360,
+                "largest_member_bytes": 8701427470,
+                "working_set_envelope_bytes": 9814671360,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 708837376,
+                "largest_member_bytes": 37722054,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3586129920
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 713031680,
+                "largest_member_bytes": 37722054,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3581935616
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 511705088,
+                "largest_member_bytes": 840990934,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3783262208
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 603979776,
+                "largest_member_bytes": 840990934,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3690987520
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 658505728,
+                "largest_member_bytes": 405160748,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3636461568
+              },
+              {
+                "cohort": "E2-AEV100-e9110566572e0e0d-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1585446912,
+                "largest_member_bytes": 88824519,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2709520384
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1874853888,
+                "largest_member_bytes": 208386332,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2420113408
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1859457024,
+                "largest_member_bytes": 208386332,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2435510272
+              },
+              {
+                "cohort": "E2-AEV100-fc0705ae3721e999-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 5096079360,
+                "largest_member_bytes": 1110675117,
+                "working_set_envelope_bytes": 5096079360,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-ffc8a89493c8a211-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 16370368512,
+                "largest_member_bytes": 2216170035,
+                "working_set_envelope_bytes": 16370368512,
+                "additional_reserved_bytes": 0
+              }
+            ],
+            "legacy_host_V1_live_cells": [],
+            "legacy_full_hard_cap_predicate_pass": false,
+            "RAM_decision_scope": "RUNTIME_ACTUAL_HEADROOM",
+            "working_set_reservation_is_not_a_hard_cap": true,
+            "elapsed_seconds": 880.3344852887094,
+            "process_tree_observed_rss_bytes": 658505728
+          },
+          {
+            "utc": "2026-10-25T14:52:42.743675+00:00",
+            "native_free_bytes": 41272700928,
+            "free_inodes": 216499246,
+            "host_MemAvailable_bytes": 226667991040,
+            "cgroup_memory_current": 120601120768,
+            "cgroup_memory_max": "274877906944",
+            "required_free_bytes": 34364557106,
+            "local_safety_floor_bytes": 5368709120,
+            "bounded_own_remaining_write_and_restore_bytes": 28995847986,
+            "own_reservations": [
+              {
+                "cohort": "E2-AEV100-09f94fcc7494a03b-CM",
+                "remaining_write_and_restore_bytes": 1140306828
+              },
+              {
+                "cohort": "E2-AEV100-2315d0e612ee7cd4-CH",
+                "remaining_write_and_restore_bytes": 1107005254
+              },
+              {
+                "cohort": "E2-AEV100-2c506bf13c81ff5d-CM",
+                "remaining_write_and_restore_bytes": 1137679672
+              },
+              {
+                "cohort": "E2-AEV100-4114a3dc0d06b55b-DH",
+                "remaining_write_and_restore_bytes": 1104233510
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CH",
+                "remaining_write_and_restore_bytes": 1104698937
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CM",
+                "remaining_write_and_restore_bytes": 1104803585
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CH",
+                "remaining_write_and_restore_bytes": 1106935502
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CM",
+                "remaining_write_and_restore_bytes": 1106935864
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DH",
+                "remaining_write_and_restore_bytes": 1106968800
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DM",
+                "remaining_write_and_restore_bytes": 1106726673
+              },
+              {
+                "cohort": "E2-AEV100-79f8ab6241faeed6-CM",
+                "remaining_write_and_restore_bytes": 1238150536
+              },
+              {
+                "cohort": "E2-AEV100-85700545918390d7-DM",
+                "remaining_write_and_restore_bytes": 1106295786
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-CH",
+                "remaining_write_and_restore_bytes": 1107092618
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-DH",
+                "remaining_write_and_restore_bytes": 1106515143
+              },
+              {
+                "cohort": "E2-AEV100-b51811aca9dc70cf-DM",
+                "remaining_write_and_restore_bytes": 1106963011
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-CH",
+                "remaining_write_and_restore_bytes": 1140237786
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-DM",
+                "remaining_write_and_restore_bytes": 1138806964
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-CH",
+                "remaining_write_and_restore_bytes": 1106362973
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-DH",
+                "remaining_write_and_restore_bytes": 1106082125
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-DM",
+                "remaining_write_and_restore_bytes": 1105475788
+              },
+              {
+                "cohort": "E2-AEV100-e9110566572e0e0d-CH",
+                "remaining_write_and_restore_bytes": 1105973372
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CH",
+                "remaining_write_and_restore_bytes": 1107144492
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CM",
+                "remaining_write_and_restore_bytes": 1106544504
+              },
+              {
+                "cohort": "E2-AEV100-fc0705ae3721e999-CM",
+                "remaining_write_and_restore_bytes": 1107099424
+              },
+              {
+                "cohort": "E2-AEV100-ffc8a89493c8a211-DM",
+                "remaining_write_and_restore_bytes": 1107067015
+              }
+            ],
+            "peer_reservations": [],
+            "other_outstanding_write_reservations_bytes": 0,
+            "reserved_additional_live_and_candidate_RAM_bytes": 54250479616,
+            "physical_RAM_pass": true,
+            "physical_disk_pass": true,
+            "fresh_local_resource_sample": true,
+            "storage_basis": "5GiB fast-tier margin plus known pending writes only;genuine164 bulk inputs/cold assets not duplicated;each new job admitted separately",
+            "host_execution_accounting": "HOST_ACTUAL4G40_V4",
+            "original_raw_cgroup_RAM_pass": false,
+            "original_full_hard_cap_RAM_reservation_bytes": 356559134720,
+            "cgroup_reclaimable_clean_inactive_file_credit_bytes": 29820612608,
+            "cgroup_effective_headroom_bytes": 184097398784,
+            "cgroup_memory_stat_for_credit": {
+              "file": 45523759104,
+              "inactive_file": 38410547200,
+              "shmem": 2500132864,
+              "file_mapped": 27992064,
+              "file_dirty": 212992,
+              "file_writeback": 0
+            },
+            "RAM_reservation_entries": [
+              {
+                "cohort": "E2-AEV100-09f94fcc7494a03b-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 4437573632,
+                "largest_member_bytes": 753500646,
+                "working_set_envelope_bytes": 4437573632,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-2315d0e612ee7cd4-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1077936128,
+                "largest_member_bytes": 965738377,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3217031168
+              },
+              {
+                "cohort": "E2-AEV100-2c506bf13c81ff5d-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 2266386432,
+                "largest_member_bytes": 112690838,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2028580864
+              },
+              {
+                "cohort": "E2-AEV100-4114a3dc0d06b55b-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1128267776,
+                "largest_member_bytes": 4072647057,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3166699520
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1077936128,
+                "largest_member_bytes": 387379205,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3217031168
+              },
+              {
+                "cohort": "E2-AEV100-6e35d612712f2706-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1077936128,
+                "largest_member_bytes": 387379205,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3217031168
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3061841920,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1233125376
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3053453312,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1241513984
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3112173568,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1182793728
+              },
+              {
+                "cohort": "E2-AEV100-769e6d9fd5f9cd53-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 3116367872,
+                "largest_member_bytes": 316381690,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 1178599424
+              },
+              {
+                "cohort": "E2-AEV100-79f8ab6241faeed6-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 520093696,
+                "largest_member_bytes": 4265350,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3774873600
+              },
+              {
+                "cohort": "E2-AEV100-85700545918390d7-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 0,
+                "largest_member_bytes": 541899526,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 4294967296
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 4567597056,
+                "largest_member_bytes": 972713645,
+                "working_set_envelope_bytes": 4567597056,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-977a2f7007cb1f96-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 4638900224,
+                "largest_member_bytes": 972713645,
+                "working_set_envelope_bytes": 4638900224,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-b51811aca9dc70cf-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 9814671360,
+                "largest_member_bytes": 8701427470,
+                "working_set_envelope_bytes": 9814671360,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 708837376,
+                "largest_member_bytes": 37722054,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3586129920
+              },
+              {
+                "cohort": "E2-AEV100-c885293ad99e21ee-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 713031680,
+                "largest_member_bytes": 37722054,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3581935616
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 511705088,
+                "largest_member_bytes": 840990934,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3783262208
+              },
+              {
+                "cohort": "E2-AEV100-d984ea5475a581ad-DH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 603979776,
+                "largest_member_bytes": 840990934,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 3690987520
+              },
+              {
+                "cohort": "E2-AEV100-e7c791ce2e4b09ee-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 0,
+                "largest_member_bytes": 405160748,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 4294967296
+              },
+              {
+                "cohort": "E2-AEV100-e9110566572e0e0d-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1589641216,
+                "largest_member_bytes": 88824519,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2705326080
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CH",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1874853888,
+                "largest_member_bytes": 208386332,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2420113408
+              },
+              {
+                "cohort": "E2-AEV100-f7d6397ed7ffa266-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 1859457024,
+                "largest_member_bytes": 208386332,
+                "working_set_envelope_bytes": 4294967296,
+                "additional_reserved_bytes": 2435510272
+              },
+              {
+                "cohort": "E2-AEV100-fc0705ae3721e999-CM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 5096079360,
+                "largest_member_bytes": 1110675117,
+                "working_set_envelope_bytes": 5096079360,
+                "additional_reserved_bytes": 0
+              },
+              {
+                "cohort": "E2-AEV100-ffc8a89493c8a211-DM",
+                "legacy_V1": false,
+                "hard_cap_bytes": 17179869184,
+                "observed_model_RSS_bytes": 16370368512,
+                "largest_member_bytes": 2216170035,
+                "working_set_envelope_bytes": 16370368512,
+                "additional_reserved_bytes": 0
+              }
+            ],
+            "legacy_host_V1_live_cells": [],
+            "legacy_full_hard_cap_predicate_pass": false,
+            "RAM_decision_scope": "RUNTIME_ACTUAL_HEADROOM",
+            "working_set_reservation_is_not_a_hard_cap": true,
+            "elapsed_seconds": 890.5527343954891,
+            "process_tree_observed_rss_bytes": 0
+          }
+        ],
+        "original_policy_decision_counts": {
+          "CONTINUE": 86,
+          "WARN": 1
+        },
+        "original_policy_STOP_samples": [],
+        "all_observed_RAM_and_disk_pass": true
+      },
+      "absent_original_receipts": {
+        "NATIVE_EXIT": true,
+        "DONE": true,
+        "SCIENCE_QUALIFICATION": true
+      },
+      "forensic_status": "ENGINEERING_OBSERVER_PROC_EXIT_RACE_GENERATIONS_GONE_CLOSURE_MISSING_UNACCEPTED",
+      "proven_facts": [
+        "原INTENT与registry charged=1/UUID/SHA吻合，启动与PID generation证据完整。",
+        "原controller RESULT记录FileNotFoundError于已绑定模型/proc路径，未记录可接受完整科学退出。",
+        "完整raw已输出simulation thread exiting/exit detected与人口终值；真实strace末尾出现该模型exit_group(0)。",
+        "progress仅存连续非terminal记录；另2个send成功但payload被strace截断，不能当成已认证NATURAL。",
+        "当前绑定模型与strace launcher PID均不存在，原generation已结束。",
+        "旧NATIVE_EXIT、DONE、SCIENCE_QUALIFICATION均缺失。"
+      ],
+      "source_causal_analysis": {
+        "observer_source_sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d",
+        "candidate_call_sites": [
+          {
+            "line": 107,
+            "site": "child_info: os.readlink(/proc/<pid>/exe) called by resource sample line214"
+          }
+        ],
+        "consistent_failure_path": "while-loop poll can observe launcher alive, then full resource/identity sampling races model natural teardown; uncaught ENOENT unwinds finally before p.wait, final telemetry drain and receipt construction.",
+        "proof_limit": "No original Python traceback/call-stack or frontend p.wait returncode survived. CFD exact stat read line cannot be uniquely selected between live checks. b+tree exe path matches child_info field read. This is not a manufactured original exit receipt."
+      },
+      "scientific_disposition": {
+        "state": "UNACCEPTED_PRESERVE_ORIGINAL_ATTEMPT",
+        "accepted_cycles": null,
+        "performance_PASS": false,
+        "old_budget_charged": 1,
+        "old_budget_refund_or_reset": false,
+        "original_done_or_exit_fabricated": false,
+        "original_matrix_complete": false,
+        "source_disposition": "SOURCE_KEEP",
+        "may_skip_wait_for_old_receipt_for_R13_dispatch_only": true,
+        "skip_scope": "Explicit reviewed engineering disposition permits later never-started cells to dispatch; it does not satisfy final matrix/consumer/strict gates.",
+        "new_repair_generation_separate": true,
+        "same_attempt_retry": false,
+        "further_validation": "Separate repair request includes a new UUID/attempt for this exact full input/config under repaired observer/runtime; keep original attempts and all evidence."
+      },
+      "evidence": [
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/f6c79f5f-6b0e-42d7-a5be-c3013fa7aaba/perf_counter_2026-10-25_14-37-52.csv.gz",
+          "bytes": 22611,
+          "sha256": "ae77ded4b66e6c65410fdd9134ea8df4400144ca1fb09cf4fe51517c82d50241"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/f6c79f5f-6b0e-42d7-a5be-c3013fa7aaba/progress.jsonl.gz",
+          "bytes": 3838,
+          "sha256": "acc2af7c496509557830556df02bdf7db542985567a9537db0e5ee922f5b4dea"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/f6c79f5f-6b0e-42d7-a5be-c3013fa7aaba/NATIVE_LAUNCH.json",
+          "bytes": 50714,
+          "sha256": "2664a8eae6c1f01972b15d53d0a6b5f7f59914de6b372807b961f7e089092314"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/f6c79f5f-6b0e-42d7-a5be-c3013fa7aaba/perf_counter.csv.gz",
+          "bytes": 22611,
+          "sha256": "ae77ded4b66e6c65410fdd9134ea8df4400144ca1fb09cf4fe51517c82d50241"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/f6c79f5f-6b0e-42d7-a5be-c3013fa7aaba/NATIVE_SIMULATOR_PID_AND_MAPS.json",
+          "bytes": 9271,
+          "sha256": "724bd3bf91fedb51aa00e1fc4198eb7f91204d1a8b104aca5e18f4eeaae7f075"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/f6c79f5f-6b0e-42d7-a5be-c3013fa7aaba/raw.log.gz",
+          "bytes": 81633,
+          "sha256": "221466bedec198671dc75a15ba83d7c36fbc012594210d7a609e46948ebdc3b6"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/f6c79f5f-6b0e-42d7-a5be-c3013fa7aaba/RESOURCE_SAMPLES.jsonl.gz",
+          "bytes": 46555,
+          "sha256": "84720f1c35601fce8ad35294bdbfe0bda344c2873170d6b8350c341d73207cf3"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/f6c79f5f-6b0e-42d7-a5be-c3013fa7aaba/actual_file_process_network.log",
+          "bytes": 1620887,
+          "sha256": "5ad9c79f1aa7885610d4ef95fddc8d2d46f0b594ac03744030ba3d9e9d8b9437"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/f6c79f5f-6b0e-42d7-a5be-c3013fa7aaba/gpgpu_inst_stats.txt",
+          "bytes": 133,
+          "sha256": "bb21a46c51c2cab168764097ace9a99a20b455a56bd49fe2c1eb78696a32a0b8"
+        },
+        {
+          "path": "/root/data/ep_l2_dtc_l1_native_v2/control/science_authority/requests/DTC_AE_V100_FULL_SWEEP_20261025_V1/E2-AEV100-e7c791ce2e4b09ee-DM.INTENT.json",
+          "bytes": 5380,
+          "sha256": "a3c18dded86de716609ecab0003c9530d4628bcd9bce8b080f0f910d6f7fa0a2"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/E2-AEV100-e7c791ce2e4b09ee-DM.RESULT.json",
+          "bytes": 477,
+          "sha256": "3d3fa4ac98427af99f1dabc72b3ea773c3f2e73aadcdece6f66625a441991f04"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-e7c791ce2e4b09ee-DM_SPEC.json",
+          "bytes": 23314,
+          "sha256": "10ba98b449abd5a371da664fe8748e72ea2aeb48cab8cd001bb28ca1fd73f284"
+        }
+      ],
+      "signals_sent": 0,
+      "simulations_started": 0,
+      "historical_file_SHA_unchanged_over_forensic_read": true
+    }
+  ],
+  "disposition_scope": "Engineering history only. No original DONE/NATIVE_EXIT/p.wait rc reconstructed; no PASS and no budget refund. Original full matrix remains incomplete.",
+  "scientific_starts": 0,
+  "simulations_retried": 0,
+  "signals_sent": 0,
+  "original_history_or_registry_writes": 0
+}

@@ -1,0 +1,129 @@
+{
+  "schema": "DTC_HISTO_DM_READONLY_ROOT_CAUSE_DIAGNOSIS_V1",
+  "utc": "2026-10-25T14:39:53.872409+00:00",
+  "cohort": "E2-AEV100-2c506bf13c81ff5d-DM",
+  "uuid": "221010cd-8185-4a85-a380-9eaecff8de8b",
+  "direct_trigger": "First kernel finished architectural instructions and entered kernel statistics; shader.cc6038 total.oo_pib_occupancy==0 assertion failed -> SIGABRT. Previous6037 oo_inflight_current==0 assertion necessarily passed.",
+  "partial_only": {
+    "first_kernel": "_Z20histo_prescan_kernelPjiS_",
+    "grid": 64,
+    "threads_per_CTA": 512,
+    "printed_cycles_diagnostic_only": 8310,
+    "printed_instructions": 6197568,
+    "full_first_kernel_trace_expected_instructions": 6197568,
+    "cacheable_global_load_records": 8192,
+    "service_retired": 8192,
+    "later_kernel_processing_count": 0,
+    "whole_input_kernel_count": 80
+  },
+  "trace_zero_dest_atomics": {
+    "RED.E.MIN.STRONG.GPU": 64,
+    "RED.E.MAX.STRONG.GPU": 64,
+    "destination_count": 0,
+    "mask": "00000001",
+    "each_CTA_total": 2,
+    "first_kernel_current_body_SHA_matches_original_audit": true
+  },
+  "source_mechanism_confirmed": "Frozen decoder maps RED to global LOAD_OP+atomic+CACHE_GLOBAL with out[] all zero; M4 allocates OO PIB+externaldep. No-destination writeback_complete returns false so completion callback never closes dependency; architectural count may drain while sidecar remains. Real frozen-body+OO-header CPU fixture confirms same deficit for RED and ATOMG.",
+  "historical_root_cause_confidence": "HIGH: exact input path to confirmed zero-dest lifecycle gap and exact live-PIB statistics assertion coincide. Historical owner UID/type/count absent, so claim does not assert exactly128 or2-per-SM residual entries were observed.",
+  "not_AE_specific": "DM uses tag_hash_bankrow0 and already fails; this operation bypasses L1, current evidence cannot identify XOR/AE-specific causality.",
+  "root_cause_not_other_guards": [
+    "actual SIGABRT assertion stack, not deadlock_check",
+    "only7progress far below1048576record cap",
+    "all captured RAM/disk checks pass and original policy sample CONTINUE"
+  ],
+  "unknown": [
+    "actual residual OO entry UIDs/types/count not printed",
+    "whether all128global RED owners remained, and whether any other lifecycle contributor existed, not directly observable",
+    "a correct completion patch must aggregate actual per-request atomic responses and avoid duplicate closure; no production patch or simulator validation done"
+  ],
+  "next_minimal_verification": "Reuse exact-body/real-header CPU fixture and extend no-dest RED.MIN/RED.MAX per-response aggregation plus once-only closure, two-entry drain and full128-entry drain controls; later immutable diagnostic run only in a separately authorized future experiment.",
+  "evidence_pins": {
+    "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/221010cd-8185-4a85-a380-9eaecff8de8b/raw.log.gz": {
+      "sha256": "8a6732ebde5f925680408b2a7adb997640fba0d604e357df272361801a0fbd3b",
+      "bytes": 15186
+    },
+    "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/221010cd-8185-4a85-a380-9eaecff8de8b/NATIVE_EXIT.json": {
+      "sha256": "3db423dee4828d5439478063739e07a774167e131978f73f76cef915d22d3580",
+      "bytes": 1133
+    },
+    "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/221010cd-8185-4a85-a380-9eaecff8de8b/progress.jsonl.gz": {
+      "sha256": "e28f1206a2ccf80b466bdbdaf8ffc7acfd9e4ec8bdd9dd99aa9e68e375ef9510",
+      "bytes": 520
+    },
+    "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/221010cd-8185-4a85-a380-9eaecff8de8b/RESOURCE_SAMPLES.jsonl.gz": {
+      "sha256": "97962bf8f7f5554fd44c498772142e7edde50656a8fca1e57174703123cd0bb1",
+      "bytes": 3568
+    },
+    "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/221010cd-8185-4a85-a380-9eaecff8de8b/NATIVE_LAUNCH.json": {
+      "sha256": "bcbd979af721fcaa962568eb7883bb54aa9f9ea24b61447c505b4380bc72ed6e",
+      "bytes": 50719
+    },
+    "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/221010cd-8185-4a85-a380-9eaecff8de8b/NATIVE_SIMULATOR_PID_AND_MAPS.json": {
+      "sha256": "d57d914af47ec718d45deabb5c6c01edb0d9fcdc870c7df21c2893c5f1d7bd44",
+      "bytes": 9171
+    },
+    "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/E2-AEV100-2c506bf13c81ff5d-DM.FAILURE_CLASSIFICATION_R5.json": {
+      "sha256": "ce7b6333e78bfe078ebd23ba7efe602268cc190251e1ec7e053d84bace0888af",
+      "bytes": 1956
+    },
+    "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/E2-AEV100-2c506bf13c81ff5d-DM.RESULT.json": {
+      "sha256": "b8d0e99632b7b684c2962e9c8403b465e1406b08d415bd419071578c5b1c7e27",
+      "bytes": 3645
+    },
+    "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/failure_diagnosis_20261025_v1/bfs/CPU_SOURCE_FIXTURE_RESULT.json": {
+      "sha256": "241dd770bcb5f58e29bdb778c6f97fcef0b2c0b72fc0d01d00ae5e4e2b67251e",
+      "bytes": 1799
+    },
+    "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/failure_diagnosis_20261025_v1/bfs/zero_dest_atomic_completion_source_fixture.cpp": {
+      "sha256": "ed94f56d85579345846c3fd5d3e3751223b577e2e889b383d218fe9e3a86f00e",
+      "bytes": 4246
+    }
+  },
+  "source_pins": {
+    "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim/shader.cc": {
+      "commit": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+      "sha256": "b2bb326916c505e43f5d70cfd9d9adc998de1c08248d035581be02f96f7c1c45",
+      "committed_blob_equal": true
+    },
+    "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim/gpu-sim.cc": {
+      "commit": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+      "sha256": "aeccfeff3c80bd414b0f6dcd53a00e6dd13d426578a9e41d108e45f7b03ce75f",
+      "committed_blob_equal": true
+    },
+    "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim/dtc-l1-common.h": {
+      "commit": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+      "sha256": "dab2df3ec8e1fd1c8953ac146eba3c93906c84af8cce66051e5728afe9963fa1",
+      "committed_blob_equal": true
+    },
+    "/root/data/dtc_main_v100_sweep_20261025_v1/telemetry_v2/framework/gpu-simulator/trace-driven/trace_driven.cc": {
+      "commit": "3b362ab5c0934fdcea9697b10244c6de5c4a14ae",
+      "sha256": "e82e9156bd28d61a044e1f677dc9e0e162290043404730ac9a81dae5ab402689",
+      "committed_blob_equal": true
+    }
+  },
+  "archive_reference": {
+    "archive_bytes": 133120,
+    "archive_sha256": "08b249ad78cc4c15adb09b245794f7ef6872c2e5e6ab62b7047a656a259b84ff",
+    "cohort": "E2-AEV100-2c506bf13c81ff5d-DM",
+    "directories": 4,
+    "manifest_sha256": "3ae0adaa6926bba4a7f5a182a16cf3e4f6bc40b0da3291c1d39d74f15b939939",
+    "native_restore": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/recovery/a132fc429dc3f6a2c10580c79c9c2c3888f535855d086f188e0b4f17bc1e61f3",
+    "original_bytes": 103856,
+    "regular_files": 8,
+    "scientific_acceptance_granted_by_archive": false,
+    "scientific_status": "STOP_UNACCEPTED",
+    "source_disposition": "SOURCE_KEEP",
+    "source_release_bytes": 0,
+    "status": "ARCHIVE_VERIFIED_AND_RESTORE_VERIFIED_NATIVE_TARGET",
+    "symlinks": 0,
+    "target_mount_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261025_dtc_ae_v100_full_sweep_results/E2-AEV100-2c506bf13c81ff5d-DM/a132fc429dc3f6a2c10580c79c9c2c3888f535855d086f188e0b4f17bc1e61f3",
+    "true164_root": "/home/shared/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261025_dtc_ae_v100_full_sweep_results/E2-AEV100-2c506bf13c81ff5d-DM/a132fc429dc3f6a2c10580c79c9c2c3888f535855d086f188e0b4f17bc1e61f3",
+    "txid": "a132fc429dc3f6a2c10580c79c9c2c3888f535855d086f188e0b4f17bc1e61f3"
+  },
+  "source_disposition": "SOURCE_KEEP",
+  "accepted_cycles": null,
+  "model_retries": 0,
+  "scientific_models_started_in_diagnosis": 0,
+  "historical_records_modified": false
+}

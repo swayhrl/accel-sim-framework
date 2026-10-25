@@ -1,0 +1,32 @@
+{
+  "all_architecture_and_original_workload_assets_unchanged": true,
+  "classification": "ENGINEERING_SYNTHETIC_COMPONENT_SENTINEL_NOT_FORMAL",
+  "expected_atomic_lane_operations": 64,
+  "expected_per_warp_atomics": 2,
+  "instruction_contract": [
+    "0000 ffffffff 1 R0 MOV 0 0",
+    "0010 ffffffff 1 R3 MOV 0 0",
+    "0020 ffffffff 1 R4 LDG.E.SYS 1 R0 4 1 0x100000 4",
+    "0030 ffffffff 1 R5 LDG.E.STRONG.GPU 1 R0 4 1 0x200000 4",
+    "0040 ffffffff 0 STG.E.SYS 2 R0 R4 4 1 0x300000 4",
+    "0050 ffffffff 1 R6 ATOMG.E.ADD.STRONG.GPU 3 R0 R0 R5 4 1 0x400000 0",
+    "0060 ffffffff 0 RED.E.ADD.STRONG.GPU 2 R0 R5 4 1 0x500000 0",
+    "0070 ffffffff 1 R4 LDG.E.SYS 1 R0 4 1 0x600000 4",
+    "0080 ffffffff 0 EXIT 0 0"
+  ],
+  "native_numerical_values": "UNPROVEN",
+  "not_NVBit_capture": true,
+  "not_recovered_original_M4_asset": true,
+  "purpose": "Exercise real decoded load, bypass, store, returning atomic, zero-dest RED lifecycle and final drain only; no performance aggregate.",
+  "returning_ATOMG_and_zero_destination_RED": true,
+  "same_address_atomic_requests_are_never_merged": true,
+  "schema": "AUTHORED_TRACE_FORMAT_COMPONENT_FIXTURE_V1",
+  "source_pins": {
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/abstract_hardware_model.cc": "88f4af1a14cb64e87d20f220ec6533980afa42d52393e925c9710dcb169913b5",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/shader.cc": "e67a486ef18abf2b8515bc5bb887812c058d29fe9fed8544320cc008e3b4ca11",
+    "/root/data/dtc_failure_repair_20261025_v1/framework/docs/dtc_l1/implementation/M4_MEMORY_OP_SEMANTICS.md": "8401eb0d4cc005e8a62343681f25b30a8b6e1ee54eff2c5eb1ac1f75b4fa1c7b",
+    "/root/data/dtc_failure_repair_20261025_v1/framework/docs/dtc_l1/implementation/WORKLOAD_MANIFEST.md": "b6e1a2ab861104e9526ce19750151ee55275c5e2e36275da1f8d1b862bb76f7f",
+    "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/trace-driven/trace_driven.cc": "3c4930da781e7ab95828a51fac5c642556ec0c4526144e1436936db1dcc5be5a",
+    "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/trace-parser/trace_parser.cc": "8e3b727b054e75825181cf22778283b97f0d4c3c9e3ec7c1234f65c631bb9370"
+  }
+}

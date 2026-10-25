@@ -1,0 +1,24 @@
+{
+  "schema": "BFS_EXACT_FROZEN_WRITEBACK_BODY_AND_REAL_OO_HEADER_CPU_FIXTURE_V1",
+  "utc": "2026-10-25T14:20:03.961946+00:00",
+  "status": "PASS",
+  "scientific_model_started": false,
+  "source_file": "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim/shader.cc",
+  "source_sha256": "b2bb326916c505e43f5d70cfd9d9adc998de1c08248d035581be02f96f7c1c45",
+  "extracted_function_sha256": "3297564181b818edbebbf35a8e2c3514efa3809aabe7bb62321d043a912eee27",
+  "fixture": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/failure_diagnosis_20261025_v1/bfs/zero_dest_atomic_completion_source_fixture.cpp",
+  "fixture_sha256": "ed94f56d85579345846c3fd5d3e3751223b577e2e889b383d218fe9e3a86f00e",
+  "compile_argv": [
+    "g++",
+    "-std=c++17",
+    "-O0",
+    "-I",
+    "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim",
+    "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/failure_diagnosis_20261025_v1/bfs/zero_dest_atomic_completion_source_fixture.cpp",
+    "-o",
+    "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/failure_diagnosis_20261025_v1/bfs/zero_dest_atomic_completion_source_fixture"
+  ],
+  "stdout": "PASS exact frozen writeback_complete zero-dest ATOMG=false and RED=false; returning-atomic destination and fence controls=true; actual OO header external-dependency leak fills 128 and refuses 129 for AE=0 and AE=1\n",
+  "qualification_scope": "Unmodified frozen writeback_complete body with minimal fake architectural types; actual frozen oo_frontend header. This demonstrates missing no-destination completion and consequent finite-PIB leak, not a timing replay of the historical run.",
+  "counterfactual_control": "Call existing complete_external_dependency for one owner makes entry_ready_for true. This is fixture-only; no production source changed."
+}

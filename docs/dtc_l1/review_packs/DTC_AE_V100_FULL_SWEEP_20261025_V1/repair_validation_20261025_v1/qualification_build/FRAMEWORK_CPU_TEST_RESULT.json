@@ -1,0 +1,108 @@
+{
+  "status": "PASS",
+  "CPU_only": true,
+  "scientific_models_started": 0,
+  "compiler_argv": [
+    "/usr/bin/g++",
+    "-O2",
+    "-std=c++17",
+    "-pthread",
+    "-I/root/data/dtc_main_20261023_v1/ae_fair_v1/toolchain/include",
+    "-I/root/data/dtc_failure_repair_20261025_v1/framework/util/tracer_nvbit/tracer_tool",
+    "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/tests/ag7_cooperative_progress_fixture.cc",
+    "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/trace-parser/trace_parser.cc",
+    "-lzstd",
+    "-o",
+    "/root/data/dtc_failure_repair_20261025_v1/framework-cpu-tests/fixture"
+  ],
+  "tests": [
+    {
+      "name": "more_than_8192_exact_authenticated_records",
+      "PASS": true,
+      "details": {
+        "records": 8196
+      }
+    },
+    {
+      "name": "text_xz_tracez_and_all_memory_address_decoders_off_on_identical",
+      "PASS": true,
+      "details": {
+        "checksum": 40980,
+        "records": 3,
+        "background_thread_isolated": true,
+        "no_late_packets_after_terminal": true,
+        "scope_restored": true
+      }
+    },
+    {
+      "name": "exception_unwind_scope_and_error_terminal_no_fake_natural",
+      "PASS": true,
+      "details": {
+        "records": 2
+      }
+    },
+    {
+      "name": "broken_socket_disables_producer_without_reconnect",
+      "PASS": true,
+      "details": {
+        "enabled": 0,
+        "checksum": 0,
+        "iterations": 0
+      }
+    },
+    {
+      "name": "real_33_second_parser_window_fresh_without_retirement",
+      "PASS": true,
+      "details": {
+        "records": 6,
+        "max_gap_seconds": 10.001044878,
+        "all_completed": 17,
+        "decoded_iterations": 28549188
+      }
+    },
+    {
+      "name": "freshness_30s_still_STOP_and_failure_latches",
+      "PASS": true,
+      "details": {
+        "reason": "MISSING_OR_STALE_PRODUCER"
+      }
+    },
+    {
+      "name": "same_value_fresh_packets_cannot_renew_600s_retirement_cap",
+      "PASS": true,
+      "details": {
+        "decision": "STOP",
+        "stop_reasons": [
+          "NO_SEMANTIC_RETIREMENT_600S"
+        ],
+        "warnings": [],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    }
+  ],
+  "receiver_source_sha256": "f523975b9780b498b988e2b3145ba5b4aebdef4d0e9b0146392d3a31a99a4ec1",
+  "runtime_policy_source_sha256": "d1a3f21ce1c9eac89b8428f0732000d81936577d080b7bcf1c48ebe38980f187",
+  "production_policy_modified": false
+}

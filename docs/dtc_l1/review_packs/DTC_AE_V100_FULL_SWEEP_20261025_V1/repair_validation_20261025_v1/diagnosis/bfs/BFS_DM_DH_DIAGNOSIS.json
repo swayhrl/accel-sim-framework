@@ -1,0 +1,160 @@
+{
+  "schema": "DTC_BFS_DM_DH_READONLY_ROOT_CAUSE_DIAGNOSIS_V1",
+  "utc": "2026-10-25T14:23:20.057396+00:00",
+  "scientific_models_started": 0,
+  "production_source_modified": false,
+  "historical_classifications_modified": false,
+  "original_assets": "SOURCE_KEEP",
+  "points": [
+    {
+      "cohort": "E2-AEV100-1df9d5479504d9c7-DM",
+      "uuid": "5d58a06a-8465-4dcf-bf31-391b5a6c4737",
+      "direct_trigger": "Frozen Core detects unchanged instruction progress at 50k-cycle checks, calls deadlock_check -> pipeline dump -> abort (SIGABRT); native natural telemetry closure missing is downstream symptom.",
+      "confirmed_runtime": {
+        "first_kernel_only": true,
+        "grid": "1x1x1",
+        "block": "512x1x1",
+        "core": 0,
+        "last_writeback_cycle": 51215,
+        "dump_cycle": 150000,
+        "stalled_instruction_pc": "0x0710",
+        "stalled_instruction_warp": 1,
+        "stall_class": "BK_CONF",
+        "opcode": "ATOMG.E.MIN.S32.STRONG.GPU",
+        "destination_register_count": 0,
+        "progress_records": 7,
+        "last_progress_completed_diagnostic_only": 240561,
+        "no_accepted_cycles": true,
+        "full_raw_sha256_reverified": true,
+        "all_RAM_and_disk_samples_pass": true,
+        "original_policy_all_CONTINUE": true
+      },
+      "source_mechanism_confirmed": "M4 atomic admission owns one OO PIB entry and external dependency. Frozen writeback_complete never marks zero-output atomic complete; callers decrement architectural atomic count but only call dtc_l1_m4_observe_complete if that boolean is true. The leaked external dependency prevents OO entry readiness/retirement. Actual frozen function+OO header fixture reproduces 128 leaked slots then admission refusal for both tag hash modes.",
+      "historical_cause_assessment": "HIGH_CONFIDENCE_SOURCE_LOCALIZED_M4_ZERO_DEST_ATOMIC_LIFECYCLE_LEAK; historical exact OO occupancy and owner UIDs were not printed, so 128 live slots at the observed abort is an inference, not an observed fact.",
+      "evidence_files": [
+        "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/failure_diagnosis_20261025_v1/bfs/RAW_PROGRESS_RESOURCE_SOURCE_FACTS.json",
+        "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/failure_diagnosis_20261025_v1/bfs/FIRST_KERNEL_TRACE_AND_DECODER_FACTS.json",
+        "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/failure_diagnosis_20261025_v1/bfs/CPU_SOURCE_FIXTURE_RESULT.json"
+      ],
+      "excluded_as_direct_trigger": [
+        "telemetry 8192/1M record cap: both end after only 7 records",
+        "outer RAM/disk guard: all captured samples pass; actual SIGABRT stack is Core deadlock_check",
+        "global atomic treated as cacheable mergeable load: decoder CACHE_GLOBAL and memory_cycle atomic branch exclude it",
+        "AE/XOR-specific defect: DM(AE0) and DH(AE1) same exact stopping state; CPU fixture fails identically with either hash mode"
+      ],
+      "unknown": [
+        "historical exact OO PIB entry inventory was not captured because existing diagnostic prints extra entry details only for PAPER_IO",
+        "minimal corrected lifecycle must handle split atomic responses and complete once, not every reply; no production fix or timing validation performed",
+        "barrier wait bitmap absent; other warps at pc0xEE0 is not by itself proof of an invalid source barrier"
+      ],
+      "next_minimal_verification": "Before any future simulator experiment, extend CPU source fixture with actual zero-dest atomic per-transaction completion aggregation, duplicate-completion guards, returning-atomic/no-dest RED/STORE/fence controls and full-PIB drain. A separate immutable diagnostic build could capture OO owner UID/operation/externaldep counts if later explicitly scheduled; preserve these historical failed attempts."
+    },
+    {
+      "cohort": "E2-AEV100-1df9d5479504d9c7-DH",
+      "uuid": "a6161cff-a0fe-4f2d-b489-8644dcb61c89",
+      "direct_trigger": "Frozen Core detects unchanged instruction progress at 50k-cycle checks, calls deadlock_check -> pipeline dump -> abort (SIGABRT); native natural telemetry closure missing is downstream symptom.",
+      "confirmed_runtime": {
+        "first_kernel_only": true,
+        "grid": "1x1x1",
+        "block": "512x1x1",
+        "core": 0,
+        "last_writeback_cycle": 51215,
+        "dump_cycle": 150000,
+        "stalled_instruction_pc": "0x0710",
+        "stalled_instruction_warp": 1,
+        "stall_class": "BK_CONF",
+        "opcode": "ATOMG.E.MIN.S32.STRONG.GPU",
+        "destination_register_count": 0,
+        "progress_records": 7,
+        "last_progress_completed_diagnostic_only": 240561,
+        "no_accepted_cycles": true,
+        "full_raw_sha256_reverified": true,
+        "all_RAM_and_disk_samples_pass": true,
+        "original_policy_all_CONTINUE": true
+      },
+      "source_mechanism_confirmed": "M4 atomic admission owns one OO PIB entry and external dependency. Frozen writeback_complete never marks zero-output atomic complete; callers decrement architectural atomic count but only call dtc_l1_m4_observe_complete if that boolean is true. The leaked external dependency prevents OO entry readiness/retirement. Actual frozen function+OO header fixture reproduces 128 leaked slots then admission refusal for both tag hash modes.",
+      "historical_cause_assessment": "HIGH_CONFIDENCE_SOURCE_LOCALIZED_M4_ZERO_DEST_ATOMIC_LIFECYCLE_LEAK; historical exact OO occupancy and owner UIDs were not printed, so 128 live slots at the observed abort is an inference, not an observed fact.",
+      "evidence_files": [
+        "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/failure_diagnosis_20261025_v1/bfs/RAW_PROGRESS_RESOURCE_SOURCE_FACTS.json",
+        "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/failure_diagnosis_20261025_v1/bfs/FIRST_KERNEL_TRACE_AND_DECODER_FACTS.json",
+        "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/failure_diagnosis_20261025_v1/bfs/CPU_SOURCE_FIXTURE_RESULT.json"
+      ],
+      "excluded_as_direct_trigger": [
+        "telemetry 8192/1M record cap: both end after only 7 records",
+        "outer RAM/disk guard: all captured samples pass; actual SIGABRT stack is Core deadlock_check",
+        "global atomic treated as cacheable mergeable load: decoder CACHE_GLOBAL and memory_cycle atomic branch exclude it",
+        "AE/XOR-specific defect: DM(AE0) and DH(AE1) same exact stopping state; CPU fixture fails identically with either hash mode"
+      ],
+      "unknown": [
+        "historical exact OO PIB entry inventory was not captured because existing diagnostic prints extra entry details only for PAPER_IO",
+        "minimal corrected lifecycle must handle split atomic responses and complete once, not every reply; no production fix or timing validation performed",
+        "barrier wait bitmap absent; other warps at pc0xEE0 is not by itself proof of an invalid source barrier"
+      ],
+      "next_minimal_verification": "Before any future simulator experiment, extend CPU source fixture with actual zero-dest atomic per-transaction completion aggregation, duplicate-completion guards, returning-atomic/no-dest RED/STORE/fence controls and full-PIB drain. A separate immutable diagnostic build could capture OO owner UID/operation/externaldep counts if later explicitly scheduled; preserve these historical failed attempts."
+    }
+  ],
+  "comparison": {
+    "CM_cycles": 4330430,
+    "CH_cycles": 4330430,
+    "CM_CH_full_11_kernel_natural_closure": true,
+    "CM_CH_m4_atomic_admissions": 0,
+    "DM_DH_effective_differences_only_tag_hash_bankrow": true
+  },
+  "source_pins": {
+    "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim/shader.cc": {
+      "git_head": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+      "sha256": "b2bb326916c505e43f5d70cfd9d9adc998de1c08248d035581be02f96f7c1c45",
+      "equals_committed_blob": true
+    },
+    "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim/gpu-sim.cc": {
+      "git_head": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+      "sha256": "aeccfeff3c80bd414b0f6dcd53a00e6dd13d426578a9e41d108e45f7b03ce75f",
+      "equals_committed_blob": true
+    },
+    "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim/dtc-l1-common.h": {
+      "git_head": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+      "sha256": "dab2df3ec8e1fd1c8953ac146eba3c93906c84af8cce66051e5728afe9963fa1",
+      "equals_committed_blob": true
+    },
+    "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim/dtc-l1-tag-index.h": {
+      "git_head": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+      "sha256": "184aab90b35330c96899133b0e6dc6ed1faa789275c128309bb481666fdeda26",
+      "equals_committed_blob": true
+    },
+    "/root/data/dtc_main_v100_sweep_20261025_v1/telemetry_v2/framework/gpu-simulator/trace-driven/trace_driven.cc": {
+      "git_head": "3b362ab5c0934fdcea9697b10244c6de5c4a14ae",
+      "sha256": "e82e9156bd28d61a044e1f677dc9e0e162290043404730ac9a81dae5ab402689",
+      "equals_committed_blob": true
+    },
+    "/root/data/dtc_main_v100_sweep_20261025_v1/telemetry_v2/framework/gpu-simulator/trace-parser/trace_parser.cc": {
+      "git_head": "3b362ab5c0934fdcea9697b10244c6de5c4a14ae",
+      "sha256": "f63db893d39bfcd4cbf679ea1158fd9a0594211181333e13b2fdbb478d60ddb7",
+      "equals_committed_blob": true
+    }
+  },
+  "fixture": {
+    "schema": "BFS_EXACT_FROZEN_WRITEBACK_BODY_AND_REAL_OO_HEADER_CPU_FIXTURE_V1",
+    "utc": "2026-10-25T14:20:03.961946+00:00",
+    "status": "PASS",
+    "scientific_model_started": false,
+    "source_file": "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim/shader.cc",
+    "source_sha256": "b2bb326916c505e43f5d70cfd9d9adc998de1c08248d035581be02f96f7c1c45",
+    "extracted_function_sha256": "3297564181b818edbebbf35a8e2c3514efa3809aabe7bb62321d043a912eee27",
+    "fixture": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/failure_diagnosis_20261025_v1/bfs/zero_dest_atomic_completion_source_fixture.cpp",
+    "fixture_sha256": "ed94f56d85579345846c3fd5d3e3751223b577e2e889b383d218fe9e3a86f00e",
+    "compile_argv": [
+      "g++",
+      "-std=c++17",
+      "-O0",
+      "-I",
+      "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim",
+      "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/failure_diagnosis_20261025_v1/bfs/zero_dest_atomic_completion_source_fixture.cpp",
+      "-o",
+      "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/failure_diagnosis_20261025_v1/bfs/zero_dest_atomic_completion_source_fixture"
+    ],
+    "stdout": "PASS exact frozen writeback_complete zero-dest ATOMG=false and RED=false; returning-atomic destination and fence controls=true; actual OO header external-dependency leak fills 128 and refuses 129 for AE=0 and AE=1\n",
+    "qualification_scope": "Unmodified frozen writeback_complete body with minimal fake architectural types; actual frozen oo_frontend header. This demonstrates missing no-destination completion and consequent finite-PIB leak, not a timing replay of the historical run.",
+    "counterfactual_control": "Call existing complete_external_dependency for one owner makes entry_ready_for true. This is fixture-only; no production source changed."
+  },
+  "trace_facts_path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/failure_diagnosis_20261025_v1/bfs/FIRST_KERNEL_TRACE_AND_DECODER_FACTS.json"
+}

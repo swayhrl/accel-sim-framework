@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "schema": "OBSERVER_EXIT_RACE_CPU_QUALIFICATION_V1",
+  "adapter_sha256": "a91c0574287b2fc2e0ae7bee88cfb7d440e07b2d93b8570e1f859f2504c28471",
+  "base_native_sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d",
+  "generated_source_sha256": "e8bcd74848d308326b415a1cc00f8f2e26c39e4214f01b070e9750d74f5720cc",
+  "driver_sha256": "606464ae6c3bcabcefb017681238268f160c321079c64b8aaa903b1abb7ba239",
+  "checks": [
+    "exact_three_process_observation_sites_transformed",
+    "reverse_transform_proves_all_other_native_code_AST_exact_including_policy_capture_actual_wait_and_limits",
+    "deterministic_source_generation",
+    "vanished_parent_children_file_is_empty_observation_not_a_stale_PID_snapshot",
+    "normal_children_observation_retained",
+    "permission_and_other_errors_not_swallowed",
+    "real_child_exit_between_poll_and_identity_or_stat_read_closes_with_actual_wait_and_complete_pipe",
+    "unexpected_identity_access_error_still_fails_closed",
+    "original_missing_proc_exception_reproduced_without_using_any_simulator",
+    "recovery_events_preserve_actual_poll_result_and_explicit_last_observed_identity",
+    "new_attempt_INTENT_launch_PID_adapter_binding_is_explicit",
+    "duplicate_install_rejected"
+  ],
+  "check_count": 12,
+  "real_CPU_fixture_cases": [
+    {
+      "case": "identity_missing",
+      "actual_wait_returncode": 0,
+      "complete_output_preserved": true
+    },
+    {
+      "case": "stat_missing",
+      "actual_wait_returncode": 0,
+      "complete_output_preserved": true
+    },
+    {
+      "case": "permission_not_masked",
+      "actual_wait_returncode": 0,
+      "complete_output_preserved": true
+    }
+  ],
+  "fixture_directory": "/root/data/dtc_failure_repair_20261025_v1/ops/OBSERVER_CPU_66vcgq2h",
+  "scientific_simulator_starts": 0,
+  "scientific_processes_attached": 0,
+  "historical_receipts_fabricated": 0,
+  "observed_utc": "2026-10-25T15:12:39.395660+00:00"
+}

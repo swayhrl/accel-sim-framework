@@ -1,0 +1,268 @@
+{
+  "schema": "DTC_HYBRIDSORT_DH_FAILURE_DIAGNOSIS_V1",
+  "cohort": "E2-AEV100-09f94fcc7494a03b-DH",
+  "program": "hybridsort",
+  "arm": "DH",
+  "uuid": "504a2712-5af5-4ffc-8239-dc49487959b7",
+  "direct_trigger_confirmed": "Core shader_print_dtc_l1_stats asserts actual aggregate OO PIB occupancy must be0;it was nonzero after first kernel. SIGABRT is captured;launcher then records missing natural telemetry closure.",
+  "confirmed_facts": {
+    "failed_kernel": "_Z19histogram1024KernelPjPfffi",
+    "whole_input_kernels": 68,
+    "whole_input_instructions": 6276086260,
+    "whole_input_CTA": 115324,
+    "first_kernel_instructions": 157690254,
+    "first_kernel_printed_cycles_diagnostic_only": 444238,
+    "first_kernel_complete_CTA": 64,
+    "first_kernel_threads_per_CTA": 96,
+    "distinct_SM_bindings": 64,
+    "first_kernel_cacheable_global_load_warp_records": 131072,
+    "service_cacheable_load_retires": 131072,
+    "zero_destination_global_RED_records": 2048,
+    "RED_per_CTA_exact": 32,
+    "passed_assert_before_failure": "oo_inflight_current==0",
+    "failed_assert": "oo_pib_occupancy==0",
+    "peak_process_tree_RSS_bytes": 2113929216,
+    "outer_RAM_disk_samples": 47,
+    "all_outer_RAM_disk_samples_pass": true,
+    "BA_policy_decision_counts": {
+      "CONTINUE": 44,
+      "WARN": 3
+    },
+    "BA_policy_STOPs": 0,
+    "progress_records": 52,
+    "last_progress": {
+      "v": 1,
+      "pid": 1268965,
+      "start_ticks": 969051670,
+      "generation": "504a2712-5af5-4ffc-8239-dc49487959b7",
+      "input": "09f94fcc7494a03b160b40b705cbc7ff5f41e88e8ee417d187e5c7fbcac82123",
+      "roi": "73549c5deae580b6a81f6b73798f4f9494479f11edbc4befd5a692f9105510c8",
+      "seq": 52,
+      "mono_ns": 9690980136536090,
+      "epoch": 0,
+      "phase_epoch": 5,
+      "phase": "SIMULATE",
+      "stream_id": 0,
+      "stream_scope": "whole_input",
+      "completed": 156862955,
+      "end": "NONE"
+    },
+    "raw_uncompressed_sha256": "d00795691d5d24894b545231095e2211946f8b83babd00d0edf5c7a8c8a29ae0",
+    "natural_end_missing": true,
+    "CTA_to_SM_allocation_records_available": false
+  },
+  "source_defect_confirmed": "OP_RED is explicitly decoded as LOAD_OP+isatomic+CACHE_GLOBAL despite initial opcode-map STORE_OP. Global atomic admission allocates an M4 PIB/external dependency;writeback_complete returnsfalse for no destination and no LDGSTS/fence/sync,so both return/writeback callsites skip observe_complete. Atomic dispatch completion calls PAPER_BASE-only dtc_l1_retire;it does not close OO M4. Source-extracted CPU fixture reproduces zero-dest RED/ATOMG false,positive returning/fence true and real128slot saturation.",
+  "historical_root_attribution": "HIGH_CONFIDENCE_SOURCE_AND_TRACE_CONSISTENT_NOT_COMPLETE_UID_REPLAY",
+  "historical_root_explanation": "The complete trace contains2048zero-destination RED operations,32perCTA across64CTAs. Raw binding messages cover64SMs,but set_kernel is called before can_issue_1block,so actual oneCTA/SM and32RED/SM are high-confidence scheduling/resource inferences,not a directly logged allocation map. Such a low per-SM leakage density can leave capacity for useful work and allow all131072cacheable loads to retire before kernel-end occupancy assertion. It does not exclude transient PIB-full stalls or directly prove the exact residual count/type. Source zero-destination completion and OO-only terminal-drain gaps remain strongly consistent with the actual assertion.",
+  "proof_limits": [
+    "No per-UID OO PIB state was captured at abort;the exact number,type andsource_completed bits of remaining entries are not directly observed.",
+    "2048residual entries is a source-derived prediction,not an observed counter.",
+    "The first kernel instruction/cycle totals do not constitute a whole68kernel result or scientific PASS.",
+    "The source-extracted CPU fixture is a logic witness,not a replay of this scientific simulation.",
+    "Termination/drain omission is a distinct source integration gap;fixing only a terminal assertion or only broad readiness cannot establish correct all-response atomic completion.",
+    "SM bind messages precede can_issue checks;oneCTA/SM and32RED/SM are not directly observed allocation facts. No claim excludes transient PIB-full stalls."
+  ],
+  "excluded_direct_triggers": [
+    "No memory-headroom or disk guardSTOP;all captured outer checksPASS.",
+    "No record cap:82records vs1M profile.",
+    "This new V4 point is not a target of the live override plan;all actual resource checks passed.",
+    "Not a stale sampled occupancy counter:the source reads the actual OO vector size.",
+    "Not evidence that AE/hash itself caused the failure;DM andDH share this lifecycle path."
+  ],
+  "recommended_fix_scope_no_changes_made": [
+    "Track outstanding source responses per instructionUID independent of destination registers;close M4 dependency exactlyonce only after all atomic source responses complete.",
+    "Preserve original warp completion/atomic side-effect/ordering;do not notify completion merely at dispatch or unconditionally per response.",
+    "Add queue/quiescence integration for kernel/core draining,including non-load M4 sidecars and lower request ownership.",
+    "CPU-first tests:zero-dest RED/ATOMG,returning atomic,multiple coalesced responses,duplicate completion,shared atomic exclusion,AE0/AE1,128-entry pressure and allthreads-ended-with-sidecar-pending.",
+    "Any future corrected Core run must use a separately versioned and explicitly bounded experimental amendment;do not relabel or automatically rerun this spent point."
+  ],
+  "accepted_cycles": null,
+  "simulation_starts": 0,
+  "simulation_retries": 0,
+  "active_source_changes": 0,
+  "source_excerpts": [
+    {
+      "path": "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim/shader.cc",
+      "sha256": "b2bb326916c505e43f5d70cfd9d9adc998de1c08248d035581be02f96f7c1c45",
+      "git_HEAD": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+      "first_line": 2617,
+      "last_line": 2681,
+      "excerpt": "2617: // M4 observes non-cacheable-read operations at their existing architectural\n2618: // completion points.  The sidecar only consumes a DTC PIB slot and one\n2619: // external dependency: it neither changes the request, cache policy, nor the\n2620: // conventional acknowledgement/writeback path selected by the source model.\n2621: bool ldst_unit::dtc_l1_m4_observe_admit(\n2622:     warp_inst_t &inst, dtc_l1_m4_operation operation) {\n2623:   if (!dtc_l1_paper_io_active() && !dtc_l1_paper_oo_active()) return true;\n2624:   const unsigned uid = inst.get_uid();\n2625:   if (dtc_l1_paper_io_active()) {\n2626:     if (dtc_l1_io_find_entry(uid)) return true;\n2627:     if (!m_dtc_l1_io_frontend->admit(uid)) return false;\n2628:     m_dtc_l1_io_frontend->add_external_dependency(uid);\n2629:     m_dtc_l1_io_pib.push_back({inst, {}, 0, operation, false});\n2630:     m_dtc_l1_io_pib_peak = std::max(\n2631:         m_dtc_l1_io_pib_peak, static_cast<uint64_t>(m_dtc_l1_io_pib.size()));\n2632:   } else {\n2633:     if (dtc_l1_oo_find_entry(uid)) return true;\n2634:     const bool admitted = dtc_l1_sector_oo_active()\n2635:                               ? m_dtc_l1_sector_frontend->admit(uid)\n2636:                               : m_dtc_l1_oo_frontend->admit(uid);\n2637:     if (!admitted) return false;\n2638:     if (dtc_l1_sector_oo_active())\n2639:       m_dtc_l1_sector_frontend->add_external_dependency(uid);\n2640:     else\n2641:       m_dtc_l1_oo_frontend->add_external_dependency(uid);\n2642:     m_dtc_l1_oo_pib.push_back({inst, {}, 0, operation, false});\n2643:   }\n2644:   switch (operation) {\n2645:     case dtc_l1_m4_operation::STORE: ++m_dtc_l1_m4_store_admits; break;\n2646:     case dtc_l1_m4_operation::ATOMIC: ++m_dtc_l1_m4_atomic_admits; break;\n2647:     case dtc_l1_m4_operation::BYPASS_LOAD:\n2648:       ++m_dtc_l1_m4_bypass_load_admits;\n2649:       break;\n2650:     case dtc_l1_m4_operation::PROXY_FENCE:\n2651:       ++m_dtc_l1_m4_proxy_fence_admits;\n2652:       break;\n2653:     case dtc_l1_m4_operation::CACHEABLE_LOAD: assert(false); break;\n2654:   }\n2655:   return true;\n2656: }\n2657: \n2658: void ldst_unit::dtc_l1_m4_observe_complete(const warp_inst_t &inst) {\n2659:   const unsigned uid = inst.get_uid();\n2660:   if (dtc_l1_paper_io_active()) {\n2661:     dtc_l1_io_pib_entry *entry = dtc_l1_io_find_entry(uid);\n2662:     if (!entry || entry->operation == dtc_l1_m4_operation::CACHEABLE_LOAD)\n2663:       return;\n2664:     assert(!entry->source_completed);\n2665:     entry->source_completed = true;\n2666:     m_dtc_l1_io_frontend->complete_external_dependency(uid);\n2667:   } else if (dtc_l1_paper_oo_active()) {\n2668:     dtc_l1_oo_pib_entry *entry = dtc_l1_oo_find_entry(uid);\n2669:     if (!entry || entry->operation == dtc_l1_m4_operation::CACHEABLE_LOAD)\n2670:       return;\n2671:     assert(!entry->source_completed);\n2672:     entry->source_completed = true;\n2673:     if (dtc_l1_sector_oo_active())\n2674:       m_dtc_l1_sector_frontend->complete_external_dependency(uid);\n2675:     else\n2676:       m_dtc_l1_oo_frontend->complete_external_dependency(uid);\n2677:   } else {\n2678:     return;\n2679:   }\n2680:   ++m_dtc_l1_m4_source_completions;\n2681: }"
+    },
+    {
+      "path": "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim/shader.cc",
+      "sha256": "b2bb326916c505e43f5d70cfd9d9adc998de1c08248d035581be02f96f7c1c45",
+      "git_HEAD": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+      "first_line": 3933,
+      "last_line": 3947,
+      "excerpt": "3933:   // Atomics retain their source-defined architectural route even though the\n3934:   // PTX model classifies them as LOAD_OP.  They are never DTC mergeable reads.\n3935:   dtc_l1_m4_operation observed_operation =\n3936:       dtc_l1_m4_operation::CACHEABLE_LOAD;\n3937:   if (inst.isatomic())\n3938:     observed_operation = dtc_l1_m4_operation::ATOMIC;\n3939:   else if (inst.is_store())\n3940:     observed_operation = dtc_l1_m4_operation::STORE;\n3941:   else if (inst.is_load() && bypassL1D)\n3942:     observed_operation = dtc_l1_m4_operation::BYPASS_LOAD;\n3943:   if (observed_operation != dtc_l1_m4_operation::CACHEABLE_LOAD &&\n3944:       !dtc_l1_m4_observe_admit(inst, observed_operation)) {\n3945:     stall_reason = BK_CONF;\n3946:     access_type = inst.is_store() ? G_MEM_ST : G_MEM_LD;\n3947:     return false;"
+    },
+    {
+      "path": "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim/shader.cc",
+      "sha256": "b2bb326916c505e43f5d70cfd9d9adc998de1c08248d035581be02f96f7c1c45",
+      "git_HEAD": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+      "first_line": 4543,
+      "last_line": 4599,
+      "excerpt": "4543: bool ldst_unit::writeback_complete(warp_inst_t &inst) {\n4544:   bool insn_completed = false;\n4545:   for (unsigned r = 0; r < MAX_OUTPUT_VALUES; r++) {\n4546:     if (inst.out[r] > 0) {\n4547:       if (inst.space.get_type() != shared_space) {\n4548:         assert(m_pending_writes[inst.warp_id()][inst.out[r]] > 0);\n4549:         const unsigned before = m_pending_writes[inst.warp_id()][inst.out[r]];\n4550:         unsigned still_pending =\n4551:             --m_pending_writes[inst.warp_id()][inst.out[r]];\n4552:         dtc_l1_r4c2_trace_pending_mutation(\n4553:             inst, inst.out[r], before, -1, still_pending,\n4554:             \"CONVENTIONAL_WRITEBACK_COMPLETE\");\n4555:         if (!still_pending) {\n4556:           m_pending_writes[inst.warp_id()].erase(inst.out[r]);\n4557:           m_scoreboard->releaseRegister(inst.warp_id(), inst.out[r]);\n4558:           insn_completed = true;\n4559:         }\n4560:       } else {  // shared\n4561:         m_scoreboard->releaseRegister(inst.warp_id(), inst.out[r]);\n4562:         insn_completed = true;\n4563:       }\n4564:     } else if (inst.m_is_ldgsts) {  // for LDGSTS instructions where no\n4565:                                     // output register is used\n4566:       m_pending_ldgsts[inst.warp_id()][inst.get_uid()]--;\n4567:       if (m_pending_ldgsts[inst.warp_id()][inst.get_uid()] == 0) {\n4568:         insn_completed = true;\n4569:       }\n4570:       break;\n4571:     } else if (inst.is_syncs() || inst.is_arrives() || inst.is_fence()) {\n4572:       // For mbarrier instructions and fence instructions that\n4573:       // go through the ldst_unit, they might not have output registers,\n4574:       // so we capture these and mark them as completed\n4575:       // For TMA instructions, they are completed\n4576:       // in ldst_unit::cycle()\n4577:       insn_completed = true;\n4578:     }\n4579:   }\n4580:   if (insn_completed) {\n4581:     m_core->warp_inst_complete(inst);\n4582:     dtc_l1_retire(inst);\n4583:     if (inst.m_is_ldgsts) {\n4584:       // If the LDGSTS instruction is done, we need to erase it from the\n4585:       // pending LDGSTS map and unset the DEPBAR\n4586:       m_pending_ldgsts[inst.warp_id()].erase(inst.get_uid());\n4587:       m_core->unset_depbar(inst);\n4588:     }\n4589:   }\n4590:   return insn_completed;\n4591: }\n4592: \n4593: void ldst_unit::writeback() {\n4594:   // process next instruction that is going to writeback\n4595:   if (!m_next_wb.empty()) {\n4596:     if (m_operand_collector->writeback(m_next_wb)) {\n4597:       const bool completed = writeback_complete(m_next_wb);\n4598:       if (completed) dtc_l1_m4_observe_complete(m_next_wb);\n4599:       m_next_wb.clear();"
+    },
+    {
+      "path": "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim/shader.cc",
+      "sha256": "b2bb326916c505e43f5d70cfd9d9adc998de1c08248d035581be02f96f7c1c45",
+      "git_HEAD": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+      "first_line": 4650,
+      "last_line": 4655,
+      "excerpt": "4650:           m_next_wb = mf->get_inst();\n4651:           if (m_operand_collector->writeback(m_next_wb)) {\n4652:             if (mf->isatomic()) {\n4653:               m_core->decrement_atomic_count(\n4654:                   mf->get_wid(), mf->get_access_warp_mask().count());\n4655:             }"
+    },
+    {
+      "path": "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim/shader.cc",
+      "sha256": "b2bb326916c505e43f5d70cfd9d9adc998de1c08248d035581be02f96f7c1c45",
+      "git_HEAD": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+      "first_line": 4687,
+      "last_line": 4699,
+      "excerpt": "4687:             const bool completed = writeback_complete(m_next_wb);\n4688:             if (completed) dtc_l1_m4_observe_complete(m_next_wb);\n4689: \n4690:             LDST_DPRINTF(\n4691:                 \"Core %u 0x%llx from warp %d writeback after %lld cycles\\n\",\n4692:                 mf->get_tpc(), m_next_wb.pc, m_next_wb.warp_id(),\n4693:                 m_core->get_gpu()->global_cycle() - mf->get_timestamp());\n4694: \n4695:             m_next_wb.clear();\n4696:             m_last_inst_gpu_sim_cycle = m_core->get_gpu()->gpu_sim_cycle;\n4697:             m_last_inst_gpu_tot_sim_cycle =\n4698:                 m_core->get_gpu()->gpu_tot_sim_cycle;\n4699: "
+    },
+    {
+      "path": "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim/shader.cc",
+      "sha256": "b2bb326916c505e43f5d70cfd9d9adc998de1c08248d035581be02f96f7c1c45",
+      "git_HEAD": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+      "first_line": 5275,
+      "last_line": 5285,
+      "excerpt": "5275:             }\n5276:           }\n5277:         }\n5278:         if (!pending_requests) {\n5279:           m_core->warp_inst_complete(*m_dispatch_reg);\n5280:           dtc_l1_retire(*m_dispatch_reg);\n5281:           m_scoreboard->releaseRegisters(m_dispatch_reg);\n5282: \n5283:           // release LDGSTS\n5284:           if (m_dispatch_reg->m_is_ldgsts) {\n5285:             if (m_pending_ldgsts[m_dispatch_reg->warp_id()]"
+    },
+    {
+      "path": "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim/shader.cc",
+      "sha256": "b2bb326916c505e43f5d70cfd9d9adc998de1c08248d035581be02f96f7c1c45",
+      "git_HEAD": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+      "first_line": 3619,
+      "last_line": 3634,
+      "excerpt": "3619: void ldst_unit::dtc_l1_retire(const warp_inst_t &inst) {\n3620:   if (!dtc_l1_paper_base_active()) return;\n3621:   const unsigned uid = inst.get_uid();\n3622:   const size_t erased = m_dtc_l1_live_instruction_uids.erase(uid);\n3623:   if (!erased) return;\n3624:   m_dtc_l1_frontend->retire(uid);\n3625:   dtc_l1_debug_event(\"RETIRE\", inst, 0);\n3626:   m_dtc_l1_frontend->assert_accounting();\n3627: }\n3628: \n3629: void ldst_unit::dtc_l1_debug_event(const char *event, const warp_inst_t &inst,\n3630:                                    new_addr_type address,\n3631:                                    const char *cache_status) {\n3632:   if (!dtc_l1_paper_base_active() || !m_dtc_l1_debug_events_left) return;\n3633:   --m_dtc_l1_debug_events_left;\n3634:   const unsigned long long cycle ="
+    },
+    {
+      "path": "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim/shader.cc",
+      "sha256": "b2bb326916c505e43f5d70cfd9d9adc998de1c08248d035581be02f96f7c1c45",
+      "git_HEAD": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+      "first_line": 2239,
+      "last_line": 2249,
+      "excerpt": "2239:       oo.sector_physical_allocated =\n2240:           m_dtc_l1_sector_frontend->allocated_lines();\n2241:     } else {\n2242:       oo.oo_lower_created = m_dtc_l1_oo_lower_created;\n2243:       oo.oo_lower_issued = m_dtc_l1_oo_lower_issued;\n2244:       oo.oo_lower_responses = m_dtc_l1_oo_lower_responses;\n2245:       oo.oo_lower_create_queue_full_stalls =\n2246:           m_dtc_l1_oo_lower_create_queue_full_stalls;\n2247:       oo.oo_inflight_current = m_dtc_l1_oo_inflight.size();\n2248:       oo.oo_pib_occupancy = m_dtc_l1_oo_pib.size();\n2249:       oo.oo_retire_count = m_dtc_l1_oo_frontend->retires();"
+    },
+    {
+      "path": "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim/shader.cc",
+      "sha256": "b2bb326916c505e43f5d70cfd9d9adc998de1c08248d035581be02f96f7c1c45",
+      "git_HEAD": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+      "first_line": 6036,
+      "last_line": 6046,
+      "excerpt": "6036:   if (mode == static_cast<unsigned>(dtc_l1::mode::PAPER_OO)) {\n6037:     assert(total.oo_inflight_current == 0);\n6038:     assert(total.oo_pib_occupancy == 0);\n6039:     assert(total.oo_lower_created == total.oo_lower_issued);\n6040:     assert(total.oo_lower_created == total.oo_lower_responses);\n6041:     assert(total.oo_completion_dependencies ==\n6042:            total.oo_completion_dependencies_closed);\n6043:     assert(total.oo_active_refs == 0);\n6044:     assert(dtc_l1_lower_outstanding() == 0);\n6045:     assert(dtc_l1_lower_requests_acquired() ==\n6046:            dtc_l1_lower_requests_released());"
+    },
+    {
+      "path": "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim/shader.cc",
+      "sha256": "b2bb326916c505e43f5d70cfd9d9adc998de1c08248d035581be02f96f7c1c45",
+      "git_HEAD": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+      "first_line": 6657,
+      "last_line": 6664,
+      "excerpt": "6657: void shader_core_ctx::cycle() {\n6658:   if (!isactive() && get_not_completed() == 0) return;\n6659: \n6660:   m_stats->shader_cycles[m_sid]++;\n6661:   writeback();\n6662:   execute();\n6663:   read_operands();\n6664:   issue();"
+    },
+    {
+      "path": "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "aeccfeff3c80bd414b0f6dcd53a00e6dd13d426578a9e41d108e45f7b03ce75f",
+      "git_HEAD": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+      "first_line": 1461,
+      "last_line": 1484,
+      "excerpt": "1461: bool gpgpu_sim::active() {\n1462:   if (m_config.gpu_max_cycle_opt &&\n1463:       (gpu_tot_sim_cycle + gpu_sim_cycle) >= m_config.gpu_max_cycle_opt)\n1464:     return false;\n1465:   if (m_config.gpu_max_insn_opt &&\n1466:       (gpu_tot_sim_insn + gpu_sim_insn) >= m_config.gpu_max_insn_opt)\n1467:     return false;\n1468:   if (m_config.gpu_max_cta_opt &&\n1469:       (gpu_tot_issued_cta >= m_config.gpu_max_cta_opt))\n1470:     return false;\n1471:   if (m_config.gpu_max_completed_cta_opt &&\n1472:       (gpu_completed_cta >= m_config.gpu_max_completed_cta_opt))\n1473:     return false;\n1474:   if (m_config.gpu_deadlock_detect && gpu_deadlock) return false;\n1475:   for (unsigned i = 0; i < m_shader_config->n_simt_clusters; i++)\n1476:     if (m_cluster[i]->get_not_completed() > 0) return true;\n1477:   ;\n1478:   for (unsigned i = 0; i < m_memory_config->m_n_mem; i++)\n1479:     if (m_memory_partition_unit[i]->busy() > 0) return true;\n1480:   ;\n1481:   if (icnt_busy()) return true;\n1482:   if (get_more_cta_left()) return true;\n1483:   return false;\n1484: }"
+    },
+    {
+      "path": "/root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "aeccfeff3c80bd414b0f6dcd53a00e6dd13d426578a9e41d108e45f7b03ce75f",
+      "git_HEAD": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+      "first_line": 2475,
+      "last_line": 2482,
+      "excerpt": "2475:     // L1 cache + shader core pipeline stages\n2476:     m_power_stats->pwr_mem_stat->core_cache_stats[CURRENT_STAT_IDX].clear();\n2477:     for (unsigned i = 0; i < m_shader_config->n_simt_clusters; i++) {\n2478:       if (m_cluster[i]->get_not_completed() || get_more_cta_left()) {\n2479:         m_cluster[i]->core_cycle();\n2480:         *active_sms += m_cluster[i]->get_n_active_sms();\n2481:       }\n2482:       // Update core icnt/cache stats for AccelWattch"
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/telemetry_v2/framework/gpu-simulator/trace-driven/trace_driven.cc",
+      "sha256": "e82e9156bd28d61a044e1f677dc9e0e162290043404730ac9a81dae5ab402689",
+      "git_HEAD": "3b362ab5c0934fdcea9697b10244c6de5c4a14ae",
+      "first_line": 422,
+      "last_line": 432,
+      "excerpt": "422:     case OP_ATOMG:\n423:     case OP_RED:\n424:     case OP_ATOM:\n425:       assert(data_size > 0);\n426:       memory_op = memory_load;\n427:       op = LOAD_OP;\n428:       space.set_type(global_space);\n429:       m_isatomic = true;\n430:       cache_op = CACHE_GLOBAL;  // all the atomics should be done at L2\n431:       break;\n432:     case OP_LDS:"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-09f94fcc7494a03b-DH.INTENT.json",
+      "sha256": "bafaee40e017b4915ad39e1cbe5c8989620cc812b5de26e4284ea624629d6a2d",
+      "bytes": 5380
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-09f94fcc7494a03b-DH.DONE.json",
+      "sha256": "5a710ab8a51f5382215d5af6e49135667741af3875576b911d34dedc7236ce14",
+      "bytes": 1134
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/504a2712-5af5-4ffc-8239-dc49487959b7/NATIVE_EXIT.json",
+      "sha256": "5a710ab8a51f5382215d5af6e49135667741af3875576b911d34dedc7236ce14",
+      "bytes": 1134
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/504a2712-5af5-4ffc-8239-dc49487959b7/NATIVE_LAUNCH.json",
+      "sha256": "45ba5f3a7592f479c25ef35abf057ae65ae0a63bcfb4fdb2dff4fb457a3da652",
+      "bytes": 50859
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/504a2712-5af5-4ffc-8239-dc49487959b7/NATIVE_SIMULATOR_PID_AND_MAPS.json",
+      "sha256": "abeec0541bc1c05822306d705f11f20b3f5321d5d3b59d12a680ebd7483cebe8",
+      "bytes": 9271
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/504a2712-5af5-4ffc-8239-dc49487959b7/raw.log.gz",
+      "sha256": "b2ec5ab9aaaccb2a5b8b99f6e3932ef6b29b8ee0d2e443e5d89baf3cfcf1e704",
+      "bytes": 10066
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/504a2712-5af5-4ffc-8239-dc49487959b7/progress.jsonl.gz",
+      "sha256": "2fd9e8f726df00613db74cfc1e4c05f268659013e0a178de47a5591dcd233af1",
+      "bytes": 2113
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/504a2712-5af5-4ffc-8239-dc49487959b7/RESOURCE_SAMPLES.jsonl.gz",
+      "sha256": "bb70c98bfd49ffaa63a369b39aef1e553d90e6a5d21c3c1d60ebbe5a0ff332e7",
+      "bytes": 28765
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/504a2712-5af5-4ffc-8239-dc49487959b7/actual_file_process_network.log",
+      "sha256": "50bcad6f84ffb4db76acbaeae91831da5b3db2936093b20750c7364205ed2bb8",
+      "bytes": 28333
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-09f94fcc7494a03b-DH_SPEC.json",
+      "sha256": "35c401b42c74f567f730e601f002e9b3f8806e7f51898f540729f44e7466bf15",
+      "bytes": 23321
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/effective_specs/E2-AEV100-09f94fcc7494a03b-DH.json",
+      "sha256": "c5170fdca8270d5b08ac8fac83d351621fe7b9a2643b7d457fe871cc554dcac3",
+      "bytes": 23728
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/E2-AEV100-09f94fcc7494a03b-DH.FAILURE_CLASSIFICATION_R5.json",
+      "sha256": "6511d678da2a8ffe03c27d7d26ff68e5c4338ac2fd86125c7674ed4f410486c8",
+      "bytes": 1965
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-09f94fcc7494a03b-DH_ARCHIVE_RECEIPT.json",
+      "sha256": "c48b17829f3e2861a85eda9294033ada887f0982d5c4b0b7b197a5de266e7df8",
+      "bytes": 1245
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/failure_diagnosis_20261025_v1/hybridsort/FIRST_KERNEL_ATOMIC_TRACE_AUDIT.json",
+      "sha256": "6a495120deb49e74e013f540f92fa65272afb66b2f8d7541e254eca2e6c69bfb",
+      "bytes": 2371
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/failure_diagnosis_20261025_v1/bfs/CPU_SOURCE_FIXTURE_RESULT.json",
+      "sha256": "241dd770bcb5f58e29bdb778c6f97fcef0b2c0b72fc0d01d00ae5e4e2b67251e",
+      "bytes": 1799
+    }
+  ],
+  "observed_utc": "2026-10-25T14:41:30.073330+00:00",
+  "peer_review_correction_utc": "2026-10-25T14:41:30.370263+00:00"
+}

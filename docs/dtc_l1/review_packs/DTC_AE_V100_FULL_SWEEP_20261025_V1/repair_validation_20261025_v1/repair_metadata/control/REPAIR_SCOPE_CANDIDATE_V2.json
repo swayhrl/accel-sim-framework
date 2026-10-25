@@ -1,0 +1,1237 @@
+{
+  "schema": "DTC_REPAIR_AND_NONFORMAL_SENTINEL_EXACT_SCOPE_V2",
+  "request": "DTC_AE_FAILURE_REPAIR_VALIDATION_20261025_V1",
+  "execution_root": "/root/data/dtc_failure_repair_20261025_v1/validation",
+  "original_request": "DTC_AE_V100_FULL_SWEEP_20261025_V1",
+  "original_root": "/root/data/dtc_main_v100_sweep_20261025_v1",
+  "source_inventory_path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/FAILURE_DIAGNOSIS_CURRENT_INVENTORY.json",
+  "source_inventory_sha256": "b984e02b446596205d6ddf8ab92fc5504076694b45a7304d9fce26305fbeb5e0",
+  "source_inventory_failed_count": 11,
+  "additional_observer_engineering_issues": 2,
+  "finite_budget": 23,
+  "maximum_repair_concurrency": 13,
+  "counts_toward_original_40_limit": false,
+  "original_spent_UUIDs_reused": false,
+  "original_dispositions_changed": false,
+  "statistics_scope": "correctness-validation only;never merge repaired points into original288 performance statistics",
+  "points": [
+    {
+      "cohort": "E2-AEREPAIR-09f94fcc7494a03b-DH-V1",
+      "prior_cohort": "E2-AEV100-09f94fcc7494a03b-DH",
+      "prior_uuid": "504a2712-5af5-4ffc-8239-dc49487959b7",
+      "program": "hybridsort",
+      "arm": "DH",
+      "input_digest": "09f94fcc7494a03b160b40b705cbc7ff5f41e88e8ee417d187e5c7fbcac82123",
+      "prior_frozen_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/effective_specs/E2-AEV100-09f94fcc7494a03b-DH.json",
+      "prior_frozen_spec_sha256": "c5170fdca8270d5b08ac8fac83d351621fe7b9a2643b7d457fe871cc554dcac3",
+      "prior_original_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-09f94fcc7494a03b-DH_SPEC.json",
+      "prior_original_spec_sha256": "35c401b42c74f567f730e601f002e9b3f8806e7f51898f540729f44e7466bf15",
+      "prior_intent_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-09f94fcc7494a03b-DH.INTENT.json",
+      "prior_intent_sha256": "bafaee40e017b4915ad39e1cbe5c8989620cc812b5de26e4284ea624629d6a2d",
+      "prior_DONE_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-09f94fcc7494a03b-DH.DONE.json",
+      "prior_DONE_sha256": "5a710ab8a51f5382215d5af6e49135667741af3875576b911d34dedc7236ce14",
+      "prior_failed_disposition": {
+        "cohort": "E2-AEV100-09f94fcc7494a03b-DH",
+        "program": "hybridsort",
+        "suite": "Rodinia",
+        "arm": "DH",
+        "input_digest": "09f94fcc7494a03b160b40b705cbc7ff5f41e88e8ee417d187e5c7fbcac82123",
+        "uuid": "504a2712-5af5-4ffc-8239-dc49487959b7",
+        "output": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/504a2712-5af5-4ffc-8239-dc49487959b7",
+        "stop_reason": "DTC_NATURAL_TELEMETRY_CLOSURE_MISSING",
+        "returncode": 1,
+        "elapsed_seconds": 473.3453921601176,
+        "peak_RSS_bytes": 2113929216,
+        "analysis_state": "FAIL_CLOSED_UNACCEPTED_ARCHIVED_NO_RETRY",
+        "classification": "CLOSED_OO_PIB_STATS_ASSERT_ABORT_UNACCEPTED",
+        "classification_path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/E2-AEV100-09f94fcc7494a03b-DH.FAILURE_CLASSIFICATION_R5.json",
+        "root_cause_recorded": "Actual native terminal-statistics assertion is captured;why OO/PIB occupancy remained nonzero is unresolved. No accepted cycles,even if partial populations appear complete.",
+        "archive_sha256": "114bc3c4698e3a61a67c6606d466d3fe4090c676c0241310dc59284c87137739",
+        "source_keep": true
+      },
+      "validation_kind": "REPAIR_FAILED_OR_ENGINEERING_POINT",
+      "source_kind": "ORIGINAL_CAPTURED_FULL_INPUT_REPAIR",
+      "operational_result_cap_bytes": 268435456
+    },
+    {
+      "cohort": "E2-AEREPAIR-09f94fcc7494a03b-DM-V1",
+      "prior_cohort": "E2-AEV100-09f94fcc7494a03b-DM",
+      "prior_uuid": "8ee5f9bf-e22c-4659-9eec-b79ec64247c7",
+      "program": "hybridsort",
+      "arm": "DM",
+      "input_digest": "09f94fcc7494a03b160b40b705cbc7ff5f41e88e8ee417d187e5c7fbcac82123",
+      "prior_frozen_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/effective_specs/E2-AEV100-09f94fcc7494a03b-DM.json",
+      "prior_frozen_spec_sha256": "037e02ba3c3e5a94f4aa9f32a367da3228a75803cd65193b522b5306067bdb02",
+      "prior_original_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-09f94fcc7494a03b-DM_SPEC.json",
+      "prior_original_spec_sha256": "9a3f4f978d0308e858cb849d348af2e15b7e1ff00fbc415d907efbd6af55f69f",
+      "prior_intent_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-09f94fcc7494a03b-DM.INTENT.json",
+      "prior_intent_sha256": "e409a14678eff3152e15cddff4cad6cde323ccae7849d6224b54e1b06833657e",
+      "prior_DONE_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-09f94fcc7494a03b-DM.DONE.json",
+      "prior_DONE_sha256": "0bd0a87589346f48ae357f27704f617f9cd60376eece262d9e5c4142663a9390",
+      "prior_failed_disposition": {
+        "cohort": "E2-AEV100-09f94fcc7494a03b-DM",
+        "program": "hybridsort",
+        "suite": "Rodinia",
+        "arm": "DM",
+        "input_digest": "09f94fcc7494a03b160b40b705cbc7ff5f41e88e8ee417d187e5c7fbcac82123",
+        "uuid": "8ee5f9bf-e22c-4659-9eec-b79ec64247c7",
+        "output": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/8ee5f9bf-e22c-4659-9eec-b79ec64247c7",
+        "stop_reason": "DTC_NATURAL_TELEMETRY_CLOSURE_MISSING",
+        "returncode": 1,
+        "elapsed_seconds": 766.8808852452785,
+        "peak_RSS_bytes": 2109734912,
+        "analysis_state": "FAIL_CLOSED_UNACCEPTED_ARCHIVED_NO_RETRY",
+        "classification": "CLOSED_OO_PIB_STATS_ASSERT_ABORT_UNACCEPTED",
+        "classification_path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/E2-AEV100-09f94fcc7494a03b-DM.FAILURE_CLASSIFICATION_R5.json",
+        "root_cause_recorded": "Actual native terminal-statistics assertion is captured;why OO/PIB occupancy remained nonzero is unresolved. No accepted cycles,even if partial populations appear complete.",
+        "archive_sha256": "cac23b7f126bde603f4bbff68fa34f4bbae824fbe0a53d91619ff6e8827aeaae",
+        "source_keep": true
+      },
+      "validation_kind": "REPAIR_FAILED_OR_ENGINEERING_POINT",
+      "source_kind": "ORIGINAL_CAPTURED_FULL_INPUT_REPAIR",
+      "operational_result_cap_bytes": 268435456
+    },
+    {
+      "cohort": "E2-AEREPAIR-1df9d5479504d9c7-DH-V1",
+      "prior_cohort": "E2-AEV100-1df9d5479504d9c7-DH",
+      "prior_uuid": "a6161cff-a0fe-4f2d-b489-8644dcb61c89",
+      "program": "bfs",
+      "arm": "DH",
+      "input_digest": "1df9d5479504d9c7c5f5ef176e9604ce1b43421c7b6be440597259607d3971c0",
+      "prior_frozen_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/effective_specs/E2-AEV100-1df9d5479504d9c7-DH.json",
+      "prior_frozen_spec_sha256": "16dbf99c99decc21c0500f42471129543cb71f00a7cc3e34c334878c7f38c4f7",
+      "prior_original_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-1df9d5479504d9c7-DH_SPEC.json",
+      "prior_original_spec_sha256": "9671a4e6035c64d1a066de03c9fdbaa5031e41b9389fe38763ba4eb10051d80a",
+      "prior_intent_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-1df9d5479504d9c7-DH.INTENT.json",
+      "prior_intent_sha256": "26066e5eddf690ab048255f338fff8d8041063f00099f0d9a84010245835655b",
+      "prior_DONE_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-1df9d5479504d9c7-DH.DONE.json",
+      "prior_DONE_sha256": "b07e1cd8d0ddd36e73571ac0dec01318d5690c313df59da347ef356407810ae1",
+      "prior_failed_disposition": {
+        "cohort": "E2-AEV100-1df9d5479504d9c7-DH",
+        "program": "bfs",
+        "suite": "Parboil",
+        "arm": "DH",
+        "input_digest": "1df9d5479504d9c7c5f5ef176e9604ce1b43421c7b6be440597259607d3971c0",
+        "uuid": "a6161cff-a0fe-4f2d-b489-8644dcb61c89",
+        "output": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/a6161cff-a0fe-4f2d-b489-8644dcb61c89",
+        "stop_reason": "DTC_NATURAL_TELEMETRY_CLOSURE_MISSING",
+        "returncode": 1,
+        "elapsed_seconds": 17.28775517642498,
+        "peak_RSS_bytes": 583008256,
+        "analysis_state": "FAIL_CLOSED_UNACCEPTED_ARCHIVED_NO_RETRY",
+        "classification": "CLOSED_NATIVE_MODEL_DEADLOCK_UNACCEPTED",
+        "classification_path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/E2-AEV100-1df9d5479504d9c7-DH.FAILURE_CLASSIFICATION_R5.json",
+        "root_cause_recorded": "Simulator deadlock/SIGABRT;precise source/input synchronization cause remains unresolved",
+        "archive_sha256": "6625010564c828d64fb293d5695fac20b060bd827c635bc6442b4c5f9d6cb53c",
+        "source_keep": true
+      },
+      "validation_kind": "REPAIR_FAILED_OR_ENGINEERING_POINT",
+      "source_kind": "ORIGINAL_CAPTURED_FULL_INPUT_REPAIR",
+      "operational_result_cap_bytes": 268435456
+    },
+    {
+      "cohort": "E2-AEREPAIR-1df9d5479504d9c7-DM-V1",
+      "prior_cohort": "E2-AEV100-1df9d5479504d9c7-DM",
+      "prior_uuid": "5d58a06a-8465-4dcf-bf31-391b5a6c4737",
+      "program": "bfs",
+      "arm": "DM",
+      "input_digest": "1df9d5479504d9c7c5f5ef176e9604ce1b43421c7b6be440597259607d3971c0",
+      "prior_frozen_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-1df9d5479504d9c7-DM_SPEC.json",
+      "prior_frozen_spec_sha256": "352778ae621b91cd005c8ed4108a05dc6bf0f83cd564f825813449e6e7846541",
+      "prior_original_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-1df9d5479504d9c7-DM_SPEC.json",
+      "prior_original_spec_sha256": "352778ae621b91cd005c8ed4108a05dc6bf0f83cd564f825813449e6e7846541",
+      "prior_intent_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-1df9d5479504d9c7-DM.INTENT.json",
+      "prior_intent_sha256": "b0ed82a8af1a74caf735c0010d5d2e4459aa963ee1d27d322d4059a76f0d82ca",
+      "prior_DONE_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-1df9d5479504d9c7-DM.DONE.json",
+      "prior_DONE_sha256": "712ee6b205e41893b86144f1978eee9c93d2d7af4ab39dcfdbbb1e1ea575ab52",
+      "prior_failed_disposition": {
+        "cohort": "E2-AEV100-1df9d5479504d9c7-DM",
+        "program": "bfs",
+        "suite": "Parboil",
+        "arm": "DM",
+        "input_digest": "1df9d5479504d9c7c5f5ef176e9604ce1b43421c7b6be440597259607d3971c0",
+        "uuid": "5d58a06a-8465-4dcf-bf31-391b5a6c4737",
+        "output": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/5d58a06a-8465-4dcf-bf31-391b5a6c4737",
+        "stop_reason": "DTC_NATURAL_TELEMETRY_CLOSURE_MISSING",
+        "returncode": 1,
+        "elapsed_seconds": 17.58429366350174,
+        "peak_RSS_bytes": 583008256,
+        "analysis_state": "FAIL_CLOSED_UNACCEPTED_ARCHIVED_NO_RETRY",
+        "classification": "CLOSED_NATIVE_MODEL_DEADLOCK_UNACCEPTED",
+        "classification_path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/E2-AEV100-1df9d5479504d9c7-DM.FAILURE_CLASSIFICATION_R5.json",
+        "root_cause_recorded": "Simulator deadlock/SIGABRT;precise source/input synchronization cause remains unresolved",
+        "archive_sha256": "5107c74b481def351f25509eea7ca475c9a3e72e02639cfbfb8c1eb4295ad1bf",
+        "source_keep": true
+      },
+      "validation_kind": "REPAIR_FAILED_OR_ENGINEERING_POINT",
+      "source_kind": "ORIGINAL_CAPTURED_FULL_INPUT_REPAIR",
+      "operational_result_cap_bytes": 268435456
+    },
+    {
+      "cohort": "E2-AEREPAIR-2b93f70cd0666c51-DH-V1",
+      "prior_cohort": "E2-AEV100-2b93f70cd0666c51-DH",
+      "prior_uuid": "5fb1dece-aab7-459e-8dab-c53425d18972",
+      "program": "scalarProd",
+      "arm": "DH",
+      "input_digest": "2b93f70cd0666c5112f5550aae7b3a8d0565de1de40604d494bdc36c503f6954",
+      "prior_frozen_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/effective_specs/E2-AEV100-2b93f70cd0666c51-DH.json",
+      "prior_frozen_spec_sha256": "4759c9922f856dda47d2bb67f21c40ce199a41eed8de86aa47bb4f6f0f5a521b",
+      "prior_original_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-2b93f70cd0666c51-DH_SPEC.json",
+      "prior_original_spec_sha256": "927508ac9174bc2b786ca5ffb912eeb0db2d3af617de1be45f80e9c8c2a077e5",
+      "prior_intent_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-2b93f70cd0666c51-DH.INTENT.json",
+      "prior_intent_sha256": "1d902565d83dca8a14445a6c951ece265e4288ca59a95fcb46bc57aaec6b0005",
+      "prior_DONE_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-2b93f70cd0666c51-DH.DONE.json",
+      "prior_DONE_sha256": "0821bf89b48e554537b5cb2d975b89726fded75f0e86e80e85b1c94fd5ed21f3",
+      "prior_failed_disposition": {
+        "cohort": "E2-AEV100-2b93f70cd0666c51-DH",
+        "program": "scalarProd",
+        "suite": "CUDA Samples",
+        "arm": "DH",
+        "input_digest": "2b93f70cd0666c5112f5550aae7b3a8d0565de1de40604d494bdc36c503f6954",
+        "uuid": "5fb1dece-aab7-459e-8dab-c53425d18972",
+        "output": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/5fb1dece-aab7-459e-8dab-c53425d18972",
+        "stop_reason": "DTC_TELEMETRY:MISSING_OR_STALE_PRODUCER",
+        "returncode": -15,
+        "elapsed_seconds": 32.477542124688625,
+        "peak_RSS_bytes": 3590324224,
+        "analysis_state": "FAIL_CLOSED_UNACCEPTED_ARCHIVED_NO_RETRY",
+        "classification": "CLOSED_TELEMETRY_PRODUCER_FRESHNESS_GUARD_STOP_UNACCEPTED",
+        "classification_path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/E2-AEV100-2b93f70cd0666c51-DH.FAILURE_CLASSIFICATION_R5.json",
+        "root_cause_recorded": "Launcher recorded missing/stale producer and terminated the authenticated native generation. Captured raw/sequence/resource evidence is preserved; why producer freshness was lost remains unresolved. No claim of model deadlock or numerical result.",
+        "archive_sha256": "7e54655ae459c1356631e817e51acd6ee302adde9580fb30e9af70a53bbb4a08",
+        "source_keep": true
+      },
+      "validation_kind": "REPAIR_FAILED_OR_ENGINEERING_POINT",
+      "source_kind": "ORIGINAL_CAPTURED_FULL_INPUT_REPAIR",
+      "operational_result_cap_bytes": 268435456
+    },
+    {
+      "cohort": "E2-AEREPAIR-2c506bf13c81ff5d-DM-V1",
+      "prior_cohort": "E2-AEV100-2c506bf13c81ff5d-DM",
+      "prior_uuid": "221010cd-8185-4a85-a380-9eaecff8de8b",
+      "program": "histo",
+      "arm": "DM",
+      "input_digest": "2c506bf13c81ff5dd4c286fa2f6d7a9edea513a5c8f38c60cfc746e36e9c5f64",
+      "prior_frozen_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/effective_specs/E2-AEV100-2c506bf13c81ff5d-DM.json",
+      "prior_frozen_spec_sha256": "fb049fe6bf2f583da548eb52a12b226e1d5e55d17a37d53587f5fa74242fecac",
+      "prior_original_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-2c506bf13c81ff5d-DM_SPEC.json",
+      "prior_original_spec_sha256": "fc67648a0d5ce262a00d19eb081be5ac4da937c89d1dd2d386e651040313c9fa",
+      "prior_intent_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-2c506bf13c81ff5d-DM.INTENT.json",
+      "prior_intent_sha256": "7431bb5869b179ceff72c05d82e119e25694539261d40c9583e379675328c4d9",
+      "prior_DONE_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-2c506bf13c81ff5d-DM.DONE.json",
+      "prior_DONE_sha256": "3db423dee4828d5439478063739e07a774167e131978f73f76cef915d22d3580",
+      "prior_failed_disposition": {
+        "cohort": "E2-AEV100-2c506bf13c81ff5d-DM",
+        "program": "histo",
+        "suite": "Parboil",
+        "arm": "DM",
+        "input_digest": "2c506bf13c81ff5dd4c286fa2f6d7a9edea513a5c8f38c60cfc746e36e9c5f64",
+        "uuid": "221010cd-8185-4a85-a380-9eaecff8de8b",
+        "output": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/221010cd-8185-4a85-a380-9eaecff8de8b",
+        "stop_reason": "DTC_NATURAL_TELEMETRY_CLOSURE_MISSING",
+        "returncode": 1,
+        "elapsed_seconds": 14.37564936093986,
+        "peak_RSS_bytes": 541065216,
+        "analysis_state": "FAIL_CLOSED_UNACCEPTED_ARCHIVED_NO_RETRY",
+        "classification": "CLOSED_OO_PIB_STATS_ASSERT_ABORT_UNACCEPTED",
+        "classification_path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/E2-AEV100-2c506bf13c81ff5d-DM.FAILURE_CLASSIFICATION_R5.json",
+        "root_cause_recorded": "Actual native terminal-statistics assertion is captured;why OO/PIB occupancy remained nonzero is unresolved. No accepted cycles,even if partial populations appear complete.",
+        "archive_sha256": "08b249ad78cc4c15adb09b245794f7ef6872c2e5e6ab62b7047a656a259b84ff",
+        "source_keep": true
+      },
+      "validation_kind": "REPAIR_FAILED_OR_ENGINEERING_POINT",
+      "source_kind": "ORIGINAL_CAPTURED_FULL_INPUT_REPAIR",
+      "operational_result_cap_bytes": 268435456
+    },
+    {
+      "cohort": "E2-AEREPAIR-85700545918390d7-DM-V1",
+      "prior_cohort": "E2-AEV100-85700545918390d7-DM",
+      "prior_uuid": "97c43b01-9628-490f-839e-4a2a8126122e",
+      "program": "cfd",
+      "arm": "DM",
+      "input_digest": "85700545918390d7a5cb33340f2043b13bf86a86d6141de238916cc60eb941cd",
+      "prior_frozen_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/effective_specs/E2-AEV100-85700545918390d7-DM.json",
+      "prior_frozen_spec_sha256": "98579a2dc1d14e12645a376a5cb37b5caebd74e6cefa2fd058c2aa1d3c8ef710",
+      "prior_original_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-85700545918390d7-DM_SPEC.json",
+      "prior_original_spec_sha256": "5c4009713bfeaae90efc7666c73c8c372380340eeae401f9513f520193b5d622",
+      "prior_intent_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-85700545918390d7-DM.INTENT.json",
+      "prior_intent_sha256": "ad534b376c24f100194076fffed54a18e71fef298235f5ff60052b673b327993",
+      "prior_DONE_path": null,
+      "prior_DONE_sha256": null,
+      "prior_failed_disposition": {
+        "cohort": "E2-AEV100-85700545918390d7-DM",
+        "uuid": "97c43b01-9628-490f-839e-4a2a8126122e",
+        "program": "cfd",
+        "suite": "Rodinia",
+        "arm": "DM",
+        "input_digest": "85700545918390d7a5cb33340f2043b13bf86a86d6141de238916cc60eb941cd",
+        "output": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/97c43b01-9628-490f-839e-4a2a8126122e",
+        "analysis_state": "RESOLVING_ISSUE_NO_MODEL_RETRY",
+        "no_original_DONE": true,
+        "result_sha256": "10c197f2940a0650cca6c3d30c5e199cae6becb37038bba3f06d9d3567608164",
+        "issue_error": "CalledProcessError(2, ['/root/data/ep_l2_dtc_l1_native_v2/bin/experiment', 'run-native', 'E2-AEV100-85700545918390d7-DM', '--project', 'DTC_L1'], '', '{\"status\": \"HOLD\", \"reason\": \"[Errno 2] No such file or directory: \\'/proc/1263485/stat\\'\", \"error_type\": \"FileNotFoundError\", \"errno\": 2, \"model_retry\": false}\\n')"
+      },
+      "validation_kind": "REPAIR_FAILED_OR_ENGINEERING_POINT",
+      "source_kind": "ORIGINAL_CAPTURED_FULL_INPUT_REPAIR",
+      "operational_result_cap_bytes": 268435456
+    },
+    {
+      "cohort": "E2-AEREPAIR-977e34578994c3d2-CH-V1",
+      "prior_cohort": "E2-AEV100-977e34578994c3d2-CH",
+      "prior_uuid": "a0a7bcfa-91d9-4498-aa2b-c18f9e696dc8",
+      "program": "myocyte",
+      "arm": "CH",
+      "input_digest": "977e34578994c3d2d1cbd1a8ecf13e09efc43b03bcb8615a141cf2a24c9d5992",
+      "prior_frozen_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-977e34578994c3d2-CH_SPEC.json",
+      "prior_frozen_spec_sha256": "c378064161405367ae5f9bbc9cb91985716c688be829c03a6bad36d6edfe75bc",
+      "prior_original_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-977e34578994c3d2-CH_SPEC.json",
+      "prior_original_spec_sha256": "c378064161405367ae5f9bbc9cb91985716c688be829c03a6bad36d6edfe75bc",
+      "prior_intent_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-977e34578994c3d2-CH.INTENT.json",
+      "prior_intent_sha256": "09a7fbd180fd9e4a77858cd059b083ac258287f1c0739eda98b259c2f4cfa297",
+      "prior_DONE_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-977e34578994c3d2-CH.DONE.json",
+      "prior_DONE_sha256": "8ef4b128f2d88b75786484325bfde2075246f0667a2a5e12a6d949efb0ea9257",
+      "prior_failed_disposition": {
+        "cohort": "E2-AEV100-977e34578994c3d2-CH",
+        "program": "myocyte",
+        "suite": "Rodinia",
+        "arm": "CH",
+        "input_digest": "977e34578994c3d2d1cbd1a8ecf13e09efc43b03bcb8615a141cf2a24c9d5992",
+        "uuid": "a0a7bcfa-91d9-4498-aa2b-c18f9e696dc8",
+        "output": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/a0a7bcfa-91d9-4498-aa2b-c18f9e696dc8",
+        "stop_reason": "DTC_TELEMETRY:MISSING_OR_STALE_PRODUCER",
+        "returncode": -15,
+        "elapsed_seconds": 3913.140231795609,
+        "peak_RSS_bytes": 490733568,
+        "analysis_state": "FAIL_CLOSED_UNACCEPTED_ARCHIVED_NO_RETRY",
+        "classification": "CLOSED_OBSERVATIONAL_TELEMETRY_RECORD_CAP_UNACCEPTED",
+        "classification_path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/E2-AEV100-977e34578994c3d2-CH.FAILURE_CLASSIFICATION_R5.json",
+        "root_cause_recorded": "Observational producer/receiver finite record ceiling reached;unchanged freshness guard stopped an incomplete input",
+        "archive_sha256": "69e14bf44e6243a237d67712e1c0bdcab81208c174f92d40608c06e0ec724785",
+        "source_keep": true
+      },
+      "validation_kind": "REPAIR_FAILED_OR_ENGINEERING_POINT",
+      "source_kind": "ORIGINAL_CAPTURED_FULL_INPUT_REPAIR",
+      "operational_result_cap_bytes": 268435456
+    },
+    {
+      "cohort": "E2-AEREPAIR-977e34578994c3d2-DM-V1",
+      "prior_cohort": "E2-AEV100-977e34578994c3d2-DM",
+      "prior_uuid": "95fedea6-6293-4673-9150-e36822857be0",
+      "program": "myocyte",
+      "arm": "DM",
+      "input_digest": "977e34578994c3d2d1cbd1a8ecf13e09efc43b03bcb8615a141cf2a24c9d5992",
+      "prior_frozen_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-977e34578994c3d2-DM_SPEC.json",
+      "prior_frozen_spec_sha256": "5d8e2df3d68bde5e57a77089d59e26f084b333849a88611b9735db5851a8245b",
+      "prior_original_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-977e34578994c3d2-DM_SPEC.json",
+      "prior_original_spec_sha256": "5d8e2df3d68bde5e57a77089d59e26f084b333849a88611b9735db5851a8245b",
+      "prior_intent_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-977e34578994c3d2-DM.INTENT.json",
+      "prior_intent_sha256": "6cbbb95cbb65ef48c127de02be7eea243022f167f0267e61f9dc03826ee541f2",
+      "prior_DONE_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-977e34578994c3d2-DM.DONE.json",
+      "prior_DONE_sha256": "1783bc6d14bdba68ce70df4c6332c106f22e4e81d71e513386f675fc2f4bf63d",
+      "prior_failed_disposition": {
+        "cohort": "E2-AEV100-977e34578994c3d2-DM",
+        "program": "myocyte",
+        "suite": "Rodinia",
+        "arm": "DM",
+        "input_digest": "977e34578994c3d2d1cbd1a8ecf13e09efc43b03bcb8615a141cf2a24c9d5992",
+        "uuid": "95fedea6-6293-4673-9150-e36822857be0",
+        "output": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/95fedea6-6293-4673-9150-e36822857be0",
+        "stop_reason": "DTC_TELEMETRY:MISSING_OR_STALE_PRODUCER",
+        "returncode": -15,
+        "elapsed_seconds": 4017.0480416361243,
+        "peak_RSS_bytes": 503316480,
+        "analysis_state": "FAIL_CLOSED_UNACCEPTED_ARCHIVED_NO_RETRY",
+        "classification": "CLOSED_OBSERVATIONAL_TELEMETRY_RECORD_CAP_UNACCEPTED",
+        "classification_path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/E2-AEV100-977e34578994c3d2-DM.FAILURE_CLASSIFICATION_R5.json",
+        "root_cause_recorded": "Observational producer/receiver finite record ceiling reached;unchanged freshness guard stopped an incomplete input",
+        "archive_sha256": "d080e7840b5b6c29d4156aaf822f10d2382a28aa8920878a2fd60ad4fc645d1c",
+        "source_keep": true
+      },
+      "validation_kind": "REPAIR_FAILED_OR_ENGINEERING_POINT",
+      "source_kind": "ORIGINAL_CAPTURED_FULL_INPUT_REPAIR",
+      "operational_result_cap_bytes": 268435456
+    },
+    {
+      "cohort": "E2-AEREPAIR-ddb6806316876a85-CH-V1",
+      "prior_cohort": "E2-AEV100-ddb6806316876a85-CH",
+      "prior_uuid": "b6e28445-8e1b-48fd-b352-aeca570bff64",
+      "program": "lavamd",
+      "arm": "CH",
+      "input_digest": "ddb6806316876a85cdea5766f2e1fc88bf9d4b699066a522eb5a5b9ff17a10d8",
+      "prior_frozen_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/effective_specs/E2-AEV100-ddb6806316876a85-CH.json",
+      "prior_frozen_spec_sha256": "a3464849867adec7323bf1b113b3f26bfc06a2c10293bb72d30d9c72cfdb5935",
+      "prior_original_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-ddb6806316876a85-CH_SPEC.json",
+      "prior_original_spec_sha256": "201bb847c149927070e21d52df5da1aff66efc671d6255ee17143078850c31d6",
+      "prior_intent_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-ddb6806316876a85-CH.INTENT.json",
+      "prior_intent_sha256": "7ff434d349d70570d967a3f690a2a2a375c6cff210356ddbb632f83233f576a2",
+      "prior_DONE_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-ddb6806316876a85-CH.DONE.json",
+      "prior_DONE_sha256": "df5125884f52ad654bdac2d2be5e86a644aadf7fc572d3b566b772e6c6a41f72",
+      "prior_failed_disposition": {
+        "cohort": "E2-AEV100-ddb6806316876a85-CH",
+        "program": "lavamd",
+        "suite": "Rodinia",
+        "arm": "CH",
+        "input_digest": "ddb6806316876a85cdea5766f2e1fc88bf9d4b699066a522eb5a5b9ff17a10d8",
+        "uuid": "b6e28445-8e1b-48fd-b352-aeca570bff64",
+        "output": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/b6e28445-8e1b-48fd-b352-aeca570bff64",
+        "stop_reason": "DTC_TELEMETRY:MISSING_OR_STALE_PRODUCER",
+        "returncode": -15,
+        "elapsed_seconds": 31.08816835284233,
+        "peak_RSS_bytes": 3326083072,
+        "analysis_state": "FAIL_CLOSED_UNACCEPTED_ARCHIVED_NO_RETRY",
+        "classification": "CLOSED_TELEMETRY_PRODUCER_FRESHNESS_GUARD_STOP_UNACCEPTED",
+        "classification_path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/E2-AEV100-ddb6806316876a85-CH.FAILURE_CLASSIFICATION_R5.json",
+        "root_cause_recorded": "Launcher recorded missing/stale producer and terminated the authenticated native generation. Captured raw/sequence/resource evidence is preserved; why producer freshness was lost remains unresolved. No claim of model deadlock or numerical result.",
+        "archive_sha256": "7b1ca7c73d856d7ec7c558fc785c62f5b64bab518800fbc73e46ae179c67e1e3",
+        "source_keep": true
+      },
+      "validation_kind": "REPAIR_FAILED_OR_ENGINEERING_POINT",
+      "source_kind": "ORIGINAL_CAPTURED_FULL_INPUT_REPAIR",
+      "operational_result_cap_bytes": 268435456
+    },
+    {
+      "cohort": "E2-AEREPAIR-ddb6806316876a85-CM-V1",
+      "prior_cohort": "E2-AEV100-ddb6806316876a85-CM",
+      "prior_uuid": "eaa858dd-04d0-41ba-9a3c-a5975c330720",
+      "program": "lavamd",
+      "arm": "CM",
+      "input_digest": "ddb6806316876a85cdea5766f2e1fc88bf9d4b699066a522eb5a5b9ff17a10d8",
+      "prior_frozen_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/effective_specs/E2-AEV100-ddb6806316876a85-CM.json",
+      "prior_frozen_spec_sha256": "dbf701f35a5ad5da525cdb143895b6458a7f839036f6400106937172d9162bfa",
+      "prior_original_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-ddb6806316876a85-CM_SPEC.json",
+      "prior_original_spec_sha256": "a8290d4d7fd31703b94b1a980d79c68cd17b06df3114f9ae3c4c21a34290fbaa",
+      "prior_intent_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-ddb6806316876a85-CM.INTENT.json",
+      "prior_intent_sha256": "82482327ecd5a93c378df27ed5a5d4cc10024b9e7c8fc21f533f3990667dadac",
+      "prior_DONE_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-ddb6806316876a85-CM.DONE.json",
+      "prior_DONE_sha256": "bf294600c23b02876b4c2faf7542b2999b0e6475be6a0e015eea6ca3c8c8dd56",
+      "prior_failed_disposition": {
+        "cohort": "E2-AEV100-ddb6806316876a85-CM",
+        "program": "lavamd",
+        "suite": "Rodinia",
+        "arm": "CM",
+        "input_digest": "ddb6806316876a85cdea5766f2e1fc88bf9d4b699066a522eb5a5b9ff17a10d8",
+        "uuid": "eaa858dd-04d0-41ba-9a3c-a5975c330720",
+        "output": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/eaa858dd-04d0-41ba-9a3c-a5975c330720",
+        "stop_reason": "DTC_TELEMETRY:MISSING_OR_STALE_PRODUCER",
+        "returncode": -15,
+        "elapsed_seconds": 31.002449095249176,
+        "peak_RSS_bytes": 3477078016,
+        "analysis_state": "FAIL_CLOSED_UNACCEPTED_ARCHIVED_NO_RETRY",
+        "classification": "CLOSED_TELEMETRY_PRODUCER_FRESHNESS_GUARD_STOP_UNACCEPTED",
+        "classification_path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/E2-AEV100-ddb6806316876a85-CM.FAILURE_CLASSIFICATION_R5.json",
+        "root_cause_recorded": "Launcher recorded missing/stale producer and terminated the authenticated native generation. Captured raw/sequence/resource evidence is preserved; why producer freshness was lost remains unresolved. No claim of model deadlock or numerical result.",
+        "archive_sha256": "fe750fce78db10aebb188197666d1ac89a14afcfa9626e4489637a45745be0f6",
+        "source_keep": true
+      },
+      "validation_kind": "REPAIR_FAILED_OR_ENGINEERING_POINT",
+      "source_kind": "ORIGINAL_CAPTURED_FULL_INPUT_REPAIR",
+      "operational_result_cap_bytes": 268435456
+    },
+    {
+      "cohort": "E2-AEREPAIR-e7bb67e63e3c3847-DH-V1",
+      "prior_cohort": "E2-AEV100-e7bb67e63e3c3847-DH",
+      "prior_uuid": "b15d3469-ed1b-4979-b7fa-9ba864c8630e",
+      "program": "vectorAdd",
+      "arm": "DH",
+      "input_digest": "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+      "prior_frozen_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/effective_specs/E2-AEV100-e7bb67e63e3c3847-DH.json",
+      "prior_frozen_spec_sha256": "25c7f49013b84871e2e3bbb7c760620d37e5ce5473a02f4eda17ea4f96f20adb",
+      "prior_original_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-e7bb67e63e3c3847-DH_SPEC.json",
+      "prior_original_spec_sha256": "bf65fbb1cc7bb1a35e2748aec7c1039530d339d73b022c903ccabcefa990ad88",
+      "prior_intent_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-e7bb67e63e3c3847-DH.INTENT.json",
+      "prior_intent_sha256": "72b8513b11ec95caa4de3aef277497b64ecff3ca0c9ee67b91820702f270fdae",
+      "prior_DONE_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-e7bb67e63e3c3847-DH.DONE.json",
+      "prior_DONE_sha256": "ec54d92fe1e2a80418a16b7b6323fb3a3241ec3f9b820a606682ef3eb0350b15",
+      "prior_failed_disposition": {
+        "cohort": "E2-AEV100-e7bb67e63e3c3847-DH",
+        "program": "vectorAdd",
+        "suite": "CUDA Samples",
+        "arm": "DH",
+        "input_digest": "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+        "uuid": "b15d3469-ed1b-4979-b7fa-9ba864c8630e",
+        "output": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/b15d3469-ed1b-4979-b7fa-9ba864c8630e",
+        "stop_reason": "MEMORY_HEADROOM",
+        "returncode": -15,
+        "elapsed_seconds": 1241.8707359973341,
+        "peak_RSS_bytes": 599785472,
+        "analysis_state": "FAIL_CLOSED_UNACCEPTED_ARCHIVED_NO_RETRY",
+        "classification": "CLOSED_OUTER_MEMORY_HEADROOM_GUARD_STOP_UNACCEPTED",
+        "classification_path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/E2-AEV100-e7bb67e63e3c3847-DH.FAILURE_CLASSIFICATION_R5.json",
+        "root_cause_recorded": "Captured outer physical_RAM_pass false caused MEMORY_HEADROOM SIGTERM;partial simulated cycles are unaccepted. Shared cached pages and outstanding reservations are retained in the original sample,not attributed exclusively to this model.",
+        "archive_sha256": "da22fcfb54925038bf5a0dd7605017b2d9481598ac504207896d6fab196ec904",
+        "source_keep": true
+      },
+      "validation_kind": "REPAIR_FAILED_OR_ENGINEERING_POINT",
+      "source_kind": "ORIGINAL_CAPTURED_FULL_INPUT_REPAIR",
+      "operational_result_cap_bytes": 268435456
+    },
+    {
+      "cohort": "E2-AEREPAIR-e7c791ce2e4b09ee-DM-V1",
+      "prior_cohort": "E2-AEV100-e7c791ce2e4b09ee-DM",
+      "prior_uuid": "f6c79f5f-6b0e-42d7-a5be-c3013fa7aaba",
+      "program": "b+tree",
+      "arm": "DM",
+      "input_digest": "e7c791ce2e4b09eea844428fdf220e0d3f095783c022a60aa9186c6146ddd83c",
+      "prior_frozen_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/effective_specs/E2-AEV100-e7c791ce2e4b09ee-DM.json",
+      "prior_frozen_spec_sha256": "7a782a7f5b00ff62641d53679390bcbe8e84dda91e031feb46df8ca4c805cef4",
+      "prior_original_spec_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-e7c791ce2e4b09ee-DM_SPEC.json",
+      "prior_original_spec_sha256": "10ba98b449abd5a371da664fe8748e72ea2aeb48cab8cd001bb28ca1fd73f284",
+      "prior_intent_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-e7c791ce2e4b09ee-DM.INTENT.json",
+      "prior_intent_sha256": "a3c18dded86de716609ecab0003c9530d4628bcd9bce8b080f0f910d6f7fa0a2",
+      "prior_DONE_path": null,
+      "prior_DONE_sha256": null,
+      "prior_failed_disposition": {
+        "cohort": "E2-AEV100-e7c791ce2e4b09ee-DM",
+        "uuid": "f6c79f5f-6b0e-42d7-a5be-c3013fa7aaba",
+        "program": "b+tree",
+        "suite": "Rodinia",
+        "arm": "DM",
+        "input_digest": "e7c791ce2e4b09eea844428fdf220e0d3f095783c022a60aa9186c6146ddd83c",
+        "output": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/f6c79f5f-6b0e-42d7-a5be-c3013fa7aaba",
+        "analysis_state": "RESOLVING_ISSUE_NO_MODEL_RETRY",
+        "no_original_DONE": true,
+        "result_sha256": "3d3fa4ac98427af99f1dabc72b3ea773c3f2e73aadcdece6f66625a441991f04",
+        "issue_error": "CalledProcessError(2, ['/root/data/ep_l2_dtc_l1_native_v2/bin/experiment', 'run-native', 'E2-AEV100-e7c791ce2e4b09ee-DM', '--project', 'DTC_L1'], '', '{\"status\": \"HOLD\", \"reason\": \"[Errno 2] No such file or directory: \\'/proc/1270448/exe\\'\", \"error_type\": \"FileNotFoundError\", \"errno\": 2, \"model_retry\": false}\\n')"
+      },
+      "validation_kind": "REPAIR_FAILED_OR_ENGINEERING_POINT",
+      "source_kind": "ORIGINAL_CAPTURED_FULL_INPUT_REPAIR",
+      "operational_result_cap_bytes": 268435456
+    },
+    {
+      "cohort": "E2-AEREPAIR-SENT-3375b4a8feb883fc-LEGACY-V1",
+      "component_mode": "LEGACY",
+      "expected": {
+        "CTA": 15625,
+        "instructions": 56000000,
+        "kernels": 1
+      },
+      "input_binding_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/3375b4a8feb883fc39f2a7777d224f921a1ecd9ff3d624654a0c69efab0a0d09.INPUT_BINDING.json",
+      "input_binding_sha256": "2f3b00e26aa7919239ee54e525e37cb0a3c020cbfc42f971ec90e2c3f6a46ad9",
+      "input_digest": "3375b4a8feb883fc39f2a7777d224f921a1ecd9ff3d624654a0c69efab0a0d09",
+      "input_source_KEEP": true,
+      "mode": 0,
+      "operational_result_cap_bytes": 33554432,
+      "option_vector_changes_from_original_DM": {
+        "-gpgpu_dtc_l1_finite_service": {
+          "parent": [
+            "1"
+          ],
+          "sentinel": [
+            "0"
+          ]
+        },
+        "-gpgpu_dtc_l1_mode": {
+          "parent": [
+            "3"
+          ],
+          "sentinel": [
+            "0"
+          ]
+        }
+      },
+      "output_cap_evidence_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/OUTPUT_CAP32_COMPONENT_EVIDENCE_V1.json",
+      "output_cap_evidence_sha256": "f150911c9bf2a77bf6c2c8a6e5acd49ee23e1cacb7189f83d273c534ff5e1282",
+      "program": "COMPONENT_SENTINEL_NOT_FORMAL:VECTORADD_ORIGINAL4M",
+      "source_kind": "REUSED_ORIGINAL_FULL_TRACE_NOT_TRIMMED",
+      "spec_template_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/E2-AEREPAIR-SENT-3375b4a8feb883fc-LEGACY-V1.SPEC_TEMPLATE.json",
+      "spec_template_sha256": "3e68110a7d3f3e7f34abac0745114380c4d910104ba5a3e8a7748deb51753b33",
+      "terminal_contract": {
+        "absent_counter_prefixes": [
+          "DTC_L1_"
+        ],
+        "constant_counters": {},
+        "equal_counter_pairs": [],
+        "mode_label": null,
+        "mode_option": "0",
+        "native_numerical_values": "UNPROVEN",
+        "required_terminal": "NATURAL_FULL_DECLARED_TRACE",
+        "zero_counters": []
+      },
+      "validation_kind": "COMPONENT_SENTINEL_NOT_FORMAL"
+    },
+    {
+      "cohort": "E2-AEREPAIR-SENT-3375b4a8feb883fc-BASE-V1",
+      "component_mode": "BASE",
+      "expected": {
+        "CTA": 15625,
+        "instructions": 56000000,
+        "kernels": 1
+      },
+      "input_binding_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/3375b4a8feb883fc39f2a7777d224f921a1ecd9ff3d624654a0c69efab0a0d09.INPUT_BINDING.json",
+      "input_binding_sha256": "2f3b00e26aa7919239ee54e525e37cb0a3c020cbfc42f971ec90e2c3f6a46ad9",
+      "input_digest": "3375b4a8feb883fc39f2a7777d224f921a1ecd9ff3d624654a0c69efab0a0d09",
+      "input_source_KEEP": true,
+      "mode": 1,
+      "operational_result_cap_bytes": 33554432,
+      "option_vector_changes_from_original_DM": {
+        "-gpgpu_dtc_l1_finite_service": {
+          "parent": [
+            "1"
+          ],
+          "sentinel": [
+            "0"
+          ]
+        },
+        "-gpgpu_dtc_l1_mode": {
+          "parent": [
+            "3"
+          ],
+          "sentinel": [
+            "1"
+          ]
+        }
+      },
+      "output_cap_evidence_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/OUTPUT_CAP32_COMPONENT_EVIDENCE_V1.json",
+      "output_cap_evidence_sha256": "f150911c9bf2a77bf6c2c8a6e5acd49ee23e1cacb7189f83d273c534ff5e1282",
+      "program": "COMPONENT_SENTINEL_NOT_FORMAL:VECTORADD_ORIGINAL4M",
+      "source_kind": "REUSED_ORIGINAL_FULL_TRACE_NOT_TRIMMED",
+      "spec_template_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/E2-AEREPAIR-SENT-3375b4a8feb883fc-BASE-V1.SPEC_TEMPLATE.json",
+      "spec_template_sha256": "ca460f61155264e7bfcb4221d31d64651c270611d7be016f157f48b1ff8d530b",
+      "terminal_contract": {
+        "constant_counters": {
+          "DTC_L1_m4_atomic_admits": 0,
+          "DTC_L1_m4_bypass_load_admits": 0,
+          "DTC_L1_m4_dynamic_atomics": 0,
+          "DTC_L1_m4_dynamic_loads": 250000,
+          "DTC_L1_m4_dynamic_stores": 125000,
+          "DTC_L1_m4_observation_retires": 0,
+          "DTC_L1_m4_proxy_fence_admits": 0,
+          "DTC_L1_m4_source_completions": 0,
+          "DTC_L1_m4_source_reachable_fence_ops": 0,
+          "DTC_L1_m4_store_admits": 0
+        },
+        "equal_counter_pairs": [
+          [
+            "DTC_L1_lower_requests_acquired",
+            "DTC_L1_lower_requests_released"
+          ],
+          [
+            "DTC_L1_m4_source_completions",
+            "DTC_L1_m4_observation_retires"
+          ],
+          [
+            "DTC_L1_pib_admits",
+            "DTC_L1_pib_retires"
+          ]
+        ],
+        "mode_label": "PAPER_BASE",
+        "mode_option": "1",
+        "native_numerical_values": "UNPROVEN",
+        "required_terminal": "NATURAL_FULL_DECLARED_TRACE",
+        "zero_counters": [
+          "DTC_L1_lower_outstanding",
+          "DTC_L1_pib_occupancy"
+        ]
+      },
+      "validation_kind": "COMPONENT_SENTINEL_NOT_FORMAL"
+    },
+    {
+      "cohort": "E2-AEREPAIR-SENT-3375b4a8feb883fc-IO-V1",
+      "component_mode": "IO",
+      "expected": {
+        "CTA": 15625,
+        "instructions": 56000000,
+        "kernels": 1
+      },
+      "input_binding_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/3375b4a8feb883fc39f2a7777d224f921a1ecd9ff3d624654a0c69efab0a0d09.INPUT_BINDING.json",
+      "input_binding_sha256": "2f3b00e26aa7919239ee54e525e37cb0a3c020cbfc42f971ec90e2c3f6a46ad9",
+      "input_digest": "3375b4a8feb883fc39f2a7777d224f921a1ecd9ff3d624654a0c69efab0a0d09",
+      "input_source_KEEP": true,
+      "mode": 2,
+      "operational_result_cap_bytes": 33554432,
+      "option_vector_changes_from_original_DM": {
+        "-gpgpu_dtc_l1_mode": {
+          "parent": [
+            "3"
+          ],
+          "sentinel": [
+            "2"
+          ]
+        }
+      },
+      "output_cap_evidence_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/OUTPUT_CAP32_COMPONENT_EVIDENCE_V1.json",
+      "output_cap_evidence_sha256": "f150911c9bf2a77bf6c2c8a6e5acd49ee23e1cacb7189f83d273c534ff5e1282",
+      "program": "COMPONENT_SENTINEL_NOT_FORMAL:VECTORADD_ORIGINAL4M",
+      "source_kind": "REUSED_ORIGINAL_FULL_TRACE_NOT_TRIMMED",
+      "spec_template_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/E2-AEREPAIR-SENT-3375b4a8feb883fc-IO-V1.SPEC_TEMPLATE.json",
+      "spec_template_sha256": "1ee1cd21648496f0b0e484b5c273b7f35372fb38bee008a3215fb30033ae4974",
+      "terminal_contract": {
+        "constant_counters": {
+          "DTC_L1_m4_atomic_admits": 0,
+          "DTC_L1_m4_bypass_load_admits": 0,
+          "DTC_L1_m4_dynamic_atomics": 0,
+          "DTC_L1_m4_dynamic_loads": 250000,
+          "DTC_L1_m4_dynamic_stores": 125000,
+          "DTC_L1_m4_observation_retires": 125000,
+          "DTC_L1_m4_proxy_fence_admits": 0,
+          "DTC_L1_m4_source_completions": 125000,
+          "DTC_L1_m4_source_reachable_fence_ops": 0,
+          "DTC_L1_m4_store_admits": 125000
+        },
+        "equal_counter_pairs": [
+          [
+            "DTC_L1_lower_requests_acquired",
+            "DTC_L1_lower_requests_released"
+          ],
+          [
+            "DTC_L1_m4_source_completions",
+            "DTC_L1_m4_observation_retires"
+          ],
+          [
+            "DTC_L1_io_lower_created",
+            "DTC_L1_io_lower_issued"
+          ],
+          [
+            "DTC_L1_io_lower_created",
+            "DTC_L1_io_lower_responses"
+          ],
+          [
+            "DTC_L1_io_completion_dependency_count",
+            "DTC_L1_io_completion_dependency_closed"
+          ]
+        ],
+        "mode_label": "PAPER_IO",
+        "mode_option": "2",
+        "native_numerical_values": "UNPROVEN",
+        "required_terminal": "NATURAL_FULL_DECLARED_TRACE",
+        "zero_counters": [
+          "DTC_L1_lower_outstanding",
+          "DTC_L1_io_inflight_current",
+          "DTC_L1_io_pib_occupancy",
+          "DTC_L1_io_inflight_identity_mismatch",
+          "DTC_L1_io_partial_entries_current",
+          "DTC_L1_io_partial_lines_held_current"
+        ]
+      },
+      "validation_kind": "COMPONENT_SENTINEL_NOT_FORMAL"
+    },
+    {
+      "cohort": "E2-AEREPAIR-SENT-3375b4a8feb883fc-OO-V1",
+      "component_mode": "OO",
+      "expected": {
+        "CTA": 15625,
+        "instructions": 56000000,
+        "kernels": 1
+      },
+      "input_binding_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/3375b4a8feb883fc39f2a7777d224f921a1ecd9ff3d624654a0c69efab0a0d09.INPUT_BINDING.json",
+      "input_binding_sha256": "2f3b00e26aa7919239ee54e525e37cb0a3c020cbfc42f971ec90e2c3f6a46ad9",
+      "input_digest": "3375b4a8feb883fc39f2a7777d224f921a1ecd9ff3d624654a0c69efab0a0d09",
+      "input_source_KEEP": true,
+      "mode": 3,
+      "operational_result_cap_bytes": 33554432,
+      "option_vector_changes_from_original_DM": {},
+      "output_cap_evidence_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/OUTPUT_CAP32_COMPONENT_EVIDENCE_V1.json",
+      "output_cap_evidence_sha256": "f150911c9bf2a77bf6c2c8a6e5acd49ee23e1cacb7189f83d273c534ff5e1282",
+      "program": "COMPONENT_SENTINEL_NOT_FORMAL:VECTORADD_ORIGINAL4M",
+      "source_kind": "REUSED_ORIGINAL_FULL_TRACE_NOT_TRIMMED",
+      "spec_template_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/E2-AEREPAIR-SENT-3375b4a8feb883fc-OO-V1.SPEC_TEMPLATE.json",
+      "spec_template_sha256": "f6c03e73e3ee5b1d19cc1e4f62f1be9ad610b35129cbb857c40eb80fee82694e",
+      "terminal_contract": {
+        "constant_counters": {
+          "DTC_L1_m4_atomic_admits": 0,
+          "DTC_L1_m4_bypass_load_admits": 0,
+          "DTC_L1_m4_dynamic_atomics": 0,
+          "DTC_L1_m4_dynamic_loads": 250000,
+          "DTC_L1_m4_dynamic_stores": 125000,
+          "DTC_L1_m4_observation_retires": 125000,
+          "DTC_L1_m4_proxy_fence_admits": 0,
+          "DTC_L1_m4_source_completions": 125000,
+          "DTC_L1_m4_source_reachable_fence_ops": 0,
+          "DTC_L1_m4_store_admits": 125000
+        },
+        "equal_counter_pairs": [
+          [
+            "DTC_L1_lower_requests_acquired",
+            "DTC_L1_lower_requests_released"
+          ],
+          [
+            "DTC_L1_m4_source_completions",
+            "DTC_L1_m4_observation_retires"
+          ],
+          [
+            "DTC_L1_oo_lower_created",
+            "DTC_L1_oo_lower_issued"
+          ],
+          [
+            "DTC_L1_oo_lower_created",
+            "DTC_L1_oo_lower_responses"
+          ],
+          [
+            "DTC_L1_oo_completion_dependency_count",
+            "DTC_L1_oo_completion_dependency_closed"
+          ]
+        ],
+        "mode_label": "PAPER_OO",
+        "mode_option": "3",
+        "native_numerical_values": "UNPROVEN",
+        "required_terminal": "NATURAL_FULL_DECLARED_TRACE",
+        "zero_counters": [
+          "DTC_L1_lower_outstanding",
+          "DTC_L1_oo_inflight_current",
+          "DTC_L1_oo_pib_occupancy",
+          "DTC_L1_oo_active_refs"
+        ]
+      },
+      "validation_kind": "COMPONENT_SENTINEL_NOT_FORMAL"
+    },
+    {
+      "cohort": "E2-AEREPAIR-SENT-3375b4a8feb883fc-SECTOR-V1",
+      "component_mode": "SECTOR",
+      "expected": {
+        "CTA": 15625,
+        "instructions": 56000000,
+        "kernels": 1
+      },
+      "input_binding_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/3375b4a8feb883fc39f2a7777d224f921a1ecd9ff3d624654a0c69efab0a0d09.INPUT_BINDING.json",
+      "input_binding_sha256": "2f3b00e26aa7919239ee54e525e37cb0a3c020cbfc42f971ec90e2c3f6a46ad9",
+      "input_digest": "3375b4a8feb883fc39f2a7777d224f921a1ecd9ff3d624654a0c69efab0a0d09",
+      "input_source_KEEP": true,
+      "mode": 4,
+      "operational_result_cap_bytes": 33554432,
+      "option_vector_changes_from_original_DM": {
+        "-gpgpu_dtc_l1_finite_service": {
+          "parent": [
+            "1"
+          ],
+          "sentinel": [
+            "0"
+          ]
+        },
+        "-gpgpu_dtc_l1_mode": {
+          "parent": [
+            "3"
+          ],
+          "sentinel": [
+            "4"
+          ]
+        }
+      },
+      "output_cap_evidence_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/OUTPUT_CAP32_COMPONENT_EVIDENCE_V1.json",
+      "output_cap_evidence_sha256": "f150911c9bf2a77bf6c2c8a6e5acd49ee23e1cacb7189f83d273c534ff5e1282",
+      "program": "COMPONENT_SENTINEL_NOT_FORMAL:VECTORADD_ORIGINAL4M",
+      "source_kind": "REUSED_ORIGINAL_FULL_TRACE_NOT_TRIMMED",
+      "spec_template_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/E2-AEREPAIR-SENT-3375b4a8feb883fc-SECTOR-V1.SPEC_TEMPLATE.json",
+      "spec_template_sha256": "9e70c2696eb0827eb180a3d376c2e741303b5149a496d05ff42eecd7d75852e7",
+      "terminal_contract": {
+        "constant_counters": {
+          "DTC_L1_m4_atomic_admits": 0,
+          "DTC_L1_m4_bypass_load_admits": 0,
+          "DTC_L1_m4_dynamic_atomics": 0,
+          "DTC_L1_m4_dynamic_loads": 250000,
+          "DTC_L1_m4_dynamic_stores": 125000,
+          "DTC_L1_m4_observation_retires": 125000,
+          "DTC_L1_m4_proxy_fence_admits": 0,
+          "DTC_L1_m4_source_completions": 125000,
+          "DTC_L1_m4_source_reachable_fence_ops": 0,
+          "DTC_L1_m4_store_admits": 125000
+        },
+        "equal_counter_pairs": [
+          [
+            "DTC_L1_lower_requests_acquired",
+            "DTC_L1_lower_requests_released"
+          ],
+          [
+            "DTC_L1_m4_source_completions",
+            "DTC_L1_m4_observation_retires"
+          ],
+          [
+            "DTC_L1_sector_lower_created",
+            "DTC_L1_sector_lower_issued"
+          ],
+          [
+            "DTC_L1_sector_lower_created",
+            "DTC_L1_sector_lower_responses"
+          ],
+          [
+            "DTC_L1_sector_completion_dependency_count",
+            "DTC_L1_sector_completion_dependency_closed"
+          ]
+        ],
+        "mode_label": "MODERN_OO_SECTOR",
+        "mode_option": "4",
+        "native_numerical_values": "UNPROVEN",
+        "required_terminal": "NATURAL_FULL_DECLARED_TRACE",
+        "zero_counters": [
+          "DTC_L1_lower_outstanding",
+          "DTC_L1_sector_inflight_current",
+          "DTC_L1_sector_pib_occupancy",
+          "DTC_L1_sector_active_refs"
+        ]
+      },
+      "validation_kind": "COMPONENT_SENTINEL_NOT_FORMAL"
+    },
+    {
+      "cohort": "E2-AEREPAIR-SENT-a24dde1bad963516-LEGACY-V1",
+      "component_mode": "LEGACY",
+      "expected": {
+        "CTA": 1,
+        "instructions": 288,
+        "kernels": 1
+      },
+      "input_binding_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/a24dde1bad963516ca1bb24a809c5c624e0c18ed216bc75711e3ebe20630cc6b.INPUT_BINDING.json",
+      "input_binding_sha256": "5af39a2c871ae6feacb4fe314c5303103aba596a44de0cda9b0a0af65e9e225f",
+      "input_digest": "a24dde1bad963516ca1bb24a809c5c624e0c18ed216bc75711e3ebe20630cc6b",
+      "input_source_KEEP": true,
+      "mode": 0,
+      "operational_result_cap_bytes": 33554432,
+      "option_vector_changes_from_original_DM": {
+        "-gpgpu_dtc_l1_finite_service": {
+          "parent": [
+            "1"
+          ],
+          "sentinel": [
+            "0"
+          ]
+        },
+        "-gpgpu_dtc_l1_mode": {
+          "parent": [
+            "3"
+          ],
+          "sentinel": [
+            "0"
+          ]
+        }
+      },
+      "output_cap_evidence_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/OUTPUT_CAP32_COMPONENT_EVIDENCE_V1.json",
+      "output_cap_evidence_sha256": "f150911c9bf2a77bf6c2c8a6e5acd49ee23e1cacb7189f83d273c534ff5e1282",
+      "program": "COMPONENT_SENTINEL_NOT_FORMAL:M4_MIXED_AUTHORED",
+      "source_kind": "ENGINEERING_SYNTHETIC_COMPONENT_SENTINEL_NOT_FORMAL",
+      "spec_template_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/E2-AEREPAIR-SENT-a24dde1bad963516-LEGACY-V1.SPEC_TEMPLATE.json",
+      "spec_template_sha256": "793881e8f06d7e3a46d1202d4315046035ccc6df5da8afce30777e6b7b3ebb3f",
+      "terminal_contract": {
+        "absent_counter_prefixes": [
+          "DTC_L1_"
+        ],
+        "constant_counters": {},
+        "equal_counter_pairs": [],
+        "mode_label": null,
+        "mode_option": "0",
+        "native_numerical_values": "UNPROVEN",
+        "required_terminal": "NATURAL_FULL_DECLARED_TRACE",
+        "zero_counters": []
+      },
+      "validation_kind": "COMPONENT_SENTINEL_NOT_FORMAL"
+    },
+    {
+      "cohort": "E2-AEREPAIR-SENT-a24dde1bad963516-BASE-V1",
+      "component_mode": "BASE",
+      "expected": {
+        "CTA": 1,
+        "instructions": 288,
+        "kernels": 1
+      },
+      "input_binding_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/a24dde1bad963516ca1bb24a809c5c624e0c18ed216bc75711e3ebe20630cc6b.INPUT_BINDING.json",
+      "input_binding_sha256": "5af39a2c871ae6feacb4fe314c5303103aba596a44de0cda9b0a0af65e9e225f",
+      "input_digest": "a24dde1bad963516ca1bb24a809c5c624e0c18ed216bc75711e3ebe20630cc6b",
+      "input_source_KEEP": true,
+      "mode": 1,
+      "operational_result_cap_bytes": 33554432,
+      "option_vector_changes_from_original_DM": {
+        "-gpgpu_dtc_l1_finite_service": {
+          "parent": [
+            "1"
+          ],
+          "sentinel": [
+            "0"
+          ]
+        },
+        "-gpgpu_dtc_l1_mode": {
+          "parent": [
+            "3"
+          ],
+          "sentinel": [
+            "1"
+          ]
+        }
+      },
+      "output_cap_evidence_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/OUTPUT_CAP32_COMPONENT_EVIDENCE_V1.json",
+      "output_cap_evidence_sha256": "f150911c9bf2a77bf6c2c8a6e5acd49ee23e1cacb7189f83d273c534ff5e1282",
+      "program": "COMPONENT_SENTINEL_NOT_FORMAL:M4_MIXED_AUTHORED",
+      "source_kind": "ENGINEERING_SYNTHETIC_COMPONENT_SENTINEL_NOT_FORMAL",
+      "spec_template_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/E2-AEREPAIR-SENT-a24dde1bad963516-BASE-V1.SPEC_TEMPLATE.json",
+      "spec_template_sha256": "0707ea335aa5d8294b3c04cbb95eaef5276ad73db53f66b4c289ff7358b48674",
+      "terminal_contract": {
+        "constant_counters": {
+          "DTC_L1_m4_atomic_admits": 0,
+          "DTC_L1_m4_bypass_load_admits": 0,
+          "DTC_L1_m4_dynamic_atomics": 2,
+          "DTC_L1_m4_dynamic_loads": 3,
+          "DTC_L1_m4_dynamic_stores": 1,
+          "DTC_L1_m4_observation_retires": 0,
+          "DTC_L1_m4_proxy_fence_admits": 0,
+          "DTC_L1_m4_source_completions": 0,
+          "DTC_L1_m4_source_reachable_fence_ops": 0,
+          "DTC_L1_m4_store_admits": 0
+        },
+        "equal_counter_pairs": [
+          [
+            "DTC_L1_lower_requests_acquired",
+            "DTC_L1_lower_requests_released"
+          ],
+          [
+            "DTC_L1_m4_source_completions",
+            "DTC_L1_m4_observation_retires"
+          ],
+          [
+            "DTC_L1_pib_admits",
+            "DTC_L1_pib_retires"
+          ]
+        ],
+        "mode_label": "PAPER_BASE",
+        "mode_option": "1",
+        "native_numerical_values": "UNPROVEN",
+        "required_terminal": "NATURAL_FULL_DECLARED_TRACE",
+        "zero_counters": [
+          "DTC_L1_lower_outstanding",
+          "DTC_L1_pib_occupancy"
+        ]
+      },
+      "validation_kind": "COMPONENT_SENTINEL_NOT_FORMAL"
+    },
+    {
+      "cohort": "E2-AEREPAIR-SENT-a24dde1bad963516-IO-V1",
+      "component_mode": "IO",
+      "expected": {
+        "CTA": 1,
+        "instructions": 288,
+        "kernels": 1
+      },
+      "input_binding_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/a24dde1bad963516ca1bb24a809c5c624e0c18ed216bc75711e3ebe20630cc6b.INPUT_BINDING.json",
+      "input_binding_sha256": "5af39a2c871ae6feacb4fe314c5303103aba596a44de0cda9b0a0af65e9e225f",
+      "input_digest": "a24dde1bad963516ca1bb24a809c5c624e0c18ed216bc75711e3ebe20630cc6b",
+      "input_source_KEEP": true,
+      "mode": 2,
+      "operational_result_cap_bytes": 33554432,
+      "option_vector_changes_from_original_DM": {
+        "-gpgpu_dtc_l1_mode": {
+          "parent": [
+            "3"
+          ],
+          "sentinel": [
+            "2"
+          ]
+        }
+      },
+      "output_cap_evidence_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/OUTPUT_CAP32_COMPONENT_EVIDENCE_V1.json",
+      "output_cap_evidence_sha256": "f150911c9bf2a77bf6c2c8a6e5acd49ee23e1cacb7189f83d273c534ff5e1282",
+      "program": "COMPONENT_SENTINEL_NOT_FORMAL:M4_MIXED_AUTHORED",
+      "source_kind": "ENGINEERING_SYNTHETIC_COMPONENT_SENTINEL_NOT_FORMAL",
+      "spec_template_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/E2-AEREPAIR-SENT-a24dde1bad963516-IO-V1.SPEC_TEMPLATE.json",
+      "spec_template_sha256": "2fd4b89d61d4d1d7831ce48fa867d1b7d4dac44fc9704ceb940f2b2aaac962ee",
+      "terminal_contract": {
+        "constant_counters": {
+          "DTC_L1_m4_atomic_admits": 2,
+          "DTC_L1_m4_bypass_load_admits": 1,
+          "DTC_L1_m4_dynamic_atomics": 2,
+          "DTC_L1_m4_dynamic_loads": 3,
+          "DTC_L1_m4_dynamic_stores": 1,
+          "DTC_L1_m4_observation_retires": 4,
+          "DTC_L1_m4_proxy_fence_admits": 0,
+          "DTC_L1_m4_source_completions": 4,
+          "DTC_L1_m4_source_reachable_fence_ops": 0,
+          "DTC_L1_m4_store_admits": 1
+        },
+        "equal_counter_pairs": [
+          [
+            "DTC_L1_lower_requests_acquired",
+            "DTC_L1_lower_requests_released"
+          ],
+          [
+            "DTC_L1_m4_source_completions",
+            "DTC_L1_m4_observation_retires"
+          ],
+          [
+            "DTC_L1_io_lower_created",
+            "DTC_L1_io_lower_issued"
+          ],
+          [
+            "DTC_L1_io_lower_created",
+            "DTC_L1_io_lower_responses"
+          ],
+          [
+            "DTC_L1_io_completion_dependency_count",
+            "DTC_L1_io_completion_dependency_closed"
+          ]
+        ],
+        "mode_label": "PAPER_IO",
+        "mode_option": "2",
+        "native_numerical_values": "UNPROVEN",
+        "required_terminal": "NATURAL_FULL_DECLARED_TRACE",
+        "zero_counters": [
+          "DTC_L1_lower_outstanding",
+          "DTC_L1_io_inflight_current",
+          "DTC_L1_io_pib_occupancy",
+          "DTC_L1_io_inflight_identity_mismatch",
+          "DTC_L1_io_partial_entries_current",
+          "DTC_L1_io_partial_lines_held_current"
+        ]
+      },
+      "validation_kind": "COMPONENT_SENTINEL_NOT_FORMAL"
+    },
+    {
+      "cohort": "E2-AEREPAIR-SENT-a24dde1bad963516-OO-V1",
+      "component_mode": "OO",
+      "expected": {
+        "CTA": 1,
+        "instructions": 288,
+        "kernels": 1
+      },
+      "input_binding_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/a24dde1bad963516ca1bb24a809c5c624e0c18ed216bc75711e3ebe20630cc6b.INPUT_BINDING.json",
+      "input_binding_sha256": "5af39a2c871ae6feacb4fe314c5303103aba596a44de0cda9b0a0af65e9e225f",
+      "input_digest": "a24dde1bad963516ca1bb24a809c5c624e0c18ed216bc75711e3ebe20630cc6b",
+      "input_source_KEEP": true,
+      "mode": 3,
+      "operational_result_cap_bytes": 33554432,
+      "option_vector_changes_from_original_DM": {},
+      "output_cap_evidence_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/OUTPUT_CAP32_COMPONENT_EVIDENCE_V1.json",
+      "output_cap_evidence_sha256": "f150911c9bf2a77bf6c2c8a6e5acd49ee23e1cacb7189f83d273c534ff5e1282",
+      "program": "COMPONENT_SENTINEL_NOT_FORMAL:M4_MIXED_AUTHORED",
+      "source_kind": "ENGINEERING_SYNTHETIC_COMPONENT_SENTINEL_NOT_FORMAL",
+      "spec_template_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/E2-AEREPAIR-SENT-a24dde1bad963516-OO-V1.SPEC_TEMPLATE.json",
+      "spec_template_sha256": "27afd846eaa8e8baa87598ea1df5568dca917bcac26c48559d9a3a0a30a01179",
+      "terminal_contract": {
+        "constant_counters": {
+          "DTC_L1_m4_atomic_admits": 2,
+          "DTC_L1_m4_bypass_load_admits": 1,
+          "DTC_L1_m4_dynamic_atomics": 2,
+          "DTC_L1_m4_dynamic_loads": 3,
+          "DTC_L1_m4_dynamic_stores": 1,
+          "DTC_L1_m4_observation_retires": 4,
+          "DTC_L1_m4_proxy_fence_admits": 0,
+          "DTC_L1_m4_source_completions": 4,
+          "DTC_L1_m4_source_reachable_fence_ops": 0,
+          "DTC_L1_m4_store_admits": 1
+        },
+        "equal_counter_pairs": [
+          [
+            "DTC_L1_lower_requests_acquired",
+            "DTC_L1_lower_requests_released"
+          ],
+          [
+            "DTC_L1_m4_source_completions",
+            "DTC_L1_m4_observation_retires"
+          ],
+          [
+            "DTC_L1_oo_lower_created",
+            "DTC_L1_oo_lower_issued"
+          ],
+          [
+            "DTC_L1_oo_lower_created",
+            "DTC_L1_oo_lower_responses"
+          ],
+          [
+            "DTC_L1_oo_completion_dependency_count",
+            "DTC_L1_oo_completion_dependency_closed"
+          ]
+        ],
+        "mode_label": "PAPER_OO",
+        "mode_option": "3",
+        "native_numerical_values": "UNPROVEN",
+        "required_terminal": "NATURAL_FULL_DECLARED_TRACE",
+        "zero_counters": [
+          "DTC_L1_lower_outstanding",
+          "DTC_L1_oo_inflight_current",
+          "DTC_L1_oo_pib_occupancy",
+          "DTC_L1_oo_active_refs"
+        ]
+      },
+      "validation_kind": "COMPONENT_SENTINEL_NOT_FORMAL"
+    },
+    {
+      "cohort": "E2-AEREPAIR-SENT-a24dde1bad963516-SECTOR-V1",
+      "component_mode": "SECTOR",
+      "expected": {
+        "CTA": 1,
+        "instructions": 288,
+        "kernels": 1
+      },
+      "input_binding_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/a24dde1bad963516ca1bb24a809c5c624e0c18ed216bc75711e3ebe20630cc6b.INPUT_BINDING.json",
+      "input_binding_sha256": "5af39a2c871ae6feacb4fe314c5303103aba596a44de0cda9b0a0af65e9e225f",
+      "input_digest": "a24dde1bad963516ca1bb24a809c5c624e0c18ed216bc75711e3ebe20630cc6b",
+      "input_source_KEEP": true,
+      "mode": 4,
+      "operational_result_cap_bytes": 33554432,
+      "option_vector_changes_from_original_DM": {
+        "-gpgpu_dtc_l1_finite_service": {
+          "parent": [
+            "1"
+          ],
+          "sentinel": [
+            "0"
+          ]
+        },
+        "-gpgpu_dtc_l1_mode": {
+          "parent": [
+            "3"
+          ],
+          "sentinel": [
+            "4"
+          ]
+        }
+      },
+      "output_cap_evidence_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/OUTPUT_CAP32_COMPONENT_EVIDENCE_V1.json",
+      "output_cap_evidence_sha256": "f150911c9bf2a77bf6c2c8a6e5acd49ee23e1cacb7189f83d273c534ff5e1282",
+      "program": "COMPONENT_SENTINEL_NOT_FORMAL:M4_MIXED_AUTHORED",
+      "source_kind": "ENGINEERING_SYNTHETIC_COMPONENT_SENTINEL_NOT_FORMAL",
+      "spec_template_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/E2-AEREPAIR-SENT-a24dde1bad963516-SECTOR-V1.SPEC_TEMPLATE.json",
+      "spec_template_sha256": "9f3fc08074bdd5e59aaf185eafcb6676786359f4e016953a6bec9423aa4dc75c",
+      "terminal_contract": {
+        "constant_counters": {
+          "DTC_L1_m4_atomic_admits": 2,
+          "DTC_L1_m4_bypass_load_admits": 1,
+          "DTC_L1_m4_dynamic_atomics": 2,
+          "DTC_L1_m4_dynamic_loads": 3,
+          "DTC_L1_m4_dynamic_stores": 1,
+          "DTC_L1_m4_observation_retires": 4,
+          "DTC_L1_m4_proxy_fence_admits": 0,
+          "DTC_L1_m4_source_completions": 4,
+          "DTC_L1_m4_source_reachable_fence_ops": 0,
+          "DTC_L1_m4_store_admits": 1
+        },
+        "equal_counter_pairs": [
+          [
+            "DTC_L1_lower_requests_acquired",
+            "DTC_L1_lower_requests_released"
+          ],
+          [
+            "DTC_L1_m4_source_completions",
+            "DTC_L1_m4_observation_retires"
+          ],
+          [
+            "DTC_L1_sector_lower_created",
+            "DTC_L1_sector_lower_issued"
+          ],
+          [
+            "DTC_L1_sector_lower_created",
+            "DTC_L1_sector_lower_responses"
+          ],
+          [
+            "DTC_L1_sector_completion_dependency_count",
+            "DTC_L1_sector_completion_dependency_closed"
+          ]
+        ],
+        "mode_label": "MODERN_OO_SECTOR",
+        "mode_option": "4",
+        "native_numerical_values": "UNPROVEN",
+        "required_terminal": "NATURAL_FULL_DECLARED_TRACE",
+        "zero_counters": [
+          "DTC_L1_lower_outstanding",
+          "DTC_L1_sector_inflight_current",
+          "DTC_L1_sector_pib_occupancy",
+          "DTC_L1_sector_active_refs"
+        ]
+      },
+      "validation_kind": "COMPONENT_SENTINEL_NOT_FORMAL"
+    }
+  ],
+  "models_started": 0,
+  "status": "CANDIDATE_NOT_REGISTERED_NOT_ACTIVATED",
+  "observed_utc": "2026-10-25T15:35:49.449563+00:00",
+  "repair_points": 13,
+  "nonformal_component_sentinels": 10,
+  "maximum_sentinel_concurrency": 10,
+  "scope13_source_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/REPAIR_SCOPE_CANDIDATE_V1.json",
+  "scope13_source_sha256": "4a9678130a1a51e5ebc893342d6de6d248bceacb1c77464f206f52d14fdadada",
+  "sentinel_candidates_path": "/root/data/dtc_failure_repair_20261025_v1/validation/control/SENTINEL_CASES_CANDIDATE_V1.json",
+  "sentinel_candidates_sha256": "26324d968bf41c7bfdd26cef77afc091eaf34d934880281a2e6a184c4a0fb37e"
+}

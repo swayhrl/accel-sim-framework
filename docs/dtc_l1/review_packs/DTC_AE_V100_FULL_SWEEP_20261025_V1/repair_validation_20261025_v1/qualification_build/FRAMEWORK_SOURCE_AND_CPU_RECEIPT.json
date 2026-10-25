@@ -1,0 +1,135 @@
+{
+  "framework_worktree": "/root/data/dtc_failure_repair_20261025_v1/framework",
+  "framework_base": "3b362ab5c0934fdcea9697b10244c6de5c4a14ae",
+  "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+  "framework_branch": "hrl/dtc-failure-repair-20261025-v1",
+  "source_bundle": "/root/data/dtc_failure_repair_20261025_v1/framework-repair-source.bundle",
+  "source_bundle_sha256": "dbe63df3fc68fe5fe7cccfab4674eebfd89a59db239017d52cb76fd26d08f71e",
+  "source_tree_clean": true,
+  "files": [
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/ag7_policyb_progress.h",
+      "sha256": "9b5b8767e7c1db2b729a6eaae91a50f56d8c6189aa415a5c36ff760f5a213201"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/accel-sim.cc",
+      "sha256": "36e11eb6aa8975b208d3f5e65f2a389bc93809483c17a15d3743c8fe272a37d8"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/trace-driven/trace_driven.cc",
+      "sha256": "3c4930da781e7ab95828a51fac5c642556ec0c4526144e1436936db1dcc5be5a"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/trace-parser/trace_parser.cc",
+      "sha256": "8e3b727b054e75825181cf22778283b97f0d4c3c9e3ec7c1234f65c631bb9370"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/trace-parser/warp_trace_stream.h",
+      "sha256": "24b2da4b398b9fdfb2accb628ebdbb361fdde8ba841a5462d0d1d3f8f00425d4"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/tests/ag7_cooperative_progress_fixture.cc",
+      "sha256": "b43c2b05c51046d51c5df54fc96aa53651fa781d27bfed5131818ce822cb92bb"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/tests/test_ag7_cooperative_progress.py",
+      "sha256": "168d85c57513354bb87a89b088cd87ff247442a0c6d2663237ca1410336e6693"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/framework/docs/dtc_l1/repairs/20261025/TELEMETRY_INITIALIZATION_WINDOW.md",
+      "sha256": "89d5783952a89970e01bf40286b0a475a99f226f76b6c8184c4e2a30ef6bd7fd"
+    }
+  ],
+  "CPU_test_result": "/root/data/dtc_failure_repair_20261025_v1/framework-cpu-tests/RESULT.json",
+  "CPU_test_result_sha256": "d31931c5f34d93c2eb6045b07693c0c90c947e1dc29f1466720277c70909f1fe",
+  "CPU_tests": [
+    {
+      "name": "more_than_8192_exact_authenticated_records",
+      "PASS": true,
+      "details": {
+        "records": 8196
+      }
+    },
+    {
+      "name": "text_xz_tracez_and_all_memory_address_decoders_off_on_identical",
+      "PASS": true,
+      "details": {
+        "checksum": 40980,
+        "records": 3,
+        "background_thread_isolated": true,
+        "no_late_packets_after_terminal": true,
+        "scope_restored": true
+      }
+    },
+    {
+      "name": "exception_unwind_scope_and_error_terminal_no_fake_natural",
+      "PASS": true,
+      "details": {
+        "records": 2
+      }
+    },
+    {
+      "name": "broken_socket_disables_producer_without_reconnect",
+      "PASS": true,
+      "details": {
+        "enabled": 0,
+        "checksum": 0,
+        "iterations": 0
+      }
+    },
+    {
+      "name": "real_33_second_parser_window_fresh_without_retirement",
+      "PASS": true,
+      "details": {
+        "records": 6,
+        "max_gap_seconds": 10.001044878,
+        "all_completed": 17,
+        "decoded_iterations": 28549188
+      }
+    },
+    {
+      "name": "freshness_30s_still_STOP_and_failure_latches",
+      "PASS": true,
+      "details": {
+        "reason": "MISSING_OR_STALE_PRODUCER"
+      }
+    },
+    {
+      "name": "same_value_fresh_packets_cannot_renew_600s_retirement_cap",
+      "PASS": true,
+      "details": {
+        "decision": "STOP",
+        "stop_reasons": [
+          "NO_SEMANTIC_RETIREMENT_600S"
+        ],
+        "warnings": [],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    }
+  ],
+  "compiled_simulator_executed": false,
+  "scientific_starts": 0,
+  "observed_utc": "2026-10-25T15:14:43.299335+00:00"
+}

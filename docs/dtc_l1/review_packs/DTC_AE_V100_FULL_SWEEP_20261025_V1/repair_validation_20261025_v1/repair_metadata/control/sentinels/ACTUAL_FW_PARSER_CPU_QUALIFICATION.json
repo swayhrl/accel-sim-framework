@@ -1,0 +1,40 @@
+{
+  "schema": "ACTUAL_FROZEN_FW_COMPONENT_SENTINEL_PARSER_QUALIFICATION_V1",
+  "status": "PASS",
+  "utc": "2026-10-25T15:35:38.157917+00:00",
+  "compile_argv": [
+    "g++",
+    "-std=c++17",
+    "-O2",
+    "-UNDEBUG",
+    "-I/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/trace-parser",
+    "-I/root/data/dtc_main_20261023_v1/ae_fair_v1/toolchain/include",
+    "-I/root/data/dtc_failure_repair_20261025_v1/core/src",
+    "-I/root/data/dtc_failure_repair_20261025_v1/core/libcuda",
+    "/root/data/dtc_failure_repair_20261025_v1/validation/tools/dtc_component_sentinel_parser_fixture.cc",
+    "/root/data/dtc_failure_repair_20261025_v1/framework-build/trace_parser.o",
+    "-L/root/data/dtc_failure_repair_20261025_v1/core-build",
+    "-Wl,-rpath,/root/data/dtc_failure_repair_20261025_v1/core-build",
+    "-lcudart",
+    "-lzstd",
+    "-lz",
+    "-o",
+    "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/dtc_component_sentinel_parser_fixture"
+  ],
+  "argv": [
+    "/root/data/dtc_failure_repair_20261025_v1/validation/control/sentinels/dtc_component_sentinel_parser_fixture",
+    "/root/share/mnt164/huangrulin/dtc_failure_repair_20261025_v1/component_sentinels/mixed_v1/kernel-1.traceg",
+    "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261023_native_v2_inputs/EP_VECTORADD_S/tree/kernel-1.traceg"
+  ],
+  "stdout": "PASS actual frozen FW parser: authored mixed full9 records/288 thread-instructions; returning ATOMG and zero-dest RED decoded address payloads; original4M first complete warp16 records/448 thread-instructions; no simulator or kernel executed\n",
+  "source_path": "/root/data/dtc_failure_repair_20261025_v1/validation/tools/dtc_component_sentinel_parser_fixture.cc",
+  "source_sha256": "bd9af5ac4240b59f27d65b9883e21e5254852795ddbd381461bdfebba62a9b86",
+  "parser_object_sha256": "25aec93a253617d0c5beb8070c468b30fedbe034dbad0f072af10e7299884b95",
+  "core_library_sha256": "694f05ce97fe3e1552d94803c2202d8d037769c61624cde5f6a832622ed60c56",
+  "scientific_model_starts": 0,
+  "scope": "Only actual parser CPU calls, no GPU simulator constructor, kernel launch, runtime thread or GPU cycle. The original full4M input was independently full-SHA/body audited; this actual parser checks its first complete warp and every authored mixed record.",
+  "generator_source_pins": {
+    "/root/data/dtc_failure_repair_20261025_v1/validation/tools/dtc_prepare_component_sentinels_v1.py": "f674a627ff9373ded36c2483e2dc54f9581fb5a566a800ad7076fee6b365747d",
+    "/root/data/dtc_failure_repair_20261025_v1/validation/tools/dtc_prepare_sentinel_cases_v1.py": "c87b1d70b0fbff50adc6e25b588dec1ef2e9e4976406a79cea5e397108ac8980"
+  }
+}
