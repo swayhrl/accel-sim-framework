@@ -1,3 +1,5 @@
+> Latest authorized I/O-policy continuation: [CURRENT_AUTHORIZED_IO_CONTINUATION_STATUS.md](t2/CURRENT_AUTHORIZED_IO_CONTINUATION_STATUS.md). Earlier blocked/reclaim snapshots below are historical.
+
 > Latest 174-new retirement and continuation audit: [CURRENT_RECOVERY_STATUS_174NEW_RECLAIM.md](t2/CURRENT_RECOVERY_STATUS_174NEW_RECLAIM.md). The original recovery snapshot below is historical; use current live STATE, Supervisor and publication receipts.
 
 # Current Lane T recovery status ? 2026-10-25 Asia/Shanghai

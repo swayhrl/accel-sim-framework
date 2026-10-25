@@ -2,11 +2,11 @@
 
 Evidence snapshot: 2026-10-25T03:18:16.834512+08:00. Original queue SHA256 `718f30ec3bc8e5ece20df02cd472ebee17eac320f7b5a9e5b5e69841cc63cc04`.
 
-The original 115 scopes remain unchanged. **34 committed, 1 current HOLD, 80 pending/in-progress**. Content archived in this execution: 115,095,478,300 bytes. T2 adds 20 assets / 4,308,507,213 bytes after the 14-asset takeover baseline.
+The original 115 scopes remain unchanged. **34 committed, 0 current HOLD, 81 pending/in-progress**. Content archived in this execution: 115,095,478,300 bytes. T2 adds 20 assets / 4,308,507,213 bytes after the 14-asset takeover baseline.
 
 | Group | Frozen | Committed | HOLD | Pending | Committed logical bytes |
 |---|---:|---:|---:|---:|---:|
-| TRACE | 51 | 33 | 1 | 17 | 115,095,302,211 |
+| TRACE | 51 | 33 | 0 | 18 | 115,095,302,211 |
 | DTC_RAW | 63 | 1 | 0 | 62 | 176,089 |
 | Q05_FIXED10000 | 1 | 0 | 0 | 1 | 0 |
 
@@ -28,7 +28,8 @@ Additional user-authorized 174-new cold compiler-copy retirement: 2,341 exact fi
 
 Recorded execution-admission error: the one 84,346,374-byte native restore test used a base-only SSD check instead of all declared reservations and the active-science gate. It passed SHA/metadata verification and its 84,353,024 allocated bytes were removed, without counting them as original-copy reclaim. `reclaim_174new/RESTORE_TEST_ADMISSION_DEVIATION.json` preserves the executed version and correction. Future test allocations now require the original full admission plus complete test-file capacity; directed checks include reservation shortfall and active-science I/O rejection. Content/receipt closure PASS does not erase this admission deviation.
 
-Current explicit HOLDs:
-- `TRACE_7a2ceb3a0f9b32b5`: RESOURCE — RESOURCE_HOLD_SSD_ALL_DECLARED_RESERVATIONS
+The subsequent explicit user authorization in `ACTIVE_SCIENCE_IO_GATE_USER_AUTHORIZATION.json` changes only the active-science avg10 I/O check to monitor-only. It does not retroactively authorize the earlier restore-test admission error. Sustained severe host-I/O protection, SSD/RAM reservations, locks, rate/staging limits and scientific identity checks remain unchanged. `io_policy_transition/` retains directed qualification, the exact old/new supervisor identities and proof that the original deadline and cumulative counters were preserved during the single policy reload; the Publisher was not restarted.
+
+No current classified terminal HOLD has been established in this snapshot. Remaining pending work is not counted as successful completion.
 
 This is an in-progress report. Execution and bounded supervision continue; no user decision is currently requested by this draft.
