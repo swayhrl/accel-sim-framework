@@ -1,0 +1,85 @@
+{
+  "schema": "DTC_OUTER_MEMORY_HEADROOM_STOP_CLASSIFICATION_V1",
+  "status": "CLOSED_OUTER_MEMORY_HEADROOM_GUARD_STOP_UNACCEPTED",
+  "cohort": "E2-AEV100-e7bb67e63e3c3847-DH",
+  "uuid": "b15d3469-ed1b-4979-b7fa-9ba864c8630e",
+  "input_digest": "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+  "program": "vectorAdd",
+  "runtime_profile": "OBSERVABILITY_CAP1M_WALL90_V1",
+  "framework_commit": "3b362ab5c0934fdcea9697b10244c6de5c4a14ae",
+  "binary_sha256": "b963139b72ea1fe5000c35803386f3a5b5eaf4905e127f1bdb12f16e13486329",
+  "intent_sha256": "72b8513b11ec95caa4de3aef277497b64ecff3ca0c9ee67b91820702f270fdae",
+  "done_sha256": "ec54d92fe1e2a80418a16b7b6323fb3a3241ec3f9b820a606682ef3eb0350b15",
+  "raw_compressed_sha256": "4cd9640338b4590424a510a953409a1a76ae1eb3c1aee7fa11cfce43cd7c52b6",
+  "raw_uncompressed_sha256": "7c7bfa90d681d55aae0e432119eb93db22fce8c0adc47eff55c6abbb9cba68b1",
+  "raw_uncompressed_bytes": 535074,
+  "progress_records": 130,
+  "last_progress": {
+    "v": 1,
+    "pid": 1192249,
+    "start_ticks": 965853383,
+    "generation": "b15d3469-ed1b-4979-b7fa-9ba864c8630e",
+    "input": "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+    "roi": "0e5347aa2702b9af28e872900e055e437dea412d81dfc74dadc9539541fef210",
+    "seq": 130,
+    "mono_ns": 9659774887292936,
+    "epoch": 0,
+    "phase_epoch": 5,
+    "phase": "SIMULATE",
+    "stream_id": 0,
+    "stream_scope": "whole_input",
+    "completed": 72625760,
+    "end": "NONE"
+  },
+  "negative_outer_RAM_samples": [
+    {
+      "utc": "2026-10-25T05:56:44.286358+00:00",
+      "native_free_bytes": 23467507712,
+      "free_inodes": 216561226,
+      "host_MemAvailable_bytes": 297489358848,
+      "cgroup_memory_current": 144653254656,
+      "cgroup_memory_max": "274877906944",
+      "required_free_bytes": 12107496346,
+      "local_safety_floor_bytes": 5368709120,
+      "bounded_own_remaining_write_and_restore_bytes": 6738787226,
+      "own_reservations": [
+        {
+          "cohort": "E2-AEV100-ae34174fbbdf83b2-CM",
+          "remaining_write_and_restore_bytes": 1107140706
+        },
+        {
+          "cohort": "E2-AEV100-ae34174fbbdf83b2-DH",
+          "remaining_write_and_restore_bytes": 1107186932
+        },
+        {
+          "cohort": "E2-AEV100-ae34174fbbdf83b2-DM",
+          "remaining_write_and_restore_bytes": 1107172330
+        },
+        {
+          "cohort": "E2-AEV100-cf569ed4fa54b5f1-DM",
+          "remaining_write_and_restore_bytes": 1238413531
+        },
+        {
+          "cohort": "E2-AEV100-e7bb67e63e3c3847-DH",
+          "remaining_write_and_restore_bytes": 1105131903
+        }
+      ],
+      "peer_reservations": [],
+      "other_outstanding_write_reservations_bytes": 0,
+      "reserved_additional_live_and_candidate_RAM_bytes": 78714503168,
+      "physical_RAM_pass": false,
+      "physical_disk_pass": true,
+      "fresh_local_resource_sample": true,
+      "storage_basis": "5GiB fast-tier margin plus known pending writes only;genuine164 bulk inputs/cold assets not duplicated;each new job admitted separately",
+      "elapsed_seconds": 1241.8011527396739,
+      "process_tree_observed_rss_bytes": 599785472
+    }
+  ],
+  "resource_sample_count": 125,
+  "classifier_source_sha256": "be9fef8ebf7f7231b3277990d54f7ac97767cfb1b080cd4584234bf06eb1d0e0",
+  "root_cause": "Captured outer physical_RAM_pass false caused MEMORY_HEADROOM SIGTERM;partial simulated cycles are unaccepted. Shared cached pages and outstanding reservations are retained in the original sample,not attributed exclusively to this model.",
+  "scientific_acceptance": false,
+  "accepted_cycles": null,
+  "model_retries": 0,
+  "verified_utc": "2026-10-25T09:04:33.681951+00:00"
+}
