@@ -1,0 +1,105 @@
+{
+  "schema": "LANE_T2_FOREIGN_RECEIVER_OWNER_AND_ORIGINAL_SUPERVISOR_RECOVERY_V1",
+  "unix": 1792903926.6985557,
+  "recorded_hold": {
+    "archive_lock_observation": {
+      "foreign_locks": [
+        {
+          "argv": [
+            "/usr/bin/python3",
+            "-B",
+            "/root/data/dtc_main_v100_sweep_20261025_v1/tools/closed_copy_coordinator_v4.py"
+          ],
+          "cwd": "/root/data/dtc_main_v100_sweep_20261025_v1",
+          "kernel_lock": "6: FLOCK  ADVISORY  WRITE 1177280 09:7f:103546992 0 EOF",
+          "path": "/root/share/host174_storage_recovery_bridge/20261016_storageops_02/.TARGET_RECEIVER.lock",
+          "pid": 1177280,
+          "process_state": "R",
+          "start_ticks": 965420123
+        }
+      ],
+      "host": "huangrulin-sshfs-174",
+      "mount_namespace": "mnt:[4026535153]",
+      "unix": 1792903694.4449177
+    },
+    "asset_id": "TRACE_11e75d18001e5289",
+    "elapsed_seconds": 0.038785457611083984,
+    "kind": "TRACE",
+    "new_scientific_starts": 0,
+    "reason": "OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER",
+    "source_disposition": "KEEP",
+    "status": "HOLD_EXACT_ASSET",
+    "traceback": "Traceback (most recent call last):\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 102, in main\n    m,prep=prepare(scope);bundle=P(m['new_true164_bundle'].replace('/home/shared','/root/share/mnt164',1));update(force=True,phase='TRUE164_RANGE_TRANSFER')\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 37, in prepare\n    c.Resources()(True)\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 27, in __call__\n    x=super().__call__(force);update(SSD_available_bytes=x['SSD_available_bytes'],SSD_required_bytes=x['SSD_required_bytes'],current_host_io=x['IO'],archive_transfer_rate_policy=x.get('archive_transfer_rate_policy'));return x\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/copy_engine.py\", line 273, in __call__\n    value=rr.admission('TARGET',include_activity=False,allowed_lock_pids=own_sender)\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/server_resources.py\", line 91, in admission\n    if not metadata_only:require_no_foreign_archive_locks(foreign_locks)\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/server_resources.py\", line 50, in require_no_foreign_archive_locks\n    raise error\nRuntimeError: OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER\n",
+    "unix": 1792903694.445501
+  },
+  "subsequent_state": {
+    "SSD_available_bytes": 23628423168,
+    "SSD_required_bytes": 23420993536,
+    "archive_transfer_rate_policy": {
+      "authorization_sha256": "08a52b3fb8dc865d85fe9f805de96ebb8714eda8a7e95fcac13c02b5de6d060a",
+      "mode": "USER_AUTHORIZED_STAGED_RATE",
+      "source_MiB_per_second": 60,
+      "tier_receipt": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_verified_offload_reclaim_v1/control/staged_transfer_rates_v1/TIER_60_120_INTENT_1792901803619400203.json",
+      "total_MiB_per_second": 120
+    },
+    "asset_expected_bytes": 5295328374,
+    "asset_id": "TRACE_11e75d18001e5289",
+    "asset_kind": "TRACE",
+    "completed_assets": 39,
+    "current_asset_new_hashed_bytes": 4869154236,
+    "current_asset_new_transferred_bytes": 2672079582,
+    "current_file_hashed_bytes": 330301440,
+    "current_host_io": {
+      "full": {
+        "avg10": 12.08,
+        "avg300": 12.16,
+        "avg60": 12.68,
+        "total": 205557247523.0
+      },
+      "some": {
+        "avg10": 12.1,
+        "avg300": 12.25,
+        "avg60": 12.74,
+        "total": 226723652788.0
+      }
+    },
+    "driver_pid": 1182502,
+    "driver_start_ticks": 965569306,
+    "file": "kernel-4.traceg",
+    "held_assets": 0,
+    "phase": "TRANSFER_RANGE_VERIFIED",
+    "queue_index": 40,
+    "total_assets": 115,
+    "total_new_transferred_bytes": 153534941816,
+    "unix": 1792903922.4755788,
+    "verified_end": 402653184
+  },
+  "supervisor": {
+    "Source_deletions": 0,
+    "completed": 39,
+    "deadline_unix": 1792947947.377078,
+    "driver": {
+      "log": "/root/data/research_asset_verified_offload_20261024_v1/control/driver_continue_1792903721723919072.log",
+      "pid": 1182502,
+      "start_ticks": 965569306
+    },
+    "driver_restarts": 5,
+    "frozen_scopes": 115,
+    "max_driver_restarts": 96,
+    "max_resource_rechecks": 288,
+    "phase": "OBSERVING_EXISTING_DRIVER",
+    "pid": 1147175,
+    "resource_rechecks": 87,
+    "running": true,
+    "schema": "LANE_T_FINITE_CONTINUATION_SUPERVISOR_V1",
+    "scientific_actions": 0,
+    "start_ticks": 964494301,
+    "unix": 1792903903.3592558
+  },
+  "current_driver_identity_verified": true,
+  "foreign_owner_stopped_or_signalled": false,
+  "foreign_locks_removed_or_taken_over": false,
+  "new_Supervisor_or_Publisher_started": false,
+  "interpretation": "At the recorded hold, another DTC closed-copy coordinator owned the shared Receiver lock. Owner identity is timestamped historical evidence, not a claim that it still holds the lock.",
+  "true164_receipt": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_verified_offload_reclaim_v1/control/coordination/FOREIGN_RECEIVER_OWNER_1792903694.json"
+}
