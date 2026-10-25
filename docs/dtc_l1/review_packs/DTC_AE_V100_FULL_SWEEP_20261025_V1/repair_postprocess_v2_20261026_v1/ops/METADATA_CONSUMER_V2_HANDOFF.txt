@@ -1,0 +1,54 @@
+V2 metadata consumer handoff (pre-activation)
+
+No background consumer has started. No live output, science qualification, COPY164,
+authority, entry, strict V1 source, R14 result, or native model was mutated by the
+CPU/readonly qualification. The activation-negative check was refused by bound()
+before locks/worker creation because the actual activation file does not exist.
+
+Published payload candidates (all in this ops directory):
+- repair_metadata_consumer_v2.py
+- qualify_repair_metadata_consumer_v2.py
+- POSTPROCESS_V2_CONSUMER_BINDING_V1.json
+- METADATA_CONSUMER_V2_CPU_QUALIFICATION.json
+- POSTPROCESS_V2_CONSUMER_ACTIVATION_V1.TEMPLATE.json (template, never activation)
+- this handoff
+Also publish/preserve the frozen reviewer, its qualifier, and both reviewer CPU
+qualification receipts referenced by the binding if not already independently
+published. POSTPROCESS_V2_CONSUMER_BINDING_CPU_DRAFT1.json is a retained unpublished
+CPU draft preimage: its qualifier had a fakeRoot fixture aliasing error; no live
+mutation or consumer activation occurred. Final qualifier/binding supersede it.
+
+Read-only API:
+python3 -B repair_metadata_consumer_v2.py --cells <cohort> ...
+No --execute means read-only inspect, no file writes. Unfinished points return
+WAIT_FOR_R14_DONE_EXECUTION_RECEIPT_AND_RESULT.
+
+After exact-byte GitHub publication/readback, root must create the actual file
+POSTPROCESS_V2_CONSUMER_ACTIVATION_V1.json from the template, replacing the three
+ROOT_MUST_SET fields with the new publication receipt path/SHA/commit. Root must
+confirm publication_all_bytes_verified. The source itself validates the exact
+binding, source pins, user authorization, strict CPU receipts, its own SHA and
+consumer qualification source/binding SHA before allowing execution.
+
+Execution API (root only after publication):
+python3 -B repair_metadata_consumer_v2.py --execute --workers 4
+It is metadata-only: no model start/resim, no additional scientific budget.
+Singleton flock; max four metadata workers; waits R14 RESULT+DONE+q receipt; COPY
+BlockingIOError may wait <=6h; readiness polling <=7d. Unexpected source/other
+errors create issues and exit; any existing issue prevents automatic restart.
+
+Existing archives: complete independent outbox.verify and saved V2 proof only in
+analysis/postprocess_v2; never append archived out or change its manifest.
+Natural sentinel/V1 ENGINEERING without archive: full V2 terminal; hold the pinned
+closed-copy lock while appending V2 proof/qualification; release before invoking
+the standard archive primitive (avoids self-deadlock); COPY164+native restore and
+independent verify; preserve R14 RESULT, write separate POSTPROCESS_V2.RESULT.
+Native failure: full compressed/uncompressed raw/DONE replay plus existing archive
+verify; accepted_cycles=null and no success strict path, no new COPY on missing
+failure archive. Such missing archive is an issue requiring root review.
+
+Closure only after all 23 independent archive/native proofs: separate
+control/REPAIR_VALIDATION_CLOSED_V2.json; via engine.update_authority modifies only
+this request's state=CLOSED, reserved_write_bytes=1GiB, validation_status=ALL_PASS
+or CLOSED_WITH_ARCHIVED_FAILURES. Exact consumed rows/budget/remaining and all peers
+stay unchanged. No claim that registered strict V1 or R14 V1 closure passed.
