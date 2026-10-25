@@ -1,18 +1,18 @@
 {
   "schema": "LANE_T_LIVE_CONTINUATION_STATUS_V1",
   "goal": "ORIGINAL174_VERIFIED_OFFLOAD_AND_SSD_RECLAIM_V1",
-  "unix": 1792906205.8966377,
-  "driver_running": true,
+  "unix": 1792906525.0910873,
+  "driver_running": false,
   "pid": 1184588,
   "expected_start_ticks": 965632643,
-  "actual_start_ticks": 965632643,
-  "completed": 43,
-  "pending": 72,
-  "current_in_progress": 1,
-  "latest_uncommitted_holds": 72,
-  "committed_original_bytes": 184900352821,
+  "actual_start_ticks": null,
+  "completed": 44,
+  "pending": 71,
+  "current_in_progress": 0,
+  "latest_uncommitted_holds": 71,
+  "committed_original_bytes": 188043931154,
   "state": {
-    "SSD_available_bytes": 23600496640,
+    "SSD_available_bytes": 23597256704,
     "SSD_required_bytes": 23420993536,
     "archive_transfer_rate_policy": {
       "authorization_sha256": "08a52b3fb8dc865d85fe9f805de96ebb8714eda8a7e95fcac13c02b5de6d060a",
@@ -21,48 +21,81 @@
       "tier_receipt": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_verified_offload_reclaim_v1/control/staged_transfer_rates_v1/TIER_60_120_INTENT_1792901803619400203.json",
       "total_MiB_per_second": 120
     },
-    "asset_expected_bytes": 3143578333,
-    "asset_id": "TRACE_6d081322d8baa881",
+    "asset_expected_bytes": 3094690029,
+    "asset_id": "TRACE_2e8ea76e602e1f3d",
     "asset_kind": "TRACE",
-    "completed_assets": 43,
-    "current_asset_new_hashed_bytes": 2913648002,
-    "current_asset_new_transferred_bytes": 449082603,
-    "current_file_hashed_bytes": 219152384,
+    "completed_assets": 44,
+    "current_asset_new_hashed_bytes": 0,
+    "current_asset_new_transferred_bytes": 0,
+    "current_file_hashed_bytes": 0,
     "current_host_io": {
       "full": {
-        "avg10": 11.4,
-        "avg300": 11.48,
-        "avg60": 11.38,
-        "total": 205838573139.0
+        "avg10": 14.93,
+        "avg300": 14.11,
+        "avg60": 16.71,
+        "total": 205883687052.0
       },
       "some": {
-        "avg10": 11.58,
-        "avg300": 11.57,
-        "avg60": 11.47,
-        "total": 227006950569.0
+        "avg10": 15.28,
+        "avg300": 14.23,
+        "avg60": 16.85,
+        "total": 227052380857.0
       }
     },
+    "driver_exit_code": 0,
+    "driver_exit_observed": true,
     "driver_pid": 1184588,
     "driver_start_ticks": 965632643,
-    "file": "kernel-1.traceg",
-    "held_assets": 0,
-    "phase": "TRANSFER_RANGE_VERIFIED",
-    "queue_index": 44,
+    "file": null,
+    "held_assets": 1,
+    "last_hold": {
+      "archive_lock_observation": {
+        "foreign_locks": [
+          {
+            "argv": [
+              "/usr/bin/python3",
+              "/root/data/dtc_main_v100_sweep_20261025_v1/tools/closed_copy_coordinator_v4.py"
+            ],
+            "argv_scope": "EXECUTABLE_AND_PYTHON_SCRIPT_ONLY",
+            "cwd": "/root/data/dtc_main_v100_sweep_20261025_v1",
+            "kernel_lock": "6: FLOCK  ADVISORY  WRITE 1177280 09:7f:103546992 0 EOF",
+            "path": "/root/share/host174_storage_recovery_bridge/20261016_storageops_02/.TARGET_RECEIVER.lock",
+            "pid": 1177280,
+            "process_state": "R",
+            "start_ticks": 965420123
+          }
+        ],
+        "host": "huangrulin-sshfs-174",
+        "mount_namespace": "mnt:[4026535153]",
+        "unix": 1792906511.0499454
+      },
+      "asset_id": "TRACE_2e8ea76e602e1f3d",
+      "elapsed_seconds": 0.025879383087158203,
+      "kind": "TRACE",
+      "new_scientific_starts": 0,
+      "reason": "OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER",
+      "source_disposition": "KEEP",
+      "status": "HOLD_EXACT_ASSET",
+      "traceback": "Traceback (most recent call last):\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 102, in main\n    m,prep=prepare(scope);bundle=P(m['new_true164_bundle'].replace('/home/shared','/root/share/mnt164',1));update(force=True,phase='TRUE164_RANGE_TRANSFER')\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 37, in prepare\n    c.Resources()(True)\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 27, in __call__\n    x=super().__call__(force);update(SSD_available_bytes=x['SSD_available_bytes'],SSD_required_bytes=x['SSD_required_bytes'],current_host_io=x['IO'],archive_transfer_rate_policy=x.get('archive_transfer_rate_policy'));return x\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/copy_engine.py\", line 273, in __call__\n    value=rr.admission('TARGET',include_activity=False,allowed_lock_pids=own_sender)\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/server_resources.py\", line 95, in admission\n    if not metadata_only:require_no_foreign_archive_locks(foreign_locks)\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/server_resources.py\", line 54, in require_no_foreign_archive_locks\n    raise error\nRuntimeError: OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER\n",
+      "unix": 1792906511.050565
+    },
+    "phase": "COMMON_RESOURCE_HOLD",
+    "queue_index": 45,
     "total_assets": 115,
-    "total_new_transferred_bytes": 171046071060,
-    "unix": 1792906201.2012227,
-    "verified_end": 449082603
+    "total_new_transferred_bytes": 174189649393,
+    "unix": 1792906511.0535595,
+    "verified_end": 0
   },
-  "SSD_available_bytes": 23600480256,
+  "SSD_available_bytes": 23487266816,
   "Share_available_bytes": 36581081088,
-  "true164_available_bytes": 48362415804416,
-  "log_tail": "erified_end\": 39976, \"new_payload_bytes\": 3501326552}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernel-989-ctx_0x55f2413c4de0.trace.xz\", \"verified_end\": 2210124, \"new_payload_bytes\": 3503536676}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernel-989-ctx_0x55f2413c4de0.traceg.xz\", \"verified_end\": 45616, \"new_payload_bytes\": 3503582292}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernel-990-ctx_0x55f2413c4de0.trace.xz\", \"verified_end\": 3736132, \"new_payload_bytes\": 3507318424}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernel-990-ctx_0x55f2413c4de0.traceg.xz\", \"verified_end\": 342284, \"new_payload_bytes\": 3507660708}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernel-991-ctx_0x55f2413c4de0.trace.xz\", \"verified_end\": 2207956, \"new_payload_bytes\": 3509868664}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernel-991-ctx_0x55f2413c4de0.traceg.xz\", \"verified_end\": 42860, \"new_payload_bytes\": 3509911524}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernel-992-ctx_0x55f2413c4de0.trace.xz\", \"verified_end\": 5665952, \"new_payload_bytes\": 3515577476}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernel-992-ctx_0x55f2413c4de0.traceg.xz\", \"verified_end\": 317184, \"new_payload_bytes\": 3515894660}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernel-993-ctx_0x55f2413c4de0.trace.xz\", \"verified_end\": 414188, \"new_payload_bytes\": 3516308848}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernel-993-ctx_0x55f2413c4de0.traceg.xz\", \"verified_end\": 48164, \"new_payload_bytes\": 3516357012}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernel-994-ctx_0x55f2413c4de0.trace.xz\", \"verified_end\": 1299004, \"new_payload_bytes\": 3517656016}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernel-994-ctx_0x55f2413c4de0.traceg.xz\", \"verified_end\": 41524, \"new_payload_bytes\": 3517697540}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernel-995-ctx_0x55f2413c4de0.trace.xz\", \"verified_end\": 7439564, \"new_payload_bytes\": 3525137104}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernel-995-ctx_0x55f2413c4de0.traceg.xz\", \"verified_end\": 174336, \"new_payload_bytes\": 3525311440}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernel-996-ctx_0x55f2413c4de0.trace.xz\", \"verified_end\": 770208, \"new_payload_bytes\": 3526081648}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernel-996-ctx_0x55f2413c4de0.traceg.xz\", \"verified_end\": 26272, \"new_payload_bytes\": 3526107920}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernel-997-ctx_0x55f2413c4de0.trace.xz\", \"verified_end\": 667172, \"new_payload_bytes\": 3526775092}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernel-997-ctx_0x55f2413c4de0.traceg.xz\", \"verified_end\": 19492, \"new_payload_bytes\": 3526794584}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernel-998-ctx_0x55f2413c4de0.trace.xz\", \"verified_end\": 908, \"new_payload_bytes\": 3526795492}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernel-998-ctx_0x55f2413c4de0.traceg.xz\", \"verified_end\": 788, \"new_payload_bytes\": 3526796280}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernel-999-ctx_0x55f2413c4de0.trace.xz\", \"verified_end\": 1096, \"new_payload_bytes\": 3526797376}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernel-999-ctx_0x55f2413c4de0.traceg.xz\", \"verified_end\": 908, \"new_payload_bytes\": 3526798284}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernelslist.g\", \"verified_end\": 29419, \"new_payload_bytes\": 3526827703}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"kernelslist_ctx_0x55f2413c4de0\", \"verified_end\": 28695, \"new_payload_bytes\": 3526856398}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_4e1b6cfbb895e211\", \"file\": \"stats_ctx_0x55f2413c4de0\", \"verified_end\": 904539, \"new_payload_bytes\": 3527760937}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernel-1.traceg\", \"verified_end\": 134217728, \"new_payload_bytes\": 134217728}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernel-1.traceg\", \"verified_end\": 268435456, \"new_payload_bytes\": 268435456}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernel-1.traceg\", \"verified_end\": 402653184, \"new_payload_bytes\": 402653184}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernel-1.traceg\", \"verified_end\": 449082603, \"new_payload_bytes\": 449082603}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernel-2.traceg\", \"verified_end\": 134217728, \"new_payload_bytes\": 583300331}\n",
+  "true164_available_bytes": 48356113403904,
+  "log_tail": "\"new_payload_bytes\": 1300818390}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernel-3.traceg\", \"verified_end\": 449082603, \"new_payload_bytes\": 1347247809}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernel-4.traceg\", \"verified_end\": 134217728, \"new_payload_bytes\": 1481465537}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernel-4.traceg\", \"verified_end\": 268435456, \"new_payload_bytes\": 1615683265}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernel-4.traceg\", \"verified_end\": 402653184, \"new_payload_bytes\": 1749900993}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernel-4.traceg\", \"verified_end\": 449082603, \"new_payload_bytes\": 1796330412}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernel-5.traceg\", \"verified_end\": 134217728, \"new_payload_bytes\": 1930548140}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernel-5.traceg\", \"verified_end\": 268435456, \"new_payload_bytes\": 2064765868}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernel-5.traceg\", \"verified_end\": 402653184, \"new_payload_bytes\": 2198983596}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernel-5.traceg\", \"verified_end\": 449082603, \"new_payload_bytes\": 2245413015}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernel-6.traceg\", \"verified_end\": 134217728, \"new_payload_bytes\": 2379630743}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernel-6.traceg\", \"verified_end\": 268435456, \"new_payload_bytes\": 2513848471}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernel-6.traceg\", \"verified_end\": 402653184, \"new_payload_bytes\": 2648066199}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernel-6.traceg\", \"verified_end\": 449082603, \"new_payload_bytes\": 2694495618}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernel-7.traceg\", \"verified_end\": 134217728, \"new_payload_bytes\": 2828713346}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernel-7.traceg\", \"verified_end\": 268435456, \"new_payload_bytes\": 2962931074}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernel-7.traceg\", \"verified_end\": 402653184, \"new_payload_bytes\": 3097148802}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernel-7.traceg\", \"verified_end\": 449082603, \"new_payload_bytes\": 3143578221}\n{\"event\": \"RANGE_VERIFIED\", \"asset\": \"TRACE_6d081322d8baa881\", \"file\": \"kernelslist.g\", \"verified_end\": 112, \"new_payload_bytes\": 3143578333}\n{\"status\": \"HOLD_EXACT_ASSET\", \"asset_id\": \"TRACE_2e8ea76e602e1f3d\", \"kind\": \"TRACE\", \"reason\": \"OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER\", \"traceback\": \"Traceback (most recent call last):\\n  File \\\"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\\\", line 102, in main\\n    m,prep=prepare(scope);bundle=P(m['new_true164_bundle'].replace('/home/shared','/root/share/mnt164',1));update(force=True,phase='TRUE164_RANGE_TRANSFER')\\n  File \\\"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\\\", line 37, in prepare\\n    c.Resources()(True)\\n  File \\\"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\\\", line 27, in __call__\\n    x=super().__call__(force);update(SSD_available_bytes=x['SSD_available_bytes'],SSD_required_bytes=x['SSD_required_bytes'],current_host_io=x['IO'],archive_transfer_rate_policy=x.get('archive_transfer_rate_policy'));return x\\n  File \\\"/root/data/research_asset_verified_offload_20261024_v1/tools/copy_engine.py\\\", line 273, in __call__\\n    value=rr.admission('TARGET',include_activity=False,allowed_lock_pids=own_sender)\\n  File \\\"/root/data/research_asset_verified_offload_20261024_v1/tools/server_resources.py\\\", line 95, in admission\\n    if not metadata_only:require_no_foreign_archive_locks(foreign_locks)\\n  File \\\"/root/data/research_asset_verified_offload_20261024_v1/tools/server_resources.py\\\", line 54, in require_no_foreign_archive_locks\\n    raise error\\nRuntimeError: OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER\\n\", \"elapsed_seconds\": 0.025879383087158203, \"unix\": 1792906511.050565, \"source_disposition\": \"KEEP\", \"new_scientific_starts\": 0, \"archive_lock_observation\": {\"unix\": 1792906511.0499454, \"host\": \"huangrulin-sshfs-174\", \"mount_namespace\": \"mnt:[4026535153]\", \"foreign_locks\": [{\"path\": \"/root/share/host174_storage_recovery_bridge/20261016_storageops_02/.TARGET_RECEIVER.lock\", \"kernel_lock\": \"6: FLOCK  ADVISORY  WRITE 1177280 09:7f:103546992 0 EOF\", \"pid\": 1177280, \"start_ticks\": 965420123, \"process_state\": \"R\", \"argv\": [\"/usr/bin/python3\", \"/root/data/dtc_main_v100_sweep_20261025_v1/tools/closed_copy_coordinator_v4.py\"], \"argv_scope\": \"EXECUTABLE_AND_PYTHON_SCRIPT_ONLY\", \"cwd\": \"/root/data/dtc_main_v100_sweep_20261025_v1\"}]}}\n",
   "new_Source_retirements_by_recovery": 0,
   "prior_retirements_repeated": false,
   "supervisor_running": true,
   "supervisor_state": {
     "Source_deletions": 0,
-    "completed": 43,
+    "completed": 44,
     "deadline_unix": 1792947947.377078,
     "driver": {
       "log": "/root/data/research_asset_verified_offload_20261024_v1/control/driver_continue_1792904355092875200.log",
@@ -73,19 +106,20 @@
     "frozen_scopes": 115,
     "max_driver_restarts": 96,
     "max_resource_rechecks": 288,
-    "phase": "OBSERVING_EXISTING_DRIVER",
+    "phase": "WAIT_COMMON_RESOURCE_ADMISSION",
     "pid": 1147175,
-    "resource_rechecks": 88,
+    "reason": "OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER",
+    "resource_rechecks": 89,
     "running": true,
     "schema": "LANE_T_FINITE_CONTINUATION_SUPERVISOR_V1",
     "scientific_actions": 0,
     "start_ticks": 964494301,
-    "unix": 1792906192.001378
+    "unix": 1792906523.0045273
   },
   "driver_log": "/root/data/research_asset_verified_offload_20261024_v1/control/driver_continue_1792904355092875200.log",
   "true164_durable_status_receipt": {
-    "path": "/home/shared/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_verified_offload_reclaim_v1/control/continuation_20261025/1792906206051029600_4ee4786ec46cd4d8.json",
-    "sha256": "4ee4786ec46cd4d88c6f93729e7b329c05973662172f21a0bf1d7463e2940b1a",
+    "path": "/home/shared/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_verified_offload_reclaim_v1/control/continuation_20261025/1792906525103511368_d334e5fe4b601969.json",
+    "sha256": "d334e5fe4b6019690fa278b4bf3461eb085b54712a8631d9be5ceff109b63e5b",
     "closed_reopen_equal": true
   }
 }

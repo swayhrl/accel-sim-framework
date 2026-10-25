@@ -1,12 +1,12 @@
 # Lane T2 archive report — DRAFT_IN_PROGRESS_NOT_GOAL_COMPLETION
 
-Evidence snapshot: 2026-10-25T13:22:15.265052+08:00. Original queue SHA256 `718f30ec3bc8e5ece20df02cd472ebee17eac320f7b5a9e5b5e69841cc63cc04`.
+Evidence snapshot: 2026-10-25T13:30:27.434229+08:00. Original queue SHA256 `718f30ec3bc8e5ece20df02cd472ebee17eac320f7b5a9e5b5e69841cc63cc04`.
 
-The original 115 scopes remain unchanged. **42 committed, 0 current HOLD, 73 pending/in-progress**. Content archived in this execution: 181,372,591,884 bytes. T2 adds 28 assets / 70,585,620,797 bytes after the 14-asset takeover baseline.
+The original 115 scopes remain unchanged. **43 committed, 0 current HOLD, 72 pending/in-progress**. Content archived in this execution: 184,900,352,821 bytes. T2 adds 29 assets / 74,113,381,734 bytes after the 14-asset takeover baseline.
 
 | Group | Frozen | Committed | HOLD | Pending | Committed logical bytes |
 |---|---:|---:|---:|---:|---:|
-| TRACE | 51 | 41 | 0 | 10 | 181,372,415,795 |
+| TRACE | 51 | 42 | 0 | 9 | 184,900,176,732 |
 | DTC_RAW | 63 | 1 | 0 | 62 | 176,089 |
 | Q05_FIXED10000 | 1 | 0 | 0 | 1 | 0 |
 
@@ -16,11 +16,11 @@ Prior 20 trace selectors: 20/20 metadata/COMMIT readbacks PASS; their 22,507,635
 
 `POLYBENCH_VARIANT_COVERAGE.csv` carries the 28 mandatory historical variants and four supplemental rows. Historical out-of-queue content or scientific HOLDs remain explicit and do not become new tasks or successful frozen-copy claims. `Q05_EXACT_SCOPE.json` binds fixed10000 run.log to SHA256 `06822c9fb9d2de0208eb51fb61c82f21150f509b8320662fd935efbac283843f`; natural R0 is a different object.
 
-Complete native Target recovery is verified for 19 scopes of this frozen115 execution / 30,037,416 bytes. These are not necessarily new T2 restorations. Other restoration states: `{"FULL_NATIVE_RESTORE_NOT_PERFORMED_EXCEEDS_BOUND": 23, "RESTORE_VERIFIED_NATIVE_TARGET": 19}`. Full native restores above the qualified 240 MiB window were not performed. Their immutable raw trees, complete file SHA, original numeric metadata and bounded recovery helpers are retained; unrestricted full native recovery and scientific runtime acceptance are not claimed.
+Complete native Target recovery is verified for 19 scopes of this frozen115 execution / 30,037,416 bytes. These are not necessarily new T2 restorations. Other restoration states: `{"FULL_NATIVE_RESTORE_NOT_PERFORMED_EXCEEDS_BOUND": 24, "RESTORE_VERIFIED_NATIVE_TARGET": 19}`. Full native restores above the qualified 240 MiB window were not performed. Their immutable raw trees, complete file SHA, original numeric metadata and bounded recovery helpers are retained; unrestricted full native recovery and scientific runtime acceptance are not claimed.
 
 Historical exact retirement: 8,423 T-owned test-copy files, 4 approved Source kernel files, plus the one cold polybench package. Allocated bytes unlinked: Target test copies 527,740,928; Source kernel files 476,585,984; Source package 17,944,014,848. Independently observed operation-interval SSD free-space deltas: pool 18,936,295,424; Source unlink intervals 18,420,580,352. These are distinct measures and are not added to archive volume. T2 has not replayed any retirement or performed a new Source retirement.
 
-Current shared SSD free: 23,606,394,880 bytes; Share/MD127 free: 36,581,085,184; genuine164 free: 48,382,683,021,312. Current free-space changes include other projects and are not attributed to this archiver.
+Current shared SSD free: 23,600,287,744 bytes; Share/MD127 free: 36,581,081,088; genuine164 free: 48,361,479,098,368. Current free-space changes include other projects and are not attributed to this archiver.
 
 All per-asset genuine164 bundle and recovery entries are in `CONTENT_AND_RESTORE_CLOSURE.json`; prior 20 reuse links are in the same file. The existing five-minute publication receipts remain `../checkpoint/recovery_20261025/PUBLICATION_RECEIPTS.jsonl`. Final process shutdown, partial-transaction accounting and GitHub remote readback must be independently closed before Goal completion.
 
@@ -32,7 +32,7 @@ The subsequent explicit user authorization in `ACTIVE_SCIENCE_IO_GATE_USER_AUTHO
 
 A later explicit authorization in `TRANSFER_RATE_USER_AUTHORIZATION.json` permits staged Source/aggregate transfer limits up to 60/120 MiB/s, initially 30/60. Cooperative post-COMMIT rate handoff closed: True. Last observed active policy: `{"authorization_sha256": "08a52b3fb8dc865d85fe9f805de96ebb8714eda8a7e95fcac13c02b5de6d060a", "schema": "LANE_T2_ACTIVE_TRANSFER_RATE_TIER_V1", "source_MiB_per_second": 60, "tier_receipt": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_verified_offload_reclaim_v1/control/staged_transfer_rates_v1/TIER_60_120_INTENT_1792901803619400203.json", "total_MiB_per_second": 120}`. `rate_transition/` retains qualification, normal lock-release and Driver-exit evidence, original Supervisor identity and cumulative budgets, and rate observations. Single-stream, SHA, staging, space/RAM, severe pressure and scientific identity requirements remain in force. Existing immutable bundle helpers retain their published versions.
 
-Published restore-entry dependency audit: 42/42 scopes passed shell syntax, standalone module loading, co-located resource-module checks and pinned existing-controller V9 dependency loading. `RESTORE_IMPORT_DEPENDENCY_AUDIT.json` retains exact helper/resource hashes and external controller paths. This is not a native payload-restoration test, independent-host portability proof or an override of frozen helper resource checks.
+Published restore-entry dependency audit: 43/43 scopes passed shell syntax, standalone module loading, co-located resource-module checks and pinned existing-controller V9 dependency loading. `RESTORE_IMPORT_DEPENDENCY_AUDIT.json` retains exact helper/resource hashes and external controller paths. This is not a native payload-restoration test, independent-host portability proof or an override of frozen helper resource checks.
 
 No current classified terminal HOLD has been established in this snapshot. Remaining pending work is not counted as successful completion.
 
