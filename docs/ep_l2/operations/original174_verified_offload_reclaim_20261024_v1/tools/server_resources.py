@@ -35,6 +35,9 @@ def old_lock_holders():
    if len(z)==3 and (int(z[0],16),int(z[1],16),int(z[2]))==(os.major(st.st_dev),os.minor(st.st_dev),st.st_ino):out.append(dict(path=str(p),kernel_lock=line,pid=int(fields[4])))
  return out
 
+def archive_owner_command(argv):
+ return argv[:1]+next(([z] for z in argv[1:] if z.startswith('/') and z.endswith('.py')),[])
+
 def require_no_foreign_archive_locks(foreign_locks):
  if not foreign_locks:return
  observations=[]
@@ -42,7 +45,8 @@ def require_no_foreign_archive_locks(foreign_locks):
   observed=dict(row);proc=P('/proc')/str(row['pid'])
   try:
    raw=(proc/'stat').read_text().rsplit(')',1)[1].split()
-   observed.update(start_ticks=int(raw[19]),process_state=raw[0],argv=[z.decode(errors='replace') for z in (proc/'cmdline').read_bytes().split(b'\0') if z],cwd=os.readlink(proc/'cwd'))
+   argv=[z.decode(errors='replace') for z in (proc/'cmdline').read_bytes().split(b'\0') if z]
+   observed.update(start_ticks=int(raw[19]),process_state=raw[0],argv=archive_owner_command(argv),argv_scope='EXECUTABLE_AND_PYTHON_SCRIPT_ONLY',cwd=os.readlink(proc/'cwd'))
   except OSError as error:observed['owner_observation_error']=str(error)
   observations.append(observed)
  error=RuntimeError('OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER')
