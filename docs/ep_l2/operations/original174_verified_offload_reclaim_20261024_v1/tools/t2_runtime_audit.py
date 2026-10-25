@@ -11,12 +11,12 @@ P=pathlib.Path;T=P('/root/data/research_asset_verified_offload_20261024_v1');N=P
 m=json.loads(subprocess.check_output(['findmnt','-J','-T',str(N)],text=True))['filesystems'][0];assert m['source']=='admin-wcx@10.208.130.164:/home/shared' and m['fstype']=='fuse.sshfs'
 q=json.loads(gzip.decompress((T/'control/FROZEN_SCOPES.json.gz').read_bytes()))['scopes'];byid={z['asset_id']:z for z in q};state=json.loads((T/'control/STATE.json').read_bytes());sup=json.loads((T/'control/CONTINUATION_SUPERVISOR.json').read_bytes());own=[];unreadable=[]
 ledger=[json.loads(z) for z in (T/'control/LEDGER.jsonl').read_text().splitlines()];ledger_done={z['asset_id'] for z in ledger if z['status']=='ARCHIVED_CONTENT_VERIFIED'}
-paths=[str(T/'tools'/n).encode() for n in ['offload_driver.py','continuation_supervisor.py','copy_engine.py']]
+paths=[str(T/'tools'/n).encode() for n in ['offload_driver.py','continuation_supervisor.py','copy_engine.py','apply_staged_transfer_rates.py','parallel_metadata_preflight.py']]
 for proc in P('/proc').iterdir():
  if not proc.name.isdigit():continue
  try:
   argv=(proc/'cmdline').read_bytes().split(b'\0')
-  if not any(path in argv for path in paths):continue
+  if not any(path in argv for path in paths) and not any(b'frozen_copy_source.py' in z or b'frozen_readonly_trace_export.py' in z for z in argv):continue
   z=(proc/'stat').read_text().rsplit(')',1)[1].split();own.append(dict(pid=int(proc.name),start_ticks=int(z[19]),state=z[0],argv=[x.decode(errors='replace') for x in argv if x],mnt=os.readlink(proc/'ns/mnt')))
  except FileNotFoundError:pass
  except PermissionError:unreadable.append(int(proc.name))
@@ -56,9 +56,34 @@ for b in N.iterdir():
 print(json.dumps(dict(unix=time.time(),state=state,supervisor=sup,own_execution_processes=own,unreadable_proc_entries=unreadable,committed_bundle_ids=sorted(commits),partial_transactions=partials,transaction_metadata_errors=errors,snapshot_consistency='Read-only multi-file observation; active atomic-renames must be rechecked before diagnosing corruption. Final mode requires stopped execution.',unrelated_processes_signaled=0)))
 '''
 
+SOURCE_REMOTE=r'''
+import pathlib,os,json,time,sys
+P=pathlib.Path;T=P('/root/data/research_asset_verified_offload_20261024_v1');sys.path.insert(0,str(T/'tools'));import server_resources as rr
+assert (os.uname().nodename,os.readlink('/proc/self/ns/mnt'))==('huangrulin-174','mnt:[4026534768]')
+own=[];unreadable=[]
+for proc in P('/proc').iterdir():
+ if not proc.name.isdigit():continue
+ try:
+  argv=(proc/'cmdline').read_bytes().split(b'\0')
+  direct=any(str(T/'tools'/n).encode() in argv for n in ['offload_driver.py','copy_engine.py','parallel_metadata_preflight.py'])
+  boot=any(b'frozen_copy_source.py' in z or b'frozen_readonly_trace_export.py' in z for z in argv)
+  if not direct and not boot:continue
+  z=(proc/'stat').read_text().rsplit(')',1)[1].split();own.append(dict(pid=int(proc.name),start_ticks=int(z[19]),state=z[0],argv=[x.decode(errors='replace') for x in argv if x],mount_namespace=os.readlink(proc/'ns/mnt')))
+ except FileNotFoundError:pass
+ except PermissionError:unreadable.append(int(proc.name))
+holders=rr.old_lock_holders()
+for row in holders:
+ p=P('/proc',str(row['pid']))
+ try:
+  z=(p/'stat').read_text().rsplit(')',1)[1].split();row.update(start_ticks=int(z[19]),argv=[x.decode(errors='replace') for x in (p/'cmdline').read_bytes().split(b'\0') if x])
+ except OSError:row['owner_exited_during_read_only_observation']=True
+print(json.dumps(dict(unix=time.time(),host=os.uname().nodename,mount_namespace=os.readlink('/proc/self/ns/mnt'),own_execution_processes=own,unreadable_proc_entries=unreadable,bridge_lock_holders=holders,unrelated_processes_signaled=0)))
+'''
+
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--final',action='store_true');args=ap.parse_args()
     x=remote('hrl-174-new',REMOTE,240)
+    x['original174_source_namespace']=remote('hrl',SOURCE_REMOTE,90)
     command="Get-CimInstance Win32_Process | Where-Object { $_.Name -match '^python' -and $_.CommandLine -like '*original174-verified-offload-reclaim-exec-20261024-v1*publish_continuation.py*' } | Select-Object ProcessId,CreationDate,CommandLine | ConvertTo-Json -Compress"
     r=subprocess.run(['powershell','-NoProfile','-Command',command],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,timeout=30)
     assert r.returncode==0,r.stderr
@@ -72,6 +97,8 @@ def main():
     if args.final:
         assert x['driver_stopped'] and x['supervisor_stopped'] and x['publisher_stopped'],'OWN_EXECUTION_OR_PUBLICATION_STILL_LIVE'
         assert not x['own_execution_processes'] and not x['unreadable_proc_entries'],'OWN_HELPER_OR_VISIBILITY_REQUIRES_REVIEW'
+        source=x['original174_source_namespace']
+        assert not source['own_execution_processes'] and not source['unreadable_proc_entries'],'ORIGINAL174_SENDER_OR_VISIBILITY_REQUIRES_REVIEW'
         assert not x['transaction_metadata_errors'],'UNEXPLAINED_TRANSACTION_METADATA_ERRORS'
         classifications=load(OUT/'HOLD_CLASSIFICATIONS.json') if (OUT/'HOLD_CLASSIFICATIONS.json').exists() else {}
         for p in x['partial_transactions']:

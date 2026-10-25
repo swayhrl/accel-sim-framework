@@ -21,7 +21,14 @@ def main():
             c=categories[row['asset_id']];assert c['category'] in allowed and c.get('evidence') and c.get('bounded_repair_or_nonrepair_reason'),'HOLD_NOT_JUSTIFIED'
             assert c.get('terminal') is True and c.get('expected_reason')==row['reason'],'HOLD_IS_TRANSIENT_OR_CLASSIFICATION_IS_STALE'
         stop=load(OUT/'FINAL_PROCESS_SHUTDOWN_AUDIT.json')
+        assert stop.get('final_mode_requested') is True,'SHUTDOWN_AUDIT_NOT_FINAL'
         assert stop['driver_stopped'] and stop['supervisor_stopped'] and stop['publisher_stopped'],'TASK_OWNED_PROCESSES_NOT_CLOSED'
+        assert not stop['own_execution_processes'] and not stop['unreadable_proc_entries'],'OWN_HELPER_OR_VISIBILITY_REQUIRES_REVIEW'
+        source_stop=stop['original174_source_namespace']
+        assert not source_stop['own_execution_processes'] and not source_stop['unreadable_proc_entries'],'ORIGINAL174_SENDER_OR_VISIBILITY_REQUIRES_REVIEW'
+        assert not stop['transaction_metadata_errors'],'UNEXPLAINED_TRANSACTION_METADATA_ERRORS'
+        for part in stop['partial_transactions']:
+            c=categories[part['asset_id']];assert c.get('terminal') is True and c.get('partial_transaction_explanation') and c.get('evidence'),'UNEXPLAINED_PARTIAL_TRANSACTION'
         assert stop['unrelated_processes_signaled']==0
     by_kind=[]
     for kind,total in [('TRACE',51),('DTC_RAW',63),('Q05_FIXED10000',1)]:
@@ -43,6 +50,11 @@ def main():
         'Q05_exact223499B_acceptance_identity':any(z['asset_id']=='AWMA_Q05_FIXED10000_EXACT_RAW' for z in done),
         'partial_transactions_explained':'REQUIRES_FINAL_STOPPED_EXECUTION_AUDIT','task_owned_processes_stopped':'REQUIRES_FINAL_SHUTDOWN_AUDIT','final_GitHub_publication_and_independent_readback':'REQUIRES_FINAL_REMOTE_READBACK'})
     proof['additional_174new_verified_copy_retirement']=extra
+    if args.final:
+        proof['requirements']['partial_transactions_explained']=True
+        proof['requirements']['task_owned_processes_stopped']=True
+        proof['shutdown_audit_unix']=stop['unix']
+        proof['original174_source_sender_stopped']=True
     io_policy_path=OUT/'ACTIVE_SCIENCE_IO_GATE_USER_AUTHORIZATION.json'
     io_policy=load(io_policy_path) if io_policy_path.exists() else None
     proof['active_science_IO_gate_user_authorization']=io_policy

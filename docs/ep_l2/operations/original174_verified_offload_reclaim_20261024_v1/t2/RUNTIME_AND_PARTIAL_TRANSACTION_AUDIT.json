@@ -1,85 +1,91 @@
 {
-  "unix": 1792869359.8994842,
+  "unix": 1792902324.348809,
   "state": {
-    "SSD_available_bytes": 20707786752,
-    "SSD_required_bytes": 10536091648,
-    "asset_expected_bytes": 21660993774,
-    "asset_id": "TRACE_7a2ceb3a0f9b32b5",
+    "SSD_available_bytes": 23667773440,
+    "SSD_required_bytes": 23420993536,
+    "archive_transfer_rate_policy": {
+      "authorization_sha256": "08a52b3fb8dc865d85fe9f805de96ebb8714eda8a7e95fcac13c02b5de6d060a",
+      "mode": "USER_AUTHORIZED_STAGED_RATE",
+      "source_MiB_per_second": 60,
+      "tier_receipt": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_verified_offload_reclaim_v1/control/staged_transfer_rates_v1/TIER_60_120_INTENT_1792901803619400203.json",
+      "total_MiB_per_second": 120
+    },
+    "asset_expected_bytes": 7684181136,
+    "asset_id": "TRACE_cae2f20bacad84d5",
     "asset_kind": "TRACE",
-    "completed_assets": 34,
-    "current_asset_new_hashed_bytes": 21531938924,
-    "current_asset_new_transferred_bytes": 12646146120,
-    "current_file_hashed_bytes": 2965372928,
+    "completed_assets": 37,
+    "current_asset_new_hashed_bytes": 7530048074,
+    "current_asset_new_transferred_bytes": 7684181136,
+    "current_file_hashed_bytes": 7526678528,
     "current_host_io": {
       "full": {
-        "avg10": 6.97,
-        "avg300": 6.16,
-        "avg60": 6.85,
-        "total": 202779770934.0
+        "avg10": 9.37,
+        "avg300": 9.13,
+        "avg60": 9.45,
+        "total": 205388765121.0
       },
       "some": {
-        "avg10": 6.97,
-        "avg300": 6.23,
-        "avg60": 6.86,
-        "total": 223746920138.0
+        "avg10": 9.41,
+        "avg300": 9.19,
+        "avg60": 9.51,
+        "total": 226553903478.0
       }
     },
-    "driver_exit_code": 0,
-    "driver_exit_observed": true,
-    "driver_pid": 1033480,
-    "driver_start_ticks": 961292693,
-    "file": "kernel-5.traceg",
-    "held_assets": 1,
-    "last_hold": {
-      "asset_id": "TRACE_7a2ceb3a0f9b32b5",
-      "elapsed_seconds": 2391.0106868743896,
-      "kind": "TRACE",
-      "new_scientific_starts": 0,
-      "reason": "RESOURCE_HOLD_SSD_ALL_DECLARED_RESERVATIONS",
-      "source_disposition": "KEEP",
-      "status": "HOLD_EXACT_ASSET",
-      "traceback": "Traceback (most recent call last):\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 103, in main\n    result=c.migrate(m)\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/copy_engine.py\", line 156, in migrate\n    need(h.hexdigest()==event['sha256'],'streamed chunk full SHA mismatch');v.rename_noreplace(partial,dest);need(hash_file(dest,gate=g)==event['sha256'],'published range reopen SHA');publish_bytes(folder/(leaf+'.json'),canon(c),v);ranges[name].append(c);newbytes+=event['size'];count_ranges+=1;emit({'event':'RANGE_VERIFIED','asset':manifest['primary_asset_id'],'file':name,'verified_end':event['offset']+event['size'],'new_payload_bytes':newbytes})\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/copy_engine.py\", line 250, in hash_file\n    return _qualified_hash_file(path,rate=rate,gate=gate)\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/copy_engine.py\", line 49, in hash_file\n    if gate:gate()\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 27, in __call__\n    x=super().__call__(force);update(SSD_available_bytes=x['SSD_available_bytes'],SSD_required_bytes=x['SSD_required_bytes'],current_host_io=x['IO']);return x\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/copy_engine.py\", line 242, in __call__\n    value=rr.admission('TARGET',include_activity=False,allowed_lock_pids=own_sender)\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/server_resources.py\", line 60, in admission\n    if not metadata_only:need(copy_space_pass,'RESOURCE_HOLD_SSD_ALL_DECLARED_RESERVATIONS')\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/server_resources.py\", line 6, in need\n    if not v:raise RuntimeError(m)\nRuntimeError: RESOURCE_HOLD_SSD_ALL_DECLARED_RESERVATIONS\n",
-      "unix": 1792868788.7787404
-    },
-    "phase": "COMMON_RESOURCE_HOLD",
-    "queue_index": 35,
+    "driver_pid": 1174414,
+    "driver_start_ticks": 965334375,
+    "file": "kernelslist.g",
+    "held_assets": 0,
+    "phase": "TRANSFER_RANGE_VERIFIED",
+    "queue_index": 38,
     "total_assets": 115,
-    "total_new_transferred_bytes": 114021560387,
-    "unix": 1792868788.7908862,
-    "verified_end": 268435456
+    "total_new_transferred_bytes": 138563531256,
+    "unix": 1792902320.2021768,
+    "verified_end": 161
   },
   "supervisor": {
     "Source_deletions": 0,
-    "completed": 34,
+    "completed": 37,
     "deadline_unix": 1792947947.377078,
     "driver": {
-      "log": "/root/data/research_asset_verified_offload_20261024_v1/control/driver_resume_20261025.log",
-      "pid": 1033480,
-      "start_ticks": 961292693
+      "log": "/root/data/research_asset_verified_offload_20261024_v1/control/driver_continue_1792901372413463799.log",
+      "pid": 1174414,
+      "start_ticks": 965334375
     },
-    "driver_restarts": 0,
+    "driver_restarts": 3,
     "frozen_scopes": 115,
     "max_driver_restarts": 96,
     "max_resource_rechecks": 288,
-    "phase": "WAIT_COMMON_RESOURCE_ADMISSION",
-    "pid": 1035068,
-    "reason": "RESOURCE_HOLD_SSD_ALL_DECLARED_RESERVATIONS",
-    "resource_rechecks": 2,
+    "phase": "OBSERVING_EXISTING_DRIVER",
+    "pid": 1147175,
+    "resource_rechecks": 84,
     "running": true,
     "schema": "LANE_T_FINITE_CONTINUATION_SUPERVISOR_V1",
     "scientific_actions": 0,
-    "start_ticks": 961351867,
-    "unix": 1792869100.8683648
+    "start_ticks": 964494301,
+    "unix": 1792902306.5015259
   },
   "own_execution_processes": [
     {
-      "pid": 1035068,
-      "start_ticks": 961351867,
+      "pid": 1147175,
+      "start_ticks": 964494301,
       "state": "S",
       "argv": [
         "/usr/bin/python3",
         "-B",
-        "/root/data/research_asset_verified_offload_20261024_v1/tools/continuation_supervisor.py"
+        "/root/data/research_asset_verified_offload_20261024_v1/tools/continuation_supervisor.py",
+        "--resume-preserved-supervision",
+        "/root/data/research_asset_verified_offload_20261024_v1/control/SUPERVISOR_IO_POLICY_HANDOFF_20261025_V1.json"
+      ],
+      "mnt": "mnt:[4026535153]"
+    },
+    {
+      "pid": 1174414,
+      "start_ticks": 965334375,
+      "state": "S",
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py"
       ],
       "mnt": "mnt:[4026535153]"
     }
@@ -107,10 +113,12 @@
     "TRACE_7468df5d7faa3b71",
     "TRACE_777ae84f37927c4e",
     "TRACE_79b6f77895def1c5",
+    "TRACE_7a2ceb3a0f9b32b5",
     "TRACE_8dda7605fd60116b",
     "TRACE_90174dcf58988a5d",
     "TRACE_9ad2f284f8c2a318",
     "TRACE_9d6ff92257d20b4b",
+    "TRACE_b3e3f652d0983650",
     "TRACE_cf75342164f0b212",
     "TRACE_d1558ccc2c7ac999",
     "TRACE_d6c21d018154d3b5",
@@ -119,28 +127,24 @@
     "TRACE_e8b3c12f3e24c7a7",
     "TRACE_ea092104b9d666f4",
     "TRACE_f10e90a46617fb55",
+    "TRACE_f254bec10d7a65a7",
     "TRACE_ffa286b1549088e6"
   ],
   "partial_transactions": [
     {
-      "asset_id": "TRACE_7a2ceb3a0f9b32b5",
-      "object_id": "84c06a11d5717943a2888bdbef96e6279557d010ebb1507b5e813a1b3e77c4aa",
-      "manifest_sha256": "6f480067700ab27fcb4422d412eb2665b87f7642754f2bc176ce526ec9ab3129",
-      "original_bytes": 21660993774,
-      "verified_range_bytes": 12646146120,
-      "verified_ranges": 98,
+      "asset_id": "TRACE_cae2f20bacad84d5",
+      "object_id": "9b246c7492a61b1cb384984155b06ce8864d848eb08806e36a9fd0c315256caf",
+      "manifest_sha256": "42ee012b0cfc241bb91af371e6832608a743ecce3f9f7c01836fc2ab66df259c",
+      "original_bytes": 7684181136,
+      "verified_range_bytes": 7684181136,
+      "verified_ranges": 61,
       "partial_files": [
         {
-          "relative_path": "chunks/ae6d263736ed9eae6d7937630545cc6039ba84fc1bf320eeee7243f3b0eba7c3/00000000000268435456.part",
-          "kind": "UNINDEXED_PUBLISHED_RANGE",
-          "bytes": 134217728,
-          "frame": {
-            "name": "00000000000268435456.part",
-            "offset": 268435456,
-            "sha256": "ac8a24b043e24398a4ce4d21309ded3ed1b7b30e504b91fe8d0bdf9bd50dcad1",
-            "size": 134217728
-          },
-          "resume": "Existing engine requires bound frame and full reopened SHA; never infer verified status from filename"
+          "relative_path": "tree/kernel-3.traceg.writing",
+          "kind": "OWNED_TREE_ASSEMBLY_PARTIAL",
+          "bytes": 7206862848,
+          "expected_bytes": 7680811429,
+          "resume": "Validate against immutable range concatenation before any continuation; never discard verified ranges"
         }
       ],
       "range_body_hashes_recomputed_by_this_audit": false,
@@ -150,6 +154,15 @@
   "transaction_metadata_errors": [],
   "snapshot_consistency": "Read-only multi-file observation; active atomic-renames must be rechecked before diagnosing corruption. Final mode requires stopped execution.",
   "unrelated_processes_signaled": 0,
+  "original174_source_namespace": {
+    "unix": 1792902324.7078912,
+    "host": "huangrulin-174",
+    "mount_namespace": "mnt:[4026534768]",
+    "own_execution_processes": [],
+    "unreadable_proc_entries": [],
+    "bridge_lock_holders": [],
+    "unrelated_processes_signaled": 0
+  },
   "publisher_processes": [
     {
       "ProcessId": 32272,
@@ -157,7 +170,7 @@
       "CommandLine": "\"C:\\Users\\huang\\AppData\\Local\\Programs\\Python\\Python312\\python.exe\" -B D:\\repo\\original174-verified-offload-reclaim-exec-20261024-v1\\docs\\ep_l2\\operations\\original174_verified_offload_reclaim_20261024_v1\\tools\\publish_continuation.py "
     }
   ],
-  "driver_stopped": true,
+  "driver_stopped": false,
   "supervisor_stopped": false,
   "publisher_stopped": false,
   "final_mode_requested": false
