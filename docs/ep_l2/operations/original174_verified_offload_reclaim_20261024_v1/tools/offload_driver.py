@@ -109,7 +109,7 @@ def main():
                 qualification=dict(status='QUALIFIED_ZERO_SHARE_PATH',pilot_asset=scope['asset_id'],manifest_sha256=record['manifest_sha256'],commit_sha256=record['commit_sha256'],true164_bundle=m['new_true164_bundle'],Source_new_payload_writes=0,Share_new_payload_writes=0,Source_sender='readonly files to verified direct SSH socket',Target_receiver='bounded memory to genuine164 only',native_restore=restoration['status'],old_Share40GiB_policy_changed=False,SSD_RAM_identity_and_live_science_gates='independently enforced on both ends',raw_chunk_max_bytes=c.CHUNK,staging_max_bytes=256*c.MIB,single_stream=True,sender_rate_bytes_per_second=c.RATE,aggregate_data_rate_limit_bytes_per_second=30*c.MIB)
                 persist(TASK/'control/ZERO_SHARE_QUALIFICATION.json',qualification);c.publish_bytes(NAS/'control/ZERO_SHARE_QUALIFICATION.json',c.canon(qualification),c.v9())
         except Exception as e:
-            holds+=1;record=dict(status='HOLD_EXACT_ASSET',asset_id=scope['asset_id'],kind=scope['kind'],reason=str(e),traceback=traceback.format_exc(),elapsed_seconds=time.time()-started,unix=time.time(),source_disposition='KEEP',new_scientific_starts=0)
+            holds+=1;record=dict(status='HOLD_EXACT_ASSET',asset_id=scope['asset_id'],kind=scope['kind'],reason=str(e),traceback=traceback.format_exc(),elapsed_seconds=time.time()-started,unix=time.time(),source_disposition='KEEP',new_scientific_starts=0,archive_lock_observation=getattr(e,'archive_lock_observation',None))
             append(record);update(force=True,phase='ASSET_HOLD',last_hold=record,held_assets=holds)
             print(json.dumps(record),flush=True)
             if index==0:raise RuntimeError('ZERO_SHARE_PILOT_NOT_QUALIFIED '+str(e))

@@ -1,7 +1,7 @@
 {
-  "unix": 1792902415.708679,
+  "unix": 1792902732.5363963,
   "state": {
-    "SSD_available_bytes": 23666671616,
+    "SSD_available_bytes": 23665250304,
     "SSD_required_bytes": 23420993536,
     "archive_transfer_rate_policy": {
       "authorization_sha256": "08a52b3fb8dc865d85fe9f805de96ebb8714eda8a7e95fcac13c02b5de6d060a",
@@ -10,46 +10,54 @@
       "tier_receipt": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_verified_offload_reclaim_v1/control/staged_transfer_rates_v1/TIER_60_120_INTENT_1792901803619400203.json",
       "total_MiB_per_second": 120
     },
-    "asset_expected_bytes": 7684181136,
-    "asset_id": "TRACE_cae2f20bacad84d5",
+    "asset_expected_bytes": 7287229424,
+    "asset_id": "TRACE_55356f3017f17c02",
     "asset_kind": "TRACE",
-    "completed_assets": 37,
-    "current_asset_new_hashed_bytes": 7530048074,
-    "current_asset_new_transferred_bytes": 7684181136,
-    "current_file_hashed_bytes": 7526678528,
+    "completed_assets": 38,
+    "current_asset_new_hashed_bytes": 0,
+    "current_asset_new_transferred_bytes": 0,
+    "current_file_hashed_bytes": 0,
     "current_host_io": {
       "full": {
-        "avg10": 8.87,
-        "avg300": 9.12,
-        "avg60": 9.15,
-        "total": 205397462716.0
+        "avg10": 9.26,
+        "avg300": 9.16,
+        "avg60": 9.25,
+        "total": 205409140148.0
       },
       "some": {
-        "avg10": 9.28,
-        "avg300": 9.21,
-        "avg60": 9.31,
-        "total": 226562679023.0
+        "avg10": 9.31,
+        "avg300": 9.24,
+        "avg60": 9.33,
+        "total": 226574470531.0
       }
     },
+    "driver_exit_code": 0,
+    "driver_exit_observed": true,
     "driver_pid": 1174414,
     "driver_start_ticks": 965334375,
-    "file": "kernelslist.g",
-    "held_assets": 0,
-    "phase": "TRANSFER_RANGE_VERIFIED",
-    "queue_index": 38,
+    "file": null,
+    "held_assets": 1,
+    "last_hold": {
+      "asset_id": "TRACE_55356f3017f17c02",
+      "elapsed_seconds": 0.036734580993652344,
+      "kind": "TRACE",
+      "new_scientific_starts": 0,
+      "reason": "OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER",
+      "source_disposition": "KEEP",
+      "status": "HOLD_EXACT_ASSET",
+      "traceback": "Traceback (most recent call last):\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 102, in main\n    m,prep=prepare(scope);bundle=P(m['new_true164_bundle'].replace('/home/shared','/root/share/mnt164',1));update(force=True,phase='TRUE164_RANGE_TRANSFER')\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 37, in prepare\n    c.Resources()(True)\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py\", line 27, in __call__\n    x=super().__call__(force);update(SSD_available_bytes=x['SSD_available_bytes'],SSD_required_bytes=x['SSD_required_bytes'],current_host_io=x['IO'],archive_transfer_rate_policy=x.get('archive_transfer_rate_policy'));return x\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/copy_engine.py\", line 273, in __call__\n    value=rr.admission('TARGET',include_activity=False,allowed_lock_pids=own_sender)\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/server_resources.py\", line 77, in admission\n    if not metadata_only:need(not foreign_locks,'OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER')\n  File \"/root/data/research_asset_verified_offload_20261024_v1/tools/server_resources.py\", line 8, in need\n    if not v:raise RuntimeError(m)\nRuntimeError: OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER\n",
+      "unix": 1792902521.6132925
+    },
+    "phase": "COMMON_RESOURCE_HOLD",
+    "queue_index": 39,
     "total_assets": 115,
-    "total_new_transferred_bytes": 138563531256,
-    "unix": 1792902410.6329267,
-    "verified_end": 161
+    "total_new_transferred_bytes": 146247712392,
+    "unix": 1792902521.6318939,
+    "verified_end": 0
   },
-  "live_process": {
-    "pid": 1174414,
-    "start_ticks": 965334375,
-    "state": "S",
-    "command": "/usr/bin/python3 -B /root/data/research_asset_verified_offload_20261024_v1/tools/offload_driver.py "
-  },
-  "SSD_available_bytes": 23666479104,
-  "true164_available_bytes": 48482749001728,
+  "live_process": null,
+  "SSD_available_bytes": 23657041920,
+  "true164_available_bytes": 48482744549376,
   "native_registry_observation": {
     "DTC_AEFAIR_EPOCH2_V1": {
       "state": "COMPLETE",
@@ -67,7 +75,7 @@
       "state": "RUNNING",
       "reserved_write_bytes": 12884901888,
       "budget": 356,
-      "remaining": 238
+      "remaining": 237
     },
     "EP_ADA_TRACE_COMPAT_CALL65_PC64_V8_20261024_V1": {
       "state": "COMPAT_PARTIAL_COMPLETE",

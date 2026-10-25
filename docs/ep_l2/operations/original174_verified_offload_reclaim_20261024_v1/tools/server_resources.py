@@ -35,6 +35,20 @@ def old_lock_holders():
    if len(z)==3 and (int(z[0],16),int(z[1],16),int(z[2]))==(os.major(st.st_dev),os.minor(st.st_dev),st.st_ino):out.append(dict(path=str(p),kernel_lock=line,pid=int(fields[4])))
  return out
 
+def require_no_foreign_archive_locks(foreign_locks):
+ if not foreign_locks:return
+ observations=[]
+ for row in foreign_locks:
+  observed=dict(row);proc=P('/proc')/str(row['pid'])
+  try:
+   raw=(proc/'stat').read_text().rsplit(')',1)[1].split()
+   observed.update(start_ticks=int(raw[19]),process_state=raw[0],argv=[z.decode(errors='replace') for z in (proc/'cmdline').read_bytes().split(b'\0') if z],cwd=os.readlink(proc/'cwd'))
+  except OSError as error:observed['owner_observation_error']=str(error)
+  observations.append(observed)
+ error=RuntimeError('OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER')
+ error.archive_lock_observation=dict(unix=time.time(),host=os.uname().nodename,mount_namespace=os.readlink('/proc/self/ns/mnt'),foreign_locks=observations)
+ raise error
+
 def current_science():
  out=[]
  for proc in P('/proc').iterdir():
@@ -74,7 +88,7 @@ def admission(role,remote_peak=0,include_activity=True,allowed_lock_pids=(),meta
  mem=int(next(l.split()[1] for l in P('/proc/meminfo').read_text().splitlines() if l.startswith('MemAvailable:')))*1024;cur=int(P('/sys/fs/cgroup/memory.current').read_text());mx=P('/sys/fs/cgroup/memory.max').read_text().strip()
  need(mem>=64*GIB and (mx=='max' or int(mx)-cur>=GIB),'RESOURCE_HOLD_RAM_OR_CGROUP')
  locks=old_lock_holders();foreign_locks=[x for x in locks if x['pid'] not in (os.getpid(),*allowed_lock_pids)]
- if not metadata_only:need(not foreign_locks,'OTHER_EXISTING_ARCHIVE_LOCK_HELD_NO_TAKEOVER')
+ if not metadata_only:require_no_foreign_archive_locks(foreign_locks)
  io=pressure();need(io.get('some',{}).get('avg60',0)<25 and io.get('full',{}).get('avg60',0)<20,'RESOURCE_HOLD_SUSTAINED_SEVERE_HOST_IO')
  active=[]
  if role=='TARGET':
