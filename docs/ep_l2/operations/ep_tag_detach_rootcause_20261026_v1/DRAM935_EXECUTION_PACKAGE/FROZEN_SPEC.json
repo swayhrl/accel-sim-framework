@@ -1,0 +1,99 @@
+{
+  "schema": "EP_NATIVE_VECTOR_DRAM935_SINGLE_FACTOR_SPEC_V1",
+  "cohort": "EP_NATIVE_VECTOR_DRAM935_SENSITIVITY_20261026_V1",
+  "project": "EP_L2",
+  "owner": "EP-MAIN",
+  "bounded_executor": "EP-TAG-ROOTCAUSE",
+  "application_budget_request": 1,
+  "automatic_retry": false,
+  "refund": false,
+  "source_identity": {
+    "archive_sha256": "7b590d2551ffe094108bef07f1ee467e6890f3eee37aa30e1072c6be3fb7687a",
+    "binary_sha256": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+    "core_source_commit": "1093d2629e3d6a9130ba25b9dd119b6f3e16c092",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "baseline_result": "/root/data/ep_l2_main_vector_r5_20261023_v1/run/results/a6b61f77-2ff6-45ad-897c-df0812d01ae8",
+  "baseline_raw_sha256": "1f5519151cb381fbc370591d65e7ad78691435d5955ad99fea8dcdf7ffab0f6a",
+  "baseline_source": "ACCEPTED_NATIVE_VECTOR_R5_POINT_NOT_MAIN61",
+  "baseline_reexecution_budget": 0,
+  "trace_entry": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernelslist.g",
+  "input_trace_composite_sha256": "138f33b61fffe99c5e9c31a5943a96edcab180e6aaaa5ed4714021249c0d2940",
+  "config_order": [
+    "config-0.config",
+    "config-1.config",
+    "config-2.config",
+    "config-3.config",
+    "config-4.config"
+  ],
+  "config_sha256": {
+    "config-0.config": "8ccad878b6abfec8254ecd6c7e0efee2714908dc3a04f611ff8787000e277bd3",
+    "config-1.config": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+    "config-2.config": "492269014ee869f9023cc7ec4fb3ac8dd7da04bf96d34e2e55ffb74d040007b3",
+    "config-3.config": "b5ca00bb33a0e75c71b9661789d6480d97be8bede4dec4edf5172637216351f0",
+    "config-4.config": "a12b254462a5d8e94b95947bdd9f1d50f07056ebd3af176fbae6f12fba1ca548"
+  },
+  "only_effective_change": {
+    "option": "-gpgpu_clock_domains",
+    "baseline": "1132.0:1132.0:1132.0:850.0",
+    "treatment": "1132.0:1132.0:1132.0:935.0",
+    "interpretation": "DRAM-domain service scaling; not pure byte-bandwidth isolation"
+  },
+  "expected_instructions": 56000000,
+  "expected_CTA": 15625,
+  "expected_kernel_uids": [
+    1
+  ],
+  "expected_slices": 64,
+  "expected_flags": {
+    "T": true,
+    "M": true,
+    "ro_runtime": true
+  },
+  "expected_cycles": "UNCONSTRAINED_OBSERVED_OUTCOME",
+  "expected_detach": "UNCONSTRAINED_OBSERVED_OUTCOME",
+  "memory_cap_bytes": 9663676416,
+  "result_cap_bytes": 402653184,
+  "reserved_write_bytes": 1342177280,
+  "wall_timeout_seconds": 7200,
+  "hot_output_parent": "/root/data/ep_tag_rootcause_20261026_v1",
+  "planned_output_root": "/root/data/ep_tag_rootcause_20261026_v1/experiments/dram935_v1/run/results",
+  "source_disposition": "SOURCE_KEEP",
+  "pinned_files": {
+    "/root/data/ep_l2_dtc_l1_native_v2/EP/control/parse_main_terminal.py": "f518aed003f2f70a4d84afc95c215773da2c14761315349b7600655a1e549c8e",
+    "/root/data/ep_l2_dtc_l1_native_v2/EP/env/lib/ld-linux-x86-64.so.2": "9eb34cb2da3ae2a9398cc09b3cd2d069563ec40d9858cb711af15cd23fa80abf",
+    "/root/data/ep_l2_dtc_l1_native_v2/EP/env/lib/libc.so.6": "c53819710b163d3f1d2541778590d58d3ef31cb0ed75adcbe059faac68c1e72d",
+    "/root/data/ep_l2_dtc_l1_native_v2/EP/env/lib/libgcc_s.so.1": "fc9d43b2f6c20e53b009238f767c5b949d202389e20de9e202ea684b4ba3729a",
+    "/root/data/ep_l2_dtc_l1_native_v2/EP/env/lib/libm.so.6": "00830df310aac5023e10bd7b715149ab8ddc682277fd8ae3539a7a44fcdd6c38",
+    "/root/data/ep_l2_dtc_l1_native_v2/EP/env/lib/libstdc++.so.6": "ff0825e113603c3866680d5d52216bc6d8eedf3a59f52a0aef67ff01994db128",
+    "/root/data/ep_l2_dtc_l1_native_v2/EP/env/lib/libstdc++.so.6.0.30": "ff0825e113603c3866680d5d52216bc6d8eedf3a59f52a0aef67ff01994db128",
+    "/root/data/ep_l2_dtc_l1_native_v2/EP/env/lib/libz.so.1": "64c206f0146cc58bbddc4f22054436f4ff278f5a554aa3ce6921ddf7e9133370",
+    "/root/data/ep_l2_dtc_l1_native_v2/EP/env/lib/libz.so.1.2.11": "64c206f0146cc58bbddc4f22054436f4ff278f5a554aa3ce6921ddf7e9133370",
+    "/root/data/ep_l2_dtc_l1_native_v2/EP/env/lib/libzstd.so.1": "5df4f4df42d76270bb6981fabc7c1fdccd8ad28a23d84d67f73203fb3f537667",
+    "/root/data/ep_l2_dtc_l1_native_v2/EP/env/lib/libzstd.so.1.4.8": "5df4f4df42d76270bb6981fabc7c1fdccd8ad28a23d84d67f73203fb3f537667",
+    "/root/data/ep_l2_dtc_l1_native_v2/tools/native_v2.py": "6f1a0b5f1a4a3d08ba1fa0709eea02e7cc2ec75b5e76e7a168027c1caf1f90a1",
+    "/root/data/ep_l2_main_vector_r5_20261023_v1/bin/accel-sim.out": "e511cce7d8bcd5a3ebbe6255f42ebe153547484a69c6857ab55f7a8835a2dc33",
+    "/root/data/ep_l2_main_vector_r5_20261023_v1/sources/r4/SOURCE_BOUND_SCHEMA_r4.json": "2c070214ed8d0f3738014f7c0a3a0386d0199defad3f4a2b2d4d3343b8707ba2",
+    "/root/data/ep_l2_main_vector_r5_20261023_v1/sources/r4/decoder_samecycle_close.py": "647510163053d30773176578cf35c10e0aea0a1256af366feba520820d0e11d4",
+    "/root/data/ep_l2_main_vector_r5_20261023_v1/sources/r5/WIRE_CONTRACT.json": "cb973b3bc462ce33895a0f8cc31b428f6bf14b63f8497e8895eb314ea0894db7",
+    "/root/data/ep_l2_main_vector_r5_20261023_v1/sources/r5/decoder.py": "65731a6df85e9821994e4efea84ea5473e482e6f1c2bb385c9b8abdf00aefcff",
+    "/root/data/ep_l2_main_vector_r5_20261023_v1/sources/r5/math_audit.py": "f55b4f911a321aae2f22fd2b017e5bcef270847adf24968d7d1e0791401d5ae0",
+    "/root/data/ep_l2_main_vector_r5_20261023_v1/env/atomic_scope.json": "b7cdc8be390e6aeef6e722c6e6123426746abb79caae4151fc234e5581939fad",
+    "/root/data/ep_l2_main_vector_r5_20261023_v1/env/current_input_scope_binding.json": "2170dd73767ee9fd059286b376a771ee20e71e88db4c4f5d0913cba41185c202",
+    "/root/data/ep_l2_main_vector_r5_20261023_v1/env/native_input_semantics.json": "fee6329dac18a9eadff4290c8cdd87557cd8f2f6ab79682e82863c196af5230d",
+    "/root/data/ep_l2_main_vector_r5_20261023_v1/env/readonly_manifest.json": "f1d2be4bc00a7e2bdde18f550736a2e6184949a4e8742267c0fcfd46e27b47aa",
+    "/root/data/ep_l2_main_vector_r5_20261023_v1/env/readonly_ranges.csv": "b641caad1bd90443803770d5a27918eb71d5ac5490f7606867bad7cccc5e1560",
+    "/root/data/ep_l2_dtc_l1_native_v2/control/EP_VECTORADD_S_TRACE_RECEIPT.json": "d7a41ebae4625025353dc94be4a3a6ba4c20e5496e6b7289636df0fc2548120e"
+  },
+  "authorization_sha256": "237edd289b46da4c4ebef259cb6060991a6829187d6bd09815a6dd35887d4faa",
+  "fresh_native_qualification": "PENDING_NOT_INHERITED",
+  "official_request_registration": "PENDING_RESOURCE_ADMISSION",
+  "sole_entry_integration": "PENDING_DO_NOT_BYPASS",
+  "numeric_SASS_output_validation": "UNKNOWN_UNCHANGED_BOUNDARY",
+  "counter_exclusions": [
+    "Bank_Level_Parallism_Col"
+  ],
+  "qualification_controls_max_simulator_help_invocations": 1,
+  "E2_L1_MissQ": "NOT_REGISTERED_CONDITIONAL_NEXT_DECISION"
+}

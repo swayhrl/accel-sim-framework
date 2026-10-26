@@ -126,3 +126,9 @@ Vector最强的三条约束证据是：DRAM域服务/调度排队；L1→L2→lo
 当前runtime无实际TLB/PTW时序模型；LOCAL_XBAR按packet建模，不能证明真实NoC字节链路饱和；异常Bank_Level_Parallism_Col被排除。CFD/DWT完整raw本轮本地未找到，不能用Vector补写它们的全路径瓶颈。单set到达率与Tag RESERVED寿命仍UNKNOWN，未用全GPULittle Law推失败概率。
 
 本次追加实际只做两份既有raw约12.9MB及小metadata的SHA验证/解析，未模拟、构建、恢复、采集或触碰迁移任务。未来若获新授权，最值得的一至两个单因素控制是DRAM域服务缩放和L1 MissQ容量；只形成设计，不启动、不消费余额，不以非零detach为验收条件。T独立性能收益仍无接受证据。
+
+## E1执行推进授权后的状态（2026-10-26）
+
+用户已同意推进，已形成 [DRAM935执行准备包](DRAM935_EXECUTION_PACKAGE/README.md)：复用同binary850MHz接受基线，只请求新增一个935MHz端点；配置、source身份和三项非启动负控制通过。当前为 **STAGED_RESOURCE_HOLD**：本地ext4可用约33.64GiB，计入正在运行的DTC预留及现有EP规则后需要45.75GiB，缺约12.12GiB。未注册或消耗预算，未改共享native入口，未调用模拟器或help，尚无实验结果。L1 MissQ控制未叠加。
+
+这不会改变前述科学结论；它是已授权研究的执行准备/资源阻塞记录，不能写成E1已完成或有性能收益。
