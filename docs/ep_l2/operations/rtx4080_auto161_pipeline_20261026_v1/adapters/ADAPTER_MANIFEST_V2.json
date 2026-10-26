@@ -1,0 +1,123 @@
+{
+  "schema": "AUTO161_ADAPTER_MANIFEST_V1",
+  "status": "ROOT_REVIEW_REQUIRED_V2_NOT_FORMAL161_EXECUTED",
+  "adapter_id": "auto161_metadata_identity_static_v2",
+  "script": {
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/adapters/auto161_metadata_adapter_v2.py",
+    "sha256": "a16ddb45c9de8a111bbaed4761b9f6b38005a5b27d1790bef8f3c06a4c86bedb",
+    "bytes": 25091
+  },
+  "allowed_profiles": [
+    "AUTO161_READONLY_CPU_METADATA_V1"
+  ],
+  "allowed_stages": [
+    "METADATA_IDENTITY_STATIC"
+  ],
+  "allowed_next_stages": [
+    "WAIT_ACTUAL_INPUT_ADAPTER",
+    "WAIT_EXISTING_AVAILABILITY_REVIEW",
+    "WAIT_ISA_ADAPTER",
+    "WAIT_MAPPING_ADAPTER",
+    "WAIT_ROOT_GPU_EXACT",
+    "WAIT_ROOT_GPU_SDK_ARMED",
+    "WAIT_ROOT_GPU_VARIANT",
+    "WAIT_SOURCE_RUNTIME_ADAPTER"
+  ],
+  "allowed_provided_gates": [
+    "EXACT_IMMUTABLE_JOB_IDENTITY_METADATA_RECHECKED",
+    "ROOT_BINARY_ATTESTATION_EXACT_BINDING_REOPENED",
+    "PRIOR_STATIC_METADATA_CLOSED_SUMMARY_REUSED",
+    "SPECIFIC_MISSING_PROOF_AND_NEXT_ADAPTER_CONSTRUCTED",
+    "READONLY_EXISTING_C8_COMPARATOR_REEXECUTED_WHEN_APPLICABLE",
+    "EXACT_ROW_ROOT_APPROVED_CPU_ARTIFACT_GATES_REOPENED"
+  ],
+  "qualification_grants_allowed": false,
+  "CLI": [
+    "python3",
+    "-B",
+    "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/adapters/auto161_metadata_adapter_v2.py",
+    "--scope-json",
+    "{scope_json}",
+    "--row-index",
+    "{row_index}",
+    "--output",
+    "{attempt}/RESULT.json",
+    "--context-json",
+    "{attempt}/CONTEXT.json"
+  ],
+  "context_schema": "AUTO161_CONTEXT_V1",
+  "result_schema": "AUTO161_ADAPTER_RESULT_V1",
+  "context_nonce_policy": "Bind and return only inside private RESULT; never print nonce to stdout",
+  "scope_sha256": "b48a9007274459184c332b77f10784c1fbb8b1c1df213543c65d18a4d8e5327a",
+  "authority_index": {
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/adapters/FROZEN_AUTHORITY_INDEX_V2.json",
+    "sha256": "16b323304b0d1af9cd77d1f1ae8298f2f96a93f6183617e9cbd6cb93ed19e4cc",
+    "bytes": 89378
+  },
+  "dependency_imports": [
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/adapters/frozen/3ade5cce9f2489631d66dcda47d23e945b0bfae0a92bfc235d7127fd59635f88_evidence_comparator_candidate_v1.py",
+      "sha256": "3ade5cce9f2489631d66dcda47d23e945b0bfae0a92bfc235d7127fd59635f88",
+      "bytes": 9646,
+      "source_path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/identity_triage/evidence_comparator_candidate_v1.py",
+      "fresh_small_metadata_hash_at_freeze": true
+    }
+  ],
+  "route_to_next_stage": {
+    "READONLY_EXISTING_WORKLOAD_AVAILABILITY_ROUTE_REVIEW_NO_HISTORICAL_ALIAS": "WAIT_EXISTING_AVAILABILITY_REVIEW",
+    "ISA_PROFILE_SPECIALIST_PREPARATION_REQUIRED": "WAIT_ISA_ADAPTER",
+    "ACTUAL_INPUT_LIFETIME_SNAPSHOT_PREPARATION_REQUIRED": "WAIT_ACTUAL_INPUT_ADAPTER",
+    "MAPPING_PROOF_HOLD": "WAIT_MAPPING_ADAPTER",
+    "SDK42_DEFAULT50000_MICROWINDOW_ARMED_NOT_EXECUTED": "WAIT_ROOT_GPU_SDK_ARMED",
+    "EXACT_RUNTIME_OR_STATIC_EVIDENCE_REVIEW_REQUIRED": "WAIT_SOURCE_RUNTIME_ADAPTER",
+    "SOURCE_INPUT_ORACLE_AND_GPU_ADMISSION_REVIEW_REQUIRED": "WAIT_SOURCE_RUNTIME_ADAPTER",
+    "ROOT_GPU_PILOT_REQUIRED_EXACT_SOURCE_BINARY": "WAIT_ROOT_GPU_EXACT",
+    "SEPARATE_REPAIRED_VARIANT_GPU_REQUIRED_NO_V3_SUPERSESSION": "WAIT_ROOT_GPU_VARIANT"
+  },
+  "CPU_workers_max": 2,
+  "CPU_time_seconds_per_attempt": 45,
+  "address_space_bytes_per_worker": 2147483648,
+  "small_metadata_read_bytes_per_attempt_max": 8388608,
+  "small_metadata_single_file_max": 2097152,
+  "writes": "only the private attempt/RESULT.json; no shared cache/QUEUE/STOP/registry writes",
+  "no_GPU_simulator_or_subprocess": true,
+  "artifact_input_ABI": "AUTO161_ARTIFACT_V1",
+  "artifact_rule": "Missing proofs contain exact binary/argv/job/source identity and family keys; later CPU-only artifacts require Root-registered producer/profile, explicit provided_gates and requires refs. No current receipt grants GPU/consumer/trace/science qualification.",
+  "supersedes_manifest": "ADAPTER_MANIFEST_V1.json",
+  "supersession_reason": "V1 compared invented MATCH alias against real MATCH_CLOSED_CURRENT_BINARY; V1 never executed over formal161",
+  "requires_allowlist_ref_when_dependency_artifacts_present": true,
+  "current_binary_contract": {
+    "schema": "EXACT161_CURRENT_BINARY_READONLY_ATTESTATION_V1",
+    "row_status": "MATCH_CLOSED_CURRENT_BINARY",
+    "required_binding": [
+      "full path",
+      "expectedSHA",
+      "actualSHA",
+      "queue_id in source_ids"
+    ],
+    "aliases_accepted": false,
+    "real_regression": "REAL_BINARY_JOIN_REGRESSION_V2.json",
+    "real_binary_pairs": 118,
+    "real_scope_rows": 161
+  },
+  "artifact_feedback_contract": {
+    "schema": "AUTO161_ARTIFACT_V1",
+    "registry_schema": "AUTO161_ALLOWLIST_V1",
+    "producer_fields": [
+      "profile",
+      "source_path",
+      "source_sha256",
+      "allowed_gates",
+      "allowed_next_stages"
+    ],
+    "required_false_flags": [
+      "qualification_granted",
+      "gpu_executed",
+      "historical_queue_mutated"
+    ],
+    "exact_gate_binding": "qid in target_queue_ids and row_bindings[qid]==canonical frozen row SHA",
+    "family_only": "research dependency only",
+    "requires_missing": "no closed CPU gate until referenced artifact SHA closure",
+    "dynamic_missing_proofs_removed": false
+  }
+}

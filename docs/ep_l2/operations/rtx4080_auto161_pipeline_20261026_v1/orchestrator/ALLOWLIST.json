@@ -1,0 +1,36 @@
+{
+  "schema": "AUTO161_ALLOWLIST_V1",
+  "metadata_adapter": {
+    "id": "auto161_metadata_identity_static_v2",
+    "profile": "AUTO161_READONLY_CPU_METADATA_V1",
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/adapters/auto161_metadata_adapter_v2.py",
+    "sha256": "a16ddb45c9de8a111bbaed4761b9f6b38005a5b27d1790bef8f3c06a4c86bedb"
+  },
+  "artifact_producers": {
+    "ROOT_PRIVATE_GAUSSIAN_STRICT_CONSUMER_CPU_REPAIR_V2": {
+      "profile": "GAUSSIAN16_STRICT_KIND_CPU_CANDIDATE_V2",
+      "source_path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/root/artifact_publishers/publish_gaussian_strict_kind_cpu_v1.py",
+      "source_sha256": "c7d06c55216b881c854b58b25be1f9da06fe7359d6f5a5eeee72e650365a5aad",
+      "allowed_gates": [
+        "EXACT_GAUSSIAN16_CONSUMER_KIND_0_1_2_CPU_NEGATIVES_CLOSED"
+      ],
+      "allowed_next_stages": [
+        "WAIT_ISA_ADAPTER"
+      ],
+      "Root_exact_CPU_only_registration": true
+    },
+    "AUTO161_C8_AVAILABILITY_REVIEW_ADAPTER_V1": {
+      "profile": "AUTO161_EXISTING_C8_AVAILABILITY_REVIEW_V1",
+      "source_path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/family_availability_v1/availability_review_adapter_v1.py",
+      "source_sha256": "077695fb6a3bf4166f42ab84e785806914a7580336492b3bcaa3b8b41997397e",
+      "allowed_gates": [
+        "EXISTING_C8_AVAILABILITY_METADATA_REVIEW_CLOSED_V1"
+      ],
+      "allowed_next_stages": [
+        "WAIT_SOURCE_RUNTIME_ADAPTER"
+      ],
+      "Root_exact_CPU_only_registration": true
+    }
+  },
+  "artifact_registration_policy": "Root review/pin producer source+profile/gates/next_wait; newly arriving artifacts never grant trace/runtime/consumer qualification"
+}

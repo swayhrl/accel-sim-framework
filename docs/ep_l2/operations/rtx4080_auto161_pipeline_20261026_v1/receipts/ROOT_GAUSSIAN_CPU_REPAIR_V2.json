@@ -1,0 +1,47 @@
+{
+  "schema": "ROOT_GAUSSIAN_STRICT_CONTROL_KIND_CPU_REPAIR_V2",
+  "status": "PRIVATE_CANDIDATE_FIXED_CPU_ONLY",
+  "parent_manifest_sha256": "f964f1610fb9c382c0f829c02db9767a841ae6b23c36b6f988d99095447d100e",
+  "original_consumer_accepts_malformed_kind3": true,
+  "exact_gap": "ADA8 kind3 was allowed on an ordinary non-CALL/RET opcode by old shared record() else branch; this scoped Gaussian contract supports only direct CALL1,RET2 and ordinary0",
+  "new_shared_header_sha256": "7bfb0a7609e30c6615aeb18241008e0c9b46af80e0ce5642f7aebd5366453daa",
+  "new_CPU_consumer_binary_sha256": "58df2c2361d55e4a3bd5cbe4bf0a93848c29ee8845bfe7dbca8f6c12f17fca5e",
+  "cases": [
+    {
+      "case": "positive",
+      "returncode": 0,
+      "expected": 0,
+      "stderr": ""
+    },
+    {
+      "case": "ordinary_tagged_control3",
+      "returncode": 2,
+      "expected": 2,
+      "stderr": "GAUSSIAN16_SCOPE_REJECT:control kind outside exact Gaussian subset\n"
+    },
+    {
+      "case": "RET_wrong_high64",
+      "returncode": 2,
+      "expected": 2,
+      "stderr": "ADA8 return target/frame mismatch\n"
+    },
+    {
+      "case": "CALL_target_zero",
+      "returncode": 2,
+      "expected": 2,
+      "stderr": "GAUSSIAN16_SCOPE_REJECT:CALL target mismatch\n"
+    },
+    {
+      "case": "record_opcode_mismatch",
+      "returncode": 2,
+      "expected": 2,
+      "stderr": "ADA8 control opcode/type mismatch\n"
+    }
+  ],
+  "producer_A2_unchanged": true,
+  "GPU_or_simulator_qualification": false,
+  "deployed": false,
+  "old_profiles_or_registry_mutated": false,
+  "requires_future_exact_spec_to_pin_new_consumer": true,
+  "created_unix": 1793004569.9141142
+}

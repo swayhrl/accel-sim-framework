@@ -1,0 +1,51 @@
+{
+  "schema": "AUTO161_PRODUCER_REGISTRATION_CANDIDATE_V1",
+  "status": "ROOT_REVIEW_REQUIRED_NOT_REGISTERED",
+  "producer_id": "AUTO161_C8_AVAILABILITY_REVIEW_ADAPTER_V1",
+  "registry_entry": {
+    "profile": "AUTO161_EXISTING_C8_AVAILABILITY_REVIEW_V1",
+    "source_path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/family_availability_v1/availability_review_adapter_v1.py",
+    "source_sha256": "077695fb6a3bf4166f42ab84e785806914a7580336492b3bcaa3b8b41997397e",
+    "allowed_gates": [
+      "EXISTING_C8_AVAILABILITY_METADATA_REVIEW_CLOSED_V1"
+    ],
+    "allowed_next_stages": [
+      "WAIT_SOURCE_RUNTIME_ADAPTER"
+    ]
+  },
+  "exact_target_queue_ids": [
+    "SDK42_VECTOR_4000000_ADA7_A001",
+    "SDK42_VECTOR_6000000_ADA7_A001",
+    "ORD_EXT_vectorAdd_b4766b5dc5ca_A001"
+  ],
+  "row_bindings": {
+    "SDK42_VECTOR_4000000_ADA7_A001": "dd970214ca3acf32f7454aeb48bb0099e079e15f044cd729051beb7e6bc699d9",
+    "SDK42_VECTOR_6000000_ADA7_A001": "1dcafbfd483cd59086b70edf4e8d56630ca73f24536d157eb4b5196d8234fa02",
+    "ORD_EXT_vectorAdd_b4766b5dc5ca_A001": "dde88d53ff0c752f572d8f349271e00da09e7aba0ee154be2eafe098ae34696a"
+  },
+  "artifact_refs": [
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/family_availability_v1/runs/run_1793008487715616606/SDK42_VECTOR_4000000_ADA7_A001/AUTO161_ARTIFACT.json",
+      "sha256": "64f31de2d3fa83b904391bd3faf70f9e3dc564fb222ec67adc50a7caa7693f61",
+      "bytes": 7368
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/family_availability_v1/runs/run_1793008487715616606/SDK42_VECTOR_6000000_ADA7_A001/AUTO161_ARTIFACT.json",
+      "sha256": "649707aafb9d507a017f85501d41f0e38f3192a9372fb390c258a0abd2cc9e3d",
+      "bytes": 7368
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/family_availability_v1/runs/run_1793008487715616606/ORD_EXT_vectorAdd_b4766b5dc5ca_A001/AUTO161_ARTIFACT.json",
+      "sha256": "13543bcb37764bcbb6264d43cf21333fde936eb8a2ad42dafabf437e4fd58a04",
+      "bytes": 7427
+    }
+  ],
+  "index_updated_by_agent": false,
+  "Root_review_steps": [
+    "Independently review producer source and exact3 metadata/comparator proof chain.",
+    "Validate each emitted artifact and copied current metadata file SHA from catalog.",
+    "Only then register this exact producer/profile/gate and append the3 artifact refs to the private pipeline index.",
+    "After ingestion, require a fresh real row worker+parent ACK and independent audit; do not write any historical QUEUE or public alias."
+  ],
+  "expected_effect": "CPU availability metadata gate closes for exact3 only; next WAIT_SOURCE_RUNTIME_ADAPTER. No new historical input/profile/consumer/native/timing/science qualification."
+}
