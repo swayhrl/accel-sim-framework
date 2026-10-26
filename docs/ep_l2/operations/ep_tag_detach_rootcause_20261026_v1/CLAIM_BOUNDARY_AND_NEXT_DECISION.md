@@ -62,3 +62,7 @@ Goal：EP_L2_TAG_DETACH_CAUSAL_ROOTCAUSE_V1。决定：**维持现有 T；不安
 [Memory-path追加报告](GPU_MEMORY_PATH_BOTTLENECK_MAP.md)证明Vector存在并发和空间分散，并有其它队列压力；不把零Tag触发写成全GPU缺乏MLP。CFD/DWT全路径仍缺本地raw；TLB/PTW未建模，LOCAL_XBAR不支持真实NoC带宽归因。维持T及其claim边界不变。
 
 新增两个未来控制设计：DRAM域服务敏感性优先、L1 MissQ容量条件性第二项，见[最小受控计划](MINIMAL_CONTROLLED_EXPERIMENT_PLAN.md)。这是研究端到端限制，不是寻找非零detach；均未执行、未安排预算，不自动取代W/V独立因果证据需求。
+
+## 后续受控验证已完成（2026-10-26）
+
+此前未执行计划中的DRAM域控制及条件性L1 MissQ控制，现已另获授权、同binary执行接受与归档，见[统一最终报告](CONTROLLED_SENSITIVITY_20261026_V1/FINAL_REPORT.md)。Vector DRAM850→935的cycles减少6.9004%；L1MissQ16→32、DRAM850时局部重试减少36.2845%，cycles增加0.16258%。两端production TagFAIL/relieve/detach均0、单set RESERVED峰3/16。维持现有T，不继续参数扫描；未获授权的被动计数、CPU fixture、DRAM时序/带宽隔离或策略改版仍NOT_EXECUTED。旧只读报告计数及CFD/DWT未知域保留原身份。

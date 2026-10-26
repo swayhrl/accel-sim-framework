@@ -33,17 +33,16 @@ E2门限是预先冻结的信息价值标准（保留基线至少25%的单位访
 
 admission按当前已承诺/claimed剩余写入及真实RAM包络判断；运行期按实际headroom和自身hard cap保护，不因peer合法futureclaim重新做准入或把短暂metadata变化误作物理不足。大资产默认真164，174只必要热输出；空间不足交用户清理。
 
-## 实际执行状态
+## 实际执行状态（终态）
 
-E1已通过prepare、fresh native help与独立新request登记，实际模型已启动：
+E1与条件性E2各一次完整native启动，均自然exit0、独立接受并归档164及两Target恢复，request CLOSED/reserve0。
 
-- cohort：`EP_NATIVE_VECTOR_DRAM935_SENSITIVITY_20261026_V1`
-- UUID：`375881f2-a811-4f71-a7cf-d171eed6fdf7`
-- 原生模拟器PID：1408395（精确start_ticks见实际maps回执）
-- raw回显DRAM935、L1 MissQ16；独立header审计全部282项仅clock变化。
-- E2仅静态准备，未登记/未启动。
+- E1 UUID375881f2-a811-4f71-a7cf-d171eed6fdf7：69861cycles，相对75039减少6.9004%。
+- E2 UUIDe3045a2f-25b0-4ff1-9881-c6473ae25634：75161cycles，增加0.16258%；L1 MissQ重试减少36.2845%。
+- E2预注册信息价值条件通过后才登记/消费/启动；它仍使用DRAM850，而非E1的935。
+- 两端生产TagFAIL、relieve、detach全0，单set RESERVED峰3/16。
 
-此时尚无E1终态或性能结论。后续结果统一写入FINAL_REPORT.md，不以中途日志充当科学接受。
+E2 spec在qualification前仅增加case-local164输入元数据适配；旧spec保留specs/E2_prequalification_history，科学option不变。运行期peer扩展入口后，另建postrun精确委派链证明；完整模型准入不适用于已持原预留的收尾COPY_ONLY，阶段修复与原HOLD一并保留。所有原model source/spec不改，没有重跑。详见[最终报告](FINAL_REPORT.md)、[终态投影](RESULTS_PROJECTION.json)与[同单位CSV](SAME_IDENTITY_METRICS.csv)。
 
 ## 验收与归档
 

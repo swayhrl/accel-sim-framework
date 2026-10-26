@@ -78,3 +78,7 @@ query每请求一cycle等待合计1M，证明固定建模延迟；port-wait0不�
 需要补的最小信息是同步的slice/set新Tag接受事件、RESERVED进入/退出时间及真实门禁原因；设计与非干扰检查见 [最小受控实验计划](MINIMAL_CONTROLLED_EXPERIMENT_PLAN.md)。优先两个未来实验候选为DRAM服务敏感性、L1 missq容量单因素控制；均未安排或执行，需新的精确授权/预算/native资格。它们不是为获取非零detach而设计。
 
 **统一科学建议：维持T并收紧论文中的独立应用收益声明。当前支持的是“访存路径有其它有限资源压力，但未出现不可替换Tag压力”，不支持“全GPU没有MLP”、TLB瓶颈、真实NoC带宽瓶颈，或T已有端到端收益。**
+
+## 后续受控验证已完成（2026-10-26）
+
+此前未执行计划中的DRAM域控制及条件性L1 MissQ控制，现已另获授权、同binary执行接受与归档，见[统一最终报告](CONTROLLED_SENSITIVITY_20261026_V1/FINAL_REPORT.md)。Vector DRAM850→935的cycles减少6.9004%；L1MissQ16→32、DRAM850时局部重试减少36.2845%，cycles增加0.16258%。两端production TagFAIL/relieve/detach均0、单set RESERVED峰3/16。维持现有T，不继续参数扫描；未获授权的被动计数、CPU fixture、DRAM时序/带宽隔离或策略改版仍NOT_EXECUTED。旧只读报告计数及CFD/DWT未知域保留原身份。

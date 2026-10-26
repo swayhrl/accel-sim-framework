@@ -77,3 +77,7 @@ CFD/DWT先补原始统计可用性，再决定是否复用相同问题，不能�
 > EP-L2的定向测试证明了Tag detach的条件性功能。已接受应用诊断没有出现真实Tag分配失败；Vector同时存在显著下游排队、上游反压与较高slice级并发，但pending Tag分散于多个set，未达到16路不可替换条件。因此目前不能将EP-L2整体性能变化归因于T，也不能将零触发解释为TLB瓶颈或全GPU缺乏MLP。
 
 统一决定仍为**维持现有T**。未来优先检验DRAM域服务及L1 queue的端到端敏感性，随后才判断是否值得扩大T研究；没有为获取非零detach而改保护条件或扫描参数。
+
+## 后续受控验证已完成（2026-10-26）
+
+此前未执行计划中的DRAM域控制及条件性L1 MissQ控制，现已另获授权、同binary执行接受与归档，见[统一最终报告](CONTROLLED_SENSITIVITY_20261026_V1/FINAL_REPORT.md)。Vector DRAM850→935的cycles减少6.9004%；L1MissQ16→32、DRAM850时局部重试减少36.2845%，cycles增加0.16258%。两端production TagFAIL/relieve/detach均0、单set RESERVED峰3/16。维持现有T，不继续参数扫描；未获授权的被动计数、CPU fixture、DRAM时序/带宽隔离或策略改版仍NOT_EXECUTED。旧只读报告计数及CFD/DWT未知域保留原身份。

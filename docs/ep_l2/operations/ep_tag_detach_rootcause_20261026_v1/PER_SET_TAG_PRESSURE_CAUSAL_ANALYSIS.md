@@ -88,3 +88,7 @@ mf包含request创建到SM response-buffer接收及WRITE_ACK；icnt2mem/mrq区�
 只有对同一slice/set证明其同时pending Tag硬上界K<16，才能推出该机制在该约束下无触发机会。目前没有这样的配置级硬上界证明；63–70是RO下游line的slice高水位，不是某set上界。观测到tick末set≤3及实际production TagFAIL0，只支持已接受执行条件中的零触发科学负结果。
 
 T需要真实newTag失败、同set live attached !reuse missing的RO、可达的Frontend/commit路径及后续资源允许；当前精确执行中首个必要条件缺失。未来通过资源扩容/服务变慢制造16路pending，仅能研究敏感性，不能写成原始真实应用T收益。下一步优先验证后端服务/上游queue对cycles与Tag压力的关系；机制保持不变。
+
+## 后续受控验证已完成（2026-10-26）
+
+此前未执行计划中的DRAM域控制及条件性L1 MissQ控制，现已另获授权、同binary执行接受与归档，见[统一最终报告](CONTROLLED_SENSITIVITY_20261026_V1/FINAL_REPORT.md)。Vector DRAM850→935的cycles减少6.9004%；L1MissQ16→32、DRAM850时局部重试减少36.2845%，cycles增加0.16258%。两端production TagFAIL/relieve/detach均0、单set RESERVED峰3/16。维持现有T，不继续参数扫描；未获授权的被动计数、CPU fixture、DRAM时序/带宽隔离或策略改版仍NOT_EXECUTED。旧只读报告计数及CFD/DWT未知域保留原身份。
