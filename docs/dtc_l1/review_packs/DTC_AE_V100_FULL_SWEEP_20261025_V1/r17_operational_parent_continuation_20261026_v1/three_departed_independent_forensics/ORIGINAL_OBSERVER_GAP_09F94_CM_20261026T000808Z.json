@@ -1,0 +1,441 @@
+{
+  "schema": "ORIGINAL_MODEL_GONE_RECEIPT_MISSING_READ_ONLY_FORENSIC_V1",
+  "observed_utc": "2026-10-26T00:08:08.837902+00:00",
+  "cohort": "E2-AEV100-09f94fcc7494a03b-CM",
+  "program": "hybridsort",
+  "arm": "CM",
+  "uuid": "df5fda68-3c3d-4b37-844f-d7ea6a1d5293",
+  "scientific_state": "UNACCEPTED_OBSERVER_RECEIPT_GAP_PRESERVE_ACTUAL_EVIDENCE",
+  "accepted_cycles": null,
+  "actual_RESULT": {
+    "state": "ENGINEERING_MODEL_GONE_RECEIPT_MISSING_PRESERVED",
+    "cohort": "E2-AEV100-09f94fcc7494a03b-CM",
+    "accepted_cycles": null,
+    "model_retries": 0
+  },
+  "charged_budget_preserved": true,
+  "model": {
+    "pid": 1264727,
+    "start_ticks": 968963653,
+    "proc_present": false
+  },
+  "strace_launcher": {
+    "pid": 1264722,
+    "proc_present": false
+  },
+  "missing": {
+    "NATIVE_EXIT": true,
+    "DONE": true,
+    "registry_execution_receipt": true
+  },
+  "actual_source": {
+    "framework": "3b362ab5c0934fdcea9697b10244c6de5c4a14ae",
+    "core": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+    "host_execution_binding": {
+      "actual_host_cpu": 78,
+      "adapter_sha256": "5456bcf34174d16679d99805556fea621cc6c1d2ae64f059523ace5185937c33",
+      "hard_cap_bytes": 17179869184,
+      "original_host_cpu": 8,
+      "original_spec_sha256": "27be995c05d0da93b0132cc77636695a0f6f6246b088453cb7706cd114a60d13",
+      "outer_RAM_accounting_changed": true,
+      "plan_sha256": "1375fec2dfb0d023cd53daa8a4f953aa8d62966142281d4578cb6d244e20d100",
+      "profile": "HOST_ACTUAL4G40_V4",
+      "reservation_not_hard_cap": true,
+      "scientific_fields_changed": false,
+      "unchanged_original_native_function_source_sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d",
+      "working_set_floor_bytes": 4294967296
+    }
+  },
+  "normal_completion_evidence": {
+    "raw_natural_exit": [
+      {
+        "line": 265425,
+        "text": "GPGPU-Sim: *** exit detected ***"
+      }
+    ],
+    "raw_terminal_tail": [
+      "Reply_Network_in_buffer_avg_util =       1.9188",
+      "Reply_Network_out_buffer_full_per_cycle =       0.0000",
+      "Reply_Network_out_buffer_avg_util =       0.0690",
+      "----------------------------END-of-Interconnect-DETAILS-------------------------",
+      "",
+      "",
+      "gpgpu_simulation_time = 0 days, 9 hrs, 45 min, 51 sec (35151 sec)",
+      "gpgpu_simulation_rate = 178546 (inst/sec)",
+      "gpgpu_simulation_rate = 530 (cycle/sec)",
+      "gpgpu_silicon_slowdown = 2660377x",
+      "GPGPU-Sim: *** simulation thread exiting ***",
+      "GPGPU-Sim: *** exit detected ***"
+    ],
+    "raw_uncompressed_sha256": "1c4e4bd2a2c0078c4a106665d2e7191b304d5e08fc39104ddd3e248b055f2556",
+    "raw_uncompressed_bytes": 10105829,
+    "raw_lines": 265425,
+    "raw_fatal_signatures": [],
+    "final_totals": {
+      "gpu_tot_sim_cycle": 18652230,
+      "gpu_tot_sim_insn": 6276086260,
+      "gpu_tot_issued_cta": 115324
+    },
+    "total_stat_count": {
+      "gpu_tot_sim_cycle": 68,
+      "gpu_tot_sim_insn": 68,
+      "gpu_tot_issued_cta": 68
+    },
+    "processing_kernel_count": 68,
+    "expected": {
+      "CTA": 115324,
+      "instructions": 6276086260,
+      "kernels": 68
+    },
+    "progress_records": 3818,
+    "all_progress_identity_and_sequence_verified": true,
+    "last_progress": {
+      "v": 1,
+      "pid": 1264727,
+      "start_ticks": 968963653,
+      "generation": "df5fda68-3c3d-4b37-844f-d7ea6a1d5293",
+      "input": "09f94fcc7494a03b160b40b705cbc7ff5f41e88e8ee417d187e5c7fbcac82123",
+      "roi": "73549c5deae580b6a81f6b73798f4f9494479f11edbc4befd5a692f9105510c8",
+      "seq": 3818,
+      "mono_ns": 9724787451112316,
+      "epoch": 0,
+      "phase_epoch": 274,
+      "phase": "BOUNDARY",
+      "stream_id": -1,
+      "stream_scope": "whole_input",
+      "completed": 6276086260,
+      "end": "NATURAL"
+    },
+    "model_sendto_records": 3818,
+    "model_trace_exit_lines": [
+      {
+        "line": 124201,
+        "text": "1264727 exit_group(0)                   = ?"
+      }
+    ],
+    "model_trace_exit_status_limit": "Actual strace records model exit_group(0) but lacks the model +++ exited with 0 +++ trailer; launcher p.wait rc was not saved. Do not fabricate NATIVE_EXIT/DONE or accept cycles from this diagnostic.",
+    "signal_lines": []
+  },
+  "resource_evidence": {
+    "outer_samples": 3457,
+    "policy_samples": 3456,
+    "all_outer_RAM_and_disk_pass": true,
+    "all_captured_policies_continue_or_warn_no_stop": true,
+    "last_outer": {
+      "utc": "2026-10-26T00:00:17.125306+00:00",
+      "native_free_bytes": 40339271680,
+      "free_inodes": 216483753,
+      "host_MemAvailable_bytes": 160583774208,
+      "cgroup_memory_current": 195605618688,
+      "cgroup_memory_max": "274877906944",
+      "required_free_bytes": 27781224046,
+      "local_safety_floor_bytes": 5368709120,
+      "bounded_own_remaining_write_and_restore_bytes": 14359451246,
+      "peer_reservations": [
+        {
+          "request": "DTC_AE_FAILURE_REPAIR_VALIDATION_20261025_V1",
+          "reserved_write_bytes": 3221225472
+        },
+        {
+          "request": "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1",
+          "reserved_write_bytes": 3221225472
+        },
+        {
+          "request": "DTC_AE_LAVAMEM_REPAIR_20261026_V2",
+          "reserved_write_bytes": 1610612736
+        }
+      ],
+      "other_outstanding_write_reservations_bytes": 8053063680,
+      "reserved_additional_live_and_candidate_RAM_bytes": 27672109056,
+      "physical_RAM_pass": true,
+      "physical_disk_pass": true,
+      "fresh_local_resource_sample": true,
+      "storage_basis": "5GiB fast-tier margin plus known pending writes only;genuine164 bulk inputs/cold assets not duplicated;each new job admitted separately",
+      "host_execution_accounting": "HOST_ACTUAL4G40_V4",
+      "original_raw_cgroup_RAM_pass": false,
+      "original_full_hard_cap_RAM_reservation_bytes": 165253668864,
+      "cgroup_reclaimable_clean_inactive_file_credit_bytes": 37991964672,
+      "cgroup_effective_headroom_bytes": 117264252928,
+      "cgroup_memory_stat_for_credit": {
+        "file": 56535605248,
+        "inactive_file": 46581899264,
+        "shmem": 2500132864,
+        "file_mapped": 31821824,
+        "file_dirty": 196608,
+        "file_writeback": 0
+      },
+      "legacy_host_V1_live_cells": [],
+      "legacy_full_hard_cap_predicate_pass": false,
+      "RAM_decision_scope": "RUNTIME_ACTUAL_HEADROOM",
+      "working_set_reservation_is_not_a_hard_cap": true,
+      "elapsed_seconds": 35152.04760754295,
+      "process_tree_observed_rss_bytes": 0
+    },
+    "last_policy": {
+      "sample": {
+        "monotonic_ns": 9724778450905305,
+        "host": "huangrulin-sshfs-174",
+        "uid": 0,
+        "host_MemAvailable_bytes": 152340586496,
+        "cgroup": {
+          "memory.max": "274877906944",
+          "memory.current": "203347611648",
+          "memory.swap.current": "15974400",
+          "memory.pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=688918379\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=685147287",
+          "io.pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=14192104668\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=13831084686",
+          "events": {
+            "low": 0,
+            "high": 0,
+            "max": 0,
+            "oom": 0,
+            "oom_kill": 0,
+            "oom_group_kill": 0
+          }
+        },
+        "pressure": {
+          "memory": {
+            "some": {
+              "avg10": "0.00",
+              "avg60": "0.00",
+              "avg300": "0.00",
+              "total": "41686280781"
+            },
+            "full": {
+              "avg10": "0.00",
+              "avg60": "0.00",
+              "avg300": "0.00",
+              "total": "41308616480"
+            }
+          },
+          "io": {
+            "some": {
+              "avg10": "4.02",
+              "avg60": "4.07",
+              "avg300": "4.02",
+              "total": "231114301648"
+            },
+            "full": {
+              "avg10": "4.02",
+              "avg60": "4.05",
+              "avg300": "4.01",
+              "total": "209915251805"
+            }
+          }
+        },
+        "pswpin": 3742525,
+        "pswpout": 11010919,
+        "host_oom_kill": 366,
+        "output_filesystem_device": 2128,
+        "disk_free_bytes": 40339320832,
+        "cgroup_pressure_parsed": {
+          "memory": {
+            "some": {
+              "avg10": "0.00",
+              "avg60": "0.00",
+              "avg300": "0.00",
+              "total": "688918379"
+            },
+            "full": {
+              "avg10": "0.00",
+              "avg60": "0.00",
+              "avg300": "0.00",
+              "total": "685147287"
+            }
+          },
+          "io": {
+            "some": {
+              "avg10": "0.00",
+              "avg60": "0.00",
+              "avg300": "0.00",
+              "total": "14192104668"
+            },
+            "full": {
+              "avg10": "0.00",
+              "avg60": "0.00",
+              "avg300": "0.00",
+              "total": "13831084686"
+            }
+          }
+        }
+      },
+      "decision": {
+        "decision": "CONTINUE",
+        "stop_reasons": [],
+        "warnings": [],
+        "domains": {
+          "host": {
+            "version": "AG3_DISCOVERY_RESOURCE_R2_V1",
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": [],
+            "global_page_deltas": {
+              "pswpin": 0,
+              "pswpout": 0
+            },
+            "cgroup_swap_growth_bytes": 0,
+            "own_major_fault_delta": 0,
+            "qualified_swap_samples": 0,
+            "memory_PSI_samples": 0,
+            "io_PSI_samples": 0,
+            "next_full_sample_seconds": 10,
+            "no_signal_in_this_policy_module": true
+          },
+          "cgroup": {
+            "version": "AG3_DISCOVERY_RESOURCE_R2_V1",
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": [],
+            "global_page_deltas": {
+              "pswpin": 0,
+              "pswpout": 0
+            },
+            "cgroup_swap_growth_bytes": 0,
+            "own_major_fault_delta": 0,
+            "qualified_swap_samples": 0,
+            "memory_PSI_samples": 0,
+            "io_PSI_samples": 0,
+            "next_full_sample_seconds": 10,
+            "no_signal_in_this_policy_module": true
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    "one_extra_last_outer_without_following_BA_policy": true
+  },
+  "observer_evidence": {
+    "per_cell_prepare_logs": [
+      "/root/data/dtc_main_v100_sweep_20261025_v1/logs/E2-AEV100-09f94fcc7494a03b-CM.prepare.R12B.0a84401be0dd44c780025aba806b12fc.json"
+    ],
+    "per_cell_run_native_logs": [],
+    "R16_events": [
+      {
+        "state": "ENGINEERING_MODEL_GONE_RECEIPT_MISSING_PRESERVED",
+        "utc": "2026-10-26T00:00:48.849938+00:00",
+        "request": "DTC_AE_V100_FULL_SWEEP_20261025_V1",
+        "cohort": "E2-AEV100-09f94fcc7494a03b-CM"
+      }
+    ],
+    "exact_frontend_exception_traceback_available": false,
+    "log_search": "No matching model PID/UUID or per-cell traceback in T/logs/*.log or *.jsonl; original R12B run-native stdout/stderr return record was never persisted.",
+    "source_window": [
+      {
+        "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_native_cap1m.py",
+        "line": 206,
+        "fact": "Last resource sample is flushed before unguarded model proc reads."
+      },
+      {
+        "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_native_cap1m.py",
+        "line": 214,
+        "fact": "child_info(model) reads /proc/stat, namespaces, exe and maps without exit-race catch in the full-sample path."
+      },
+      {
+        "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_native_cap1m.py",
+        "line": 219,
+        "fact": "Second unguarded /proc/model/stat faults read precedes BA sample flush."
+      },
+      {
+        "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_native_cap1m.py",
+        "line": 235,
+        "fact": "finally flushes/closes gzip streams on any exception; receipt creation lies after finally and is skipped by a propagated exception."
+      },
+      {
+        "path": "/root/data/dtc_failure_repair_20261025_v1/ops/revision16/sweep_controller.py",
+        "line": 80,
+        "fact": "Guardian observes gone identity, waits30s, and preserves missing receipt as ENGINEERING rather than synthesizing it."
+      }
+    ]
+  },
+  "direct_conclusion": "OBSERVED_NATURAL_TERMINAL_WITH_MISSING_LAUNCHER_RECEIPT; observer bookkeeping gap, not evidence of a new model abort.",
+  "causal_limit": "Sequence localizes the likely gap to the old full-sample proc-exit race after last RSS0 resource flush and before next BA record. Exact exception type and proc field are not recoverable without frontend stderr; final launcher wait result is unknown. No exact /proc/stat versus /proc/exe claim is made.",
+  "impact": "This original point remains charged and unaccepted, with no accepted performance and no archive closure requiring invented DONE. Existing R16 scheduling and other models need not be stopped.",
+  "safe_next_step": [
+    "Preserve original raw/progress/strace and this separate forensic snapshot; do not rerun or synthesize historical receipts.",
+    "Keep scientific status UNACCEPTED until an independently authorized review policy for terminal evidence without wait receipt exists; any future COPY must explicitly support forensic evidence rather than forged original DONE.",
+    "No new repair batch is proposed for this status check."
+  ],
+  "source_pins": [
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_native_cap1m.py",
+      "sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d",
+      "bytes": 45060,
+      "mtime_utc": "2026-10-24T20:58:23.901946+00:00"
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_read_cache.py",
+      "sha256": "5172b6ac7b00f8ea80fdb0dc807180a530f2a155003badbb0a86758e3db7eaa6",
+      "bytes": 3187,
+      "mtime_utc": "2026-10-24T18:37:59.448793+00:00"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/ops/revision16/sweep_controller.py",
+      "sha256": "32ebd671924d4e23eda7960c5957708e5a71f225ceb0887edcbe3249f25f65d3",
+      "bytes": 16239,
+      "mtime_utc": "2026-10-25T17:47:10.078072+00:00"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-09f94fcc7494a03b-CM.INTENT.json",
+      "sha256": "adb50bbcfc05b0bf35e74451d6bd2206a05ff0105f00ff3050018e5a000fbd09",
+      "bytes": 5380,
+      "mtime_utc": "2026-10-25T14:14:25.161703+00:00"
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/E2-AEV100-09f94fcc7494a03b-CM.RESULT.json",
+      "sha256": "d730f62b004186c9ef8863478df41c639924e3db81116050f0c53c282b50960b",
+      "bytes": 160,
+      "mtime_utc": "2026-10-26T00:00:48.848571+00:00"
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/df5fda68-3c3d-4b37-844f-d7ea6a1d5293/NATIVE_LAUNCH.json",
+      "sha256": "ddc5fa93d5a3916cc4636d841c9af7c13d74d6481512c534c78aad4634727db3",
+      "bytes": 50804,
+      "mtime_utc": "2026-10-25T14:14:25.197703+00:00"
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/df5fda68-3c3d-4b37-844f-d7ea6a1d5293/NATIVE_SIMULATOR_PID_AND_MAPS.json",
+      "sha256": "ef23d3e10e35d2567c5860f8aa7d6492d9fa7cbadb002a17184f27d43d081997",
+      "bytes": 9221,
+      "mtime_utc": "2026-10-25T14:14:25.205703+00:00"
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/df5fda68-3c3d-4b37-844f-d7ea6a1d5293/raw.log.gz",
+      "sha256": "9b261e0d209f6c54e19b664226f66e3cbcaee47627aeac030fd939b0bf402bfe",
+      "bytes": 1421171,
+      "mtime_utc": "2026-10-26T00:00:17.289817+00:00"
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/df5fda68-3c3d-4b37-844f-d7ea6a1d5293/progress.jsonl.gz",
+      "sha256": "45fe17362b2371fa1a07f81fa9dcb3e0fb58c2feb1b4cdc5ea874127d8fe1a78",
+      "bytes": 131901,
+      "mtime_utc": "2026-10-26T00:00:17.290817+00:00"
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/df5fda68-3c3d-4b37-844f-d7ea6a1d5293/RESOURCE_SAMPLES.jsonl.gz",
+      "sha256": "34159c5dbd1e3f6dc3f2b2ca896787b722df81f3025c9b29e14839dcacf75534",
+      "bytes": 1379135,
+      "mtime_utc": "2026-10-26T00:00:17.290817+00:00"
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/df5fda68-3c3d-4b37-844f-d7ea6a1d5293/actual_file_process_network.log",
+      "sha256": "7fa93e980a0f0a03718f337611f9e337e02d64b8c204c31ac128eccb5d1dbb37",
+      "bytes": 12479382,
+      "mtime_utc": "2026-10-26T00:00:16.107789+00:00"
+    }
+  ],
+  "authority_mutations": 0,
+  "RESULT_or_ledger_writes": 0,
+  "models_started": 0,
+  "signals": 0
+}

@@ -1,0 +1,50 @@
+"""Pure resource arithmetic, fakeRoot identity negatives, real read-only wrapper calls."""
+import copy,hashlib,importlib.util,json,pathlib,tempfile,datetime,os
+P=pathlib.Path;F=P('/root/data/dtc_failure_repair_20261025_v1');O=F/'ops/revision17';SRC=O/'admission_resource_adapter_v1.py';CERT=O/'THREE_DEPARTED_ORIGINAL_RAM_CERTIFICATE_V1.json';CPIN='cd86d9cb2609a968310937fcdf6c24764897c23e7dc2516e9be4bb6701b4be42';rd=lambda p:json.loads(P(p).read_bytes());sha=lambda p:hashlib.sha256(P(p).read_bytes()).hexdigest()
+def load(name,path):s=importlib.util.spec_from_file_location(name,path);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
+m=load('r17_resource_cpu',SRC);cert=rd(CERT);assert sha(CERT)==CPIN;checks=[]
+def check(name,fn):fn();checks.append(dict(name=name,status='PASS'))
+def reject(name,fn):
+ try:fn()
+ except (RuntimeError,ValueError,KeyError,OSError):checks.append(dict(name=name,status='PASS'));return
+ raise RuntimeError('negative accepted '+name)
+def put(p,x):p=P(p);p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps(x))
+snap=P(F/'analysis/R16_ACTUAL_NEXTCANDIDATE_RESOURCE_GATES_20261026T001518Z.json');snapshot=rd(snap);base=snapshot['late_full_sample'];spec={'cohort':snapshot['candidate'],'request':m.ORIGINAL};out=m.adjust_sample(base,spec,m.ALLOWED);adj=out['parent_admission_departed_generation_adjustment']
+check('exact snapshot12GiB correction changes cgroup fail to pass with unchanged64/48 floors',lambda:m.require(not base['physical_RAM_pass'] and out['physical_RAM_pass'] and adj['excluded_future_RAM_bytes']==12*m.G and adj['effective_projected_additional_RAM_bytes']==base['reserved_additional_live_and_candidate_RAM_bytes']-12*m.G,'wrong correction'))
+check('all source counters disk samples knownwrites LAVA96 RSS caps and original4GiB entries byte-semantic unchanged',lambda:m.require({k:v for k,v in out.items()if k not in ['physical_RAM_pass','parent_admission_departed_generation_adjustment']}=={k:v for k,v in base.items()if k!='physical_RAM_pass'},'non RAM field mutation'))
+check('candidate4GiB is retained; only exact3 spent original ghost entries excluded',lambda:m.require({x['cohort']for x in adj['excluded']}==set(m.ALLOWED) and spec['cohort']not in m.ALLOWED,'candidate exclusion'))
+need=adj['effective_projected_additional_RAM_bytes']
+for label,field,threshold in [('host','host_MemAvailable_bytes',64*m.G+need),('cgroup','cgroup_effective_headroom_bytes',48*m.G+need)]:
+ r=copy.deepcopy(base);r[field]=threshold;r['host_MemAvailable_bytes']=threshold if field=='host_MemAvailable_bytes'else 1<<50;r['cgroup_effective_headroom_bytes']=threshold if field=='cgroup_effective_headroom_bytes'else 1<<50
+ check(label+' exact inclusive boundary passes',lambda r=r:m.require(m.adjust_sample(r,spec,m.ALLOWED)['physical_RAM_pass'],'inclusive failed'));r[field]-=1;check(label+' one byte below boundary fails',lambda r=r:m.require(not m.adjust_sample(r,spec,m.ALLOWED)['physical_RAM_pass'],'unsafe pass'))
+r=copy.deepcopy(base);r['cgroup_effective_headroom_bytes']=None;check('unlimited cgroup still checks host64 plus all non-ghost projected growth',lambda:m.require(m.adjust_sample(r,spec,m.ALLOWED)['physical_RAM_pass'],'unlimited failed'))
+r=copy.deepcopy(base);r['physical_disk_pass']=False;check('disk false remains false after RAM-only adjustment',lambda:m.require(m.adjust_sample(r,spec,m.ALLOWED)['physical_disk_pass']is False,'disk loosened'))
+r=copy.deepcopy(base);next(e for e in r['RAM_reservation_entries']if e['cohort']in m.ALLOWED)['RSS_bytes']=1;reject('nonzero RSS cannot be excluded',lambda:m.adjust_sample(r,spec,m.ALLOWED))
+r=copy.deepcopy(base);r['RAM_reservation_entries'].append(copy.deepcopy(next(e for e in r['RAM_reservation_entries']if e['cohort']in m.ALLOWED)));reject('duplicate ghost entry rejects',lambda:m.adjust_sample(r,spec,m.ALLOWED))
+r=copy.deepcopy(base);r['reserved_additional_live_and_candidate_RAM_bytes']=0;reject('negative adjusted projection rejects',lambda:m.adjust_sample(r,spec,m.ALLOWED));reject('different request cannot use original adjustment',lambda:m.adjust_sample(base,{'request':'OTHER'},m.ALLOWED))
+fixture=P(tempfile.mkdtemp(prefix='R17_RESOURCE_CPU_',dir=F/'control'));realT=m.T;m.T=fixture/'original';fakeproc=fixture/'proc';fakeproc.mkdir();realP=m.P;m.P=lambda *args:fakeproc if args==('/proc',)else P(*args);q={'consumed':{}};fcert=copy.deepcopy(cert)
+for target in fcert['targets']:
+ c=target['cohort'];oldip=P(target['intent_path']);oldout=P(target['output']);outpath=m.T/'DTC/run/results'/target['uuid'];ip=m.T/'control/qualification_ledger'/(c+'.INTENT.json');i=rd(oldip);i['output']=str(outpath);put(ip,i)
+ for name in ['NATIVE_SIMULATOR_PID_AND_MAPS.json','NATIVE_LAUNCH.json']:p=outpath/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes((oldout/name).read_bytes())
+ target.update(intent_path=str(ip),intent_sha256=sha(ip),output=str(outpath));q['consumed'][c]={'uuid':target['uuid'],'intent_sha256':sha(ip)}
+put(m.T/'control/POOL_DISPATCH_RESERVATIONS.json',{'claims':{}});reg={'registered_future_requests':{m.ORIGINAL:q}};eligible,retained=m.verified_departed(reg,fcert);check('fakeRoot exact3 UUID INTENT generation launch proof and absent PID validates',lambda:m.require(eligible==m.ALLOWED and not retained,'identity verifier failed'))
+for name,change in [('wrong certificate UUID',lambda c:c['targets'][0].update(uuid='wrong')),('wrong forensic SHA',lambda c:c['forensic_pins'][0].update(sha256='0'*64)),('wrong model start tick',lambda c:c['targets'][0].update(model_start_ticks=1)),('wrong INTENT pin',lambda c:c['targets'][0].update(intent_sha256='0'*64))]:
+ b=copy.deepcopy(fcert);change(b);reject(name+' rejected',lambda b=b:m.verified_departed(reg,b))
+target=fcert['targets'][0];c=target['cohort']
+for name,field in [('model PID present','model_pid'),('launcher PID present','launcher_pid')]:
+ p=fakeproc/str(target[field]);p.mkdir();v,r=m.verified_departed(reg,fcert);check(name+' retains its4GiB instead of discounting',lambda v=v:m.require(c not in v and len(v)==2,'present PID dropped'));p.rmdir()
+q['consumed'][c]['execution_receipt']={'observed_CPU_only':True};v,r=m.verified_departed(reg,fcert);check('new receipt does not rewrite row and removes target from this override',lambda:m.require(c not in v and q['consumed'][c]['execution_receipt']=={'observed_CPU_only':True},'receipt ignored'));q['consumed'][c].pop('execution_receipt')
+claimpath=m.T/'control/POOL_DISPATCH_RESERVATIONS.json';put(claimpath,{'claims':{c:{}}});v,r=m.verified_departed(reg,fcert);check('unspent or lingering claim keeps its reservation',lambda:m.require(c not in v,'claim dropped'));put(claimpath,{'claims':{}})
+for name,path in [('DONE',P(target['intent_path']).with_name(c+'.DONE.json')),('EXIT',P(target['output'])/'NATIVE_EXIT.json')]:
+ put(path,{'CPU_only':True});v,r=m.verified_departed(reg,fcert);check(name+' appeared requires separate review and retains RAM',lambda v=v:m.require(c not in v,'new closure ignored'));path.unlink()
+q['consumed'][c]['uuid']='wrong';v,r=m.verified_departed(reg,fcert);check('changed consumed UUID retains old generation reservation',lambda:m.require(c not in v,'wrong UUID dropped'));q['consumed'][c]['uuid']=target['uuid'];m.T=realT;m.P=realP
+# Only actual resource/read-current-authority functions are called here; no
+# patched code filename or fixture DEBUG source-identity bypass is used.
+late=load('r17_real_frozen_late_cpu',F/'validation_late_failure_v1/tools/late_native_v1.py');native=load('r17_real_readonly_authority',realT/'tools/sweep_native_cap1m.py');wrapped=m.make_wrapper(late.resources,native.read_current_authority,CERT,CPIN);actual=wrapped(spec,True);check('actual frozen late function plus current3-identity certificate releases exactly12GiB',lambda:m.require(actual['parent_admission_departed_generation_adjustment']['excluded_future_RAM_bytes']==12*m.G,'real wrapper did not release12'))
+runtime=wrapped(spec,False);check('runtime call retains original dictionary semantics with no parent override',lambda:m.require('parent_admission_departed_generation_adjustment'not in runtime,'runtime patched'))
+other=copy.deepcopy(spec);other['request']=late.REQ;other['cohort']=next(iter(native.read_current_authority()[0]['registered_future_requests'][late.REQ]['admitted_specs']));untouched=wrapped(other,True);check('other repair scope cannot use original parent RAM discount',lambda:m.require('parent_admission_departed_generation_adjustment'not in untouched,'scope leak'))
+badwrapped=m.make_wrapper(late.resources,native.read_current_authority,CERT,'0'*64);bad=badwrapped(spec,True);check('bad certificate preserves entire base gate and zero release without killing parent',lambda:m.require(bad['parent_admission_departed_generation_adjustment']['excluded_future_RAM_bytes']==0,'uncertain release'))
+assert sha(CERT)==CPIN;result=dict(schema='R17_PARENT_ADMISSION_EXACT_DEPARTED_RESOURCE_CPU_QUALIFICATION_V1',status='PASS',utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),source_path=str(SRC),source_sha256=sha(SRC),driver_path=str(P(__file__)),driver_sha256=sha(__file__),certificate_path=str(CERT),certificate_sha256=CPIN,source_snapshot_path=str(snap),source_snapshot_sha256=sha(snap),check_count=len(checks),checks=checks,fixture_root=str(fixture),actual_read_only_sample=actual,parent_model_limit_unchanged=40,host_floor_GiB=64,cgroup_floor_GiB=48,initial_working_set_GiB=4,LAVA_estimate_GiB=96,maximum_RAM_release_GiB=12,no_runtime_or_disk_guard_changes=True,real_model_starts=0,real_signals=0,authority_mutations=0,real_control_mutations=0,scope='Pure arithmetic and private fakeRoot metadata negatives plus actual read-only frozen late.resources calls; no parent activation/hot patch, no model operation.')
+dest=O/'ADMISSION_RESOURCE_ADAPTER_CPU_QUALIFICATION_V1.json'
+with dest.open('x')as f:json.dump(result,f,indent=2);f.write('\n')
+print(json.dumps(dict(status='PASS',checks=len(checks),qualification=str(dest),qualification_sha256=sha(dest),source_sha256=sha(SRC),driver_sha256=sha(__file__),certificate_sha256=CPIN,actual_released_GiB=12)))
