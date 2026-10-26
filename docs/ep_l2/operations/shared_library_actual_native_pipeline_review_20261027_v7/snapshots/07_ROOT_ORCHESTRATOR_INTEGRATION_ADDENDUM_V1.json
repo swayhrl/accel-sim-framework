@@ -1,0 +1,42 @@
+{
+  "schema": "ROOT_MAPPING6_V4_ORCHESTRATOR_INTEGRATION_ADDENDUM_V1",
+  "status": "PRIVATE_ONE_CONDITION_FIX_TESTED_PENDING_PEER",
+  "original_34ref_manifest": {
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/mapping6_additive_progress_prepare_20261027_v1/ROOT_CANDIDATE_MANIFEST_V1.json",
+    "sha256": "dc1456f2a2bb4c491e48c17627d804205054d4ae28243353232863b6611aad38",
+    "bytes": 14483
+  },
+  "original_peer_report": {
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/mapping6_additive_progress_independent_replay_20261027_v1/INDEPENDENT_REVIEW_REPORT_V1.json",
+    "sha256": "d9305c09937e209263f53311964bfabc82c0cd5b7784d86c8aea10efad9caa5f",
+    "bytes": 9268
+  },
+  "finding": "Existing V3 orchestrator only suppresses last-writer artifact next-stage hints for metadata adapter id v3. Selecting new adapter id v4 would override its proof-derived result with artifact hints; reproduced 2DCONV WAIT_ACTUAL_INPUT -> WAIT_SOURCE_RUNTIME under normal order and order-dependent reversal. No production mutation occurred.",
+  "changes": "Extend exact adapter-id set from v3 to {v3,v4}; two comments/one condition only, all other orchestrator bytes unchanged. Current V3 and legacy generic hint behavior preserved.",
+  "evidence": [
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/mapping6_additive_progress_prepare_20261027_v1/orchestrator_v4_candidate.py",
+      "sha256": "dc4a1e683170916a10c70f1099d99ee3ac39583cc7a8d5d753570fe180f2d048",
+      "bytes": 24051
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/mapping6_additive_progress_prepare_20261027_v1/ORCHESTRATOR_V3_TO_V4.diff",
+      "sha256": "efb99047caf1739e611d259cf7360f391d87af62f3009c21997824a67ede3ec8",
+      "bytes": 884
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/mapping6_additive_progress_prepare_20261027_v1/test_orchestrator_v4_route_v1.py",
+      "sha256": "610de3b4f60d86005e95957f812521be34b66d2e539a7c994f69401b2a8780d4",
+      "bytes": 2575
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/mapping6_additive_progress_prepare_20261027_v1/ROOT_ORCHESTRATOR_ROUTE_RESULT_V1.json",
+      "sha256": "8c447afaba3d583d0d271d0006b97b838713f1c31aa8d9bbf2bcb6afe692502a",
+      "bytes": 1348
+    }
+  ],
+  "all161_actual_artifact_selection_both_orders": true,
+  "V3_V2_backward_compatibility_all161": true,
+  "production_code_or_registry_or_queue_mutated": false,
+  "GPU_or_simulation_or_real_worker_executed": false
+}

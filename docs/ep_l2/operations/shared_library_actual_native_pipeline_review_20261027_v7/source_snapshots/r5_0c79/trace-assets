@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+unset LD_PRELOAD LD_LIBRARY_PATH CUDA_INJECTION64_PATH TRACES_FOLDER PYTHONHOME PYTHONPATH VIRTUAL_ENV CONDA_PREFIX
+SCRIPT=$(/usr/bin/readlink -f -- "$0")
+HERE=$(CDPATH= cd -- "$(/usr/bin/dirname -- "$SCRIPT")" && pwd)
+exec /usr/bin/python3 -I -S -B "$HERE/trace_assets.py" "$@"

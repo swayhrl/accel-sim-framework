@@ -1,0 +1,65 @@
+{
+  "schema": "SM70_LITERAL_NATIVE_MEMBER_STREAM_DECODER_CONTRACT_V2",
+  "API": "Session(profile,configuration_profile).begin(meta).feed(bytes)...end(); single active object; one persistent guard+decoder pair per selected profile/config",
+  "input_layer": "Literal bytes of the stored Native member object, exactly the layer hashed by Root object SHA. NOT outer transport/archive/framing bytes. For a literal *.traceg.xz member feed its original xz bytes.",
+  "canonical_compression_values": {
+    "text": "plain stored trace text",
+    "xz": "stored xz member bytes, incrementally decompressed",
+    "gzip": "stored gzip member bytes, incrementally decompressed; normalization only, not a claim native PipeReader directly supports gzip filenames",
+    "aux": "opaque literal hash only, no decompression/record qualification"
+  },
+  "outer_archives": "Root existing restore/archive layer handles tar.zst/tar.gz and yields exact member bytes. Do not feed whole archive bytes as an individual trace. Adapter performs no member-path body open.",
+  "begin_meta": [
+    "profile=EP|DTC",
+    "configuration_profile=EP_R5|DTC_DM|DTC_DH|DTC_CM|DTC_CH",
+    "kind=trace|traceg|cmdlist|aux",
+    "compression=text|xz|gzip",
+    "size and sha256 of literal stored member",
+    "max_decoded_bytes explicit for compressed member",
+    "optional frozen relative_path checked against advisory kind classifier"
+  ],
+  "framing": "uint32BE length of(tag+payload),B JSON<=64KiB,D literal bytes<=64MiB,E empty final EOF,Q empty quit; no interleaved objects.",
+  "state_across_windows": "Keep same ObjectStream/decompressor/partial-line/TB/warp/native-header context across arbitrary64MiB windows. Native subprocesses persist across objects. No suffix acceptance after process/checkpoint state loss.",
+  "header_context": "Decoded headers validate SM70,grid/block/nregs/shmem and default legacy version0 vs explicitversion3. At header delimiter attach real kernel metadata carrier shmem/local bases; source-reachable onlythese2fields,version/lineinfo passed every batch. Header context SHA and fixedconfig manifest SHA retained. Missingbases native fallback exposed, not invented.",
+  "EOF_proof": [
+    "whole literal size and SHA equal frozen member",
+    "xz/gzip decompressor EOF true, CRC errors fail, no unused/trailing or concatenated stream",
+    "complete final newline and no partialrecord",
+    "complete TB/warp and declaredinst counts/full grid envelope with lastEXIT",
+    "every parsedrecord gets actual native decoder row,exactBATCH_OK count and totalnative count equality",
+    "only then emit end receipt; errors retain incomplete active object and no success"
+  ],
+  "hash_domains": {
+    "literal_native_bytes_sha256": "exact stored raw bytes; same layer as Root Native object hash",
+    "decoded_text_sha256": "derived decompressed/plain textual bytes, not a second physical Native read",
+    "decoded_metadata_sha256": "canonical JSON rows from actual native decoder; derived metadata, not literal byte-integrity proof"
+  },
+  "resource_bounds": {
+    "input_frame_bytes": 67108864,
+    "decoded_output_piece_bytes": 1048576,
+    "line_bytes": 65536,
+    "decoded_total_explicit_cap_bytes_max": 2199023255552,
+    "default_state_keys": 1000000,
+    "max_state_keys": 4000000,
+    "native_children_affinity": [
+      0,
+      1
+    ],
+    "nice_at_least": 15,
+    "native_child_RLIMIT_AS": 536870912,
+    "XZ_dictionary_memory": "No internal lzma memlimit in preserved envelope; Root parent process RAM bound remains required. Output-piece/total limits do not claim a separate hard dictionary cap."
+  },
+  "commandlist_aux_semantics": {
+    "cmdlist": "strict envelope/ordered refs only; no decodedinstruction PASS; Root mustjoin exact frozen member inventory/graph",
+    "aux": "literal size/SHA only, actual_native_decoder_records0, decoded_text_sha256null, no ISA qualification",
+    "tracez": "explicitunsupported, not silently treated as trace text"
+  },
+  "actual_validation": "179 synthetic cases including actual64MiB boundary,all5configs,plain/xz/gzip andframed2objects. No new real body/header reads.",
+  "not_granted": [
+    "full125 activation",
+    "numerical/application correctness",
+    "hardware/timing/calibration",
+    "clock/scheduler simulation",
+    "scientific qualification"
+  ]
+}
