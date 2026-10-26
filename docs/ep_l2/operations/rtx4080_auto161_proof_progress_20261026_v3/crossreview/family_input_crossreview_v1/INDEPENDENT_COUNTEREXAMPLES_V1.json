@@ -1,0 +1,50 @@
+{
+  "schema": "INPUT_FAMILY_CROSSREVIEW_NEGATIVE_CASES_V1",
+  "status": "PASS_WITH_NONBLOCKING_CURRENT_DATA_HARDENING_FINDINGS",
+  "tests": [
+    {
+      "case": "all21_real_specs_stronger_source_row_owner_bindings",
+      "status": "PASS",
+      "count": 21
+    },
+    {
+      "case": "SDK_invocation_flag_contradiction",
+      "original_validator": "ACCEPTS_CONTRADICTION",
+      "candidate": "REJECTS",
+      "reason": "SDK_OWNER_ONLY_NOT_REENTRANT",
+      "current_original21_specs_have_this_defect": false
+    },
+    {
+      "case": "canonical_archived_worker_reentry",
+      "original_validator": "ACCEPTS_CONTRADICTION",
+      "candidate": "REJECTS",
+      "reason": "ARCHIVED_WORKER_MUST_NOT_REENTER",
+      "current_original21_specs_have_this_defect": false
+    },
+    {
+      "case": "wrong_root_row_binding",
+      "original_validator": "ACCEPTS_CONTRADICTION",
+      "candidate": "REJECTS",
+      "reason": "ROW_BINDING_NOT_AUTHORITY",
+      "current_original21_specs_have_this_defect": false
+    },
+    {
+      "case": "actual_input_CPU_artifact_order_regression_counterexample",
+      "original_actual_artifact_next": "WAIT_EXISTING_AVAILABILITY_REVIEW",
+      "accepted_route": "WAIT_SOURCE_RUNTIME_ADAPTER",
+      "accepted_then_preparation": "WAIT_EXISTING_AVAILABILITY_REVIEW",
+      "preparation_then_accepted": "WAIT_SOURCE_RUNTIME_ADAPTER",
+      "old_order_dependence_proven": true
+    },
+    {
+      "case": "prep_CPU_gate_never_clears_actualinput_or_downgrades_route",
+      "candidate": "PASS",
+      "dynamic_missing_unchanged": true,
+      "routing_authority": false
+    }
+  ],
+  "candidate_source_sha256": "dec3b4f344b15770793b7d2240a919b837bed59c526982c9dd37f8b507863597",
+  "registered_or_deployed": false,
+  "original_package_changed": false,
+  "GPU_or_simulation": false
+}

@@ -1,0 +1,72 @@
+{
+  "status": "ROOT_REVIEW_PENDING_NOT_STARTED",
+  "candidate_code_root": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/failed4_recovery_prepare_20261026_v1/derived_exact3_candidate",
+  "scope_sha256": "e54cbb26c38fea4c9626382dd47572f0dfb2583d05214bc5efbdb55f7df0d685",
+  "rows": [
+    {
+      "parent_asset_id": "ORD_EXT_transpose_cab8f027e949_A001",
+      "derived_asset_id": "ORD_EXT_transpose_cab8f027e949_A001_CTA_STRIDE_40_V1",
+      "parent_commit_sha256": "f42f5f6f7b05d27b96c28e60fa2d35ddcf4003a010051b104bfc1d874ac15811",
+      "parent_manifest_sha256": "ab2f8e41207f015e2dc42e99ac35982d28f15375af79d5691bd3054c9f0f548e",
+      "manifest_files": 2476,
+      "logical_bytes": 3515876212
+    },
+    {
+      "parent_asset_id": "ORD_CUDA_SDK_convolutionSeparable_d9917aed0e64_A001",
+      "derived_asset_id": "ORD_CUDA_SDK_convolutionSeparable_d9917aed0e64_A001_CTA_STRIDE_40_V1",
+      "parent_commit_sha256": "5c79a7977cc3432c5b8afbddc4fe9cc402819ff683b79fbc2d6ab3895594fbb6",
+      "parent_manifest_sha256": "c32d93b768520c8f729414feecc893bc4885756c231a6be7a75098cd27c9dca8",
+      "manifest_files": 80,
+      "logical_bytes": 7568313
+    },
+    {
+      "parent_asset_id": "ORD_CUDA_SDK_histogram_6ff1afc1be7d_A001",
+      "derived_asset_id": "ORD_CUDA_SDK_histogram_6ff1afc1be7d_A001_CTA_STRIDE_40_V1",
+      "parent_commit_sha256": "7430d5ac7d7caf12d0ed0ff8a3db933c49acde9ae3b648fc3101a9960cf1f554",
+      "parent_manifest_sha256": "8b486c5cf80a6411420628638eda83b8989cc4d32233543949a47d5cf7e45058",
+      "manifest_files": 106,
+      "logical_bytes": 9974216
+    }
+  ],
+  "prepare_argv": [
+    "/usr/bin/python3",
+    "-B",
+    "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/failed4_recovery_prepare_20261026_v1/derived_exact3_candidate/finite_driver_v1.py",
+    "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/failed4_recovery_prepare_20261026_v1/derived_exact3_candidate/ROOT_PREPARE_GRANT.json"
+  ],
+  "publish_argv": [
+    "/usr/bin/python3",
+    "-B",
+    "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/failed4_recovery_prepare_20261026_v1/derived_exact3_candidate/publish_watcher_v1.py",
+    "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/failed4_recovery_prepare_20261026_v1/derived_exact3_candidate/ROOT_PUBLISH_GRANT.json"
+  ],
+  "worker_argv_template": [
+    "/usr/bin/python3",
+    "-B",
+    "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/failed4_recovery_prepare_20261026_v1/derived_exact3_candidate/derive_worker_v1.py",
+    "<new-prepare-grant>",
+    "<index0..2>"
+  ],
+  "publish_one_argv_template": [
+    "/usr/bin/python3",
+    "-B",
+    "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/failed4_recovery_prepare_20261026_v1/derived_exact3_candidate/publish_one_derived_nas_v1.py",
+    "<new-publish-grant>",
+    "<run/work/parent/derived>"
+  ],
+  "entry_conditions": [
+    "Root confirm old13 driver/watcher terminal and no old derived writer",
+    "Root freeze all new code/SCOPE pins",
+    "Root confirm parent COMMIT/manifest current and derived IDs/inflight/prepared absent",
+    "Root physical Native/NAS5GiB floors plus current foreign activity admission; no foreign budget exclusion",
+    "Root use one identical fresh run_root in both grants"
+  ],
+  "old13_scope_ref": {
+    "path": "/root/share/mnt164/huangrulin/traces/rtx4080_sm89/bulk_20261024_v1/receipts/derived_catchup_prepare_20261026_v2/SCOPE.json",
+    "sha256": "0dbab96e8cc757986ea9d765abfd63caebf10abc09326a9f2a5e9ffe8f7768f5"
+  },
+  "review_ref": {
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/failed4_recovery_prepare_20261026_v1/derived_exact3_candidate/REVIEW_PACKAGE.json",
+    "sha256": "637a52665fe02c5110bed27923d84ceda357175daefc83b43021feefa0259558"
+  }
+}

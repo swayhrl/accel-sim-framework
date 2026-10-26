@@ -1,0 +1,118 @@
+{
+  "schema": "INDEPENDENT_STATIC_FAMILY_FINAL_REVIEW_V1",
+  "status": "FINITE_CROSS_REVIEW_CLOSED_WITH_FUTURE_HARDENING_CANDIDATE",
+  "review_directory": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/independent_static_review_1793012103028561465",
+  "reviewer_authored_reviewed_original": false,
+  "Root_formal_acceptance_claimed_by_reviewer": false,
+  "original_static_source_ref": {
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/family_static_reopen_v1/existing_static_reopen_adapter_v1.py",
+    "sha256": "b59c42354680a49f138e4510b845f1c3292d2137bb0a90cc658a543b6eaf0cb0",
+    "bytes": 14604
+  },
+  "original_manifest_ref": {
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/family_static_reopen_v1/FINAL_MANIFEST_V1.json",
+    "sha256": "390ee5eaca15ca978764ce287a8bbeafad387f0792fac9fffc268d9a0958998d",
+    "bytes": 122260
+  },
+  "evidence": [
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/independent_static_review_1793012103028561465/REVIEW_SCOPE.json",
+      "sha256": "f316ba9061c35139bd479c93517bf511be632dbe0287acc36874f3a050a6b500",
+      "bytes": 877
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/independent_static_review_1793012103028561465/INDEPENDENT_STATIC_CROSSCHECK.json",
+      "sha256": "94a2d18cd82d40978fac707c4dc48dcd1ebc2ad6804073923838235c207d4044",
+      "bytes": 3945
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/independent_static_review_1793012103028561465/ORDER_AND_HARDENING_REVIEW.json",
+      "sha256": "5904a66667910074f67972e91d206b7af01a1c9fe1287f65882ee8cdae9012b9",
+      "bytes": 4423
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/independent_static_review_1793012103028561465/V3_MINIMAL_RULE_INDEPENDENT_REVIEW.json",
+      "sha256": "135e3e62445124b8a2e9308bcf7e2f3f131837f5288cb0569f0bf43fc58935b7",
+      "bytes": 935
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/independent_static_review_1793012103028561465/SYNTHETIC_TEST_RESULT_V1.json",
+      "sha256": "77356c0016a36f07d6c598949b97a4e02ccc65c191f6da8d98e4d107e6d54169",
+      "bytes": 3745
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/independent_static_review_1793012103028561465/actual_replay/EXECUTION_RECEIPT.json",
+      "sha256": "e06452655055678cdeb15152cf05e992e14ed600c731e05e9228fa0a6d4436a7",
+      "bytes": 62492
+    }
+  ],
+  "confirmed": {
+    "original_file_refs_reopened": 336,
+    "exact_unique_rows": 83,
+    "shared_binary_validations": 60,
+    "PASS_existing_metadata_gate": 69,
+    "HOLD": 14,
+    "additional_invalid_rows_in_real69_under_stricter_guards": 0,
+    "metadata_bytes_reopened_unique": 28579133,
+    "original_synthetic_tests_independent_replay": 17,
+    "frozen_V3_minimal_rule_cases": 6,
+    "no_ambiguous_owner_names_across_images_found": true
+  },
+  "HOLD_categories": {
+    "known_true_fresh_mapping_failures": 9,
+    "missing_complete_manifest_or_TSV": 4,
+    "2DCONV_duplicate_basename_incomplete_image_set": 1
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "priority": "P1_OLD_CONSUMER_ONLY",
+      "finding": "Three accepted C8 rows regress from sourceRuntime to availability under old artifact-last-next-state selection; reversing real artifact order changes outcome",
+      "affected_ids": [
+        "SDK42_VECTOR_4000000_ADA7_A001",
+        "SDK42_VECTOR_6000000_ADA7_A001",
+        "ORD_EXT_vectorAdd_b4766b5dc5ca_A001"
+      ],
+      "current_rule_review": "V3 ignores raw artifact routing hints, closes only exact Root-approved proof identities and adds source/runtime proof; six independent frozen-function cases pass",
+      "fix_old_artifacts_in_place": false
+    },
+    {
+      "id": "F2",
+      "priority": "P2_FUTURE_NEW_INPUT_ADMISSION",
+      "finding": "Old metadata validator accepts real-manifest copies whose JSON disassembler exit is1 or whose cubin digest is64 nonhex characters",
+      "actual_current69_invalid": 0,
+      "reason_not_new_input_authority": "Original producer hardpins PLAN/PACKET; demonstrated mutations are not present in the frozen actual69",
+      "candidate_ref": {
+        "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/independent_static_review_1793012103028561465/strict_static_guard_candidate_v2.py",
+        "sha256": "7cc62bce5c918e3eb5ba769f9d1ed9052b8c2c88f0e696e4ceefd221a7f46152",
+        "bytes": 3201
+      },
+      "candidate_base_sha256": "b59c42354680a49f138e4510b845f1c3292d2137bb0a90cc658a543b6eaf0cb0",
+      "candidate_actual_classification": {
+        "PASS": 69,
+        "HOLD": 14
+      },
+      "candidate_registered_or_activated": false
+    }
+  ],
+  "CPU_gate_can_close_only": "EXACT_STATIC_METADATA_REOPEN_OR_NEW_PROOF",
+  "cannot_close": [
+    "COMPLETE_STATIC_MAP_METADATA_OR_ERROR_REPAIR",
+    "EXACT_MAPPING_REPAIR_WITH_NEGATIVE_REGRESSION",
+    "actual_loaded_or_JIT_image_proof",
+    "ISA_or_actual_input_lifetime_or_source_runtime_proofs",
+    "trace_consumer_or_scientific_qualification"
+  ],
+  "boundary": "Existing pinned manifest+TSV+census consistency; no new cubin/body verification or historical/input/runtime equivalence. Additional static instruction semantics are not made ordinary by a readable map.",
+  "reviewer_actions": {
+    "new_109_queries": 0,
+    "mapper_or_binary_tool_or_GPU_or_simulator_invocations": 0,
+    "trace_body_reads": 0,
+    "production_ALLOWLIST_INDEX_approval_or_worker_writes": 0,
+    "registration_activation": 0,
+    "private_NAS_CPU_only": true,
+    "max_CPU_affinity": 2,
+    "nice": 15
+  },
+  "closed_unix": 1793013760.7457638
+}
