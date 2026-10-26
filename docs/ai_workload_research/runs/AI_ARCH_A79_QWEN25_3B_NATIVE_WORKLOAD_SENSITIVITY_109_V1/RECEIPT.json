@@ -1,0 +1,184 @@
+{
+  "schema": "AI_ARCH_A79_EXECUTION_RECEIPT_V1",
+  "scientific_status": "GPU_RESOURCE_DEFERRED",
+  "interpretation": "NATIVE_ONLY_WORKLOAD_CHARACTERIZATION_NOT_EXECUTED",
+  "stages": {
+    "G0": "COMPLETE_AND_FROZEN",
+    "G1": "NOT_ADMITTED_LOCK_CONFLICT",
+    "G2": "NOT_ADMITTED_LOCK_CONFLICT",
+    "G3": "NEGATIVE_ADMISSION_ARCHIVE_COMPLETE"
+  },
+  "repository": "swayhrl/accel-sim-framework",
+  "branch": "hrl/aiarch-a79-qwen25-3b-native-workload-sensitivity-109-v1",
+  "fixed_start_commit": "7094d4b2d29980c2d2d8d97a9abb6fddb3283c9f",
+  "worktree": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-a79-qwen25-3b-native-workload-sensitivity-109-v1",
+  "started_epoch": 1792983527,
+  "receipt_epoch": 1792984680.385674,
+  "elapsed_seconds_before_publication": 1153.385674238205,
+  "whole_Goal_limit_seconds": 2700,
+  "GPU": {
+    "lock_nonblocking_attempts": 1,
+    "wait_or_poll_count": 0,
+    "lock_acquired": false,
+    "lock_held_seconds": 0,
+    "CUDA_initialized": false,
+    "NVML_initialized": false,
+    "model_initializations": 0,
+    "formal_samples": 0,
+    "GPU_peak_own_MiB": "NOT_APPLICABLE_NO_CONTEXT",
+    "EXCLUSIVITY_EVIDENCE_COMPLETE": false,
+    "resource_observation": "No NVML or GPU call because lock conflict; no external owner/PID inspection"
+  },
+  "CPU_and_disk": {
+    "tree_RSS_cap_bytes": 17179869184,
+    "G0_tree_RSS_lifetime_peak": "NOT_CONTINUOUSLY_OBSERVED; not claimed as measured aggregate peak",
+    "final_archival_worker_ru_maxrss_KiB": 16468,
+    "final_validation_child_ru_maxrss_KiB": 18336,
+    "new_worktree_logical_file_bytes_snapshot": 431612,
+    "public_payload_bytes_before_receipt": 69720,
+    "new_disk_cap_bytes": 3221225472,
+    "public_tracking_recommended_cap_bytes": 10485760,
+    "private_raw_and_helper_artifacts_retained": true
+  },
+  "downloads_and_mutations": {
+    "weight_download_bytes": 0,
+    "dataset_download_bytes": 0,
+    "dependency_installs": 0,
+    "model_or_environment_mutations": 0,
+    "old_C16_AWMA_contract_cache_mutations": 0,
+    "node164_accesses": 0,
+    "simulator_runs": 0,
+    "profiler_or_trace_sessions": 0,
+    "new_mechanisms": 0,
+    "cleanup_actions": 0,
+    "source_metadata_network": "Exact Goal Git fetch; one timed-out109 metadata HTTPS attempt; web tool pinned README inspection, selected license disclosure recorded; no corpus/model download"
+  },
+  "G0": {
+    "asset_identity": "12/12 published manifest size and full-stream SHA256 PASS",
+    "natural_inputs": "A00/A01 original512 binding PASS; both exact2048 prefix inputs qualified",
+    "historical_reference": "Pinned local MP02_A.json asset SHA PASS only; no new historical numeric comparison",
+    "CPU_tokenizer_no_CUDA": "PASS",
+    "source_runtime": "SOURCE_AND_RUNTIME.json",
+    "input_receipt": "INPUT_RECEIPT.json",
+    "frozen_contract_sha256": "4b9ce0b5827df9f55823360c43cdc6b1b85b00c8f8a9d4ec42add6853a26a073",
+    "source_version_differences": "Current transformer return container normalized; actual library versions disclosed, frozen512 IDs exactly reproduced; no upgrade/downgrade",
+    "runtime_cache_isolation": "Source interfaces statically qualified; GPU runtime isolation NOT_EXERCISED"
+  },
+  "engineering_repairs": {
+    "repair_count": 2,
+    "max_repairs": 2,
+    "events": [
+      {
+        "stage": "G0",
+        "issue": "109 HTTPS metadata fetch timed out after20s; no GPU initialized",
+        "bounded_fix": "Use selected license disclosure fields from independently inspected pinned raw README via web tool; preserve source URL/revision, conflict and capture method; no dataset payload downloaded",
+        "scientific_identity_changed": false
+      },
+      {
+        "stage": "G0",
+        "issue": "New tokenizer apply_chat_template returns BatchEncoding; initial assertion compared container to frozen list, not token contents",
+        "bounded_fix": "Normalize explicit input_ids from BatchEncoding; preserve all token bytes, template, versions, model, counts and numerical requirements",
+        "scientific_identity_changed": false
+      }
+    ]
+  },
+  "validation": {
+    "status": "PASS",
+    "checks": [
+      "Pre-lock frozen source/input/runtime hashes unchanged",
+      "Frozen input matrix, capacities and full model identity receipts",
+      "Lock conflict is nonblocking terminal DEFER; zero GPU/NVML/model/formal observations",
+      "Only own source/output whitelist modified; private and helper bytecode ignored",
+      "Public metadata has no source text/generated text/input or output token arrays"
+    ],
+    "completed_native_points": 0,
+    "scientific_status": "GPU_RESOURCE_DEFERRED"
+  },
+  "precommit_payloads_excluding_self": {
+    "docs/ai_workload_research/runs/AI_ARCH_A79_QWEN25_3B_NATIVE_WORKLOAD_SENSITIVITY_109_V1/ANALYSIS.json": {
+      "sha256": "1af06d34c249d54419b3e9a7e3286eba3e1816f13e1eef94c6d693ee347fe0dc",
+      "bytes": 757
+    },
+    "docs/ai_workload_research/runs/AI_ARCH_A79_QWEN25_3B_NATIVE_WORKLOAD_SENSITIVITY_109_V1/CPU_VALIDATION.json": {
+      "sha256": "f88683fd9fb7335621c200d954f96e93ce73b0000822ba4162ed9fd401db2ae9",
+      "bytes": 661
+    },
+    "docs/ai_workload_research/runs/AI_ARCH_A79_QWEN25_3B_NATIVE_WORKLOAD_SENSITIVITY_109_V1/DELIVERY_VALIDATION.json": {
+      "sha256": "78efc667234753b64881870287abc50f2b950a9c311ad382d02a388b808b9a3d",
+      "bytes": 518
+    },
+    "docs/ai_workload_research/runs/AI_ARCH_A79_QWEN25_3B_NATIVE_WORKLOAD_SENSITIVITY_109_V1/ENGINEERING_LOG.json": {
+      "sha256": "7d199631a316d33868a6a41135e06b9fc741177347df5dff7d2207809021ea4e",
+      "bytes": 818
+    },
+    "docs/ai_workload_research/runs/AI_ARCH_A79_QWEN25_3B_NATIVE_WORKLOAD_SENSITIVITY_109_V1/FINAL_REPORT.md": {
+      "sha256": "f019d3cb951997c0ebe9ad920eeab3c9ea878b0557f8943817f5690afb5de003",
+      "bytes": 3807
+    },
+    "docs/ai_workload_research/runs/AI_ARCH_A79_QWEN25_3B_NATIVE_WORKLOAD_SENSITIVITY_109_V1/FORMAL_SAMPLES.tsv": {
+      "sha256": "28fc5218f41c969fdef139f07522fd5cc47b969b1704df0cc88ddf505636f90e",
+      "bytes": 173
+    },
+    "docs/ai_workload_research/runs/AI_ARCH_A79_QWEN25_3B_NATIVE_WORKLOAD_SENSITIVITY_109_V1/FROZEN_SCIENCE_CONTRACT.json": {
+      "sha256": "4b9ce0b5827df9f55823360c43cdc6b1b85b00c8f8a9d4ec42add6853a26a073",
+      "bytes": 6170
+    },
+    "docs/ai_workload_research/runs/AI_ARCH_A79_QWEN25_3B_NATIVE_WORKLOAD_SENSITIVITY_109_V1/GPU_RESOURCE_RECEIPT.json": {
+      "sha256": "2df92819a1d0c3db9b74119b17a0a101c459a00d480aee05caf693b85c54156c",
+      "bytes": 581
+    },
+    "docs/ai_workload_research/runs/AI_ARCH_A79_QWEN25_3B_NATIVE_WORKLOAD_SENSITIVITY_109_V1/INPUT_RECEIPT.json": {
+      "sha256": "1ab5756df6cc5d4729940dca3ca2b67732cd21af01f6479cf59a0a1a9748ad67",
+      "bytes": 5365
+    },
+    "docs/ai_workload_research/runs/AI_ARCH_A79_QWEN25_3B_NATIVE_WORKLOAD_SENSITIVITY_109_V1/NUMERIC_AND_IDENTITY.json": {
+      "sha256": "32c117f4c632ee4b782d243acd0be32e54529df03c36b59c9e797280cea9afe3",
+      "bytes": 482
+    },
+    "docs/ai_workload_research/runs/AI_ARCH_A79_QWEN25_3B_NATIVE_WORKLOAD_SENSITIVITY_109_V1/SOURCE_AND_RUNTIME.json": {
+      "sha256": "81bf823e7490d0ef0be1c350e16334c44bb9681188aa3223f0c1344c366b9cec",
+      "bytes": 10236
+    },
+    "docs/ai_workload_research/runs/AI_ARCH_A79_QWEN25_3B_NATIVE_WORKLOAD_SENSITIVITY_109_V1/raw/ADMISSION.json": {
+      "sha256": "663b51fd92c64d7993b5fed9773e868c14a4f2e84f4ca5b671ffa86a391a83f7",
+      "bytes": 543
+    },
+    "util/ai_workload_research/a79_qwen25_3b_native/analyze.py": {
+      "sha256": "f94ceb3c7d2af4a2811ecc7f8767d938ce97b58222863eeea6127ac7e149ba06",
+      "bytes": 5396
+    },
+    "util/ai_workload_research/a79_qwen25_3b_native/g0.py": {
+      "sha256": "ce3e7e0c05df4ef599d7e9e3294479ea1288bf220d3420cdab10ab136c5b03a9",
+      "bytes": 8454
+    },
+    "util/ai_workload_research/a79_qwen25_3b_native/supervisor.py": {
+      "sha256": "415c6d16a3927ff59d5cb7af3d5d8f725965fa2804d26f73645173dc4bfb9bde",
+      "bytes": 8813
+    },
+    "util/ai_workload_research/a79_qwen25_3b_native/validate.py": {
+      "sha256": "62860bd7458238ac39fe5fe5b4a0008dc216fe494a3d0c82f729edf6afbe71ba",
+      "bytes": 3694
+    },
+    "util/ai_workload_research/a79_qwen25_3b_native/worker.py": {
+      "sha256": "5169b5122bdbc4ac2f02bc2f656794a2ff55fb1b0094bdba05c18be8a509c8be",
+      "bytes": 10528
+    },
+    "docs/ai_workload_research/runs/AI_ARCH_A79_QWEN25_3B_NATIVE_WORKLOAD_SENSITIVITY_109_V1/SHA256SUMS": {
+      "sha256": "78236e40abd5569aa6e9110f141fff6a0df5629c8652e96d3a6386edc0ad69e0",
+      "bytes": 2724
+    }
+  },
+  "publication": {
+    "origin": "git@github.com:swayhrl/accel-sim-framework.git",
+    "target_ref": "refs/heads/hrl/aiarch-a79-qwen25-3b-native-workload-sensitivity-109-v1",
+    "required": "Normal commit/push once; single fetch-back; exact commit/tree/every blob and clean validation; STOP",
+    "status_at_receipt_creation": "POST_COMMIT_PENDING",
+    "final_Git_identity": "Enclosing commit; independent final readback proof avoids self-reference",
+    "post_publish_proof_path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-a79-qwen25-3b-native-workload-sensitivity-109-v1/docs/ai_workload_research/runs/AI_ARCH_A79_QWEN25_3B_NATIVE_WORKLOAD_SENSITIVITY_109_V1/.private/POST_PUBLISH_PROOF.json",
+    "only_write_prefixes": [
+      "util/ai_workload_research/a79_qwen25_3b_native/",
+      "docs/ai_workload_research/runs/AI_ARCH_A79_QWEN25_3B_NATIVE_WORKLOAD_SENSITIVITY_109_V1/"
+    ]
+  },
+  "STOP": "No lock retry, no background GPU process, no next Round automatically"
+}

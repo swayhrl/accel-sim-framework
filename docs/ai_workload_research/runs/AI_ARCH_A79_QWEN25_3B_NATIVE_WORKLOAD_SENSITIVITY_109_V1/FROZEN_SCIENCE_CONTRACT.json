@@ -1,0 +1,167 @@
+{
+  "schema": "A79_FROZEN_SCIENCE_V1",
+  "status": "FROZEN_BEFORE_ANY_GPU_LOCK_OR_CUDA",
+  "fixed_start_HEAD": "7094d4b2d29980c2d2d8d97a9abb6fddb3283c9f",
+  "frozen_epoch": 1792984400.1542675,
+  "Goal_started_epoch": 1792983527,
+  "scientific_question": "Natural prompt length512/2048 by output length1/32 complete Mode A request sensitivity; no resource attribution",
+  "G1_points": [
+    {
+      "point": "H0",
+      "source": "TRAIN_A_DISCOVERY_00",
+      "prompt_tokens": 512,
+      "output_tokens": 32
+    }
+  ],
+  "G1_capacity": {
+    "max_model_len": 544,
+    "max_num_batched_tokens": 544
+  },
+  "G2_points": [
+    {
+      "point": "C01",
+      "source": "TRAIN_A_DISCOVERY_00",
+      "prompt_tokens": 512,
+      "output_tokens": 32
+    },
+    {
+      "point": "C02",
+      "source": "TRAIN_A_DISCOVERY_00",
+      "prompt_tokens": 2048,
+      "output_tokens": 32
+    },
+    {
+      "point": "C03",
+      "source": "TRAIN_A_DISCOVERY_00",
+      "prompt_tokens": 512,
+      "output_tokens": 1
+    },
+    {
+      "point": "C04",
+      "source": "TRAIN_A_DISCOVERY_00",
+      "prompt_tokens": 2048,
+      "output_tokens": 1
+    },
+    {
+      "point": "C05",
+      "source": "TRAIN_A_DISCOVERY_01",
+      "prompt_tokens": 512,
+      "output_tokens": 32
+    },
+    {
+      "point": "C06",
+      "source": "TRAIN_A_DISCOVERY_01",
+      "prompt_tokens": 2048,
+      "output_tokens": 32
+    },
+    {
+      "point": "C07",
+      "source": "TRAIN_A_DISCOVERY_01",
+      "prompt_tokens": 512,
+      "output_tokens": 1
+    },
+    {
+      "point": "C08",
+      "source": "TRAIN_A_DISCOVERY_01",
+      "prompt_tokens": 2048,
+      "output_tokens": 1
+    }
+  ],
+  "G2_capacity": {
+    "max_model_len": 2080,
+    "max_num_batched_tokens": 2080
+  },
+  "all_point_sampling": {
+    "warmups": 2,
+    "formals": 5,
+    "seed": 0,
+    "temperature": 0,
+    "top_p": 1,
+    "ignore_eos": true,
+    "detokenize": false,
+    "logprobs": 20
+  },
+  "strong_path": {
+    "vllm": "0.30.0",
+    "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+    "dtype": "bfloat16",
+    "quantization": null,
+    "model_impl": "vllm",
+    "tensor_parallel_size": 1,
+    "skip_tokenizer_init": true,
+    "enforce_eager": false,
+    "compilation_mode": "VLLM_COMPILE",
+    "backend": "inductor",
+    "cudagraph_mode": "FULL_AND_PIECEWISE",
+    "cpu_offload_gb": 0,
+    "enable_prefix_caching": false,
+    "gpu_memory_utilization": 0.92,
+    "max_num_seqs": 1
+  },
+  "G1_gates": {
+    "historical_median_ms": 354.59820556640625,
+    "MAD_over_median_max": 0.05,
+    "historical_relative_median_drift_max": 0.15,
+    "over15percent_with_stable_correct_strong_identity": "Continue only as NEW_NATIVE_ONLY_UNLINKED_TO_HISTORICAL",
+    "historical_numeric": "Exact32 token IDs and sampled logprob abs(delta)<=0.05+0.01*abs(reference)",
+    "reference_file_sha256": "318326c7fa52dcb7f228d4e2c5be7daddf715f715fc367540fb87f4fad63ab89"
+  },
+  "G2_numeric": "Exact requested response length; deterministic per-point token equality; all returned20 logprobs finite; sampled logprob repetition within frozen0.05/0.01; only SCOPED_SELF_REPEATABILITY, not external oracle",
+  "timing": "pre-sync; CUDA event start; single llm.generate; stop; post-sync; read elapsed. Host generate wall separately diagnostic; initialization, initial compile/capture and warmups outside formal",
+  "graph_observation": "Original accepted manager-level run_fullgraph call counter; no model semantic hooks. For32 output require replay;1 output may be piecewise; no family mapping inferred",
+  "contrast_formulas": {
+    "Delta_prompt": "T(2048,O)-T(512,O) in G2 only",
+    "Delta_generation": "T(L,32)-T(L,1) in G2 only",
+    "Interaction": "Delta_prompt(32)-Delta_prompt(1)"
+  },
+  "descriptive_difference_rule": "A contrast exceeds a conservative descriptive envelope when abs(delta)>max(5%*min(two medians),3*(two MAD sum)); pre-frozen diagnostic, not statistical significance or saturation claim",
+  "cross_text_direction_rule": "Keep A00/A01 separate; opposite recorded signs imply INPUT_DEPENDENT, no knee claim",
+  "GPU_limits": {
+    "lock": "/data/c16/locks/c16_gpu_campaign.lock",
+    "nonblocking": true,
+    "UUID": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+    "held_seconds": 720,
+    "supervisor_shutdown_reserve_seconds": 10,
+    "model_contexts_max": 2,
+    "NVML_own_MiB_max": 15400,
+    "RSS_tree_bytes_max": 17179869184,
+    "new_disk_bytes_max": 3221225472,
+    "whole_Goal_seconds_max": 2700,
+    "sample_interval_seconds": 2,
+    "external_or_unknown_GPU_PID": "FAIL_CLOSED_NO_EXEMPTION",
+    "clear_context_and_child_exit_before_unlock": true
+  },
+  "cache_policy": "Explicit context-specific private VLLM/HOME/XDG/Triton/Inductor/CUDA/HF/Torch roots; NEW_MODE_A_COMPILATION_IDENTITY, never edit/rebuild old C16 caches",
+  "engineering_repairs_used": 2,
+  "frozen_files": {
+    "util/ai_workload_research/a79_qwen25_3b_native/g0.py": {
+      "sha256": "ce3e7e0c05df4ef599d7e9e3294479ea1288bf220d3420cdab10ab136c5b03a9",
+      "bytes": 8454
+    },
+    "util/ai_workload_research/a79_qwen25_3b_native/supervisor.py": {
+      "sha256": "415c6d16a3927ff59d5cb7af3d5d8f725965fa2804d26f73645173dc4bfb9bde",
+      "bytes": 8813
+    },
+    "util/ai_workload_research/a79_qwen25_3b_native/worker.py": {
+      "sha256": "5169b5122bdbc4ac2f02bc2f656794a2ff55fb1b0094bdba05c18be8a509c8be",
+      "bytes": 10528
+    },
+    "util/ai_workload_research/a79_qwen25_3b_native/analyze.py": {
+      "sha256": "f94ceb3c7d2af4a2811ecc7f8767d938ce97b58222863eeea6127ac7e149ba06",
+      "bytes": 5396
+    },
+    "docs/ai_workload_research/runs/AI_ARCH_A79_QWEN25_3B_NATIVE_WORKLOAD_SENSITIVITY_109_V1/INPUT_RECEIPT.json": {
+      "sha256": "1ab5756df6cc5d4729940dca3ca2b67732cd21af01f6479cf59a0a1a9748ad67",
+      "bytes": 5365
+    },
+    "docs/ai_workload_research/runs/AI_ARCH_A79_QWEN25_3B_NATIVE_WORKLOAD_SENSITIVITY_109_V1/SOURCE_AND_RUNTIME.json": {
+      "sha256": "81bf823e7490d0ef0be1c350e16334c44bb9681188aa3223f0c1344c366b9cec",
+      "bytes": 10236
+    }
+  },
+  "no_weight_or_dataset_download": true,
+  "no_install": true,
+  "no_164": true,
+  "no_sim_profiler_trace": true,
+  "scientific_contract_change": "STOP"
+}
