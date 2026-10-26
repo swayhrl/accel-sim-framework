@@ -1,29 +1,29 @@
 {
-  "accounting_rule": "No unlink occurred, so actual reclaim is zero. Candidate logical bytes and allocation are not reported as released capacity.",
+  "accounting_rule": "Logical bytes, allocated bytes and df available-byte change are separate measures and are not added together.",
   "actual_operation": {
-    "allocated_bytes_unlinked": 0,
-    "df_reclaim_bytes": 0,
-    "files_unlinked": 0,
-    "logical_bytes_unlinked": 0,
-    "retirement_df_after": null,
-    "retirement_df_before": null
+    "allocated_bytes_unlinked": 20776263680,
+    "df_available_after": 38264659968,
+    "df_available_before": 17488400384,
+    "df_available_interval_delta": 20776259584,
+    "df_available_post_independent_audit": 38262300672,
+    "files_unlinked": 1,
+    "logical_bytes_unlinked": 20776255925
   },
   "asset_id": "TRACE_90174dcf58988a5d",
-  "candidate": {
-    "allocated_bytes": 20776263680,
-    "logical_bytes": 20776255925,
-    "physical_upper_layer_qualified": true
+  "attribution_limit": "The df interval delta is observed during the exact unlink window and can include concurrent filesystem activity.",
+  "gib": {
+    "allocated_unlinked": 19.349403381347656,
+    "df_interval_delta": 19.34939956665039,
+    "logical_unlinked": 19.34939615894109,
+    "post_audit_available": 35.634544372558594
   },
-  "capacity_gate": {
-    "SSD_available_bytes": 17512468480,
-    "SSD_contract_required_bytes": 52412022784,
-    "hypothetical_post_retirement_available_bytes": 38288732160,
-    "hypothetical_restore_capacity_pass": false,
-    "required_available_before_restore_bytes": 73188282368,
-    "restore_payload_allocated_estimate": 20776259584,
-    "shortfall_bytes": 34899550208
+  "physical_layer_evidence": {
+    "exact_upper_backing_path": "/docker/overlay2/e7cd1a981b72236879066fe204a1281a18b4bf4b187fdf8281722465e12d1ce5/diff/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/lavaMD-rodinia-3.1/_boxes1d_10/traces/kernel-1.traceg",
+    "inode": 49300667,
+    "nlink": 1,
+    "status": "PASS"
   },
-  "concurrent_activity_note": "SSD available bytes changed during read-only auditing because other science activity continued; those changes are not lavaMD reclaim.",
-  "schema": "ORIGINAL174_LAVAMD_REAL_SSD_RECLAIM_ACCOUNTING_V1",
-  "status": "NOT_EXECUTED_CAPACITY_HOLD"
+  "prior_HOLD_reclaim_bytes": 0,
+  "schema": "ORIGINAL174_LAVAMD_REAL_SSD_RECLAIM_ACCOUNTING_V2",
+  "status": "DONE"
 }

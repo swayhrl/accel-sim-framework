@@ -1,58 +1,82 @@
 {
   "asset_id": "TRACE_90174dcf58988a5d",
-  "authorized_candidate": "kernel-1.traceg",
-  "blocking_gate": {
-    "SSD_available_bytes": 17512468480,
-    "SSD_contract_required_bytes": 52412022784,
-    "hypothetical_post_retirement_available_bytes": 38288732160,
-    "hypothetical_restore_capacity_pass": false,
-    "required_available_before_restore_bytes": 73188282368,
-    "restore_payload_allocated_estimate": 20776259584,
-    "shortfall_bytes": 34899550208
-  },
   "done": {
-    "allocated_bytes_unlinked": 0,
-    "files_unlinked": 0,
-    "logical_bytes_unlinked": 0,
-    "unlink_executed": false,
-    "written": false
-  },
-  "hold_receipt_sha256": "a117433c2945859d2171d5db6d7218e2040a74ef5850de027b00fccb39d9ed9a",
-  "intent": {
-    "reason": "restore capacity gate failed",
-    "written": false
-  },
-  "next_action": "Re-run as a separately authorized disposition only after the unchanged resource contract can admit the restore payload; do not replay this HOLD as an unlink authorization.",
-  "other_gates": {
-    "HybridSort_protection": "PASS",
-    "SRAD_no_replay": "PASS",
-    "physical_upper_layer": "PASS",
-    "reader_writer_and_future_dependency": "PASS",
-    "restore_program_self_check_and_safety": "PASS",
-    "source_identity_and_full_SHA": "PASS",
-    "true164_identity_and_full_SHA": "PASS"
-  },
-  "protection": {
     "HybridSort_exactly_unchanged": true,
-    "SRAD_terminal_state_unchanged": true,
-    "other_assets_touched": false
-  },
-  "schema": "ORIGINAL174_LAVAMD_EXACT_RETIREMENT_INTENT_DONE_V1",
-  "source_terminal_state": {
-    "candidate_present": true,
+    "SRAD_exactly_unchanged": true,
+    "allocated_bytes_unlinked": 20776263680,
     "controls_preserved": [
       "commandlist",
       "kernelslist",
       "kernelslist.g",
       "stats.csv"
     ],
-    "members": [
-      "commandlist",
-      "kernel-1.traceg",
-      "kernelslist",
-      "kernelslist.g",
-      "stats.csv"
-    ]
+    "df_after": 38264659968,
+    "df_before": 17488400384,
+    "df_interval_delta": 20776259584,
+    "file": "kernel-1.traceg",
+    "logical_bytes_unlinked": 20776255925,
+    "recursive_delete_used": false,
+    "restore_capacity_preflight_waived_by_user": true,
+    "restore_entry": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_verified_offload_reclaim_v1/control/lavamd_exact_source_retirement_v1/LAVAMD_RESTORE_TO_OLD174.py",
+    "source_root_ctime_not_restorable": true,
+    "source_root_mtime_mode_uid_gid_restored": true,
+    "source_root_preserved": true,
+    "status": "DONE",
+    "true164_unchanged": true,
+    "unix": 1793022959.4923983
   },
-  "status": "HOLD_BEFORE_INTENT"
+  "file_intent": {
+    "identity": {
+      "allocated": 20776263680,
+      "ctime_ns": 1786635418711438986,
+      "dev": 156,
+      "gid": 5000,
+      "inode": 49300667,
+      "mode": 420,
+      "mtime_ns": 1589831967000000000,
+      "nlink": 1,
+      "size": 20776255925,
+      "type": "file",
+      "uid": 543796
+    },
+    "reader_refs": [],
+    "sha256": "145202c4904522e9b49f949832c63f85455c606d2a4d49b0f8451166cb4f4534",
+    "written_before_unlink": true
+  },
+  "history": {
+    "prior_HOLD": {
+      "hold_receipt_sha256": "a117433c2945859d2171d5db6d7218e2040a74ef5850de027b00fccb39d9ed9a",
+      "intent_written": false,
+      "status": "HOLD_RESTORE_CAPACITY_BEFORE_INTENT",
+      "unlink_executed": false
+    },
+    "user_capacity_override": "USER_CAPACITY_GATE_OVERRIDE_AUTHORIZATION.md"
+  },
+  "intent": {
+    "receipt": {
+      "HybridSort_deletion_authorized": false,
+      "allocated_bytes": 20776263680,
+      "asset_id": "TRACE_90174dcf58988a5d",
+      "capacity_override_sha256": "3c043b41f2b21ba6f5faddb5ad9cb2e0e21374a333c91a0dcb2490b154de69e0",
+      "file": "kernel-1.traceg",
+      "full_native_restore_required_before_unlink": false,
+      "logical_bytes": 20776255925,
+      "prior_HOLD_sha256": "a117433c2945859d2171d5db6d7218e2040a74ef5850de027b00fccb39d9ed9a",
+      "qualified_whitelist_sha256": "3e13956f2260d36ce5ff2f9ecd315f4387e6213cd063a20bdd61a92c7032225a",
+      "recursive_delete_authorized": false,
+      "restore_capacity_preflight_waived": true,
+      "schema": "ORIGINAL174_LAVAMD_CONTINUE_INTENT_AFTER_CAPACITY_OVERRIDE_V1",
+      "sha256": "ccbd8ff9ff00c6b5a2fc49e982c652e12259b59378f2853593f36df8ae24701f",
+      "source_root": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/lavaMD-rodinia-3.1/_boxes1d_10/traces",
+      "unix": 1793022955.7698755
+    },
+    "sha256": "7ea35052e70bcb94c89b6a50f3855770358152a4d1d4885f9175f5eecfdc9003",
+    "written": true
+  },
+  "post_independent_audit": {
+    "controller_done_sha256": "58676af33666685ab670921157ad265a21e41bdc686a2bbdab580abdf9596e28",
+    "status": "PASS_DONE"
+  },
+  "schema": "ORIGINAL174_LAVAMD_EXACT_RETIREMENT_INTENT_DONE_V2",
+  "status": "DONE_AFTER_USER_CAPACITY_OVERRIDE"
 }

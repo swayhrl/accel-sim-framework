@@ -1,10 +1,11 @@
 {
   "archive": {
-    "all_manifest_SHA_identity_match": true,
     "bytes": 20776256536,
     "commit_sha256": "a39062e9d39d483f9d517fc496683e8be838c5a8b78047ab51a0ddee1cf61686",
     "manifest_sha256": "75810b00842cb095dcb837ad5a7a888c192b4db5a06f0b1d23c17cf04ba3ce08",
     "members": 5,
+    "post_retirement_all_current_identities_match_full_SHA_receipt": true,
+    "pre_retirement_all_manifest_SHA_identity_match": true,
     "range_index_sha256": "73efa5cf16eb9cdb935eef09d0bca094dc60599680a788370a37dfedd975bd82",
     "trace_identity": {
       "allocated": 20776259584,
@@ -22,18 +23,14 @@
       "uid": 1011
     },
     "trace_sha256": "ccbd8ff9ff00c6b5a2fc49e982c652e12259b59378f2853593f36df8ae24701f",
-    "tree_verification_sha256": "816564a20b68381011e69ef6e0d5fe231802e5712b1d7e0fd0300eb7cb814ce9"
+    "tree_verification_sha256": "816564a20b68381011e69ef6e0d5fe231802e5712b1d7e0fd0300eb7cb814ce9",
+    "unchanged": true
   },
-  "archive_unchanged": true,
   "asset_id": "TRACE_90174dcf58988a5d",
   "checkpoint_evidence": {
-    "RESTORE_PREFLIGHT.json": {
-      "bytes": 4529,
-      "sha256": "84ef7bd94d4892cab40ea9fbd8e68d1b101b308d63a29ff6ef686ade0e421a68"
-    },
-    "RESTORE_SELF_CHECK.json": {
-      "bytes": 962,
-      "sha256": "c7196fb49bbdbd71c30bcec6257f3fa44cdc3f2aa94aa3c3877dda379a998f5c"
+    "POST_OVERRIDE_INDEPENDENT_AUDIT.json": {
+      "bytes": 3345,
+      "sha256": "b3c3fb4b390ea2df0414d887409efb85247803392e11d36c00a804ed4786ed2a"
     },
     "TARGET_FULL_SHA_REVERIFY.json": {
       "bytes": 3506,
@@ -52,12 +49,16 @@
     "namespace": "mnt:[4026535153]",
     "native_bundle": "/home/shared/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_verified_offload_reclaim_v1/assets/TRACE_90174dcf58988a5d"
   },
+  "protection": {
+    "HybridSort_exactly_unchanged": true,
+    "SRAD_exactly_unchanged": true
+  },
   "recovery": {
+    "current_rule": "Run a fresh --preflight and require capacity PASS before --execute. The user waived capacity only for retirement, not restoration.",
     "dedicated_entry_native": "/home/shared/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_verified_offload_reclaim_v1/control/lavamd_exact_source_retirement_v1/LAVAMD_RESTORE_TO_OLD174.py",
     "dedicated_entry_new174": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261024_verified_offload_reclaim_v1/control/lavamd_exact_source_retirement_v1/LAVAMD_RESTORE_TO_OLD174.py",
     "full_native_restore_performed": false,
-    "limitation": "The 20.776 GB native restore was not executed. The Source remains intact because capacity admission failed before retirement.",
-    "preflight": {
+    "last_preflight": {
       "asset_id": "TRACE_90174dcf58988a5d",
       "buffer_bytes": 1048576,
       "bytes": 20776255925,
@@ -227,6 +228,6 @@
       "trace": "kernel-1.traceg"
     }
   },
-  "schema": "ORIGINAL174_LAVAMD_TRUE164_CONTENT_VERIFICATION_V1",
-  "status": "PASS_CONTENT_HOLD_RESTORE_CAPACITY"
+  "schema": "ORIGINAL174_LAVAMD_TRUE164_CONTENT_VERIFICATION_V2",
+  "status": "PASS_RETIREMENT_DONE"
 }
