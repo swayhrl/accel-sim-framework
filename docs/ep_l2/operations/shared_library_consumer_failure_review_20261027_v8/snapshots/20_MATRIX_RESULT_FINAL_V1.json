@@ -1,0 +1,301 @@
+{
+  "status": "PASS",
+  "case_count": 29,
+  "cases": [
+    {
+      "case": "positive_workers1",
+      "serial_accepted": true,
+      "parallel_accepted": true,
+      "matched": true,
+      "error": null,
+      "workers": 1,
+      "completion_order": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "fold_order": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "case": "positive_workers2",
+      "serial_accepted": true,
+      "parallel_accepted": true,
+      "matched": true,
+      "error": null,
+      "workers": 2,
+      "completion_order": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "fold_order": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "case": "completion_out_of_order",
+      "serial_accepted": true,
+      "parallel_accepted": true,
+      "matched": true,
+      "error": null,
+      "workers": 2,
+      "completion_order": [
+        1,
+        0,
+        3,
+        2
+      ],
+      "fold_order": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "case": "single_kernel_fallback",
+      "serial_accepted": true,
+      "parallel_accepted": true,
+      "matched": true,
+      "error": null,
+      "workers": 1,
+      "completion_order": [
+        0
+      ],
+      "fold_order": [
+        0
+      ]
+    },
+    {
+      "case": "truncated_XZ_EOF",
+      "serial_accepted": false,
+      "parallel_accepted": false,
+      "matched": true,
+      "error": "RuntimeError(\"CHILD_VALIDATION_FAILED EOFError('Compressed file ended before the end-of-stream marker was reached')\")"
+    },
+    {
+      "case": "duplicate_command",
+      "serial_accepted": false,
+      "parallel_accepted": false,
+      "matched": true,
+      "error": "RuntimeError('zero or duplicate declared kernel')"
+    },
+    {
+      "case": "missing_raw",
+      "serial_accepted": false,
+      "parallel_accepted": false,
+      "matched": true,
+      "error": "RuntimeError('missing or undeclared raw kernel')"
+    },
+    {
+      "case": "wrong_reported_stats",
+      "serial_accepted": false,
+      "parallel_accepted": false,
+      "matched": true,
+      "error": "RuntimeError(\"CHILD_VALIDATION_FAILED AssertionError('reported record count mismatch')\")"
+    },
+    {
+      "case": "cross_kernel_stream_mismatch",
+      "serial_accepted": false,
+      "parallel_accepted": false,
+      "matched": true,
+      "error": "RuntimeError('PENDING_CONCURRENT_STREAM_ORDERING')"
+    },
+    {
+      "case": "multiple_contexts",
+      "serial_accepted": false,
+      "parallel_accepted": false,
+      "matched": true,
+      "error": "RuntimeError('multiple CUDA contexts')"
+    },
+    {
+      "case": "duplicate_static_PC",
+      "serial_accepted": false,
+      "parallel_accepted": false,
+      "matched": true,
+      "error": "RuntimeError('duplicate static function/PC')"
+    },
+    {
+      "case": "wrong_binary_identity",
+      "serial_accepted": false,
+      "parallel_accepted": false,
+      "matched": true,
+      "error": "RuntimeError('capture/map/tool binding')"
+    },
+    {
+      "case": "wrong_producer_identity",
+      "serial_accepted": false,
+      "parallel_accepted": false,
+      "matched": true,
+      "error": "RuntimeError('capture/map/tool binding')"
+    },
+    {
+      "case": "missing_EXIT",
+      "serial_accepted": false,
+      "parallel_accepted": false,
+      "matched": true,
+      "error": "RuntimeError('CHILD_VALIDATION_FAILED AssertionError()')"
+    },
+    {
+      "case": "raw_record_order_EXIT_before_MOV",
+      "serial_accepted": false,
+      "parallel_accepted": false,
+      "matched": true,
+      "error": "RuntimeError(\"CHILD_VALIDATION_FAILED AssertionError('executed instruction after EXIT')\")"
+    },
+    {
+      "case": "wrong_dependency",
+      "serial_accepted": false,
+      "parallel_accepted": false,
+      "matched": true,
+      "error": "RuntimeError(\"CHILD_VALIDATION_FAILED AssertionError(('dependency mismatch', 'kernel-1-ctx_0xabc.trace.xz', (0, 0, 0), 0, 0))\")"
+    },
+    {
+      "case": "child_exit17_wholejob_failure",
+      "rejected": true,
+      "error": "RuntimeError('WORKER_CHANNEL_EOF_BEFORE_DONE')",
+      "elapsed": 0.09000328369438648,
+      "owned_cleanup": [
+        {
+          "pid": 1549750,
+          "signal": 15,
+          "start_ticks": "979380661"
+        }
+      ]
+    },
+    {
+      "case": "child_EOF_without_DONE",
+      "rejected": true,
+      "error": "RuntimeError('WORKER_CHANNEL_EOF_BEFORE_DONE')",
+      "elapsed": 0.09565620496869087,
+      "owned_cleanup": [
+        {
+          "pid": 1549751,
+          "signal": 15,
+          "start_ticks": "979380686"
+        },
+        {
+          "pid": 1549752,
+          "signal": 15,
+          "start_ticks": "979380686"
+        }
+      ]
+    },
+    {
+      "case": "wrong_result_index",
+      "rejected": true,
+      "error": "RuntimeError('WRONG_OR_DUPLICATE_WORKER_RESULT')",
+      "elapsed": 0.08323729783296585,
+      "owned_cleanup": [
+        {
+          "pid": 1549754,
+          "signal": 15,
+          "start_ticks": "979380702"
+        }
+      ]
+    },
+    {
+      "case": "duplicate_child_result",
+      "rejected": true,
+      "error": "RuntimeError('WRONG_OR_DUPLICATE_WORKER_RESULT')",
+      "elapsed": 0.2221650518476963,
+      "owned_cleanup": [
+        {
+          "pid": 1549755,
+          "signal": 15,
+          "start_ticks": "979380716"
+        },
+        {
+          "pid": 1549756,
+          "signal": 15,
+          "start_ticks": "979380717"
+        }
+      ]
+    },
+    {
+      "case": "deadline_cleanup_only_owned",
+      "rejected": true,
+      "error": "RuntimeError('VALIDATOR_DEADLINE')",
+      "elapsed": 2.3682719226926565,
+      "owned_cleanup": [
+        {
+          "pid": 1549757,
+          "signal": 15,
+          "start_ticks": "979380746"
+        },
+        {
+          "pid": 1549758,
+          "signal": 15,
+          "start_ticks": "979380746"
+        },
+        {
+          "pid": 1549757,
+          "signal": 9,
+          "start_ticks": "979380746"
+        },
+        {
+          "pid": 1549758,
+          "signal": 9,
+          "start_ticks": "979380746"
+        }
+      ]
+    },
+    {
+      "case": "wholejob_metadata_drift_after_snapshot",
+      "rejected": true,
+      "error": "RuntimeError('WHOLE_JOB_METADATA_CHANGED')",
+      "elapsed": 0.5324450880289078,
+      "owned_cleanup": []
+    },
+    {
+      "case": "source_FD_path_changed_during_read",
+      "rejected": true,
+      "error": "RuntimeError(\"CHILD_VALIDATION_FAILED RuntimeError('SOURCE_CLOSE_FD_PATH_CHANGED')\")"
+    },
+    {
+      "case": "unheld_wholejob_lease",
+      "rejected": true,
+      "error": "RuntimeError('MOTHER_WHOLEJOB_LEASE_NOT_HELD')",
+      "body_started": false
+    },
+    {
+      "case": "wrong_owner_ticks",
+      "rejected": true,
+      "error": "RuntimeError('LEASE_OWNER_CHANGED')",
+      "body_started": false
+    },
+    {
+      "case": "production_missing_Rootgrant_before_body",
+      "rejected": true,
+      "error": "RuntimeError('ROOT_EXACT_GRANT_REQUIRED_BEFORE_BODY')"
+    },
+    {
+      "case": "inherited_wholejob_lease_never_unlocked",
+      "passed": true
+    },
+    {
+      "case": "two_children_aggregate4MiB_at1MiB_per_sec_plus1MiB_burst",
+      "passed": true,
+      "elapsed": 3.0835778266191483,
+      "charged_bytes": 4194304
+    },
+    {
+      "case": "wrong_startticks_parent_sentinel_not_signaled",
+      "passed": true
+    }
+  ],
+  "current_streamcluster_payload_read": false,
+  "GPU": false,
+  "Native_payload_written": false,
+  "formal_validation_executed": false
+}

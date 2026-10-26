@@ -1,0 +1,153 @@
+{
+  "schema": "SM70_V3_BOUNDED_MEMORY_RESOURCE_POLICY_V1",
+  "source_profile": "SM70_EXACT_PHYSICAL_LANE_COMPLETION_BITMAP_V3",
+  "max_state_keys": 8000000,
+  "default_state_keys": 1000000,
+  "max_state_array_payload_bytes": 34000000,
+  "max_state_budget_bytes": 41943040,
+  "five_max_array_payload_bytes": 170000000,
+  "measured_five_array_RSS_before": 31518720,
+  "measured_five_array_RSS_after": 199290880,
+  "array_model": "uint32 EXIT mask for each physical warp key; one CTA and one warp seen bitmap; no global per-grid Python tuples/sets/dicts",
+  "release_at_successful_object_EOF": "Arrays and decompressor explicitly released even if caller retains ended ObjectStream",
+  "XZ": {
+    "parameter": "max_xz_decoder_bytes",
+    "default": 67108864,
+    "hard_explicit_max": 268435456,
+    "Root_selects_finite_value": true,
+    "automatic_fallback": false,
+    "resource_exception": "SM70_STREAM_RESOURCE_HOLD_XZ_MEMORY",
+    "dictionary_not_total_decoder_memusage": true,
+    "actual_full65MiB_experiments": [
+      {
+        "preset": 6,
+        "source_sha": "96424db004ca27217ff8fdaf13602c522cbc230ac2dbf185e666bd28e4d7d93d",
+        "XZ_ref": {
+          "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/sm70_stream_completion_prepare_20261027_v3/SYNTHETIC65_PRESET6.traceg.xz",
+          "sha256": "db6651d6fe5674f9ad8dc1d643599a470eee4f35361712852c8a40d0f64bc47b",
+          "bytes": 13132
+        },
+        "actual_LZMA2_dictionary_bytes": 8388608,
+        "RSS_before": 12582912,
+        "RSS_after_encoder_freed": 15237120,
+        "process_peak_RSS": 109051904,
+        "seconds": 8.160772800445557,
+        "full_EOF_liblzma_required_memlimit_interval_bytes": [
+          8454145,
+          8455168
+        ]
+      },
+      {
+        "preset": 9,
+        "source_sha": "96424db004ca27217ff8fdaf13602c522cbc230ac2dbf185e666bd28e4d7d93d",
+        "XZ_ref": {
+          "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/sm70_stream_completion_prepare_20261027_v3/SYNTHETIC65_PRESET9.traceg.xz",
+          "sha256": "d22ed224f1a5f2a26f49a8959e799dc6dfd234891600fcbb67da5cf2543334b1",
+          "bytes": 13092
+        },
+        "actual_LZMA2_dictionary_bytes": 67108864,
+        "RSS_before": 15237120,
+        "RSS_after_encoder_freed": 17772544,
+        "process_peak_RSS": 686325760,
+        "seconds": 8.226314067840576,
+        "full_EOF_liblzma_required_memlimit_interval_bytes": [
+          67174401,
+          67175424
+        ]
+      }
+    ],
+    "actual_five_profile_runs": [
+      {
+        "preset": 6,
+        "configured_memlimit": 67108864,
+        "profiles": 5,
+        "RSS_before": 25923584,
+        "parent_peak_RSS_observed": 63672320,
+        "owned10_CPP_processes_total_RSS_peak_sampled": 0,
+        "parent_RLIMIT_AS_before_after_unchanged": [
+          2147483648,
+          2147483648
+        ],
+        "records_each": 1041,
+        "decoded_SHA": "96424db004ca27217ff8fdaf13602c522cbc230ac2dbf185e666bd28e4d7d93d",
+        "metadata_SHA_by_profile": {
+          "EP_R5": "5b546f9591a9379675fbfa5d7894bd5b1d95efceab81dd9a2da694c608d17fc8",
+          "DTC_DM": "b961e8eda68b6606a11e00ab886c9578ba17a6dfb60547998f2fdb41e1a491f3",
+          "DTC_DH": "b961e8eda68b6606a11e00ab886c9578ba17a6dfb60547998f2fdb41e1a491f3",
+          "DTC_CM": "b961e8eda68b6606a11e00ab886c9578ba17a6dfb60547998f2fdb41e1a491f3",
+          "DTC_CH": "b961e8eda68b6606a11e00ab886c9578ba17a6dfb60547998f2fdb41e1a491f3"
+        }
+      },
+      {
+        "preset": 9,
+        "configured_memlimit": 134217728,
+        "profiles": 5,
+        "RSS_before": 63672320,
+        "parent_peak_RSS_observed": 403410944,
+        "owned10_CPP_processes_total_RSS_peak_sampled": 0,
+        "parent_RLIMIT_AS_before_after_unchanged": [
+          2147483648,
+          2147483648
+        ],
+        "records_each": 1041,
+        "decoded_SHA": "96424db004ca27217ff8fdaf13602c522cbc230ac2dbf185e666bd28e4d7d93d",
+        "metadata_SHA_by_profile": {
+          "EP_R5": "5b546f9591a9379675fbfa5d7894bd5b1d95efceab81dd9a2da694c608d17fc8",
+          "DTC_DM": "b961e8eda68b6606a11e00ab886c9578ba17a6dfb60547998f2fdb41e1a491f3",
+          "DTC_DH": "b961e8eda68b6606a11e00ab886c9578ba17a6dfb60547998f2fdb41e1a491f3",
+          "DTC_CM": "b961e8eda68b6606a11e00ab886c9578ba17a6dfb60547998f2fdb41e1a491f3",
+          "DTC_CH": "b961e8eda68b6606a11e00ab886c9578ba17a6dfb60547998f2fdb41e1a491f3"
+        }
+      },
+      {
+        "preset": 9,
+        "configured_memlimit": 268435456,
+        "profiles": 5,
+        "RSS_before": 73650176,
+        "parent_peak_RSS_observed": 400805888,
+        "owned10_CPP_processes_total_RSS_peak_sampled": 0,
+        "parent_RLIMIT_AS_before_after_unchanged": [
+          2147483648,
+          2147483648
+        ],
+        "records_each": 1041,
+        "decoded_SHA": "96424db004ca27217ff8fdaf13602c522cbc230ac2dbf185e666bd28e4d7d93d",
+        "metadata_SHA_by_profile": {
+          "EP_R5": "5b546f9591a9379675fbfa5d7894bd5b1d95efceab81dd9a2da694c608d17fc8",
+          "DTC_DM": "b961e8eda68b6606a11e00ab886c9578ba17a6dfb60547998f2fdb41e1a491f3",
+          "DTC_DH": "b961e8eda68b6606a11e00ab886c9578ba17a6dfb60547998f2fdb41e1a491f3",
+          "DTC_CM": "b961e8eda68b6606a11e00ab886c9578ba17a6dfb60547998f2fdb41e1a491f3",
+          "DTC_CH": "b961e8eda68b6606a11e00ab886c9578ba17a6dfb60547998f2fdb41e1a491f3"
+        }
+      }
+    ]
+  },
+  "other_components": {
+    "shared_caller_literal_frame_cap": 67108864,
+    "text_split_piece": 65536,
+    "decoded_piece_cap": 1048576,
+    "partial_line_cap": 65536,
+    "native_response_line_cap": 1048576,
+    "headers_max_entries": 32,
+    "header_line_cap": 65536,
+    "command_strings_max_count": 100000,
+    "default_command_payload_bytes": 4194304,
+    "max_explicit_command_payload_bytes": 16777216,
+    "command_Python_string_and_list_overhead_additional": true,
+    "record_batch_max_records": 256,
+    "record_batch_payload_cap_about_bytes": 1114112,
+    "record_frontend_child": "Existing native parser helper inherits caller process limits; actual sampled RSS in XZ experiment. It is separate from parent.",
+    "native_decoder_child_address_space_cap": 536870912,
+    "all_CPP_children_separate_from_parent_AS": true
+  },
+  "parent_contract": {
+    "Session_does_not_set_parent_limits_or_signals": true,
+    "optional_parent_budget_bytes": "Read-only check that caller has already established a finite soft AS <= declared amount; never raises or changes lower limit",
+    "dedicated_CLI_parameter": "--parent-memory-bytes; default2GiB only in its own standalone process; explicit Root-selected finite128MiB..16GiB, preserves existing lower soft limit",
+    "R5_binding_proof_catalog_RAM_NOT_INCLUDED": true,
+    "whole_parent_budget_NOT_PROVEN_BY_arrays_plus_liblzma": true,
+    "Root_must_measure_and_choose_full_dedicated_runner_budget": true,
+    "parent_deadline_owner_unchanged": "Caller/Root R5 owns finite absolute deadline; Session does not change caller timers or deadline environment"
+  },
+  "not_ISA_hardware_or_scientific_qualification": true
+}

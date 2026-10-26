@@ -1,0 +1,53 @@
+{
+  "status": "PASS",
+  "case_count": 6,
+  "cases": [
+    {
+      "case": "real_CLI_admission_only_no_body_no_work",
+      "passed": true
+    },
+    {
+      "case": "real_CLI_pass_fds_full4kernel_with2_reaped_workers",
+      "passed": true,
+      "adapter_sha256": "9add4f4b4002ec8ef130a7889d380d4a3ef47c1b7a46116a66721135efb20a6e",
+      "ack": {
+        "lease_unlocked": false,
+        "schema": "ORDINARY_VALIDATOR_OWNED_WORKERS_CLOSED_V1",
+        "source_KEEP": true,
+        "status": "ALL_OWNED_WORKERS_REAPED",
+        "workers": [
+          {
+            "exitcode": 0,
+            "pid": 1549814,
+            "start_ticks": "979381515"
+          },
+          {
+            "exitcode": 0,
+            "pid": 1549815,
+            "start_ticks": "979381516"
+          }
+        ]
+      }
+    },
+    {
+      "case": "CLI_without_pass_fds_refused",
+      "rejected": true
+    },
+    {
+      "case": "real_CLI_missing_Rootgrant_before_body",
+      "rejected": true
+    },
+    {
+      "case": "optimized_CLI_denied_before_frozen_asserts",
+      "rejected": true
+    },
+    {
+      "case": "escaping_output_refused_before_body",
+      "rejected": true
+    }
+  ],
+  "current_process_untouched": true,
+  "old_mother_sha256": "a546e0cfdf47e463bed63740289f44737f503b7cd6b822510c5845a6ec80b183",
+  "GPU": false,
+  "formal_validation": false
+}

@@ -1,0 +1,71 @@
+{
+  "schema": "SM70_LITERAL_STREAM_PHYSICAL_LANE_COMPLETION_CONTRACT_V3",
+  "source_id": "SM70_EXACT_PHYSICAL_LANE_COMPLETION_BITMAP_V3",
+  "source_refs": [
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/sm70_stream_completion_prepare_20261027_v3/compact_completion_v3.py",
+      "bytes": 4461,
+      "sha256": "01c8b0082c9e7cf99708632581bf0a40f944a88b7756eee6a8a9039688d6f864"
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/sm70_stream_completion_prepare_20261027_v3/format_envelope_v3.py",
+      "bytes": 14389,
+      "sha256": "fb2eb2423ed9529fff56e11c2f0820b8a3fc3bb06748753c0be3ed8101fd60b7"
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/sm70_stream_completion_prepare_20261027_v3/sm70_decoder_stream_v3.py",
+      "bytes": 11748,
+      "sha256": "9b46fbb2e315b822f3444b979e2a3e7f43b338717f54630d167a078866314236"
+    }
+  ],
+  "native_CPP_config_refs": {
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/sm70_stream_completion_prepare_20261027_v3/ORIGINAL_CPP_BINARY_CONFIG_BYTE_IDENTITY_V3.json",
+    "bytes": 23942,
+    "sha256": "1ca5683b537e5a1e7ad614c14b6f2ed6f7d13aa118be6552f72ad5d93e27e80c"
+  },
+  "API": "Session(profile,cfg,parent_budget_bytes=None).begin(meta).feed(literal stored bytes)...end(); one active object per Session; Root caller chooses up to5 fixed profiles",
+  "literal_layers": "Same V2 literal stored-member API, not outer transport/archive framing; plain/xz/gzip. Unknown compression fails closed; aux is opaque literal with compression literal/text only.",
+  "begin_fields": {
+    "required": [
+      "profile",
+      "configuration_profile",
+      "kind",
+      "size",
+      "sha256"
+    ],
+    "optional": [
+      "compression",
+      "relative_path",
+      "max_decoded_bytes",
+      "stream_completion_profile",
+      "max_state_keys",
+      "max_state_bytes",
+      "max_xz_decoder_bytes",
+      "max_command_bytes"
+    ]
+  },
+  "profile_binding": "Optional meta.stream_completion_profile must equal newSourceID; selecting this new adapter itself selects V3. No automatic qualification registration.",
+  "completion_rules": [
+    "Geometry maps exact CTA/warp to bounded linear uint32 mask slot. Physical last-warp mask derives from declared block threads.",
+    "Every record active mask must stay inside physical lanes and must not intersect already EXITed lanes, including re-EXIT.",
+    "EXIT contributes only its active mask. Union is monotonic; physical warp coverage is required when traceg warp closes.",
+    "All declared CTA/warp/inst counts, complete TB/newline/compressed CRC/EOF and whole literal SHA still required. Legacy raw interleaving uses same masks and whole-grid counts.",
+    "All physical lanes in every physical warp must EXIT by EOF; no last-root-only shortcut. Valid partial divergent EXITs may be followed by other live-lane work then later EXITs.",
+    "Zero mask is parsed/native-decoded as zero-active metadata, gives no exit credit and cannot revive lanes. Zero-active records after full exit remain allowed; no claim actual hardware scheduled/emitted such records."
+  ],
+  "supported_versions": "Traceg0..4, optional lineinfo0/1; raw legacy0..2 with inline CTA/warp. Raw>=3 remains explicit rejected because inline ownership absent; no invented reconstruction.",
+  "resource_policy_ref": {
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/sm70_stream_completion_prepare_20261027_v3/BOUNDED_MEMORY_POLICY_AND_MEASUREMENTS_V3.json",
+    "bytes": 7140,
+    "sha256": "9c80a0dc1143772e17eb4428ba0826b4bf9020cd2eac4ddc5c6542b92b2738b2"
+  },
+  "state_data_not_scientific_simulation": true,
+  "independent_lane_envelope_only": true,
+  "real_native_decoder_methods_unchanged": true,
+  "not_granted": [
+    "No existing125 corruption inferred from V2 counterexample.",
+    "No actual125 full-body Native readback/registration/public activation.",
+    "No GPU, original engine main, cycle/scheduler, scientific budget or hardware/timing/numerical qualification.",
+    "Resource limits are explicit resource/profile HOLDs, not declarations that ISA or hardware does not support a trace."
+  ]
+}
