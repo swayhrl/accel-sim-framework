@@ -59,7 +59,7 @@ Framework 审查基准：`swayhrl/accel-sim-framework@62e402872027b3e9149f668da3
 
 CFD/DWT 的 copied accepted projection 只有 eligible way 暴露105076/20185，不能冒充全应用二联合。CFD UID5 物理阶段有234次 `newTag∧certifiedRO∧eligible` 的实际三联合，但也没有 TagFAIL；不能把阶段三联合当全应用二联合。来源：E/`r5CFD.json:133–262`、`r5DWT.json:138–272`、`phaseReview.md:1–9`；V/`SCIENTIFIC_CAUSE_PROJECTION.json:2–51,96–106`。
 
-Vector 2385次联合在原 route tuple 中分为：nonRO/NOT_CONSULTED/admitted1372，RO/NOT_CONSULTED/admitted179，RO/PROD_NOT_REACHED/QUERY-denied179，nonRO/NOT_CONSULTED/denied655。它们都不是 CONSULTED_FAIL。newTag 的 raw 是 MISS 或 FAIL；SECTOR_MISS 使用已有 Tag，不计新 Tag 需求。见本轮 [离线结果](OFFLINE_CHECK_RESULT.json)。
+Vector 2385次联合在原 route tuple 中分为：nonRO/NOT_CONSULTED/admitted1372，RO/NOT_CONSULTED/admitted179，RO/PROD_NOT_REACHED/QUERY-denied179，nonRO/NOT_CONSULTED/denied655。这里admitted是Frontend允许commit尝试，不等于commit成功；全应用1581555次尝试实际接受1500000、拒绝81555。它们都不是 CONSULTED_FAIL。newTag 的 raw 是 MISS 或 FAIL；SECTOR_MISS 使用已有 Tag，不计新 Tag 需求。见本轮 [离线结果](OFFLINE_CHECK_RESULT.json)。
 
 ## 对七个问题的回答
 
@@ -114,3 +114,15 @@ E051正向证书的accepted oracle candidates2317312；可见candidate head22827
 只读阅读：生产源码、历史测试源码及历史执行receipts。未重跑CPU模拟器fixture、未编译、未运行完整应用或GPU采集、未消费epoch2预算。多sector+detach+新Tag+ICNT组合及完整preview状态snapshot仍只是计划。策略改版的最小设计与证明清单保留在 [下一决策](CLAIM_BOUNDARY_AND_NEXT_DECISION.md)，状态NOT_EXECUTED、需独立授权。
 
 六份指定交付由主Agent统一提交，另附一个只读诊断脚本及其小型结果；无自动合并accepted simulator，无原有数据资产或protected source修改。
+
+## 追加整合：Memory-path MLP 与瓶颈归因（2026-10-26）
+
+追加研究 `MEMORY_PATH_MLP_AND_BOTTLENECK_ATTRIBUTION_V1` 已完成同分支只读整合，见 [访存路径主报告](GPU_MEMORY_PATH_BOTTLENECK_MAP.md)、[逐层漏斗](UPSTREAM_TO_L2_MLP_FUNNEL.csv)、[模型与counter审计](L1_ICNT_TLB_MODEL_AND_COUNTER_AUDIT.md)、[per-set分析](PER_SET_TAG_PRESSURE_CAUSAL_ANALYSIS.md)、[未执行的最小控制计划](MINIMAL_CONTROLLED_EXPERIMENT_PLAN.md)。
+
+**不改变“维持现有T”的决定，但修正“全GPU MLP不足”这一可能误解。** Vector的RO下游独立line每slice峰63–70，B0全set tick末RESERVED总峰90–96，任一set峰均3/16；所以在各slice总峰时刻至少30–32个set同时有pending Tag。Tag压力没有集中到16路，与没有访存并发不同。
+
+Vector最强的三条约束证据是：DRAM域服务/调度排队；L1→L2→lower有限queue反压；core ready/RAW依赖与EP局部bank/landing等待。它们可能属于同一反压链，不能按阻塞次数拆分端到端cycles。DRAM byte利用率77.8143%、scheduler-full26.4978% channel-DRAM-cycle；L2 ingress full32.1966% slice-L2-tick；L1 missq重试1240787。这些是有界模型中的观测，不是物理硬件测量或严格因果排序。
+
+当前runtime无实际TLB/PTW时序模型；LOCAL_XBAR按packet建模，不能证明真实NoC字节链路饱和；异常Bank_Level_Parallism_Col被排除。CFD/DWT完整raw本轮本地未找到，不能用Vector补写它们的全路径瓶颈。单set到达率与Tag RESERVED寿命仍UNKNOWN，未用全GPULittle Law推失败概率。
+
+本次追加实际只做两份既有raw约12.9MB及小metadata的SHA验证/解析，未模拟、构建、恢复、采集或触碰迁移任务。未来若获新授权，最值得的一至两个单因素控制是DRAM域服务缩放和L1 MissQ容量；只形成设计，不启动、不消费余额，不以非零detach为验收条件。T独立性能收益仍无接受证据。

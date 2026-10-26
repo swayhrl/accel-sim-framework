@@ -56,3 +56,9 @@ Goal：EP_L2_TAG_DETACH_CAUSAL_ROOTCAUSE_V1。决定：**维持现有 T；不安
 ## 交付和执行责任
 
 仅主Agent写入独立审查分支本目录。A历史科学、B生产路径、C诊断设计三个只读任务均已完成、汇总、关闭；没有永久科研Lane。交付六份指定文件，外加诊断脚本和离线结果JSON。实际/历史/计划的测试分类见 [MINIMAL_DIAGNOSTIC_PLAN.md](MINIMAL_DIAGNOSTIC_PLAN.md)。原EP-MAIN基准、旧57/44/T0、失败/HOLD、预算和runtime源码保持原有科学身份。
+
+## 追加研究的统一决策补充（2026-10-26）
+
+[Memory-path追加报告](GPU_MEMORY_PATH_BOTTLENECK_MAP.md)证明Vector存在并发和空间分散，并有其它队列压力；不把零Tag触发写成全GPU缺乏MLP。CFD/DWT全路径仍缺本地raw；TLB/PTW未建模，LOCAL_XBAR不支持真实NoC带宽归因。维持T及其claim边界不变。
+
+新增两个未来控制设计：DRAM域服务敏感性优先、L1 MissQ容量条件性第二项，见[最小受控计划](MINIMAL_CONTROLLED_EXPERIMENT_PLAN.md)。这是研究端到端限制，不是寻找非零detach；均未执行、未安排预算，不自动取代W/V独立因果证据需求。
