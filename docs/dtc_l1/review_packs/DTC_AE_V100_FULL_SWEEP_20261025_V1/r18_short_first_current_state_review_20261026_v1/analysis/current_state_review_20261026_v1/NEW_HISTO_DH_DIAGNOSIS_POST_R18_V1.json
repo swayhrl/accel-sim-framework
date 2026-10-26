@@ -1,0 +1,262 @@
+{
+  "schema": "NEW_HISTO_DH_POST_R18_INDEPENDENT_READ_ONLY_DIAGNOSIS_V1",
+  "observed_utc": "2026-10-26T01:58:03.312653+00:00",
+  "cohort": "E2-AEV100-2c506bf13c81ff5d-DH",
+  "uuid": "8fd324a9-23c6-420b-90ee-f6d5bdae00a5",
+  "program": "histo",
+  "arm": "DH",
+  "actual_RESULT_state": "FAIL_CLOSED_UNACCEPTED_ARCHIVED_NO_RETRY",
+  "accepted_cycles": null,
+  "scientific_acceptance": false,
+  "model_retries": 0,
+  "short_job_PASS": false,
+  "actually_started_and_failed": true,
+  "actual_R18_lease": {
+    "pid": 1371516,
+    "start_ticks": 973154389,
+    "fd": 4,
+    "request": "DTC_AE_V100_FULL_SWEEP_20261025_V1",
+    "additional_requests": [
+      "DTC_AE_FAILURE_REPAIR_VALIDATION_20261025_V1",
+      "DTC_AE_LAVAMEM_REPAIR_20261026_V2",
+      "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1"
+    ],
+    "controller_sha256": "b7c302aff28712729efc4c06d5744e8cd184c115a069b2536c52b2cba45e6b31",
+    "scope": "Real R18 continuation; original40/lava2/late4 existing budgets only;old23 independent metadata;no spent retries",
+    "operational_parent_bridge_manifest_sha256": "f2fbdc3386fbb1968384d797ea18a4d341cf085c005b5c107156bb400f9c1315"
+  },
+  "INTENT_DONE_EXIT_registry_receipt_join_verified": true,
+  "actual_model_generation": {
+    "pid": 1371669,
+    "start_ticks": 973155671,
+    "proc_present": false
+  },
+  "launcher_wait_returncode": 1,
+  "elapsed_seconds": 12.508412612602115,
+  "peak_RSS_bytes": 541065216,
+  "recorded_secondary_stop_reason": "DTC_NATURAL_TELEMETRY_CLOSURE_MISSING",
+  "direct_trigger": "Old Core shader_print_dtc_l1_stats shader.cc6038 assertion total.oo_pib_occupancy==0 failed; native self-SIGABRT followed by actual exit1. Missing NATURAL is consequence of abort.",
+  "assertion_lines": [
+    {
+      "line": 1610,
+      "text": "DTC_SERVICE_V1_maccel-sim.out: /root/data/dtc_main_20261023_v1/ae_fair_v1/core/src/gpgpu-sim/shader.cc:6038: void gpgpu_sim::shader_print_dtc_l1_stats(FILE*) const: Assertion `total.oo_pib_occupancy == 0' failed."
+    }
+  ],
+  "strace_actual_termination": [
+    "1371669 tgkill(1371669, 1371669, SIGABRT) = 0",
+    "1371669 --- SIGABRT {si_signo=SIGABRT, si_code=SI_TKILL, si_pid=1371669, si_uid=0} ---",
+    "1371669 exit_group(1)                   = ?",
+    "1371669 +++ exited with 1 +++"
+  ],
+  "raw_double_SHA_replayed": true,
+  "raw_uncompressed_bytes": 113313,
+  "raw_uncompressed_sha256": "ca1d513977542a9320b4a0ff0e60e0a18cf36ceefccc2c5dd1072008779f009c",
+  "progress_records": 7,
+  "last_progress": {
+    "v": 1,
+    "pid": 1371669,
+    "start_ticks": 973155671,
+    "generation": "8fd324a9-23c6-420b-90ee-f6d5bdae00a5",
+    "input": "2c506bf13c81ff5dd4c286fa2f6d7a9edea513a5c8f38c60cfc746e36e9c5f64",
+    "roi": "4460e3fae01fa40f29c99926fc22d85b9cb6869431a29f5637cfde7658c2269c",
+    "seq": 7,
+    "mono_ns": 9731567106581192,
+    "epoch": 0,
+    "phase_epoch": 5,
+    "phase": "SIMULATE",
+    "stream_id": 0,
+    "stream_scope": "whole_input",
+    "completed": 6057548,
+    "end": "NONE"
+  },
+  "resources": {
+    "outer_samples": 2,
+    "all_RAM_disk_pass": true,
+    "policy_samples": 2,
+    "all_policy_continue_or_warn_no_stop": true
+  },
+  "actual_framework_commit": "3b362ab5c0934fdcea9697b10244c6de5c4a14ae",
+  "actual_core_commit": "2e3bef4364e578cddd0e881c0baace2e51c55930",
+  "frozen_ancestor_framework_commit": "cfd3ff56d7ba6642dab6c7710ec4f6065168174e",
+  "actual_binary": {
+    "bytes": 301432,
+    "path": "/root/data/dtc_main_v100_sweep_20261025_v1/telemetry_v2/framework-build/accel-sim.out",
+    "sha256": "b963139b72ea1fe5000c35803386f3a5b5eaf4905e127f1bdb12f16e13486329"
+  },
+  "first_kernel_partial_diagnostic_only": {
+    "processing": [
+      "Processing kernel /root/workspace/assets/traces/bundles/7e62ee69713480076957f59f2cdc346681853f67fff52449cc82cafede3a7ccc/tree/kernel-1.traceg"
+    ],
+    "printed_totals": {
+      "gpu_tot_sim_cycle": 8310,
+      "gpu_tot_sim_insn": 6197568,
+      "gpu_tot_issued_cta": 64
+    },
+    "expected_first_kernel_instructions": 6197568,
+    "whole_input_expected": {
+      "CTA": 4260,
+      "instructions": 2196264084,
+      "kernels": 80
+    },
+    "whole_input_completion": false
+  },
+  "same_input_old_Histo_DM": {
+    "cohort": "E2-AEV100-2c506bf13c81ff5d-DM",
+    "uuid": "221010cd-8185-4a85-a380-9eaecff8de8b",
+    "diagnosis_path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/failure_diagnosis_20261025_v1/histo/HISTO_DM_DIAGNOSIS.json",
+    "diagnosis_sha256": "967b34e7c6000c4ae6d87c270592d2672c059eaa58c3942a3aaf0324ce817461",
+    "same_input_digest_and_binding_SHA": true,
+    "same_expected_population": true,
+    "same_old_Framework_Core": true,
+    "different_cache_hash_arm": true
+  },
+  "source_family_assessment": {
+    "confidence": "HIGH_SOURCE_FAMILY_MATCH_WITH_KNOWN_ZERO_DEST_ATOMIC_M4_DEFECT",
+    "evidence": "Prior exact first-kernel body audit for this same digest found64 RED.MIN+64 RED.MAX, destination_count0, active mask00000001. Old decoder/M4 path can finish architectural atomics without closing zero-destination external PIB dependencies. New DH independently reaches same first-kernel stats assertion on same old Core.",
+    "prior_first_kernel_SHA": "a2d46bf42d4bbca872daf4e74952cd933c4833277f8f9bd0699756e64c223c95",
+    "prior_first_kernel_audit_path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/failure_diagnosis_20261025_v1/histo/FIRST_KERNEL_FULL_READ_FACTS.json",
+    "prior_first_kernel_audit_SHA": "6fc23a0aa6e0fc1d0ee5b8597bca14002274f5abb883785398147c76c585ba31",
+    "no_current_trace_body_reread": true,
+    "repair_Core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+    "repair_applicability": "The separately qualified Core9eed zero-destination atomic completion plus kernel-specific drain repair addresses this source family; this DH point has not run that repair and no PASS is inferred.",
+    "uncertainty": "Historical residual OO owner UID/type/count were not printed. Do not claim exactly128 residual owners or exclusive atomic contribution from the assertion alone. This is not evidence of AE/hash-specific scientific causality."
+  },
+  "archive": {
+    "status": "ARCHIVE_VERIFIED_AND_RESTORE_VERIFIED_NATIVE_TARGET",
+    "scientific_status": "STOP_UNACCEPTED",
+    "target_mount_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/increments/20261025_dtc_ae_v100_full_sweep_results/E2-AEV100-2c506bf13c81ff5d-DH/6f0d7cafa02f5b739e77b5b2db09f3088966e578c0d267e932c6b3ea49540bc0",
+    "native_restore": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/recovery/6f0d7cafa02f5b739e77b5b2db09f3088966e578c0d267e932c6b3ea49540bc0",
+    "archive_sha256": "d5b41db145583708eb0dcc9ff224eb62494caaea87e65baf86fea2223e7682e5",
+    "SOURCE_KEEP": true,
+    "performed_by_existing_controller_not_this_diagnosis": true
+  },
+  "latest_original_accounting": {
+    "consumed": 271,
+    "counts": {
+      "PASS": 232,
+      "missing_observer_receipt_gone": 3,
+      "native_failure_unaccepted": 17,
+      "live": 19
+    },
+    "native_failure_cohorts": [
+      "E2-AEV100-09f94fcc7494a03b-DH",
+      "E2-AEV100-09f94fcc7494a03b-DM",
+      "E2-AEV100-1df9d5479504d9c7-DH",
+      "E2-AEV100-1df9d5479504d9c7-DM",
+      "E2-AEV100-2b93f70cd0666c51-CM",
+      "E2-AEV100-2b93f70cd0666c51-DH",
+      "E2-AEV100-2c506bf13c81ff5d-DH",
+      "E2-AEV100-2c506bf13c81ff5d-DM",
+      "E2-AEV100-769e6d9fd5f9cd53-CH",
+      "E2-AEV100-977e34578994c3d2-CH",
+      "E2-AEV100-977e34578994c3d2-DM",
+      "E2-AEV100-ddb6806316876a85-CH",
+      "E2-AEV100-ddb6806316876a85-CM",
+      "E2-AEV100-ddb6806316876a85-DH",
+      "E2-AEV100-e7bb67e63e3c3847-DH",
+      "E2-AEV100-e9110566572e0e0d-DH",
+      "E2-AEV100-e9110566572e0e0d-DM"
+    ],
+    "missing_receipt_cohorts": [
+      "E2-AEV100-09f94fcc7494a03b-CM",
+      "E2-AEV100-85700545918390d7-DM",
+      "E2-AEV100-e7c791ce2e4b09ee-DM"
+    ],
+    "known_unaccepted_failure_plus_holes": 20,
+    "admitted_not_started": 13,
+    "normal_not_started_including_unadmitted_Cutcp": 17,
+    "normal_planned_matrix": 288
+  },
+  "followup": "Preserve original negative and existing archive. If full repair validation of this new DH arm is requested, use its own independently authorized finite attempt/scope; no retry or source mutation performed here.",
+  "evidence_pins": [
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-2c506bf13c81ff5d-DH.INTENT.json",
+      "sha256": "d06d40a29da668fafbab07195fef0fcdd9ceab1eca727ffed48176f0e7df5c10",
+      "bytes": 6221
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/qualification_ledger/E2-AEV100-2c506bf13c81ff5d-DH.DONE.json",
+      "sha256": "3c68213dc7ca02862c3a369785bfd675251a63e1f058229fcb3fc2248baa1261",
+      "bytes": 1134
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/8fd324a9-23c6-420b-90ee-f6d5bdae00a5/NATIVE_EXIT.json",
+      "sha256": "3c68213dc7ca02862c3a369785bfd675251a63e1f058229fcb3fc2248baa1261",
+      "bytes": 1134
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/8fd324a9-23c6-420b-90ee-f6d5bdae00a5/NATIVE_LAUNCH.json",
+      "sha256": "f349650824e72de511380e2ca39b533c6912f08410e154726fc6aa36301818b7",
+      "bytes": 43776
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/8fd324a9-23c6-420b-90ee-f6d5bdae00a5/NATIVE_SIMULATOR_PID_AND_MAPS.json",
+      "sha256": "4ac28c050c08c969c0b4ca3b234f86e93c9665e208c6bd119f8dd137cea82bec",
+      "bytes": 10112
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/8fd324a9-23c6-420b-90ee-f6d5bdae00a5/raw.log.gz",
+      "sha256": "0757f2a65acc8366ab8d2cb056803fb06d6167855cdf3d00b9dbda42f39bdb5f",
+      "bytes": 15186
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/8fd324a9-23c6-420b-90ee-f6d5bdae00a5/progress.jsonl.gz",
+      "sha256": "974f84f42823858e26fcb0ed058588cd190bf5b4cc3b0fff917e011c27df8fe2",
+      "bytes": 521
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/8fd324a9-23c6-420b-90ee-f6d5bdae00a5/RESOURCE_SAMPLES.jsonl.gz",
+      "sha256": "673fdd4a3a5314f71a43c1db22c948afa85663d30a407f10dccba5301811c4f8",
+      "bytes": 3150
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/8fd324a9-23c6-420b-90ee-f6d5bdae00a5/actual_file_process_network.log",
+      "sha256": "990a6856f01823f2b641ef585ac2eb0d7ee4a707f478eac0ec4ec77732fbdd7f",
+      "bytes": 23426
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/E2-AEV100-2c506bf13c81ff5d-DH.RESULT.json",
+      "sha256": "9c9c8f45bc35a78a26ddb1aa91213f21dac895668ceea8b8ba7ee51796148641",
+      "bytes": 3644
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/E2-AEV100-2c506bf13c81ff5d-DH.FAILURE_CLASSIFICATION_R5.json",
+      "sha256": "6622a033539e2b022f7738e4f9b6ab4dc812a22228d16926bdd92066390e16e3",
+      "bytes": 1956
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/E2-AEV100-2c506bf13c81ff5d-DH_ARCHIVE_RECEIPT.json",
+      "sha256": "6273d214befe77ca5d38250fc1c741cb137b29eb5704407a86f3c6275fb9c4b3",
+      "bytes": 1244
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/failure_diagnosis_20261025_v1/histo/HISTO_DM_DIAGNOSIS.json",
+      "sha256": "967b34e7c6000c4ae6d87c270592d2672c059eaa58c3942a3aaf0324ce817461",
+      "bytes": 7854
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/analysis/failure_diagnosis_20261025_v1/histo/FIRST_KERNEL_FULL_READ_FACTS.json",
+      "sha256": "6fc23a0aa6e0fc1d0ee5b8597bca14002274f5abb883785398147c76c585ba31",
+      "bytes": 8125
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/qualification/2c506bf13c81ff5dd4c286fa2f6d7a9edea513a5c8f38c60cfc746e36e9c5f64/kernel_1.json",
+      "sha256": "934bc6ff8c1f04ff5777243fbfbdc54aac5ba0c4531634405687926143c0acc6",
+      "bytes": 3160
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/docs/dtc_l1/repairs/20261025_zero_dest_atomic_lifecycle.md",
+      "sha256": "74d808f20ffe71443bad892792fec2ee57d5e5e2353a05d6411ee62ab52a35dd",
+      "bytes": 4092
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/control/CORE_BUILD_PROFILE.json",
+      "sha256": "4547cb4f9362c9c33f2e87502920284c4ecb61208f9ced4d6fd65169497a8029",
+      "bytes": 6751
+    }
+  ],
+  "full_trace_body_reads": 0,
+  "model_starts_by_diagnosis": 0,
+  "source_registry_RESULT_or_ledger_mutations": 0,
+  "signals": 0
+}

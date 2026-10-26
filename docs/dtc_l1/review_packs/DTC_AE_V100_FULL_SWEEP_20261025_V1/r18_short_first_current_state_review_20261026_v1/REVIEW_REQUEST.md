@@ -15,7 +15,7 @@ or natural-exit markers alone as a completed scientific acceptance.
    captured traces*, with recorded SHA/format/population checks. This does not
    prove original native numerical outputs, universal workload coverage, or
    correctness outside the captured domain. Are any claims stronger than evidence?
-3. Is actual R17 identity separated from R18 qualification/not-yet-activation?
+3. Is the original R17/pre-activation snapshot separated from the later real R18 activation in ACTIVATION_STATUS.md?
    The five consumed lava/late launches are actual old-R16 launches. The prior
    R17-binding branch has explicit synthetic CPU evidence, not an already
    observed real R17 science launch. Are all such boundaries maintained?
@@ -27,7 +27,7 @@ or natural-exit markers alone as a completed scientific acceptance.
    cover actual relevant code paths and fail-closed negatives? Are the full
    original strict/source/runtime/population/BA checks still required after CPU
    qualification, including archived failure versus PASS distinctions?
-6. Are all19 original negatives/receipt gaps retained honestly, including the
+6. Are the initial19 original negatives/gaps and later20 after histoDH retained honestly, including the
    independent GESUMMV expected-growth negative and the missing-wait/DONE cases?
    Does any evidence accidentally fabricate a wait status, overwrite a failed
    result, recycle a consumed attempt, or claim full matrix completeness?

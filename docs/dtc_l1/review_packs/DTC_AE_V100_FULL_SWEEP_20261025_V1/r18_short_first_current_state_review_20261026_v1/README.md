@@ -9,11 +9,11 @@ no semantic labels are guessed from their short names. Current evidence reports
 simulation and repair validation; the AE-benefit conclusion is still pending
 matched comparison/closure. Englishv0.23 is the last confirmed paper master.
 
-This is a source-and-facts snapshot: R17 is the actual running controller and
-R18 is qualified but NOT ACTIVATED at the publication snapshot. Root will append
-an explicitly timestamped activation-status commit after publication/readback
-and actual takeover. Such a supplement must distinguish actual activation from
-the qualification-only snapshot; it does not rewrite its historical facts.
+The original8cda publication was a source/facts snapshot with R17 running and
+R18 qualified but not yet activated. Actual R18 takeover has now been recorded
+separately: read ACTIVATION_STATUS.md and STATE_POST_ACTIVATION_V1.json. The older
+cutoff facts and original8cda native document sources remain unchanged; this
+normal follow-up commit updates the review navigation and current status.
 
 The package contains final new R18 code, empirical dispatch policy, explicit
 operational-parent manifest, CPU evidence, independent review and current-state
@@ -23,7 +23,6 @@ runtime tree, live registry, lease or claim state is copied as restart authority
 SOURCE_COPY_MANIFEST.json lists exact source/copy byte joins; the identical
 HANDOFF_COPY_MANIFEST.json is retained for publication-tool compatibility.
 
-There is no fixed54-item source-proof index; an earlier planning reference to54
-was a typo. Only actual R16/R17 publications/qualifications are cited.
+Prior-source evidence references the actual R16/R17 publications and qualifications included here.
 No scientific model, activation, authority, asset movement or deletion occurs
 in packaging. The last confirmed English paper master remainsv0.23.

@@ -1,0 +1,321 @@
+# Actual R18 activation and post-activation review status
+
+R18 was published/read back at commit8cda8c0c6c81c828eab439e56ce47941ce1d2029
+before actual activation. Its unchanged code/qualification source identity is
+b7c302aff28712729efc4c06d5744e8cd184c115a069b2536c52b2cba45e6b31 /
+72f111e38b0d000f29d223600a9b22333dc1df71d23b9f3848bf12111e8a2270.
+The real controller is PID1371516/start973154389, native qualification FD4.
+Root's CST09:54:19 activation verification preserved all16 old model generations
+at takeover and checked the spent identity prefix. Later natural exits/finishes
+are reflected in the separate CST09:57:16 facts, not rewritten into takeover.
+
+At the later cutoff, total live is20:19original plus1late validation. The
+ordinary288 matrix is232 strictPASS +17 native negatives +3 missing-receipt
+engineering gaps +19live +17not-started. Seventeen means13admitted plus Cutcp4;
+the registry remaining85 additionally includes68 historical HOLD. No full-matrix
+or final-consumer closure is claimed. Existing R1 remains21PASS+2old failures,
+all23 independently archived/closed; lava is1PASS+1pending and late3PASS+1live.
+
+Six new original points launched: the four empirically shortest eligible points
+first; histoDH's true abort/DONE freed a slot for3MM CM, and old79CH's natural
+PASS freed one for3MM DM. Scheduling is not acceptance: histoDH terminated after
+12.508s with SIGABRT/exit1 and remains UNACCEPTED/accepted_cycles=null. Its old
+Core2e3/Framework3b362 source has a high-confidence match to the known no-dest RED
+atomic completion family; exact residual UID/count was not captured. No retry,
+new repair cohort or scope expansion is implied by this diagnosis.
+
+STATE_POST_ACTIVATION_V1.json was frozen before the independent histoDH report,
+so its diag_sha=null is preserved. The later exact diagnosis is supplied beside
+it with an independent source-copy SHA; absence at the earlier timestamp is not
+concealed or backfilled. See NEW_HISTO_DH_DIAGNOSIS_POST_R18_V1.json.
+
+The independent agent's remote review read three fixed8cda documents through
+the GitHub connector, passed12 checks without blocking findings, and identified
+the editorial reference and pre-activation supplement as nonblocking updates.
+It is NOT an external ChatGPT session or a human peer review. Its source/time
+boundary is retained in REMOTE_CURRENT_STATE_REVIEW_V1.json. User-requested
+external ChatGPT review should start with REVIEW_REQUEST.md, then this file,
+CURRENT_STATE.md, the exact golden four-arm fields and code/evidence.
+
+The scientific question remains whether AE benefits survive matched traditional
+cache-hash controls (CM/CH/DM/DH exact original golden fields). Current materials
+report simulation/validation evidence, not an AE-benefit conclusion. Complete
+declared traces are not original-native numerical proof; repaired-source cycles
+are not mixed into old-source performance. Negative/HOLD/receipt history and
+Cutcp4/final-consumer open items remain visible. ETA around three weeks is a
+window-based planning extrapolation, not a promised completion date. English
+v0.23 remains the last confirmed paper master.
+
+## Exact post-activation facts
+
+```json
+{
+  "schema": "DTC_R18_REAL_ACTIVATION_CURRENT_STATE_REVIEW_V1",
+  "checked_at_CST": "2026-10-26T09:57:16.164274+08:00",
+  "actual_controller": "R18",
+  "lease": {
+    "pid": 1371516,
+    "start_ticks": 973154389,
+    "fd": 4,
+    "request": "DTC_AE_V100_FULL_SWEEP_20261025_V1",
+    "additional_requests": [
+      "DTC_AE_FAILURE_REPAIR_VALIDATION_20261025_V1",
+      "DTC_AE_LAVAMEM_REPAIR_20261026_V2",
+      "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1"
+    ],
+    "controller_sha256": "b7c302aff28712729efc4c06d5744e8cd184c115a069b2536c52b2cba45e6b31",
+    "scope": "Real R18 continuation; original40/lava2/late4 existing budgets only;old23 independent metadata;no spent retries",
+    "operational_parent_bridge_manifest_sha256": "f2fbdc3386fbb1968384d797ea18a4d341cf085c005b5c107156bb400f9c1315"
+  },
+  "controller_live": true,
+  "publication_commit": "8cda8c0c6c81c828eab439e56ce47941ce1d2029",
+  "publication_readback_path": "/root/data/dtc_failure_repair_20261025_v1/ops/R18_PUBLICATION_READBACK_V1.json",
+  "publication_readback_sha256": "a647b9ab86b63ae15476459155a22340883acfce2b83ba5f0d0b50dc3569d2da",
+  "qualification_checks": 95,
+  "qualification_source_pins": 184,
+  "qualification_sha256": "72f111e38b0d000f29d223600a9b22333dc1df71d23b9f3848bf12111e8a2270",
+  "scopes": {
+    "original": {
+      "request": "DTC_AE_V100_FULL_SWEEP_20261025_V1",
+      "state": "RUNNING",
+      "budget": 356,
+      "remaining": 85,
+      "consumed": 271,
+      "models_live": 19,
+      "real_DONE_count": 249,
+      "archive_receipts": 249,
+      "canonical_states": {
+        "PASS_STRICT_ARCHIVE_NATIVE_RESTORE": 232,
+        "ENGINEERING_MODEL_GONE_RECEIPT_MISSING_PRESERVED": 1,
+        "FAIL_CLOSED_UNACCEPTED_ARCHIVED_NO_RETRY": 16,
+        "ENGINEERING_ISSUE_PRESERVE_ACTUAL_ARTIFACTS": 1,
+        "RESOLVING_ISSUE_NO_MODEL_RETRY": 2
+      },
+      "normal_scientific_matrix_points": 288,
+      "normal_full_declared_input_sets": 72,
+      "strict_PASS": 232,
+      "native_negative_including_independently_closed_GESUMMV": 17,
+      "known_receipt_gaps": 3,
+      "normal_not_started": 17,
+      "admitted_unsealed_not_started": 13,
+      "cutcp_not_yet_admitted": 4,
+      "historical_HOLD_points": 68,
+      "unspent_budget_equation": "85 =68 historical HOLD +17 normal not started"
+    },
+    "repair23": {
+      "request": "DTC_AE_FAILURE_REPAIR_VALIDATION_20261025_V1",
+      "state": "CLOSED",
+      "budget": 23,
+      "remaining": 0,
+      "consumed": 23,
+      "models_live": 0,
+      "real_DONE_count": 23,
+      "archive_receipts": 23,
+      "canonical_states": {
+        "PASS_REPAIR_CORRECTNESS_STRICT_ARCHIVE_RESTORE": 11,
+        "ENGINEERING_ISSUE_PRESERVE_ACTUAL_ARTIFACTS": 10,
+        "FAIL_REPAIR_VALIDATION_ARCHIVED_NO_RETRY": 2
+      },
+      "independent_V2_states": {
+        "PASS_REPAIR_CORRECTNESS_V2_STRICT_ARCHIVE_RESTORE": 21,
+        "FAIL_REPAIR_VALIDATION_ARCHIVED_NO_RETRY": 2
+      },
+      "old_canonical_ENGINEERING_sentinel_rows_are_not_new_pending_or_failures": true
+    },
+    "lava2": {
+      "request": "DTC_AE_LAVAMEM_REPAIR_20261026_V2",
+      "state": "RUNNING",
+      "budget": 2,
+      "remaining": 1,
+      "consumed": 1,
+      "models_live": 0,
+      "real_DONE_count": 1,
+      "archive_receipts": 1,
+      "canonical_states": {
+        "PASS_REPAIR_CORRECTNESS_STRICT_ARCHIVE_RESTORE": 1
+      }
+    },
+    "late4": {
+      "request": "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1",
+      "state": "RUNNING",
+      "budget": 4,
+      "remaining": 0,
+      "consumed": 4,
+      "models_live": 1,
+      "real_DONE_count": 3,
+      "archive_receipts": 3,
+      "canonical_states": {
+        "PASS_REPAIR_CORRECTNESS_STRICT_ARCHIVE_RESTORE": 3
+      }
+    }
+  },
+  "models_live_total": 20,
+  "newly_started_since_R18": [
+    {
+      "cohort": "E2-AEV100-2c506bf13c81ff5d-DH",
+      "uuid": "8fd324a9-23c6-420b-90ee-f6d5bdae00a5",
+      "model_live": false,
+      "real_DONE": true,
+      "returncode": 1,
+      "stop_reason": "DTC_NATURAL_TELEMETRY_CLOSURE_MISSING",
+      "canonical_state": "FAIL_CLOSED_UNACCEPTED_ARCHIVED_NO_RETRY",
+      "archive_receipt_exists": true,
+      "scope": "original"
+    },
+    {
+      "cohort": "E2-AEV100-977a2f7007cb1f96-CM",
+      "uuid": "f3e9860f-73a3-40ec-8d65-c27ceba9e88a",
+      "model_live": true,
+      "real_DONE": false,
+      "returncode": null,
+      "stop_reason": null,
+      "canonical_state": null,
+      "archive_receipt_exists": false,
+      "scope": "original"
+    },
+    {
+      "cohort": "E2-AEV100-977a2f7007cb1f96-DM",
+      "uuid": "54c51753-7498-4da8-8f74-5a3df5989ebc",
+      "model_live": true,
+      "real_DONE": false,
+      "returncode": null,
+      "stop_reason": null,
+      "canonical_state": null,
+      "archive_receipt_exists": false,
+      "scope": "original"
+    },
+    {
+      "cohort": "E2-AEV100-c885293ad99e21ee-CM",
+      "uuid": "aa2a9d12-99a9-4cab-b934-964efe5936c1",
+      "model_live": true,
+      "real_DONE": false,
+      "returncode": null,
+      "stop_reason": null,
+      "canonical_state": null,
+      "archive_receipt_exists": false,
+      "scope": "original"
+    },
+    {
+      "cohort": "E2-AEV100-c885293ad99e21ee-DH",
+      "uuid": "be98901a-2730-4ea9-86d2-854bab0a59c8",
+      "model_live": true,
+      "real_DONE": false,
+      "returncode": null,
+      "stop_reason": null,
+      "canonical_state": null,
+      "archive_receipt_exists": false,
+      "scope": "original"
+    },
+    {
+      "cohort": "E2-AEV100-ffc8a89493c8a211-DH",
+      "uuid": "43ba88b4-e25c-48de-9dad-3d11015b5b4f",
+      "model_live": true,
+      "real_DONE": false,
+      "returncode": null,
+      "stop_reason": null,
+      "canonical_state": null,
+      "archive_receipt_exists": false,
+      "scope": "original"
+    }
+  ],
+  "empirical_short_policy_candidates": 10,
+  "short_policy_first_fastest_four_programs": [
+    "sgemm DH",
+    "histo DH",
+    "stencil CM",
+    "stencil DH"
+  ],
+  "actual_dispatch_events": [
+    {
+      "state": "DISPATCH_FRESH_EXACT_ATTEMPT",
+      "utc": "2026-10-26T01:52:53.147970+00:00",
+      "request": "DTC_AE_V100_FULL_SWEEP_20261025_V1",
+      "cohort": "E2-AEV100-ffc8a89493c8a211-DH",
+      "CPU": 74
+    },
+    {
+      "state": "DISPATCH_FRESH_EXACT_ATTEMPT",
+      "utc": "2026-10-26T01:52:53.410629+00:00",
+      "request": "DTC_AE_V100_FULL_SWEEP_20261025_V1",
+      "cohort": "E2-AEV100-2c506bf13c81ff5d-DH",
+      "CPU": 75
+    },
+    {
+      "state": "DISPATCH_FRESH_EXACT_ATTEMPT",
+      "utc": "2026-10-26T01:52:53.682041+00:00",
+      "request": "DTC_AE_V100_FULL_SWEEP_20261025_V1",
+      "cohort": "E2-AEV100-c885293ad99e21ee-CM",
+      "CPU": 76
+    },
+    {
+      "state": "DISPATCH_FRESH_EXACT_ATTEMPT",
+      "utc": "2026-10-26T01:52:53.965244+00:00",
+      "request": "DTC_AE_V100_FULL_SWEEP_20261025_V1",
+      "cohort": "E2-AEV100-c885293ad99e21ee-DH",
+      "CPU": 77
+    },
+    {
+      "state": "FAIL_CLOSED_UNACCEPTED_ARCHIVED_NO_RETRY",
+      "utc": "2026-10-26T01:53:20.034682+00:00",
+      "request": "DTC_AE_V100_FULL_SWEEP_20261025_V1",
+      "cohort": "E2-AEV100-2c506bf13c81ff5d-DH"
+    },
+    {
+      "state": "DISPATCH_FRESH_EXACT_ATTEMPT",
+      "utc": "2026-10-26T01:53:20.297635+00:00",
+      "request": "DTC_AE_V100_FULL_SWEEP_20261025_V1",
+      "cohort": "E2-AEV100-977a2f7007cb1f96-CM",
+      "CPU": 75
+    },
+    {
+      "state": "PASS_STRICT_ARCHIVE_NATIVE_RESTORE",
+      "utc": "2026-10-26T01:56:02.592248+00:00",
+      "request": "DTC_AE_V100_FULL_SWEEP_20261025_V1",
+      "cohort": "E2-AEV100-79f8ab6241faeed6-CH"
+    },
+    {
+      "state": "DISPATCH_FRESH_EXACT_ATTEMPT",
+      "utc": "2026-10-26T01:56:02.866786+00:00",
+      "request": "DTC_AE_V100_FULL_SWEEP_20261025_V1",
+      "cohort": "E2-AEV100-977a2f7007cb1f96-DM",
+      "CPU": 70
+    }
+  ],
+  "histo_DH_new_failure_is_not_a_short_success": true,
+  "post_activation_diagnosis_path": "/root/data/dtc_failure_repair_20261025_v1/analysis/current_state_review_20261026_v1/NEW_HISTO_DH_DIAGNOSIS_POST_R18_V1.json",
+  "post_activation_diagnosis_sha256": null,
+  "existing_model_preservation_receipt_path": "/root/data/dtc_failure_repair_20261025_v1/ops/R18_LIVE_ACTIVATION_VERIFICATION_V1.json",
+  "existing_model_preservation_receipt_sha256": "ef8e273f9257adf9e5e0626fe97531d8f52ee9f51ed3b7d4ed4c00a47f443b76",
+  "native_entry_sha256": "688039ea418b79ac44bf89065ec6960d0f789d7ad986ecbb31e06fea0e65eb1d",
+  "native_free_GiB": 33.877960205078125,
+  "ordinary_initial_RAM_GiB": 4,
+  "original_model_cap": 40,
+  "repair_slots_count_independently": true,
+  "host_floor_GiB": 64,
+  "effective_cgroup_floor_GiB": 48,
+  "disk_floor_GiB": 5,
+  "LAVA_estimated_peak_GiB": 96,
+  "short_runtime_estimates_are_heuristics": true,
+  "previous_4_to_8_hour_repair_ETA_may_change_under_short_first_priority": true,
+  "scientific_conclusions": {
+    "AE_gain_survives_matched_hash_control": "NOT_YET_ESTABLISHED",
+    "native_application_capture_completeness_or_numerical_correctness": "NOT_NEWLY_CERTIFIED; current simulations cover admitted whole declared traces",
+    "repair_cycles_merge_into_original_performance": false,
+    "last_confirmed_paper_master": "English v0.23",
+    "historical_failures_or_receipt_gaps_refunded_or_relabelled_PASS": false
+  },
+  "open_items": [
+    "New histo DH old-Core atomic assert is a real negative; source fix exists but its separate full-point repaired validation has not been newly registered.",
+    "New original lavaMD DH old-framework parser failure remains a separate negative pending additional repaired validation.",
+    "Four Cutcp points have not been admitted; original final-consumer older completion gate is not yet closed.",
+    "Three historical observer receipt gaps remain charged and unaccepted.",
+    "Long per-point runtime forecasts are linear extrapolations, not guaranteed completion or evidence acceptance dates."
+  ],
+  "operator_actions_by_this_fact_collector": {
+    "simulation_starts": 0,
+    "authority_or_ledger_writes": 0,
+    "asset_migrations_or_deletions": 0,
+    "process_signals": 0
+  }
+}
+```

@@ -1,3 +1,20 @@
+# Latest actual status and retained qualification snapshot
+
+**R18 is now actually active.** Read [ACTIVATION_STATUS.md](ACTIVATION_STATUS.md)
+for the timestamped takeover and post-activation facts (CST09:57:16). The
+pre-activation source/facts snapshot preserved below was correct at its earlier
+cutoff; its R17-active/R18-not-yet-active wording is historical, not the latest
+controller state. No original cutoff facts or qualification bytes were edited.
+
+Latest ordinary accounting:288 =232 strictPASS +17 native negatives +3 receipt
+gaps +19live +17not-started. Seventeen not-started means13admitted plus Cutcp4.
+The20negative/gap cases include the new histoDH abort, not a PASS. Total live20
+means19original plus1late validation. The three-week ETA remains an extrapolation.
+
+---
+
+## Original pre-activation review snapshot
+
 # Current state at the R18 publication snapshot
 
 **Actual controller: R17. R18: qualified, not activated in this snapshot.**
