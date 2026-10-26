@@ -1,4 +1,4 @@
-# DRAM935 执行准备包：已授权推进，待资源口径重核
+# DRAM935 早期执行准备包（历史，已由新Goal规格接替）
 
 本包承接用户2026-10-26的“同意，做吧”，范围为前述 E1 DRAM域服务敏感性优先执行。**当前状态：STAGED_PENDING_RESOURCE_RECONCILIATION；实际模拟器/帮助资格调用0、注册0、消耗0。实验尚未运行，尚无性能结果。**
 
@@ -57,3 +57,7 @@ timeout 30s nice -n 10 env PYTHONDONTWRITEBYTECODE=1 python3 prepare_only.py
 8. 科学接受后按现有COPY_ONLY真164归档、全SHA及独立native恢复流程处理；SOURCE_KEEP。
 
 当前剩余项是实际准入阻塞与尚未安装的执行工程，不是缺少用户对E1推进的同意。本包不声称已经可经sole-entry启动，也不把准备工作登记成应用接受。
+
+## 后续实际执行版本
+
+用户后来明确授权新的有限受控Goal。实际运行使用[CONTROLLED_SENSITIVITY协议](../CONTROLLED_SENSITIVITY_20261026_V1/PROTOCOL_AND_STATUS.md)及/root/data/ep_memory_path_sensitivity_20261026_v1/cases下的新冻结spec；本目录旧spec从未注册启动，保持历史证据，不可据它重放实验。

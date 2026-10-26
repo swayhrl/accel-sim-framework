@@ -136,3 +136,7 @@ Vector最强的三条约束证据是：DRAM域服务/调度排队；L1→L2→lo
 ## 用户存储约定及预留核算修正（2026-10-26）
 
 大资产默认真164，174仅必要热工作集；显著I/O影响先报告，空间由用户清理。已写入本项目AGENTS.md。先前12.12GiB清理缺口来自把DTC并发池ceiling全额相加的旧保守算式，不能当实际增量需求，确定性结论撤回；详见[存储口径修正](STORAGE_ACCOUNTING_CORRECTION.md)。当前为STAGED_PENDING_RESOURCE_RECONCILIATION，仍未启动E1或修改任何peer预留。
+
+## 新的有限受控敏感性Goal（2026-10-26，进行中）
+
+用户明确授权新Goal，现已按精确新spec、native入口和独立预算启动E1 DRAM935控制，UUID375881f2-a811-4f71-a7cf-d171eed6fdf7；E2 L1MissQ32仅条件性准备，未启动。详见[预注册协议与状态](CONTROLLED_SENSITIVITY_20261026_V1/PROTOCOL_AND_STATUS.md)。旧DRAM935执行准备包及其HOLD回执是此前未注册阶段的历史记录，本Goal使用新的ROOT/cases规格，不复用旧资格或已消费请求。E1尚未完成，暂无新的性能结论。
