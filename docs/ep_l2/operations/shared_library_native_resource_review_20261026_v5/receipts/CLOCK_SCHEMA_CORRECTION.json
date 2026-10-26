@@ -1,0 +1,22 @@
+{
+  "status": "ROOT_SCHEMA_INTERPRETATION_CORRECTION",
+  "created": 1793024636.9634588,
+  "original_probe_ref": {
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/root/warpsync_clock_independent_replay_1793021061624831525/ROOT_STATIC_COVERAGE_AND_HANDLE_NEGATIVE_PROBE_V1.json",
+    "sha256": "c2a76daaa3b095631583b9b0768886abcb38018a83a0f5212d0703ea6e310ab7"
+  },
+  "producer_source_ref": {
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/warpsync_plain_build_and_worker_20261026_v1/source/ada_semantics.h",
+    "sha256": "4ae1ed14247bb5ebb362ffe5a65f0cc54999e806dcab32d28281510a7bbbbd43",
+    "line": 68
+  },
+  "correct_schema": "ada-static.tsv field index9 is ctrl_static, not CUfunction handle; handle is lifecycle field index5 only",
+  "valid_findings": [
+    "missing unexecuted PC784 is accepted with49/50 static rows",
+    "changing static ctrl_static to deadbeef is incorrectly accepted"
+  ],
+  "retracted_interpretation": "The second mutation did not replace static function handles because that field does not exist in the old static journal",
+  "remaining_dynamic_binding_gap": "Static-journal ctx/CUfunction handle must be added and joined to actual lifecycle launch; original probe does not prove this directly",
+  "gpu_admission_issued": false,
+  "old_receipt_retained_immutable": true
+}
