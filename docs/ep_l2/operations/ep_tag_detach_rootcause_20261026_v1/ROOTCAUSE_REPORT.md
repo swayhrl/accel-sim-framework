@@ -132,3 +132,7 @@ Vector最强的三条约束证据是：DRAM域服务/调度排队；L1→L2→lo
 用户已同意推进，已形成 [DRAM935执行准备包](DRAM935_EXECUTION_PACKAGE/README.md)：复用同binary850MHz接受基线，只请求新增一个935MHz端点；配置、source身份和三项非启动负控制通过。当前为 **STAGED_RESOURCE_HOLD**：本地ext4可用约33.64GiB，计入正在运行的DTC预留及现有EP规则后需要45.75GiB，缺约12.12GiB。未注册或消耗预算，未改共享native入口，未调用模拟器或help，尚无实验结果。L1 MissQ控制未叠加。
 
 这不会改变前述科学结论；它是已授权研究的执行准备/资源阻塞记录，不能写成E1已完成或有性能收益。
+
+## 用户存储约定及预留核算修正（2026-10-26）
+
+大资产默认真164，174仅必要热工作集；显著I/O影响先报告，空间由用户清理。已写入本项目AGENTS.md。先前12.12GiB清理缺口来自把DTC并发池ceiling全额相加的旧保守算式，不能当实际增量需求，确定性结论撤回；详见[存储口径修正](STORAGE_ACCOUNTING_CORRECTION.md)。当前为STAGED_PENDING_RESOURCE_RECONCILIATION，仍未启动E1或修改任何peer预留。

@@ -73,12 +73,14 @@ def verify(package):
     resources=resource_snapshot(s)
     holds=[]
     if not resources["consistent_snapshot"]:holds.append("EPOCH_REGISTRY_SNAPSHOT_MISMATCH")
-    if not resources["disk_pass"]:holds.append("RESOURCE_DISK_HOLD")
+    if not resources["disk_pass"]:holds.append("LEGACY_FULL_CEILING_THRESHOLD_FAIL_REQUIRES_RECONCILIATION")
     if not resources["RAM_pass"]:holds.append("RESOURCE_RAM_HOLD")
     if not resources["EP_request_registered"]:holds.append("EXACT_REQUEST_REGISTRATION_PENDING")
     holds+=["NEW_NATIVE_PRELAUNCH_QUALIFICATION_PENDING","EXACT_NATIVE_ENTRY_ROUTE_PENDING"]
     return {"schema":"EP_DRAM935_PREPARE_ONLY_RECEIPT_V1",
-        "status":"STAGED_RESOURCE_HOLD" if not resources["disk_pass"] else "STAGED_NOT_LAUNCH_AUTHORITY",
+        "status":"STAGED_PENDING_RESOURCE_RECONCILIATION",
+        "resource_formula_scope":"LEGACY_FULL_PEER_POOL_CEILINGS; not current incremental-growth launch admission",
+        "actual_incremental_write_admission":"UNKNOWN_PENDING_RECONCILIATION",
         "cohort":C,"spec_sha256":sha(package/"FROZEN_SPEC.json"),
         "authorization_sha256":sha(package/"USER_AUTHORIZATION.json"),
         "static_identity_and_single_factor_check":"PASS",

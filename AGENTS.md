@@ -30,3 +30,16 @@ This supersedes the old inventory only for present asset scope/readiness; scient
 
 Latest SM70 member-header statistics: docs/ep_l2/operations/ep_main_sm70_trace_statistics_20261024_v3/SM70_TRACE_STATISTICS.md.
 53 suite-program families with trace, not 53 EP-qualified workloads; regular and fraction-only are distinct.
+
+## User storage preference — 2026-10-26
+
+For this EP-L2 project, follow the user's explicit instruction:
+
+> 把大资产应该放在164写在你的上下文中，当然如果很影响速度的情况，你可以向我报告，空间不够我来清理。
+
+- Large trace inputs, datasets, bulk results and long-term archives belong on genuine164 by default. Use the established verified164 namespace; do not proactively duplicate bulk assets onto174-new.
+- Keep only necessary execution-time hot output, bounded temporary working sets and short-lived verification copies on174-new. Reuse existing qualified binaries/inputs rather than making new large copies.
+- If164 I/O materially slows the work, report measured throughput/time, the affected step, proposed cache size and expected benefit before choosing a storage exception. Do not assume a large local cache is required.
+- If space is insufficient, report actual free space and separately itemize remaining committed growth, temporary result/restore writes and pool ceilings. The user will handle cleanup. Do not delete source assets, reduce peer reservations, move bulk assets or interfere with active migration/collection to free space.
+- A concurrency pool ceiling is not automatically an additional unallocated write commitment. Existing on-disk bytes already reduce df free space. Reconcile current outstanding growth before claiming a cleanup deficit; retain old conservative receipts as historical evidence.
+- The DRAM935 execution authorization remains bounded and pending proper native admission. Storage preference does not bypass sole-entry, exact-budget, source qualification or resource gates.
