@@ -1,0 +1,93 @@
+{
+  "schema": "COMPLETE_CTA_DERIVED_TRACE_V1",
+  "kind": "DERIVED_COMPLETE_CTA_TRACE",
+  "asset_id": "ORD_Rodinia_backprop_6eae6a4bdafb_A001_CTA_STRIDE_40_V1",
+  "parent_asset_id": "ORD_Rodinia_backprop_6eae6a4bdafb_A001",
+  "parent_commit_sha256": "28a6fe2eda8c5e38316155abe347e529d6f8825f987a36add9cfa177bfa7b51b",
+  "parent_manifest_sha256": "eeda4dbf15c8b1a58f8144214372921f4d688f4eceebb4c7e4c2c4cde875a11b",
+  "parent_binary_sha256": "c9895b44acaabfb00a4b967accc878329312cd5a16f07aea55a3e4d1a362f3e3",
+  "parent_full_application": {
+    "kernel_launches": 2,
+    "ctas": 8192,
+    "warps": 65536,
+    "records": 5472279,
+    "all_warps_terminate": true,
+    "expected_kernel_presence": "YES_SOURCE_ORACLE",
+    "expected_kernel_count": null,
+    "context_count": 1,
+    "stream_ids": [
+      0
+    ],
+    "sampling": "NONE",
+    "commandlist": "traces/kernelslist.g"
+  },
+  "capture_gpu_uuid": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+  "actual_cubin_arch": 89,
+  "suite": "Rodinia",
+  "source_version": "3.1",
+  "program": "backprop",
+  "numerical_status": "INHERITED_PARENT_ONLY: NATIVE_EXECUTION_ONLY_NUMERICAL_UNVERIFIED",
+  "producer_semantic_qualification": "PARENT_ADA7_FULL_RECORD_PASS_WITH_EXACT_SELECTED_BODY_EQUALITY",
+  "consumer_qualification": "NOT_GRANTED; sparse CTA grid remap and cache-context profile require explicit qualification",
+  "sampling": {
+    "kind": "DETERMINISTIC_COMPLETE_CTA_STRIDE",
+    "stride": 40,
+    "selection": "all kernels retained; original CUDA linear CTA index % stride == 0",
+    "linear_index": "x + Nx*(y + Ny*z)",
+    "coordinate_remap": "selected original indices in ascending CUDA order -> (j,0,0); original block shape and all SASS/masks/addresses/dependencies retained",
+    "historical_crop_equivalence": "NOT_CLAIMED; independent explicit policy"
+  },
+  "kernels": [
+    {
+      "name": "kernel-1-ctx_0x62e8fc2b4cc0.traceg.xz",
+      "path": "traces/kernel-1-ctx_0x62e8fc2b4cc0.traceg.xz",
+      "original_grid": [
+        1,
+        4096,
+        1
+      ],
+      "derived_grid": [
+        103,
+        1,
+        1
+      ],
+      "block": [
+        16,
+        16,
+        1
+      ],
+      "parent_ctas": 4096,
+      "selected_ctas": 103,
+      "parent_grouped_sha256": "b14c2a473bcab5dbee52e85c80813405e4213dc27ea384ddf046b178e8681419",
+      "derived_grouped_sha256": "cf4023173b0434fa32a98e93b25ba7b30a9dbc6e97546b3bbfa39a901cdcb1d3"
+    },
+    {
+      "name": "kernel-2-ctx_0x62e8fc2b4cc0.traceg.xz",
+      "path": "traces/kernel-2-ctx_0x62e8fc2b4cc0.traceg.xz",
+      "original_grid": [
+        1,
+        4096,
+        1
+      ],
+      "derived_grid": [
+        103,
+        1,
+        1
+      ],
+      "block": [
+        16,
+        16,
+        1
+      ],
+      "parent_ctas": 4096,
+      "selected_ctas": 103,
+      "parent_grouped_sha256": "95a5b7e5d0f70854dd079252bf5c0f705a19be073636fd9f5ae022f4489d4cbd",
+      "derived_grouped_sha256": "f79416a1e0a2e81fe763276106383801768b81e89471801024f6164042a5e7a0"
+    }
+  ],
+  "generator_sha256": "0f2a6d35e5f2547aa284a075a02fae1b981483d9b10614f6275697368ef513a4",
+  "frozen_parser_sha256": "f4a811c779e9b106c0977af45634d1b7dc01025c9e9b2805b74de6c6c82b879b",
+  "gpu_capture_repeated": false,
+  "source_keep": true,
+  "release_bytes": 0
+}

@@ -1,0 +1,66 @@
+{
+  "schema": "RTX4080_FULL_TRACE_ASSET_V1",
+  "kind": "FULL_APPLICATION_TRACE",
+  "asset_id": "CUDA_SAMPLES_DB3EEA_VECTORADD_4M_ADA7_55C6_V1",
+  "suite": "CUDA Samples",
+  "source_version": "db3eea23946bca2e90a75eca2b5b3e07158a9e11",
+  "program": "vectorAdd",
+  "input": {
+    "elements": 4000000,
+    "seed": 1,
+    "threads_per_block": 256
+  },
+  "capture_gpu_uuid": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+  "actual_cubin_arch": 89,
+  "embedded_PTX": {
+    "listing": "PTX file    1: vectorAdd.sm_89.ptx\n",
+    "loaded_code": "SM89 cubin validated to exact function/PC map; no JIT substitute"
+  },
+  "producer_sha256": "55c6f4829e8c92e11e0ab54496bf8f507f6cfa3a10cd01a857c6de147ee68b73",
+  "contract_sha256": "97901eb373fc94b041c5ef6923e0e5ca1635edd1bac4213d53c28271abb6c184",
+  "binary_sha256": "1819fe6c9720b417e34a122e9b013bf1b09835850e23606d901fdf1ca8b2227f",
+  "map_manifest_sha256": "83267f04e942655f0b962517884d3b2cdaeb6d05585eb5baa59edc9339a2b212",
+  "validator_sha256": "f4a811c779e9b106c0977af45634d1b7dc01025c9e9b2805b74de6c6c82b879b",
+  "semantic_map_maker_sha256": "e9d260f72299b2d25aea18fcbbc273fcf5eefcb1deb9a0e26d3ba453b38aa44b",
+  "full_validation_rechecked_on_NAS_copy": true,
+  "pipeline_worker_sha256": "1309aae1576c13962cb084c277c063981fef756fdbaa5778b654268ecf8be98d",
+  "postprocessor_sha256": "91ccc18db2a9859b565f4a210506554d3866ee63ca78149fe1972023465826c5",
+  "pump_sha256": "0b600f06d592b638663f7bb07adcc22b86505726b1664fe2e168eb634ae11095",
+  "original_capture": {
+    "path": "/data/c16/ada_trace_semantics_20261024_v1/attempts/vector4m_v7_final_attempt1",
+    "execution": {
+      "pid": 381252,
+      "start_ticks": "344267288",
+      "started": 1792819776.9248464,
+      "tool_sha256": "55c6f4829e8c92e11e0ab54496bf8f507f6cfa3a10cd01a857c6de147ee68b73",
+      "binary_sha256": "1819fe6c9720b417e34a122e9b013bf1b09835850e23606d901fdf1ca8b2227f",
+      "exit_code": 0,
+      "elapsed": 2.721386432647705
+    },
+    "reuse_existing_capture": true,
+    "additional_gpu_processes": 0
+  },
+  "full_application": {
+    "kernel_launches": 1,
+    "ctas": 15625,
+    "warps": 125000,
+    "records": 2125000,
+    "active_lane_instruction_instances": 64000000,
+    "all_warps_terminate": true,
+    "sampling": "NONE",
+    "context_count": 1,
+    "h2d_copies": 2,
+    "h2d_bytes": 32000000,
+    "commandlist": "traces/kernelslist.g",
+    "stream_ids": [
+      0
+    ]
+  },
+  "numerical_status": "PASS_MAX_ABS_ERROR_0",
+  "output_digest_fnv64": "0a8162dae8a16ac5",
+  "producer_semantic_qualification": "ADA7_ORDINARY_FULL_RECORD_PASS",
+  "consumer_qualification": "NOT_AUTOMATICALLY_GRANTED; per profile independent qualification required",
+  "hardware_timing_calibration": "NOT_GRANTED",
+  "source_keep": true,
+  "release_bytes": 0
+}

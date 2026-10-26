@@ -1,0 +1,87 @@
+{
+  "schema": "RTX4080_FULL_TRACE_ASSET_V1",
+  "kind": "FULL_APPLICATION_TRACE",
+  "asset_id": "ORD_LATE_sgemm_ce1c18b94292_A001",
+  "suite": "Parboil",
+  "source_version": "4e0fc548",
+  "program": "sgemm",
+  "variant": "small_complete_official_input__host_io_return_defined_v1",
+  "input_identity": [
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/parboil_source_verified/datasets/sgemm/small/input/matrix1.txt",
+      "bytes": 184278,
+      "sha256": "7afc2712f5847eeedc41448514656d38a4308a30539f6b18c4750cbfd182cfac"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/parboil_source_verified/datasets/sgemm/small/input/matrix2.txt",
+      "bytes": 230353,
+      "sha256": "7854a5288acb9abf724ee8dd5d40c639ad8d90ae185c6812437227a47cf11278"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/parboil_source_verified/datasets/sgemm/small/input/matrix2t.txt",
+      "bytes": 230353,
+      "sha256": "1ffb4a17a41808b35c43090c285f3a4e9b8899bd0ae9d66b3e955a11378b5ded"
+    }
+  ],
+  "argv": [
+    "/data/c16/rtx4080_suite_fill_20261024_v1/bin/parboil_sgemm_host_return_v1",
+    "-i",
+    "/data/c16/rtx4080_suite_fill_20261024_v1/assets/parboil_source_verified/datasets/sgemm/small/input/matrix1.txt,/data/c16/rtx4080_suite_fill_20261024_v1/assets/parboil_source_verified/datasets/sgemm/small/input/matrix2.txt,/data/c16/rtx4080_suite_fill_20261024_v1/assets/parboil_source_verified/datasets/sgemm/small/input/matrix2t.txt",
+    "-o",
+    "actual.out"
+  ],
+  "binary_member": "bin/application",
+  "binary_sha256": "c606d93e18f91fcde078b337b0d2ee402dd59ae0a471fcfa0c2bf8e587337337",
+  "capture_gpu_uuid": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+  "actual_cubin_arch": 89,
+  "embedded_PTX_listing": "PTX file    1: main.sm_89.ptx\n",
+  "producer_sha256": "55c6f4829e8c92e11e0ab54496bf8f507f6cfa3a10cd01a857c6de147ee68b73",
+  "contract_sha256": "97901eb373fc94b041c5ef6923e0e5ca1635edd1bac4213d53c28271abb6c184",
+  "validator_sha256": "f9f8a05ca7e0f8afe60e7d9a34f4884a9d1cb920b2212e41ed9a4faf19975af1",
+  "frozen_parser_sha256": "f4a811c779e9b106c0977af45634d1b7dc01025c9e9b2805b74de6c6c82b879b",
+  "map_manifest_sha256": "20ef17af5eef6df995ea2d9c56a966424fc90afb2b0b883abb98ce970ca28025",
+  "map_maker_sha256": "a2e7ee38aa722465250c53096aea50bcd93623fea5b60114486538429dce1f6e",
+  "postprocessor_sha256": "5d3ffcd3cf000e1f72e2adf97b4185217a51e1fe0c147c5c39500130e418e66d",
+  "pump_sha256": "8ff3e634870ae34071362afb834245291a49f8d9e37e524462515e3a95771295",
+  "worker_sha256": "1cce2a03cd26d6b4e9b027fd665c57bcdd829260b14d23eb1e08b19336d5a339",
+  "full_application": {
+    "kernel_launches": 1,
+    "ctas": 10,
+    "warps": 40,
+    "records": 95560,
+    "all_warps_terminate": true,
+    "expected_kernel_presence": "YES_SOURCE_ORACLE",
+    "expected_kernel_count": null,
+    "context_count": 1,
+    "stream_ids": [
+      0
+    ],
+    "sampling": "NONE",
+    "commandlist": "traces/kernelslist.g"
+  },
+  "tracer_control_flags": {
+    "INSTR_BEGIN": "0",
+    "INSTR_END": "4294967295",
+    "C16_EXACT_ROOT_FUNCTION_ONLY": "0",
+    "C16_USE_NVBIT_STATIC_INDEX": "0",
+    "ENABLE_SPINLOCK_FAST_FORWARD": "0",
+    "SPINLOCK_ITER_TO_KEEP": "1",
+    "TERMINATE_UPON_LIMIT": "0",
+    "TRACE_LINEINFO": "0",
+    "EXCLUDE_PRED_OFF": "1",
+    "TOOL_VERBOSE": "0",
+    "TOOL_TRACE_CORE": "0"
+  },
+  "capture_limits": {
+    "capture_timeout_sec": 172800,
+    "capture_max_bytes": 2199023255552
+  },
+  "numerical_status": "CAPTURE_REFERENCE_PASS",
+  "input_byte_identity_qualification": "DECLARED_FILE_SHA_OR_DETERMINISTIC_SOURCE;NO_UNRECORDED_SEED_CLAIM",
+  "native_state": null,
+  "producer_semantic_qualification": "ADA7_ORDINARY_FULL_RECORD_PASS",
+  "consumer_qualification": "NOT_AUTOMATICALLY_GRANTED; per-profile required",
+  "hardware_timing_calibration": "NOT_GRANTED",
+  "source_keep": true,
+  "release_bytes": 0
+}

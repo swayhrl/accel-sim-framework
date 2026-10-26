@@ -1,0 +1,70 @@
+{
+  "schema": "COMPLETE_CTA_DERIVED_TRACE_V1",
+  "kind": "DERIVED_COMPLETE_CTA_TRACE",
+  "asset_id": "C8_SDK42_VECTOR_SIZE4000000_A001_CTA_STRIDE_40_V1",
+  "parent_asset_id": "C8_SDK42_VECTOR_SIZE4000000_A001",
+  "parent_commit_sha256": "1e34e99c852e60271226d7f9844b5e0a8dae1f2795c97103c6a0dad7c766b05c",
+  "parent_manifest_sha256": "9b9d83f3129181bba378bb9d6ba3d41a7fec6430b2f2916684bb313a544074b4",
+  "parent_binary_sha256": "46792c2d326171628cfcd01e3285d1840d917b4bb58c33dfa98c404518572507",
+  "parent_full_application": {
+    "kernel_launches": 1,
+    "ctas": 15625,
+    "warps": 125000,
+    "records": 2000000,
+    "all_warps_terminate": true,
+    "expected_kernel_presence": "YES_SOURCE_ORACLE",
+    "expected_kernel_count": 1,
+    "context_count": 1,
+    "stream_ids": [
+      0
+    ],
+    "sampling": "NONE",
+    "commandlist": "traces/kernelslist.g"
+  },
+  "capture_gpu_uuid": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+  "actual_cubin_arch": 89,
+  "suite": "CUDA SDK",
+  "source_version": "4.2-source-host-adapter-v3",
+  "program": "vectorAdd",
+  "numerical_status": "INHERITED_PARENT_ONLY: SOURCE_FABS_REFERENCE_REPORTED_PASS_NO_EXPLICIT_OUTPUT_FINITE_CHECK;OBSERVER_SOURCE_FABS_REPORTED_PASS",
+  "producer_semantic_qualification": "PARENT_ADA7_FULL_RECORD_PASS_WITH_EXACT_SELECTED_BODY_EQUALITY",
+  "consumer_qualification": "NOT_GRANTED; sparse CTA grid remap and cache-context profile require explicit qualification",
+  "sampling": {
+    "kind": "DETERMINISTIC_COMPLETE_CTA_STRIDE",
+    "stride": 40,
+    "selection": "all kernels retained; original CUDA linear CTA index % stride == 0",
+    "linear_index": "x + Nx*(y + Ny*z)",
+    "coordinate_remap": "selected original indices in ascending CUDA order -> (j,0,0); original block shape and all SASS/masks/addresses/dependencies retained",
+    "historical_crop_equivalence": "NOT_CLAIMED; independent explicit policy"
+  },
+  "kernels": [
+    {
+      "name": "kernel-1-ctx_0x615f86f38ea0.traceg.xz",
+      "path": "traces/kernel-1-ctx_0x615f86f38ea0.traceg.xz",
+      "original_grid": [
+        15625,
+        1,
+        1
+      ],
+      "derived_grid": [
+        391,
+        1,
+        1
+      ],
+      "block": [
+        256,
+        1,
+        1
+      ],
+      "parent_ctas": 15625,
+      "selected_ctas": 391,
+      "parent_grouped_sha256": "db2b9b0c8c700d38071e5837ade0ae7f4270af01de0f54b6e52f79b8b960fa27",
+      "derived_grouped_sha256": "421a9e642d6ac6a5a2b87ccae077f11a2c9e6b1287f21aec6a3a4b80ac434207"
+    }
+  ],
+  "generator_sha256": "0f2a6d35e5f2547aa284a075a02fae1b981483d9b10614f6275697368ef513a4",
+  "frozen_parser_sha256": "f4a811c779e9b106c0977af45634d1b7dc01025c9e9b2805b74de6c6c82b879b",
+  "gpu_capture_repeated": false,
+  "source_keep": true,
+  "release_bytes": 0
+}

@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "production_source": "/root/share/mnt164/huangrulin/traces/rtx4080_sm89/bulk_20261024_v1/receipts/derived_catchup_prepare_20261026_v2/derive_worker_v1.py",
+  "actual_save_source": "def save(p,x):\n temp=p.with_name(p.name+'.closed_writing')\n with temp.open('x') as f:json.dump(x,f,indent=2);f.write('\\n');f.flush();os.fsync(f.fileno())\n module=load('metadata_noreplace',R/'v9_noreplace_frozen.py');module.rename_noreplace(temp,p)",
+  "first_target_absent_until_closed_temp_install": true,
+  "successful_receipt_json_closed": {
+    "fixture_only": true,
+    "closed": true
+  },
+  "existing_target_unchanged": true,
+  "collision_closed_temp_retained": true,
+  "qualified_noreplace_dependency": "v9_noreplace_frozen.py"
+}

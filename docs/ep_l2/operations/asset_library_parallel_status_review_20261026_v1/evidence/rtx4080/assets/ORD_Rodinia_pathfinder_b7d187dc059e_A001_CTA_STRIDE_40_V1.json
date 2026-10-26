@@ -1,0 +1,139 @@
+{
+  "schema": "COMPLETE_CTA_DERIVED_TRACE_V1",
+  "kind": "DERIVED_COMPLETE_CTA_TRACE",
+  "asset_id": "ORD_Rodinia_pathfinder_b7d187dc059e_A001_CTA_STRIDE_40_V1",
+  "parent_asset_id": "ORD_Rodinia_pathfinder_b7d187dc059e_A001",
+  "parent_commit_sha256": "b49af48e43ea4c0c5be1f1d01e7bd5c913878a776f49b7b4549bf516a7f23d64",
+  "parent_manifest_sha256": "d64d04db624e245e8c8a5cac3983d38dfec6d1559931d24e971584e9b3b62496",
+  "parent_binary_sha256": "465420fbc4f5233050da53ca1ff4515b962409ef814205d8e65d8b4c2b520f30",
+  "parent_full_application": {
+    "kernel_launches": 4,
+    "ctas": 20,
+    "warps": 160,
+    "records": 28196,
+    "all_warps_terminate": true,
+    "expected_kernel_presence": "YES_SOURCE_ORACLE",
+    "expected_kernel_count": null,
+    "context_count": 1,
+    "stream_ids": [
+      0
+    ],
+    "sampling": "NONE",
+    "commandlist": "traces/kernelslist.g"
+  },
+  "capture_gpu_uuid": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+  "actual_cubin_arch": 89,
+  "suite": "Rodinia",
+  "source_version": "2.0-ft",
+  "program": "pathfinder",
+  "numerical_status": "INHERITED_PARENT_ONLY: NATIVE_EXECUTION_ONLY_NUMERICAL_UNVERIFIED",
+  "producer_semantic_qualification": "PARENT_ADA7_FULL_RECORD_PASS_WITH_EXACT_SELECTED_BODY_EQUALITY",
+  "consumer_qualification": "NOT_GRANTED; sparse CTA grid remap and cache-context profile require explicit qualification",
+  "sampling": {
+    "kind": "DETERMINISTIC_COMPLETE_CTA_STRIDE",
+    "stride": 40,
+    "selection": "all kernels retained; original CUDA linear CTA index % stride == 0",
+    "linear_index": "x + Nx*(y + Ny*z)",
+    "coordinate_remap": "selected original indices in ascending CUDA order -> (j,0,0); original block shape and all SASS/masks/addresses/dependencies retained",
+    "historical_crop_equivalence": "NOT_CLAIMED; independent explicit policy"
+  },
+  "kernels": [
+    {
+      "name": "kernel-1-ctx_0x5776fe592820.traceg.xz",
+      "path": "traces/kernel-1-ctx_0x5776fe592820.traceg.xz",
+      "original_grid": [
+        5,
+        1,
+        1
+      ],
+      "derived_grid": [
+        1,
+        1,
+        1
+      ],
+      "block": [
+        256,
+        1,
+        1
+      ],
+      "parent_ctas": 5,
+      "selected_ctas": 1,
+      "parent_grouped_sha256": "a962480902a30ad464919f224dacd419d957e72f7c51e66276f729b75b6f3852",
+      "derived_grouped_sha256": "0f10f51d0ebc41d6644c1e0d12e3d9aeefbce3f1657c55631e6317141879aeba"
+    },
+    {
+      "name": "kernel-2-ctx_0x5776fe592820.traceg.xz",
+      "path": "traces/kernel-2-ctx_0x5776fe592820.traceg.xz",
+      "original_grid": [
+        5,
+        1,
+        1
+      ],
+      "derived_grid": [
+        1,
+        1,
+        1
+      ],
+      "block": [
+        256,
+        1,
+        1
+      ],
+      "parent_ctas": 5,
+      "selected_ctas": 1,
+      "parent_grouped_sha256": "52971deb043c85317beef7b51c55af069f2c1383f5c10f26be8d6ef8b227f67a",
+      "derived_grouped_sha256": "d30ca9b949ae37fc04bcfdb7cad640e617978a7937010a2579cfb3e7df7d3a6d"
+    },
+    {
+      "name": "kernel-3-ctx_0x5776fe592820.traceg.xz",
+      "path": "traces/kernel-3-ctx_0x5776fe592820.traceg.xz",
+      "original_grid": [
+        5,
+        1,
+        1
+      ],
+      "derived_grid": [
+        1,
+        1,
+        1
+      ],
+      "block": [
+        256,
+        1,
+        1
+      ],
+      "parent_ctas": 5,
+      "selected_ctas": 1,
+      "parent_grouped_sha256": "e979cf4666e5e3522ade86818d53ba8c75d1c628e689b3076fd1f157efb55d6a",
+      "derived_grouped_sha256": "fe67587c39e9f1d747a036c939074556bd3ef304a58187f11cbf2b4aba41af0d"
+    },
+    {
+      "name": "kernel-4-ctx_0x5776fe592820.traceg.xz",
+      "path": "traces/kernel-4-ctx_0x5776fe592820.traceg.xz",
+      "original_grid": [
+        5,
+        1,
+        1
+      ],
+      "derived_grid": [
+        1,
+        1,
+        1
+      ],
+      "block": [
+        256,
+        1,
+        1
+      ],
+      "parent_ctas": 5,
+      "selected_ctas": 1,
+      "parent_grouped_sha256": "4a06acc68eb6179387e78cd046bcd3f5a1eb4440ef1089c12bf6fe1c3feeaf05",
+      "derived_grouped_sha256": "63eadde88b13ccac33790430e99118c9d11bded09203a9a9003113d4b03d9f74"
+    }
+  ],
+  "generator_sha256": "0f2a6d35e5f2547aa284a075a02fae1b981483d9b10614f6275697368ef513a4",
+  "frozen_parser_sha256": "f4a811c779e9b106c0977af45634d1b7dc01025c9e9b2805b74de6c6c82b879b",
+  "gpu_capture_repeated": false,
+  "source_keep": true,
+  "release_bytes": 0
+}

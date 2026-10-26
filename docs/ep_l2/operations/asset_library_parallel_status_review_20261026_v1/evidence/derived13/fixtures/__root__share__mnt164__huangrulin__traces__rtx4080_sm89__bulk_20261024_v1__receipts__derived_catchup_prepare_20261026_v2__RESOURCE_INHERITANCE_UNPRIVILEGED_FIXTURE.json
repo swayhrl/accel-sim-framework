@@ -1,0 +1,49 @@
+{
+  "status": "PASS",
+  "production_resource_fragments_exact_AST": true,
+  "nonprivileged_UID": 65534,
+  "controller_soft_AS_bytes": 268435456,
+  "controller_hard_AS_bytes": 1610612736,
+  "worker_and_publisher_AS_bytes": 1610612736,
+  "cases": [
+    {
+      "parent": "finite_driver_v1.py",
+      "parent_exact_call": "resource.setrlimit(resource.RLIMIT_AS,(256*2**20,1536*2**20))",
+      "child": "derive_worker_v1.py",
+      "child_exact_call": "resource.setrlimit(resource.RLIMIT_AS,(1536*2**20,1536*2**20))",
+      "result": {
+        "uid": 65534,
+        "inherited_AS": [
+          268435456,
+          1610612736
+        ],
+        "production_child_AS": [
+          1610612736,
+          1610612736
+        ],
+        "raise_above_hard_rejected": true
+      },
+      "status": "PASS"
+    },
+    {
+      "parent": "publish_watcher_v1.py",
+      "parent_exact_call": "resource.setrlimit(resource.RLIMIT_AS,(256*2**20,1536*2**20))",
+      "child": "publish_one_derived_nas_v1.py",
+      "child_exact_call": "resource.setrlimit(resource.RLIMIT_AS,(1536*2**20,1536*2**20))",
+      "result": {
+        "uid": 65534,
+        "inherited_AS": [
+          268435456,
+          1610612736
+        ],
+        "production_child_AS": [
+          1610612736,
+          1610612736
+        ],
+        "raise_above_hard_rejected": true
+      },
+      "status": "PASS"
+    }
+  ],
+  "no_real_scope_execution": true
+}

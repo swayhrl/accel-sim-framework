@@ -1,0 +1,42 @@
+{
+  "status": "FROZEN_V12R2_TESTED_NOT_ACTIVATED",
+  "source_pins": {
+    "library_copy_v12_nas.py": "53ca6aedea4f11f2e45fcf9bdd8f33ec5ecd5437af0e5e3ca286458c7cd01b1e",
+    "transfer_exact_v12_nas.py": "5f5d98524b7907e733cf50260c967eaf4391f0a15f3940630ae48bd57ffabf20",
+    "resume_exact_v12_nas.py": "0fc6ef726926cb7351289bff077bca14c133af7987da3f5be9fab55a5ac02d61"
+  },
+  "prior_V12_source_pins": {
+    "library_copy_v12_nas.py": "27933a385294633b0d074ef7fb50b7b7a05bdd89acc35e452b37638272c198ff",
+    "transfer_exact_v12_nas.py": "2eb1a3f90d107d24cbc40258affa5a7c76da218e58d8bd52b3648fed16b43f37",
+    "resume_exact_v12_nas.py": "cf751cb23cb54b364c8a32b96c1a6d20f571a057d1b34a8ad9fcb2d80de517af"
+  },
+  "only_changed_engine_function": [
+    "install_nas_write_boundary"
+  ],
+  "change": "Only write-open audit event additionally admits literal absolute/dev/null if lstat shows non-symlink character device major1 minor3. No other file/device path is admitted; no mutation event (unlink/chmod/rename/etc) is broadened.",
+  "dependent_changes": "driver and supervisor expected engine/driver SHA constants updated only.",
+  "original7_CPU_fixture_groups": "PASS",
+  "original7_result_sha256": "45e45c014b11695d93fae47595d593c515cd726418af8f0f8f5938627eccd767",
+  "real_gated_DEVNULL_lifecycle": "PASS",
+  "real_lifecycle_result_sha256": "82f3779faa1833035151de4650730cbb0cba10728eadf55c7d6354dc359e8aff",
+  "lifecycle_evidence": {
+    "actual_launch_gated": true,
+    "audit_before_Popen_DEVNULL": true,
+    "driver_same_audit_then_Source_DEVNULL": true,
+    "scoped_NAS_stdout": true,
+    "Native_write_denied": true,
+    "symlink_to_devnull_denied": true,
+    "devzero_denied": true,
+    "child_returncode": 0,
+    "unresolved_owned_processes": []
+  },
+  "prior_failed_main_evidence": {
+    "source": "/root/share/mnt164/huangrulin/traces/receipts/sm70_nas_only_alias_resume_20261026_v1/run_1792974339476085008/STATE.json",
+    "copied_preimage": "/root/data/sm70_nas_only_alias_resume_review_20261026_r2_v1/FAILED_V12_MAIN_STATE_PREIMAGE.json",
+    "preimage_sha256": "2a558eb241705605ed385ae47f885353fe0790e0149dacf0e15726579b47cb71"
+  },
+  "Root_activation": "Root independently reviews and seals a fresh NAS CAS code set with these filenames and pins, writes fresh ROOT_APPROVAL.json bound to new engine/driver/supervisor; source proof and original manifest pins unchanged. Prior code/run/failure evidence and already-preserved partial remain untouched. New supervisor runtimeRoot may remain same NAS receipts root and creates fresh run_time_ns directory.",
+  "Root_approval_exists": false,
+  "production_started_or_signaled_by_agent": false,
+  "partial_or_manifest_or_foreign_budget_changes": false
+}

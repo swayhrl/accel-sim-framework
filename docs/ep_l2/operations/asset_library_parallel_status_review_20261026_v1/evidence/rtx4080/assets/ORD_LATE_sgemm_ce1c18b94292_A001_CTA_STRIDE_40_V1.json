@@ -1,0 +1,70 @@
+{
+  "schema": "COMPLETE_CTA_DERIVED_TRACE_V1",
+  "kind": "DERIVED_COMPLETE_CTA_TRACE",
+  "asset_id": "ORD_LATE_sgemm_ce1c18b94292_A001_CTA_STRIDE_40_V1",
+  "parent_asset_id": "ORD_LATE_sgemm_ce1c18b94292_A001",
+  "parent_commit_sha256": "3b05c8b8750012552c396283734a6a2e065adf839102529e104f721db3a871fa",
+  "parent_manifest_sha256": "d9972653d0923f616f7ec823eda069d6b8544512a41825a6a7f34ddb6cb7d626",
+  "parent_binary_sha256": "c606d93e18f91fcde078b337b0d2ee402dd59ae0a471fcfa0c2bf8e587337337",
+  "parent_full_application": {
+    "kernel_launches": 1,
+    "ctas": 10,
+    "warps": 40,
+    "records": 95560,
+    "all_warps_terminate": true,
+    "expected_kernel_presence": "YES_SOURCE_ORACLE",
+    "expected_kernel_count": null,
+    "context_count": 1,
+    "stream_ids": [
+      0
+    ],
+    "sampling": "NONE",
+    "commandlist": "traces/kernelslist.g"
+  },
+  "capture_gpu_uuid": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+  "actual_cubin_arch": 89,
+  "suite": "Parboil",
+  "source_version": "4e0fc548",
+  "program": "sgemm",
+  "numerical_status": "INHERITED_PARENT_ONLY: CAPTURE_REFERENCE_PASS",
+  "producer_semantic_qualification": "PARENT_ADA7_FULL_RECORD_PASS_WITH_EXACT_SELECTED_BODY_EQUALITY",
+  "consumer_qualification": "NOT_GRANTED; sparse CTA grid remap and cache-context profile require explicit qualification",
+  "sampling": {
+    "kind": "DETERMINISTIC_COMPLETE_CTA_STRIDE",
+    "stride": 40,
+    "selection": "all kernels retained; original CUDA linear CTA index % stride == 0",
+    "linear_index": "x + Nx*(y + Ny*z)",
+    "coordinate_remap": "selected original indices in ascending CUDA order -> (j,0,0); original block shape and all SASS/masks/addresses/dependencies retained",
+    "historical_crop_equivalence": "NOT_CLAIMED; independent explicit policy"
+  },
+  "kernels": [
+    {
+      "name": "kernel-1-ctx_0x59c7479a4460.traceg.xz",
+      "path": "traces/kernel-1-ctx_0x59c7479a4460.traceg.xz",
+      "original_grid": [
+        1,
+        10,
+        1
+      ],
+      "derived_grid": [
+        1,
+        1,
+        1
+      ],
+      "block": [
+        16,
+        8,
+        1
+      ],
+      "parent_ctas": 10,
+      "selected_ctas": 1,
+      "parent_grouped_sha256": "e15c2159d862cc615daf5b82942875f585d776518fd472290ae5a13e4427c8d7",
+      "derived_grouped_sha256": "c3566e2afbc1e7c351dd6582476251e9f05c1bea887ed44164479196c1ff3825"
+    }
+  ],
+  "generator_sha256": "0f2a6d35e5f2547aa284a075a02fae1b981483d9b10614f6275697368ef513a4",
+  "frozen_parser_sha256": "f4a811c779e9b106c0977af45634d1b7dc01025c9e9b2805b74de6c6c82b879b",
+  "gpu_capture_repeated": false,
+  "source_keep": true,
+  "release_bytes": 0
+}

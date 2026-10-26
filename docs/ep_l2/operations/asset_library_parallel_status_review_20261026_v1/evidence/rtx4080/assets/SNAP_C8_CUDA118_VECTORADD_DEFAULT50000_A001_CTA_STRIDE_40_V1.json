@@ -1,0 +1,70 @@
+{
+  "schema": "COMPLETE_CTA_DERIVED_TRACE_V1",
+  "kind": "DERIVED_COMPLETE_CTA_TRACE",
+  "asset_id": "SNAP_C8_CUDA118_VECTORADD_DEFAULT50000_A001_CTA_STRIDE_40_V1",
+  "parent_asset_id": "SNAP_C8_CUDA118_VECTORADD_DEFAULT50000_A001",
+  "parent_commit_sha256": "e62758f0bbe9503a988ccd6b7b84075ae9dbc9851205c22709aa00386cc4a584",
+  "parent_manifest_sha256": "67f8f1f8391d5595a3e0054892a4aaea6b0133793c1f19476c3b3badb0d93f62",
+  "parent_binary_sha256": "d32e5d43c17d19a6a249e20d1f06c95a5f3453558a671a57d64831fb727bb95c",
+  "parent_full_application": {
+    "kernel_launches": 1,
+    "ctas": 196,
+    "warps": 1568,
+    "records": 26601,
+    "all_warps_terminate": true,
+    "expected_kernel_presence": "YES_SOURCE_ORACLE",
+    "expected_kernel_count": 1,
+    "context_count": 1,
+    "stream_ids": [
+      0
+    ],
+    "sampling": "NONE",
+    "commandlist": "traces/kernelslist.g"
+  },
+  "capture_gpu_uuid": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+  "actual_cubin_arch": 89,
+  "suite": "CUDA Samples",
+  "source_version": "v11.8",
+  "program": "vectorAdd",
+  "numerical_status": "INHERITED_PARENT_ONLY: SOURCE_FABS_REFERENCE_REPORTED_PASS_NO_EXPLICIT_OUTPUT_FINITE_CHECK;OBSERVER_SOURCE_FABS_REPORTED_PASS",
+  "producer_semantic_qualification": "PARENT_ADA7_FULL_RECORD_PASS_WITH_EXACT_SELECTED_BODY_EQUALITY",
+  "consumer_qualification": "NOT_GRANTED; sparse CTA grid remap and cache-context profile require explicit qualification",
+  "sampling": {
+    "kind": "DETERMINISTIC_COMPLETE_CTA_STRIDE",
+    "stride": 40,
+    "selection": "all kernels retained; original CUDA linear CTA index % stride == 0",
+    "linear_index": "x + Nx*(y + Ny*z)",
+    "coordinate_remap": "selected original indices in ascending CUDA order -> (j,0,0); original block shape and all SASS/masks/addresses/dependencies retained",
+    "historical_crop_equivalence": "NOT_CLAIMED; independent explicit policy"
+  },
+  "kernels": [
+    {
+      "name": "kernel-1-ctx_0x59c3b7b10720.traceg.xz",
+      "path": "traces/kernel-1-ctx_0x59c3b7b10720.traceg.xz",
+      "original_grid": [
+        196,
+        1,
+        1
+      ],
+      "derived_grid": [
+        5,
+        1,
+        1
+      ],
+      "block": [
+        256,
+        1,
+        1
+      ],
+      "parent_ctas": 196,
+      "selected_ctas": 5,
+      "parent_grouped_sha256": "8c26a6bc069b0cab574d9ddbf417f2d79b5cec1b28ecc5ce2d03d5dd11c9556c",
+      "derived_grouped_sha256": "fe7db8603c9890e0e6d24a04ae7d2d0688ceb32a0ec6efcb00619c303e8ba0d4"
+    }
+  ],
+  "generator_sha256": "0f2a6d35e5f2547aa284a075a02fae1b981483d9b10614f6275697368ef513a4",
+  "frozen_parser_sha256": "f4a811c779e9b106c0977af45634d1b7dc01025c9e9b2805b74de6c6c82b879b",
+  "gpu_capture_repeated": false,
+  "source_keep": true,
+  "release_bytes": 0
+}

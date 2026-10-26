@@ -1,0 +1,59 @@
+{
+  "status": "PASS",
+  "actual_launch_gated_and_wait_owned": true,
+  "audit_installed_before_Popen_DEVNULL": true,
+  "driver_installs_same_boundary_then_new_Source_DEVNULL": true,
+  "stdout_and_markers_inside_scoped_NAS_fixture": true,
+  "Native_regular_file_write_denied": true,
+  "symlink_to_devnull_denied": true,
+  "other_character_device_devzero_denied": true,
+  "registered_exact_driver_identity": {
+    "driver_pid": 1360971,
+    "driver_start_ticks": 972652088,
+    "driver_pgid": 1360971,
+    "driver_sid": 1360971,
+    "driver_argv": [
+      "/usr/bin/python3",
+      "-B",
+      "-c",
+      "import pathlib,sys,json,subprocess,importlib.util\nD=pathlib.Path(sys.argv[1]);F=pathlib.Path(sys.argv[2]);run=F/'nas/runtime'\nspec=importlib.util.spec_from_file_location('driver_boundary',D/'library_copy_v12_nas.py');e=importlib.util.module_from_spec(spec);spec.loader.exec_module(e);e.TASK=F/'native';e.BRIDGE=F/'bridge';e.EXACT_MANIFEST=F/'MANIFEST.json';e.install_nas_write_boundary({'runtime_root':str(run)})\nassert sys.stdin.read()==''\ngrand=\"import sys;assert sys.stdin.read()=='';print('SOURCE_DEVNULL_PASS')\"\nwith (run/'new_source.stdout').open('wb')as out:\n cp=subprocess.run([sys.executable,'-B','-c',grand],stdin=subprocess.DEVNULL,stdout=out,stderr=subprocess.STDOUT,timeout=5)\nassert cp.returncode==0\n(run/'driver_pass.json').write_text(json.dumps({'driver_boundary':True,'Source_child_DEVNULL':True}))\nprint('DRIVER_DEVNULL_PASS')\n",
+      "/root/data/sm70_nas_only_alias_resume_review_20261026_r2_v1",
+      "/root/data/sm70_nas_only_alias_resume_review_20261026_r2_v1/devnull_lifecycle_fixture"
+    ],
+    "driver_exec_released": false
+  },
+  "driver_rc": 0,
+  "cleanup": {
+    "owner": {
+      "pid": 1360971,
+      "state": "R",
+      "ppid": 1360970,
+      "pgid": 1360971,
+      "sid": 1360971,
+      "start_ticks": 972652088
+    },
+    "initial_members": [
+      {
+        "pid": 1360971,
+        "state": "Z",
+        "ppid": 1360970,
+        "pgid": 1360971,
+        "sid": 1360971,
+        "start_ticks": 972652088
+      }
+    ],
+    "observed_members": [
+      {
+        "pid": 1360971,
+        "state": "Z",
+        "ppid": 1360970,
+        "pgid": 1360971,
+        "sid": 1360971,
+        "start_ticks": 972652088
+      }
+    ],
+    "signals": [],
+    "unresolved": [],
+    "zombies_not_claimed_reaped": []
+  }
+}

@@ -1,0 +1,1197 @@
+{
+  "schema": "COMPLETE_CTA_DERIVED_TRACE_V1",
+  "kind": "DERIVED_COMPLETE_CTA_TRACE",
+  "asset_id": "ORD_Parboil_spmv_2b5047e90504_A001_CTA_STRIDE_40_V1",
+  "parent_asset_id": "ORD_Parboil_spmv_2b5047e90504_A001",
+  "parent_commit_sha256": "29ec8d6e6f3292dbbde1ed0c466aabcce738cd36c93098ff8e9b9b002f2c566a",
+  "parent_manifest_sha256": "8fff3f963dc72160022f045938f9bc28d2ea845d2edbeb5573ca41bc806a6a5c",
+  "parent_binary_sha256": "4067c5d271cf973758005dc3e36c39a45d13b55bf0a1e30598ad94ba5690dd0f",
+  "parent_full_application": {
+    "kernel_launches": 50,
+    "ctas": 38250,
+    "warps": 229500,
+    "records": 66753000,
+    "all_warps_terminate": true,
+    "expected_kernel_presence": "YES_SOURCE_ORACLE",
+    "expected_kernel_count": null,
+    "context_count": 1,
+    "stream_ids": [
+      0
+    ],
+    "sampling": "NONE",
+    "commandlist": "traces/kernelslist.g"
+  },
+  "capture_gpu_uuid": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+  "actual_cubin_arch": 89,
+  "suite": "Parboil",
+  "source_version": "4e0fc548",
+  "program": "spmv",
+  "numerical_status": "INHERITED_PARENT_ONLY: CAPTURE_REFERENCE_PASS",
+  "producer_semantic_qualification": "PARENT_ADA7_FULL_RECORD_PASS_WITH_EXACT_SELECTED_BODY_EQUALITY",
+  "consumer_qualification": "NOT_GRANTED; sparse CTA grid remap and cache-context profile require explicit qualification",
+  "sampling": {
+    "kind": "DETERMINISTIC_COMPLETE_CTA_STRIDE",
+    "stride": 40,
+    "selection": "all kernels retained; original CUDA linear CTA index % stride == 0",
+    "linear_index": "x + Nx*(y + Ny*z)",
+    "coordinate_remap": "selected original indices in ascending CUDA order -> (j,0,0); original block shape and all SASS/masks/addresses/dependencies retained",
+    "historical_crop_equivalence": "NOT_CLAIMED; independent explicit policy"
+  },
+  "kernels": [
+    {
+      "name": "kernel-1-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-1-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "9db4de1716821c1c3ea866f84bca1f74e25796af3f8734cdd69ef9a66a10bf4f",
+      "derived_grouped_sha256": "dc94f9ba19dfbb963190144167ab20cc867c9f8cebc26d848c60ff940bfcab2d"
+    },
+    {
+      "name": "kernel-10-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-10-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "566217134548f8f1e0461a0949a0145e3ed9fdaf47e693cf394ace9e5a618939",
+      "derived_grouped_sha256": "6cd7919f9d0f2a46c101a4acc1fb9ce6b7087ea58257855abea070c43bec8b39"
+    },
+    {
+      "name": "kernel-11-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-11-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "e1c827753e197017c4b7b52e5f317d783f18858386814620dcd3a835f855a72c",
+      "derived_grouped_sha256": "a348779dc3e9578286cd24b744dbe41a8d0bd137ad72fb84ac40e473c685e78d"
+    },
+    {
+      "name": "kernel-12-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-12-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "3d9757371a3d4c89522c15770b58fa83b635ef1ea23a1a3063176d7ad84a1d09",
+      "derived_grouped_sha256": "5b56c74d37f56f6a1058cbcc024229c415b5e1694d380d6af6e796b65cfde209"
+    },
+    {
+      "name": "kernel-13-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-13-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "229659c887e9940753a177c4de6809617b3ab5c127deace4d57fe8dfebaaa7d2",
+      "derived_grouped_sha256": "91046eaf084e936ced247488609afa1b9616299de897f2340bf2378f8acbab64"
+    },
+    {
+      "name": "kernel-14-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-14-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "458607697f8dd7592634bfe796fe8e567327c821d7c15d3bf3dcecb91909302d",
+      "derived_grouped_sha256": "f9ca0bc17966c1594506c2b04125d6646a5fcf5bbc207c38d616b931cfc22dfb"
+    },
+    {
+      "name": "kernel-15-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-15-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "eeb4e34d83d64b1c5bd13b5cf311b0f421b9bb34d8f0d4cda7497becf874ced9",
+      "derived_grouped_sha256": "8d9c8a80172e2e87cd85c692d079432316c727cda97421cec16e9b43a6853fbd"
+    },
+    {
+      "name": "kernel-16-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-16-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "dd3f2b1fa3a35c99a91fd7cc0f4bc87f235dad598ce8f74441220ec785e89cbb",
+      "derived_grouped_sha256": "f8931f4a94181e07ffcd8dad9bf2163115e521478d9c806f4f199bcaebd300dd"
+    },
+    {
+      "name": "kernel-17-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-17-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "4ac1ccd84fe02591af41ce954f4013bec8ec3cd94824a2e377ad36e84e5b4431",
+      "derived_grouped_sha256": "9b13ccf9d441d827f5c1360a63a28841c3a31d47770e218f4a87db41502f4ee1"
+    },
+    {
+      "name": "kernel-18-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-18-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "cb282b1280f95d44a4e3dbf3a6bc893f20d117257571eff429e3655bdc9aec74",
+      "derived_grouped_sha256": "8d629a8e2c574d341baf804af99a426d3f8688ac0852f8642d33829c0461208d"
+    },
+    {
+      "name": "kernel-19-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-19-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "43ca6d56be639aabbeeac4e4b8691fb2fd3e77a4e1042d78cf2889230d91946f",
+      "derived_grouped_sha256": "3f47d515653768b823f7c8e3dbcb0d033ec31de6298bf8e91ee9ce3026cbe3e1"
+    },
+    {
+      "name": "kernel-2-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-2-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "297cdff24b3f079ae8ad67f3737543f03aa7e939f4c0bbdbc189c7ed330182b4",
+      "derived_grouped_sha256": "ce1a2b2bb9c38bd55bb12bdb03221e6f355c2714f8b1e08058885d6ee5f42c32"
+    },
+    {
+      "name": "kernel-20-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-20-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "0d86295a3e4e43265fe0afe1d5b8db60b2a2ef7eed605f81835ec69812c3535f",
+      "derived_grouped_sha256": "1ff2659608af516ee06a5f965ec7d368190d107f51ec2eae69c22a6f43322278"
+    },
+    {
+      "name": "kernel-21-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-21-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "57b86fc04c452e04a48c6b336ea7d1a3d8d743184bb3fd41dd6b971977d299eb",
+      "derived_grouped_sha256": "068e8123d38a9ae439b681ced7c45044857041f2bfa7b78779ce3ee7251e207a"
+    },
+    {
+      "name": "kernel-22-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-22-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "22f792b37b59f615e8fc4ce875c34dd17315acf2d931b616284e99885d30acb3",
+      "derived_grouped_sha256": "083dccfd0ab7aea3514095c6e1cb3acfc3a7b181ff42933a82fa69732970fd04"
+    },
+    {
+      "name": "kernel-23-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-23-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "074b50769293aecfb62174478737598b7ae32b5fa031ebc1d84a8e33791d6c41",
+      "derived_grouped_sha256": "4239598ab5a8ec2de92532dccc1b7eae16b8fe9c5e1aa16a557b2990cabd2ac5"
+    },
+    {
+      "name": "kernel-24-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-24-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "12f90f2765c075fbc701174b4c518fe62218226bd930d23aa5437e8ff50e51a4",
+      "derived_grouped_sha256": "df96fd73a5788ce7c332f8be908cdce99c3339aa331b72c9e62388f109f9602b"
+    },
+    {
+      "name": "kernel-25-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-25-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "c469434d632c2aafbe870886070a0730d0ef7cd23519ee9ec2b183979ba4a44c",
+      "derived_grouped_sha256": "439effaba9a98b938f3fb2c64decdd4dc9659d7db400f0b79de532fc95f40d2d"
+    },
+    {
+      "name": "kernel-26-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-26-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "88d50704c3b756b3ad5e6ee62abd1e5202b215f3011c7977794eace58a3a838a",
+      "derived_grouped_sha256": "14505846139fdd72251cc1b115b8ce9c137b94b39961d94eb7545e6e9ff0de2a"
+    },
+    {
+      "name": "kernel-27-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-27-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "348fef9b0828b0bedafa482d67ee16c6efa915a223ed17581c49925748b19fef",
+      "derived_grouped_sha256": "bc974704588e7c7034015d5dc6b0ae07c8359b3512799d0ba87b2239b8fd3330"
+    },
+    {
+      "name": "kernel-28-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-28-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "3aa5c9f910e9602ce7cddaf7785f97cacb6131192b96329ccae865fcc7659add",
+      "derived_grouped_sha256": "c4ab19d14648da9b9aa839c50c1f0a56a7fe21b9e25477e8379cd3d77f12d602"
+    },
+    {
+      "name": "kernel-29-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-29-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "67a4dd3d4ed4b7ecec423a92aea849393a7e832ca97aafabafe639e219a29d51",
+      "derived_grouped_sha256": "4fc6821c3e54f492f5aad603aa8a2fb3be92c1f11580dea5a34042acda20cdb0"
+    },
+    {
+      "name": "kernel-3-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-3-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "6a3f953cd4709b2dc1fbb3d7d3b5b24a8ab6add027326d48fe2713e2b8cba1ee",
+      "derived_grouped_sha256": "f6898149cf82fd75d4b6b2002618f6b191927a4ba8e97bcfbee9d27589012cc5"
+    },
+    {
+      "name": "kernel-30-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-30-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "e69ab19b1d04d9f3b3c8671c93c20b564839d315dd2413ccb91c3ac6bacab961",
+      "derived_grouped_sha256": "b49362f88968598a297242d4fc214736521f098f9669b8401506c6929f2bbcd6"
+    },
+    {
+      "name": "kernel-31-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-31-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "37c7feef4de2e0d21e5eaacc8976e885bbd3a1613da539ed96d14eab527ab820",
+      "derived_grouped_sha256": "d5cec48a9a335999f3a1a73a0f1ad3335da7e7d5c79b7bcd192aba4212d227d3"
+    },
+    {
+      "name": "kernel-32-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-32-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "d029393ea31247b4106aafea3132896770261a98e3f3d8eb7eafea2413917c79",
+      "derived_grouped_sha256": "3cf69dac332fab0d4911de669f43b373642110073c50fa5aa06d21f10b2d23b2"
+    },
+    {
+      "name": "kernel-33-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-33-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "632e29d9b61b04f2aa62f48aed8ddab0b9ebbf4950255c5648ef6226beda2559",
+      "derived_grouped_sha256": "69d2ae5b551c19b521d05217dd5d97ba7ac9839d129f21a3faa6649c5f6afa7d"
+    },
+    {
+      "name": "kernel-34-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-34-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "6a674d43ec3402a40d367a1af33c83832a6f5b60598f86822367e13546036c16",
+      "derived_grouped_sha256": "02c100b2caf34341f15e84a8c19ced66033e57f470b12ae98157b6225abff2c7"
+    },
+    {
+      "name": "kernel-35-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-35-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "1f99205b28da778197945b44483727d277376634894ffff7c47217e7c2639813",
+      "derived_grouped_sha256": "24ff9426af63b2a7a53f9da3e06bee641e49be667368ac8e0305c2db59f65b5a"
+    },
+    {
+      "name": "kernel-36-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-36-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "29f6f9c3aac8c34e5f59ca8335c3853297cf523c3310fcdc5e254f26f87d9605",
+      "derived_grouped_sha256": "21bc3dbb281f10a1d0bf4053e9275a2f5404212803a66935b453d800109d5a40"
+    },
+    {
+      "name": "kernel-37-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-37-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "af289333c99253eb4c48b32e7864b95deff599e127a6a5ff59ffa97e33bc47e4",
+      "derived_grouped_sha256": "d139698bdadb1602b6bd2e41018938aa55dd000cb41cb0a983b30f1795b88613"
+    },
+    {
+      "name": "kernel-38-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-38-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "f5f9b99d3c01196d80d1ff79bf214c3212be1128e4b62cc32822bf7a87867b95",
+      "derived_grouped_sha256": "8b7b827b665f68a7d33a307ba1036ae9c2c62a41d86290f640bb9236f66bb7a0"
+    },
+    {
+      "name": "kernel-39-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-39-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "60b35865338473a5d50e0185779fa2fecb6a23086633162a9530e3ebdc9993e0",
+      "derived_grouped_sha256": "1d86376e3f7641120d3adca2b41a1392a3ef6e49e00f4f5863cab2e175345cb5"
+    },
+    {
+      "name": "kernel-4-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-4-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "044c9f16dbe8a9c7751545356585d32e55f4474fc832a616aaedebb00f7a132f",
+      "derived_grouped_sha256": "9755fc2b2f16d094a18a97441f5de8f60639a431e17db1dc5d64a5d9f57d7fde"
+    },
+    {
+      "name": "kernel-40-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-40-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "fdfa058ca8c98e9f3ab548176871f4ffec94066ecb9e25d7d98055020243c77d",
+      "derived_grouped_sha256": "524e751c77fc404cbbed11e3a9b933b2f7929c4f4bfe964febb183896e96cf5b"
+    },
+    {
+      "name": "kernel-41-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-41-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "d732b070b07e65449369baac4d6e10a3507d88db71f2bf039343608ad96192b0",
+      "derived_grouped_sha256": "9bf2bc6d6f6fc0202b90fb5333dbf2f2f6483c48ae92a17f3a0bb7c74dc6fb2f"
+    },
+    {
+      "name": "kernel-42-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-42-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "2b368842d8a6ef476e84934444d88cf033cc0566f232e92e0af953e303e8cb97",
+      "derived_grouped_sha256": "d6f6cec67b7ca34dd7031e16728e102fd006c9604fe0f42499cdde7623fc841f"
+    },
+    {
+      "name": "kernel-43-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-43-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "b2deec835c1b122a961a016c19e3eaa576a634ab00b09ab9670e6714bcc86749",
+      "derived_grouped_sha256": "762bbd3cbe8193388e01d782f3681bc4bb119a0694a51213bf2856aa703837d1"
+    },
+    {
+      "name": "kernel-44-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-44-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "c6acf2ad602bfb1da0dec4c34331a43e8e6f11ca1c2a9f99859a216bf93aaf4d",
+      "derived_grouped_sha256": "8b17e1c473ec1bb898ce56bd1da362637d88b5938c4fea8597d7dc45345e44bb"
+    },
+    {
+      "name": "kernel-45-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-45-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "d8b0fa42cb44a6662c3e30239559477ea471c12338b2640d59a3857bd0d74340",
+      "derived_grouped_sha256": "0ec2c0ba6a35093ce84af348940fceec1a5cb2bf3df299481aaf513d6e2c0a57"
+    },
+    {
+      "name": "kernel-46-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-46-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "260c9464fd614d8945622da06837a1d387da2593296a40a9bee6db18a0e028f0",
+      "derived_grouped_sha256": "e0c87dd0bd94ab901b2474ceb91e25be7e817dacae261183dcd85d3582a70995"
+    },
+    {
+      "name": "kernel-47-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-47-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "64335c9d34a8c278ad6a40464b4ef0b5a5ecd36aaeec53e8dc1ec5fa1caf7495",
+      "derived_grouped_sha256": "a0669865daea516c5606ff7f4c8f7ea22181a9ec711c16b4508071f6f437096a"
+    },
+    {
+      "name": "kernel-48-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-48-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "216073b27084d04ceb4ae956d4e6770f6f128bfb4d4820ffcf5637ba6e3b54b8",
+      "derived_grouped_sha256": "03a67cc4e71fee35c1888c6d51eb7f63af101fbfc1529cfe49522b071368a0fe"
+    },
+    {
+      "name": "kernel-49-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-49-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "01a179e818152c4a3a5244ef7cf3a727841fed4bbc785bd50806424ea6e71522",
+      "derived_grouped_sha256": "4c844b0fd1040174aae6c7097b04ba772ffae2025a61980a28ab3b2a4a290ab7"
+    },
+    {
+      "name": "kernel-5-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-5-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "483bf4067155e3a64fa0c8121b9036c8d7aa28e8d5f7acc39d567b08d05b88f8",
+      "derived_grouped_sha256": "a986f13b797a0c5597b4ce9862b06cf6fdb7c926c4a6b8adbec0f50806642192"
+    },
+    {
+      "name": "kernel-50-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-50-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "8f62c1452bcb4b2689dd31d220d3ef2a8d4d8643626e4e97ad9866363751a7a4",
+      "derived_grouped_sha256": "3fea62f434ba2ee1f65555da6b38b61011022c4bfd0a84d53b2ea2ed35b911fd"
+    },
+    {
+      "name": "kernel-6-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-6-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "0bfb4ed75177a34ad94fef1f4c5988078b4339266bd28691b499a40359f8fb13",
+      "derived_grouped_sha256": "3c52ef802d1db70b3bc94f2c538c358ed1f1c801baf4e57886d52fb61502acc7"
+    },
+    {
+      "name": "kernel-7-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-7-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "e0e86de551914d1b80be37e145f3e84e2a2b9a0a9f43ef4da0a45fa679e9a7df",
+      "derived_grouped_sha256": "a57a6c8f1482e54da8619c19dd8c100f75aab580850d5ada1069903b2bc1ec0c"
+    },
+    {
+      "name": "kernel-8-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-8-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "8bea1706d1594795cd2b171dec9e095ac64675ef0d610c1da4e91001817f67ac",
+      "derived_grouped_sha256": "5167e58fa17fc1fde79a5894f6ce47b299a68502086805fe7a1fb9ac2555c096"
+    },
+    {
+      "name": "kernel-9-ctx_0x623cc4ac0960.traceg.xz",
+      "path": "traces/kernel-9-ctx_0x623cc4ac0960.traceg.xz",
+      "original_grid": [
+        765,
+        1,
+        1
+      ],
+      "derived_grid": [
+        20,
+        1,
+        1
+      ],
+      "block": [
+        192,
+        1,
+        1
+      ],
+      "parent_ctas": 765,
+      "selected_ctas": 20,
+      "parent_grouped_sha256": "740a865aed8cb2cfc9714d44e71044e2a3fc4b7a8fa65cee3cfc84001b6d4f2a",
+      "derived_grouped_sha256": "a931ab2ccc882a15e4f23174988a4c53b2c884619c757f98c77317dacbed40f4"
+    }
+  ],
+  "generator_sha256": "0f2a6d35e5f2547aa284a075a02fae1b981483d9b10614f6275697368ef513a4",
+  "frozen_parser_sha256": "f4a811c779e9b106c0977af45634d1b7dc01025c9e9b2805b74de6c6c82b879b",
+  "gpu_capture_repeated": false,
+  "source_keep": true,
+  "release_bytes": 0
+}

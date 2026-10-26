@@ -1,0 +1,139 @@
+{
+  "schema": "COMPLETE_CTA_DERIVED_TRACE_V1",
+  "kind": "DERIVED_COMPLETE_CTA_TRACE",
+  "asset_id": "ORD_Parboil_mri_q_36503ea17499_A001_CTA_STRIDE_40_V1",
+  "parent_asset_id": "ORD_Parboil_mri_q_36503ea17499_A001",
+  "parent_commit_sha256": "48902ba533540a0af3ab79cebb67b29d9b7835c35a954c8787eeb76389fa0d74",
+  "parent_manifest_sha256": "430e20f947f8a3c1c2084b6181c57f5cc2762c2dc4acb7de49e83b34fb96f5a7",
+  "parent_binary_sha256": "86f9212455cd4c22b45b708917a9fe20010dddefa687598d10a287b40e96d82f",
+  "parent_full_application": {
+    "kernel_launches": 4,
+    "ctas": 390,
+    "warps": 3168,
+    "records": 44124768,
+    "all_warps_terminate": true,
+    "expected_kernel_presence": "YES_SOURCE_ORACLE",
+    "expected_kernel_count": null,
+    "context_count": 1,
+    "stream_ids": [
+      0
+    ],
+    "sampling": "NONE",
+    "commandlist": "traces/kernelslist.g"
+  },
+  "capture_gpu_uuid": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+  "actual_cubin_arch": 89,
+  "suite": "Parboil",
+  "source_version": "4e0fc548",
+  "program": "mri-q",
+  "numerical_status": "INHERITED_PARENT_ONLY: CAPTURE_REFERENCE_PASS",
+  "producer_semantic_qualification": "PARENT_ADA7_FULL_RECORD_PASS_WITH_EXACT_SELECTED_BODY_EQUALITY",
+  "consumer_qualification": "NOT_GRANTED; sparse CTA grid remap and cache-context profile require explicit qualification",
+  "sampling": {
+    "kind": "DETERMINISTIC_COMPLETE_CTA_STRIDE",
+    "stride": 40,
+    "selection": "all kernels retained; original CUDA linear CTA index % stride == 0",
+    "linear_index": "x + Nx*(y + Ny*z)",
+    "coordinate_remap": "selected original indices in ascending CUDA order -> (j,0,0); original block shape and all SASS/masks/addresses/dependencies retained",
+    "historical_crop_equivalence": "NOT_CLAIMED; independent explicit policy"
+  },
+  "kernels": [
+    {
+      "name": "kernel-1-ctx_0x5807e0ce44c0.traceg.xz",
+      "path": "traces/kernel-1-ctx_0x5807e0ce44c0.traceg.xz",
+      "original_grid": [
+        6,
+        1,
+        1
+      ],
+      "derived_grid": [
+        1,
+        1,
+        1
+      ],
+      "block": [
+        512,
+        1,
+        1
+      ],
+      "parent_ctas": 6,
+      "selected_ctas": 1,
+      "parent_grouped_sha256": "a3432e42e03002c1d7ea7823d9edbf8ae7709a5cdd0455cf8b97a01a416d4796",
+      "derived_grouped_sha256": "66acf91c2d7b4f4c49ea37290040a493b5ea8f0d0cd7cb2ab0d2ef7ce3e82613"
+    },
+    {
+      "name": "kernel-2-ctx_0x5807e0ce44c0.traceg.xz",
+      "path": "traces/kernel-2-ctx_0x5807e0ce44c0.traceg.xz",
+      "original_grid": [
+        128,
+        1,
+        1
+      ],
+      "derived_grid": [
+        4,
+        1,
+        1
+      ],
+      "block": [
+        256,
+        1,
+        1
+      ],
+      "parent_ctas": 128,
+      "selected_ctas": 4,
+      "parent_grouped_sha256": "59549ea9bdd9c6191a81caacb0494b728b8ab48be852509e0069ef71cc7f1dba",
+      "derived_grouped_sha256": "12971dc0299efdd985772b0239bb84e618162c04b4a9955ccb733e9c143ace69"
+    },
+    {
+      "name": "kernel-3-ctx_0x5807e0ce44c0.traceg.xz",
+      "path": "traces/kernel-3-ctx_0x5807e0ce44c0.traceg.xz",
+      "original_grid": [
+        128,
+        1,
+        1
+      ],
+      "derived_grid": [
+        4,
+        1,
+        1
+      ],
+      "block": [
+        256,
+        1,
+        1
+      ],
+      "parent_ctas": 128,
+      "selected_ctas": 4,
+      "parent_grouped_sha256": "a143eee0028b06bcf576ae12d4d58d5e14c585bb5058615c072aa389a3909134",
+      "derived_grouped_sha256": "7e4f14f7641a6d435123bb83e1231b928461c40f505184fac3e171e448562717"
+    },
+    {
+      "name": "kernel-4-ctx_0x5807e0ce44c0.traceg.xz",
+      "path": "traces/kernel-4-ctx_0x5807e0ce44c0.traceg.xz",
+      "original_grid": [
+        128,
+        1,
+        1
+      ],
+      "derived_grid": [
+        4,
+        1,
+        1
+      ],
+      "block": [
+        256,
+        1,
+        1
+      ],
+      "parent_ctas": 128,
+      "selected_ctas": 4,
+      "parent_grouped_sha256": "e4832f76223e38ebd2771d297c05259e4eed3f5f6696b10594626a9d4cc880f5",
+      "derived_grouped_sha256": "c405f94f4b15cc40e4ba562c8702d8db025c70096e03c729f3b627c8057abe37"
+    }
+  ],
+  "generator_sha256": "0f2a6d35e5f2547aa284a075a02fae1b981483d9b10614f6275697368ef513a4",
+  "frozen_parser_sha256": "f4a811c779e9b106c0977af45634d1b7dc01025c9e9b2805b74de6c6c82b879b",
+  "gpu_capture_repeated": false,
+  "source_keep": true,
+  "release_bytes": 0
+}

@@ -1,0 +1,91 @@
+{
+  "schema": "RTX4080_FULL_TRACE_ASSET_V1",
+  "kind": "FULL_APPLICATION_TRACE",
+  "asset_id": "ORD_LATE_stencil_c3e987b033b4_A002_CPU_ADOPT_V2",
+  "suite": "Parboil",
+  "source_version": "4e0fc548",
+  "program": "stencil",
+  "variant": "default_complete_official_input",
+  "argv": [
+    "/data/c16/rtx4080_suite_fill_20261024_v1/bin/parboil_stencil",
+    "-i",
+    "/data/c16/rtx4080_suite_fill_20261024_v1/assets/parboil_source_verified/datasets/stencil/default/input/512x512x64x100.bin",
+    "-o",
+    "actual.out",
+    "--",
+    "512",
+    "512",
+    "64",
+    "100"
+  ],
+  "input_identity": [
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/parboil_source_verified/datasets/stencil/default/input/512x512x64x100.bin",
+      "bytes": 67108864,
+      "sha256": "3effc615445965b344bb178c71bc902a5e7230be7df9099188d63bedda67c2d6"
+    }
+  ],
+  "binary_member": "bin/application",
+  "binary_sha256": "248332b79c2e45e246760a94521fcd56db97ef247a56b12c4d56ceb05d89c368",
+  "capture_gpu_uuid": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+  "actual_cubin_arch": 89,
+  "producer_sha256": "55c6f4829e8c92e11e0ab54496bf8f507f6cfa3a10cd01a857c6de147ee68b73",
+  "contract_sha256": "97901eb373fc94b041c5ef6923e0e5ca1635edd1bac4213d53c28271abb6c184",
+  "validator_sha256": "85ff5d68408632a4f15634bfa6a6d7a504429821ed8067f1ab8f39ce1b9a6909",
+  "delegated_validator_sha256": "f9f8a05ca7e0f8afe60e7d9a34f4884a9d1cb920b2212e41ed9a4faf19975af1",
+  "postprocessor_sha256": "5d3ffcd3cf000e1f72e2adf97b4185217a51e1fe0c147c5c39500130e418e66d",
+  "CPU_post_controller_sha256": "2d581ebd921d85b2d44d685dc81c09fa9e86932bb3a445562d66b34869d76e0b",
+  "raw_SHA_IO_adapter_sha256": "ec7f7eaaf65781fd31fe50526163f4a272fee17f398b541564f1fbbf2a5db545",
+  "resource_adapter_sha256": "2f03dbb2e99f82a6ef52488182703e90d9d4f7d27e2001b5b58c73864d52a545",
+  "full_application": {
+    "kernel_launches": 100,
+    "ctas": 102400,
+    "warps": 409600,
+    "records": 2119914400,
+    "all_warps_terminate": true,
+    "sampling": "NONE",
+    "commandlist": "traces/kernelslist.g"
+  },
+  "tracer_control_flags": {
+    "ACK_CTX_INIT_LIMITATION": "0",
+    "NVDISASM": "/usr/local/cuda-12.8/bin/nvdisasm",
+    "NOBANNER": "0",
+    "NO_EAGER_LOAD": "0",
+    "INSTR_BEGIN": "0",
+    "INSTR_END": "4294967295",
+    "EXCLUDE_PRED_OFF": "1",
+    "TRACE_LINEINFO": "0",
+    "DYNAMIC_KERNEL_RANGE": "- Specify kernel IDs or ranges to trace. Format:",
+    "ACTIVE_FROM_START": "1",
+    "C16_EXACT_ROOT_FUNCTION_ONLY": "0",
+    "C16_USE_NVBIT_STATIC_INDEX": "0",
+    "TOOL_VERBOSE": "0",
+    "TOOL_COMPRESS": "1",
+    "TOOL_TRACE_CORE": "0",
+    "TERMINATE_UPON_LIMIT": "0",
+    "USER_DEFINED_FOLDERS": "0",
+    "TRACE_FILE_COMPRESS": "1",
+    "ENABLE_SPINLOCK_FAST_FORWARD": "0",
+    "SPINLOCK_ITER_TO_KEEP": "1"
+  },
+  "numerical_status": "ORIGINAL_CAPTURE_REFERENCE_CHECKER_REPORTED_PASS",
+  "producer_semantic_qualification": "ADA7_ORDINARY_FULL_RECORD_PASS",
+  "consumer_qualification": "NOT_GRANTED",
+  "hardware_timing_calibration": "NOT_GRANTED",
+  "GPU_replayed": false,
+  "source_keep": true,
+  "release_bytes": 0,
+  "CPU_epochs": {
+    "epoch2": "Original2 complete groups and whole46e100kernel validation retained; old34 terminal results have old_exit_not_separately_recorded",
+    "epoch3": "96 groups closed; allforeign reservation increase correctly stopped own work; all failure history cold retained",
+    "epoch4": {
+      "remaining2_complete_kernels": true,
+      "single_helper": true,
+      "Native_stage_limit_polled": 805306368,
+      "raw_Native_copy": false,
+      "old_frames_reused_each": 9,
+      "resource_library_copy_v10_sha256": "7e5b290e330cbc1fcc845b6a9c7ce3487d181677d117a8d77a31c60d12a42521",
+      "retained_history_object": "/root/share/mnt164/huangrulin/traces/rtx4080_sm89/bulk_20261024_v1/objects/stage_retained_native_rtx_post_epoch3_tail2_20261025_v1"
+    }
+  }
+}

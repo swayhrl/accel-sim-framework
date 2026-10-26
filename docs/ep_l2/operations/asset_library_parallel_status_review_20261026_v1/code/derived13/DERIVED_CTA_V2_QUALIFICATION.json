@@ -1,0 +1,97 @@
+{
+  "status": "PASS",
+  "kind": "DERIVED_TRACE_QUALIFICATION_ONLY",
+  "tool_sha256": "0f2a6d35e5f2547aa284a075a02fae1b981483d9b10614f6275697368ef513a4",
+  "positive_structural_cases": [
+    {
+      "case": "synthetic2d",
+      "grid": [
+        3,
+        2,
+        1
+      ],
+      "physical_block_threads": 37,
+      "stride": 2,
+      "result": {
+        "status": "COMPLETE_CTA_PARENT_MEMBER_EQUALITY_PASS",
+        "selected_records": 25,
+        "selected_ctas": 3,
+        "all_selected_warps_complete": true,
+        "all_selected_active_predicate_masks_within_physical_launch": true,
+        "full_xz_crc_and_eof": true,
+        "all_selected_bodies_byte_identical_parent_except_declared_cta_coordinate_remap": true
+      },
+      "kind": "SYNTHETIC_NOT_FORMAL_WORKLOAD"
+    },
+    {
+      "case": "synthetic3d",
+      "grid": [
+        2,
+        2,
+        2
+      ],
+      "physical_block_threads": 37,
+      "stride": 3,
+      "result": {
+        "status": "COMPLETE_CTA_PARENT_MEMBER_EQUALITY_PASS",
+        "selected_records": 25,
+        "selected_ctas": 3,
+        "all_selected_warps_complete": true,
+        "all_selected_active_predicate_masks_within_physical_launch": true,
+        "full_xz_crc_and_eof": true,
+        "all_selected_bodies_byte_identical_parent_except_declared_cta_coordinate_remap": true
+      },
+      "kind": "SYNTHETIC_NOT_FORMAL_WORKLOAD"
+    }
+  ],
+  "actual_RTX4080_parent_Vector4M": {
+    "status": "COMPLETE_CTA_PARENT_MEMBER_EQUALITY_PASS",
+    "selected_records": 50048,
+    "selected_ctas": 391,
+    "all_selected_warps_complete": true,
+    "all_selected_active_predicate_masks_within_physical_launch": true,
+    "full_xz_crc_and_eof": true,
+    "all_selected_bodies_byte_identical_parent_except_declared_cta_coordinate_remap": true
+  },
+  "negative_cases": [
+    {
+      "case": "drop_EXIT",
+      "status": "REJECTED",
+      "exception": "AssertionError",
+      "reason": "incomplete warp/EXIT"
+    },
+    {
+      "case": "physical_lane5_in_5lane_warp",
+      "status": "REJECTED",
+      "exception": "AssertionError",
+      "reason": ""
+    },
+    {
+      "case": "wrong_origin_map",
+      "status": "REJECTED",
+      "exception": "AssertionError",
+      "reason": ""
+    },
+    {
+      "case": "wrong_grid",
+      "status": "REJECTED",
+      "exception": "AssertionError",
+      "reason": ""
+    },
+    {
+      "case": "extra_mapping_row",
+      "status": "REJECTED",
+      "exception": "AssertionError",
+      "reason": "unused/extra selection mapping"
+    },
+    {
+      "case": "truncated_xz",
+      "status": "REJECTED",
+      "exception": "EOFError",
+      "reason": "Compressed file ended before the end-of-stream marker was reached"
+    }
+  ],
+  "policy": "independent explicit complete-CTA stride; no historical crop equivalence inferred",
+  "root": "/root/data/shared_rtx4080_trace_library_20261024_v1/trim_structural_qualification_1792834590",
+  "no_gpu_capture": true
+}

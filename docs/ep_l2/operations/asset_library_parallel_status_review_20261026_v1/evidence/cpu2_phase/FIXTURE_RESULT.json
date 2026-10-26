@@ -1,0 +1,58 @@
+{
+  "status": "PRIVATE_SYNTHETIC_CPU_FIXTURE_PASS",
+  "source_KEEP": true,
+  "no_GPU_execution": true,
+  "no_production_trace_reads": true,
+  "synthetic_raw_bytes": 2032,
+  "synthetic_records": 1280,
+  "scheduler_sha256": "9308c508d85c84db7e9b8d49e465ffaffc426fef638a92d05eec4c6dc7cae423",
+  "worker_sha256": "a546e0cfdf47e463bed63740289f44737f503b7cd6b822510c5845a6ec80b183",
+  "post_sha256": "5d3ffcd3cf000e1f72e2adf97b4185217a51e1fe0c147c5c39500130e418e66d",
+  "results": [
+    {
+      "case": "parallel2",
+      "status": "PASS_EXACT_COMPRESSED_AND_DECOMPRESSED_BYTES",
+      "workers": 2,
+      "peak": 2
+    },
+    {
+      "case": "parallel4",
+      "status": "PASS_EXACT_COMPRESSED_AND_DECOMPRESSED_BYTES",
+      "workers": 4,
+      "peak": 4
+    },
+    {
+      "case": "deadline",
+      "status": "REJECTED_NO_COMPLETE_RESULT",
+      "exit": 1
+    },
+    {
+      "case": "bad_source_digest",
+      "status": "REJECTED_NO_COMPLETE_RESULT",
+      "exit": 1
+    },
+    {
+      "case": "changed_valid_group",
+      "status": "REJECTED"
+    },
+    {
+      "case": "extra_group",
+      "status": "REJECTED"
+    },
+    {
+      "case": "changed_closed_receipt",
+      "status": "REJECTED"
+    },
+    {
+      "case": "exact_worker_handoff",
+      "status": "PASS_FINAL_PATHS_AND_EXACT_GROUP_SET"
+    },
+    {
+      "case": "duplicate_handoff",
+      "status": "REJECTED_EXISTING_OR_MISSING_STAGING"
+    }
+  ],
+  "candidate_only_not_production_qualification": true,
+  "bandwidth_limit_enforced": false,
+  "notes": "CPU2 default; CPU4 is fixture-tested only, not enabled in candidate worker"
+}

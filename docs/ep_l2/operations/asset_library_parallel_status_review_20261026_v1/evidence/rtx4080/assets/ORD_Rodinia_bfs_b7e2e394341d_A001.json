@@ -1,0 +1,88 @@
+{
+  "schema": "RTX4080_FULL_TRACE_ASSET_V1",
+  "kind": "FULL_APPLICATION_TRACE",
+  "asset_id": "ORD_Rodinia_bfs_b7e2e394341d_A001",
+  "suite": "Rodinia",
+  "source_version": "2.0-ft",
+  "program": "bfs",
+  "variant": "frozen_exact_argv_503af9a9c12a",
+  "input_identity": [
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/official_appdata_rodinia/data_dirs/cuda/rodinia/2.0-ft/bfs-rodinia-2.0-ft/data/graph4096-result.txt",
+      "bytes": 52138,
+      "sha256": "936b472243aa2ea5195008eb0e709c30e0508ff19584918dc25bd6f24b444aca"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/official_appdata_rodinia/data_dirs/cuda/rodinia/2.0-ft/bfs-rodinia-2.0-ft/data/graph4096.txt",
+      "bytes": 199082,
+      "sha256": "b695d07bbea389989fc8ba4ed1f44eea3425d810c096e150ca4774525ebb8100"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/official_appdata_rodinia/data_dirs/cuda/rodinia/2.0-ft/bfs-rodinia-2.0-ft/data/GraphFormat.txt",
+      "bytes": 172,
+      "sha256": "e415952bf95b4c1257036d755c10a93db072f5d92ed2f0b5a9a810c6bdb9401a"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/official_appdata_rodinia/data_dirs/cuda/rodinia/2.0-ft/bfs-rodinia-2.0-ft/data/SampleGraph.txt",
+      "bytes": 151,
+      "sha256": "b7822f0ab990875c3340620e39d49e3b42e65c8e6e67b03318234c1c5c35d09e"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/official_appdata_rodinia/data_dirs/cuda/rodinia/2.0-ft/bfs-rodinia-2.0-ft/data/graph65536.txt",
+      "bytes": 3873156,
+      "sha256": "4e7d1ab8b8d25aa0f2d5e1975c42cc95fb96a558f13f50ec73767b40f0f2dc15"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/official_appdata_rodinia/data_dirs/cuda/rodinia/2.0-ft/bfs-rodinia-2.0-ft/data/result_SampleGraph.txt",
+      "bytes": 60,
+      "sha256": "293e185806c558336482e0dad091df63a1ef5a6347873749043a47dab8b020f9"
+    },
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/official_appdata_rodinia/data_dirs/cuda/rodinia/2.0-ft/bfs-rodinia-2.0-ft/benchmark_options.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "argv": [
+    "/data/c16/rtx4080_suite_fill_20261024_v1/assets/gpu-app-collection/src/cuda/rodinia/bin/linux/release/bfs-rodinia-2.0-ft",
+    "./data/graph4096.txt",
+    "./data/graph4096-result.txt"
+  ],
+  "binary_member": "bin/application",
+  "binary_sha256": "f96f1b8cf5d204cf465ce699ab3463ea27ee4a66732582e4bd0ea6016aa4f5b3",
+  "capture_gpu_uuid": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+  "actual_cubin_arch": 89,
+  "embedded_PTX_listing": "PTX file    1: bfs.sm_89.ptx\n",
+  "producer_sha256": "55c6f4829e8c92e11e0ab54496bf8f507f6cfa3a10cd01a857c6de147ee68b73",
+  "contract_sha256": "97901eb373fc94b041c5ef6923e0e5ca1635edd1bac4213d53c28271abb6c184",
+  "validator_sha256": "f9f8a05ca7e0f8afe60e7d9a34f4884a9d1cb920b2212e41ed9a4faf19975af1",
+  "frozen_parser_sha256": "f4a811c779e9b106c0977af45634d1b7dc01025c9e9b2805b74de6c6c82b879b",
+  "map_manifest_sha256": "02836afb1ba734683ca0cc36e24a4b304b111b2e7b53df32e40599380be14c7f",
+  "map_maker_sha256": "a2e7ee38aa722465250c53096aea50bcd93623fea5b60114486538429dce1f6e",
+  "postprocessor_sha256": "5d3ffcd3cf000e1f72e2adf97b4185217a51e1fe0c147c5c39500130e418e66d",
+  "pump_sha256": "8ff3e634870ae34071362afb834245291a49f8d9e37e524462515e3a95771295",
+  "worker_sha256": "640998d4857636eb3459a2cb3b28bab79e7c337df043e681f87315e37220eb57",
+  "full_application": {
+    "kernel_launches": 16,
+    "ctas": 128,
+    "warps": 2048,
+    "records": 159986,
+    "all_warps_terminate": true,
+    "expected_kernel_presence": "YES_SOURCE_ORACLE",
+    "expected_kernel_count": null,
+    "context_count": 1,
+    "stream_ids": [
+      0
+    ],
+    "sampling": "NONE",
+    "commandlist": "traces/kernelslist.g"
+  },
+  "numerical_status": "NATIVE_EXECUTION_ONLY_NUMERICAL_UNVERIFIED",
+  "input_byte_identity_qualification": "DECLARED_FILE_SHA_OR_DETERMINISTIC_SOURCE;NO_UNRECORDED_SEED_CLAIM",
+  "native_state": null,
+  "producer_semantic_qualification": "ADA7_ORDINARY_FULL_RECORD_PASS",
+  "consumer_qualification": "NOT_AUTOMATICALLY_GRANTED; per-profile required",
+  "hardware_timing_calibration": "NOT_GRANTED",
+  "source_keep": true,
+  "release_bytes": 0
+}

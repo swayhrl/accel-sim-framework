@@ -1,0 +1,94 @@
+{
+  "status": "PASS",
+  "CPU_only": true,
+  "real_trace_body_reads": 0,
+  "generator_sha256": "0f2a6d35e5f2547aa284a075a02fae1b981483d9b10614f6275697368ef513a4",
+  "io_adapter_sha256": "19a5274933da2ec0c83852ac7d87bddcff3b3fdd70d47d0d51769266fe93116e",
+  "positive_cases": [
+    {
+      "case": "tiny2d",
+      "grid": [
+        3,
+        2,
+        1
+      ],
+      "stride": 2,
+      "status": "PASS_ALL_OUTPUT_MEMBERS_BYTE_IDENTICAL",
+      "members": 7,
+      "selected_records": 18,
+      "guards": 83,
+      "paced_bytes": 30510,
+      "IO": {
+        "low_level_NAS_reads": 49,
+        "NAS_bytes": 30510,
+        "max_low_level_read_request_bytes": 1048576,
+        "CPU_events": 163,
+        "guard_every_at_most_events": 4096,
+        "Source_metadata_hash_XZ_tool_copies_share_one_low_read_adapter": true
+      }
+    },
+    {
+      "case": "tiny3d",
+      "grid": [
+        2,
+        2,
+        2
+      ],
+      "stride": 3,
+      "status": "PASS_ALL_OUTPUT_MEMBERS_BYTE_IDENTICAL",
+      "members": 7,
+      "selected_records": 18,
+      "guards": 83,
+      "paced_bytes": 30558,
+      "IO": {
+        "low_level_NAS_reads": 49,
+        "NAS_bytes": 30558,
+        "max_low_level_read_request_bytes": 1048576,
+        "CPU_events": 197,
+        "guard_every_at_most_events": 4096,
+        "Source_metadata_hash_XZ_tool_copies_share_one_low_read_adapter": true
+      }
+    }
+  ],
+  "existing_qualified_negative_cases_preserved": [
+    {
+      "case": "drop_EXIT",
+      "status": "REJECTED",
+      "exception": "AssertionError",
+      "reason": "incomplete warp/EXIT"
+    },
+    {
+      "case": "physical_lane5_in_5lane_warp",
+      "status": "REJECTED",
+      "exception": "AssertionError",
+      "reason": ""
+    },
+    {
+      "case": "wrong_origin_map",
+      "status": "REJECTED",
+      "exception": "AssertionError",
+      "reason": ""
+    },
+    {
+      "case": "wrong_grid",
+      "status": "REJECTED",
+      "exception": "AssertionError",
+      "reason": ""
+    },
+    {
+      "case": "extra_mapping_row",
+      "status": "REJECTED",
+      "exception": "AssertionError",
+      "reason": "unused/extra selection mapping"
+    },
+    {
+      "case": "truncated_xz",
+      "status": "REJECTED",
+      "exception": "EOFError",
+      "reason": "Compressed file ended before the end-of-stream marker was reached"
+    }
+  ],
+  "scope_count": 13,
+  "production_launches": 0,
+  "public_catalog_writes": 0
+}
