@@ -1,0 +1,58 @@
+--- frozenV3/mother
++++ RootV4/mother
+@@ -3,7 +3,7 @@
+ import pathlib,os,json,subprocess,time,fcntl,hashlib,signal,re,shutil,sys,traceback
+ from shared_io_v1 import read_root_grant,check_root_grant_window,token
+ R=pathlib.Path('/data/c16/rtx4080_suite_fill_20261024_v1');N=R/'nas_rtx4080';S=pathlib.Path('/data/c16/ada_trace_semantics_20261024_v1')
+-TOOL=S/'frozen/producer_v7_55c6f482/producer.so';CONTRACT=S/'frozen/ada7_contract_v1';VALIDATOR=pathlib.Path('/data/c16/rtx4080_suite_fill_20261024_v1/nas_rtx4080/private_candidates/ordinary_validator_parallel_prepare_20261027_v3/candidate/parallel_ordinary_validator_v1.py');POST=pathlib.Path('/data/c16/rtx4080_suite_fill_20261024_v1/control/frozen/post_v4_5d3ffcd3/postprocess_nas_sharded_v4.py');MAPPER=pathlib.Path('/data/c16/ada_trace_extensions_v8_20261024_v1/frozen/mapper_v3_a2e7ee38aa72/make_semantic_map_elf_owner_v3.py')
++TOOL=S/'frozen/producer_v7_55c6f482/producer.so';CONTRACT=S/'frozen/ada7_contract_v1';VALIDATOR=pathlib.Path('/data/c16/rtx4080_suite_fill_20261024_v1/nas_rtx4080/private_candidates/root_bounded_validator_pipeline_20261027_v4/candidate/parallel_ordinary_validator_v1.py');POST=pathlib.Path('/data/c16/rtx4080_suite_fill_20261024_v1/control/frozen/post_v4_5d3ffcd3/postprocess_nas_sharded_v4.py');MAPPER=pathlib.Path('/data/c16/ada_trace_extensions_v8_20261024_v1/frozen/mapper_v3_a2e7ee38aa72/make_semantic_map_elf_owner_v3.py')
+ def sha(p):
+  h=hashlib.sha256()
+  with p.open('rb') as f:
+@@ -22,6 +22,14 @@
+  text=subprocess.check_output(['nvidia-smi','--query-'+kind+'='+fields,'--format=csv,noheader,nounits'],text=True).strip()
+  return [x.strip() for x in text.splitlines() if x.strip()]
+ def procs():return [x.split(', ') for x in query('pid,process_name,used_memory','compute-apps')]
++def exact_validator_closed(doc,expected):
++ assert type(expected)is int and expected in(1,2,4,8),'exact validator worker choice'
++ assert doc['schema']=='ORDINARY_VALIDATOR_OWNED_WORKERS_CLOSED_V1'and doc['status']=='ALL_OWNED_WORKERS_REAPED','exact validator closure schema'
++ workers=doc['workers'];assert type(workers)is list and len(workers)==expected,'exact validator worker coverage'
++ assert doc['lease_unlocked']is False and doc['source_KEEP']is True,'wholejob lease preserved'
++ assert all(type(x['pid'])is int and x['pid']>1 and type(x['start_ticks'])is str and x['start_ticks'].isdigit()and int(x['start_ticks'])>0 and type(x['exitcode'])is int and x['exitcode']==0 for x in workers),'all exact owned validators exit0'
++ assert len({x['pid']for x in workers})==expected,'unique validator PIDs'
++ return True
+ job=json.loads(pathlib.Path(sys.argv[1]).read_text());task=job['task'];jobid=job['id'];root=N/'inflight'/jobid;binary=pathlib.Path(task['argv'][0]);root.mkdir(exist_ok=False)
+ v2cfg=job['ordinary_validator_bounded_v3']
+ assert type(v2cfg['rate_bytes_sec'])is int and 0<v2cfg['rate_bytes_sec']<=256*2**20
+@@ -67,7 +75,8 @@
+  if bad:
+   save(root/'PENDING_SPECIALIST_EXTENSION.json',{'unsupported_static_sites':bad,'source_keep':True})
+   raise RuntimeError('PENDING_SPECIALIST_EXTENSION static domain')
+- validator_argv=['python3','-B',str(VALIDATOR),str(root),str(root/'map/manifest.json'),'--work',str(root/'validator_parallel_bounded_v3'),'--lease-fd',str(io.fileno()),'--owner-pid',str(os.getpid()),'--owner-start-ticks',ticks(os.getpid()),'--rate-bytes-sec',str(v2cfg['rate_bytes_sec']),'--workers',str(v2cfg['workers']),'--deadline-sec',str(v2cfg['deadline_sec']),'--grant-file',v2cfg['grant_file'],'--grant-sha',v2cfg['grant_sha256']]
++ validator_work=root/'validator_parallel_bounded_v3'
++ validator_argv=['python3','-B',str(VALIDATOR),str(root),str(root/'map/manifest.json'),'--work',str(validator_work),'--lease-fd',str(io.fileno()),'--owner-pid',str(os.getpid()),'--owner-start-ticks',ticks(os.getpid()),'--rate-bytes-sec',str(v2cfg['rate_bytes_sec']),'--workers',str(v2cfg['workers']),'--deadline-sec',str(v2cfg['deadline_sec']),'--grant-file',v2cfg['grant_file'],'--grant-sha',v2cfg['grant_sha256']]
+  root_grant_boundary()
+  gate=subprocess.run(validator_argv+['--admission-only'],pass_fds=(io.fileno(),),capture_output=True,text=True,timeout=60)
+  save(root/'VALIDATOR_BOUNDED_V3_PREFLIGHT.json',{'returncode':gate.returncode,'stdout':gate.stdout,'stderr':gate.stderr,'GPU_query_started':False})
+@@ -172,10 +181,10 @@
+  cp=subprocess.run(validator_argv,pass_fds=(io.fileno(),),capture_output=True,text=True,timeout=min(86410,v2cfg['deadline_sec']+10))
+  root_grant_boundary()
+  (root/'VALIDATOR.log').write_text(cp.stdout+cp.stderr)
+- ack=root/'validator_parallel2/OWNED_WORKERS_CLOSED.json'
++ ack=validator_work/'OWNED_WORKERS_CLOSED.json'
+  if ack.is_file():
+   closed=json.loads(ack.read_text())
+-  validator_parallel_closed=closed['schema']=='ORDINARY_VALIDATOR_OWNED_WORKERS_CLOSED_V1'and closed['status']=='ALL_OWNED_WORKERS_REAPED'and all(x['exitcode']is not None for x in closed['workers'])
++  validator_parallel_closed=exact_validator_closed(closed,v2cfg['workers'])
+  assert validator_parallel_closed,'VALIDATOR_CHILD_CLOSURE_UNKNOWN_RETAIN_LOCK_REFERENCE'
+  assert cp.returncode==0,cp.stderr
+  val=json.loads(cp.stdout);assert val['status']=='ADA7_ORDINARY_FULL_RECORD_PASS'
+@@ -188,7 +197,7 @@
+  parallel_dir=root/'post_parallel2'
+  parallel_result=root/'POST_PARALLEL_CLOSED.json'
+  with (root/'POST_PARALLEL.stdout.log').open('x') as out,(root/'POST_PARALLEL.stderr.log').open('x') as err:
+-  q=subprocess.run(['python3','-B',str(scheduler),str(root),'--post',str(POST),'--dest-root',str(parallel_dir),'--output',str(parallel_result),'--workers',str(v2cfg['workers']),'--deadline-sec','86400'],stdout=out,stderr=err,timeout=86500)
++  q=subprocess.run(['python3','-B',str(scheduler),str(root),'--post',str(POST),'--dest-root',str(parallel_dir),'--output',str(parallel_result),'--workers','2','--deadline-sec','86400'],stdout=out,stderr=err,timeout=86500)
+  assert q.returncode==0,'parallel POST incomplete; SourceKEEP'
+  result=json.loads(parallel_result.read_text())
+  assert result['status']=='WHOLE_APP_PARALLEL_V4_GROUPING_CLOSED_PASS'

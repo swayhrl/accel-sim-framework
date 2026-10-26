@@ -1,0 +1,92 @@
+{
+  "schema": "R7_INDEPENDENT_PREINIT_RESOURCE_CLEANUP_COUNTEREXAMPLES_V1",
+  "status": "THREE_CONFIRMED_PRE_TRY_GAPS",
+  "cases": [
+    {
+      "case": "Popen_error",
+      "actual_exception": "OWN_PROBE_POPEN_BIRTH_ERROR",
+      "resource_lock_still_open": true,
+      "second_lock_busy": true,
+      "errFD_still_open": true,
+      "actual_started_runner_live": [],
+      "state": {
+        "actors": [],
+        "inventory_complete": true,
+        "run_id": "R6_1793049230948894920",
+        "spawn_begun": false,
+        "status": "STARTING"
+      },
+      "START_absent": true,
+      "CLOSED_absent": true,
+      "hold_exception_traceback_for_inspection": true,
+      "only_exact_own_PID_ticks_cleanup_done": true
+    },
+    {
+      "case": "ticks_error",
+      "actual_exception": "OWN_PROBE_START_TICKS_READ_ERROR",
+      "resource_lock_still_open": true,
+      "second_lock_busy": true,
+      "errFD_still_open": true,
+      "actual_started_runner_live": [
+        {
+          "pid": 1573038,
+          "start_ticks": "980120271",
+          "RLIMIT_AS": [
+            3221225472,
+            3221225472
+          ]
+        }
+      ],
+      "state": {
+        "actors": [],
+        "inventory_complete": true,
+        "run_id": "R6_1793049231339473886",
+        "spawn_begun": false,
+        "status": "STARTING"
+      },
+      "START_absent": true,
+      "CLOSED_absent": true,
+      "hold_exception_traceback_for_inspection": true,
+      "only_exact_own_PID_ticks_cleanup_done": true
+    },
+    {
+      "case": "parent_started_error",
+      "actual_exception": "OWN_PROBE_STATE_PUBLICATION_AFTER_SPAWN_ERROR",
+      "resource_lock_still_open": true,
+      "second_lock_busy": true,
+      "errFD_still_open": true,
+      "actual_started_runner_live": [
+        {
+          "pid": 1573041,
+          "start_ticks": "980120308",
+          "RLIMIT_AS": [
+            3221225472,
+            3221225472
+          ]
+        }
+      ],
+      "state": {
+        "actors": [
+          {
+            "pid": 1573041,
+            "start_ticks": "980120308"
+          }
+        ],
+        "inventory_complete": false,
+        "run_id": "R6_1793049231719660290",
+        "spawn_begun": true,
+        "status": "RUNNER_EXEC_CHAIN_STARTED"
+      },
+      "START_absent": true,
+      "CLOSED_absent": true,
+      "hold_exception_traceback_for_inspection": true,
+      "only_exact_own_PID_ticks_cleanup_done": true
+    }
+  ],
+  "all_private_QUAL": true,
+  "Native": false,
+  "GPU": false,
+  "cgroup": false,
+  "production_authority": false,
+  "no_foreign_signal": true
+}

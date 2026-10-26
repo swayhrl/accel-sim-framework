@@ -1,0 +1,44 @@
+--- RootV4/validator
++++ RootV5/validator
+@@ -16,7 +16,9 @@
+ def child_loop(conn,indexes,cfg):
+  for sig in [signal.SIGTERM,signal.SIGINT,signal.SIGHUP]:signal.signal(sig,signal.SIG_DFL)
+  os.close(cfg['parent_pace_fd'])
+- os.setpriority(os.PRIO_PROCESS,0,15);os.sched_setaffinity(0,cfg['affinity'])
++ current_nice=os.getpriority(os.PRIO_PROCESS,0)
++ if current_nice<15:os.nice(15-current_nice)
++ os.sched_setaffinity(0,cfg['affinity'])
+  resource.setrlimit(resource.RLIMIT_AS,(2**31,2**31));pace=Pace(cfg['pace'],cfg['rate'],cfg['deadline'],cfg['lease'])
+  if cfg.get('root_grant')is not None:check_root_grant_window(cfg['root_grant'])
+  checker=load()
+@@ -195,7 +197,9 @@
+ def main():
+  import argparse
+  p=argparse.ArgumentParser();p.add_argument('root');p.add_argument('map');p.add_argument('--work',required=True);p.add_argument('--lease-fd',type=int,required=True);p.add_argument('--owner-pid',type=int,required=True);p.add_argument('--owner-start-ticks',required=True);p.add_argument('--rate-bytes-sec',type=int,required=True);p.add_argument('--workers',type=int,default=2);p.add_argument('--deadline-sec',type=float,required=True);p.add_argument('--qualification',action='store_true');p.add_argument('--grant-file');p.add_argument('--grant-sha');p.add_argument('--admission-only',action='store_true');p.add_argument('--output',default='FULL_RECORD_STREAM_VALIDATION.json');a=p.parse_args()
+- os.nice(15);resource.setrlimit(resource.RLIMIT_AS,(2**31,2**31))
++ current_nice=os.getpriority(os.PRIO_PROCESS,0)
++ if current_nice<15:os.nice(15-current_nice)
++ resource.setrlimit(resource.RLIMIT_AS,(2**31,2**31))
+  need(type(a.workers)is int and a.workers in(1,2,4,8),'EXACT_WORKER_CHOICE')
+  if a.qualification:
+   cpus=sorted(os.sched_getaffinity(0));need(len(cpus)>=a.workers,'QUALIFICATION_ALLOWED_CPU_COUNT');os.sched_setaffinity(0,cpus[:a.workers])
+--- RootV4/mother
++++ RootV5/mother
+@@ -3,7 +3,7 @@
+ import pathlib,os,json,subprocess,time,fcntl,hashlib,signal,re,shutil,sys,traceback
+ from shared_io_v1 import read_root_grant,check_root_grant_window,token
+ R=pathlib.Path('/data/c16/rtx4080_suite_fill_20261024_v1');N=R/'nas_rtx4080';S=pathlib.Path('/data/c16/ada_trace_semantics_20261024_v1')
+-TOOL=S/'frozen/producer_v7_55c6f482/producer.so';CONTRACT=S/'frozen/ada7_contract_v1';VALIDATOR=pathlib.Path('/data/c16/rtx4080_suite_fill_20261024_v1/nas_rtx4080/private_candidates/root_bounded_validator_pipeline_20261027_v4/candidate/parallel_ordinary_validator_v1.py');POST=pathlib.Path('/data/c16/rtx4080_suite_fill_20261024_v1/control/frozen/post_v4_5d3ffcd3/postprocess_nas_sharded_v4.py');MAPPER=pathlib.Path('/data/c16/ada_trace_extensions_v8_20261024_v1/frozen/mapper_v3_a2e7ee38aa72/make_semantic_map_elf_owner_v3.py')
++TOOL=S/'frozen/producer_v7_55c6f482/producer.so';CONTRACT=S/'frozen/ada7_contract_v1';VALIDATOR=pathlib.Path('/data/c16/rtx4080_suite_fill_20261024_v1/nas_rtx4080/private_candidates/root_bounded_validator_pipeline_20261027_v5/candidate/parallel_ordinary_validator_v1.py');POST=pathlib.Path('/data/c16/rtx4080_suite_fill_20261024_v1/control/frozen/post_v4_5d3ffcd3/postprocess_nas_sharded_v4.py');MAPPER=pathlib.Path('/data/c16/ada_trace_extensions_v8_20261024_v1/frozen/mapper_v3_a2e7ee38aa72/make_semantic_map_elf_owner_v3.py')
+ def sha(p):
+  h=hashlib.sha256()
+  with p.open('rb') as f:
+@@ -49,7 +49,7 @@
+  assert sha(binary)==task['binary_sha256']
+  assert sha(TOOL)=='55c6f4829e8c92e11e0ab54496bf8f507f6cfa3a10cd01a857c6de147ee68b73'
+  assert sha(CONTRACT/'CONTRACT.json')=='97901eb373fc94b041c5ef6923e0e5ca1635edd1bac4213d53c28271abb6c184'
+- assert sha(VALIDATOR)=='8afd7d3841289adb1742302a0ae2657fc07ffdaa1793e34baeb2e3e697e71a31'
++ assert sha(VALIDATOR)=='6e71f88f7bce7e8f83c116078ab7a5f04e92af5f1164f2ffbf60f20aac6707be'
+ 
+  LISTER=pathlib.Path('/usr/local/cuda-12.8/bin/cuobjdump')
+  assert sha(LISTER)=='9d515ac6f60c246ef63fe87b0a95d209b00ff3e25b716f8f263520010760e8f8'
