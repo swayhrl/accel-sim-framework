@@ -1,0 +1,169 @@
+--- V8_normalized/control/gpu_leaf_bridge_v9.py
++++ V9/control/gpu_leaf_bridge_v9.py
+@@ -28,8 +28,14 @@
+  from native_witness_broker_v9 import request_native
+  native=request_native(scope,pathlib.Path(root))
+  if mode(scope)=='test':return native
++ verify_local109_resources(scope,root)
++ return native
++def verify_local109_resources(scope,root):
++ need(mode(scope)=='production','CPU scope cannot invoke production resource admission')
+  from cross_host_v9 import read
+  rr=scope['resource_authority_ref'];x=read(rr['remote_path'],rr['sha256'])
++ from memory_gate_adapter_v9 import validate_authority
++ validate_authority(scope,x)
+  need(x['schema']=='ROOT_COMPLETE_TWO_HOST_RESOURCE_AUTHORITY_V9'and x['root_scope_id']==scope['root_scope_id']and x['all_foreign_Native_and_RAM_reservations_complete']is True,'independent full109 Native/RAM authority')
+  for r in x['remote_registry_refs']:need(sha(pathlib.Path(r['path']))==r['sha256'],'fresh full109 registry refs')
+  need(shutil.disk_usage('/data/c16').free>=5*1024**3+x['Native109_all_reserved_bytes']+x['Native109_own_control_bytes'],'109 5GiB + all foreign + own control')
+@@ -37,7 +43,13 @@
+  need(mem>=x['Native109_all_RAM_reserved_bytes']+x['Native109_own_RAM_bytes'],'109 all foreign plus own RAM')
+  need(x['Native109_own_RAM_bytes']>=20*1024**3 and x['hard_memory_service_required']is True,'Root independent hard20GiB service qualification still required')
+  need(shutil.disk_usage(D).free>=5*1024**3,'NAS5GiB floor')
+- return native
++
++ from cross_host_v9 import approval,descendants,process_identity,same_identity
++ a,which=approval(pathlib.Path(root),scope['root_authorization_sha256'],False)
++ creator=scope['creator'];need(same_identity(process_identity(creator['pid']),creator),'actual same109 bootstrap owner for cgroup')
++ owned=[creator['pid']]+[q['pid']for q in descendants(creator['pid'])]
++ from memory_gate_adapter_v9 import check
++ return check(a,x,'gpu109_service',root,owned)
+ class ActualActivity:
+  def __init__(self,scope):need(mode(scope)=='production','CPU scope cannot create GPU activity provider');self.scope=scope
+  def sample(self,owned=None,done=None):
+@@ -61,6 +73,7 @@
+  def popen(self,p,env,root,out,err):
+   need(sha(pathlib.Path(p['argv'][0]))==p['binary_sha256']and sha(p['SO_path'])==p['SO_sha256'],'last fixed binary/SO bytes')
+   from first_admission_v9 import final_launch_gate
++  verify_local109_resources(self.scope,root)
+   final_launch_gate(self.scope,self.admission)
+   return subprocess.Popen(p['argv'],cwd=root,env=env,stdin=subprocess.DEVNULL,stdout=out,stderr=err,start_new_session=True,preexec_fn=lambda:capture_limits(p['family']))
+ class FixedCPUExecutor:
+--- V8_normalized/cross_host_v9.py
++++ V9/cross_host_v9.py
+@@ -32,7 +32,7 @@
+  need(a['family']in ('epoch','warp')and a['idle_samples']==15 and a['runtime_TTL_seconds']==30,'fixed family/idle/first TTL')
+  need(a['release_sha256']==sha(D/'RELEASE_CODE_V9.json'),'external full code release')
+  for r in read(D/'RELEASE_CODE_V9.json')['files']:
+-  if full or r['relative']in ('cross_host_v9.py','native_witness_broker_v9.py','native_observer_v9.py','remote_observer_v9.py','control/activity_proof_v3.py','control/inherited_leases_v5.py','control/raw_admission_v5.py'):need(sha(D/r['relative'])==r['sha256'],'source release drift')
++  if full or r['relative']in ('cross_host_v9.py','native_witness_broker_v9.py','native_observer_v9.py','remote_observer_v9.py','control/activity_proof_v3.py','control/inherited_leases_v5.py','control/raw_admission_v5.py','runtime_memory_gate_v9.py','memory_gate_adapter_v9.py','native_entry_v9.py'):need(sha(D/r['relative'])==r['sha256'],'source release drift')
+  need(a['Root_absolute_deadline_unix']-a['Root_not_before_unix']<=(600 if a['family']=='epoch'else 900),'original family absolute cap')
+  return a,which
+ def local_identity(role,proof,a,run,root_sha):
+@@ -60,7 +60,11 @@
+  root=run_dir(run,True);a,which=approval(root,root_sha,False);r=read(root/'NATIVE_KEEPER.json')
+  need(r['Root_sha256']==root_sha and r['run_id']==run,'original keeper Root binding')
+  local_identity('native_entry',r['owner'],a,run,root_sha)
+- if phase=='LIVE':clock_native(a)
++ if phase=='LIVE':
++  clock_native(a)
++  if which=='production':
++   from native_entry_v9 import resource_gate
++   resource_gate(a,which)
+  desc=r['leases'];need(same_identity(desc['guard'],r['owner'])and desc['bindings']==dict(approval_sha256=root_sha,run_id=run),'exact Native lease bindings')
+  expected=[str(N/'native_runs'/run/('PRIVATE_'+x+'.lock'))for x in ('DISPATCHER','SOURCE','TARGET','QUEUE')]if which=='test'else[str(pathlib.Path('/root/data/shared_rtx4080_trace_library_20261024_v1/control')/x)for x in ('RTX4080_DISPATCHER.lock','RTX4080_SOURCE.lock','RTX4080_TARGET.lock','RTX4080_QUEUE.lock')]
+  need([x['path']for x in desc['files']]==expected and len(desc['files'])==4,'full four Native leases')
+@@ -70,7 +74,9 @@
+  if phase=='ACK':
+   ack=read(root/'NATIVE_CLEANUP_ACK.json')
+   need(ack['Root_sha256']==root_sha and ack['proposal_sha256']==sha(root/'REMOTE_CLOSED_PROPOSAL.json')and ack['leases_sha256']==digest(desc),'Native cleanup ACK exact join')
+- return dict(schema='NATIVE174_LOCAL_WITNESS_V9',status='EXACT_FOUR_OWNED_NATIVE_LEASES_LIVE',Root_sha256=root_sha,run_id=run,challenge=challenge,owner=r['owner'],leases_sha256=digest(desc),observed_unix=time.time(),native_boot_id=r['owner']['boot_id'],original_absolute_unix=a['Root_absolute_deadline_unix'],Native_monotonic_is_not_exported_as_remote_clock=True,source_sha256=sha(N/'cross_host_v9.py'),ACK_sha256=sha(root/'NATIVE_CLEANUP_ACK.json')if phase=='ACK'else None)
++ source_pin=sha(N/'cross_host_v9.py')
++ if phase=='LIVE':clock_native(a) # fresh after resource registry/cgroup/OFD/source IO
++ return dict(schema='NATIVE174_LOCAL_WITNESS_V9',status='EXACT_FOUR_OWNED_NATIVE_LEASES_LIVE',Root_sha256=root_sha,run_id=run,challenge=challenge,owner=r['owner'],leases_sha256=digest(desc),observed_unix=time.time(),native_boot_id=r['owner']['boot_id'],original_absolute_unix=a['Root_absolute_deadline_unix'],Native_monotonic_is_not_exported_as_remote_clock=True,source_sha256=source_pin,ACK_sha256=sha(root/'NATIVE_CLEANUP_ACK.json')if phase=='ACK'else None)
+ def descendants(parent):
+  found={};queue=[parent];seen=set()
+  while queue:
+NEW_TYPED_RESOURCE_SOURCE memory_gate_adapter_v9.py
+NEW_TYPED_RESOURCE_SOURCE metadata_adapter_probe_v9.py
+NEW_TYPED_RESOURCE_SOURCE metadata_service_probe_v9.py
+--- V8_normalized/native_entry_v9.py
++++ V9/native_entry_v9.py
+@@ -7,12 +7,16 @@
+ def resource_gate(a,which):
+  if which=='test':return
+  r=a['resource_authority_ref'];x=read(r['native_path'],r['sha256'])
++ from memory_gate_adapter_v9 import validate_authority
++ validate_authority(a,x)
+  need(x['schema']=='ROOT_COMPLETE_TWO_HOST_RESOURCE_AUTHORITY_V9'and x['root_scope_id']==a['root_scope_id']and x['all_foreign_Native_and_RAM_reservations_complete']is True,'independent full Native/RAM reservation authority required')
+  import shutil
+  need(shutil.disk_usage('/root/data').free>=5*1024**3+x['Native174_all_reserved_bytes']+x['Native174_own_control_bytes'],'Native174 5GiB + full foreign/own reserve')
+  mem=int(next(s.split()[1]for s in pathlib.Path('/proc/meminfo').read_text().splitlines()if s.startswith('MemAvailable:')))*1024
+  need(mem>=x['Native174_all_RAM_reserved_bytes']+x['Native174_own_RAM_bytes'],'Native174 full RAM budget')
+  for r in x['native_registry_refs']:need(sha(pathlib.Path(r['path']))==r['sha256'],'fresh Native174 registry source')
++ from memory_gate_adapter_v9 import check
++ check(a,x,'native174',run_dir(a['run_id'],True))
+ def main():
+  p=argparse.ArgumentParser();p.add_argument('--approval',required=True);p.add_argument('--expected-sha',required=True);x=p.parse_args()
+  ap=pathlib.Path(x.approval);need(ap.resolve().is_relative_to(N.resolve())and not ap.is_symlink(),'private exact Root approval path')
+@@ -29,12 +33,13 @@
+   control=pathlib.Path('/root/data/shared_rtx4080_trace_library_20261024_v1/control')
+   need(not(control/'STOP_AFTER_CURRENT').exists(),'foreign STOP retained')
+   paths=[control/k for k in ('RTX4080_DISPATCHER.lock','RTX4080_SOURCE.lock','RTX4080_TARGET.lock','RTX4080_QUEUE.lock')]
++ clock_native(a) # fresh after full resource+identity IO, before actual Native lease acquisition
+  h=GuardLeases(tuple(map(str,paths)),dict(approval_sha256=x.expected_sha,run_id=run))
+  session_nonce=secrets.token_hex(32)
+  write(root/'NATIVE_KEEPER.json',dict(schema='NATIVE174_FOUR_LEASE_KEEPER_V9',Root_sha256=x.expected_sha,run_id=run,owner=me,leases=h.descriptor,session_nonce=session_nonce,original_absolute_unix=a['Root_absolute_deadline_unix'],Native_original_mono=a['Native_absolute_deadline_monotonic_ns']))
+  remote_argv=[a['remote_interpreter']['argv0'],'-B',str(RB/'remote_entry_v9.py'),'--run-id',run,'--root-sha',x.expected_sha,'--release-sha',a['release_sha256']]
+  if which=='production':
+-  remote_argv=['systemd-run','--user','--quiet','--wait','--collect','--pipe','--unit=trace-bridge-v9-'+run,'--property=MemoryMax=21474836480','--property=MemorySwapMax=0','--property=MemoryOOMGroup=yes','--property=CPUQuota=800%','--property=KillMode=control-group','--property=TimeoutStopSec=30','--',*remote_argv]
++  remote_argv=['systemd-run','--user','--quiet','--wait','--collect','--pipe','--unit=trace-bridge-v9-'+run,'--property=MemoryMax=21474836480','--property=MemorySwapMax=0','--property=OOMPolicy=kill','--property=CPUQuota=800%','--property=KillMode=control-group','--property=TimeoutStopSec=30','--',*remote_argv]
+  cmd=shlex.join(remote_argv)
+  proc=None;released=False;stop=[False];challenge=secrets.token_hex(32);seq=[0];handled=set();transport_lock=threading.Lock();finished=[False]
+  def transport(kind,**extra):
+@@ -56,6 +61,7 @@
+  for sig in [signal.SIGTERM,signal.SIGHUP,signal.SIGINT]:signal.signal(sig,stopnew)
+  try:
+   with(root/'SSH109.stdout.log').open('xb')as out,(root/'SSH109.stderr.log').open('xb')as err:
++   clock_native(a) # original Native clocks, never renewed
+    proc=subprocess.Popen(['ssh','-T','-o','BatchMode=yes','-o','ConnectTimeout=8','gpu109',cmd],stdin=subprocess.PIPE,stdout=out,stderr=err)
+   write(root/'NATIVE_SSH_START.json',process_identity(proc.pid))
+   threading.Thread(target=heartbeat,daemon=True).start()
+--- V8_normalized/remote_entry_v9.py
++++ V9/remote_entry_v9.py
+@@ -24,7 +24,8 @@
+   time.sleep(.1)
+ def main():
+  p=argparse.ArgumentParser();p.add_argument('--run-id',required=True);p.add_argument('--root-sha',required=True);p.add_argument('--release-sha',required=True);x=p.parse_args()
+- root=run_dir(x.run_id);a,which=approval(root,x.root_sha);need(x.release_sha==a['release_sha256'],'exact Root release')
++ received_unix=time.time();received_mono=time.monotonic_ns()
++ root=run_dir(x.run_id);a,which=approval(root,x.root_sha);remote_static_deadline=received_mono+int((a['Root_absolute_deadline_unix']-received_unix)*1e9);need(x.release_sha==a['release_sha256'],'exact Root release')
+  os.umask(0o077);os.nice(15);os.sched_setaffinity(0,sorted(os.sched_getaffinity(0))[:2]);ctypes.CDLL(None).prctl(36,1,0,0,0)
+  me=process_identity(os.getpid());local_identity('remote_entry',me,a,x.run_id,x.root_sha)
+  need(a['Root_not_before_unix']<=time.time()<a['Root_absolute_deadline_unix'],'original Root wall no renewal')
+@@ -35,6 +36,16 @@
+   need((cg/'memory.max').read_text().strip()=='21474836480'and(cg/'memory.swap.max').read_text().strip()=='0'and(cg/'memory.oom.group').read_text().strip()=='1','actual hard20GiB whole-cgroup memory and no swap')
+   quota,period=(cg/'cpu.max').read_text().split();need(quota!='max'and int(quota)<=8*int(period),'actual8CPU bound')
+   write(root/'ROOT_HARD_SERVICE_ADMISSION.json',dict(cgroup=cgroup,memory_max=(cg/'memory.max').read_text(),memory_swap_max=(cg/'memory.swap.max').read_text(),cpu_max=(cg/'cpu.max').read_text(),not_a_foreign_reservation_authority=True))
++ if which=='production':
++  from cross_host_v9 import read as read_budget
++  resource=read_budget(a['resource_authority_ref']['remote_path'],a['resource_authority_ref']['sha256'])
++  from memory_gate_adapter_v9 import validate_authority
++  validate_authority(a,resource)
++  need(resource['schema']=='ROOT_COMPLETE_TWO_HOST_RESOURCE_AUTHORITY_V9'and resource['root_scope_id']==a['root_scope_id']and resource['all_foreign_Native_and_RAM_reservations_complete']is True,'independent full resource authority')
++  for ref in resource['remote_registry_refs']:need(sha(pathlib.Path(ref['path']))==ref['sha256'],'current full109 foreign registry refs')
++  from memory_gate_adapter_v9 import check as check_cgroup
++  check_cgroup(a,resource,'gpu109_service',root,[os.getpid()])
++ need(time.time()<a['Root_absolute_deadline_unix']and time.monotonic_ns()<remote_static_deadline,'fresh original Root/109 receive-derived static deadlines after resource IO')
+  write(root/'REMOTE_START.json',dict(schema='REMOTE109_BOOTSTRAP_START_V9',bootstrap=me,Root_sha256=x.root_sha,original_Root_unix_deadline=a['Root_absolute_deadline_unix'],no_Native_monotonic_compared_here=True))
+  stop=[False];last=time.monotonic()
+  def stopping(sig,frame):stop[0]=True
+@@ -51,6 +62,7 @@
+  (root/'tmp').mkdir(exist_ok=True);cleanenv.update(TMPDIR=str(root/'tmp'),PYTHONDONTWRITEBYTECODE='1')
+  issuer=guard=None
+  try:
++  need(time.time()<a['Root_absolute_deadline_unix']and time.monotonic_ns()<remote_static_deadline,'fresh pre-issuer original static deadlines')
+   with(root/'ISSUER.stdout.log').open('xb')as o,(root/'ISSUER.stderr.log').open('xb')as e:
+    issuer=subprocess.Popen(P.argv('issuer',root,base),env=dict(cleanenv,V6_ISSUER_FD=str(ca.fileno())),pass_fds=(ca.fileno(),),stdout=o,stderr=e)
+   ip=process_identity(issuer.pid);need(ip is not None,'exact local issuer start')
+@@ -61,8 +73,9 @@
+   if which=='test'and a['case']=='wrong_native_pid':native_expected['pid']+=1
+   if which=='test'and a['case']=='wrong_native_ticks':native_expected['start_ticks']='0'
+   if which=='test'and a['case']=='wrong_native_boot':native_expected['boot_id']='wrong'
+-  scope=dict(expected_native_owner=native_expected,schema=P.bridge.SCHEMAS['production'if which=='production'else'test'],approved=which=='production',CPU_TEST_ONLY=which=='test',capture_permission=False,family=family,case=a['protocol_case'],limits=P.LIMITS[family],not_before_unix=now,absolute_deadline_unix=a['Root_absolute_deadline_unix'],created_monotonic_ns=mono,absolute_deadline_monotonic_ns=mono+int(remaining*1e9),execution_boot_id=me['boot_id'],execution_namespaces=me['namespaces'],code_sha256=code_sha,job_sha256=a['job_sha256'],interpreter=interp,issuer=ip,creator=me,idle_samples=15,admission_TTL_seconds=30,static_refs=[dict(path=str(p),sha256=sha(p))for p in refs],native_run_id=x.run_id,root_authorization_sha256=x.root_sha,root_scope_id=a['root_scope_id'],resource_authority_ref=a.get('resource_authority_ref'),known_residents=a.get('known_residents',[]),gpu_uuid='GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59')
++  scope=dict(expected_native_owner=native_expected,schema=P.bridge.SCHEMAS['production'if which=='production'else'test'],approved=which=='production',CPU_TEST_ONLY=which=='test',capture_permission=False,family=family,case=a['protocol_case'],limits=P.LIMITS[family],not_before_unix=now,absolute_deadline_unix=a['Root_absolute_deadline_unix'],created_monotonic_ns=mono,absolute_deadline_monotonic_ns=remote_static_deadline,execution_boot_id=me['boot_id'],execution_namespaces=me['namespaces'],code_sha256=code_sha,job_sha256=a['job_sha256'],interpreter=interp,issuer=ip,creator=me,idle_samples=15,admission_TTL_seconds=30,static_refs=[dict(path=str(p),sha256=sha(p))for p in refs],native_run_id=x.run_id,root_authorization_sha256=x.root_sha,root_scope_id=a['root_scope_id'],resource_authority_ref=a.get('resource_authority_ref'),known_residents=a.get('known_residents',[]),gpu_uuid='GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59')
+   write(root/'CPU_STATIC_SCOPE.json',scope);write(root/'SCOPE_PIN.json',dict(sha256=sha(root/'CPU_STATIC_SCOPE.json')))
++  need(time.time()<a['Root_absolute_deadline_unix']and time.monotonic_ns()<remote_static_deadline,'fresh pre-guard original static deadlines')
+   with(root/'GUARD.stdout.log').open('xb')as o,(root/'GUARD.stderr.log').open('xb')as e:
+    guard=subprocess.Popen(P.argv('guard',root,scope),env=dict(cleanenv,V6_FIRST_ISSUER_FD=str(cb.fileno())),pass_fds=(cb.fileno(),),stdin=subprocess.PIPE,stdout=o,stderr=e)
+   ca.close();cb.close()
+NEW_TYPED_RESOURCE_SOURCE runtime_memory_gate_v9.py
