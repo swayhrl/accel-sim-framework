@@ -58,7 +58,7 @@ ISA preparation remains private. The exact Gaussian producer has an offline-buil
 
 SM70 V13R2 and its reviewed recovery companion remain active in parallel. At the latest live check, the original supervisor, driver and companion matched their recorded start ticks; the driver had read approximately406.03GB. This is I/O progress, not a completed source or archive proof. Archive completion still requires the exact bundle COMMIT, same-run EXACT_BATCH_COMPLETE, successful natural supervisor completion and closed cleanup. The current RTX streamcluster job and already armed SDK boundary controller also remained live.
 
-The parent shared-library Goal is active and incomplete. Public125 full Native restoration and public activation remain separate work. Source KEEP and released bytes0 remain in force.
+The parent shared-library Goal is incomplete. A final goal-tool readback returned UI status blocked; the goal tools cannot restore that status to active. The explicitly authorized finite work and existing background processes have executed independently of that UI state. Automatic Goal continuation requires restoring it in the app. Public125 full Native restoration and public activation remain separate work. Source KEEP and released bytes0 remain in force.
 
 ## Review questions
 

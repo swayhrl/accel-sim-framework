@@ -4,4 +4,4 @@ Read [the exact161 automatic adaptation report](../rtx4080_auto161_pipeline_2026
 
 The report includes current118-binary attestation, pinned implementation, independent checker, evidence chains, typed remaining work and parallel SM70/RTX status. See LATEST_REVIEW_ENTRY_V4.md for the preserved earlier review state.
 
-The parent Goal remains active. ChatGPT external review has not been received.
+The parent Goal remains incomplete; the latest goal-tool readback is blocked, as recorded in the new report. ChatGPT external review has not been received.
