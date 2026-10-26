@@ -1,0 +1,234 @@
+{
+  "asset_id": "TRACE_90174dcf58988a5d",
+  "checkpoint_evidence": {
+    "HOLD.json": {
+      "bytes": 1861,
+      "sha256": "a117433c2945859d2171d5db6d7218e2040a74ef5850de027b00fccb39d9ed9a"
+    },
+    "PHYSICAL_LAYER_DEBUGFS_STAT.txt": {
+      "bytes": 12662,
+      "sha256": "f5f9e2d80e54b171c80c73163485172c34f0bec48aa88cb83584e65afbf43f99"
+    },
+    "PHYSICAL_LAYER_QUALIFICATION.json": {
+      "bytes": 1558,
+      "sha256": "efffe651d132b08ba44ec6828d1a6c0fe2992dc4c6542847ca082d75b9b953ab"
+    },
+    "PRE_DELETE_AUDIT.json": {
+      "bytes": 11338,
+      "sha256": "cb932aee75608a345f27890e3fd572573585faa97de484fc6f98941bf692fedf"
+    },
+    "PROTECTED_AFTER.json": {
+      "bytes": 61909,
+      "sha256": "4d6092603ba8a613b1074387285fd7824710493aa71af7c0bf3e0afd11a6a2c8"
+    },
+    "PROTECTED_BEFORE.json": {
+      "bytes": 61859,
+      "sha256": "6716e53c1c11be9be0904962af11dd9608daf25f8c2d84259ff0d812bae1e39b"
+    },
+    "RESTORE_PREFLIGHT.json": {
+      "bytes": 4529,
+      "sha256": "84ef7bd94d4892cab40ea9fbd8e68d1b101b308d63a29ff6ef686ade0e421a68"
+    },
+    "RESTORE_SELF_CHECK.json": {
+      "bytes": 962,
+      "sha256": "c7196fb49bbdbd71c30bcec6257f3fa44cdc3f2aa94aa3c3877dda379a998f5c"
+    },
+    "SOURCE_FULL_SHA_REVERIFY.json": {
+      "bytes": 3027,
+      "sha256": "6d6f20d85ded2a7efdb580e1cbc8e21837bb94f47bc67553cda2dfb1c85d483c"
+    },
+    "TARGET_FULL_SHA_REVERIFY.json": {
+      "bytes": 3506,
+      "sha256": "a722e02d6ce7d53d46318f4f27a1bcfd0e27ef5483a99efdb4d5c212ca15de38"
+    }
+  },
+  "decision": {
+    "intent_written": false,
+    "reason": "The dedicated restoration preflight failed the unchanged SSD capacity contract. All Source bytes remain.",
+    "unlink_executed": false
+  },
+  "dependencies": {
+    "future_registered_or_scheduled_consumers": [],
+    "future_script_lavaMD_matches": [],
+    "historical_consumers": {
+      "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-functional/rodinia-first-batch/rodinia-3.1__9.1__lavaMD-rodinia-3.1___boxes1d_10": {
+        "baseline_PASS": true,
+        "completed": true,
+        "decoupled_PASS": true,
+        "result": "finished_at=2026-08-14T11:34:50+08:00\nbaseline_rc=0\ndecoupled_rc=0\n"
+      }
+    },
+    "historical_symlinks": [
+      "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-functional/rodinia-first-batch/rodinia-3.1__9.1__lavaMD-rodinia-3.1___boxes1d_10/baseline/traces",
+      "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-functional/rodinia-first-batch/rodinia-3.1__9.1__lavaMD-rodinia-3.1___boxes1d_10/decoupled/traces"
+    ],
+    "rule": "Any future replay through either preserved historical symlink requires kernel-1.traceg to remain present or be restored first."
+  },
+  "physical_reclaim_qualification": {
+    "block_device": "/dev/sdf",
+    "conclusion": "Exact merged Source is the same allocated nlink=1 inode at the current overlay upperdir path; unlink is qualified to reclaim its upper-layer ext4 blocks rather than create a lower-only whiteout.",
+    "debugfs_raw_sha256": "f5f9e2d80e54b171c80c73163485172c34f0bec48aa88cb83584e65afbf43f99",
+    "debugfs_read_only": true,
+    "debugfs_stat": {
+      "allocated_bytes": 20776263680,
+      "blockcount_512": 40578640,
+      "inode": 49300667,
+      "links": 1,
+      "size": 20776255925
+    },
+    "exact_upper_backing_path": "/docker/overlay2/e7cd1a981b72236879066fe204a1281a18b4bf4b187fdf8281722465e12d1ce5/diff/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/lavaMD-rodinia-3.1/_boxes1d_10/traces/kernel-1.traceg",
+    "filesystem": "ext4",
+    "filesystem_last_mounted_on": "/mnt/data",
+    "old174": {
+      "hostname": "huangrulin-174",
+      "identity": {
+        "allocated": 20776263680,
+        "blocks": 40578640,
+        "dev": 156,
+        "inode": 49300667,
+        "nlink": 1,
+        "size": 20776255925
+      },
+      "namespace": "mnt:[4026534768]",
+      "source_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/lavaMD-rodinia-3.1/_boxes1d_10/traces/kernel-1.traceg",
+      "upperdir": "/mnt/data/docker/overlay2/e7cd1a981b72236879066fe204a1281a18b4bf4b187fdf8281722465e12d1ce5/diff"
+    },
+    "schema": "ORIGINAL174_LAVAMD_PHYSICAL_UPPER_LAYER_QUALIFICATION_V1",
+    "status": "PASS",
+    "unix": 1793021203.6407197
+  },
+  "readers_and_writers": {
+    "current": [],
+    "registries": {
+      "native": {
+        "exact_source_matches": 0,
+        "lavaMD_matches": 0,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/science_authority/NATIVE_SCIENCE_REGISTRY.json",
+        "sha256": "74f88e15da286f4dc62eca7179cbd1877dc446acbad556adb80d93f52f5c9da6"
+      },
+      "source": {
+        "exact_source_matches": 0,
+        "lavaMD_matches": 0,
+        "path": "/workspace/ep_l2_ft20261016_shared/RUN_REGISTRY.json",
+        "sha256": "d8c402cce5d0d00c45c2a7512d2736d7fd0024d604d2603637f4615279eaaf07"
+      }
+    },
+    "scheduled_matches": [],
+    "unreadable_processes": []
+  },
+  "schema": "ORIGINAL174_LAVAMD_SOURCE_READER_AND_FUTURE_DEPENDENCY_AUDIT_V1",
+  "source": {
+    "candidate_allocated_bytes": 20776263680,
+    "candidate_nlink": 1,
+    "candidate_present": true,
+    "current_members": [
+      {
+        "identity": {
+          "allocated": 4096,
+          "ctime_ns": 1786635418711438986,
+          "dev": 156,
+          "gid": 5000,
+          "inode": 49300782,
+          "mode": 420,
+          "mtime_ns": 1589831968000000000,
+          "nlink": 1,
+          "size": 126,
+          "type": "file",
+          "uid": 543796
+        },
+        "relative_path": "commandlist",
+        "sha256": "78b20ee46ca983a9e592a937615775bc05fe1058ebfa725d257a47a55aed2d03"
+      },
+      {
+        "identity": {
+          "allocated": 20776263680,
+          "ctime_ns": 1786635418711438986,
+          "dev": 156,
+          "gid": 5000,
+          "inode": 49300667,
+          "mode": 420,
+          "mtime_ns": 1589831967000000000,
+          "nlink": 1,
+          "size": 20776255925,
+          "type": "file",
+          "uid": 543796
+        },
+        "relative_path": "kernel-1.traceg",
+        "sha256": null
+      },
+      {
+        "identity": {
+          "allocated": 4096,
+          "ctime_ns": 1786635346778828473,
+          "dev": 156,
+          "gid": 5000,
+          "inode": 49300664,
+          "mode": 420,
+          "mtime_ns": 1589831935000000000,
+          "nlink": 1,
+          "size": 165,
+          "type": "file",
+          "uid": 543796
+        },
+        "relative_path": "kernelslist",
+        "sha256": "0008b9378705e2cf435d47c2a93dd0f74325c400cc86a9d9b82d71b8ef1e4931"
+      },
+      {
+        "identity": {
+          "allocated": 4096,
+          "ctime_ns": 1786635346778828473,
+          "dev": 156,
+          "gid": 5000,
+          "inode": 49300666,
+          "mode": 420,
+          "mtime_ns": 1589831935000000000,
+          "nlink": 1,
+          "size": 166,
+          "type": "file",
+          "uid": 543796
+        },
+        "relative_path": "kernelslist.g",
+        "sha256": "1d9ff3b9466a0e20f2e18d07d20e925bafe6163e965dccf81245b21c77b84645"
+      },
+      {
+        "identity": {
+          "allocated": 4096,
+          "ctime_ns": 1786635346778828473,
+          "dev": 156,
+          "gid": 5000,
+          "inode": 49300665,
+          "mode": 420,
+          "mtime_ns": 1589831935000000000,
+          "nlink": 1,
+          "size": 154,
+          "type": "file",
+          "uid": 543796
+        },
+        "relative_path": "stats.csv",
+        "sha256": "c8154e79db1382fff12f97d811faf552809feb4eddcbf05659e7fa4652e43e5c"
+      }
+    ],
+    "full_SHA_receipt": {
+      "all_manifest_SHA_identity_match": true,
+      "bytes": 20776256536,
+      "members": 5,
+      "status": "PASS",
+      "trace_sha256": "ccbd8ff9ff00c6b5a2fc49e982c652e12259b59378f2853593f36df8ae24701f"
+    },
+    "root_identity": {
+      "allocated": 4096,
+      "ctime_ns": 1786635418711438986,
+      "dev": 156,
+      "gid": 5000,
+      "inode": 49389805,
+      "mode": 493,
+      "mtime_ns": 1589831968000000000,
+      "nlink": 2,
+      "size": 4096,
+      "type": "directory",
+      "uid": 543796
+    }
+  },
+  "source_root": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/lavaMD-rodinia-3.1/_boxes1d_10/traces",
+  "status": "HOLD_RESTORE_CAPACITY_BEFORE_INTENT"
+}

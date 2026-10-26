@@ -1,0 +1,58 @@
+{
+  "asset_id": "TRACE_90174dcf58988a5d",
+  "authorized_candidate": "kernel-1.traceg",
+  "blocking_gate": {
+    "SSD_available_bytes": 17512468480,
+    "SSD_contract_required_bytes": 52412022784,
+    "hypothetical_post_retirement_available_bytes": 38288732160,
+    "hypothetical_restore_capacity_pass": false,
+    "required_available_before_restore_bytes": 73188282368,
+    "restore_payload_allocated_estimate": 20776259584,
+    "shortfall_bytes": 34899550208
+  },
+  "done": {
+    "allocated_bytes_unlinked": 0,
+    "files_unlinked": 0,
+    "logical_bytes_unlinked": 0,
+    "unlink_executed": false,
+    "written": false
+  },
+  "hold_receipt_sha256": "a117433c2945859d2171d5db6d7218e2040a74ef5850de027b00fccb39d9ed9a",
+  "intent": {
+    "reason": "restore capacity gate failed",
+    "written": false
+  },
+  "next_action": "Re-run as a separately authorized disposition only after the unchanged resource contract can admit the restore payload; do not replay this HOLD as an unlink authorization.",
+  "other_gates": {
+    "HybridSort_protection": "PASS",
+    "SRAD_no_replay": "PASS",
+    "physical_upper_layer": "PASS",
+    "reader_writer_and_future_dependency": "PASS",
+    "restore_program_self_check_and_safety": "PASS",
+    "source_identity_and_full_SHA": "PASS",
+    "true164_identity_and_full_SHA": "PASS"
+  },
+  "protection": {
+    "HybridSort_exactly_unchanged": true,
+    "SRAD_terminal_state_unchanged": true,
+    "other_assets_touched": false
+  },
+  "schema": "ORIGINAL174_LAVAMD_EXACT_RETIREMENT_INTENT_DONE_V1",
+  "source_terminal_state": {
+    "candidate_present": true,
+    "controls_preserved": [
+      "commandlist",
+      "kernelslist",
+      "kernelslist.g",
+      "stats.csv"
+    ],
+    "members": [
+      "commandlist",
+      "kernel-1.traceg",
+      "kernelslist",
+      "kernelslist.g",
+      "stats.csv"
+    ]
+  },
+  "status": "HOLD_BEFORE_INTENT"
+}

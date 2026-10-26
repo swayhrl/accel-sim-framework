@@ -1,0 +1,319 @@
+{
+  "decision": "DO_NOT_WRITE_INTENT_OR_UNLINK",
+  "done_exists": false,
+  "intent_exists": false,
+  "physical_upper_layer_qualification": {
+    "block_device": "/dev/sdf",
+    "conclusion": "Exact merged Source is the same allocated nlink=1 inode at the current overlay upperdir path; unlink is qualified to reclaim its upper-layer ext4 blocks rather than create a lower-only whiteout.",
+    "debugfs_raw_sha256": "f5f9e2d80e54b171c80c73163485172c34f0bec48aa88cb83584e65afbf43f99",
+    "debugfs_read_only": true,
+    "debugfs_stat": {
+      "allocated_bytes": 20776263680,
+      "blockcount_512": 40578640,
+      "inode": 49300667,
+      "links": 1,
+      "size": 20776255925
+    },
+    "exact_upper_backing_path": "/docker/overlay2/e7cd1a981b72236879066fe204a1281a18b4bf4b187fdf8281722465e12d1ce5/diff/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/lavaMD-rodinia-3.1/_boxes1d_10/traces/kernel-1.traceg",
+    "filesystem": "ext4",
+    "filesystem_last_mounted_on": "/mnt/data",
+    "old174": {
+      "hostname": "huangrulin-174",
+      "identity": {
+        "allocated": 20776263680,
+        "blocks": 40578640,
+        "dev": 156,
+        "inode": 49300667,
+        "nlink": 1,
+        "size": 20776255925
+      },
+      "namespace": "mnt:[4026534768]",
+      "source_path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/lavaMD-rodinia-3.1/_boxes1d_10/traces/kernel-1.traceg",
+      "upperdir": "/mnt/data/docker/overlay2/e7cd1a981b72236879066fe204a1281a18b4bf4b187fdf8281722465e12d1ce5/diff"
+    },
+    "schema": "ORIGINAL174_LAVAMD_PHYSICAL_UPPER_LAYER_QUALIFICATION_V1",
+    "status": "PASS",
+    "unix": 1793021203.6407197
+  },
+  "restore_preflight": {
+    "asset_id": "TRACE_90174dcf58988a5d",
+    "buffer_bytes": 1048576,
+    "bytes": 20776255925,
+    "commit_sha256": "a39062e9d39d483f9d517fc496683e8be838c5a8b78047ab51a0ddee1cf61686",
+    "controls": [
+      "commandlist",
+      "kernelslist",
+      "kernelslist.g",
+      "stats.csv"
+    ],
+    "full_native_restore_performed": false,
+    "manifest_sha256": "75810b00842cb095dcb837ad5a7a888c192b4db5a06f0b1d23c17cf04ba3ce08",
+    "mount": {
+      "fstype": "fuse.sshfs",
+      "options": "rw,nosuid,nodev,relatime,user_id=0,group_id=0,allow_other",
+      "source": "admin-wcx@10.208.130.164:/home/shared",
+      "target": "/root/share/mnt164"
+    },
+    "old174": {
+      "SSD_available_bytes": 17512468480,
+      "SSD_contract_required_bytes": 52412022784,
+      "controls_verified": 4,
+      "event": "PREFLIGHT",
+      "hypothetical_post_retirement_available_bytes": 38288732160,
+      "hypothetical_restore_capacity_pass": false,
+      "mode": "preflight",
+      "reader_writer_check": {
+        "current_selected_readers": [],
+        "current_selected_writers": [],
+        "planned_readers": "Original Source remains KEEP; no reader path/controller changed; archived bytes preserve exact current owner input and order"
+      },
+      "required_available_before_restore_bytes": 73188282368,
+      "resource_gate": {
+        "CPU_pressure": {
+          "full": {
+            "avg10": 0.0,
+            "avg300": 0.0,
+            "avg60": 0.0,
+            "total": 0.0
+          },
+          "some": {
+            "avg10": 0.05,
+            "avg300": 0.12,
+            "avg60": 0.1,
+            "total": 543281653113.0
+          }
+        },
+        "IO": {
+          "full": {
+            "avg10": 6.71,
+            "avg300": 6.83,
+            "avg60": 6.79,
+            "total": 211961286839.0
+          },
+          "some": {
+            "avg10": 6.85,
+            "avg300": 6.89,
+            "avg60": 6.91,
+            "total": 233192668805.0
+          }
+        },
+        "MemAvailable_bytes": 271119446016,
+        "SSD_available_bytes": 17512468480,
+        "SSD_required_bytes": 52412022784,
+        "Share_available_bytes": 36564189184,
+        "Share_global40GiB_policy_changed": false,
+        "Share_payload_write_budget_bytes": 0,
+        "active_AEFAIR": [],
+        "active_science_IO_gate": {
+          "active_science_observed": false,
+          "authorization": {
+            "mode": "USER_AUTHORIZED_MONITOR_ONLY",
+            "path": "/root/data/research_asset_verified_offload_20261024_v1/control/ACTIVE_SCIENCE_IO_GATE_USER_AUTHORIZATION.json",
+            "sha256": "4e412e2a57d8d23e7c844cfb42b08ed8a512e7fcfaec97663ca0dc06b8c933dd"
+          },
+          "mode": "USER_AUTHORIZED_MONITOR_ONLY",
+          "original_avg10_thresholds_pass": false,
+          "original_full_max": 1,
+          "original_some_max": 5,
+          "pressure_observation_retained": true
+        },
+        "cgroup_memory_current": 25819181056,
+        "cgroup_memory_max": "274877906944",
+        "copy_SSD_admission_pass": false,
+        "host": "huangrulin-174",
+        "metadata_only": true,
+        "mount_namespace": "mnt:[4026534768]",
+        "native_registered_reserved_bytes": 43754979328,
+        "old_archive_locks_observed": [
+          {
+            "kernel_lock": "41: FLOCK  ADVISORY  WRITE 3272706 09:7f:103547605 0 EOF",
+            "path": "/root/share/host174_storage_recovery_bridge/20261016_storageops_02/.TLS_V10_SOURCE_SENDER.lock",
+            "pid": 3272706
+          }
+        ],
+        "outside_registered_project_headroom_bytes": 1073741824,
+        "own_controls_reserve_bytes": 67108864,
+        "role": "SOURCE",
+        "route_exception": "TASK_QUALIFIED_ZERO_SHARE_PAYLOAD_STAGING_ONLY",
+        "science_processes": [],
+        "source_registry": {
+          "T0": 1792414193,
+          "floor_bytes": 5368709120,
+          "leases": {},
+          "monitor_reserve_bytes": 2147483648,
+          "registered_reserved_bytes": 0,
+          "science_starts": 57,
+          "unclosed_DTC_locks": []
+        },
+        "true164": null,
+        "unix": 1793022448.171165
+      },
+      "restore_payload_allocated_estimate": 20776259584,
+      "safety": {
+        "no_overwrite_publish": "hard-link publication",
+        "partial_collision_absent": true,
+        "unexpected_members_absent": true
+      },
+      "source_trace_identity_match": true,
+      "trace_present": true
+    },
+    "rate_limit_bytes_per_second": 15728640,
+    "safety_tests": {
+      "exclusive_no_overwrite_publish": true,
+      "owned_partial_collision_fails_closed": true,
+      "receiver_compiles": true,
+      "unsafe_paths_rejected": [
+        "../escape",
+        "/absolute",
+        "x\\y"
+      ]
+    },
+    "status": "PREFLIGHT_CAPACITY_HOLD",
+    "trace": "kernel-1.traceg"
+  },
+  "schema": "ORIGINAL174_LAVAMD_PRE_DELETE_AUDIT_V1",
+  "source": {
+    "current_readers_writers": [],
+    "future_script_lavaMD_matches": [],
+    "historical_consumers": {
+      "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-functional/rodinia-first-batch/rodinia-3.1__9.1__lavaMD-rodinia-3.1___boxes1d_10": {
+        "baseline_PASS": true,
+        "completed": true,
+        "decoupled_PASS": true,
+        "result": "finished_at=2026-08-14T11:34:50+08:00\nbaseline_rc=0\ndecoupled_rc=0\n"
+      }
+    },
+    "historical_symlinks": [
+      "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-functional/rodinia-first-batch/rodinia-3.1__9.1__lavaMD-rodinia-3.1___boxes1d_10/baseline/traces",
+      "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-functional/rodinia-first-batch/rodinia-3.1__9.1__lavaMD-rodinia-3.1___boxes1d_10/decoupled/traces"
+    ],
+    "hostname": "huangrulin-174",
+    "members": [
+      {
+        "identity": {
+          "allocated": 4096,
+          "ctime_ns": 1786635418711438986,
+          "dev": 156,
+          "gid": 5000,
+          "inode": 49300782,
+          "mode": 420,
+          "mtime_ns": 1589831968000000000,
+          "nlink": 1,
+          "size": 126,
+          "type": "file",
+          "uid": 543796
+        },
+        "relative_path": "commandlist",
+        "sha256": "78b20ee46ca983a9e592a937615775bc05fe1058ebfa725d257a47a55aed2d03"
+      },
+      {
+        "identity": {
+          "allocated": 20776263680,
+          "ctime_ns": 1786635418711438986,
+          "dev": 156,
+          "gid": 5000,
+          "inode": 49300667,
+          "mode": 420,
+          "mtime_ns": 1589831967000000000,
+          "nlink": 1,
+          "size": 20776255925,
+          "type": "file",
+          "uid": 543796
+        },
+        "relative_path": "kernel-1.traceg",
+        "sha256": null
+      },
+      {
+        "identity": {
+          "allocated": 4096,
+          "ctime_ns": 1786635346778828473,
+          "dev": 156,
+          "gid": 5000,
+          "inode": 49300664,
+          "mode": 420,
+          "mtime_ns": 1589831935000000000,
+          "nlink": 1,
+          "size": 165,
+          "type": "file",
+          "uid": 543796
+        },
+        "relative_path": "kernelslist",
+        "sha256": "0008b9378705e2cf435d47c2a93dd0f74325c400cc86a9d9b82d71b8ef1e4931"
+      },
+      {
+        "identity": {
+          "allocated": 4096,
+          "ctime_ns": 1786635346778828473,
+          "dev": 156,
+          "gid": 5000,
+          "inode": 49300666,
+          "mode": 420,
+          "mtime_ns": 1589831935000000000,
+          "nlink": 1,
+          "size": 166,
+          "type": "file",
+          "uid": 543796
+        },
+        "relative_path": "kernelslist.g",
+        "sha256": "1d9ff3b9466a0e20f2e18d07d20e925bafe6163e965dccf81245b21c77b84645"
+      },
+      {
+        "identity": {
+          "allocated": 4096,
+          "ctime_ns": 1786635346778828473,
+          "dev": 156,
+          "gid": 5000,
+          "inode": 49300665,
+          "mode": 420,
+          "mtime_ns": 1589831935000000000,
+          "nlink": 1,
+          "size": 154,
+          "type": "file",
+          "uid": 543796
+        },
+        "relative_path": "stats.csv",
+        "sha256": "c8154e79db1382fff12f97d811faf552809feb4eddcbf05659e7fa4652e43e5c"
+      }
+    ],
+    "namespace": "mnt:[4026534768]",
+    "registries": {
+      "native": {
+        "exact_source_matches": 0,
+        "lavaMD_matches": 0,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/science_authority/NATIVE_SCIENCE_REGISTRY.json",
+        "sha256": "74f88e15da286f4dc62eca7179cbd1877dc446acbad556adb80d93f52f5c9da6"
+      },
+      "source": {
+        "exact_source_matches": 0,
+        "lavaMD_matches": 0,
+        "path": "/workspace/ep_l2_ft20261016_shared/RUN_REGISTRY.json",
+        "sha256": "d8c402cce5d0d00c45c2a7512d2736d7fd0024d604d2603637f4615279eaaf07"
+      }
+    },
+    "restore_temp_exists": false,
+    "root_identity": {
+      "allocated": 4096,
+      "ctime_ns": 1786635418711438986,
+      "dev": 156,
+      "gid": 5000,
+      "inode": 49389805,
+      "mode": 493,
+      "mtime_ns": 1589831968000000000,
+      "nlink": 2,
+      "size": 4096,
+      "type": "directory",
+      "uid": 543796
+    },
+    "scheduled_matches": [],
+    "source_root": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodinia-first-batch/rodinia-3.1/9.1/lavaMD-rodinia-3.1/_boxes1d_10/traces",
+    "unreadable_processes": []
+  },
+  "source_full_SHA_receipt": {
+    "bytes": 20776256536,
+    "members": 5,
+    "sha256": "6d6f20d85ded2a7efdb580e1cbc8e21837bb94f47bc67553cda2dfb1c85d483c",
+    "status": "PASS"
+  },
+  "status": "HOLD_RESTORE_CAPACITY_BEFORE_INTENT",
+  "unix": 1793022492.3536203
+}
