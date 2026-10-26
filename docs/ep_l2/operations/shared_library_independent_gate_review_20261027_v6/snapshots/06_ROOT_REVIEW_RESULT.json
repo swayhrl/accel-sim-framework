@@ -1,0 +1,54 @@
+{
+  "schema": "ROOT_WARPSYNC_V2_INDEPENDENT_CPU_REVIEW_V1",
+  "original_replays": [
+    {
+      "test": "test_clock_source_qa_cpu_v2.py",
+      "returncode": 0
+    },
+    {
+      "test": "test_clock_worker_gate_cpu_v3.py",
+      "returncode": 0
+    },
+    {
+      "test": "test_clock_additional_cpu_v2.py",
+      "returncode": 0
+    }
+  ],
+  "extra_pmon_cases": [
+    {
+      "name": "numeric_zero",
+      "accepted": true,
+      "error": null,
+      "actual_GPU_query": false
+    },
+    {
+      "name": "header_only",
+      "accepted": true,
+      "error": null,
+      "actual_GPU_query": false
+    },
+    {
+      "name": "known_unavailable",
+      "accepted": true,
+      "error": null,
+      "actual_GPU_query": false
+    },
+    {
+      "name": "known_missing",
+      "accepted": true,
+      "error": null,
+      "actual_GPU_query": false
+    },
+    {
+      "name": "known_active",
+      "accepted": false,
+      "error": "resident became GPU-active; stop only owned capture",
+      "actual_GPU_query": false
+    }
+  ],
+  "missing_or_unavailable_activity_misaccepted": true,
+  "GPU": false,
+  "SO_loaded": false,
+  "Native_bytes": 0,
+  "production_admission": false
+}

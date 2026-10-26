@@ -1,0 +1,54 @@
+--- /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/warpsync_plain_build_and_worker_20261026_v1/source/ada_semantics.h
++++ /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/warpsync_plain_build_and_worker_20261026_v2/source/ada_semantics.h
+@@ -1,6 +1,6 @@
+ #include <cstdlib>
+ #include <sstream>
+-struct AdaMeta { std::string opcode,sass,function; unsigned pc; std::vector<int> dst,src; bool qualified; int cb=-1,co=0,cw=0; uint64_t code_base=0,ctrl_static=0; int ctrl_kind=0,ctrl_reg=-1; bool ctrl_ureg=false; std::vector<int> call_summary_src,call_summary_dst; };
++struct AdaMeta { std::string opcode,sass,function; unsigned pc; std::vector<int> dst,src; bool qualified; int cb=-1,co=0,cw=0; uint64_t code_base=0,ctrl_static=0,context_handle=0,function_handle=0; int ctrl_kind=0,ctrl_reg=-1; bool ctrl_ureg=false; std::vector<int> call_summary_src,call_summary_dst; };
+ static std::vector<AdaMeta> ada_meta;
+ static std::map<std::pair<std::string,unsigned>,AdaMeta> ada_map;
+ static bool ada_loaded=false;
+@@ -8,7 +8,7 @@
+   std::vector<int> r; if(s=="-") return r; std::istringstream ss(s);std::string x;
+   while(std::getline(ss,x,',')) {int v=std::stoi(x); if(v<0||v>334) abort();r.push_back(v);}return r;
+ }
+-static int ada_register(Instr *instr,const char *fn,uint64_t code_base) {
++static int ada_register(Instr *instr,const char *fn,uint64_t code_base,CUcontext context,CUfunction function) {
+   if(!ada_loaded) {
+     const char* path=getenv("ADA_SEMANTIC_MAP"); if(!path) {fprintf(stderr,"ADA_SEMANTIC_MAP required\n");abort();}
+     std::ifstream in(path);if(!in) abort(); std::string line;
+@@ -21,7 +21,7 @@
+   }
+   auto it=ada_map.find(std::make_pair(std::string(fn),instr->getOffset()));
+   AdaMeta m;if(it!=ada_map.end())m=it->second;else {m.function=fn;m.pc=instr->getOffset();m.qualified=false;}
+-  fprintf(stderr,"ADA_STATIC function=%s pc=%x sass=%s qualified=%d\n",fn,instr->getOffset(),instr->getSass(),m.qualified?1:0); m.code_base=code_base;m.opcode=instr->getOpcode();
++  fprintf(stderr,"ADA_STATIC function=%s pc=%x sass=%s qualified=%d\n",fn,instr->getOffset(),instr->getSass(),m.qualified?1:0); m.code_base=code_base;m.context_handle=(uintptr_t)context;m.function_handle=(uintptr_t)function;if(!context||!function){fprintf(stderr,"CLOCK_V2_NULL_STATIC_CONTEXT_OR_FUNCTION\n");abort();}m.opcode=instr->getOpcode();
+   if((m.opcode.find("WARPSYNC")==0&&m.opcode!="WARPSYNC")||m.opcode.find("BAR.WARP")==0||m.opcode.find("CALL")==0||m.opcode.find("RET")==0||m.opcode.find("JMX")==0||m.opcode.find("BRX")==0){fprintf(stderr,"WARPSYNC_PROFILE_UNCOMPOSED_CONTROL_DOMAIN %s\n",m.opcode.c_str());abort();}
+   if(m.qualified) { // Compare opcode spelling independently of disassembler formatting.
+     std::string op=m.sass; if(op[0]=='@') op=op.substr(op.find(' ')+1);op=op.substr(0,op.find(' '));
+@@ -61,11 +61,12 @@
+       if(o->type==InstrType::OperandType::IMM_UINT64){m.ctrl_static=o->u.imm_uint64.value;found=true;break;}
+     }
+     if(!found)m.qualified=false;
++    if(m.ctrl_reg>=0||m.ctrl_static!=0xffffffffull){fprintf(stderr,"CLOCK_V2_REQUIRES_PLAIN_FULL32_IMMEDIATE_MASK\n");abort();}
+   } else if(m.opcode.find("CALL")==0 || m.opcode.find("RET")==0 || m.opcode.find("BRX")==0 || m.opcode.find("JMX")==0)m.qualified=false;
+   if(m.dst.size()>8||m.src.size()>24)m.qualified=false;
+   int id=ada_meta.size();
+   std::ofstream out(std::string(getcwd(NULL,0))+"/traces/ada-static.tsv",std::ios::app);
+   out<<std::hex<<(m.code_base+m.pc)<<"	"<<m.pc<<"	"<<m.function<<"	"<<m.sass<<"	"<<std::dec<<m.cb<<"	"<<m.co<<"	"<<m.cw<<"	"<<m.qualified<<"\t"<<m.ctrl_kind<<"\t"<<m.ctrl_static<<"\t";
+-  for(int x:m.call_summary_src)out<<x<<",";out<<"\t";for(int x:m.call_summary_dst)out<<x<<",";out<<"\n";
++  for(int x:m.call_summary_src)out<<x<<",";out<<"\t";for(int x:m.call_summary_dst)out<<x<<",";out<<"\t"<<std::hex<<m.context_handle<<"\t"<<m.function_handle<<"\tADA_STATIC_CTX_FUNCTION_V2\n";
+   ada_meta.push_back(m);return id;
+ }
+
+--- /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/warpsync_plain_build_and_worker_20261026_v1/source/tracer_tool.cu
++++ /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/warpsync_plain_build_and_worker_20261026_v2/source/tracer_tool.cu
+@@ -366,7 +366,7 @@
+         id_to_opcode_map[opcode_id] = instr->getOpcode();
+       }
+ 
+-      int opcode_id = ada_register(instr, nvbit_get_func_name(ctx, f, true),nvbit_get_func_addr(ctx,f));
++      int opcode_id = ada_register(instr, nvbit_get_func_name(ctx, f, true),nvbit_get_func_addr(ctx,f),ctx,f);
+ 
+       int src_oprd[MAX_SRC]; std::fill(src_oprd,src_oprd+MAX_SRC,-1);
+       int srcNum=0,dst_oprd=-1,mem_oper_idx=-1,num_mref=0;
