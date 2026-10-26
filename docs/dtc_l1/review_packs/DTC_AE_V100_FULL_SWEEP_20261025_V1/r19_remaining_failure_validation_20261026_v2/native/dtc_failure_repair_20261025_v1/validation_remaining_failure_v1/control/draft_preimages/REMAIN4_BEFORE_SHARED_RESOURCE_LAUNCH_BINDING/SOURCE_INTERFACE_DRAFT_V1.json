@@ -1,0 +1,64 @@
+{
+  "closed_R1_cpu_reuse_evidence": {
+    "path": "/root/data/dtc_failure_repair_20261025_v1/validation_remaining_failure_v1/control/CLOSED_R1_CPU_REUSE_EVIDENCE_CANDIDATE_V1.json",
+    "sha256": "6e19f3cad1728565be1d619665e0e3172864da3b589bfeea00da4862aa0860fc"
+  },
+  "engine_API": [
+    "registered()->reg,epoch,q,plan",
+    "spec_for(cell)",
+    "resources(spec,fresh_source=False)",
+    "prepare(cell)",
+    "run_native(cell)",
+    "verify_cpu_reuse()->fresh readonly closedR1 proof, callable before new registration"
+  ],
+  "models_started": 0,
+  "old_scopes_not_modified": true,
+  "parent_R19_pending": true,
+  "plan_candidate_path": "/root/data/dtc_failure_repair_20261025_v1/validation_remaining_failure_v1/control/EXECUTION_PLAN_DRAFT_V1.json",
+  "plan_candidate_sha256": "1de3034276b93c1c9192741a16830bc568c597957c058fa5a343a05e032a3687",
+  "registration_or_entry_mutations": 0,
+  "request": "DTC_AE_REMAINING_FAILURE_REPAIR_20261026_V1",
+  "root": "/root/data/dtc_failure_repair_20261025_v1/validation_remaining_failure_v1",
+  "root_R19_frontend_contract": "Native top entry may use remaining_frontend_v1; its pinned R19 continuation_fallback handles only older scopes/original. Avoid a fallback routing cycle. New request parent is actually R19; no oldSHA impersonation.",
+  "schema": "REMAINING_FAILURE_FOUR_POINT_PREPARATION_INTERFACE_DRAFT_V1",
+  "scope_budget": 4,
+  "scope_path": "/root/data/dtc_failure_repair_20261025_v1/validation_remaining_failure_v1/control/REMAINING_SCOPE_CANDIDATE_V1.json",
+  "scope_sha256": "08c6adfa917535def295bdb666bdbccef8c3bcc2b5756b16e16f80d4ca349b52",
+  "shared_resource_API": {
+    "function": "resources(spec,fresh_source=False)",
+    "path": "/root/data/dtc_failure_repair_20261025_v1/ops/revision19/resource_accounting_v1.py",
+    "per_cohort_memory_keys": [
+      "max_process_tree_rss_bytes",
+      "estimated_peak_model_RAM_bytes",
+      "initial_working_set_floor_bytes"
+    ],
+    "policy_candidate": "/root/data/dtc_failure_repair_20261025_v1/control/R19_RESOURCE_ACCOUNTING_POLICY_V1.json"
+  },
+  "sources": [
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/validation_remaining_failure_v1/tools/remaining_frontend_v1.py",
+      "sha256": "7e6f47e5295f5319aaea5c4326a3a3909cf09ace6a8f8c6f3a4f616c000afdc9"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/validation_remaining_failure_v1/tools/remaining_native_v1.py",
+      "sha256": "0a62373fa7bab691d81b66c9776ac325d077bef230909f731482147e2d4d5b55"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/validation_remaining_failure_v1/tools/remaining_ops_v1.py",
+      "sha256": "0897bcb9290ff28bb10858c7382ccedc6a53c9cffe987eadf7c2ef9f23790c2c"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/validation_remaining_failure_v1/tools/remaining_outbox_v1.py",
+      "sha256": "e285ea59eea863e52cd9bc482ae9d9cf20e76555c2824577383dc5981781a00b"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/validation_remaining_failure_v1/tools/remaining_strict_v1.py",
+      "sha256": "600b16c896fb8dc6aad13837103f804a1aa49456b2ed514926f44aac676a0901"
+    }
+  ],
+  "status": "DRAFT_AST_ONLY_NOT_QUALIFIED_NOT_FROZEN",
+  "worker_API": [
+    "remaining_ops_v1.run_cell(cell)",
+    "remaining_ops_v1.finish_evidence(cell)"
+  ]
+}

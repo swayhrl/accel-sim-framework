@@ -1,0 +1,105 @@
+{
+  "status": "PASS",
+  "check_count": 11,
+  "checks": [
+    {
+      "argv": [
+        "experiment",
+        "prepare",
+        "E2-AEV100-X",
+        "--project",
+        "DTC_L1"
+      ],
+      "route": "DTC",
+      "status": "PASS"
+    },
+    {
+      "argv": [
+        "experiment",
+        "run-native",
+        "E2-AEREPAIR-LAVAMEM2-X"
+      ],
+      "route": "DTC",
+      "status": "PASS"
+    },
+    {
+      "argv": [
+        "experiment",
+        "inspect",
+        "E2-AEREPAIR-LATE4-X"
+      ],
+      "route": "DTC",
+      "status": "PASS"
+    },
+    {
+      "argv": [
+        "experiment",
+        "run-native",
+        "E2-AEREPAIR-REMAIN4-X"
+      ],
+      "route": "DTC",
+      "status": "PASS"
+    },
+    {
+      "argv": [
+        "result",
+        "archive",
+        "E2-AEREPAIR-REMAIN4-X"
+      ],
+      "route": "DTC",
+      "status": "PASS"
+    },
+    {
+      "argv": [
+        "experiment",
+        "prepare",
+        "EP_NATIVE_VECTOR_L1MISSQ32_SENSITIVITY_20261026_V1"
+      ],
+      "route": "EP",
+      "status": "PASS"
+    },
+    {
+      "argv": [
+        "result",
+        "archive",
+        "EP_NATIVE_VECTOR_L1MISSQ32_SENSITIVITY_20261026_V1"
+      ],
+      "route": "EP",
+      "status": "PASS"
+    },
+    {
+      "argv": [
+        "experiment",
+        "prepare",
+        "EP_NATIVE_VECTOR_DRAM935_SENSITIVITY_20261026_V1"
+      ],
+      "route": "FALLBACK",
+      "status": "PASS"
+    },
+    {
+      "argv": [
+        "status"
+      ],
+      "route": "FALLBACK",
+      "status": "PASS"
+    },
+    {
+      "argv": [
+        "experiment",
+        "prepare",
+        "OTHER"
+      ],
+      "route": "FALLBACK",
+      "status": "PASS"
+    },
+    {
+      "name": "old shared EP wrapper bytes reconstruct exactly; DTC prefix unique; sh syntax valid",
+      "status": "PASS"
+    }
+  ],
+  "source_before_sha256": "dc7c232b944691379aaa42417abd7d622114abc148ecb6fdf72aebf6ecbf3f66",
+  "candidate_sha256": "bb3cb524e6e314a08726ce006ccfe8f3626518f82382381fef7e3ca1d60b35be",
+  "driver_sha256": "26a20ca2142ca187ce0b65c61d63459a700f19438cd1aedc8a08f14de1bc96bb",
+  "real_frontend_or_model_starts": 0,
+  "EP_or_delegated_source_writes": 0
+}
