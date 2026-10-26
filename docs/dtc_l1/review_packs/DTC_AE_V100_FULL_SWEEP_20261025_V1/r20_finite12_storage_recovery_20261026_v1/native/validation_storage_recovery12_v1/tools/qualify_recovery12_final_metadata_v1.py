@@ -1,0 +1,45 @@
+"""Final finite4 metadata/spec/runtime/binding join only, never executes a model."""
+import pathlib,json,hashlib,importlib.util,types,datetime,subprocess
+P=pathlib.Path;F=P('/root/data/dtc_failure_repair_20261025_v1');R=F/'validation_storage_recovery12_v1';N=P('/root/data/ep_l2_dtc_l1_native_v2');T=P('/root/data/dtc_main_v100_sweep_20261025_v1');REQ='DTC_AE_STORAGE_RECOVERY12_20261026_V1'
+def read(p):return json.loads(P(p).read_bytes())
+def sha(p):return hashlib.sha256(P(p).read_bytes()).hexdigest()
+def load(name,path):
+ s=importlib.util.spec_from_file_location(name,path);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
+checks=[]
+def ok(n,c):assert c,n;checks.append(n)
+pp=R/'control/RECOVERY12_BUILD_PROFILE_V1.json';ep=R/'control/EXECUTION_PLAN_V1.json';rp=R/'control/SINGLE_SCIENTIFIC_APPROVAL_REQUEST.json';qp=R/'control/REGISTRY_REQUEST_CANDIDATE_V1.json';ap=R/'control/SCIENCE_AUTHORIZATION.json';p=read(pp);plan=read(ep);q=read(qp);request=read(rp);auth=read(ap);scope=read(plan['scope_path']);reg=read(N/'control/science_authority/NATIVE_SCIENCE_REGISTRY.json');ok('candidate_not_registered_no_actual_INTENT',REQ not in reg['registered_future_requests'] and not list((R/'control/qualification_ledger').glob('*.INTENT.json')))
+ok('budget12_no_consumed_or_refund',q['budget']==q['remaining']==scope['finite_budget']==12 and q['consumed']=={} and q['reserved_write_bytes']==7*1024**3 and q['model_automatic_retries']==0)
+ok('real_final_parent_and_fallback_SHA_pins',sha(p['parent_controller_path'])==p['parent_controller_sha256']==q['orchestrator_sha256'] and sha(p['continuation_fallback_frontend_path'])==p['continuation_fallback_frontend_sha256'])
+ok('profile_plan_request_q_auth_SHA_chain',plan['build_profile_sha256']==sha(pp) and q['execution_plan_sha256']==request['execution_plan_sha256']==sha(ep) and q['spec_request_sha256']==auth['approval_request_sha256']==sha(rp) and plan['scope_sha256']==request['scope_sha256']==sha(plan['scope_path']))
+for item in plan['source_pins']:assert sha(item['path'])==item['sha256'],('source pin drift',item['path'])
+ok('all_plan_source_pins_current',True)
+runtime={};input_bindings={};original_refs=[]
+for cell,digest in q['admitted_specs'].items():
+ sp=R/'control/specs'/(cell+'.json');s=read(sp);ref=s['prior_failed_attempt'];old=read(ref['prior_frozen_spec_path']);ok(cell+'_exact_alias_q_and_profile',sha(sp)==digest==sha(R/'control'/(cell+'_SPEC.json')) and s['build_profile_sha256']==sha(pp))
+ for field in ['expected_options','configs','expected','input_digest','input_binding_sha256','original_environment']:ok(cell+'_unchanged_'+field,s[field]==old[field])
+ ok(cell+'_full270_trace_argv_and_geometry_unchanged',len(s['expected_options'])==270 and s['native_simulator_argv'][1:]==old['native_simulator_argv'][1:] and s['expected_options']['-trace']==[s['native_simulator_argv'][s['native_simulator_argv'].index('-trace')+1]])
+ memory=p['per_cohort_memory'][cell];expected=(128,96) if s['program']=='lavamd' else(16,4);ok(cell+'_mixed_hard_and_estimate_exact',s['limits']['max_process_tree_rss_bytes']==memory['max_process_tree_rss_bytes']==expected[0]*1024**3 and s['estimated_peak_model_RAM_bytes']==memory['estimated_peak_model_RAM_bytes']==expected[1]*1024**3 and memory['initial_working_set_floor_bytes']==4*1024**3)
+ ok(cell+'_fixed_repair_source_only_correctness',s['core_commit']=='9eedb3131937748f0492fa83aad37d3691118d70' and s['framework_commit']=='02775fd795cde5aae1480d81cee6eb481d0a08f4' and s['correctness_validation_only'] is True)
+ for kind in ['INTENT','DONE']:assert sha(ref[kind+'_path'])==ref[kind+'_sha256'];original_refs.append({'path':ref[kind+'_path'],'sha256':ref[kind+'_sha256']})
+ ok(cell+'_old_negative_archived_still_charged',sha(ref['archive_receipt_path'])==ref['archive_receipt_sha256'] and ref['original_failure_refunded'] is False)
+ for item in s['runtime_files']:
+  runtime[item['actual_realpath']]=item['sha256']
+  if item['target'].startswith('DTC/env/lib/'):assert (R/item['target']).resolve()==P(item['actual_realpath']).resolve()
+ binding=P(s.get('input_binding_path',str(T/'control/input_bindings'/(s['input_digest']+'.json'))));assert sha(binding)==s['input_binding_sha256'];domain=read(binding)['qualification'];assert domain['status']=='BODY_COMPLETE_SHA_AND_BASIC_FORMAT_PASS' and not domain['issues'] and len(domain['rows'])==s['expected']['kernels'];assert domain['expected_instructions']==s['expected']['instructions'] and domain['expected_CTA']==s['expected']['CTA'];input_bindings[str(binding)]=sha(binding)
+ capfile=R/'control'/('OPERATIONAL_OUTPUT_CAP_'+cell+'.json');cap=read(capfile);assert sha(capfile)==s['operational_output_cap_sha256'] and cap['effective_result_cap_bytes']==256*1024**2 and cap['frozen_upper_result_cap_bytes']==s['limits']['max_result_directory_bytes']
+for path,h in runtime.items():assert sha(path)==h
+ok('all_unique_runtime_binary_library_SHA_current',True)
+for kind in ['core','framework']:assert subprocess.check_output(['git','-C',p[kind+'_worktree'],'rev-parse','HEAD'],text=True).strip()==p[kind+'_commit'] and not subprocess.check_output(['git','-C',p[kind+'_worktree'],'status','--porcelain'],text=True).strip()
+ok('actual_Core_Framework_HEAD_clean',True)
+engine=load('recovery12_final_metadata_engine',R/'tools/recovery12_native_v1.py');engine.verify_cpu_reuse();ok('fresh_closed_R1_CPU208_223_reuse_proof_and_old4claims_retained',True)
+resource=p['resource_accounting_overlay'];assert sha(resource['path'])==resource['sha256'];shared=load('recovery12_final_binding_source',resource['path']);observed=[];native=shared.future_engine_install(types.SimpleNamespace(exclusive=lambda path,obj:observed.append(obj)))
+for name in ['C.INTENT.json','NATIVE_LAUNCH.json','NATIVE_SIMULATOR_PID_AND_MAPS.json']:native.exclusive(P(name),{'CPU_ONLY_NO_PROCESS':True})
+ok('three_resource_exclusive_callbacks_bind_same_exact_source_policy_floors',len(observed)==3 and all(x['resource_accounting_binding_R20']==native._R20_FUTURE_RESOURCE_BINDING for x in observed) and native.resources==shared.resources and native._R20_FUTURE_RESOURCE_BINDING['host_runtime_floor_bytes']==64*1024**3 and native._R20_FUTURE_RESOURCE_BINDING['cgroup_runtime_floor_bytes']==48*1024**3 and native._R20_FUTURE_RESOURCE_BINDING['disk_safety_floor_bytes']==5*1024**3)
+cp=R/'control/REAL_NATIVE_PRE_POPEN_CPU_QUALIFICATION_V1.json';cpu=read(cp);ok('native4_positive_missingalias_negative_and0_real_fork',cpu['status']=='PASS' and cpu['positive_count']==4 and cpu['actual_registry_mutated'] is False and cpu['real_model_or_component_processes_forked']==0 and cpu['actual_scientific_INTENTs_written']==0 and {x['cohort'] for x in cpu['positive_cases']}<=set(q['admitted_specs']) and cpu['negative_alias_case']['fake_credit_unchanged']==12)
+for case in cpu['positive_cases']:
+ b=case['barrier'];assert b['exact_spec_alias_sha256']==q['admitted_specs'][case['cohort']] and b['R20_resource_binding_three_callbacks_identical'] is True and b['actual_INTENT_file_SHA_matches_consumed_row'] is True and b['resource_binding']==native._R20_FUTURE_RESOURCE_BINDING and case['hard_AS_RSS_bytes']==p['per_cohort_memory'][case['cohort']]['max_process_tree_rss_bytes']
+ok('prefork_cases_bound_to_final_alias_memory_and_resource_source',True)
+meta=[pp,ep,rp,qp,ap,R/'control/RECOVERY12_SCOPE_CANDIDATE_V1.json',cp,R/'control/CLOSED_R1_CPU_REUSE_EVIDENCE_CANDIDATE_V1.json'];pins=[{'path':str(x),'sha256':sha(x)} for x in meta]+[{'path':str(x),'sha256':sha(x)} for x in sorted((R/'tools').glob('*.py'))]
+receipt={'schema':'RECOVER12_FINAL_SOURCE_METADATA_RUNTIME_AND_PREFORK_CPU_JOIN_V1','status':'PASS_PREPARED_NOT_REGISTERED_NOT_ACTIVATED','check_count':len(checks),'checks':checks,'request':REQ,'parent_controller_sha256':p['parent_controller_sha256'],'resource_module_sha256':resource['sha256'],'profile_sha256':sha(pp),'plan_sha256':sha(ep),'spec_request_sha256':sha(rp),'registry_candidate_sha256':sha(qp),'authorization_sha256':sha(ap),'source_pins':pins,'input_binding_pins':[{'path':x,'sha256':v} for x,v in sorted(input_bindings.items())],'original_negative_reference_pins':original_refs,'unique_runtime_SHA_count':len(runtime),'real_model_starts':0,'real_entry_or_registry_updates':0,'old_scope_or_failed_attempt_mutations':0,'scientific_model_or_native_numerical_correctness_claimed':False,'native_prefork_scope':'Actual original native pre-fork code and BA in private FakeRoot; Popen replaced by nonreturning CPU sentinel. Other2 resource-binding callback snapshots explicitly synthetic, not model PID/wait evidence. Resource availability/current trace-body stat steps mocked; exact metadata/source/runtime/binding hashes are real.','observed_utc':datetime.datetime.now(datetime.timezone.utc).isoformat()};dest=R/'control/FINAL_METADATA_AND_PREFORK_CPU_JOIN_V1.json'
+with dest.open('x') as f:json.dump(receipt,f,sort_keys=True,indent=2);f.write('\n')
+print(json.dumps({'status':receipt['status'],'check_count':len(checks),'path':str(dest),'sha256':sha(dest),'parent_controller_sha256':p['parent_controller_sha256'],'resource_module_sha256':resource['sha256']},indent=2))
