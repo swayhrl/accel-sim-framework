@@ -1,0 +1,188 @@
+--- qualified423e
++++ candidateSDKdefault50kV2
+@@ -1,7 +1,7 @@
+ #!/usr/bin/env python3
+ """Single immutable ordinary-input capture. Native174 owns global transport leases."""
+ import pathlib,os,json,subprocess,time,fcntl,hashlib,signal,re,shutil,sys,traceback
+-R=pathlib.Path('/data/c16/rtx4080_suite_fill_20261024_v1');N=R/'local_staging';S=pathlib.Path('/data/c16/ada_trace_semantics_20261024_v1')
++R=pathlib.Path('/data/c16/rtx4080_suite_fill_20261024_v1');N=R/'nas_rtx4080';S=pathlib.Path('/data/c16/ada_trace_semantics_20261024_v1')
+ F=pathlib.Path('/data/c16/ada_trace_extensions_v8_20261024_v1/frozen/producer_v7_input_c8cfa41fcabc_r2');TOOL=F/'producer.so';CONTRACT=F;VALIDATOR=F/'validate_v7_snapshot_v2.py';POST=pathlib.Path('/data/c16/rtx4080_suite_fill_20261024_v1/control/frozen/post_v4_5d3ffcd3/postprocess_nas_sharded_v4.py');MAPPER=pathlib.Path('/data/c16/ada_trace_extensions_v8_20261024_v1/frozen/mapper_v3_a2e7ee38aa72/make_semantic_map_elf_owner_v3.py')
+ def sha(p):
+  h=hashlib.sha256()
+@@ -23,18 +23,50 @@
+ def app_limits():
+  import resource
+  os.nice(15);resource.setrlimit(resource.RLIMIT_FSIZE,(64*1024**2,64*1024**2))
++def cpu_limits():
++ import resource
++ resource.setrlimit(resource.RLIMIT_AS,(2147483648,2147483648))
++ os.nice(15)
+ def procs():return [x.split(', ') for x in query('pid,process_name,used_memory','compute-apps')]
+-job=json.loads(pathlib.Path(sys.argv[1]).read_text());task=job['task'];jobid=job['id'];root=N/'inflight'/jobid;binary=pathlib.Path(task['argv'][0]);root.mkdir(exist_ok=False)
++
++def validate_root_grant(job_path,job,worker_path,grant_path):
++ g=json.loads(pathlib.Path(grant_path).read_text())
++ assert g.get('approved') is True and g.get('action')=='SDK42_DEFAULT50000_C8_NAS_MICROWINDOW_ONCE'
++ assert g.get('worker_sha256')==sha(worker_path) and g.get('job_sha256')==sha(job_path)
++ assert job['id']=='C8_SDK42_VECTOR_DEFAULT50000_SPECIALIST_A001'
++ assert job['asset_id']==job['id']
++ t=job['task']
++ assert t['argv']==['/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_vectorAdd']
++ assert t['binary_sha256']=='46792c2d326171628cfcd01e3285d1840d917b4bb58c33dfa98c404518572507'
++ assert job['resource_limits']=={'capture_timeout_sec':180,'capture_max_bytes':1073741824}
++ assert job['snapshot_limits']=={'max_copy_bytes':1048576,'max_total_bytes':4194304}
++ assert job['snapshot_scope_oracle']['elements']==50000
++ assert g.get('GPU_window_max_seconds')==900 and g.get('payload_max_bytes')==1073741824
++ return g
++
++job=json.loads(pathlib.Path(sys.argv[1]).read_text())
++batch_approval=pathlib.Path(__file__).resolve().parent/'ROOT_CAPTURE_APPROVAL_V1.json'
++validate_root_grant(pathlib.Path(sys.argv[1]),job,pathlib.Path(__file__),batch_approval)
++task=job['task'];jobid=job['id'];root=N/'inflight'/jobid;binary=pathlib.Path(task['argv'][0]);root.mkdir(exist_ok=False)
++
+ receipt={'kind':'instrumented','job_id':jobid,'task':task,'started':time.time(),'status':'PREPARING','worker_pid':os.getpid(),'worker_start_ticks':ticks(os.getpid()),'actual_gpu_uuid':'GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59','pipeline_sha256':sha(pathlib.Path(__file__))};gpu=None;io=None;p=None
+ try:
+- io=open(R/'control/RTX4080_LOCAL_STAGING.lock','a');fcntl.flock(io,fcntl.LOCK_EX|fcntl.LOCK_NB)
+- q=json.loads((R/'control/LOCAL_STAGING_CHANNEL_QUALIFICATION_V1.json').read_text());assert q['status']=='LOCAL_STAGING_8MIB_INTERRUPTION_REENTRY_LIMIT_MUTEX_PASS'
+- assert sha(R/'control/qualify_local_staging_v1.py')==q['qualification_code_sha256']=='0a4eef4ce2a8dedac2690258941fed04f2d11e8d65b3456e980745dda49cf793'
+- old=R/'nas_rtx4080/inflight/ORD_LATE_stencil_c3e987b033b4_A001';oldexec=json.loads((old/'EXECUTION.json').read_text());assert oldexec['exit_code']==0
+- assert not pathlib.Path('/proc',str(oldexec['capture_pid'])).exists() or ticks(oldexec['capture_pid'])!=oldexec['capture_start_ticks']
+- assert sum(p.stat().st_size for p in N.rglob('*')if p.is_file())<2*1024**3
+- assert shutil.disk_usage(N).free>20*1024**3
+- receipt['local_staging_phase_policy']={'NAS_writes':0,'old_worker_LOCK_FD_unchanged':True,'aggregate_threshold_bytes':2*1024**3,'minimum_free_bytes':20*1024**3,'per_app_RLIMIT_FSIZE_bytes':64*1024**2,'status':'LOCAL_CLOSED_NOT_ARCHIVED_NOT_FORMAL','one_extra_GPU_process':True}
++ io=open(R/'control/RTX4080_LOCAL_IO.lock','r+');fcntl.flock(io,fcntl.LOCK_EX|fcntl.LOCK_NB)
++ assert shutil.disk_usage(N).free>5*1024**3
++ receipt['local_staging_phase_policy']={'NAS_writes':True,'Native_payload_bytes':0,'aggregate_threshold_bytes':1073741824,'minimum_free_bytes':5*1024**3,'per_app_RLIMIT_FSIZE_bytes':64*1024**2,'status':'NAS_PRIVATE_UNCOMMITTED','GPU_concurrency':1}
++ # Whole worker, including post, is bounded by the unchanged remote watchdog. A byte monitor
++ # terminates only this private worker; the subreaper then cleans its exact descendants.
++ import threading
++ monitor_done=threading.Event()
++ def budget_monitor():
++  while not monitor_done.wait(.5):
++   try:
++    size=sum(x.stat().st_size for x in root.rglob('*')if x.is_file())
++    if size>1073741824:
++     (root/'BYTE_LIMIT_EXCEEDED.json').write_text(json.dumps({'bytes':size,'cap':1073741824,'source_KEEP':True}))
++     os.kill(os.getpid(),signal.SIGTERM);return
++   except FileNotFoundError:continue
++ threading.Thread(target=budget_monitor,daemon=True).start()
+ 
+  save(root/'CAPTURE_JOB.json',job)
+  receipt['capture_job_sha256']=sha(root/'CAPTURE_JOB.json')
+@@ -52,7 +84,7 @@
+  save(root/'STATIC_IMAGE_ENUMERATION_CENSUS.json',{'listing':listing.stdout,'tool_sha256':sha(LISTER),'binary_sha256':sha(binary),'no_duplicate_basenames':True,'scope':'Censusonly, not standalone static/loadedcodequalification'})
+ 
+  (root/'map').parent.mkdir(exist_ok=True)
+- cp=subprocess.run(['python3',str(MAPPER),str(binary),str(root/'map')],capture_output=True,text=True,timeout=300)
++ cp=subprocess.run(['python3',str(MAPPER),str(binary),str(root/'map')],capture_output=True,text=True,timeout=300,preexec_fn=cpu_limits)
+  (root/'MAP_PREFLIGHT.log').write_text(cp.stdout+cp.stderr)
+  if cp.returncode:raise RuntimeError('MAP_PREFLIGHT_HOLD '+cp.stderr[-2000:])
+  m=json.loads((root/'map/manifest.json').read_text());assert m['binary_sha256']==task['binary_sha256']
+@@ -94,14 +126,13 @@
+  env.update(tracer_flags);receipt['tracer_control_flags']=tracer_flags
+  assert sha(R/'control/PARENT_C8_OBSERVED_HTOD_RELEASE_V1.json')=='14c56c21a34dcedf2524248a9787bf7e005d6a574c0b97d6a1e77b718565ef6e'
+  assert job['snapshot_scope_oracle']['program']=='SDK42_RESEARCH_VECTORADD_SYNC_FLOAT32'
+- n=job['snapshot_scope_oracle']['elements'];assert n in [4000000,6000000]
+- batch_approval=R/'control/PARENT_C8_TWO_VECTOR_BATCH_APPROVAL_V1.json';grant=json.loads(batch_approval.read_text());assert grant['status']=='APPROVED_TWO_EXACT_VECTOR_SNAPSHOT_JOBS' and grant['worker_sha256']==sha(pathlib.Path(__file__))
+- assert grant['jobs'][jobid]==sha(pathlib.Path(sys.argv[1]))
++ n=job['snapshot_scope_oracle']['elements'];assert n==50000
++ grant=validate_root_grant(pathlib.Path(sys.argv[1]),job,pathlib.Path(__file__),batch_approval)
+  receipt['batch_approval_sha256']=sha(batch_approval)
+  assert task['source_head']=='b059fdae25c2aabf737486aada743fca114469ce'
+- assert task['argv']==['/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_vectorAdd','--size',str(n)]
++ assert task['argv']==['/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_vectorAdd']
+  for x in task.get('source_files',task.get('sources',[])):assert sha(pathlib.Path(x['path']))==x['sha256']
+- assert task['program']=='vectorAdd' and len(task['argv'])==3
++ assert task['program']=='vectorAdd' and len(task['argv'])==1
+  assert task['binary_sha256']=='46792c2d326171628cfcd01e3285d1840d917b4bb58c33dfa98c404518572507'
+  assert sha(F/'qualify_input_capsule_v4.py')=='7d00cf3524389ec5f9bfd28ec931cd9c88c45b3deaa4fb9ea0368c7cc0b58388'
+  assert sha(F/'INPUT_INITIALIZATION_SCOPE_ADDENDUM.json')=='f7196678b81715dda1c2d45ebeed5b94351b29925f6450dbaa7bbab66dfc870a'
+@@ -148,9 +179,9 @@
+    current_free=float(query('memory.free')[0]);min_free=min(min_free,current_free)
+    if current_free<512:obsreceipt['bounded_stop']='GPU free headroom<512MiB'
+    if time.monotonic()-start>limits['capture_timeout_sec']:obsreceipt['bounded_stop']='capture wall bound'
+-   size=sum(x.stat().st_size for x in N.rglob('*') if x.is_file())
++   size=sum(x.stat().st_size for x in root.rglob('*') if x.is_file())
+    if size>limits['capture_max_bytes']:obsreceipt['bounded_stop']='capture byte bound'
+-   if shutil.disk_usage(root).free<20*1024**3:obsreceipt['bounded_stop']='NAS free reserve<20GiB'
++   if shutil.disk_usage(root).free<5*1024**3:obsreceipt['bounded_stop']='NAS free reserve<20GiB'
+    if obsreceipt.get('bounded_stop') and p.poll() is None:
+     os.killpg(p.pid,signal.SIGTERM)
+     try:p.wait(timeout=10)
+@@ -181,9 +212,9 @@
+    current_free=float(query('memory.free')[0]);min_free=min(min_free,current_free)
+    if current_free<512:receipt['bounded_stop']='GPU free headroom<512MiB'
+    if time.monotonic()-start>limits['capture_timeout_sec']:receipt['bounded_stop']='capture wall bound'
+-   size=sum(x.stat().st_size for x in N.rglob('*') if x.is_file())
++   size=sum(x.stat().st_size for x in root.rglob('*') if x.is_file())
+    if size>limits['capture_max_bytes']:receipt['bounded_stop']='capture byte bound'
+-   if shutil.disk_usage(root).free<20*1024**3:receipt['bounded_stop']='LOCAL free reserve<20GiB'
++   if shutil.disk_usage(root).free<5*1024**3:receipt['bounded_stop']='LOCAL free reserve<20GiB'
+    if receipt.get('bounded_stop') and p.poll() is None:
+     os.killpg(p.pid,signal.SIGTERM)
+     try:p.wait(timeout=10)
+@@ -216,14 +247,14 @@
+  for attempt,is_trace in [(obsroot,False),(root,True)]:
+   cmd=['python3','-B',str(F/'qualify_input_capsule_v4.py'),str(attempt),'--max-copy-bytes',str(job['snapshot_limits']['max_copy_bytes']),'--max-total-bytes',str(job['snapshot_limits']['max_total_bytes'])]
+   if is_trace:cmd.append('--trace-required')
+-  cp0=subprocess.run(cmd,capture_output=True,text=True,timeout=300)
++  cp0=subprocess.run(cmd,capture_output=True,text=True,timeout=300,preexec_fn=cpu_limits)
+   (attempt/'CAPSULE_VALIDATOR.log').write_text(cp0.stdout+cp0.stderr);assert cp0.returncode==0,cp0.stderr
+   cq=json.loads(cp0.stdout);assert len(cq['copies'])==2 and cq['total_bytes']==8*n
+   for copyrow in cq['copies'].values():
+    assert copyrow['bytes']==4*n and copyrow['api'] in ['cuMemcpyHtoD_v2','cuMemcpyHtoD_v2_ptds']
+    data=(attempt/copyrow['restorable_relative_path']).read_bytes()
+    assert all(math.isfinite(v[0]) and 0<=v[0]<=1 for v in struct.iter_unpack('<f',data))
+-  cp1=subprocess.run(['python3','-B',str(HANDLE),str(attempt),'--expected-launch-count','1','--source-oracle-reference',str(root/'SOURCE_INITIALIZATION_AND_LAUNCH_ORACLE.json')],capture_output=True,text=True,timeout=60)
++  cp1=subprocess.run(['python3','-B',str(HANDLE),str(attempt),'--expected-launch-count','1','--source-oracle-reference',str(root/'SOURCE_INITIALIZATION_AND_LAUNCH_ORACLE.json')],capture_output=True,text=True,timeout=60,preexec_fn=cpu_limits)
+   (attempt/'HANDLE_JOIN.log').write_text(cp1.stdout+cp1.stderr);assert cp1.returncode==0,cp1.stderr
+   joins=json.loads(cp1.stdout)['joins'];assert len(joins)==1 and 'VecAdd' in joins[0]['function']
+   capsule_qualifications.append(cq)
+@@ -231,7 +262,7 @@
+  snapshot_identity={'scope':'OBSERVED_SUPPORTED_HTOD_SOURCE_BYTES_ONLY','observer_ordered_sha256':capsule_qualifications[0]['ordered_input_identity_sha256'],'trace_ordered_sha256':capsule_qualifications[1]['ordered_input_identity_sha256'],'comparison':'MATCH' if capsule_qualifications[0]['ordered_input_identity_sha256']==capsule_qualifications[1]['ordered_input_identity_sha256'] else 'INPUT_DIFF','native_observer_is_not_unloaded_native':True,'complete_CUDA_initialization_snapshot':False,'source_initialization_oracle':job['snapshot_scope_oracle'],'copy_caps':job['snapshot_limits'],'source_numerical_reference':'FullN element CPU comparison within each same-instrumented process, source epsilon1e-5; snapshot floats independently finite0..1'}
+  save(root/'INPUT_SNAPSHOT_PAIR_IDENTITY.json',snapshot_identity)
+  numerical='SOURCE_FABS_REFERENCE_REPORTED_PASS_NO_EXPLICIT_OUTPUT_FINITE_CHECK;OBSERVER_SOURCE_FABS_REPORTED_PASS'
+- cp=subprocess.run(['python3',str(VALIDATOR),str(root),str(root/'map/manifest.json')],capture_output=True,text=True,timeout=86400);(root/'VALIDATOR.log').write_text(cp.stdout+cp.stderr);assert cp.returncode==0,cp.stderr
++ cp=subprocess.run(['python3',str(VALIDATOR),str(root),str(root/'map/manifest.json')],capture_output=True,text=True,timeout=240,preexec_fn=cpu_limits);(root/'VALIDATOR.log').write_text(cp.stdout+cp.stderr);assert cp.returncode==0,cp.stderr
+  val=json.loads(cp.stdout);assert val['status']=='ADA7_ORDINARY_FULL_RECORD_PASS'
+  if 'expected_kernel_count' in job:assert val['kernels']==job['expected_kernel_count'],'expected kernel count'
+  assert val['kernels']==1 and val['ctas']==(n+255)//256 and val['warps']==((n+255)//256)*8
+@@ -249,9 +280,10 @@
+  post_receipts=[]
+  for raw in sorted((root/'traces').glob('*.trace.xz')):
+   dest=raw.with_name(raw.name.replace('.trace.xz','.traceg.xz'));work=root/'postprocess_work'/raw.stem
+-  q=subprocess.run(['python3',str(POST),str(raw),str(dest),str(work)],capture_output=True,text=True,timeout=86400);(root/('POSTPROCESS_'+raw.name+'.log')).write_text(q.stdout+q.stderr);assert q.returncode==0,q.stderr
++  q=subprocess.run(['python3',str(POST),str(raw),str(dest),str(work)],capture_output=True,text=True,timeout=240,preexec_fn=cpu_limits);(root/('POSTPROCESS_'+raw.name+'.log')).write_text(q.stdout+q.stderr);assert q.returncode==0,q.stderr
+   gr=json.loads(q.stdout);post_receipts.append(gr)
+-  assert root.resolve() in work.resolve().parents and 'postprocess_work' in work.parts;shutil.rmtree(work)
++  assert root.resolve() in work.resolve().parents and 'postprocess_work' in work.parts
++  # Scratch retained within this private attempt and the1GiB aggregate monitor.
+  (root/'POSTPROCESS_NAS.json').write_text(json.dumps(post_receipts,indent=2)+'\n')
+  ctx=next((root/'traces').glob('kernelslist_ctx_*'));lines=[]
+  for line in ctx.read_text().splitlines():
+@@ -267,7 +299,7 @@
+  copy(HANDLE,root/'tools/verify_c8_launch_handles_v1.py')
+  copy(S/'frozen/ada7_contract_v1/validate_v7.py',root/'contract/validate_v7.py')
+  copy(R/'control/PARENT_C8_OBSERVED_HTOD_RELEASE_V1.json',root/'qualification/PARENT_C8_OBSERVED_HTOD_RELEASE_V1.json')
+- copy(batch_approval,root/'qualification/PARENT_C8_TWO_VECTOR_BATCH_APPROVAL_V1.json')
++ copy(batch_approval,root/'qualification/ROOT_CAPTURE_APPROVAL_V1.json')
+  source_items=list(task.get('sources',task.get('source_files',[])))
+  if not source_items and task.get('source'):source_items=[{'path':task['source'],'sha256':task['source_sha256']}]
+  source_items+=list(task.get('correctness',{}).get('checker_source_files',[]))
+@@ -281,7 +313,7 @@
+  save(root/'ASSET.json',asset)
+  files=[{'path':str(f.relative_to(root)),'bytes':f.stat().st_size,'sha256':sha(f)} for f in sorted(root.rglob('*')) if f.is_file()]
+  sender={'asset':asset,'files':files};save(root/'SENDER_MANIFEST.json',sender)
+- print(json.dumps({'status':'LOCAL_STAGING_SENDER_COMPLETE_NOT_ARCHIVED','inflight':str(root.relative_to(N)),'asset_id':asset['asset_id'],'sender_manifest_sha256':sha(root/'SENDER_MANIFEST.json'),'payload_files':len(files),'payload_bytes':sum(x['bytes'] for x in files)}))
++ print(json.dumps({'status':'SENDER_COMPLETE','inflight':str(root.relative_to(N)),'asset_id':asset['asset_id'],'sender_manifest_sha256':sha(root/'SENDER_MANIFEST.json'),'payload_files':len(files),'payload_bytes':sum(x['bytes'] for x in files)}))
+ except Exception as e:
+  receipt.update(status='PENDING_SPECIALIST_EXTENSION' if any(x in str(e) for x in ['SPECIALIST','MAP_PREFLIGHT']) else 'FAILED_RETAINED',error=repr(e),traceback=traceback.format_exc())
+  if p and p.poll() is None:
+@@ -289,6 +321,7 @@
+  save(root/'FAILURE.json',receipt)
+  print(json.dumps({'status':receipt['status'],'inflight':str(root.relative_to(N)),'error':repr(e)}))
+ finally:
++ if 'monitor_done' in globals():monitor_done.set()
+  if gpu:fcntl.flock(gpu,fcntl.LOCK_UN);gpu.close()
+  if io:fcntl.flock(io,fcntl.LOCK_UN);io.close()
+ 

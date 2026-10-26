@@ -1,0 +1,13 @@
+# 给ChatGPT的审阅请求
+
+请以本快照的精确范围审阅，优先指出会改变身份、资格或运行安全结论的问题。
+
+1. mapper ordinal提取是否充分防止同名cubin覆盖，并保持完整映射与ELF-owner/PC闭合？查看 code/mapper_ordinal_candidate_v2_hexsize.py、code/ordinal_extract_intercept_v1.c、静态Root回执及CPU fixture。
+2. 新worker的exact grant是否确实在attempt、锁和GPU查询之前拒绝未批准、未知binary和错误proof？exact4原身份与FDTD-v4新变体、确定性source策略与实际输入bytes是否区分准确？查看code/specialist_admission.py、code/capture_specialist_exact_candidate.py。
+3. SDK42控制器目前仅armed等待现作业完整闭合。Root admission列出的900s窗口、180s单进程、轮询1GiB及清理后恢复原exact33/原绝对deadline，有哪些尚未被CPU或实际运行证明的限制？不要将armed误读为GPU实验已完成。
+4. comparator的三条可用路由是否仍保持历史attempt和输入/producer/science身份边界？查看Root接受回执与code/evidence_comparator_candidate_v1.py。
+5. SM70 V12R2的Source EOF目前只是失败症状；V13尚在准备。请不要根据本快照虚构已修复或唯一根因。
+
+请给出逐条结论、严重性及所依赖的证据入口；证据不足时明确说明。静态PASS、Root CPU接受、实际GPU producer闭合、模拟器consumer资格和科学验收必须分别判断。不要建议覆盖旧失败记录或因源副本已在164就立即删除近期缓存。
+
+另请检查Root统一精确161待办的研究路由是否与覆盖率、87行静态分派及历史attempt资格严格区分；以 EVIDENCE_INDEX_V2.json 和 UNIFIED_EXACT161_ROUTE_SUMMARY_V1.json 为准。

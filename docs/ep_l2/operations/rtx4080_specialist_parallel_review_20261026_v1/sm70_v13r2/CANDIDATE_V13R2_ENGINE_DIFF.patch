@@ -1,0 +1,34 @@
+--- private_V13/library_copy_v12_nas.py
++++ private_V13R2/library_copy_v12_nas.py
+@@ -182,7 +182,7 @@
+ EXACT_MANIFEST_SHA='4f2e611e7b1a2e599005fc2160122eaf0f975c66a45757b0a1f7730713d630ba'
+ SOURCE_PROOF=P('/root/share/mnt164/huangrulin/traces/receipts/sm70_source_inode_rebind_qualification_20261026_v1/RESULT.json')
+ SOURCE_PROOF_SHA='5ff68b61806c79a0a6393cf289e4db88aac212f7dfb1a64acca98863c655ccf1'
+-APPROVED_STATUS='PASS_ROOT_APPROVED_SM70_NAS_ONLY_FUSE_STABLE_FIELDS_V13'
++APPROVED_STATUS='PASS_ROOT_APPROVED_SM70_NAS_ONLY_FUSE_STABLE_FIELDS_V13R2'
+ _nas_health={'known':False}
+ def observe_nas_health():
+  global _nas_health
+@@ -503,6 +503,13 @@
+  return {'status':'RESTORE_VERIFIED_NATIVE_TARGET','destination':str(dest),'scope':'Dedicated174-new native ext4, not native164','regular_files':len(rows),'rows':rows,'root_directory_original_numeric_metadata':manifest.get('payload_kind')!='CAS_FILES_V1','root_directory_manifest_numeric_metadata':True,'original_bytes':manifest['source_data_bytes'],'Source_mutations':0}
+ 
+ 
++
++def archive_member_end_event(path,size,sha256,manifest):
++ event={'event':'FILE_END','path':path,'size':size,'sha256':sha256,'source_before_after_identity_unchanged':True,'source_disposition':'SOURCE_KEEP'}
++ if manifest.get('_qualified_fuse_alias_context'):
++  event.update({'source_before_after_identity_unchanged':None,'stable_fields_excluding_FUSE_inode':True,'policy':'EXACT_ROOT_FUSE_ALIAS_PLUS_ARCHIVE_AND_MEMBER_SHA','whole_archive_proof':'PENDING_UNTIL_SOURCE_DONE'})
++ return event
++
+ def source_archive_send(request,testing=False):
+  import tarfile,gzip,threading
+  m=request['manifest'];archive=P(m['archive_path']);skip=request['skip']
+@@ -552,7 +559,7 @@
+      for i in range(0,len(b),MIB):part=memoryview(b)[i:i+MIB];adaptive_io_pace(len(part),RATE);sys.stdout.buffer.write(part);sys.stdout.buffer.flush()
+     offset+=len(b)
+    need(offset==row['size'] and h.hexdigest()==row['sha256'],'archive member full SHA drift');found.append(name)
+-   frame({'event':'FILE_END','path':row['relative_path'],'size':offset,'sha256':h.hexdigest(),'source_before_after_identity_unchanged':True,'source_disposition':'SOURCE_KEEP'})
++   frame(archive_member_end_event(row['relative_path'],offset,h.hexdigest(),m))
+   need(found==[r['archive_member'] for r in m['members']],'archive member order or EOF mismatch')
+   need(_approved_archive_same_source(m['archive_identity'],identity(archive),m,testing),'archive stable identity changed during stream')
+  finally:

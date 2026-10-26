@@ -1,0 +1,68 @@
+{
+  "schema": "EXACT_SPECIALIST_WORKER_CPU_FIXTURE_V1",
+  "status": "PASS_NO_GPU_EXECUTION",
+  "rows": [
+    {
+      "case": "exact_root_bound_fixture_admission",
+      "status": "PASS_CPU_ONLY"
+    },
+    {
+      "case": "actual_fresh5_v2_proof_readback",
+      "status": "PASS_CPU_ONLY"
+    },
+    {
+      "case": "missing_Root_grant",
+      "status": "REJECTED",
+      "reason": "ROOT_GRANT_REQUIRED"
+    },
+    {
+      "case": "unknown_job",
+      "status": "REJECTED",
+      "reason": "UNKNOWN_JOB_NO_ROOT_GRANT"
+    },
+    {
+      "case": "unknown_binary",
+      "status": "REJECTED",
+      "reason": "UNKNOWN_OR_DRIFTED_BINARY"
+    },
+    {
+      "case": "input_snapshot_overclaim",
+      "status": "REJECTED",
+      "reason": "INPUT_POLICY_MISLABEL"
+    },
+    {
+      "case": "expired_Root_grant",
+      "status": "REJECTED",
+      "reason": "ROOT_GRANT_EXPIRED_OR_EARLY"
+    },
+    {
+      "case": "wrong_static_proof",
+      "status": "REJECTED",
+      "reason": "FRESH_MAP_PROOF_MISMATCH_manifest.json"
+    },
+    {
+      "case": "wrong_listing",
+      "status": "REJECTED",
+      "reason": "LISTING_PROOF_MISMATCH"
+    },
+    {
+      "case": "missing_ordinal_image",
+      "status": "REJECTED",
+      "reason": "[Errno 2] No such file or directory: '/data/c16/rtx4080_suite_fill_20261024_v1/nas_rtx4080/private_candidates/specialist_mapper_repair_20261026_v1/integration_cpu_fixture_v1/missing_image/000001__mvt.sm_89.cubin'"
+    },
+    {
+      "case": "unsupported_CALL_even_with_matching_fixture_hash",
+      "status": "REJECTED",
+      "reason": "UNSUPPORTED_STATIC_DOMAIN"
+    },
+    {
+      "case": "complete_worker_no_grant_no_attempt_or_GPU",
+      "status": "REJECTED",
+      "worker_exit": 1,
+      "inflight_created": false
+    }
+  ],
+  "tests": 12,
+  "real_grant_path_absent": true,
+  "package_manifest_sha256": "c447b98b5fbc198b5768d24977673ff92b75d0411cf62339311e9952a7f8c000"
+}

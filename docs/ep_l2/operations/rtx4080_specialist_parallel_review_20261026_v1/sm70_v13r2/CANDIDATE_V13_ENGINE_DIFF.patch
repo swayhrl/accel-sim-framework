@@ -1,0 +1,149 @@
+--- frozen_V12R2/library_copy_v12_nas.py
++++ private_candidate_V13/library_copy_v12_nas.py
+@@ -182,7 +182,7 @@
+ EXACT_MANIFEST_SHA='4f2e611e7b1a2e599005fc2160122eaf0f975c66a45757b0a1f7730713d630ba'
+ SOURCE_PROOF=P('/root/share/mnt164/huangrulin/traces/receipts/sm70_source_inode_rebind_qualification_20261026_v1/RESULT.json')
+ SOURCE_PROOF_SHA='5ff68b61806c79a0a6393cf289e4db88aac212f7dfb1a64acca98863c655ccf1'
+-APPROVED_STATUS='PASS_ROOT_APPROVED_SM70_NAS_ONLY_ALIAS_COPY_V12'
++APPROVED_STATUS='PASS_ROOT_APPROVED_SM70_NAS_ONLY_FUSE_STABLE_FIELDS_V13'
+ _nas_health={'known':False}
+ def observe_nas_health():
+  global _nas_health
+@@ -196,6 +196,58 @@
+  a=read(CODE/'ROOT_APPROVAL.json')
+  need(a['status']==APPROVED_STATUS and a['engine_sha256']==digest(SELF_BYTES) and a['manifest_sha256']==EXACT_MANIFEST_SHA and a['source_proof_sha256']==SOURCE_PROOF_SHA,'Root NAS-only/alias approval missing or changed')
+  return a
++
++EXACT_ARCHIVE_ALIAS_PATH='/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive/20261016_storageops_02/Decoupled-L2/old174/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/polybench.tgz'
++EXACT_ARCHIVE_ALIAS_SHA='9feffb121c304412ea7b8289e9ae0c7cabff5aef2098ff025fb65af2f43653ca'
++def fuse_alias_metadata_equal(expected,current):
++ # Conservative: every recorded identity field except FUSE inode is exact.
++ if not isinstance(expected,dict) or not isinstance(current,dict):return False
++ if expected.get('type')!='file' or current.get('type')!='file':return False
++ if type(expected.get('inode'))is not int or type(current.get('inode'))is not int or min(expected['inode'],current['inode'])<=0:return False
++ return set(expected)==set(current) and all(expected[k]==current[k] for k in expected if k!='inode')
++def _genuine164_archive_mount(path):
++ fs=json.loads(subprocess.check_output(['findmnt','-J','-T',str(path)],text=True))['filesystems'][0]
++ need(fs['source']=='admin-wcx@10.208.130.164:/home/shared' and fs['fstype']=='fuse.sshfs','archive alias not genuine164 FUSE mount')
++ return True
++def _approved_archive_same_source(expected,current,manifest,testing=False):
++ context=manifest.get('_qualified_fuse_alias_context')
++ if testing or not context:return same_source(expected,current)
++ need(manifest['archive_path']==EXACT_ARCHIVE_ALIAS_PATH and manifest['archive_sha256']==EXACT_ARCHIVE_ALIAS_SHA,'archive FUSE alias exact path or Source SHA changed')
++ need(context=={'archive_path':EXACT_ARCHIVE_ALIAS_PATH,'archive_sha256':EXACT_ARCHIVE_ALIAS_SHA,'source_proof_sha256':SOURCE_PROOF_SHA,'manifest_sha256':EXACT_MANIFEST_SHA},'unbound archive FUSE alias context')
++ _genuine164_archive_mount(manifest['archive_path'])
++ return fuse_alias_metadata_equal(expected,current)
++class _SenderStderrCapture:
++ def __init__(self,pipe,limit=65536):
++  self.pipe=pipe;self.limit=limit;self.tail=bytearray();self.total=0;self.error=None;self.mutex=threading.Lock();self.finished=threading.Event()
++  self.thread=threading.Thread(target=self._drain,name='bounded_source_stderr',daemon=True);self.thread.start()
++ def _drain(self):
++  try:
++   while True:
++    data=os.read(self.pipe.fileno(),8192)
++    if not data:break
++    with self.mutex:
++     self.total+=len(data);self.tail.extend(data)
++     if len(self.tail)>self.limit:del self.tail[:-self.limit]
++  except (OSError,ValueError) as exc:
++   with self.mutex:self.error=repr(exc)
++  finally:self.finished.set()
++ def snapshot(self,wait_seconds=.2):
++  self.finished.wait(timeout=wait_seconds)
++  with self.mutex:return {'sender_stderr_utf8':bytes(self.tail).decode(errors='replace'),'sender_stderr_captured_bytes':len(self.tail),'sender_stderr_total_bytes':self.total,'sender_stderr_limit_bytes':self.limit,'sender_stderr_may_be_truncated':self.total>self.limit,'sender_stderr_read_error':self.error,'sender_stderr_drainer_finished':self.finished.is_set(),'sender_stderr_capture_policy':'CONTINUOUS_DRAIN_RETAIN_LAST64KiB'}
++def start_sender_stderr_capture(child):
++ need(not hasattr(child,'_bounded_stderr_capture'),'sender stderr collector already attached')
++ child._bounded_stderr_capture=_SenderStderrCapture(child.stderr)
++ return child
++def sender_stderr_snapshot(child,wait_seconds=.2):
++ capture=getattr(child,'_bounded_stderr_capture',None)
++ if capture is None:return {'sender_stderr_read_error':'MISSING_CONTINUOUS_COLLECTOR','sender_stderr_drainer_finished':False}
++ return capture.snapshot(wait_seconds)
++def sender_eof_diagnostic(child,wait_seconds=2.0):
++ try:rc=child.wait(timeout=wait_seconds)
++ except subprocess.TimeoutExpired:rc=None
++ return {'sender_returncode':rc,**sender_stderr_snapshot(child),'sender_diagnostic_no_restart':True}
++
++
+ def qualified_archive_request(request,testing=False):
+  if testing:return request
+  a=root_approval();need(a.get('source_alias_approved')is True,'Source alias requires explicit Root approval')
+@@ -206,8 +258,10 @@
+  need(proof['archive_sha256']==original['archive_sha256'] and proof['bytes_read']==original['archive_identity']['size'] and proof['frozen_archive_identity']==original['archive_identity'],'Source fullSHA not equal frozen inventory')
+  old=proof['frozen_archive_identity'];new=proof['observed_archive_identity']
+  need({k for k in old if old[k]!=new[k]}=={'inode'},'alias must differ only in historical FUSE inode')
+- need(identity(original['archive_path'])==new,'qualified Source alias current identity changed')
+- alias=json.loads(json.dumps(request));alias['manifest']['archive_identity']=new
++ current=identity(original['archive_path']);_genuine164_archive_mount(original['archive_path'])
++ need(fuse_alias_metadata_equal(new,current),'qualified Source alias stable metadata changed')
++ alias=json.loads(json.dumps(request));alias['manifest']['archive_identity']=current
++ alias['manifest']['_qualified_fuse_alias_context']={'archive_path':original['archive_path'],'archive_sha256':original['archive_sha256'],'source_proof_sha256':SOURCE_PROOF_SHA,'manifest_sha256':EXACT_MANIFEST_SHA}
+  observe_nas_health();install_nas_write_boundary(a);return alias
+ def native_control_bytes():
+  # Runtime logs/artifacts must live on genuine164; no new Native payload path exists.
+@@ -312,15 +366,16 @@
+ def spawn_sender(manifest,skip,testing=False):
+  request={'manifest':manifest,'skip':skip}
+  if testing or manifest.get('source_backend')=='native' or manifest.get('source_host')=='174-new':
+-  p=subprocess.Popen(['/usr/bin/python3','-B',str(P(__file__)),('source-native' if manifest.get('source_backend')=='native' or manifest.get('source_host')=='174-new' else 'source-synthetic')],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE);p.stdin.write(canon(request));p.stdin.close();return p
++  p=subprocess.Popen(['/usr/bin/python3','-B',str(P(__file__)),('source-native' if manifest.get('source_backend')=='native' or manifest.get('source_host')=='174-new' else 'source-synthetic')],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE);start_sender_stderr_capture(p);p.stdin.write(canon(request));p.stdin.close();return p
+  source=SELF_BYTES.decode();boot='import sys,json;code=sys.stdin.buffer.readline();exec(compile(json.loads(code),"frozen_readonly_trace_export.py","exec"),{"__name__":"trace_source"})';payload=source+'\nsource_send(json.loads(sys.stdin.buffer.readline()))\n'
+- ssh=['ssh','-i','/root/.ssh/id_ed25519_old174','-o','IdentitiesOnly=yes','-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','UserKnownHostsFile=/root/data/result_offload_pilot_20261023_v1/controls/OLD174_VERIFIED_KNOWN_HOSTS','-p','2233','root@10.208.130.174'];p=subprocess.Popen(ssh+['python3 -B -c '+shlex.quote(boot)],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE);p.stdin.write((json.dumps(payload)+'\n').encode()+canon(request));p.stdin.close();return p
++ ssh=['ssh','-i','/root/.ssh/id_ed25519_old174','-o','IdentitiesOnly=yes','-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','UserKnownHostsFile=/root/data/result_offload_pilot_20261023_v1/controls/OLD174_VERIFIED_KNOWN_HOSTS','-p','2233','root@10.208.130.174'];p=subprocess.Popen(ssh+['python3 -B -c '+shlex.quote(boot)],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE);start_sender_stderr_capture(p);p.stdin.write((json.dumps(payload)+'\n').encode()+canon(request));p.stdin.close();return p
+ 
+ def migrate(manifest,testing=False,inject_after_ranges=None):
+  need(manifest['freeze_status'].startswith('FROZEN'),'source scope held');g=Resources(testing);before=g(True);bundle=P(manifest['new_true164_bundle'].replace('/home/shared','/root/share/mnt164',1));need(bundle.is_relative_to(NAS),'wrong new NAS scope');need(not manifest.get('reuse'),'reuse must not enter new payload path')
+  available=os.statvfs(NAS.parent).f_bavail*os.statvfs(NAS.parent).f_frsize;need(available>=3*manifest['source_data_bytes']+64*MIB,'RESOURCE_HOLD_NAS_CAPACITY')
+  lock=(BRIDGE/('.SHARED_SM70_V8_QUAL_TARGET.lock' if testing else '.SHARED_SM70_LIBRARY_TARGET.lock')).open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB);v=v9();bundle.mkdir(parents=True,exist_ok=True);publish_bytes(bundle/'SOURCE_MANIFEST.json',canon(manifest),v);(bundle/'chunks').mkdir(exist_ok=True);(bundle/'tree').mkdir(exist_ok=True)
+  if (bundle/'COMMIT.json').exists():return verify_committed(bundle,g,rehash=False)
++ if not testing:qualified_archive_request({'manifest':manifest,'skip':{}}) # Early bounded metadata admission, before the mandatory full retained-range SHA pass.
+  skip={};ranges={};newbytes=0;resumed=0
+  for row in manifest['members']:
+   name=row['relative_path'];key=digest(name.encode());folder=bundle/'chunks'/key;folder.mkdir(exist_ok=True);chunks=[];offset=0
+@@ -351,7 +406,9 @@
+  def exact(n):
+   out=bytearray()
+   while len(out)<n:
+-   b=p.stdout.read(n-len(out));need(b,'Source EOF before complete verification');out.extend(b)
++   b=p.stdout.read(n-len(out))
++   if not b:raise RuntimeError('Source EOF before complete verification '+json.dumps(sender_eof_diagnostic(p),sort_keys=True))
++   out.extend(b)
+   return bytes(out)
+  try:
+   while True:
+@@ -380,7 +437,7 @@
+    peak_pending=max(peak_pending,len(pending))
+    if len(pending)>=3:drain_one()
+   while pending:drain_one()
+-  rc=p.wait(timeout=30);need(rc==0,'Source readonly export failed: '+p.stderr.read().decode(errors='replace')[-1000:])
++  rc=p.wait(timeout=30);need(rc==0,'Source readonly export failed: '+json.dumps(sender_stderr_snapshot(p),sort_keys=True))
+  finally:
+   if p.poll() is None:p.terminate();p.wait(timeout=10)
+   p.stdout.close();p.stderr.close()
+@@ -451,7 +508,7 @@
+  m=request['manifest'];archive=P(m['archive_path']);skip=request['skip']
+  if testing:need(archive.is_relative_to(TASK/'synthetic'),'archive test outside owned source')
+  else:need((os.uname().nodename=='huangrulin-174' and os.readlink('/proc/self/ns/mnt')=='mnt:[4026534768]') or (m.get('source_host')=='174-new' and os.uname().nodename=='huangrulin-sshfs-174' and os.readlink('/proc/self/ns/mnt')=='mnt:[4026535153]'),'archive source identity')
+- need(same_source(identity(archive),m['archive_identity']),'archive identity changed before stream')
++ need(_approved_archive_same_source(m['archive_identity'],identity(archive),m,testing),'archive stable identity changed before stream')
+  lock=((TASK/'synthetic/.SOURCE_TEST.lock') if testing else (BRIDGE/'.SHARED_SM70_LIBRARY_SOURCE.lock')).open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+  try:os.nice(19)
+  except OSError:pass
+@@ -497,7 +554,7 @@
+    need(offset==row['size'] and h.hexdigest()==row['sha256'],'archive member full SHA drift');found.append(name)
+    frame({'event':'FILE_END','path':row['relative_path'],'size':offset,'sha256':h.hexdigest(),'source_before_after_identity_unchanged':True,'source_disposition':'SOURCE_KEEP'})
+   need(found==[r['archive_member'] for r in m['members']],'archive member order or EOF mismatch')
+-  need(same_source(identity(archive),m['archive_identity']),'archive changed during stream')
++  need(_approved_archive_same_source(m['archive_identity'],identity(archive),m,testing),'archive stable identity changed during stream')
+  finally:
+   tf.close()
+   if decoder:
+@@ -510,7 +567,7 @@
+   raw.close()
+  need(physical[0]==m['archive_identity']['size'],'archive physical EOF incomplete')
+  if m.get('archive_sha256'):need(archive_hash.hexdigest()==m['archive_sha256'],'archive whole SHA differs from inventory')
+- need(same_source(identity(archive),m['archive_identity']),'archive changed before final source close')
++ need(_approved_archive_same_source(m['archive_identity'],identity(archive),m,testing),'archive stable identity changed before final source close')
+  frame({'event':'SOURCE_DONE','Source_simulator_starts':0,'source_disposition':'SOURCE_KEEP'})
+ 
+ StrictResourcesV10=Resources

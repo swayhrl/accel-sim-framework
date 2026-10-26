@@ -1,0 +1,106 @@
+{
+  "schema": "SM70_V13R2_ACTUAL_LENGTH_FRAMED_CPU_FIXTURE_V1",
+  "status": "PASS",
+  "tests": [
+    {
+      "name": "actual_nonalias_archive_FILE_END_original_fields_unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "actual_nonalias_SOURCE_DONE_after_fixture_archive_and_member_SHA",
+      "status": "PASS"
+    },
+    {
+      "name": "actual_alias_length_framed_FILE_END_nullable_full_identity_stable_scope_pending_archive",
+      "status": "PASS"
+    },
+    {
+      "name": "actual_alias_SOURCE_DONE_after_fixture_archive_and_member_SHA",
+      "status": "PASS"
+    },
+    {
+      "name": "receiver_does_not_consume_old_identity_boolean_or_new_policy_fields",
+      "status": "PASS"
+    },
+    {
+      "name": "R2_AST_unchanged_source_send",
+      "status": "PASS"
+    },
+    {
+      "name": "R2_AST_unchanged_migrate",
+      "status": "PASS"
+    },
+    {
+      "name": "R2_AST_unchanged_install_nas_write_boundary",
+      "status": "PASS"
+    },
+    {
+      "name": "R2_AST_unchanged_same_source",
+      "status": "PASS"
+    }
+  ],
+  "tests_passed": 9,
+  "frames": [
+    {
+      "alias_fixture": false,
+      "events": [
+        {
+          "event": "CHUNK",
+          "offset": 0,
+          "path": "archive_objects/tiny",
+          "sha256": "c86aa1a2486b2a9567beacf40aeedf5670a3d22ab1e07065d6f33ce7d225ce6f",
+          "size": 688
+        },
+        {
+          "event": "FILE_END",
+          "path": "archive_objects/tiny",
+          "sha256": "c86aa1a2486b2a9567beacf40aeedf5670a3d22ab1e07065d6f33ce7d225ce6f",
+          "size": 688,
+          "source_before_after_identity_unchanged": true,
+          "source_disposition": "SOURCE_KEEP"
+        },
+        {
+          "Source_simulator_starts": 0,
+          "event": "SOURCE_DONE",
+          "source_disposition": "SOURCE_KEEP"
+        }
+      ],
+      "wire_bytes": 1164
+    },
+    {
+      "alias_fixture": true,
+      "events": [
+        {
+          "event": "CHUNK",
+          "offset": 0,
+          "path": "archive_objects/tiny",
+          "sha256": "c86aa1a2486b2a9567beacf40aeedf5670a3d22ab1e07065d6f33ce7d225ce6f",
+          "size": 688
+        },
+        {
+          "event": "FILE_END",
+          "path": "archive_objects/tiny",
+          "policy": "EXACT_ROOT_FUSE_ALIAS_PLUS_ARCHIVE_AND_MEMBER_SHA",
+          "sha256": "c86aa1a2486b2a9567beacf40aeedf5670a3d22ab1e07065d6f33ce7d225ce6f",
+          "size": 688,
+          "source_before_after_identity_unchanged": null,
+          "source_disposition": "SOURCE_KEEP",
+          "stable_fields_excluding_FUSE_inode": true,
+          "whole_archive_proof": "PENDING_UNTIL_SOURCE_DONE"
+        },
+        {
+          "Source_simulator_starts": 0,
+          "event": "SOURCE_DONE",
+          "source_disposition": "SOURCE_KEEP"
+        }
+      ],
+      "wire_bytes": 1317
+    }
+  ],
+  "source_archive_payload_read_bytes_production": 0,
+  "synthetic_archive_bytes": 147,
+  "synthetic_member_bytes": 688,
+  "production_locks_or_SOURCE_not_touched": true,
+  "new_transfer_or_qualification": false,
+  "all_fixture_paths_under_private_NAS": true
+}
