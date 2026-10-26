@@ -1,0 +1,60 @@
+--- frozen_tools_v2/88a
++++ ON_only_tools_v3/runtime
+@@ -99,7 +99,7 @@
+  need(sum(s['write_components_bytes'].values())==512*M,'whole operation512MiB')
+  for path,h in TRACE_PINS.items():need(s['pinned_files'].get(path)==h and sha(path)==h,'required tracer/loader/library pin missing or drift '+path)
+  need(s['runtime_module_sha256'] is not None,'main-frozen engine missing')
+- need(s['runtime_module_path']==str(J/'tools_v2/finite_native_runtime.py') and sha(s['runtime_module_path'])==s['runtime_module_sha256'],'main installed frozen engine mismatch')
++ need(s['runtime_module_path']==str(J/('tools_v2' if case==OFF else 'tools_v3')/'finite_native_runtime.py') and sha(s['runtime_module_path'])==s['runtime_module_sha256'],'main installed frozen engine mismatch')
+  need(s['help_loading_max_invocations']==1,'at most one bounded help-loading operation')
+  return b,s,a,q,proof
+ def environment(s,out):
+@@ -216,20 +216,44 @@
+  mount=json.loads(subprocess.check_output(['findmnt','-J','-T',proof['native_mirror_mount_path']],text=True))['filesystems'][0]
+  need(mount['source']=='admin-wcx@10.208.130.164:/home/shared' and mount['fstype']=='fuse.sshfs','genuine164 source drift')
+  need(P(proof['source_root']).resolve()==P(proof['native_mirror_mount_path']).resolve(),'input alias drift')
++ if s['cohort']==ON and s.get('input_stat_continuation_path'):
++  continuation=exact(s['input_stat_continuation_path'],s['input_stat_continuation_sha256'])
++  need(continuation['status']=='GENUINE164_SAME_CONTENT_INPUT_REOPEN_CONTINUATION_PASS' and continuation['original_input_binding_sha256']==FRESH_SHA,'same-content input continuation missing')
++  current={r['path']:r for r in continuation['members']}
++  need(set(current)=={r['path'] for r in proof['members']},'input continuation member scope changed')
++  observed=[]
++  for row in proof['members']:
++   cr=current[row['path']];p=P(row['path'])
++   need(cr['size']==row['size'] and cr['sha256']==cr['closed_reopen_full_sha256']==row['sha256'],'input continuation content identity changed')
++   need(p.resolve().parent==P(proof['native_mirror_mount_path']).resolve(),'input member escaped exact native mirror tree')
++   rounds=[]
++   for number in (1,2):
++    before=p.stat();h=hashlib.sha256();count=0
++    with p.open('rb') as stream:
++     opened=os.fstat(stream.fileno())
++     for chunk in iter(lambda:stream.read(M),b''):h.update(chunk);count+=len(chunk)
++     ended=os.fstat(stream.fileno())
++    after=p.stat()
++    identity=lambda t:[t.st_dev,t.st_ino,t.st_size,t.st_mtime_ns]
++    need(identity(before)==identity(opened)==identity(ended)==identity(after),'input changed during a complete open/read/close round')
++    need(after.st_dev==row['identity'][0] and after.st_size==count==row['size'] and after.st_mtime_ns==row['identity'][3] and h.hexdigest()==row['sha256'] and os.access(p,os.R_OK),'fresh closed-reopen input content/dev/size/mtime drift')
++    rounds.append({'open_number':number,'sha256':h.hexdigest(),'identity':identity(after),'fstat_open_close_and_path_stable':True})
++   observed.append({'path':str(p),'sha256':rounds[0]['sha256'],'closed_reopen_full_sha256':rounds[1]['sha256'],'identity':rounds[-1]['identity'],'closed_reopen_rounds':rounds,'inode_is_informational_between_qualified_reads':True})
++  return {'input_binding_sha256':s['input_binding_sha256'],'mount':mount,'members_stat_matched':None,'input_stat_continuation_sha256':s['input_stat_continuation_sha256'],'content_identity_method':'TWO_FRESH_CLOSED_REOPEN_FULL_SHA256_OLD_CONTENT_SAME_MOUNT_ALIAS_SIZE','actual_members':observed,'sshfs_inode_is_informational_not_content_identity':True}
+  for row in proof['members']:
+   p=P(row['path']);t=p.stat()
+   need([t.st_dev,t.st_ino,t.st_size,t.st_mtime_ns]==row['identity'] and os.access(p,os.R_OK),'fresh input stat drift; separate fresh proof required; frozen spec never rewritten')
+  return {'input_binding_sha256':s['input_binding_sha256'],'mount':mount,'members_stat_matched':len(proof['members'])}
+ def entry_route():
+- candidate=J/'tools_v2/native_entry_candidate.sh';review=read(J/'control/NATIVE_ENTRY_CANDIDATE_ROUTING_REVIEW_V2.json')
+- need(review['status']=='MAIN_REVIEWED_V2_BYTE_PRESERVING_ROUTING_PASS' and review['qualified_by']=='EP-MAIN','V2 routing review incomplete')
+- need(sha(candidate)==review['candidate_sha256'] and sha(J/'tools_v2/prior_native_entry.sh')==review['prior_copy_sha256'],'frozen main routing candidate changed')
++ candidate=J/'tools_v3/native_entry_candidate.sh';review=read(J/'control/NATIVE_ENTRY_CANDIDATE_ROUTING_REVIEW_V3.json')
++ need(review['status']=='MAIN_REVIEWED_V3_BYTE_PRESERVING_ROUTING_PASS' and review['qualified_by']=='EP-MAIN','V2 routing review incomplete')
++ need(sha(candidate)==review['candidate_sha256'] and sha(J/'tools_v3/prior_native_entry.sh')==review['prior_copy_sha256'],'frozen main routing candidate changed')
+  data=(N/'bin/native').read_bytes();actual=hashlib.sha256(data).hexdigest()
+  if actual==review['candidate_sha256']:
+   return {'entry_sha256':actual,'candidate_sha256':review['candidate_sha256'],'mode':'EXACT_MAIN_CANDIDATE'}
+  # Legal new peer prefixes are supported by a separate exact reviewed attestation.
+  # A mere matching suffix is insufficient. Unknown prefix => HOLD; no rollback.
+- path=J/'control'/('ENTRY_ROUTE_CONTINUATION_V2.'+actual+'.json');p=read(path)
++ path=J/'control'/('ENTRY_ROUTE_CONTINUATION_V3.'+actual+'.json');p=read(path)
+  need(p['status']=='MAIN_REVIEWED_EXACT_PREFIX_DELEGATION_PASS' and p['qualified_by']=='EP-MAIN','unreviewed entry prefix')
+  need(p['current_entry_sha256']==actual and p['retained_candidate_sha256']==sha(candidate),'continuation identity drift')
+  offset=p['retained_candidate_offset'];need(type(offset) is int and offset>0 and data[offset:]==candidate.read_bytes(),'original candidate not exact suffix')
