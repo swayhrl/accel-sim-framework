@@ -1,5 +1,7 @@
 # DTC L2 MLP full-workload exploration V1
 
+Latest counter coverage: [129 closed-log sidecar and baseline CH/DH table](agents/D/raw_reason_v1/README.md). The prior unparsed-versus-unprinted distinction is now verified across129 accepted logs, with no raw or strict rewrite. [Supplementary search V2 review](SUPPLEMENTARY_SEARCH_V2_REVIEW.md) records the coordinator-approved boundary and best-uniform-CH rules before their separate runtime activation.
+
 Latest completed read-only analysis: [three-agent current results](CURRENT_RESULTS_ANALYSIS_V1.md). This is a time-labelled partial snapshot, not a final candidate selection. [Counter clarification](COUNTER_CLARIFICATION_V1.md) distinguishes unparsed reason fields from absent raw counters.
 
 Operational follow-up: the same owner now uses provider-consistent resource reservations and a four-task pre-execution window while retaining384 model capacity. Actual native models increased41→51 in two30-second observations with zero fresh-HOLD events, versus46 HOLD events in the preceding two intervals. A qualified durable registry journal protects future extension commits and prevents scientific completion while recovery is unresolved. The85-case actual-source qualification and production ACK are preserved; installation granted no starts and changed no frozen source or old budget.

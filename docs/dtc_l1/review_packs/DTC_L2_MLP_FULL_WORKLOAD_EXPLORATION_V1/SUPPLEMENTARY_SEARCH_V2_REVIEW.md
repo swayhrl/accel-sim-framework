@@ -1,0 +1,17 @@
+# Supplementary search V2: coordinator review and activation-ready record
+
+DTC-MAIN approves candidate revision2 within the user's already-authorized parameter families. This record is published before installation and before any adaptive decision or extension grant. At review, MATRIX_CURRENT revision is0, the initial350-cell matrix remains incomplete, and no ADAPTIVE_DECISIONS file exists. Production application is separately proved by a later operational ACK; this source commit alone is not an application claim.
+
+The original fixed input, source/binary, 850MHz clock, 10MiB L2 capacity/mapping, DTC architecture, Hash and P0 contracts are unchanged. The frozen V1 source, its preregistered1% criterion and all historical bytes remain intact. V2 is an explicit supplementary search rule, not a reclassification of prior evidence.
+
+The1% threshold was an agent-chosen implementation rule, not the user's stopping instruction. To implement the user's requirement to continue an improving boundary, V2 treats1% as materiality only: after all350 initial cells are terminal, a direction needs all35 DH-P0 and all35 variant results accepted. Positive whole35 total and adjacent-level marginal gains above numerical epsilon1e-12 permit doubling. Incomplete higher levels cannot be skipped. Saturation, regression, source bounds and evidenced resource constraints remain stopping grounds; there is no total-start cap.
+
+Whole35 or fixed-suite evidence can support the authorized factor-pair/union search. Fixed suite membership, at least3 members, GM>=1.01 and a strict positive majority are preregistered; every resulting experiment still validates one uniform configuration on all35 inputs, including regressions outside that suite. No per-program best-of or input replacement is allowed.
+
+The best observed complete35 uniform profile receives35 matched CH points even if it is an initial profile and its gain is below1%. Fixed-suite useful uniform champions also receive35 CH matching. This prevents a0.9% E384 gain being omitted merely because E768 gains0.8% and V1's materiality filter selects other resource classes. Negative/missing CH points remain explicit and block qualification.
+
+Best observed uniform performance is reported separately from the highest-resource configuration. Neither is asserted to be a mathematical upper bound over unexplored hardware. V1 formal fields remain unchanged; supplementary fields disclose best global profile/GM, incomplete profiles, CH coverage and candidate materiality.
+
+The existing sole-owner registry journal remains the final outer guard. V2 cannot turn a preexisting false completion/adoption flag true, bypass a pending transaction, grant identities itself, start models, change old budgets or alter raw/strict results. Integration is a qualified new adaptive-instance wrapper, preserving all frozen tool source SHA.84 CPU-only cases cover actual schemas, the sub1% counterexample, full35/missing/failed CH, duplicate proposals, source/resource bounds and journal holds. Its current real partial snapshot emits zero new proposals.
+
+Exact source/module/policy/qualification SHA and examples: agents/E/boundary_validation_v2/DELIVERY_MANIFEST.json and POLICY_REVIEW.md. Source module SHA a7e476604d18ba7c9d9d53af7dd381b95eabc502f33617ee7b945dafa63dbd01; qualification SHA88a86e6256f762c1bb398879825bf7e374d4ec9ebed2ca3f2c1ebe1872e03213. Runtime activation must verify the published source and retain the existing executor/owner and outer journal protection.
