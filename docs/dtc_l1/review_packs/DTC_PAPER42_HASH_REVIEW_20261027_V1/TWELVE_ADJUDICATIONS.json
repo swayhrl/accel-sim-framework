@@ -1,0 +1,265 @@
+[
+  {
+    "program_id": "P42-05",
+    "program": "backprop",
+    "suite": "Rodinia",
+    "ordinary_main_slot": true,
+    "state": "UNRESOLVED",
+    "selected_input_digest": null,
+    "selected_trace_entry": null,
+    "selected_bundle_id": null,
+    "selected_source_version": null,
+    "selected_parameters": null,
+    "reason": "Two different source versions (2.0-ft4096 and3.1 65536) each have a standard command. No approved reference precedence or demonstrated source/data equivalence establishes one version for the42-set. Two4096 captures also differ; do not merge or pick by their outcomes.",
+    "scope_evidence": "VERSION_OR_INPUT_SEMANTICS_UNRESOLVED",
+    "input_count": 3,
+    "all_input_digests": [
+      "5fa6f81161d230f55179618027a07e9060d87511e79943049494e2768d2788ad",
+      "66a2ff40b5b4f8daee8b489afd05afbcd68725361ea49d50e2e29dfefea76ece",
+      "6dad43cf98e6624064e55e543a0fc20ebdcb9c7378a34ccae0fee2890e91c39f"
+    ],
+    "exact_capture_executable_and_original_input_linkage_newly_certified": false
+  },
+  {
+    "program_id": "P42-12",
+    "program": "dwt2d",
+    "suite": "Rodinia",
+    "ordinary_main_slot": true,
+    "state": "IDENTITY_FROZEN",
+    "selected_input_digest": "e5638b94095098acf5186be97210cb371bb3f88dcc8ceefb7609b454ef5ce008",
+    "selected_trace_entry": "/root/workspace/assets/traces/bundles/52b17d988c23c61c0ad4756fa4a26cc9b77748cf646f3a0125ce3f0f3c4d06c6/tree/kernelslist.g",
+    "selected_bundle_id": "52b17d988c23c61c0ad4756fa4a26cc9b77748cf646f3a0125ce3f0f3c4d06c6",
+    "selected_source_version": "3.1",
+    "selected_parameters": [
+      "__data_192_bmp__d_192x192__f__5__l_3"
+    ],
+    "reason": "PRIOR_REFERENCE_SELECTED: Historical E1 source/input inventory nominates Rodinia3.1 192.bmp -d192x192 -f -5 -l3 (input reference595e63cc...). Trace copies110592=192*192*3 bytes, component split plus3channels*3levels=10 kernels. 1024 variant has unconfirmed source version and different kernel specializations; not treated as duplicate.",
+    "scope_evidence": "SOURCE_CONSISTENT_3_CHANNEL_3_LEVEL",
+    "input_count": 2,
+    "all_input_digests": [
+      "196006754730d8ab6e4c1d8093d4cc63ff5266f20eedf5ac78c51f7acd2d9a5b",
+      "e5638b94095098acf5186be97210cb371bb3f88dcc8ceefb7609b454ef5ce008"
+    ],
+    "exact_capture_executable_and_original_input_linkage_newly_certified": false
+  },
+  {
+    "program_id": "P42-13",
+    "program": "fastWalshTransform",
+    "suite": "CUDA Samples",
+    "ordinary_main_slot": true,
+    "state": "IDENTITY_FROZEN",
+    "selected_input_digest": "f7f22a2ccc836a8a9b2096d4df50caf00a2c4bcebc7b16d064b8b0287ce593d3",
+    "selected_trace_entry": "/root/workspace/assets/traces/bundles/7295c0b77d36f02fd699de71d408b97b8598e425fac4d5ef489283bdd56bd7db/tree/kernelslist.g",
+    "selected_bundle_id": "7295c0b77d36f02fd699de71d408b97b8598e425fac4d5ef489283bdd56bd7db",
+    "selected_source_version": "cudasdk/9.1 path; exact capture provenance not newly certified",
+    "selected_parameters": [
+      "_logK_11__logD_19"
+    ],
+    "reason": "PRIOR_REFERENCE_SELECTED: Previously approved pre-current-performance Extended-20 primary11/19 at selection commit d43b6eec93f68efa94057f34ffa699463b53e6a6, with7/21 explicitly alternate. No dimension-wise ranking of the two pairs. Trace K8192/D2097152 bytes and three transform groups+modulation match source recipe.",
+    "scope_evidence": "SOURCE_CONSISTENT_TRANSFORM_SEQUENCE",
+    "input_count": 2,
+    "all_input_digests": [
+      "6e35d612712f270663a8158904ba0748266162ea5d7ec158e03e5377d0293ba9",
+      "f7f22a2ccc836a8a9b2096d4df50caf00a2c4bcebc7b16d064b8b0287ce593d3"
+    ],
+    "exact_capture_executable_and_original_input_linkage_newly_certified": false
+  },
+  {
+    "program_id": "P42-14",
+    "program": "gaussian",
+    "suite": "Rodinia",
+    "ordinary_main_slot": true,
+    "state": "IDENTITY_FROZEN",
+    "selected_input_digest": "16f4c42373e4961eac6b16178237f1de2bbdf21d5e08bf669c4b6102bab2c6b3",
+    "selected_trace_entry": "/root/workspace/assets/traces/bundles/e777c8282c3720156144121bae4e8f794c189dcb837f247c03c1b98cb558ce35/tree/kernelslist.g",
+    "selected_bundle_id": "e777c8282c3720156144121bae4e8f794c189dcb837f247c03c1b98cb558ce35",
+    "selected_source_version": "3.1",
+    "selected_parameters": [
+      "_s_64"
+    ],
+    "reason": "MEDIAN_SIZE_SOURCE_VERIFIED: E1 explicitly did not promote a primary Gaussian command. All five inputs are3.1 same Fan1/Fan2 ForwardSub algorithm; -f/-s only supply matrix/RHS. Trace copies establish N=4,16,64,208,256 and each has2*(N-1) alternating kernels. Median N64, deterministic source-generated matrix; no pivot/precision/algorithm flag changes. Not asserting matrix contents equivalent across sizes.",
+    "scope_evidence": "SOURCE_CONSISTENT_FULL_FORWARD_SUBSTITUTION",
+    "input_count": 5,
+    "all_input_digests": [
+      "16f4c42373e4961eac6b16178237f1de2bbdf21d5e08bf669c4b6102bab2c6b3",
+      "36b09814c609253df73813586d01bc331a28fa1baef509955b9dad524029c1a0",
+      "4683a782a4ece0d99c59eb4e9364876a4c47def334da024e9c262274c86442d5",
+      "64da93d5cac47cd507e3248d4d1d00001549b5c1f1e4d4cfbb05e858f4600fc1",
+      "786d2bd637e415344a697a9ccc347d6c3b6f62e70745fabc0e6aafbce08b0120"
+    ],
+    "exact_capture_executable_and_original_input_linkage_newly_certified": false
+  },
+  {
+    "program_id": "P42-17",
+    "program": "heartwall",
+    "suite": "Rodinia",
+    "ordinary_main_slot": true,
+    "state": "IDENTITY_FROZEN",
+    "selected_input_digest": "731af5428c4b81552d8750c8edf9eeb609b71bd4f3651ca378a4dd73b194d980",
+    "selected_trace_entry": "/root/workspace/assets/traces/bundles/04119459d74ef9a2afacaaa752a594cea7faec57a92b836cd8243c60cdaf7aed/tree/kernelslist.g",
+    "selected_bundle_id": "04119459d74ef9a2afacaaa752a594cea7faec57a92b836cd8243c60cdaf7aed",
+    "selected_source_version": "2.0-ft",
+    "selected_parameters": [
+      "__data_test_avi_1___data_result_1_txt"
+    ],
+    "reason": "REFERENCE_CAPTURE_PROVENANCE_SELECTED: Both captures carry2.0-ft standard1-frame command. Choose the official archive/capture with SHA-preserved run.sh and known source-alias lineage over1299a96e, which has no retained capture script. Source loop launches one kernel per processed frame; chosen trace contains one full51-CTA grid. Byte/semantic equivalence to alternate capture is NOT asserted. Original video/executable SHA linkage remains provenance gap.",
+    "scope_evidence": "SOURCE_CONSISTENT_ONE_FRAME_PROVENANCE_GAP",
+    "input_count": 2,
+    "all_input_digests": [
+      "1299a96e35024a59c9dd030d523a3dea7e4fe670a092dc4993c23913523e98a3",
+      "731af5428c4b81552d8750c8edf9eeb609b71bd4f3651ca378a4dd73b194d980"
+    ],
+    "exact_capture_executable_and_original_input_linkage_newly_certified": false
+  },
+  {
+    "program_id": "P42-20",
+    "program": "hybridsort",
+    "suite": "Rodinia",
+    "ordinary_main_slot": true,
+    "state": "IDENTITY_FROZEN",
+    "selected_input_digest": "09f94fcc7494a03b160b40b705cbc7ff5f41e88e8ee417d187e5c7fbcac82123",
+    "selected_trace_entry": "/root/workspace/assets/traces/bundles/e3d4313c10859073e80315af10ca87367f89d574e5f9177a3ae4f57bd6c6c821/tree/kernelslist.g",
+    "selected_bundle_id": "e3d4313c10859073e80315af10ca87367f89d574e5f9177a3ae4f57bd6c6c821",
+    "selected_source_version": "3.1",
+    "selected_parameters": [
+      "r"
+    ],
+    "reason": "UPPER_MEDIAN_SOURCE_VERIFIED: Source3.1 main.cu r fixes SIZE=1<<22=4194304 FP32 values; file variant contains500000 values. Both execute same cudaSort pipeline four times (TEST4). Trace has four16777216-byte input copies and68 kernels, versus four2000000-byte copies and56 kernels. Same sort algorithm, upper median4194304 selects r. Data distributions/realized random input are not declared equivalent.",
+    "scope_evidence": "SOURCE_CONSISTENT_FOUR_FULL_SORTS",
+    "input_count": 2,
+    "all_input_digests": [
+      "09f94fcc7494a03b160b40b705cbc7ff5f41e88e8ee417d187e5c7fbcac82123",
+      "e9110566572e0e0dd3c00afc3aba533fa14ca3bb53a52cb44ffb4262b67be967"
+    ],
+    "exact_capture_executable_and_original_input_linkage_newly_certified": false
+  },
+  {
+    "program_id": "P42-21",
+    "program": "kmeans",
+    "suite": "Rodinia",
+    "ordinary_main_slot": true,
+    "state": "UNRESOLVED",
+    "selected_input_digest": null,
+    "selected_trace_entry": null,
+    "selected_bundle_id": null,
+    "selected_source_version": null,
+    "selected_parameters": null,
+    "reason": "2.0-ft400 versus3.1 28k_4x_features/kdd_cup/819200 mix implementation and feature/input semantics. Dataset dimensions/content and a single intended standard configuration are not jointly bound. No one-dimensional median or arbitrary newest-version choice.",
+    "scope_evidence": "VERSION_OR_INPUT_SEMANTICS_UNRESOLVED",
+    "input_count": 4,
+    "all_input_digests": [
+      "1213f9ab49665a65b429c79e0511047e92524e5f9bf53cc706ab222af22634aa",
+      "2315d0e612ee7cd4ee6e711e2a673e85d7490bec9a8767ec67bde3ddafff970a",
+      "bd8f42c4d21e28ce7d2f6f458bae67720d5237ef8418b8581796d33e2c9d76e1",
+      "c7efba60561811c0652e5bb9331fc1f4c8265ef8a54b75ddc746319292817e76"
+    ],
+    "exact_capture_executable_and_original_input_linkage_newly_certified": false
+  },
+  {
+    "program_id": "P42-23",
+    "program": "lud",
+    "suite": "Rodinia",
+    "ordinary_main_slot": true,
+    "state": "IDENTITY_FROZEN",
+    "selected_input_digest": "b33381cf25d443599aea5253936c13914acb0a2e7c22478496025c5234aef1f8",
+    "selected_trace_entry": "/root/workspace/assets/traces/bundles/07e439dd141d4465b96a46e9ca7031d557b99743eaba5e8c6584e0543f15a7df/tree/kernelslist.g",
+    "selected_bundle_id": "07e439dd141d4465b96a46e9ca7031d557b99743eaba5e8c6584e0543f15a7df",
+    "selected_source_version": "3.1",
+    "selected_parameters": [
+      "_s_256__v"
+    ],
+    "reason": "PRIOR_REFERENCE_SELECTED: Historical pre-current-performance E1 primary is Rodinia3.1 generated -s256 -v. Prefer this identified reference, not pooled median across2.0-ft/3.1 implementations. Trace262144-byte matrix and16 diagonal+15perimeter+15internal kernels match full256 block16 LU. Retain512 and both2.0-ft64 captures as distinct alternatives.",
+    "scope_evidence": "SOURCE_CONSISTENT_FULL_BLOCKED_LU",
+    "input_count": 4,
+    "all_input_digests": [
+      "0323e504fc928c58e0e80a2d615a5ad926dd6ef48e283474763e1069c1f51e64",
+      "59908b3dd7cb0a0e1eefb183ce9bf8965cee155d38bf53844d2c48b9cfd026dc",
+      "9e80de77fd34591f7885362f676414dc2b6443e4e9c8bef6d6572473ecb48832",
+      "b33381cf25d443599aea5253936c13914acb0a2e7c22478496025c5234aef1f8"
+    ],
+    "exact_capture_executable_and_original_input_linkage_newly_certified": false
+  },
+  {
+    "program_id": "P42-28",
+    "program": "nn",
+    "suite": "Rodinia",
+    "ordinary_main_slot": true,
+    "state": "UNRESOLVED",
+    "selected_input_digest": null,
+    "selected_trace_entry": null,
+    "selected_bundle_id": null,
+    "selected_source_version": null,
+    "selected_parameters": null,
+    "reason": "2.0-ft command selects3 neighbors;3.1 uses-r5. Source-version and algorithm-parameter differences matter. No approved42-set version/k precedence; two2.0-ft captures not proven equivalent.",
+    "scope_evidence": "VERSION_OR_INPUT_SEMANTICS_UNRESOLVED",
+    "input_count": 3,
+    "all_input_digests": [
+      "7530ee6952c967c574b81bbf6b2abe768d937e414eda9fe902711fd743972d8c",
+      "8df9ee2d901953e7f4fee2732082bcfd80298003754feb6535340a9e621227cc",
+      "fff1afd00c2eb305a08f67233cb21718f780bcddac2a81649087a270cf80bfbb"
+    ],
+    "exact_capture_executable_and_original_input_linkage_newly_certified": false
+  },
+  {
+    "program_id": "P42-29",
+    "program": "nw",
+    "suite": "Rodinia",
+    "ordinary_main_slot": true,
+    "state": "UNRESOLVED",
+    "selected_input_digest": null,
+    "selected_trace_entry": null,
+    "selected_bundle_id": null,
+    "selected_source_version": null,
+    "selected_parameters": null,
+    "reason": "2.0-ft128x128 and3.1 2048x2048 both standard configurations, but no approved reference precedence across implementations; two128 captures differ. Do not use result size or pass status to decide.",
+    "scope_evidence": "VERSION_OR_INPUT_SEMANTICS_UNRESOLVED",
+    "input_count": 3,
+    "all_input_digests": [
+      "2982f1db6fe849710e62f66ae7c4cdf45f0143a403df440e66110bf40dc1344d",
+      "cf569ed4fa54b5f11746ce6c0c44e43807ac9d0164e21e4900b5bdb61377e8c7",
+      "ec1461f2c83fe1bd4d0ca8aefecc4874db6f1c8621ae8b5365003666842c717f"
+    ],
+    "exact_capture_executable_and_original_input_linkage_newly_certified": false
+  },
+  {
+    "program_id": "P42-32",
+    "program": "pathfinder",
+    "suite": "Rodinia",
+    "ordinary_main_slot": true,
+    "state": "UNRESOLVED",
+    "selected_input_digest": null,
+    "selected_trace_entry": null,
+    "selected_bundle_id": null,
+    "selected_source_version": null,
+    "selected_parameters": null,
+    "reason": "2.0-ft1000/20/5 versus3.1 100000/100/20 changes implementation, rows/columns and pyramid height. No fixed cross-version input policy;1000/20/5 captures unproven equivalent.",
+    "scope_evidence": "VERSION_OR_INPUT_SEMANTICS_UNRESOLVED",
+    "input_count": 3,
+    "all_input_digests": [
+      "030e87a45e9c6dae2c164392ab7dbbf9ea8511802f04258628b5d0830ebd5e67",
+      "6811f98b1edd34f6ea0496797625a38322fc6125f92e94572555366aaa7418d8",
+      "ccdd1b98bff6187e23c60ac1b37e6358cd83539010530d6c13dfe7595bb0a228"
+    ],
+    "exact_capture_executable_and_original_input_linkage_newly_certified": false
+  },
+  {
+    "program_id": "P42-39",
+    "program": "streamcluster",
+    "suite": "Rodinia",
+    "ordinary_main_slot": true,
+    "state": "UNRESOLVED",
+    "selected_input_digest": null,
+    "selected_trace_entry": null,
+    "selected_bundle_id": null,
+    "selected_source_version": null,
+    "selected_parameters": null,
+    "reason": "3.1 parameters3/6/16 and10/20/256 change kmin/kmax and point dimension simultaneously. Sample count alone is not a comparable scalar size. No uniquely approved reference among these tuples.",
+    "scope_evidence": "VERSION_OR_INPUT_SEMANTICS_UNRESOLVED",
+    "input_count": 2,
+    "all_input_digests": [
+      "322bdf9f1830fad4464c03da9c2367fa7c1b74ffbc72098673bec76529c7bc7e",
+      "f7d6397ed7ffa266724e124e76e896015cd71a9936a43e787d815c3c8420f348"
+    ],
+    "exact_capture_executable_and_original_input_linkage_newly_certified": false
+  }
+]

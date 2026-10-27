@@ -1,0 +1,4145 @@
+{
+  "schema": "DTC_P42_BOTTLENECK_EVIDENCE_AND_LIMITS_V1",
+  "freeze_sha256": "a4157b56b48d8d8df048b9f64e62d54b091e80176d7a05169ef9c64b0c06da9d",
+  "counter_scope": "Terminal counters are cumulative across kernel prints; use final cumulative total, not sum of all cumulative prints. Per-kernel cycles are separate increments. L2 accepted read sectors exclude reservation-fail retry attempts. Read misses=GLOBAL_ACC_R MISS+SECTOR_MISS. DRAM reads=issued32B atoms. Aggregate stall event counts are not wall-cycle fractions.",
+  "definitions": {
+    "Tag_evictions": "Logical Tag mapping replacements; not synonymous with Tag-bank arbitration conflicts or proven redundant fetches.",
+    "Tag_bank_conflict_finite_OO": "UNAVAILABLE in these terminal outputs.",
+    "OO_duplicate_after_eviction": "UNAVAILABLE in terminal output; never inferred as0.",
+    "service_means": "Read-retired conditioned quantities; populations/timing can differ across modes. Not causal subtractions.",
+    "PIB_mean": "Time-weighted sum over all sampled SMs including idle SMs; no saturation verdict from mean alone.",
+    "gpu_stall_dramfull": "Legacy label for aggregate ICNT-to-memory input/backpressure events, not direct DRAM utilization or unique DRAM-full cycles.",
+    "L1D_total_cache_misses": "Cannot compare across the conventional read path and the DTC OO read path as if both counted all identical events."
+  },
+  "cases": [
+    {
+      "program": "3MM",
+      "input_digest": "977a2f7007cb1f9673fe3a5c17cdbb469335c619c172a0a882eb18410049eb3d",
+      "selected_representative": true,
+      "modes": {
+        "CH": {
+          "cohort": "E2-AEV100-977a2f7007cb1f96-CH",
+          "uuid": "d6febc89-fd43-42ff-b367-02a18a339fec",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/d6febc89-fd43-42ff-b367-02a18a339fec/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/d6febc89-fd43-42ff-b367-02a18a339fec/raw.log.gz",
+          "raw_gzip_sha256": "f37e22fc1a7782d9e17c41b6fb6a3b68934bf91374001b70f090d396db120304",
+          "raw_uncompressed_sha256": "c1c4e4badd7b98db01d9dbcf4f272d456903f390b21fc799ed658b2011d31f25",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 7859,
+              "value": 4191465
+            },
+            "gpu_stall_dramfull": {
+              "line": 7866,
+              "value": 0
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 7867,
+              "value": 0
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 8116,
+              "value": 3740548
+            },
+            "L2_total_cache_accesses": {
+              "line": 9831,
+              "value": 65293840
+            }
+          },
+          "values": {
+            "cycles": 4191465,
+            "global_lower_read_requests": 3740548,
+            "DTC_new_line_misses": null,
+            "DTC_tag_evictions": null,
+            "Tag_bank_conflict_events": 75571200,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 14962192,
+            "L2_global_read_payload_bytes": 478790144,
+            "L2_global_read_miss_32B_sectors": 0,
+            "L2_global_read_miss_fraction": 0.0,
+            "L2_global_read_reservation_fail_attempts": 0,
+            "L2_all_accepted_accesses": 65293840,
+            "DRAM_issued_read_32B_atoms": 0,
+            "DRAM_read_bytes": 0,
+            "DRAM_write_bytes": 0,
+            "baseline_MSHR_merge_full_events": 678895548,
+            "OO_lower_create_queue_full_stalls": null,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 18.213321509147733,
+            "physical_lines_time_mean_per_SM_including_idle": null,
+            "fully_ready_to_complete_mean_read_conditioned": null,
+            "ready_to_collect_mean_read_conditioned": null,
+            "collection_cycles_mean_read_conditioned": null,
+            "writeback_wait_mean_read_conditioned": null,
+            "OO_ready_but_writeback_blocked_cycles": null,
+            "ICNT_to_memory_full_aggregate_events": 0,
+            "memory_to_ICNT_full_aggregate_events": 0,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z11mm3_kernel1PfS_S_",
+                "cycles": 1409346,
+                "fraction_of_total": 0.3362418629285942
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z11mm3_kernel2PfS_S_",
+                "cycles": 1391779,
+                "fraction_of_total": 0.33205072689381876
+              },
+              {
+                "ordinal": 3,
+                "kernel": "_Z11mm3_kernel3PfS_S_",
+                "cycles": 1390340,
+                "fraction_of_total": 0.3317074101775871
+              }
+            ]
+          }
+        },
+        "CM": {
+          "cohort": "E2-AEV100-977a2f7007cb1f96-CM",
+          "uuid": "f3e9860f-73a3-40ec-8d65-c27ceba9e88a",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/f3e9860f-73a3-40ec-8d65-c27ceba9e88a/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/f3e9860f-73a3-40ec-8d65-c27ceba9e88a/raw.log.gz",
+          "raw_gzip_sha256": "6ada1f2c10a18626b91e530f2e27c6b176f4507df012976ce0dacc96c734fb32",
+          "raw_uncompressed_sha256": "3e58d5a2a2b02174d6ddd362892f1edffc35e45fe5da28e35820e58e81ac9d54",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 7863,
+              "value": 4617374
+            },
+            "gpu_stall_dramfull": {
+              "line": 7870,
+              "value": 146600
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 7871,
+              "value": 257407
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 8122,
+              "value": 7978975
+            },
+            "L2_total_cache_accesses": {
+              "line": 9837,
+              "value": 82247548
+            }
+          },
+          "values": {
+            "cycles": 4617374,
+            "global_lower_read_requests": 7978975,
+            "DTC_new_line_misses": null,
+            "DTC_tag_evictions": null,
+            "Tag_bank_conflict_events": 75571200,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 31915900,
+            "L2_global_read_payload_bytes": 1021308800,
+            "L2_global_read_miss_32B_sectors": 0,
+            "L2_global_read_miss_fraction": 0.0,
+            "L2_global_read_reservation_fail_attempts": 0,
+            "L2_all_accepted_accesses": 82247548,
+            "DRAM_issued_read_32B_atoms": 0,
+            "DRAM_read_bytes": 0,
+            "DRAM_write_bytes": 0,
+            "baseline_MSHR_merge_full_events": 742694416,
+            "OO_lower_create_queue_full_stalls": null,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 25.890131101241963,
+            "physical_lines_time_mean_per_SM_including_idle": null,
+            "fully_ready_to_complete_mean_read_conditioned": null,
+            "ready_to_collect_mean_read_conditioned": null,
+            "collection_cycles_mean_read_conditioned": null,
+            "writeback_wait_mean_read_conditioned": null,
+            "OO_ready_but_writeback_blocked_cycles": null,
+            "ICNT_to_memory_full_aggregate_events": 146600,
+            "memory_to_ICNT_full_aggregate_events": 257407,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z11mm3_kernel1PfS_S_",
+                "cycles": 1551618,
+                "fraction_of_total": 0.336039055965577
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z11mm3_kernel2PfS_S_",
+                "cycles": 1519865,
+                "fraction_of_total": 0.32916220345157227
+              },
+              {
+                "ordinal": 3,
+                "kernel": "_Z11mm3_kernel3PfS_S_",
+                "cycles": 1545891,
+                "fraction_of_total": 0.33479874058285075
+              }
+            ]
+          }
+        },
+        "DH": {
+          "cohort": "E2-AEV100-977a2f7007cb1f96-DH",
+          "uuid": "1164f9e7-1069-47fd-8992-1a112e792460",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/1164f9e7-1069-47fd-8992-1a112e792460/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/1164f9e7-1069-47fd-8992-1a112e792460/raw.log.gz",
+          "raw_gzip_sha256": "658aa5f50b58d26114e479abe477bccd6c5093557961ebb604e524d4f30b73d5",
+          "raw_uncompressed_sha256": "70b477dc75cbdcadf95c3f8798f7cd106bc44250e18011ecd56b6604b27ae393",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 7863,
+              "value": 2402871
+            },
+            "gpu_stall_dramfull": {
+              "line": 7870,
+              "value": 3265907
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 7871,
+              "value": 3325569
+            },
+            "DTC_SERVICE_V1_samples": {
+              "line": 7968,
+              "value": 153783744
+            },
+            "DTC_SERVICE_V1_pib_integral": {
+              "line": 7969,
+              "value": 9149691165
+            },
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": {
+              "line": 7972,
+              "value": 831432199
+            },
+            "DTC_SERVICE_V1_retired": {
+              "line": 7973,
+              "value": 25190400
+            },
+            "DTC_L1_oo_new_misses": {
+              "line": 7993,
+              "value": 1296706
+            },
+            "DTC_L1_oo_tag_evictions": {
+              "line": 7994,
+              "value": 1263938
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 8122,
+              "value": 1296706
+            },
+            "L2_total_cache_accesses": {
+              "line": 9837,
+              "value": 55518472
+            }
+          },
+          "values": {
+            "cycles": 2402871,
+            "global_lower_read_requests": 1296706,
+            "DTC_new_line_misses": 1296706,
+            "DTC_tag_evictions": 1263938,
+            "Tag_bank_conflict_events": null,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 5186824,
+            "L2_global_read_payload_bytes": 165978368,
+            "L2_global_read_miss_32B_sectors": 0,
+            "L2_global_read_miss_fraction": 0.0,
+            "L2_global_read_reservation_fail_attempts": 0,
+            "L2_all_accepted_accesses": 55518472,
+            "DRAM_issued_read_32B_atoms": 0,
+            "DRAM_read_bytes": 0,
+            "DRAM_write_bytes": 0,
+            "baseline_MSHR_merge_full_events": null,
+            "OO_lower_create_queue_full_stalls": 0,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 59.49712841560159,
+            "physical_lines_time_mean_per_SM_including_idle": 489.13230317113363,
+            "fully_ready_to_complete_mean_read_conditioned": 33.00591491202998,
+            "ready_to_collect_mean_read_conditioned": 31.91206820852388,
+            "collection_cycles_mean_read_conditioned": 1.0,
+            "writeback_wait_mean_read_conditioned": 0.09384670350609756,
+            "OO_ready_but_writeback_blocked_cycles": 103722,
+            "ICNT_to_memory_full_aggregate_events": 3265907,
+            "memory_to_ICNT_full_aggregate_events": 3325569,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z11mm3_kernel1PfS_S_",
+                "cycles": 797131,
+                "fraction_of_total": 0.3317410714099925
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z11mm3_kernel2PfS_S_",
+                "cycles": 796214,
+                "fraction_of_total": 0.3313594445977333
+              },
+              {
+                "ordinal": 3,
+                "kernel": "_Z11mm3_kernel3PfS_S_",
+                "cycles": 809526,
+                "fraction_of_total": 0.33689948399227426
+              }
+            ]
+          }
+        },
+        "DM": {
+          "cohort": "E2-AEV100-977a2f7007cb1f96-DM",
+          "uuid": "54c51753-7498-4da8-8f74-5a3df5989ebc",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/54c51753-7498-4da8-8f74-5a3df5989ebc/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/54c51753-7498-4da8-8f74-5a3df5989ebc/raw.log.gz",
+          "raw_gzip_sha256": "803047995f628072e9e5a218c147f13de1697f10173e9e44ccedc48ac1301014",
+          "raw_uncompressed_sha256": "4622cf593a8d28bbf7aaabd3c533f73713b324e41117337c1bec06ba61c66b9f",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 7863,
+              "value": 3156575
+            },
+            "gpu_stall_dramfull": {
+              "line": 7870,
+              "value": 12168997
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 7871,
+              "value": 12210676
+            },
+            "DTC_SERVICE_V1_samples": {
+              "line": 7968,
+              "value": 202020800
+            },
+            "DTC_SERVICE_V1_pib_integral": {
+              "line": 7969,
+              "value": 14108229175
+            },
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": {
+              "line": 7972,
+              "value": 331191701
+            },
+            "DTC_SERVICE_V1_retired": {
+              "line": 7973,
+              "value": 25190400
+            },
+            "DTC_L1_oo_new_misses": {
+              "line": 7993,
+              "value": 5965959
+            },
+            "DTC_L1_oo_tag_evictions": {
+              "line": 7994,
+              "value": 5933191
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 8122,
+              "value": 5965959
+            },
+            "L2_total_cache_accesses": {
+              "line": 9837,
+              "value": 74195484
+            }
+          },
+          "values": {
+            "cycles": 3156575,
+            "global_lower_read_requests": 5965959,
+            "DTC_new_line_misses": 5965959,
+            "DTC_tag_evictions": 5933191,
+            "Tag_bank_conflict_events": null,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 23863836,
+            "L2_global_read_payload_bytes": 763642752,
+            "L2_global_read_miss_32B_sectors": 0,
+            "L2_global_read_miss_fraction": 0.0,
+            "L2_global_read_reservation_fail_attempts": 0,
+            "L2_all_accepted_accesses": 74195484,
+            "DRAM_issued_read_32B_atoms": 0,
+            "DRAM_read_bytes": 0,
+            "DRAM_write_bytes": 0,
+            "baseline_MSHR_merge_full_events": null,
+            "OO_lower_create_queue_full_stalls": 0,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 69.835527703088,
+            "physical_lines_time_mean_per_SM_including_idle": 479.26875535588414,
+            "fully_ready_to_complete_mean_read_conditioned": 13.147536402756606,
+            "ready_to_collect_mean_read_conditioned": 12.004702704204776,
+            "collection_cycles_mean_read_conditioned": 1.0,
+            "writeback_wait_mean_read_conditioned": 0.14283369855182926,
+            "OO_ready_but_writeback_blocked_cycles": 116152,
+            "ICNT_to_memory_full_aggregate_events": 12168997,
+            "memory_to_ICNT_full_aggregate_events": 12210676,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z11mm3_kernel1PfS_S_",
+                "cycles": 1048937,
+                "fraction_of_total": 0.3323022579853164
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z11mm3_kernel2PfS_S_",
+                "cycles": 1050595,
+                "fraction_of_total": 0.33282751083056794
+              },
+              {
+                "ordinal": 3,
+                "kernel": "_Z11mm3_kernel3PfS_S_",
+                "cycles": 1057043,
+                "fraction_of_total": 0.3348702311841157
+              }
+            ]
+          }
+        }
+      },
+      "comparisons": {
+        "traditional_hash": {
+          "old": "CM",
+          "new": "CH",
+          "speedup_ratio": 1.1016133977022353,
+          "cycles_change_pct": -9.224052459254983,
+          "lower_read_requests_change_pct": -53.11994335111967,
+          "DTC_tag_evictions_change_pct": null,
+          "L2_read_payload_change_pct": -53.11994335111967,
+          "DRAM_read_bytes_change_pct": null
+        },
+        "DTC_hash": {
+          "old": "DM",
+          "new": "DH",
+          "speedup_ratio": 1.3136681078593067,
+          "cycles_change_pct": -23.877272043274754,
+          "lower_read_requests_change_pct": -78.26491935328418,
+          "DTC_tag_evictions_change_pct": -78.69716312857618,
+          "L2_read_payload_change_pct": -78.26491935328418,
+          "DRAM_read_bytes_change_pct": null
+        },
+        "matched_hash_cross_design": {
+          "old": "CH",
+          "new": "DH",
+          "speedup_ratio": 1.7443570628635494,
+          "cycles_change_pct": -42.672287613042215,
+          "lower_read_requests_change_pct": -65.33379601063801,
+          "DTC_tag_evictions_change_pct": null,
+          "L2_read_payload_change_pct": -65.33379601063801,
+          "DRAM_read_bytes_change_pct": null
+        }
+      }
+    },
+    {
+      "program": "ATAX",
+      "input_digest": "dd8955feff97ab8c2013c32daccb3e916dc7dce6d435c913b4eaa0a61e64f308",
+      "selected_representative": false,
+      "modes": {
+        "CH": {
+          "cohort": "E2-AEV100-dd8955feff97ab8c-CH",
+          "uuid": "eb5a91b3-b4d3-4166-966e-7842650e327b",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/eb5a91b3-b4d3-4166-966e-7842650e327b/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/eb5a91b3-b4d3-4166-966e-7842650e327b/raw.log.gz",
+          "raw_gzip_sha256": "80f2441a34348d8b500200aef992e00afd206c18bb005c4f22cacb0302c5d07c",
+          "raw_uncompressed_sha256": "5df4c4b4203c113da764c242cce80a90303a4125aac9f507171cd66fc2f35d61",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 2472,
+              "value": 7158457
+            },
+            "gpu_stall_dramfull": {
+              "line": 2479,
+              "value": 0
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 2480,
+              "value": 0
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 2730,
+              "value": 2185304
+            },
+            "L2_total_cache_accesses": {
+              "line": 4446,
+              "value": 9265504
+            }
+          },
+          "values": {
+            "cycles": 7158457,
+            "global_lower_read_requests": 2185304,
+            "DTC_new_line_misses": null,
+            "DTC_tag_evictions": null,
+            "Tag_bank_conflict_events": 2621536,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 8741216,
+            "L2_global_read_payload_bytes": 279718912,
+            "L2_global_read_miss_32B_sectors": 491520,
+            "L2_global_read_miss_fraction": 0.05623016294300472,
+            "L2_global_read_reservation_fail_attempts": 0,
+            "L2_all_accepted_accesses": 9265504,
+            "DRAM_issued_read_32B_atoms": 491520,
+            "DRAM_read_bytes": 15728640,
+            "DRAM_write_bytes": 2048,
+            "baseline_MSHR_merge_full_events": 0,
+            "OO_lower_create_queue_full_stalls": null,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 5.786721807708428,
+            "physical_lines_time_mean_per_SM_including_idle": null,
+            "fully_ready_to_complete_mean_read_conditioned": null,
+            "ready_to_collect_mean_read_conditioned": null,
+            "collection_cycles_mean_read_conditioned": null,
+            "writeback_wait_mean_read_conditioned": null,
+            "OO_ready_but_writeback_blocked_cycles": null,
+            "ICNT_to_memory_full_aggregate_events": 0,
+            "memory_to_ICNT_full_aggregate_events": 0,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z12atax_kernel1PfS_S_",
+                "cycles": 5501984,
+                "fraction_of_total": 0.7685991548178609
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z12atax_kernel2PfS_S_",
+                "cycles": 1656473,
+                "fraction_of_total": 0.2314008451821391
+              }
+            ]
+          }
+        },
+        "CM": {
+          "cohort": "E2-AEV100-dd8955feff97ab8c-CM",
+          "uuid": "9e4d4b4b-25e8-4c3b-8c77-689813860730",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/9e4d4b4b-25e8-4c3b-8c77-689813860730/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/9e4d4b4b-25e8-4c3b-8c77-689813860730/raw.log.gz",
+          "raw_gzip_sha256": "0d82efb8cdf27b8953c8f5315fd8ca0e4d6bae37c9026b31f500699ba0f36bb8",
+          "raw_uncompressed_sha256": "f3c479de7b42c4a73216c9ffc3e81c81f9c569287e5f1bf7c0f2fdf06c02470e",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 2472,
+              "value": 11174024
+            },
+            "gpu_stall_dramfull": {
+              "line": 2479,
+              "value": 0
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 2480,
+              "value": 0
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 2730,
+              "value": 2199986
+            },
+            "L2_total_cache_accesses": {
+              "line": 4446,
+              "value": 9324232
+            }
+          },
+          "values": {
+            "cycles": 11174024,
+            "global_lower_read_requests": 2199986,
+            "DTC_new_line_misses": null,
+            "DTC_tag_evictions": null,
+            "Tag_bank_conflict_events": 2621536,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 8799944,
+            "L2_global_read_payload_bytes": 281598208,
+            "L2_global_read_miss_32B_sectors": 491520,
+            "L2_global_read_miss_fraction": 0.055854900894823874,
+            "L2_global_read_reservation_fail_attempts": 0,
+            "L2_all_accepted_accesses": 9324232,
+            "DRAM_issued_read_32B_atoms": 491520,
+            "DRAM_read_bytes": 15728640,
+            "DRAM_write_bytes": 2048,
+            "baseline_MSHR_merge_full_events": 0,
+            "OO_lower_create_queue_full_stalls": null,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 4.4544141671591095,
+            "physical_lines_time_mean_per_SM_including_idle": null,
+            "fully_ready_to_complete_mean_read_conditioned": null,
+            "ready_to_collect_mean_read_conditioned": null,
+            "collection_cycles_mean_read_conditioned": null,
+            "writeback_wait_mean_read_conditioned": null,
+            "OO_ready_but_writeback_blocked_cycles": null,
+            "ICNT_to_memory_full_aggregate_events": 0,
+            "memory_to_ICNT_full_aggregate_events": 0,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z12atax_kernel1PfS_S_",
+                "cycles": 9517538,
+                "fraction_of_total": 0.8517556432669198
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z12atax_kernel2PfS_S_",
+                "cycles": 1656486,
+                "fraction_of_total": 0.14824435673308023
+              }
+            ]
+          }
+        },
+        "DH": {
+          "cohort": "E2-AEV100-dd8955feff97ab8c-DH",
+          "uuid": "3e7dc1c5-5365-4f43-b37b-5e15bf3a9c6a",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/3e7dc1c5-5365-4f43-b37b-5e15bf3a9c6a/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/3e7dc1c5-5365-4f43-b37b-5e15bf3a9c6a/raw.log.gz",
+          "raw_gzip_sha256": "f574ae2d1ea813883f887654712b04dded500497d6602f3f8cb93cab84ab0ed5",
+          "raw_uncompressed_sha256": "dcf6c004b8f11869516b15e1a2116af355107389a6dd252c0789538e53128762",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 2473,
+              "value": 5989485
+            },
+            "gpu_stall_dramfull": {
+              "line": 2480,
+              "value": 1020043
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 2481,
+              "value": 1030020
+            },
+            "DTC_SERVICE_V1_samples": {
+              "line": 2578,
+              "value": 383327040
+            },
+            "DTC_SERVICE_V1_pib_integral": {
+              "line": 2579,
+              "value": 96855993
+            },
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": {
+              "line": 2582,
+              "value": 1141308
+            },
+            "DTC_SERVICE_V1_retired": {
+              "line": 2583,
+              "value": 262176
+            },
+            "DTC_L1_oo_new_misses": {
+              "line": 2603,
+              "value": 1627668
+            },
+            "DTC_L1_oo_tag_evictions": {
+              "line": 2604,
+              "value": 1625620
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 2731,
+              "value": 1627668
+            },
+            "L2_total_cache_accesses": {
+              "line": 4447,
+              "value": 7034960
+            }
+          },
+          "values": {
+            "cycles": 5989485,
+            "global_lower_read_requests": 1627668,
+            "DTC_new_line_misses": 1627668,
+            "DTC_tag_evictions": 1625620,
+            "Tag_bank_conflict_events": null,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 6510672,
+            "L2_global_read_payload_bytes": 208341504,
+            "L2_global_read_miss_32B_sectors": 491520,
+            "L2_global_read_miss_fraction": 0.07549451116566769,
+            "L2_global_read_reservation_fail_attempts": 310,
+            "L2_all_accepted_accesses": 7034960,
+            "DRAM_issued_read_32B_atoms": 491520,
+            "DRAM_read_bytes": 15728640,
+            "DRAM_write_bytes": 2048,
+            "baseline_MSHR_merge_full_events": null,
+            "OO_lower_create_queue_full_stalls": 0,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 0.2526719560404609,
+            "physical_lines_time_mean_per_SM_including_idle": 22.263564902700317,
+            "fully_ready_to_complete_mean_read_conditioned": 4.3532131087513735,
+            "ready_to_collect_mean_read_conditioned": 1.5241288294885877,
+            "collection_cycles_mean_read_conditioned": 2.797986848529232,
+            "writeback_wait_mean_read_conditioned": 0.031097430733553033,
+            "OO_ready_but_writeback_blocked_cycles": 49,
+            "ICNT_to_memory_full_aggregate_events": 1020043,
+            "memory_to_ICNT_full_aggregate_events": 1030020,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z12atax_kernel1PfS_S_",
+                "cycles": 4425622,
+                "fraction_of_total": 0.7388985864394018
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z12atax_kernel2PfS_S_",
+                "cycles": 1563863,
+                "fraction_of_total": 0.2611014135605983
+              }
+            ]
+          }
+        },
+        "DM": {
+          "cohort": "E2-AEV100-dd8955feff97ab8c-DM",
+          "uuid": "6415c1c0-cfef-42a8-918b-2204fbd1269d",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/6415c1c0-cfef-42a8-918b-2204fbd1269d/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/6415c1c0-cfef-42a8-918b-2204fbd1269d/raw.log.gz",
+          "raw_gzip_sha256": "459201bb1cb290bc54b5f88be1ebfe0f9705c16b489f686dd030927687e040fa",
+          "raw_uncompressed_sha256": "7f195b805d77934dee7fcc77d5058e2fb9bf3fc93374c44bbfa00c06f5ad2879",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 2473,
+              "value": 6980448
+            },
+            "gpu_stall_dramfull": {
+              "line": 2480,
+              "value": 0
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 2481,
+              "value": 0
+            },
+            "DTC_SERVICE_V1_samples": {
+              "line": 2578,
+              "value": 446748672
+            },
+            "DTC_SERVICE_V1_pib_integral": {
+              "line": 2579,
+              "value": 143884364
+            },
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": {
+              "line": 2582,
+              "value": 1078864
+            },
+            "DTC_SERVICE_V1_retired": {
+              "line": 2583,
+              "value": 262176
+            },
+            "DTC_L1_oo_new_misses": {
+              "line": 2603,
+              "value": 2223008
+            },
+            "DTC_L1_oo_tag_evictions": {
+              "line": 2604,
+              "value": 2221632
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 2731,
+              "value": 2223008
+            },
+            "L2_total_cache_accesses": {
+              "line": 4447,
+              "value": 9416320
+            }
+          },
+          "values": {
+            "cycles": 6980448,
+            "global_lower_read_requests": 2223008,
+            "DTC_new_line_misses": 2223008,
+            "DTC_tag_evictions": 2221632,
+            "Tag_bank_conflict_events": null,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 8892032,
+            "L2_global_read_payload_bytes": 284545024,
+            "L2_global_read_miss_32B_sectors": 491520,
+            "L2_global_read_miss_fraction": 0.05527645424577869,
+            "L2_global_read_reservation_fail_attempts": 309,
+            "L2_all_accepted_accesses": 9416320,
+            "DRAM_issued_read_32B_atoms": 491520,
+            "DRAM_read_bytes": 15728640,
+            "DRAM_write_bytes": 2048,
+            "baseline_MSHR_merge_full_events": null,
+            "OO_lower_create_queue_full_stalls": 0,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 0.3220700429972403,
+            "physical_lines_time_mean_per_SM_including_idle": 18.07898365056584,
+            "fully_ready_to_complete_mean_read_conditioned": 4.115037226901013,
+            "ready_to_collect_mean_read_conditioned": 1.3450620956914439,
+            "collection_cycles_mean_read_conditioned": 2.756148541437813,
+            "writeback_wait_mean_read_conditioned": 0.013826589771756378,
+            "OO_ready_but_writeback_blocked_cycles": 16,
+            "ICNT_to_memory_full_aggregate_events": 0,
+            "memory_to_ICNT_full_aggregate_events": 0,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z12atax_kernel1PfS_S_",
+                "cycles": 5416584,
+                "fraction_of_total": 0.7759650956500214
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z12atax_kernel2PfS_S_",
+                "cycles": 1563864,
+                "fraction_of_total": 0.2240349043499787
+              }
+            ]
+          }
+        }
+      },
+      "comparisons": {
+        "traditional_hash": {
+          "old": "CM",
+          "new": "CH",
+          "speedup_ratio": 1.5609542670997396,
+          "cycles_change_pct": -35.93662408457329,
+          "lower_read_requests_change_pct": -0.6673678832501695,
+          "DTC_tag_evictions_change_pct": null,
+          "L2_read_payload_change_pct": -0.6673678832501695,
+          "DRAM_read_bytes_change_pct": 0.0
+        },
+        "DTC_hash": {
+          "old": "DM",
+          "new": "DH",
+          "speedup_ratio": 1.1654504519169846,
+          "cycles_change_pct": -14.196266486047882,
+          "lower_read_requests_change_pct": -26.78083029840649,
+          "DTC_tag_evictions_change_pct": -26.827665427937664,
+          "L2_read_payload_change_pct": -26.78083029840649,
+          "DRAM_read_bytes_change_pct": 0.0
+        },
+        "matched_hash_cross_design": {
+          "old": "CH",
+          "new": "DH",
+          "speedup_ratio": 1.1951707033242425,
+          "cycles_change_pct": -16.329943729493657,
+          "lower_read_requests_change_pct": -25.51754813060334,
+          "DTC_tag_evictions_change_pct": null,
+          "L2_read_payload_change_pct": -25.51754813060334,
+          "DRAM_read_bytes_change_pct": 0.0
+        }
+      }
+    },
+    {
+      "program": "ATAX",
+      "input_digest": "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+      "selected_representative": true,
+      "modes": {
+        "CH": {
+          "cohort": "E2-AEV100-eededb785179fc04-CH",
+          "uuid": "36cb29e3-6bb4-49de-b9b2-40e85ec35052",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/36cb29e3-6bb4-49de-b9b2-40e85ec35052/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/36cb29e3-6bb4-49de-b9b2-40e85ec35052/raw.log.gz",
+          "raw_gzip_sha256": "811a9e0fd1eb36c041c025c1345f05cc2eb9187a3d8c3c6d12d604768c5eb27d",
+          "raw_uncompressed_sha256": "941a533a71087f79119e5da1d1287936247a77503132f2f5d5ce1a641351490f",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 2533,
+              "value": 28428842
+            },
+            "gpu_stall_dramfull": {
+              "line": 2540,
+              "value": 31062137
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 2541,
+              "value": 7433
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 2791,
+              "value": 16472364
+            },
+            "L2_total_cache_accesses": {
+              "line": 4507,
+              "value": 70083760
+            }
+          },
+          "values": {
+            "cycles": 28428842,
+            "global_lower_read_requests": 16472364,
+            "DTC_new_line_misses": null,
+            "DTC_tag_evictions": null,
+            "Tag_bank_conflict_events": 20972288,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 65889456,
+            "L2_global_read_payload_bytes": 2108462592,
+            "L2_global_read_miss_32B_sectors": 16720180,
+            "L2_global_read_miss_fraction": 0.2537610873581958,
+            "L2_global_read_reservation_fail_attempts": 39325655,
+            "L2_all_accepted_accesses": 70083760,
+            "DRAM_issued_read_32B_atoms": 16720180,
+            "DRAM_read_bytes": 535045760,
+            "DRAM_write_bytes": 157568,
+            "baseline_MSHR_merge_full_events": 0,
+            "OO_lower_create_queue_full_stalls": null,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 9.371474657379263,
+            "physical_lines_time_mean_per_SM_including_idle": null,
+            "fully_ready_to_complete_mean_read_conditioned": null,
+            "ready_to_collect_mean_read_conditioned": null,
+            "collection_cycles_mean_read_conditioned": null,
+            "writeback_wait_mean_read_conditioned": null,
+            "OO_ready_but_writeback_blocked_cycles": null,
+            "ICNT_to_memory_full_aggregate_events": 31062137,
+            "memory_to_ICNT_full_aggregate_events": 7433,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z12atax_kernel1PfS_S_",
+                "cycles": 26677630,
+                "fraction_of_total": 0.9384001641713018
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z12atax_kernel2PfS_S_",
+                "cycles": 1751212,
+                "fraction_of_total": 0.06159983582869819
+              }
+            ]
+          }
+        },
+        "CM": {
+          "cohort": "E2-AEV100-eededb785179fc04-CM",
+          "uuid": "9c486518-85b5-4ac5-994d-5f7471228ce3",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/9c486518-85b5-4ac5-994d-5f7471228ce3/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/9c486518-85b5-4ac5-994d-5f7471228ce3/raw.log.gz",
+          "raw_gzip_sha256": "65be46a55d98a65e8409672a8f355a619620cbb01d091ea366c8c732dbe501c9",
+          "raw_uncompressed_sha256": "cdae8be27311f7392ae2b67be95e52f064251fbfd594478f8172343baf928baf",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 2532,
+              "value": 30981690
+            },
+            "gpu_stall_dramfull": {
+              "line": 2539,
+              "value": 18546763
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 2540,
+              "value": 0
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 2790,
+              "value": 17555574
+            },
+            "L2_total_cache_accesses": {
+              "line": 4506,
+              "value": 74416600
+            }
+          },
+          "values": {
+            "cycles": 30981690,
+            "global_lower_read_requests": 17555574,
+            "DTC_new_line_misses": null,
+            "DTC_tag_evictions": null,
+            "Tag_bank_conflict_events": 20972288,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 70222296,
+            "L2_global_read_payload_bytes": 2247113472,
+            "L2_global_read_miss_32B_sectors": 16976348,
+            "L2_global_read_miss_fraction": 0.2417515371471192,
+            "L2_global_read_reservation_fail_attempts": 20674079,
+            "L2_all_accepted_accesses": 74416600,
+            "DRAM_issued_read_32B_atoms": 16976348,
+            "DRAM_read_bytes": 543243136,
+            "DRAM_write_bytes": 165120,
+            "baseline_MSHR_merge_full_events": 0,
+            "OO_lower_create_queue_full_stalls": null,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 7.496436447538909,
+            "physical_lines_time_mean_per_SM_including_idle": null,
+            "fully_ready_to_complete_mean_read_conditioned": null,
+            "ready_to_collect_mean_read_conditioned": null,
+            "collection_cycles_mean_read_conditioned": null,
+            "writeback_wait_mean_read_conditioned": null,
+            "OO_ready_but_writeback_blocked_cycles": null,
+            "ICNT_to_memory_full_aggregate_events": 18546763,
+            "memory_to_ICNT_full_aggregate_events": 0,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z12atax_kernel1PfS_S_",
+                "cycles": 29245822,
+                "fraction_of_total": 0.9439711649041741
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z12atax_kernel2PfS_S_",
+                "cycles": 1735868,
+                "fraction_of_total": 0.05602883509582596
+              }
+            ]
+          }
+        },
+        "DH": {
+          "cohort": "E2-AEV100-eededb785179fc04-DH",
+          "uuid": "9dc44a66-77dd-4efc-a0c5-9463a7ce8d7c",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/9dc44a66-77dd-4efc-a0c5-9463a7ce8d7c/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/9dc44a66-77dd-4efc-a0c5-9463a7ce8d7c/raw.log.gz",
+          "raw_gzip_sha256": "762f1fd8190e419c0311603b84358e46e20a583c170e4f5a57f00ec224fed01b",
+          "raw_uncompressed_sha256": "35d5c31442be2e5e6208dc4f0ba0dbd31e3911f5e8b5967047d8e39461807d18",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 2534,
+              "value": 31880220
+            },
+            "gpu_stall_dramfull": {
+              "line": 2541,
+              "value": 158348591
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 2542,
+              "value": 2067502
+            },
+            "DTC_SERVICE_V1_samples": {
+              "line": 2639,
+              "value": 2040334080
+            },
+            "DTC_SERVICE_V1_pib_integral": {
+              "line": 2640,
+              "value": 3419022729
+            },
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": {
+              "line": 2643,
+              "value": 8863818
+            },
+            "DTC_SERVICE_V1_retired": {
+              "line": 2644,
+              "value": 2097408
+            },
+            "DTC_L1_oo_new_misses": {
+              "line": 2664,
+              "value": 12288838
+            },
+            "DTC_L1_oo_tag_evictions": {
+              "line": 2665,
+              "value": 12272454
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 2793,
+              "value": 12288838
+            },
+            "L2_total_cache_accesses": {
+              "line": 4509,
+              "value": 53349656
+            }
+          },
+          "values": {
+            "cycles": 31880220,
+            "global_lower_read_requests": 12288838,
+            "DTC_new_line_misses": 12288838,
+            "DTC_tag_evictions": 12272454,
+            "Tag_bank_conflict_events": null,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 49155352,
+            "L2_global_read_payload_bytes": 1572971264,
+            "L2_global_read_miss_32B_sectors": 19387556,
+            "L2_global_read_miss_fraction": 0.3944139388931647,
+            "L2_global_read_reservation_fail_attempts": 158817641,
+            "L2_all_accepted_accesses": 53349656,
+            "DRAM_issued_read_32B_atoms": 19387556,
+            "DRAM_read_bytes": 620401792,
+            "DRAM_write_bytes": 185856,
+            "baseline_MSHR_merge_full_events": null,
+            "OO_lower_create_queue_full_stalls": 0,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 1.6757171105037858,
+            "physical_lines_time_mean_per_SM_including_idle": 152.61432978073864,
+            "fully_ready_to_complete_mean_read_conditioned": 4.226081906810692,
+            "ready_to_collect_mean_read_conditioned": 1.4312618241181496,
+            "collection_cycles_mean_read_conditioned": 2.777330400189186,
+            "writeback_wait_mean_read_conditioned": 0.017489682503356523,
+            "OO_ready_but_writeback_blocked_cycles": 553,
+            "ICNT_to_memory_full_aggregate_events": 158348591,
+            "memory_to_ICNT_full_aggregate_events": 2067502,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z12atax_kernel1PfS_S_",
+                "cycles": 30226439,
+                "fraction_of_total": 0.9481251697761183
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z12atax_kernel2PfS_S_",
+                "cycles": 1653781,
+                "fraction_of_total": 0.051874830223881764
+              }
+            ]
+          }
+        },
+        "DM": {
+          "cohort": "E2-AEV100-eededb785179fc04-DM",
+          "uuid": "c8add02c-5718-4517-8c18-ab52c0d70f5a",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/c8add02c-5718-4517-8c18-ab52c0d70f5a/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/c8add02c-5718-4517-8c18-ab52c0d70f5a/raw.log.gz",
+          "raw_gzip_sha256": "357382004692481d9288060b93a16a5ef2e1578bbb512ef68c3335db06c0410a",
+          "raw_uncompressed_sha256": "6013d9d1113f2f2f381637c12bfd0425d1ed1b0de10c71f90074c9fa14ca4c22",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 2533,
+              "value": 40569964
+            },
+            "gpu_stall_dramfull": {
+              "line": 2540,
+              "value": 231005486
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 2541,
+              "value": 2051363
+            },
+            "DTC_SERVICE_V1_samples": {
+              "line": 2638,
+              "value": 2596477696
+            },
+            "DTC_SERVICE_V1_pib_integral": {
+              "line": 2639,
+              "value": 7648438585
+            },
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": {
+              "line": 2642,
+              "value": 8412710
+            },
+            "DTC_SERVICE_V1_retired": {
+              "line": 2643,
+              "value": 2097408
+            },
+            "DTC_L1_oo_new_misses": {
+              "line": 2663,
+              "value": 17789743
+            },
+            "DTC_L1_oo_tag_evictions": {
+              "line": 2664,
+              "value": 17778735
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 2791,
+              "value": 17789743
+            },
+            "L2_total_cache_accesses": {
+              "line": 4507,
+              "value": 75353276
+            }
+          },
+          "values": {
+            "cycles": 40569964,
+            "global_lower_read_requests": 17789743,
+            "DTC_new_line_misses": 17789743,
+            "DTC_tag_evictions": 17778735,
+            "Tag_bank_conflict_events": null,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 71158972,
+            "L2_global_read_payload_bytes": 2277087104,
+            "L2_global_read_miss_32B_sectors": 23694060,
+            "L2_global_read_miss_fraction": 0.3329736129408952,
+            "L2_global_read_reservation_fail_attempts": 229688972,
+            "L2_all_accepted_accesses": 75353276,
+            "DRAM_issued_read_32B_atoms": 23694060,
+            "DRAM_read_bytes": 758209920,
+            "DRAM_write_bytes": 212352,
+            "baseline_MSHR_merge_full_events": null,
+            "OO_lower_create_queue_full_stalls": 0,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 2.9456977800282247,
+            "physical_lines_time_mean_per_SM_including_idle": 118.02217996599344,
+            "fully_ready_to_complete_mean_read_conditioned": 4.011003104784572,
+            "ready_to_collect_mean_read_conditioned": 1.2454977763029416,
+            "collection_cycles_mean_read_conditioned": 2.7576308472171367,
+            "writeback_wait_mean_read_conditioned": 0.00787448126449408,
+            "OO_ready_but_writeback_blocked_cycles": 102,
+            "ICNT_to_memory_full_aggregate_events": 231005486,
+            "memory_to_ICNT_full_aggregate_events": 2051363,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z12atax_kernel1PfS_S_",
+                "cycles": 38915933,
+                "fraction_of_total": 0.959230158547836
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z12atax_kernel2PfS_S_",
+                "cycles": 1654031,
+                "fraction_of_total": 0.04076984145216397
+              }
+            ]
+          }
+        }
+      },
+      "comparisons": {
+        "traditional_hash": {
+          "old": "CM",
+          "new": "CH",
+          "speedup_ratio": 1.0897978187081978,
+          "cycles_change_pct": -8.239860382051468,
+          "lower_read_requests_change_pct": -6.170177061712712,
+          "DTC_tag_evictions_change_pct": null,
+          "L2_read_payload_change_pct": -6.170177061712712,
+          "DRAM_read_bytes_change_pct": -1.5089700093329883
+        },
+        "DTC_hash": {
+          "old": "DM",
+          "new": "DH",
+          "speedup_ratio": 1.2725747814789232,
+          "cycles_change_pct": -21.419156299966158,
+          "lower_read_requests_change_pct": -30.921778914962406,
+          "DTC_tag_evictions_change_pct": -30.97116302144106,
+          "L2_read_payload_change_pct": -30.921778914962406,
+          "DRAM_read_bytes_change_pct": -18.17545832162154
+        },
+        "matched_hash_cross_design": {
+          "old": "CH",
+          "new": "DH",
+          "speedup_ratio": 0.891739203807251,
+          "cycles_change_pct": 12.140410080720132,
+          "lower_read_requests_change_pct": -25.397241100305944,
+          "DTC_tag_evictions_change_pct": null,
+          "L2_read_payload_change_pct": -25.397241100305944,
+          "DRAM_read_bytes_change_pct": 15.953033998437816
+        }
+      }
+    },
+    {
+      "program": "BICG",
+      "input_digest": "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+      "selected_representative": true,
+      "modes": {
+        "CH": {
+          "cohort": "E2-AEV100-ae34174fbbdf83b2-CH",
+          "uuid": "2b35a47a-9ab2-4241-8827-665079622e3b",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/2b35a47a-9ab2-4241-8827-665079622e3b/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/2b35a47a-9ab2-4241-8827-665079622e3b/raw.log.gz",
+          "raw_gzip_sha256": "a37faadfbe9eabf355ff85e9b2fd701aa74c80b9c2ce915732950757fb3af2b3",
+          "raw_uncompressed_sha256": "3d5cafd763a127654fc96fcec411dacb5d0173d8c93de8148c356c0d0f9b49be",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 2525,
+              "value": 26298698
+            },
+            "gpu_stall_dramfull": {
+              "line": 2532,
+              "value": 42823201
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 2533,
+              "value": 157403
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 2783,
+              "value": 16146636
+            },
+            "L2_total_cache_accesses": {
+              "line": 4499,
+              "value": 68781872
+            }
+          },
+          "values": {
+            "cycles": 26298698,
+            "global_lower_read_requests": 16146636,
+            "DTC_new_line_misses": null,
+            "DTC_tag_evictions": null,
+            "Tag_bank_conflict_events": 20972288,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 64586544,
+            "L2_global_read_payload_bytes": 2066769408,
+            "L2_global_read_miss_32B_sectors": 15513224,
+            "L2_global_read_miss_fraction": 0.24019281787240387,
+            "L2_global_read_reservation_fail_attempts": 57028756,
+            "L2_all_accepted_accesses": 68781872,
+            "DRAM_issued_read_32B_atoms": 15513224,
+            "DRAM_read_bytes": 496423168,
+            "DRAM_write_bytes": 152704,
+            "baseline_MSHR_merge_full_events": 0,
+            "OO_lower_create_queue_full_stalls": null,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 8.712003744110486,
+            "physical_lines_time_mean_per_SM_including_idle": null,
+            "fully_ready_to_complete_mean_read_conditioned": null,
+            "ready_to_collect_mean_read_conditioned": null,
+            "collection_cycles_mean_read_conditioned": null,
+            "writeback_wait_mean_read_conditioned": null,
+            "OO_ready_but_writeback_blocked_cycles": null,
+            "ICNT_to_memory_full_aggregate_events": 42823201,
+            "memory_to_ICNT_full_aggregate_events": 157403,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z12bicg_kernel1PfS_S_",
+                "cycles": 1749396,
+                "fraction_of_total": 0.0665202513067377
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z12bicg_kernel2PfS_S_",
+                "cycles": 24549302,
+                "fraction_of_total": 0.9334797486932623
+              }
+            ]
+          }
+        },
+        "CM": {
+          "cohort": "E2-AEV100-ae34174fbbdf83b2-CM",
+          "uuid": "62cc8846-1055-4d38-91af-1c5c4baaf13c",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/62cc8846-1055-4d38-91af-1c5c4baaf13c/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/62cc8846-1055-4d38-91af-1c5c4baaf13c/raw.log.gz",
+          "raw_gzip_sha256": "7136037884c311cacfff5a9a540e1b5b917c0fb2add36e7cd7342fe3999b8333",
+          "raw_uncompressed_sha256": "6c94f225869183060458ea5018d53e91b7d76656fd348ab9e9986d6c2151f402",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 2525,
+              "value": 25353488
+            },
+            "gpu_stall_dramfull": {
+              "line": 2532,
+              "value": 12196100
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 2533,
+              "value": 0
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 2783,
+              "value": 17602331
+            },
+            "L2_total_cache_accesses": {
+              "line": 4499,
+              "value": 74604652
+            }
+          },
+          "values": {
+            "cycles": 25353488,
+            "global_lower_read_requests": 17602331,
+            "DTC_new_line_misses": null,
+            "DTC_tag_evictions": null,
+            "Tag_bank_conflict_events": 20972288,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 70409324,
+            "L2_global_read_payload_bytes": 2253098368,
+            "L2_global_read_miss_32B_sectors": 14640676,
+            "L2_global_read_miss_fraction": 0.2079366079413005,
+            "L2_global_read_reservation_fail_attempts": 26574828,
+            "L2_all_accepted_accesses": 74604652,
+            "DRAM_issued_read_32B_atoms": 14640676,
+            "DRAM_read_bytes": 468501632,
+            "DRAM_write_bytes": 117280,
+            "baseline_MSHR_merge_full_events": 0,
+            "OO_lower_create_queue_full_stalls": null,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 4.223354589835182,
+            "physical_lines_time_mean_per_SM_including_idle": null,
+            "fully_ready_to_complete_mean_read_conditioned": null,
+            "ready_to_collect_mean_read_conditioned": null,
+            "collection_cycles_mean_read_conditioned": null,
+            "writeback_wait_mean_read_conditioned": null,
+            "OO_ready_but_writeback_blocked_cycles": null,
+            "ICNT_to_memory_full_aggregate_events": 12196100,
+            "memory_to_ICNT_full_aggregate_events": 0,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z12bicg_kernel1PfS_S_",
+                "cycles": 1749396,
+                "fraction_of_total": 0.06900021014859967
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z12bicg_kernel2PfS_S_",
+                "cycles": 23604092,
+                "fraction_of_total": 0.9309997898514003
+              }
+            ]
+          }
+        },
+        "DH": {
+          "cohort": "E2-AEV100-ae34174fbbdf83b2-DH",
+          "uuid": "b49e0e19-c1d1-44e3-a089-fb8ef98ed0a8",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/b49e0e19-c1d1-44e3-a089-fb8ef98ed0a8/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/b49e0e19-c1d1-44e3-a089-fb8ef98ed0a8/raw.log.gz",
+          "raw_gzip_sha256": "57ef53e3f7d49625d94e7a2af2a1e871cfc287d8381b1ff572380936b33aa28a",
+          "raw_uncompressed_sha256": "43e0c82511d91d24ac7e2dea27a4a019fef79fcfc042df610c183cfdbe769dab",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 2531,
+              "value": 28685812
+            },
+            "gpu_stall_dramfull": {
+              "line": 2538,
+              "value": 157588835
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 2539,
+              "value": 2069209
+            },
+            "DTC_SERVICE_V1_samples": {
+              "line": 2636,
+              "value": 1835891968
+            },
+            "DTC_SERVICE_V1_pib_integral": {
+              "line": 2637,
+              "value": 3024944589
+            },
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": {
+              "line": 2640,
+              "value": 9069203
+            },
+            "DTC_SERVICE_V1_retired": {
+              "line": 2641,
+              "value": 2097152
+            },
+            "DTC_L1_oo_new_misses": {
+              "line": 2661,
+              "value": 11201149
+            },
+            "DTC_L1_oo_tag_evictions": {
+              "line": 2662,
+              "value": 11184765
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 2790,
+              "value": 11201149
+            },
+            "L2_total_cache_accesses": {
+              "line": 4506,
+              "value": 48999924
+            }
+          },
+          "values": {
+            "cycles": 28685812,
+            "global_lower_read_requests": 11201149,
+            "DTC_new_line_misses": 11201149,
+            "DTC_tag_evictions": 11184765,
+            "Tag_bank_conflict_events": null,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 44804596,
+            "L2_global_read_payload_bytes": 1433747072,
+            "L2_global_read_miss_32B_sectors": 17688864,
+            "L2_global_read_miss_fraction": 0.3948002120139639,
+            "L2_global_read_reservation_fail_attempts": 158410296,
+            "L2_all_accepted_accesses": 48999924,
+            "DRAM_issued_read_32B_atoms": 17688864,
+            "DRAM_read_bytes": 566043648,
+            "DRAM_write_bytes": 188544,
+            "baseline_MSHR_merge_full_events": null,
+            "OO_lower_create_queue_full_stalls": 0,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 1.6476702560528877,
+            "physical_lines_time_mean_per_SM_including_idle": 264.9822216314637,
+            "fully_ready_to_complete_mean_read_conditioned": 4.324532985687256,
+            "ready_to_collect_mean_read_conditioned": 1.5206003189086914,
+            "collection_cycles_mean_read_conditioned": 2.7882800102233887,
+            "writeback_wait_mean_read_conditioned": 0.01565265655517578,
+            "OO_ready_but_writeback_blocked_cycles": 1576,
+            "ICNT_to_memory_full_aggregate_events": 157588835,
+            "memory_to_ICNT_full_aggregate_events": 2069209,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z12bicg_kernel1PfS_S_",
+                "cycles": 1655347,
+                "fraction_of_total": 0.057706123152449024
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z12bicg_kernel2PfS_S_",
+                "cycles": 27030465,
+                "fraction_of_total": 0.942293876847551
+              }
+            ]
+          }
+        },
+        "DM": {
+          "cohort": "E2-AEV100-ae34174fbbdf83b2-DM",
+          "uuid": "d9860916-664f-436d-b1e2-09a00b10eaec",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/d9860916-664f-436d-b1e2-09a00b10eaec/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/d9860916-664f-436d-b1e2-09a00b10eaec/raw.log.gz",
+          "raw_gzip_sha256": "c029427ed7fa1f62e5588b37178cad6d5c656d828892459b0325c157e8423002",
+          "raw_uncompressed_sha256": "5434850fb1474fa47d41607b810a93cb9abf1df29525af90efc68f31038a00a0",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 2531,
+              "value": 41157397
+            },
+            "gpu_stall_dramfull": {
+              "line": 2538,
+              "value": 238973860
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 2539,
+              "value": 3627617
+            },
+            "DTC_SERVICE_V1_samples": {
+              "line": 2636,
+              "value": 2634073408
+            },
+            "DTC_SERVICE_V1_pib_integral": {
+              "line": 2637,
+              "value": 6167363983
+            },
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": {
+              "line": 2640,
+              "value": 8467177
+            },
+            "DTC_SERVICE_V1_retired": {
+              "line": 2641,
+              "value": 2097152
+            },
+            "DTC_L1_oo_new_misses": {
+              "line": 2661,
+              "value": 17788475
+            },
+            "DTC_L1_oo_tag_evictions": {
+              "line": 2662,
+              "value": 17777467
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 2790,
+              "value": 17788475
+            },
+            "L2_total_cache_accesses": {
+              "line": 4506,
+              "value": 75349228
+            }
+          },
+          "values": {
+            "cycles": 41157397,
+            "global_lower_read_requests": 17788475,
+            "DTC_new_line_misses": 17788475,
+            "DTC_tag_evictions": 17777467,
+            "Tag_bank_conflict_events": null,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 71153900,
+            "L2_global_read_payload_bytes": 2276924800,
+            "L2_global_read_miss_32B_sectors": 23975144,
+            "L2_global_read_miss_fraction": 0.3369477147422699,
+            "L2_global_read_reservation_fail_attempts": 232074936,
+            "L2_all_accepted_accesses": 75349228,
+            "DRAM_issued_read_32B_atoms": 23975144,
+            "DRAM_read_bytes": 767204608,
+            "DRAM_write_bytes": 232480,
+            "baseline_MSHR_merge_full_events": null,
+            "OO_lower_create_queue_full_stalls": 0,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 2.3413789320635363,
+            "physical_lines_time_mean_per_SM_including_idle": 154.79331710371224,
+            "fully_ready_to_complete_mean_read_conditioned": 4.037464618682861,
+            "ready_to_collect_mean_read_conditioned": 1.2733392715454102,
+            "collection_cycles_mean_read_conditioned": 2.7581305503845215,
+            "writeback_wait_mean_read_conditioned": 0.0059947967529296875,
+            "OO_ready_but_writeback_blocked_cycles": 1344,
+            "ICNT_to_memory_full_aggregate_events": 238973860,
+            "memory_to_ICNT_full_aggregate_events": 3627617,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z12bicg_kernel1PfS_S_",
+                "cycles": 1655347,
+                "fraction_of_total": 0.04021991478226866
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z12bicg_kernel2PfS_S_",
+                "cycles": 39502050,
+                "fraction_of_total": 0.9597800852177313
+              }
+            ]
+          }
+        }
+      },
+      "comparisons": {
+        "traditional_hash": {
+          "old": "CM",
+          "new": "CH",
+          "speedup_ratio": 0.964058676973286,
+          "cycles_change_pct": 3.728126086635486,
+          "lower_read_requests_change_pct": -8.26989902644144,
+          "DTC_tag_evictions_change_pct": null,
+          "L2_read_payload_change_pct": -8.26989902644144,
+          "DRAM_read_bytes_change_pct": 5.959752131663865
+        },
+        "DTC_hash": {
+          "old": "DM",
+          "new": "DH",
+          "speedup_ratio": 1.4347649283903834,
+          "cycles_change_pct": -30.30217144198891,
+          "lower_read_requests_change_pct": -37.031426246488245,
+          "DTC_tag_evictions_change_pct": -37.08459703511192,
+          "L2_read_payload_change_pct": -37.031426246488245,
+          "DRAM_read_bytes_change_pct": -26.21998850142464
+        },
+        "matched_hash_cross_design": {
+          "old": "CH",
+          "new": "DH",
+          "speedup_ratio": 0.9167841579663145,
+          "cycles_change_pct": 9.076928447180155,
+          "lower_read_requests_change_pct": -30.628590376348363,
+          "DTC_tag_evictions_change_pct": null,
+          "L2_read_payload_change_pct": -30.628590376348363,
+          "DRAM_read_bytes_change_pct": 14.02442200280225
+        }
+      }
+    },
+    {
+      "program": "GEMM",
+      "input_digest": "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318",
+      "selected_representative": true,
+      "modes": {
+        "CH": {
+          "cohort": "E2-AEV100-fc0705ae3721e999-CH",
+          "uuid": "df58f975-ac7a-4735-81de-3512ff585c67",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/df58f975-ac7a-4735-81de-3512ff585c67/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/df58f975-ac7a-4735-81de-3512ff585c67/raw.log.gz",
+          "raw_gzip_sha256": "dca8dcc6caf555c3add772252c99560dd3641c2ed3de182e93b308302555c1c1",
+          "raw_uncompressed_sha256": "152fde4b2230c621c390a07e039e57d76056a141f1075366f49ebab43cf0758f",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 1419,
+              "value": 1395216
+            },
+            "gpu_stall_dramfull": {
+              "line": 1426,
+              "value": 0
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 1427,
+              "value": 0
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 1676,
+              "value": 1199057
+            },
+            "L2_total_cache_accesses": {
+              "line": 3391,
+              "value": 21606212
+            }
+          },
+          "values": {
+            "cycles": 1395216,
+            "global_lower_read_requests": 1199057,
+            "DTC_new_line_misses": null,
+            "DTC_tag_evictions": null,
+            "Tag_bank_conflict_events": 25214976,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 4796228,
+            "L2_global_read_payload_bytes": 153479296,
+            "L2_global_read_miss_32B_sectors": 0,
+            "L2_global_read_miss_fraction": 0.0,
+            "L2_global_read_reservation_fail_attempts": 0,
+            "L2_all_accepted_accesses": 21606212,
+            "DRAM_issued_read_32B_atoms": 0,
+            "DRAM_read_bytes": 0,
+            "DRAM_write_bytes": 0,
+            "baseline_MSHR_merge_full_events": 226209642,
+            "OO_lower_create_queue_full_stalls": null,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 17.705810134834426,
+            "physical_lines_time_mean_per_SM_including_idle": null,
+            "fully_ready_to_complete_mean_read_conditioned": null,
+            "ready_to_collect_mean_read_conditioned": null,
+            "collection_cycles_mean_read_conditioned": null,
+            "writeback_wait_mean_read_conditioned": null,
+            "OO_ready_but_writeback_blocked_cycles": null,
+            "ICNT_to_memory_full_aggregate_events": 0,
+            "memory_to_ICNT_full_aggregate_events": 0,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z11gemm_kernelPfS_S_",
+                "cycles": 1395216,
+                "fraction_of_total": 1.0
+              }
+            ]
+          }
+        },
+        "CM": {
+          "cohort": "E2-AEV100-fc0705ae3721e999-CM",
+          "uuid": "f59679f5-7062-4b16-a85d-f3a16765f1d6",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/f59679f5-7062-4b16-a85d-f3a16765f1d6/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/f59679f5-7062-4b16-a85d-f3a16765f1d6/raw.log.gz",
+          "raw_gzip_sha256": "faa2f2c1d1d35737304452380a7a20fba48d597c973dacdb620611a3f4c88593",
+          "raw_uncompressed_sha256": "ba8cb9b10fcda1f99fc8cf5b7329eb8d0706a53ed51b13e592a3ec5da7301c6f",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 1419,
+              "value": 1511333
+            },
+            "gpu_stall_dramfull": {
+              "line": 1426,
+              "value": 4933
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 1427,
+              "value": 28781
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 1678,
+              "value": 2603998
+            },
+            "L2_total_cache_accesses": {
+              "line": 3393,
+              "value": 27225976
+            }
+          },
+          "values": {
+            "cycles": 1511333,
+            "global_lower_read_requests": 2603998,
+            "DTC_new_line_misses": null,
+            "DTC_tag_evictions": null,
+            "Tag_bank_conflict_events": 25214976,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 10415992,
+            "L2_global_read_payload_bytes": 333311744,
+            "L2_global_read_miss_32B_sectors": 0,
+            "L2_global_read_miss_fraction": 0.0,
+            "L2_global_read_reservation_fail_attempts": 0,
+            "L2_all_accepted_accesses": 27225976,
+            "DRAM_issued_read_32B_atoms": 0,
+            "DRAM_read_bytes": 0,
+            "DRAM_write_bytes": 0,
+            "baseline_MSHR_merge_full_events": 243363286,
+            "OO_lower_create_queue_full_stalls": null,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 25.741366056513062,
+            "physical_lines_time_mean_per_SM_including_idle": null,
+            "fully_ready_to_complete_mean_read_conditioned": null,
+            "ready_to_collect_mean_read_conditioned": null,
+            "collection_cycles_mean_read_conditioned": null,
+            "writeback_wait_mean_read_conditioned": null,
+            "OO_ready_but_writeback_blocked_cycles": null,
+            "ICNT_to_memory_full_aggregate_events": 4933,
+            "memory_to_ICNT_full_aggregate_events": 28781,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z11gemm_kernelPfS_S_",
+                "cycles": 1511333,
+                "fraction_of_total": 1.0
+              }
+            ]
+          }
+        },
+        "DH": {
+          "cohort": "E2-AEV100-fc0705ae3721e999-DH",
+          "uuid": "2261440b-c603-454c-8698-6a2d3caaefe8",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/2261440b-c603-454c-8698-6a2d3caaefe8/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/2261440b-c603-454c-8698-6a2d3caaefe8/raw.log.gz",
+          "raw_gzip_sha256": "275f111bf4e5949d2df54d3000c25c6dbd7f666f8f516cba03217e6b07219b52",
+          "raw_uncompressed_sha256": "3a0dacbc1f6238c62d17d2a067370c21b82399dfed90d65393551669996daeed",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 1419,
+              "value": 826089
+            },
+            "gpu_stall_dramfull": {
+              "line": 1426,
+              "value": 1165837
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 1427,
+              "value": 1166285
+            },
+            "DTC_SERVICE_V1_samples": {
+              "line": 1524,
+              "value": 52869696
+            },
+            "DTC_SERVICE_V1_pib_integral": {
+              "line": 1525,
+              "value": 3116491485
+            },
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": {
+              "line": 1528,
+              "value": 303490335
+            },
+            "DTC_SERVICE_V1_retired": {
+              "line": 1529,
+              "value": 8396800
+            },
+            "DTC_L1_oo_new_misses": {
+              "line": 1549,
+              "value": 429126
+            },
+            "DTC_L1_oo_tag_evictions": {
+              "line": 1550,
+              "value": 396358
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 1678,
+              "value": 429126
+            },
+            "L2_total_cache_accesses": {
+              "line": 3393,
+              "value": 18526488
+            }
+          },
+          "values": {
+            "cycles": 826089,
+            "global_lower_read_requests": 429126,
+            "DTC_new_line_misses": 429126,
+            "DTC_tag_evictions": 396358,
+            "Tag_bank_conflict_events": null,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 1716504,
+            "L2_global_read_payload_bytes": 54928128,
+            "L2_global_read_miss_32B_sectors": 0,
+            "L2_global_read_miss_fraction": 0.0,
+            "L2_global_read_reservation_fail_attempts": 0,
+            "L2_all_accepted_accesses": 18526488,
+            "DRAM_issued_read_32B_atoms": 0,
+            "DRAM_read_bytes": 0,
+            "DRAM_write_bytes": 0,
+            "baseline_MSHR_merge_full_events": null,
+            "OO_lower_create_queue_full_stalls": 0,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 58.94665036470041,
+            "physical_lines_time_mean_per_SM_including_idle": 443.26774927928466,
+            "fully_ready_to_complete_mean_read_conditioned": 36.143570765053354,
+            "ready_to_collect_mean_read_conditioned": 35.004527915396345,
+            "collection_cycles_mean_read_conditioned": 1.0,
+            "writeback_wait_mean_read_conditioned": 0.1390428496570122,
+            "OO_ready_but_writeback_blocked_cycles": 389331,
+            "ICNT_to_memory_full_aggregate_events": 1165837,
+            "memory_to_ICNT_full_aggregate_events": 1166285,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z11gemm_kernelPfS_S_",
+                "cycles": 826089,
+                "fraction_of_total": 1.0
+              }
+            ]
+          }
+        },
+        "DM": {
+          "cohort": "E2-AEV100-fc0705ae3721e999-DM",
+          "uuid": "8547fd04-5869-406b-b3a8-d64949c8f9ef",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/8547fd04-5869-406b-b3a8-d64949c8f9ef/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/8547fd04-5869-406b-b3a8-d64949c8f9ef/raw.log.gz",
+          "raw_gzip_sha256": "cca3be22eefef52a48b41f0b7516061b17c68d83c00905ebff9175d2ba6e50c5",
+          "raw_uncompressed_sha256": "ec5ab192e885ae99d923b46dcaa2ca37b03c8a2677ddd1ca5442c60de8f1feed",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 1419,
+              "value": 1071405
+            },
+            "gpu_stall_dramfull": {
+              "line": 1426,
+              "value": 4676709
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 1427,
+              "value": 5625195
+            },
+            "DTC_SERVICE_V1_samples": {
+              "line": 1524,
+              "value": 68569920
+            },
+            "DTC_SERVICE_V1_pib_integral": {
+              "line": 1525,
+              "value": 4714480212
+            },
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": {
+              "line": 1528,
+              "value": 104050562
+            },
+            "DTC_SERVICE_V1_retired": {
+              "line": 1529,
+              "value": 8396800
+            },
+            "DTC_L1_oo_new_misses": {
+              "line": 1549,
+              "value": 2091696
+            },
+            "DTC_L1_oo_tag_evictions": {
+              "line": 1550,
+              "value": 2058928
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 1678,
+              "value": 2091696
+            },
+            "L2_total_cache_accesses": {
+              "line": 3393,
+              "value": 25176768
+            }
+          },
+          "values": {
+            "cycles": 1071405,
+            "global_lower_read_requests": 2091696,
+            "DTC_new_line_misses": 2091696,
+            "DTC_tag_evictions": 2058928,
+            "Tag_bank_conflict_events": null,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 8366784,
+            "L2_global_read_payload_bytes": 267737088,
+            "L2_global_read_miss_32B_sectors": 0,
+            "L2_global_read_miss_fraction": 0.0,
+            "L2_global_read_reservation_fail_attempts": 0,
+            "L2_all_accepted_accesses": 25176768,
+            "DRAM_issued_read_32B_atoms": 0,
+            "DRAM_read_bytes": 0,
+            "DRAM_write_bytes": 0,
+            "baseline_MSHR_merge_full_events": null,
+            "OO_lower_create_queue_full_stalls": 0,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 68.75434902067846,
+            "physical_lines_time_mean_per_SM_including_idle": 388.8898011256248,
+            "fully_ready_to_complete_mean_read_conditioned": 12.391692311356707,
+            "ready_to_collect_mean_read_conditioned": 11.219562928734756,
+            "collection_cycles_mean_read_conditioned": 1.0,
+            "writeback_wait_mean_read_conditioned": 0.1721293826219512,
+            "OO_ready_but_writeback_blocked_cycles": 251948,
+            "ICNT_to_memory_full_aggregate_events": 4676709,
+            "memory_to_ICNT_full_aggregate_events": 5625195,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z11gemm_kernelPfS_S_",
+                "cycles": 1071405,
+                "fraction_of_total": 1.0
+              }
+            ]
+          }
+        }
+      },
+      "comparisons": {
+        "traditional_hash": {
+          "old": "CM",
+          "new": "CH",
+          "speedup_ratio": 1.083225106363459,
+          "cycles_change_pct": -7.683085064641615,
+          "lower_read_requests_change_pct": -53.953228842725686,
+          "DTC_tag_evictions_change_pct": null,
+          "L2_read_payload_change_pct": -53.953228842725686,
+          "DRAM_read_bytes_change_pct": null
+        },
+        "DTC_hash": {
+          "old": "DM",
+          "new": "DH",
+          "speedup_ratio": 1.2969607390971192,
+          "cycles_change_pct": -22.896663726601986,
+          "lower_read_requests_change_pct": -79.48430364641898,
+          "DTC_tag_evictions_change_pct": -80.74930254967634,
+          "L2_read_payload_change_pct": -79.48430364641898,
+          "DRAM_read_bytes_change_pct": null
+        },
+        "matched_hash_cross_design": {
+          "old": "CH",
+          "new": "DH",
+          "speedup_ratio": 1.6889415063025897,
+          "cycles_change_pct": -40.791318333505345,
+          "lower_read_requests_change_pct": -64.21137610639028,
+          "DTC_tag_evictions_change_pct": null,
+          "L2_read_payload_change_pct": -64.21137610639028,
+          "DRAM_read_bytes_change_pct": null
+        }
+      }
+    },
+    {
+      "program": "MVT",
+      "input_digest": "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+      "selected_representative": true,
+      "modes": {
+        "CH": {
+          "cohort": "E2-AEV100-f437190767aaed49-CH",
+          "uuid": "9c20d33b-5346-47b0-902d-7b047f4027e5",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/9c20d33b-5346-47b0-902d-7b047f4027e5/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/9c20d33b-5346-47b0-902d-7b047f4027e5/raw.log.gz",
+          "raw_gzip_sha256": "4970cec09a3c8018e665b4ff3bde1f119b3ef6108cdcf33d164e42326f491032",
+          "raw_uncompressed_sha256": "64e2208c88cce530400cb57584fa373fee57d8e6123e83143bd858d6690b2625",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 2534,
+              "value": 26581175
+            },
+            "gpu_stall_dramfull": {
+              "line": 2541,
+              "value": 32670735
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 2542,
+              "value": 27139
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 2792,
+              "value": 16327793
+            },
+            "L2_total_cache_accesses": {
+              "line": 4508,
+              "value": 69505476
+            }
+          },
+          "values": {
+            "cycles": 26581175,
+            "global_lower_read_requests": 16327793,
+            "DTC_new_line_misses": null,
+            "DTC_tag_evictions": null,
+            "Tag_bank_conflict_events": 20972288,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 65311172,
+            "L2_global_read_payload_bytes": 2089957504,
+            "L2_global_read_miss_32B_sectors": 15617216,
+            "L2_global_read_miss_fraction": 0.23912013093257614,
+            "L2_global_read_reservation_fail_attempts": 38818470,
+            "L2_all_accepted_accesses": 69505476,
+            "DRAM_issued_read_32B_atoms": 15617216,
+            "DRAM_read_bytes": 499750912,
+            "DRAM_write_bytes": 154432,
+            "baseline_MSHR_merge_full_events": 0,
+            "OO_lower_create_queue_full_stalls": null,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 7.183061156845902,
+            "physical_lines_time_mean_per_SM_including_idle": null,
+            "fully_ready_to_complete_mean_read_conditioned": null,
+            "ready_to_collect_mean_read_conditioned": null,
+            "collection_cycles_mean_read_conditioned": null,
+            "writeback_wait_mean_read_conditioned": null,
+            "OO_ready_but_writeback_blocked_cycles": null,
+            "ICNT_to_memory_full_aggregate_events": 32670735,
+            "memory_to_ICNT_full_aggregate_events": 27139,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z11mvt_kernel1PfS_S_",
+                "cycles": 24828424,
+                "fraction_of_total": 0.9340604393899066
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z11mvt_kernel2PfS_S_",
+                "cycles": 1752751,
+                "fraction_of_total": 0.06593956061009341
+              }
+            ]
+          }
+        },
+        "CM": {
+          "cohort": "E2-AEV100-f437190767aaed49-CM",
+          "uuid": "593c2ba3-2401-4f4f-b44f-84ebef6ae8e1",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/593c2ba3-2401-4f4f-b44f-84ebef6ae8e1/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/593c2ba3-2401-4f4f-b44f-84ebef6ae8e1/raw.log.gz",
+          "raw_gzip_sha256": "a228da90e4227b99eeab0f4ce3668d053a9d860c3277d0d0a4cbe369269df576",
+          "raw_uncompressed_sha256": "261b3dabf3d0cf2cad9a06869d1138f58eeb06481db20e3fc5c7bf5b59577b4a",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 2534,
+              "value": 27246579
+            },
+            "gpu_stall_dramfull": {
+              "line": 2541,
+              "value": 14978561
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 2542,
+              "value": 0
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 2792,
+              "value": 17623723
+            },
+            "L2_total_cache_accesses": {
+              "line": 4508,
+              "value": 74689196
+            }
+          },
+          "values": {
+            "cycles": 27246579,
+            "global_lower_read_requests": 17623723,
+            "DTC_new_line_misses": null,
+            "DTC_tag_evictions": null,
+            "Tag_bank_conflict_events": 20972288,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 70494892,
+            "L2_global_read_payload_bytes": 2255836544,
+            "L2_global_read_miss_32B_sectors": 14772164,
+            "L2_global_read_miss_fraction": 0.209549423807898,
+            "L2_global_read_reservation_fail_attempts": 17293614,
+            "L2_all_accepted_accesses": 74689196,
+            "DRAM_issued_read_32B_atoms": 14772164,
+            "DRAM_read_bytes": 472709248,
+            "DRAM_write_bytes": 156416,
+            "baseline_MSHR_merge_full_events": 0,
+            "OO_lower_create_queue_full_stalls": null,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 5.902946064812557,
+            "physical_lines_time_mean_per_SM_including_idle": null,
+            "fully_ready_to_complete_mean_read_conditioned": null,
+            "ready_to_collect_mean_read_conditioned": null,
+            "collection_cycles_mean_read_conditioned": null,
+            "writeback_wait_mean_read_conditioned": null,
+            "OO_ready_but_writeback_blocked_cycles": null,
+            "ICNT_to_memory_full_aggregate_events": 14978561,
+            "memory_to_ICNT_full_aggregate_events": 0,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z11mvt_kernel1PfS_S_",
+                "cycles": 25494553,
+                "fraction_of_total": 0.9356973952583185
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z11mvt_kernel2PfS_S_",
+                "cycles": 1752026,
+                "fraction_of_total": 0.06430260474168152
+              }
+            ]
+          }
+        },
+        "DH": {
+          "cohort": "E2-AEV100-f437190767aaed49-DH",
+          "uuid": "dfbc0269-f782-405a-8478-0f6c82bf9d8c",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/dfbc0269-f782-405a-8478-0f6c82bf9d8c/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/dfbc0269-f782-405a-8478-0f6c82bf9d8c/raw.log.gz",
+          "raw_gzip_sha256": "eb8e155f21fb2e0ce2370678454c911c373c7a4b5ae60cb35abfd600ecd5a470",
+          "raw_uncompressed_sha256": "196d91bba75db5e73623d2082b46bdf52f93fef1f9aa91b51f8513b9dea64a5b",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 2535,
+              "value": 34687540
+            },
+            "gpu_stall_dramfull": {
+              "line": 2542,
+              "value": 152064800
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 2543,
+              "value": 2185796
+            },
+            "DTC_SERVICE_V1_samples": {
+              "line": 2640,
+              "value": 2220002560
+            },
+            "DTC_SERVICE_V1_pib_integral": {
+              "line": 2641,
+              "value": 3524478877
+            },
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": {
+              "line": 2644,
+              "value": 8982782
+            },
+            "DTC_SERVICE_V1_retired": {
+              "line": 2645,
+              "value": 2097408
+            },
+            "DTC_L1_oo_new_misses": {
+              "line": 2665,
+              "value": 12127693
+            },
+            "DTC_L1_oo_tag_evictions": {
+              "line": 2666,
+              "value": 12111309
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 2794,
+              "value": 12127693
+            },
+            "L2_total_cache_accesses": {
+              "line": 4510,
+              "value": 52705076
+            }
+          },
+          "values": {
+            "cycles": 34687540,
+            "global_lower_read_requests": 12127693,
+            "DTC_new_line_misses": 12127693,
+            "DTC_tag_evictions": 12111309,
+            "Tag_bank_conflict_events": null,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 48510772,
+            "L2_global_read_payload_bytes": 1552344704,
+            "L2_global_read_miss_32B_sectors": 20574896,
+            "L2_global_read_miss_fraction": 0.42413045910710306,
+            "L2_global_read_reservation_fail_attempts": 161529791,
+            "L2_all_accepted_accesses": 52705076,
+            "DRAM_issued_read_32B_atoms": 20574896,
+            "DRAM_read_bytes": 658396672,
+            "DRAM_write_bytes": 202624,
+            "baseline_MSHR_merge_full_events": null,
+            "OO_lower_create_queue_full_stalls": 0,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 1.5876012670003408,
+            "physical_lines_time_mean_per_SM_including_idle": 152.64399464251068,
+            "fully_ready_to_complete_mean_read_conditioned": 4.282801438728183,
+            "ready_to_collect_mean_read_conditioned": 1.479827482301965,
+            "collection_cycles_mean_read_conditioned": 2.7812395108629318,
+            "writeback_wait_mean_read_conditioned": 0.021734445563285732,
+            "OO_ready_but_writeback_blocked_cycles": 744,
+            "ICNT_to_memory_full_aggregate_events": 152064800,
+            "memory_to_ICNT_full_aggregate_events": 2185796,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z11mvt_kernel1PfS_S_",
+                "cycles": 33032429,
+                "fraction_of_total": 0.9522851433108257
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z11mvt_kernel2PfS_S_",
+                "cycles": 1655111,
+                "fraction_of_total": 0.047714856689174266
+              }
+            ]
+          }
+        },
+        "DM": {
+          "cohort": "E2-AEV100-f437190767aaed49-DM",
+          "uuid": "a0855ea0-22a1-4a93-b9e9-79584c606876",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/a0855ea0-22a1-4a93-b9e9-79584c606876/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/a0855ea0-22a1-4a93-b9e9-79584c606876/raw.log.gz",
+          "raw_gzip_sha256": "0e4d5171830542ab1afef1d874be146e85e1c30a3e4dd21f807fe49ef11153fa",
+          "raw_uncompressed_sha256": "bf76cfb12252af7993c12dc85cb85eae8b057a1896750f3d3b306a1c200ae64f",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 2534,
+              "value": 40926747
+            },
+            "gpu_stall_dramfull": {
+              "line": 2541,
+              "value": 149540434
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 2542,
+              "value": 3345713
+            },
+            "DTC_SERVICE_V1_samples": {
+              "line": 2639,
+              "value": 2619311808
+            },
+            "DTC_SERVICE_V1_pib_integral": {
+              "line": 2640,
+              "value": 5586446344
+            },
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": {
+              "line": 2643,
+              "value": 8420545
+            },
+            "DTC_SERVICE_V1_retired": {
+              "line": 2644,
+              "value": 2097408
+            },
+            "DTC_L1_oo_new_misses": {
+              "line": 2664,
+              "value": 17787674
+            },
+            "DTC_L1_oo_tag_evictions": {
+              "line": 2665,
+              "value": 17776666
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 2792,
+              "value": 17787674
+            },
+            "L2_total_cache_accesses": {
+              "line": 4508,
+              "value": 75345000
+            }
+          },
+          "values": {
+            "cycles": 40926747,
+            "global_lower_read_requests": 17787674,
+            "DTC_new_line_misses": 17787674,
+            "DTC_tag_evictions": 17776666,
+            "Tag_bank_conflict_events": null,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 71150696,
+            "L2_global_read_payload_bytes": 2276822272,
+            "L2_global_read_miss_32B_sectors": 23993468,
+            "L2_global_read_miss_fraction": 0.3372204257847316,
+            "L2_global_read_reservation_fail_attempts": 153859501,
+            "L2_all_accepted_accesses": 75345000,
+            "DRAM_issued_read_32B_atoms": 23993468,
+            "DRAM_read_bytes": 767790976,
+            "DRAM_write_bytes": 217088,
+            "baseline_MSHR_merge_full_events": null,
+            "OO_lower_create_queue_full_stalls": 0,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 2.132791646621707,
+            "physical_lines_time_mean_per_SM_including_idle": 117.5892413935928,
+            "fully_ready_to_complete_mean_read_conditioned": 4.014738667917735,
+            "ready_to_collect_mean_read_conditioned": 1.2495565955693886,
+            "collection_cycles_mean_read_conditioned": 2.758571055321616,
+            "writeback_wait_mean_read_conditioned": 0.006611017026730136,
+            "OO_ready_but_writeback_blocked_cycles": 182,
+            "ICNT_to_memory_full_aggregate_events": 149540434,
+            "memory_to_ICNT_full_aggregate_events": 3345713,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z11mvt_kernel1PfS_S_",
+                "cycles": 39272636,
+                "fraction_of_total": 0.9595836189961543
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z11mvt_kernel2PfS_S_",
+                "cycles": 1654111,
+                "fraction_of_total": 0.040416381003845724
+              }
+            ]
+          }
+        }
+      },
+      "comparisons": {
+        "traditional_hash": {
+          "old": "CM",
+          "new": "CH",
+          "speedup_ratio": 1.0250329039254285,
+          "cycles_change_pct": -2.4421561327020225,
+          "lower_read_requests_change_pct": -7.353327103472973,
+          "DTC_tag_evictions_change_pct": null,
+          "L2_read_payload_change_pct": -7.353327103472973,
+          "DRAM_read_bytes_change_pct": 5.720570120938273
+        },
+        "DTC_hash": {
+          "old": "DM",
+          "new": "DH",
+          "speedup_ratio": 1.17986882321433,
+          "cycles_change_pct": -15.244815328225325,
+          "lower_read_requests_change_pct": -31.819680302213772,
+          "DTC_tag_evictions_change_pct": -31.869626171746713,
+          "L2_read_payload_change_pct": -31.819680302213772,
+          "DRAM_read_bytes_change_pct": -14.247927811019235
+        },
+        "matched_hash_cross_design": {
+          "old": "CH",
+          "new": "DH",
+          "speedup_ratio": 0.766303260479123,
+          "cycles_change_pct": 30.49663906881468,
+          "lower_read_requests_change_pct": -25.72362351727512,
+          "DTC_tag_evictions_change_pct": null,
+          "L2_read_payload_change_pct": -25.72362351727512,
+          "DRAM_read_bytes_change_pct": 31.74496658047119
+        }
+      }
+    },
+    {
+      "program": "dwt2d",
+      "input_digest": "196006754730d8ab6e4c1d8093d4cc63ff5266f20eedf5ac78c51f7acd2d9a5b",
+      "selected_representative": false,
+      "modes": {
+        "CH": {
+          "cohort": "E2-AEV100-196006754730d8ab-CH",
+          "uuid": "d9a7b8bb-cbf8-4780-8d3d-1c5813c22d59",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/d9a7b8bb-cbf8-4780-8d3d-1c5813c22d59/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/d9a7b8bb-cbf8-4780-8d3d-1c5813c22d59/raw.log.gz",
+          "raw_gzip_sha256": "a66e55cb7c3db95145be2d60d94f32f9b5083459e353b1899e7d6b74f1e1a114",
+          "raw_uncompressed_sha256": "7ba92ef400a0947c1ef64ef564b03cf1ecb4302473e67fdb1c4dc3b8e9cf41ef",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 24857,
+              "value": 249229
+            },
+            "gpu_stall_dramfull": {
+              "line": 24864,
+              "value": 749198
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 24865,
+              "value": 2027
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 25112,
+              "value": 218776
+            },
+            "L2_total_cache_accesses": {
+              "line": 26828,
+              "value": 1784416
+            }
+          },
+          "values": {
+            "cycles": 249229,
+            "global_lower_read_requests": 218776,
+            "DTC_new_line_misses": null,
+            "DTC_tag_evictions": null,
+            "Tag_bank_conflict_events": 1225446,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 875104,
+            "L2_global_read_payload_bytes": 28003328,
+            "L2_global_read_miss_32B_sectors": 351388,
+            "L2_global_read_miss_fraction": 0.4015385599882985,
+            "L2_global_read_reservation_fail_attempts": 822036,
+            "L2_all_accepted_accesses": 1784416,
+            "DRAM_issued_read_32B_atoms": 351388,
+            "DRAM_read_bytes": 11244416,
+            "DRAM_write_bytes": 19878144,
+            "baseline_MSHR_merge_full_events": 872802,
+            "OO_lower_create_queue_full_stalls": null,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 16.473021750812407,
+            "physical_lines_time_mean_per_SM_including_idle": null,
+            "fully_ready_to_complete_mean_read_conditioned": null,
+            "ready_to_collect_mean_read_conditioned": null,
+            "collection_cycles_mean_read_conditioned": null,
+            "writeback_wait_mean_read_conditioned": null,
+            "OO_ready_but_writeback_blocked_cycles": null,
+            "ICNT_to_memory_full_aggregate_events": 749198,
+            "memory_to_ICNT_full_aggregate_events": 2027,
+            "shared_memory_active_thread_instructions": 34057638,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z21c_CopySrcToComponentsIiEvPT_S1_S1_Phi",
+                "cycles": 32486,
+                "fraction_of_total": 0.13034598702398195
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi192ELi8EEEvPKiPiiii",
+                "cycles": 39281,
+                "fraction_of_total": 0.15761006945419676
+              },
+              {
+                "ordinal": 3,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi128ELi8EEEvPKiPiiii",
+                "cycles": 16008,
+                "fraction_of_total": 0.06423008558394087
+              },
+              {
+                "ordinal": 4,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 9386,
+                "fraction_of_total": 0.037660143883737444
+              },
+              {
+                "ordinal": 5,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi192ELi8EEEvPKiPiiii",
+                "cycles": 53742,
+                "fraction_of_total": 0.21563301220965458
+              },
+              {
+                "ordinal": 6,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi128ELi8EEEvPKiPiiii",
+                "cycles": 16111,
+                "fraction_of_total": 0.06464336012261815
+              },
+              {
+                "ordinal": 7,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 9423,
+                "fraction_of_total": 0.03780860172772831
+              },
+              {
+                "ordinal": 8,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi192ELi8EEEvPKiPiiii",
+                "cycles": 47363,
+                "fraction_of_total": 0.19003807743079656
+              },
+              {
+                "ordinal": 9,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi128ELi8EEEvPKiPiiii",
+                "cycles": 16038,
+                "fraction_of_total": 0.06435045680879833
+              },
+              {
+                "ordinal": 10,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 9391,
+                "fraction_of_total": 0.03768020575454702
+              }
+            ]
+          }
+        },
+        "CM": {
+          "cohort": "E2-AEV100-196006754730d8ab-CM",
+          "uuid": "abe8775f-1e09-4042-bc2b-43d40719590e",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/abe8775f-1e09-4042-bc2b-43d40719590e/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/abe8775f-1e09-4042-bc2b-43d40719590e/raw.log.gz",
+          "raw_gzip_sha256": "f65aacc17e76e5a744c8a4978b7e18bfd1ca9f9d0342b5b470eea6155d2688b7",
+          "raw_uncompressed_sha256": "788cb8360381235e0b34836910de5a6bd8b27398738067f502eb9e229e4a15b1",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 24872,
+              "value": 247588
+            },
+            "gpu_stall_dramfull": {
+              "line": 24879,
+              "value": 725753
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 24880,
+              "value": 2027
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 25127,
+              "value": 219173
+            },
+            "L2_total_cache_accesses": {
+              "line": 26843,
+              "value": 1786004
+            }
+          },
+          "values": {
+            "cycles": 247588,
+            "global_lower_read_requests": 219173,
+            "DTC_new_line_misses": null,
+            "DTC_tag_evictions": null,
+            "Tag_bank_conflict_events": 1225446,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 876692,
+            "L2_global_read_payload_bytes": 28054144,
+            "L2_global_read_miss_32B_sectors": 352156,
+            "L2_global_read_miss_fraction": 0.401687251623147,
+            "L2_global_read_reservation_fail_attempts": 800088,
+            "L2_all_accepted_accesses": 1786004,
+            "DRAM_issued_read_32B_atoms": 352156,
+            "DRAM_read_bytes": 11268992,
+            "DRAM_write_bytes": 19861376,
+            "baseline_MSHR_merge_full_events": 856861,
+            "OO_lower_create_queue_full_stalls": null,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 16.502077665100174,
+            "physical_lines_time_mean_per_SM_including_idle": null,
+            "fully_ready_to_complete_mean_read_conditioned": null,
+            "ready_to_collect_mean_read_conditioned": null,
+            "collection_cycles_mean_read_conditioned": null,
+            "writeback_wait_mean_read_conditioned": null,
+            "OO_ready_but_writeback_blocked_cycles": null,
+            "ICNT_to_memory_full_aggregate_events": 725753,
+            "memory_to_ICNT_full_aggregate_events": 2027,
+            "shared_memory_active_thread_instructions": 34057638,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z21c_CopySrcToComponentsIiEvPT_S1_S1_Phi",
+                "cycles": 32486,
+                "fraction_of_total": 0.13120991324296816
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi192ELi8EEEvPKiPiiii",
+                "cycles": 40761,
+                "fraction_of_total": 0.16463237313601628
+              },
+              {
+                "ordinal": 3,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi128ELi8EEEvPKiPiiii",
+                "cycles": 15786,
+                "fraction_of_total": 0.06375914826243598
+              },
+              {
+                "ordinal": 4,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 9417,
+                "fraction_of_total": 0.03803496130668692
+              },
+              {
+                "ordinal": 5,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi192ELi8EEEvPKiPiiii",
+                "cycles": 53027,
+                "fraction_of_total": 0.21417435416902272
+              },
+              {
+                "ordinal": 6,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi128ELi8EEEvPKiPiiii",
+                "cycles": 16131,
+                "fraction_of_total": 0.0651525922096386
+              },
+              {
+                "ordinal": 7,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 9406,
+                "fraction_of_total": 0.037990532659094946
+              },
+              {
+                "ordinal": 8,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi192ELi8EEEvPKiPiiii",
+                "cycles": 45309,
+                "fraction_of_total": 0.1830015994313133
+              },
+              {
+                "ordinal": 9,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi128ELi8EEEvPKiPiiii",
+                "cycles": 15878,
+                "fraction_of_total": 0.06413073331502335
+              },
+              {
+                "ordinal": 10,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 9387,
+                "fraction_of_total": 0.03791379226779973
+              }
+            ]
+          }
+        },
+        "DH": {
+          "cohort": "E2-AEV100-196006754730d8ab-DH",
+          "uuid": "fabef7d1-2e35-4be8-920e-7f40d65a7b31",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/fabef7d1-2e35-4be8-920e-7f40d65a7b31/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/fabef7d1-2e35-4be8-920e-7f40d65a7b31/raw.log.gz",
+          "raw_gzip_sha256": "ed50a764f45817c513acdae5f834abe37b8ef64b0543d7ea638b1c14d647aee1",
+          "raw_uncompressed_sha256": "50a150c24c356d57740a97be54af472966e270564c3393d777220d89d3ea29a4",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 25660,
+              "value": 233497
+            },
+            "gpu_stall_dramfull": {
+              "line": 25667,
+              "value": 958960
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 25668,
+              "value": 5300
+            },
+            "DTC_SERVICE_V1_samples": {
+              "line": 25765,
+              "value": 14943808
+            },
+            "DTC_SERVICE_V1_pib_integral": {
+              "line": 25766,
+              "value": 191618185
+            },
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": {
+              "line": 25769,
+              "value": 518612
+            },
+            "DTC_SERVICE_V1_retired": {
+              "line": 25770,
+              "value": 210558
+            },
+            "DTC_L1_oo_new_misses": {
+              "line": 25790,
+              "value": 218163
+            },
+            "DTC_L1_oo_tag_evictions": {
+              "line": 25791,
+              "value": 185395
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 25919,
+              "value": 218163
+            },
+            "L2_total_cache_accesses": {
+              "line": 27635,
+              "value": 1781964
+            }
+          },
+          "values": {
+            "cycles": 233497,
+            "global_lower_read_requests": 218163,
+            "DTC_new_line_misses": 218163,
+            "DTC_tag_evictions": 185395,
+            "Tag_bank_conflict_events": null,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 872652,
+            "L2_global_read_payload_bytes": 27924864,
+            "L2_global_read_miss_32B_sectors": 352232,
+            "L2_global_read_miss_fraction": 0.40363398009745005,
+            "L2_global_read_reservation_fail_attempts": 1063450,
+            "L2_all_accepted_accesses": 1781964,
+            "DRAM_issued_read_32B_atoms": 352232,
+            "DRAM_read_bytes": 11271424,
+            "DRAM_write_bytes": 19873280,
+            "baseline_MSHR_merge_full_events": null,
+            "OO_lower_create_queue_full_stalls": 0,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 12.822580763885618,
+            "physical_lines_time_mean_per_SM_including_idle": 467.57103925585767,
+            "fully_ready_to_complete_mean_read_conditioned": 2.4630363130348885,
+            "ready_to_collect_mean_read_conditioned": 1.2785598267460747,
+            "collection_cycles_mean_read_conditioned": 1.071766449149403,
+            "writeback_wait_mean_read_conditioned": 0.11271003713941052,
+            "OO_ready_but_writeback_blocked_cycles": 4060,
+            "ICNT_to_memory_full_aggregate_events": 958960,
+            "memory_to_ICNT_full_aggregate_events": 5300,
+            "shared_memory_active_thread_instructions": 34057638,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z21c_CopySrcToComponentsIiEvPT_S1_S1_Phi",
+                "cycles": 31301,
+                "fraction_of_total": 0.1340531141727731
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi192ELi8EEEvPKiPiiii",
+                "cycles": 35014,
+                "fraction_of_total": 0.14995481740664762
+              },
+              {
+                "ordinal": 3,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi128ELi8EEEvPKiPiiii",
+                "cycles": 15841,
+                "fraction_of_total": 0.06784241339289156
+              },
+              {
+                "ordinal": 4,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 9361,
+                "fraction_of_total": 0.04009045084091016
+              },
+              {
+                "ordinal": 5,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi192ELi8EEEvPKiPiiii",
+                "cycles": 48981,
+                "fraction_of_total": 0.2097714317528705
+              },
+              {
+                "ordinal": 6,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi128ELi8EEEvPKiPiiii",
+                "cycles": 16052,
+                "fraction_of_total": 0.0687460652599391
+              },
+              {
+                "ordinal": 7,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 9329,
+                "fraction_of_total": 0.0399534041122584
+              },
+              {
+                "ordinal": 8,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi192ELi8EEEvPKiPiiii",
+                "cycles": 42393,
+                "fraction_of_total": 0.1815569364916894
+              },
+              {
+                "ordinal": 9,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi128ELi8EEEvPKiPiiii",
+                "cycles": 15865,
+                "fraction_of_total": 0.06794519843938038
+              },
+              {
+                "ordinal": 10,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 9360,
+                "fraction_of_total": 0.040086168130639796
+              }
+            ]
+          }
+        },
+        "DM": {
+          "cohort": "E2-AEV100-196006754730d8ab-DM",
+          "uuid": "1c2fab73-8615-47dc-89f0-ef4cf4dd32db",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/1c2fab73-8615-47dc-89f0-ef4cf4dd32db/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/1c2fab73-8615-47dc-89f0-ef4cf4dd32db/raw.log.gz",
+          "raw_gzip_sha256": "5ec7a715687fe3ac0fdd9a7f3625fbd92dfa86c5f0f148f4f34d107692fc9aa9",
+          "raw_uncompressed_sha256": "1b5db52274b87d4a1b61ca5e8d64f7a159b694bb07d96b1a16f363636fb9fdc9",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 25667,
+              "value": 236447
+            },
+            "gpu_stall_dramfull": {
+              "line": 25674,
+              "value": 949536
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 25675,
+              "value": 5300
+            },
+            "DTC_SERVICE_V1_samples": {
+              "line": 25772,
+              "value": 15132608
+            },
+            "DTC_SERVICE_V1_pib_integral": {
+              "line": 25773,
+              "value": 189798154
+            },
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": {
+              "line": 25776,
+              "value": 521291
+            },
+            "DTC_SERVICE_V1_retired": {
+              "line": 25777,
+              "value": 210558
+            },
+            "DTC_L1_oo_new_misses": {
+              "line": 25797,
+              "value": 218759
+            },
+            "DTC_L1_oo_tag_evictions": {
+              "line": 25798,
+              "value": 187200
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 25926,
+              "value": 218759
+            },
+            "L2_total_cache_accesses": {
+              "line": 27642,
+              "value": 1784348
+            }
+          },
+          "values": {
+            "cycles": 236447,
+            "global_lower_read_requests": 218759,
+            "DTC_new_line_misses": 218759,
+            "DTC_tag_evictions": 187200,
+            "Tag_bank_conflict_events": null,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 875036,
+            "L2_global_read_payload_bytes": 28001152,
+            "L2_global_read_miss_32B_sectors": 352532,
+            "L2_global_read_miss_fraction": 0.40287713876914777,
+            "L2_global_read_reservation_fail_attempts": 1003820,
+            "L2_all_accepted_accesses": 1784348,
+            "DRAM_issued_read_32B_atoms": 352532,
+            "DRAM_read_bytes": 11281024,
+            "DRAM_write_bytes": 19865472,
+            "baseline_MSHR_merge_full_events": null,
+            "OO_lower_create_queue_full_stalls": 0,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 12.542329385655137,
+            "physical_lines_time_mean_per_SM_including_idle": 420.2266813493087,
+            "fully_ready_to_complete_mean_read_conditioned": 2.47575964817295,
+            "ready_to_collect_mean_read_conditioned": 1.2878399300905214,
+            "collection_cycles_mean_read_conditioned": 1.0730155111655695,
+            "writeback_wait_mean_read_conditioned": 0.11490420691685901,
+            "OO_ready_but_writeback_blocked_cycles": 4058,
+            "ICNT_to_memory_full_aggregate_events": 949536,
+            "memory_to_ICNT_full_aggregate_events": 5300,
+            "shared_memory_active_thread_instructions": 34057638,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z21c_CopySrcToComponentsIiEvPT_S1_S1_Phi",
+                "cycles": 31301,
+                "fraction_of_total": 0.13238061806662804
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi192ELi8EEEvPKiPiiii",
+                "cycles": 36769,
+                "fraction_of_total": 0.15550630796753606
+              },
+              {
+                "ordinal": 3,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi128ELi8EEEvPKiPiiii",
+                "cycles": 15741,
+                "fraction_of_total": 0.06657305865585099
+              },
+              {
+                "ordinal": 4,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 9386,
+                "fraction_of_total": 0.039695999526320906
+              },
+              {
+                "ordinal": 5,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi192ELi8EEEvPKiPiiii",
+                "cycles": 48892,
+                "fraction_of_total": 0.20677784027710228
+              },
+              {
+                "ordinal": 6,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi128ELi8EEEvPKiPiiii",
+                "cycles": 15838,
+                "fraction_of_total": 0.06698329858276908
+              },
+              {
+                "ordinal": 7,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 9377,
+                "fraction_of_total": 0.039657936027947066
+              },
+              {
+                "ordinal": 8,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi192ELi8EEEvPKiPiiii",
+                "cycles": 43683,
+                "fraction_of_total": 0.1847475332738415
+              },
+              {
+                "ordinal": 9,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi128ELi8EEEvPKiPiiii",
+                "cycles": 16087,
+                "fraction_of_total": 0.0680363887044454
+              },
+              {
+                "ordinal": 10,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 9373,
+                "fraction_of_total": 0.03964101891755869
+              }
+            ]
+          }
+        }
+      },
+      "comparisons": {
+        "traditional_hash": {
+          "old": "CM",
+          "new": "CH",
+          "speedup_ratio": 0.993415694000297,
+          "cycles_change_pct": 0.662794642712905,
+          "lower_read_requests_change_pct": -0.18113545007825138,
+          "DTC_tag_evictions_change_pct": null,
+          "L2_read_payload_change_pct": -0.18113545007825138,
+          "DRAM_read_bytes_change_pct": -0.21808516680107415
+        },
+        "DTC_hash": {
+          "old": "DM",
+          "new": "DH",
+          "speedup_ratio": 1.012633995297584,
+          "cycles_change_pct": -1.2476368911426228,
+          "lower_read_requests_change_pct": -0.2724459336530205,
+          "DTC_tag_evictions_change_pct": -0.9642094017094038,
+          "L2_read_payload_change_pct": -0.2724459336530205,
+          "DRAM_read_bytes_change_pct": -0.08509865771050285
+        },
+        "matched_hash_cross_design": {
+          "old": "CH",
+          "new": "DH",
+          "speedup_ratio": 1.0673755979734214,
+          "cycles_change_pct": -6.31226703152522,
+          "lower_read_requests_change_pct": -0.2801952682195519,
+          "DTC_tag_evictions_change_pct": null,
+          "L2_read_payload_change_pct": -0.2801952682195519,
+          "DRAM_read_bytes_change_pct": 0.24019033091624564
+        }
+      }
+    },
+    {
+      "program": "dwt2d",
+      "input_digest": "e5638b94095098acf5186be97210cb371bb3f88dcc8ceefb7609b454ef5ce008",
+      "selected_representative": true,
+      "modes": {
+        "CH": {
+          "cohort": "E2-AEV100-e5638b94095098ac-CH",
+          "uuid": "e539b651-6356-4742-b5a4-7523fac4fec9",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/e539b651-6356-4742-b5a4-7523fac4fec9/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/e539b651-6356-4742-b5a4-7523fac4fec9/raw.log.gz",
+          "raw_gzip_sha256": "a447688ec02065d6a36e84b42388a27f651ecdff96d7d7bf31177aa610b6efde",
+          "raw_uncompressed_sha256": "692908636befb131b4dd457c4ea7387208678d3e599367685c9b1c0c11c01588",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 20046,
+              "value": 73691
+            },
+            "gpu_stall_dramfull": {
+              "line": 20053,
+              "value": 0
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 20054,
+              "value": 0
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 20301,
+              "value": 9840
+            },
+            "L2_total_cache_accesses": {
+              "line": 22016,
+              "value": 71328
+            }
+          },
+          "values": {
+            "cycles": 73691,
+            "global_lower_read_requests": 9840,
+            "DTC_new_line_misses": null,
+            "DTC_tag_evictions": null,
+            "Tag_bank_conflict_events": 43740,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 39360,
+            "L2_global_read_payload_bytes": 1259520,
+            "L2_global_read_miss_32B_sectors": 0,
+            "L2_global_read_miss_fraction": 0.0,
+            "L2_global_read_reservation_fail_attempts": 0,
+            "L2_all_accepted_accesses": 71328,
+            "DRAM_issued_read_32B_atoms": 0,
+            "DRAM_read_bytes": 0,
+            "DRAM_write_bytes": 0,
+            "baseline_MSHR_merge_full_events": 831,
+            "OO_lower_create_queue_full_stalls": null,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 4.375799271256675,
+            "physical_lines_time_mean_per_SM_including_idle": null,
+            "fully_ready_to_complete_mean_read_conditioned": null,
+            "ready_to_collect_mean_read_conditioned": null,
+            "collection_cycles_mean_read_conditioned": null,
+            "writeback_wait_mean_read_conditioned": null,
+            "OO_ready_but_writeback_blocked_cycles": null,
+            "ICNT_to_memory_full_aggregate_events": 0,
+            "memory_to_ICNT_full_aggregate_events": 0,
+            "shared_memory_active_thread_instructions": 1172322,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z21c_CopySrcToComponentsIiEvPT_S1_S1_Phi",
+                "cycles": 6474,
+                "fraction_of_total": 0.08785333351426904
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 8568,
+                "fraction_of_total": 0.11626928661573327
+              },
+              {
+                "ordinal": 3,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 7091,
+                "fraction_of_total": 0.09622613344913218
+              },
+              {
+                "ordinal": 4,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 6759,
+                "fraction_of_total": 0.09172083429455428
+              },
+              {
+                "ordinal": 5,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 8552,
+                "fraction_of_total": 0.11605216376491023
+              },
+              {
+                "ordinal": 6,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 7091,
+                "fraction_of_total": 0.09622613344913218
+              },
+              {
+                "ordinal": 7,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 6757,
+                "fraction_of_total": 0.09169369393820141
+              },
+              {
+                "ordinal": 8,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 8548,
+                "fraction_of_total": 0.11599788305220447
+              },
+              {
+                "ordinal": 9,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 7091,
+                "fraction_of_total": 0.09622613344913218
+              },
+              {
+                "ordinal": 10,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 6760,
+                "fraction_of_total": 0.09173440447273072
+              }
+            ]
+          }
+        },
+        "CM": {
+          "cohort": "E2-AEV100-e5638b94095098ac-CM",
+          "uuid": "28c0f9c1-bc9c-4c2f-885d-7f1dc2227b95",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/28c0f9c1-bc9c-4c2f-885d-7f1dc2227b95/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/28c0f9c1-bc9c-4c2f-885d-7f1dc2227b95/raw.log.gz",
+          "raw_gzip_sha256": "2a88050c396a8ca754ce33e6f9c70dcfd7effb8fc1ae93c16f068eed5922c56e",
+          "raw_uncompressed_sha256": "fd8b9726b370eab38bb423a1d4cbec6e53403448b55948a9695b55dd8f0d699c",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 20046,
+              "value": 73691
+            },
+            "gpu_stall_dramfull": {
+              "line": 20053,
+              "value": 0
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 20054,
+              "value": 0
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 20301,
+              "value": 9840
+            },
+            "L2_total_cache_accesses": {
+              "line": 22016,
+              "value": 71328
+            }
+          },
+          "values": {
+            "cycles": 73691,
+            "global_lower_read_requests": 9840,
+            "DTC_new_line_misses": null,
+            "DTC_tag_evictions": null,
+            "Tag_bank_conflict_events": 43740,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 39360,
+            "L2_global_read_payload_bytes": 1259520,
+            "L2_global_read_miss_32B_sectors": 0,
+            "L2_global_read_miss_fraction": 0.0,
+            "L2_global_read_reservation_fail_attempts": 0,
+            "L2_all_accepted_accesses": 71328,
+            "DRAM_issued_read_32B_atoms": 0,
+            "DRAM_read_bytes": 0,
+            "DRAM_write_bytes": 0,
+            "baseline_MSHR_merge_full_events": 831,
+            "OO_lower_create_queue_full_stalls": null,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 4.375799271256675,
+            "physical_lines_time_mean_per_SM_including_idle": null,
+            "fully_ready_to_complete_mean_read_conditioned": null,
+            "ready_to_collect_mean_read_conditioned": null,
+            "collection_cycles_mean_read_conditioned": null,
+            "writeback_wait_mean_read_conditioned": null,
+            "OO_ready_but_writeback_blocked_cycles": null,
+            "ICNT_to_memory_full_aggregate_events": 0,
+            "memory_to_ICNT_full_aggregate_events": 0,
+            "shared_memory_active_thread_instructions": 1172322,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z21c_CopySrcToComponentsIiEvPT_S1_S1_Phi",
+                "cycles": 6474,
+                "fraction_of_total": 0.08785333351426904
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 8568,
+                "fraction_of_total": 0.11626928661573327
+              },
+              {
+                "ordinal": 3,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 7091,
+                "fraction_of_total": 0.09622613344913218
+              },
+              {
+                "ordinal": 4,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 6759,
+                "fraction_of_total": 0.09172083429455428
+              },
+              {
+                "ordinal": 5,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 8552,
+                "fraction_of_total": 0.11605216376491023
+              },
+              {
+                "ordinal": 6,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 7091,
+                "fraction_of_total": 0.09622613344913218
+              },
+              {
+                "ordinal": 7,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 6757,
+                "fraction_of_total": 0.09169369393820141
+              },
+              {
+                "ordinal": 8,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 8548,
+                "fraction_of_total": 0.11599788305220447
+              },
+              {
+                "ordinal": 9,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 7091,
+                "fraction_of_total": 0.09622613344913218
+              },
+              {
+                "ordinal": 10,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 6760,
+                "fraction_of_total": 0.09173440447273072
+              }
+            ]
+          }
+        },
+        "DH": {
+          "cohort": "E2-AEV100-e5638b94095098ac-DH",
+          "uuid": "e29a0a97-a24e-4bb9-a0b1-f3cf9ed99324",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/e29a0a97-a24e-4bb9-a0b1-f3cf9ed99324/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/e29a0a97-a24e-4bb9-a0b1-f3cf9ed99324/raw.log.gz",
+          "raw_gzip_sha256": "72a698bc479f86a086b53d4aa9b270c15bc74d420969165addf034043f2bd039",
+          "raw_uncompressed_sha256": "d22ae0f9ad322eebe59e161d6891eb5a8aab6051c0599742d3d8e6f8dde427ba",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 20084,
+              "value": 73071
+            },
+            "gpu_stall_dramfull": {
+              "line": 20091,
+              "value": 0
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 20092,
+              "value": 0
+            },
+            "DTC_SERVICE_V1_samples": {
+              "line": 20189,
+              "value": 4676544
+            },
+            "DTC_SERVICE_V1_pib_integral": {
+              "line": 20190,
+              "value": 2254958
+            },
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": {
+              "line": 20193,
+              "value": 23934
+            },
+            "DTC_SERVICE_V1_retired": {
+              "line": 20194,
+              "value": 9990
+            },
+            "DTC_L1_oo_new_misses": {
+              "line": 20214,
+              "value": 9786
+            },
+            "DTC_L1_oo_tag_evictions": {
+              "line": 20215,
+              "value": 0
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 20343,
+              "value": 9786
+            },
+            "L2_total_cache_accesses": {
+              "line": 22058,
+              "value": 71112
+            }
+          },
+          "values": {
+            "cycles": 73071,
+            "global_lower_read_requests": 9786,
+            "DTC_new_line_misses": 9786,
+            "DTC_tag_evictions": 0,
+            "Tag_bank_conflict_events": null,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 39144,
+            "L2_global_read_payload_bytes": 1252608,
+            "L2_global_read_miss_32B_sectors": 0,
+            "L2_global_read_miss_fraction": 0.0,
+            "L2_global_read_reservation_fail_attempts": 0,
+            "L2_all_accepted_accesses": 71112,
+            "DRAM_issued_read_32B_atoms": 0,
+            "DRAM_read_bytes": 0,
+            "DRAM_write_bytes": 0,
+            "baseline_MSHR_merge_full_events": null,
+            "OO_lower_create_queue_full_stalls": 0,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 0.48218470733943697,
+            "physical_lines_time_mean_per_SM_including_idle": 81.90056674330445,
+            "fully_ready_to_complete_mean_read_conditioned": 2.3957957957957956,
+            "ready_to_collect_mean_read_conditioned": 1.2533533533533534,
+            "collection_cycles_mean_read_conditioned": 1.0396396396396397,
+            "writeback_wait_mean_read_conditioned": 0.10280280280280281,
+            "OO_ready_but_writeback_blocked_cycles": 426,
+            "ICNT_to_memory_full_aggregate_events": 0,
+            "memory_to_ICNT_full_aggregate_events": 0,
+            "shared_memory_active_thread_instructions": 1172322,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z21c_CopySrcToComponentsIiEvPT_S1_S1_Phi",
+                "cycles": 6399,
+                "fraction_of_total": 0.08757236112821776
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 8453,
+                "fraction_of_total": 0.11568200791011482
+              },
+              {
+                "ordinal": 3,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 7046,
+                "fraction_of_total": 0.09642676301131776
+              },
+              {
+                "ordinal": 4,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 6731,
+                "fraction_of_total": 0.09211588728770648
+              },
+              {
+                "ordinal": 5,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 8440,
+                "fraction_of_total": 0.11550409875326736
+              },
+              {
+                "ordinal": 6,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 7046,
+                "fraction_of_total": 0.09642676301131776
+              },
+              {
+                "ordinal": 7,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 6731,
+                "fraction_of_total": 0.09211588728770648
+              },
+              {
+                "ordinal": 8,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 8451,
+                "fraction_of_total": 0.11565463727059982
+              },
+              {
+                "ordinal": 9,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 7045,
+                "fraction_of_total": 0.09641307769156027
+              },
+              {
+                "ordinal": 10,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 6729,
+                "fraction_of_total": 0.09208851664819148
+              }
+            ]
+          }
+        },
+        "DM": {
+          "cohort": "E2-AEV100-e5638b94095098ac-DM",
+          "uuid": "455b9080-1c4a-4af7-ab2f-7f3b0f69fb53",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/455b9080-1c4a-4af7-ab2f-7f3b0f69fb53/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/455b9080-1c4a-4af7-ab2f-7f3b0f69fb53/raw.log.gz",
+          "raw_gzip_sha256": "ca8a3370b8a7094c49e8f3a15848688d83c9b77ff5516640c561aa5b061d286a",
+          "raw_uncompressed_sha256": "855624311fb2d9c7208a76502f781f7f894d29cbbea1f89b6f7d33efed487ca6",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 20084,
+              "value": 73071
+            },
+            "gpu_stall_dramfull": {
+              "line": 20091,
+              "value": 0
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 20092,
+              "value": 0
+            },
+            "DTC_SERVICE_V1_samples": {
+              "line": 20189,
+              "value": 4676544
+            },
+            "DTC_SERVICE_V1_pib_integral": {
+              "line": 20190,
+              "value": 2254958
+            },
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": {
+              "line": 20193,
+              "value": 23934
+            },
+            "DTC_SERVICE_V1_retired": {
+              "line": 20194,
+              "value": 9990
+            },
+            "DTC_L1_oo_new_misses": {
+              "line": 20214,
+              "value": 9786
+            },
+            "DTC_L1_oo_tag_evictions": {
+              "line": 20215,
+              "value": 0
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 20343,
+              "value": 9786
+            },
+            "L2_total_cache_accesses": {
+              "line": 22058,
+              "value": 71112
+            }
+          },
+          "values": {
+            "cycles": 73071,
+            "global_lower_read_requests": 9786,
+            "DTC_new_line_misses": 9786,
+            "DTC_tag_evictions": 0,
+            "Tag_bank_conflict_events": null,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 39144,
+            "L2_global_read_payload_bytes": 1252608,
+            "L2_global_read_miss_32B_sectors": 0,
+            "L2_global_read_miss_fraction": 0.0,
+            "L2_global_read_reservation_fail_attempts": 0,
+            "L2_all_accepted_accesses": 71112,
+            "DRAM_issued_read_32B_atoms": 0,
+            "DRAM_read_bytes": 0,
+            "DRAM_write_bytes": 0,
+            "baseline_MSHR_merge_full_events": null,
+            "OO_lower_create_queue_full_stalls": 0,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 0.48218470733943697,
+            "physical_lines_time_mean_per_SM_including_idle": 81.90056674330445,
+            "fully_ready_to_complete_mean_read_conditioned": 2.3957957957957956,
+            "ready_to_collect_mean_read_conditioned": 1.2533533533533534,
+            "collection_cycles_mean_read_conditioned": 1.0396396396396397,
+            "writeback_wait_mean_read_conditioned": 0.10280280280280281,
+            "OO_ready_but_writeback_blocked_cycles": 426,
+            "ICNT_to_memory_full_aggregate_events": 0,
+            "memory_to_ICNT_full_aggregate_events": 0,
+            "shared_memory_active_thread_instructions": 1172322,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z21c_CopySrcToComponentsIiEvPT_S1_S1_Phi",
+                "cycles": 6399,
+                "fraction_of_total": 0.08757236112821776
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 8453,
+                "fraction_of_total": 0.11568200791011482
+              },
+              {
+                "ordinal": 3,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 7046,
+                "fraction_of_total": 0.09642676301131776
+              },
+              {
+                "ordinal": 4,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 6731,
+                "fraction_of_total": 0.09211588728770648
+              },
+              {
+                "ordinal": 5,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 8440,
+                "fraction_of_total": 0.11550409875326736
+              },
+              {
+                "ordinal": 6,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 7046,
+                "fraction_of_total": 0.09642676301131776
+              },
+              {
+                "ordinal": 7,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 6731,
+                "fraction_of_total": 0.09211588728770648
+              },
+              {
+                "ordinal": 8,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 8451,
+                "fraction_of_total": 0.11565463727059982
+              },
+              {
+                "ordinal": 9,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 7045,
+                "fraction_of_total": 0.09641307769156027
+              },
+              {
+                "ordinal": 10,
+                "kernel": "_ZN8dwt_cuda12fdwt53KernelILi64ELi8EEEvPKiPiiii",
+                "cycles": 6729,
+                "fraction_of_total": 0.09208851664819148
+              }
+            ]
+          }
+        }
+      },
+      "comparisons": {
+        "traditional_hash": {
+          "old": "CM",
+          "new": "CH",
+          "speedup_ratio": 1.0,
+          "cycles_change_pct": 0.0,
+          "lower_read_requests_change_pct": 0.0,
+          "DTC_tag_evictions_change_pct": null,
+          "L2_read_payload_change_pct": 0.0,
+          "DRAM_read_bytes_change_pct": null
+        },
+        "DTC_hash": {
+          "old": "DM",
+          "new": "DH",
+          "speedup_ratio": 1.0,
+          "cycles_change_pct": 0.0,
+          "lower_read_requests_change_pct": 0.0,
+          "DTC_tag_evictions_change_pct": null,
+          "L2_read_payload_change_pct": 0.0,
+          "DRAM_read_bytes_change_pct": null
+        },
+        "matched_hash_cross_design": {
+          "old": "CH",
+          "new": "DH",
+          "speedup_ratio": 1.0084848982496477,
+          "cycles_change_pct": -0.8413510469392427,
+          "lower_read_requests_change_pct": -0.5487804878048785,
+          "DTC_tag_evictions_change_pct": null,
+          "L2_read_payload_change_pct": -0.5487804878048785,
+          "DRAM_read_bytes_change_pct": null
+        }
+      }
+    },
+    {
+      "program": "mri-q",
+      "input_digest": "dc7a91531846c1134c197a6e83509c91b2768151692a7b1286f6be9c431cabd4",
+      "selected_representative": true,
+      "modes": {
+        "CH": {
+          "cohort": "E2-AEV100-dc7a91531846c113-CH",
+          "uuid": "240a7314-ac83-4dd5-ae7d-23f7bf8535c5",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/240a7314-ac83-4dd5-ae7d-23f7bf8535c5/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/240a7314-ac83-4dd5-ae7d-23f7bf8535c5/raw.log.gz",
+          "raw_gzip_sha256": "2a034bf73868863ba89e73a5668121f45ec75cf52550ca77962d563adcd824c2",
+          "raw_uncompressed_sha256": "4bb5b87858d28f48f1d09868ef65f8d0794c1c05115609514ce0f8199c42db93",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 7306,
+              "value": 362244
+            },
+            "gpu_stall_dramfull": {
+              "line": 7313,
+              "value": 0
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 7314,
+              "value": 0
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 7560,
+              "value": 15552
+            },
+            "L2_total_cache_accesses": {
+              "line": 9276,
+              "value": 87168
+            }
+          },
+          "values": {
+            "cycles": 362244,
+            "global_lower_read_requests": 15552,
+            "DTC_new_line_misses": null,
+            "DTC_tag_evictions": null,
+            "Tag_bank_conflict_events": 65376,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 62208,
+            "L2_global_read_payload_bytes": 1990656,
+            "L2_global_read_miss_32B_sectors": 8192,
+            "L2_global_read_miss_fraction": 0.13168724279835392,
+            "L2_global_read_reservation_fail_attempts": 3132,
+            "L2_all_accepted_accesses": 87168,
+            "DRAM_issued_read_32B_atoms": 8192,
+            "DRAM_read_bytes": 262144,
+            "DRAM_write_bytes": 0,
+            "baseline_MSHR_merge_full_events": 0,
+            "OO_lower_create_queue_full_stalls": null,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 0.35312711201657954,
+            "physical_lines_time_mean_per_SM_including_idle": null,
+            "fully_ready_to_complete_mean_read_conditioned": null,
+            "ready_to_collect_mean_read_conditioned": null,
+            "collection_cycles_mean_read_conditioned": null,
+            "writeback_wait_mean_read_conditioned": null,
+            "OO_ready_but_writeback_blocked_cycles": null,
+            "ICNT_to_memory_full_aggregate_events": 0,
+            "memory_to_ICNT_full_aggregate_events": 0,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z17ComputePhiMag_GPUPfS_S_i",
+                "cycles": 5719,
+                "fraction_of_total": 0.015787701107540773
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z12ComputeQ_GPUiiPfS_S_S_S_",
+                "cycles": 119403,
+                "fraction_of_total": 0.32962036638288006
+              },
+              {
+                "ordinal": 3,
+                "kernel": "_Z12ComputeQ_GPUiiPfS_S_S_S_",
+                "cycles": 118370,
+                "fraction_of_total": 0.326768697342123
+              },
+              {
+                "ordinal": 4,
+                "kernel": "_Z12ComputeQ_GPUiiPfS_S_S_S_",
+                "cycles": 118752,
+                "fraction_of_total": 0.3278232351674562
+              }
+            ]
+          }
+        },
+        "CM": {
+          "cohort": "E2-AEV100-dc7a91531846c113-CM",
+          "uuid": "41df4d45-bd92-4375-a93e-7f5d52c95b0b",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/41df4d45-bd92-4375-a93e-7f5d52c95b0b/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/41df4d45-bd92-4375-a93e-7f5d52c95b0b/raw.log.gz",
+          "raw_gzip_sha256": "8716d0f8f647c7d22c63cff2a8d0e11639cfbd119c1efa985805e27a443d843c",
+          "raw_uncompressed_sha256": "04699fb31a3e8dd80e8801506e995de64c5ad2c723d08dfb7f865dcc5da487f6",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 7306,
+              "value": 362244
+            },
+            "gpu_stall_dramfull": {
+              "line": 7313,
+              "value": 0
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 7314,
+              "value": 0
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 7560,
+              "value": 15552
+            },
+            "L2_total_cache_accesses": {
+              "line": 9276,
+              "value": 87168
+            }
+          },
+          "values": {
+            "cycles": 362244,
+            "global_lower_read_requests": 15552,
+            "DTC_new_line_misses": null,
+            "DTC_tag_evictions": null,
+            "Tag_bank_conflict_events": 65376,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 62208,
+            "L2_global_read_payload_bytes": 1990656,
+            "L2_global_read_miss_32B_sectors": 8192,
+            "L2_global_read_miss_fraction": 0.13168724279835392,
+            "L2_global_read_reservation_fail_attempts": 3132,
+            "L2_all_accepted_accesses": 87168,
+            "DRAM_issued_read_32B_atoms": 8192,
+            "DRAM_read_bytes": 262144,
+            "DRAM_write_bytes": 0,
+            "baseline_MSHR_merge_full_events": 0,
+            "OO_lower_create_queue_full_stalls": null,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 0.35312711201657954,
+            "physical_lines_time_mean_per_SM_including_idle": null,
+            "fully_ready_to_complete_mean_read_conditioned": null,
+            "ready_to_collect_mean_read_conditioned": null,
+            "collection_cycles_mean_read_conditioned": null,
+            "writeback_wait_mean_read_conditioned": null,
+            "OO_ready_but_writeback_blocked_cycles": null,
+            "ICNT_to_memory_full_aggregate_events": 0,
+            "memory_to_ICNT_full_aggregate_events": 0,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z17ComputePhiMag_GPUPfS_S_i",
+                "cycles": 5719,
+                "fraction_of_total": 0.015787701107540773
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z12ComputeQ_GPUiiPfS_S_S_S_",
+                "cycles": 119403,
+                "fraction_of_total": 0.32962036638288006
+              },
+              {
+                "ordinal": 3,
+                "kernel": "_Z12ComputeQ_GPUiiPfS_S_S_S_",
+                "cycles": 118370,
+                "fraction_of_total": 0.326768697342123
+              },
+              {
+                "ordinal": 4,
+                "kernel": "_Z12ComputeQ_GPUiiPfS_S_S_S_",
+                "cycles": 118752,
+                "fraction_of_total": 0.3278232351674562
+              }
+            ]
+          }
+        },
+        "DH": {
+          "cohort": "E2-AEV100-dc7a91531846c113-DH",
+          "uuid": "bcb3ea08-0113-4d75-829d-c96e606d9b1b",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/bcb3ea08-0113-4d75-829d-c96e606d9b1b/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/bcb3ea08-0113-4d75-829d-c96e606d9b1b/raw.log.gz",
+          "raw_gzip_sha256": "0f7cff31e594db975b484236bdb3d4dce665d2050de86b9d6f0c8e07d93e2f46",
+          "raw_uncompressed_sha256": "9f2f22eb7efe22b936177d24bee3e4b608230894a78e00d24fe05f4960e5cbb0",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 7318,
+              "value": 360174
+            },
+            "gpu_stall_dramfull": {
+              "line": 7325,
+              "value": 0
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 7326,
+              "value": 0
+            },
+            "DTC_SERVICE_V1_samples": {
+              "line": 7423,
+              "value": 23051136
+            },
+            "DTC_SERVICE_V1_pib_integral": {
+              "line": 7424,
+              "value": 3095169
+            },
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": {
+              "line": 7427,
+              "value": 43594
+            },
+            "DTC_SERVICE_V1_retired": {
+              "line": 7428,
+              "value": 15552
+            },
+            "DTC_L1_oo_new_misses": {
+              "line": 7448,
+              "value": 5312
+            },
+            "DTC_L1_oo_tag_evictions": {
+              "line": 7449,
+              "value": 0
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 7576,
+              "value": 5312
+            },
+            "L2_total_cache_accesses": {
+              "line": 9292,
+              "value": 46208
+            }
+          },
+          "values": {
+            "cycles": 360174,
+            "global_lower_read_requests": 5312,
+            "DTC_new_line_misses": 5312,
+            "DTC_tag_evictions": 0,
+            "Tag_bank_conflict_events": null,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 21248,
+            "L2_global_read_payload_bytes": 679936,
+            "L2_global_read_miss_32B_sectors": 8192,
+            "L2_global_read_miss_fraction": 0.3855421686746988,
+            "L2_global_read_reservation_fail_attempts": 1937,
+            "L2_all_accepted_accesses": 46208,
+            "DRAM_issued_read_32B_atoms": 8192,
+            "DRAM_read_bytes": 262144,
+            "DRAM_write_bytes": 0,
+            "baseline_MSHR_merge_full_events": null,
+            "OO_lower_create_queue_full_stalls": 0,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 0.13427403317563177,
+            "physical_lines_time_mean_per_SM_including_idle": 80.5526613959503,
+            "fully_ready_to_complete_mean_read_conditioned": 2.8031121399176953,
+            "ready_to_collect_mean_read_conditioned": 1.691358024691358,
+            "collection_cycles_mean_read_conditioned": 1.0,
+            "writeback_wait_mean_read_conditioned": 0.11175411522633745,
+            "OO_ready_but_writeback_blocked_cycles": 963,
+            "ICNT_to_memory_full_aggregate_events": 0,
+            "memory_to_ICNT_full_aggregate_events": 0,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z17ComputePhiMag_GPUPfS_S_i",
+                "cycles": 5694,
+                "fraction_of_total": 0.015809025637608488
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z12ComputeQ_GPUiiPfS_S_S_S_",
+                "cycles": 119028,
+                "fraction_of_total": 0.33047360442452817
+              },
+              {
+                "ordinal": 3,
+                "kernel": "_Z12ComputeQ_GPUiiPfS_S_S_S_",
+                "cycles": 117726,
+                "fraction_of_total": 0.32685868496893167
+              },
+              {
+                "ordinal": 4,
+                "kernel": "_Z12ComputeQ_GPUiiPfS_S_S_S_",
+                "cycles": 117726,
+                "fraction_of_total": 0.32685868496893167
+              }
+            ]
+          }
+        },
+        "DM": {
+          "cohort": "E2-AEV100-dc7a91531846c113-DM",
+          "uuid": "074407b0-036f-46d7-98d9-df02684d568f",
+          "strict_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/074407b0-036f-46d7-98d9-df02684d568f/AEFAIR_STRICT.json",
+          "raw_path": "/root/data/dtc_main_v100_sweep_20261025_v1/DTC/run/results/074407b0-036f-46d7-98d9-df02684d568f/raw.log.gz",
+          "raw_gzip_sha256": "02ebc3d982230daafbcbfffa7832dd3559872e7e1247c57ec47722d47f0d2e56",
+          "raw_uncompressed_sha256": "9232e082ae2c45be1e1aaf2e5eddb25f41da107e023b4c197e39f0aac3e33b01",
+          "terminal_line_bindings": {
+            "gpu_tot_sim_cycle": {
+              "line": 7318,
+              "value": 361988
+            },
+            "gpu_stall_dramfull": {
+              "line": 7325,
+              "value": 0
+            },
+            "gpu_stall_icnt2sh": {
+              "line": 7326,
+              "value": 0
+            },
+            "DTC_SERVICE_V1_samples": {
+              "line": 7423,
+              "value": 23167232
+            },
+            "DTC_SERVICE_V1_pib_integral": {
+              "line": 7424,
+              "value": 7690557
+            },
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": {
+              "line": 7427,
+              "value": 39455
+            },
+            "DTC_SERVICE_V1_retired": {
+              "line": 7428,
+              "value": 15552
+            },
+            "DTC_L1_oo_new_misses": {
+              "line": 7448,
+              "value": 14594
+            },
+            "DTC_L1_oo_tag_evictions": {
+              "line": 7449,
+              "value": 10330
+            },
+            "gpgpu_n_mem_read_global": {
+              "line": 7576,
+              "value": 14594
+            },
+            "L2_total_cache_accesses": {
+              "line": 9292,
+              "value": 83336
+            }
+          },
+          "values": {
+            "cycles": 361988,
+            "global_lower_read_requests": 14594,
+            "DTC_new_line_misses": 14594,
+            "DTC_tag_evictions": 10330,
+            "Tag_bank_conflict_events": null,
+            "OO_duplicate_after_eviction_events": null,
+            "OO_PIB_full_events": null,
+            "L2_global_read_accepted_32B_sectors": 58376,
+            "L2_global_read_payload_bytes": 1868032,
+            "L2_global_read_miss_32B_sectors": 8192,
+            "L2_global_read_miss_fraction": 0.14033164314101684,
+            "L2_global_read_reservation_fail_attempts": 1937,
+            "L2_all_accepted_accesses": 83336,
+            "DRAM_issued_read_32B_atoms": 8192,
+            "DRAM_read_bytes": 262144,
+            "DRAM_write_bytes": 0,
+            "baseline_MSHR_merge_full_events": null,
+            "OO_lower_create_queue_full_stalls": 0,
+            "lower_credit_cap_full_events": 0,
+            "PIB_time_mean_per_SM_including_idle": 0.33195838846867853,
+            "physical_lines_time_mean_per_SM_including_idle": 64.70774626852271,
+            "fully_ready_to_complete_mean_read_conditioned": 2.5369727366255144,
+            "ready_to_collect_mean_read_conditioned": 1.31494341563786,
+            "collection_cycles_mean_read_conditioned": 1.0,
+            "writeback_wait_mean_read_conditioned": 0.22202932098765432,
+            "OO_ready_but_writeback_blocked_cycles": 1118,
+            "ICNT_to_memory_full_aggregate_events": 0,
+            "memory_to_ICNT_full_aggregate_events": 0,
+            "shared_memory_active_thread_instructions": 0,
+            "kernel_launch_latency_configured": [
+              "5000"
+            ],
+            "kernel_cycles": [
+              {
+                "ordinal": 1,
+                "kernel": "_Z17ComputePhiMag_GPUPfS_S_i",
+                "cycles": 5694,
+                "fraction_of_total": 0.01572980319789606
+              },
+              {
+                "ordinal": 2,
+                "kernel": "_Z12ComputeQ_GPUiiPfS_S_S_S_",
+                "cycles": 119028,
+                "fraction_of_total": 0.3288175298628684
+              },
+              {
+                "ordinal": 3,
+                "kernel": "_Z12ComputeQ_GPUiiPfS_S_S_S_",
+                "cycles": 118738,
+                "fraction_of_total": 0.32801639833364643
+              },
+              {
+                "ordinal": 4,
+                "kernel": "_Z12ComputeQ_GPUiiPfS_S_S_S_",
+                "cycles": 118528,
+                "fraction_of_total": 0.3274362686055891
+              }
+            ]
+          }
+        }
+      },
+      "comparisons": {
+        "traditional_hash": {
+          "old": "CM",
+          "new": "CH",
+          "speedup_ratio": 1.0,
+          "cycles_change_pct": 0.0,
+          "lower_read_requests_change_pct": 0.0,
+          "DTC_tag_evictions_change_pct": null,
+          "L2_read_payload_change_pct": 0.0,
+          "DRAM_read_bytes_change_pct": 0.0
+        },
+        "DTC_hash": {
+          "old": "DM",
+          "new": "DH",
+          "speedup_ratio": 1.0050364546024977,
+          "cycles_change_pct": -0.5011215841409067,
+          "lower_read_requests_change_pct": -63.601480060298755,
+          "DTC_tag_evictions_change_pct": -100.0,
+          "L2_read_payload_change_pct": -63.601480060298755,
+          "DRAM_read_bytes_change_pct": 0.0
+        },
+        "matched_hash_cross_design": {
+          "old": "CH",
+          "new": "DH",
+          "speedup_ratio": 1.0057472221759483,
+          "cycles_change_pct": -0.5714380362407678,
+          "lower_read_requests_change_pct": -65.84362139917695,
+          "DTC_tag_evictions_change_pct": null,
+          "L2_read_payload_change_pct": -65.84362139917695,
+          "DRAM_read_bytes_change_pct": 0.0
+        }
+      }
+    }
+  ],
+  "findings": [
+    {
+      "programs": [
+        "3MM",
+        "GEMM"
+      ],
+      "facts": [
+        "Within DTC, hash reduces tag evictions, new line/lower read requests and accepted L2 read bytes by roughly78-81%; cycles decrease about23-24%.",
+        "Both CM/CH and DM/DH have zero modeled DRAM reads in these exact input runs. This is consistent with their reused small working sets and memcpy-initialized L2, not ideal-L2: -l2_ideal=0 and -gpgpu_perf_sim_memcpy=1.",
+        "Hash preserves bank bits; the finite OO terminal output does not print Tag-bank conflict or duplicate-after-eviction counters. They are unavailable, not zero."
+      ],
+      "supported_association": "Source changes only fixed row indexing within each design; fewer row replacements/new requests strongly support a Tag placement/reuse mechanism, with reduced L1-to-L2/interconnect pressure. This is not direct measurement of bank collision reduction or redundant unique-data transfers.",
+      "unproven": [
+        "Conflict-versus-capacity miss split without a shadow/tag reference model.",
+        "Per-request repeated lower fetch counts and exact causal portion of the speedup.",
+        "Ready-conditioned mean differences are not causal cycle savings; they rise after hash here while whole-input cycles fall."
+      ]
+    },
+    {
+      "programs": [
+        "ATAX",
+        "MVT",
+        "BICG"
+      ],
+      "facts": [
+        "Selected full captures have16 CTAs in each256-thread kernel on64SM; at most16SM can execute blocks for a kernel simultaneously.",
+        "After hash, DTC sends fewer L2 read sectors than CH but issues more DRAM read atoms: the accepted L2 read-miss fraction is higher.",
+        "The strided matrix traversal kernel accounts for over93% of DH whole-input cycles.",
+        "OO completion-service post-ready means remain a few cycles; global time-mean PIB occupancy is small, but includes idle SMs and does not prove zero PIB-full episodes."
+      ],
+      "supported_association": "Remaining adverse cross-design performance is associated with low CTA concurrency, the strided kernel, L2 read residency/miss behavior and downstream backpressure. Hash repairs a substantial Tag mapping effect but does not eliminate the downstream work or the different modeled C/D service/capacity constraints.",
+      "unproven": [
+        "Exact allocation versus timing/reordering contribution to the higher L2 read-miss fraction and DRAM reads.",
+        "Whether a particular finite service port is the critical limiter; lack of a printed stall category is not a zero count.",
+        "Physical-GPU performance, area-matched superiority, or transferable numerical values."
+      ]
+    },
+    {
+      "programs": [
+        "BICG"
+      ],
+      "historical_context_only": [
+        "Historical FAST64 sensitivity tables show OO logical16->64KiB coverage cycles47,231,655->42,468,441, and PIB32..256 unchanged47,231,655 in that tuple. Preserve their CANDIDATE_PENDING_STAGE6_HANDOFF row labels; they are not accepted performance for the new quartet.",
+        "The DTC-MAIN scientific-state handoff separately records detailed-DRAM2x modeled service helping older BICG IO/OO tuples; this is a sensitivity counterfactual, not a physical-frequency prediction or a current intervention."
+      ],
+      "supported_association": "The historical evidence does not justify further unbounded Tag/PIB enlargement as a universal remedy; current strided-kernel/downstream evidence is the more relevant next read-only attribution target."
+    },
+    {
+      "programs": [
+        "dwt2d"
+      ],
+      "facts": [
+        "Chosen192x192 input has identical DM/DH cycles and lower read counts; zero Tag evictions in both.",
+        "Relative to CH, DH lower requests fall only9840->9786 (0.55%); comparable read traffic does not exhibit a large reduction for this representative.",
+        "Ten short kernels, substantial shared-memory instructions, and a configured5000-cycle launch latency per kernel limit the opportunity for an L1 hash gain."
+      ],
+      "supported_association": "The premise of a large comparable miss reduction does not hold for the selected192 input. The conventional L1D miss statistic does not include the same DTC read path and must not be directly compared to OO_new_misses. Shared/local work and fixed startup are plausible limiters.",
+      "unproven": [
+        "A unique shared-memory/compute/launch critical-path partition.",
+        "The exact separable50000-cycle contribution without a dedicated existing event decomposition."
+      ]
+    },
+    {
+      "programs": [
+        "mri-q"
+      ],
+      "facts": [
+        "CH->DH reduces lower reads15552->5312 and accepted L2 read bytes by65.84%, but DRAM reads stay8192atoms.",
+        "Whole cycles improve only362244->360174 (~0.575% ratio gain); ComputeQ kernels account for over98% of total cycles.",
+        "Existing body qualification records3,145,728 MUFU.SIN and3,145,728 MUFU.COS warp instruction records, plus12,583,008 FFMA.FTZ records."
+      ],
+      "supported_association": "Reduced traffic predominantly removes L2 hits rather than compulsory DRAM reads; the expensive ComputeQ arithmetic/SFU/constant-data loop remains. This supports a weak end-to-end response to an L1 traffic reduction.",
+      "unproven": [
+        "Exclusive SFU criticality without issue/ready/stall/occupancy traces.",
+        "A causal decomposition using subtraction of ready-conditioned means."
+      ]
+    }
+  ],
+  "recommendations": [
+    {
+      "id": 1,
+      "kind": "READ_ONLY",
+      "action": "Close the7 unresolved representative slots: decide intended Rodinia version/input tuple with exact source/data reference; find CFD capture-generation/binary/ROI evidence. Do not re-simulate to choose an input."
+    },
+    {
+      "id": 2,
+      "kind": "READ_ONLY",
+      "action": "Use existing per-kernel counters and immutable trace address streams to quantify unique128B lines, repeated lower-request candidates and L2 reuse distance for the strided ATAX/MVT/BICG kernels. Bound the scan and share one index; do not change traces."
+    },
+    {
+      "id": 3,
+      "kind": "READ_ONLY",
+      "action": "Inspect existing perf_counter time series with source-defined sampling windows for Tag-bank/PIB/fullness/issue occupancy and ComputeQ SFU or short-kernel startup attribution; missing columns remain unavailable."
+    },
+    {
+      "id": 4,
+      "kind": "NEW_EXPERIMENT_APPROVAL_REQUIRED",
+      "action": "If event attribution remains absent, propose a finite instrumentation-only matched CH/DH validation on1-2 frozen representative inputs, with source/config/parser identity and regression qualification. No automatic runs or repairs under this task."
+    },
+    {
+      "id": 5,
+      "kind": "NEW_EXPERIMENT_AND_CONTRACT_APPROVAL_REQUIRED",
+      "action": "Only after membership/source closure, consider one controlled low-CTA strided-workload or matched downstream/area-timing diagnostic. It changes the scientific contract and cannot be represented by selecting a better existing input or reusing historical sensitivity cycles."
+    }
+  ],
+  "new_simulations": 0
+}
