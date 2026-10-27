@@ -1,0 +1,9 @@
+# Actual activation: typed engineering negative + full35 inference
+
+At02:36:39CST the sole existing ownerPID1498278 installed the exact final sources published/read back atbf1a7050e. Actual ACK and in-owner shadow are included. The SAME live registry-journal object129593481701904 is the final guard; registry.extend, resources, choose_dispatch, claims and all model processes were unchanged. Original21 source pins and raw350 results/summary definitions remain. No budget grant, replacement run or signal occurred.
+
+The real archive verifier ran within the actual owner shadow. One engineering-negative certificate was recognized only in the copied typed view, acceptedfalse/cyclesnull. Current state WAIT_INITIAL_TERMINAL,0newproposals, no adoption or stage completion, engineering review retained. Static candidate labels inside source policy are the historical source declaration; this actual ACK and registered ACTIVE operation prove deployment. The originalM16 result is still absent and original error remains; the failed consumed identity is preserved.
+
+CURRENT_STATUS.json gives a time-labelled actual350-cell accounting; CLOSED_RESULT_PATH_SHA_INDEX.json locates every accepted raw result and SHA. These are partial snapshots, not an atomic freeze of concurrent model completions. Typed-negative outcome is counted separately from accepted, running and unstarted; it never contributes performance cycles/GM.
+
+For review read this activation, parent TYPED_NEGATIVE_FULL35_GATE_V2 for19CPU+realreadonly checks and actual archive evidence, then ACTUAL_IO_CANARY_AND_BROAD_RELEASE_V1 for the successful scalarProd409181cycles IO rollout and broad resumption. All bulk archives remain true164. The phase continues through remaining initial runs and evidence-backed full35 parameter/CH comparisons; it is not declared complete here. Englishv0.23 remains unchanged.
