@@ -1,0 +1,194 @@
+{
+  "status": "CONV_S_REAL_FRONTEND_TAG_PRESSURE_PROVEN_ACTUAL_FT_PROBE_FAIL_ZERO_NARROW_SCOPE",
+  "goal": "EP_L2_MULTIWORKLOAD_TAG_OPPORTUNITY_AND_EVENT_TIMELINE_V1",
+  "source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+  "point_ref": {
+    "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cases/EP_MULTI_CONV_S_ET1_20261027_V1/run/results/132559ec-249d-4bb8-b867-92b23050ed3d/CURRENT_ACCEPTED_DIAGNOSTIC_POINT.json",
+    "sha256": "cafca42af4a1782d2b0519fa54d639c352f2ae2265712f531f7d9bb2a34c340c"
+  },
+  "raw_ref": {
+    "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cases/EP_MULTI_CONV_S_ET1_20261027_V1/run/results/132559ec-249d-4bb8-b867-92b23050ed3d/raw.log",
+    "sha256": "ddf5fd9d0588c6c6a9a0635194135c5ee26d84fa24f24d78602ecbab32b8aa9c"
+  },
+  "metric_ref": {
+    "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/analysis/accepted_metrics/EP_MULTI_CONV_S_ET1_20261027_V1/METRICS.json",
+    "sha256": "fe51286f13fb651e5ac6bac07a14ca8db1734f38f536bb7fa146fc80e925e390"
+  },
+  "cycles": 331234,
+  "joint_preview_failure_funnel": {
+    "raw_reservation_fail": 42717,
+    "pressure_T_disabled": 42717,
+    "pressure_prod_probe_reached": 42717,
+    "pressure_relief_not_consulted": 42717,
+    "pressure_frontend_denied": 42717,
+    "pressure_frontend_admitted": 0
+  },
+  "actual_ft_access_funnel": {
+    "ft_access_attempts": 11477953,
+    "commit_raw_probe_reached": 11477953,
+    "raw_tag_fail_commit": 0,
+    "commit_accepted": 5239872,
+    "commit_denied": 6238081,
+    "denied_tag": 0,
+    "denied_wad": 3733023,
+    "denied_wb": 1308586,
+    "denied_copy": 720834,
+    "denied_bank": 475185,
+    "denied_pin": 453
+  },
+  "LIFE": {
+    "slice_meta_count": 64,
+    "physical_set_count": 2048,
+    "META_closed_invalid0_all": true,
+    "END_closed_invalid0_all": true,
+    "maxima": {
+      "EVENT_PEAK": 8,
+      "TICK_PEAK": 8
+    },
+    "area0through8_all_physical_sets_L2_tick_sum": [
+      371585708,
+      141368425,
+      78248400,
+      47135603,
+      25005830,
+      10384090,
+      3522207,
+      914491,
+      202478
+    ],
+    "NEW_first_unique_reserved0through8": [
+      702810,
+      396632,
+      211656,
+      112328,
+      52334,
+      19801,
+      6055,
+      1376,
+      289
+    ],
+    "NEW_headcycle_reserved0through8": [
+      2867302,
+      2190814,
+      1349439,
+      738664,
+      349077,
+      135010,
+      50010,
+      18779,
+      42717
+    ],
+    "RAW_FAIL_HEAD": 42717,
+    "PROD_TAGFAIL": 0,
+    "NEW_AT_8_first_unique": 289,
+    "sets_with_R8_tick_area": 703,
+    "sets_with_NEW_head_at8": 204,
+    "sets_with_first_NEW_unique_at8": 204,
+    "first_unique_is_not_all_unique_requests_ever_failing": true,
+    "SUMMARY_STAGE_WINDOW_SET_not_emitted": true
+  },
+  "R5_same_head_same_target_set_joint": {
+    "raw3_RESERVED8": 42717,
+    "all_raw3_rows": [
+      [
+        3,
+        8,
+        42717
+      ]
+    ],
+    "covered_heads": 11937084,
+    "RO_NA_heads": 11937084,
+    "terminal_assoc": 8,
+    "terminal_sets": 32,
+    "cycle": 331234,
+    "source_base_core_is_wire_provenance_not_actual_producer": "9243f769620653f2a9d4df5599e9581e9dae6067"
+  },
+  "R4_SAMPLE_boundary": {
+    "seen": 42717,
+    "stored": 64,
+    "dropped": 42653,
+    "unique_uids_in64_samples": 2,
+    "sample_CORE_min": 6903,
+    "sample_CORE_max": 6963,
+    "immediate_commit_result_minus1_samples": 64,
+    "not_population_or_eventual_outcome": true
+  },
+  "actual_probe_instrumentation_S": "COVERED_COMMON_FT1_AND_FT2; zero is after-admission initial-ft_access-probe failures only",
+  "preview_pressure_instrumentation_S": "COVERED_REAL_CONTROLLER_PREVIEW_NOT_POST_ADMISSION_ACCESS",
+  "T_eligibility_and_detach_in_S": "N/A_NO_RO_RUNTIME_NOT_A_MEASURED_ZERO_OPPORTUNITY",
+  "same_request_union_with_WAD_WB_COPY_denials": "NOT_MEASURED; different admitted-ft_access population, do not multiply/sum marginals",
+  "why_pressure_prod_probe_reached_name_is_misleading": "assigned inside production preview, not evidence actual access called",
+  "source_evidence": [
+    {
+      "path": "src/gpgpu-sim/gpu-cache.cc",
+      "lines": "379-452",
+      "meaning": "all-reserved Tag-array RES_FAIL criterion with dirty fallback"
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-cache.cc",
+      "lines": "2796-2823",
+      "meaning": "production preview; o.production_reached is set before a RES_FAIL early return"
+    },
+    {
+      "path": "src/gpgpu-sim/l2cache.cc",
+      "lines": "1432-1443,1474-1495,1551-1593",
+      "meaning": "same-head admission line_available false; actual access only if admit"
+    },
+    {
+      "path": "src/gpgpu-sim/l2_admission_rules.h",
+      "lines": "45-59",
+      "meaning": "line allocation blocker and zero-blocker admission rule"
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-cache.cc",
+      "lines": "2566-2576",
+      "meaning": "shared FT1/FT2 dispatch, m_ro guards only RO-specific actions"
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+      "lines": "300-339",
+      "meaning": "actual ft_access initial probe and three actual-failure hooks common to S/F"
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-cache.h",
+      "lines": "3116",
+      "meaning": "ft_enabled is ft_mode!=0"
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "lines": "383-387",
+      "meaning": "R4 registered before conditional m_ro construction"
+    },
+    {
+      "path": "src/gpgpu-sim/gpu-cache.cc",
+      "lines": "3088-3146",
+      "meaning": "R4 same-head pressure/admission population and primary_unknown category limitation"
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-detach-diag.h",
+      "lines": "14,247-250,287,298,304",
+      "meaning": "global64sample cap, once-head-per-cycle, commit scope UID/cycle update"
+    },
+    {
+      "path": "src/gpgpu-sim/ep-l2-reservation-lifetime.h",
+      "lines": "264-284,364-366",
+      "meaning": "actual same-set NEW/occupancy joints, first NEW dedup, terminal array output"
+    }
+  ],
+  "claim_boundary": {
+    "PROVEN": [
+      "actual S controller encountered42717 all8RESERVED Tag allocation failure head-cycle observations",
+      "all42717 jointly frontend denied with no relief consulted and T disabled",
+      "actual common-ft_access first probe hook covered S and saw0FAIL in11477953attempts",
+      "actual first NEW/R8 and tick-area joints independently match final metrics"
+    ],
+    "UNKNOWN": [
+      "all distinct requests that ever faced TagFAIL beyond first-NEW dedup",
+      "which RO victims would be eligible in a certified F configuration",
+      "detach profitability or end-to-end speedup",
+      "eventual same-request outcomes beyond bounded64samples"
+    ]
+  },
+  "frozen_assets_or_model_or_registry_mutated": false,
+  "scientific_acceptance_changed": false
+}

@@ -1,0 +1,99 @@
+{
+  "Gaussian": {
+    "CTA": 6,
+    "ICNT_mem_to_simt_packets": 31,
+    "ICNT_simt_to_mem_packets": 31,
+    "L1_native": {
+      "L1D_total_cache_accesses": 50,
+      "L1D_total_cache_misses": 21,
+      "L1D_total_cache_pending_hits": 15,
+      "L1D_total_cache_reservation_fails": 0
+    },
+    "L2_global_read_HIT": 17,
+    "L2_global_write_HIT": 14,
+    "L2_native_scalars": {
+      "L2_total_cache_accesses": 31,
+      "L2_total_cache_miss_rate": 0.0,
+      "L2_total_cache_misses": 0,
+      "L2_total_cache_pending_hits": 0,
+      "L2_total_cache_reservation_fails": 0
+    },
+    "causal_attribution_to_prefill": "UNKNOWN_WITHOUT_COUNTERFACTUAL",
+    "claim": "LIFEzeroNEW doesnotmean no memoryaccess or highL1hitrate; explicit smallL2 allhit/preload-compatible observation only",
+    "cohort": "EP_MULTI_GAUSSIAN_S_ET1_20261027_V1",
+    "declared_HtoD_prefix": [
+      "MemcpyHtoD,0x00007fea25500000,64",
+      "MemcpyHtoD,0x00007fea25500200,64",
+      "MemcpyHtoD,0x00007fea25500400,16"
+    ],
+    "effective_gmem_skip_L1D": "0",
+    "effective_perf_sim_memcpy": "1",
+    "effective_perfect_mem": "0",
+    "evidence_refs": {
+      "counter_ref": {
+        "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/analysis/accepted_metrics/EP_MULTI_GAUSSIAN_S_ET1_20261027_V1/MEMORY_PATH_COUNTERS.json",
+        "sha256": "6dd2a93d0ef6a0d7221241660f1cf0f4f1b39ac353a2b9b2929bbedd5eec733e"
+      },
+      "input_binding": {
+        "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/control/inputs/3f769a0089b5a92d34bb9299b5a0be1a003db383a52682bc80d0ad47b5b32af2/INPUT_BINDING.json",
+        "sha256": "d91be340a9a708483ccbb85cfc0a593939862db3ad36d5e98d33924cec5c273e"
+      },
+      "perf_memcpy_source": {
+        "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/gpu-sim.cc",
+        "sha256": "d9b1e85fdf5eb33fa84dfd2fdca37bb07fb40d251e6d3940621674998f6f8908"
+      },
+      "spec": {
+        "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cases/EP_MULTI_GAUSSIAN_S_ET1_20261027_V1/control/FROZEN_SPEC.json",
+        "sha256": "ed5afba695b816377edee660a78e9f3560e6ec0865c0e7331b48324a7aadefbc"
+      }
+    },
+    "instructions": 11454,
+    "kernels": 6
+  },
+  "new_model_raw_or_Trace_reads": 0,
+  "schema": "EP_MULTIWORKLOAD_SMALL_GAUSSIAN_AND_GRID_CONSTRAINTS_V1",
+  "static_grid_constraints": [
+    {
+      "binding_ref": {
+        "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/control/inputs/a953fb7ddd119bb90971906ad4e695a32c711f5d9eb516747bdd2d4f97432d8e/INPUT_BINDING.json",
+        "sha256": "c5816233479ac28af15e750328af7674b2a5b1ac7149e45a229986c83fb262df"
+      },
+      "classification": "PROVEN_STATIC_GRID_UPPER_BOUND_NOT_MEASURED_CAUSAL_BOTTLENECK",
+      "cohort": "EP_MULTI_GESUMMV_S_ET1_20261027_V1",
+      "configured_SM": 80,
+      "no_ATAX_runtime_data_or_acceptance_claim": false,
+      "per_kernel_CTA_counts": [
+        16
+      ],
+      "per_kernel_simultaneous_active_SM_upper_bound": [
+        16
+      ],
+      "spec_ref": {
+        "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cases/EP_MULTI_GESUMMV_S_ET1_20261027_V1/control/FROZEN_SPEC.json",
+        "sha256": "96574b98010658139d127cef8050e98ba0990cfa0e6639592130ce6f62d7cc87"
+      }
+    },
+    {
+      "binding_ref": {
+        "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/control/inputs/9dad7fd62b015743a5436ae6cf5d6543f1de4e82bccbbd0bbf0a261abd589a49/INPUT_BINDING.json",
+        "sha256": "7b720ec988327c2fc2b9dadb3a994b8667ab4b11bee02af1a1376c593c46d5de"
+      },
+      "classification": "PROVEN_STATIC_GRID_UPPER_BOUND_NOT_MEASURED_CAUSAL_BOTTLENECK",
+      "cohort": "EP_MULTI_ATAX_S_ET1_20261027_V1",
+      "configured_SM": 80,
+      "no_ATAX_runtime_data_or_acceptance_claim": true,
+      "per_kernel_CTA_counts": [
+        16,
+        16
+      ],
+      "per_kernel_simultaneous_active_SM_upper_bound": [
+        16,
+        16
+      ],
+      "spec_ref": {
+        "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cases/EP_MULTI_ATAX_S_ET1_20261027_V1/control/FROZEN_SPEC.json",
+        "sha256": "aac81baa50ce1d6ec86d3ecceb5d896e735989e7dd31b68dcaea20103e20cbc6"
+      }
+    }
+  ]
+}

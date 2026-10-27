@@ -1,0 +1,58 @@
+{
+  "status": "POSTRUN_REMAINING_DYNAMIC_CLAIM_RECONCILIATION_READONLY_REVIEW_PASS",
+  "goal": "EP_L2_MULTIWORKLOAD_TAG_OPPORTUNITY_AND_EVENT_TIMELINE_V1",
+  "script_ref": {
+    "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/tools/main_reconcile_postrun_remaining.py",
+    "sha256": "c3239d8d5fe4a077ec0f43c74aa5c0004ba4cb8bcc7c6e3835c56ee4c3c4156a"
+  },
+  "Main_actual_proof_ref": {
+    "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cases/EP_MULTI_GESUMMV_S_ET1_20261027_V1/control/POSTRUN_REMAINING_WRITE_RECONCILIATION.json",
+    "sha256": "b600dddb0b4206bf78487707d5ff0e4043d5348cbd00a5b4cec5f2f175ccddcd"
+  },
+  "Main_script_imported_or_executed_by_B": false,
+  "change_scope": "dynamic future-write claim after accepted bundle materialized, not source/result/restore cap relaxation",
+  "old_actual_allocated_result_bytes": 86138880,
+  "old_remaining_bytes": 16777216,
+  "old_used_plus_remaining_excess_bytes": 2252800,
+  "future_copy_block_upper_bytes": 81920,
+  "future_proof_upper_bytes": 65536,
+  "future_directory_upper_bytes": 16384,
+  "new_remaining_bytes": 163840,
+  "same_hard_result_cap_bytes": 100663296,
+  "actual_final_result_allocated_bytes": 86237184,
+  "actual_added_capsule_bytes": 98304,
+  "actual_three_proofs": {
+    "ACTUAL_ARCHIVE_OPERATIONAL_MODULE_PROOF.json": {
+      "logical_bytes": 3589,
+      "allocated_bytes": 4096
+    },
+    "PID_QUIESCENCE_AT_ARCHIVE.json": {
+      "logical_bytes": 316,
+      "allocated_bytes": 4096
+    },
+    "EVIDENCE_IDENTITY.json": {
+      "logical_bytes": 1053,
+      "allocated_bytes": 4096
+    }
+  },
+  "actual_proof_allocated_sum_below_upper": true,
+  "R_archive_does_not_reset_remaining_16MiB": true,
+  "source_for_reset_claim": "4ac launch finish initializes16MiB; record_existing_point/archive only change states/pointers/restore claims/closure; exact original archive body has no assignment to remaining_postrun_metadata_bytes",
+  "original_transaction_guards_retained": [
+    "accepted pending, natural DONE, spent1/remaining0",
+    "same frozen spec/source/raw/point/bundle hashes",
+    "old serialized remaining amount unchanged before atomic update",
+    "all foreign rows/history and all budget values unchanged",
+    "refresh profile and registry/epoch hashes with original transaction",
+    "subsequent original resource gate/SourceKEEP/V9/two96MiB restores remain mandatory"
+  ],
+  "future_cases_boundary": "recompute actual missing copy blocks and check proof/PID populations against64KiB for each natural accepted case; thisGES measurement is not a universal new fixed cap or permission",
+  "observed_GES_postclosure": {
+    "state": "CLOSED",
+    "consumed": 1,
+    "remaining": 0,
+    "reserved_write_bytes": 0
+  },
+  "BICG_retry_or_refund_authorized": false,
+  "source_spec_resource_runtime_raw_or_accepted_point_changed_by_B": false
+}

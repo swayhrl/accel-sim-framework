@@ -1,0 +1,61 @@
+{
+  "schema": "EP_MULTIWORKLOAD_FINAL_REPORT_TEXT_READONLY_QA_V1",
+  "utc": "2026-10-27T09:38:52.982101+00:00",
+  "status": "NO_SCIENTIFIC_BLOCKER_FOUND_TEXT_PRECISIONS_RECOMMENDED",
+  "scope": "Static text and guards only. ATAX remains RUNNING at assignment; terminal writer was not executed. This review does not certify final population, future ATAX acceptance, archival completion, or ungenerated final tables.",
+  "reviewed": [
+    {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/tools/main_final_reports.py",
+      "sha256": "799e77ac1eefbe50aadd21436cca3f458b51e4a3c40b3a5bf2a78209f2df7598"
+    },
+    {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/review/docs/ep_l2/operations/ep_multiworkload_event_timeline_20261027_v1/EXPERIMENT_IDENTITY_AND_CLAIM_BOUNDARY.md",
+      "sha256": "dd18190ee5f1daa4afa95694b126ef01412e2bcdadc762c133f856de7c6a4b75"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "WORDING_PRECISION",
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/tools/main_final_reports.py",
+      "line": 44,
+      "text": "42,717次重复head检查",
+      "recommendation": "42,717次head检查（包含重复观察）",
+      "reason": "The head-observation population includes checks, not an independently established count of repetitions excluding first observations. Preserve the accepted count unchanged."
+    },
+    {
+      "severity": "WORDING_PRECISION",
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/tools/main_final_reports.py",
+      "line": 54,
+      "text": "压力尾部仅289/1,503,281个独立NEW",
+      "recommendation": "1,503,281个独立NEW中有289个在同Set R8状态到达",
+      "reason": "Avoid suggesting a temporal tail or deriving a small performance upper bound solely from request share."
+    },
+    {
+      "severity": "OPTIONAL_CLARIFICATION",
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/review/docs/ep_l2/operations/ep_multiworkload_event_timeline_20261027_v1/EXPERIMENT_IDENTITY_AND_CLAIM_BOUNDARY.md",
+      "line": 58,
+      "recommendation": "S reuse means an S reference only, with identical producer/input/background physical conditions and explicitly permitted formal-mode option deltas; T causality remains exclusively matched F-minus-T/F.",
+      "reason": "Literal complete-config equality across S/F is impossible because their declared mode switches differ; current text otherwise correctly excludes cross-mode T attribution."
+    }
+  ],
+  "checked_claim_boundaries": {
+    "historical_positive_RO_plus_current_S_pressure_not_joint_current_F": true,
+    "current_F_only_Vector_S_RO_T_NA": true,
+    "preview_TagRF_not_actual_access_TagFAIL": true,
+    "distinct_NEW_not_repeated_head_checks": true,
+    "area_set_L2_ticks_vs_reserved_Tag_L2_ticks_not_global_stall": true,
+    "Vector_selected_deadline_windows_not_global_DRAM_residence_distribution": true,
+    "DWT_and_BICG_not_accepted_FWT_unstarted": true,
+    "next_Conv_two_points_design_only_new_authorization": true,
+    "terminal_writer_hard_asserts_present_lines_13_18": true,
+    "capture_and_numeric_correctness_UNKNOWN": true
+  },
+  "operations": {
+    "report_writer_executed": false,
+    "model_started": false,
+    "actor_called": false,
+    "registry_or_scientific_asset_modified": false,
+    "trace_body_read": false,
+    "source_or_main_docs_modified": false
+  }
+}
