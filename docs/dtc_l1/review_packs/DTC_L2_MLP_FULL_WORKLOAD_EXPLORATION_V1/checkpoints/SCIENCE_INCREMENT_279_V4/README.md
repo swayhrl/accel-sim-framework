@@ -1,0 +1,11 @@
+# Scientific increment V4: 279 accepted and207DH/P0 pairs
+
+Read science_279/REPORT.md. Fixed05:59:28CST snapshot:279accepted=273new+6references. Only8new accepted raw logs were scanned beyond the271anchor; old271raw and191pair identities are unchanged. Three new DH-P0s(scalarProd,scan,srad_v1)unlock14comparisons,with cutcpE384/myocyteQ128adding2more:207strict pairs total. Original350scope/35complete input identities remain; old scan/M16 engineering failure and any later supplemental trial are excluded.
+
+New scan F128/F256 speedup1.156693/1.283635 with DRAMreadvolume changes only-0.007222/-0.000995percent. Scheduling/overlap and coupledF+191partitioncredits merit attention; decreased DRAM volume is not a supported explanation for this benefit. ScalarProdF2561.004467,F1280.998952;sradM8/M160.997719;all regressions and neutral results remain.
+
+All8common population grows23to25. F256 common25GM1.014493 versus available27GM1.022996; these are different populations,neither full35. Every profile's old fixed-population GM is unchanged exactly. No profile has full35accepted,no nonP0CHmatch exists,and relative DTC improvement or a final uniform configuration winner is not inferred. The remaining7DH-P0and2CH-P0gaps and11accepted denominator-blocked variants are recorded. Source/counter/missing-field limitations are explicit.
+
+All8new raw natural closures,strict,archive/native restore and IO chains pass. The structured scientific increment retains exact cohort/UUID/input binding/config/sourceSHA for the16new pairs,perprogram/suite/available/common populations,and the191immutable old-pair anchor. Compressed derived tables include an extra compression SHA index; no raw trace/model-log assets enterGit. Full source assets stay164/native at the manifest paths. Main only publishes; agent analysis made no model/production/budget/E-directory changes.
+
+This data snapshot predates the memory canary's actual completion and any scanM16supplemental grant. Subsequent operational progress must not be silently mixed into this cutoff. Future-memory finite activation is in parent7221; it is not broad95percent qualification. DRAM850MHz,Core/FW/binary,L2capacity,Hash/DTC,input semantics,historical ledger,7UNRESOLVED and Englishv0.23 remain. Goal continues.
