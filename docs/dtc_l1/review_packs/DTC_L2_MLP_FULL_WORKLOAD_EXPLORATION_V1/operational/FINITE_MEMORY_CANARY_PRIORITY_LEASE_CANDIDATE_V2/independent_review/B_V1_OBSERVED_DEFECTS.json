@@ -1,0 +1,44 @@
+{
+  "schema": "FINITE_MEMORY_CANARY_PRIORITY_LEASE_B_INDEPENDENT_REVIEW_V1",
+  "UTC": "2026-10-27T23:00:43.838939+00:00",
+  "status": "CHANGES_OR_EXPLICIT_DEPLOYMENT_PRECONDITIONS_REQUIRED",
+  "reviewed_manifest_sha256": "cbf6bc916e60eea0c48fe83fe62dde2466828cb46b401bce50cc51c31d76e6d7",
+  "reviewed_source_sha256": "a1333bbabc2051c2d7c19db6c95db87af7d1f5f4f362742244125c6bfae40505",
+  "reviewed_QA_sha256": "00f7f4d3b6d8484c66f8dae86399e126ca5f7a15c806c4315465dcb3bf11234a",
+  "observed_isolated_exception_checks": {
+    "outer_oldcpu_exception_escapes": true,
+    "inner_oldE_exception_escapes": true
+  },
+  "issues": [
+    {
+      "id": "B1",
+      "severity": "OPERATIONAL_BLOCKING_IF_AUTOMATIC_BROAD_PASSTHROUGH_REQUIRED",
+      "evidence": "priority_lease.py validate hard-requires old ACTIVE_MEMORY SHA and FINITE_CANARY; Adapter.outer catches activation mismatch and returns None for every cohort.",
+      "resolution": "Explicitly restore priority lease before broad scope transaction, as README requires; or qualify a versioned automatic-pass-through implementation. Current source is not automatic pass-through."
+    },
+    {
+      "id": "B2",
+      "severity": "BLOCKING_FOR_ALL_EXCEPTION_CONTAINMENT_CLAIM",
+      "evidence": "inner original=self.old_choose and outer value=self.old_cpu execute outside their exception boundaries. Two isolated mocked callable exceptions demonstrably escape.",
+      "resolution": "Qualify a versioned containment boundary if source/assert failures anywhere inside captured chains must not escape the scheduler. Existing 34 tests source-drift-before-E do not cover this case."
+    },
+    {
+      "id": "B3",
+      "severity": "AUDIT_LINK_REQUIREMENT_NOT_MEMORY_SAFETY_FAILURE",
+      "evidence": "RESERVED/CPU_RETURNED receipts freeze pre-refresh canonical_spec_sha256. Frozen l2_ops calls registry.refresh_pending_resource_spec after chooser and before dispatch binding, allowing legal RSS/AS-only canonical SHA amendment when no binding exists.",
+      "resolution": "Do not claim receipt canonicalSHA equals future INTENT. Join resource_spec_history oldSHA/newSHA AMENDMENT and preimage; prove exact stable science plus only estimatedRAM/RSS/VMS changed, then join final binding/INTENT. Native fresh gate remains mandatory."
+    }
+  ],
+  "positive_findings": [
+    "Single allowlisted cohort; unspent/unclaimed/noINTENT/noDONE/sealed/active-worker exclusions retained.",
+    "Normal E decision runs first; fallback does not mutate protected R or release tokens.",
+    "Two fresh frames plus full memory95/B5 own/peer growth, candidate max, CPU/pressure/disk/inode/write gates remain.",
+    "Immutable atomic helper produces RESERVED and CPU_RETURNED before dispatcher claim/INTENT; failed publication returns HOLD.",
+    "Source/QA/readback/record identity validation is explicit; no dispatch binding is pre-created."
+  ],
+  "locking_sequence_note": "Frozen aging.lock is threading.RLock; E.choose and FrameReadGuard use it. Main holding that lock can atomically sequence authority->ACTIVE_MEMORY->context rebase for scheduler memory chooser. Native child readers do not share the Python lock; priority outer activation also precedes lock, so restore lease first.",
+  "production_mutations": 0,
+  "model_starts": 0,
+  "signals": 0,
+  "large_tests_reexecuted": false
+}

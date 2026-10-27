@@ -1,0 +1,28 @@
+{
+  "AMENDMENT_fields": [
+    "cohort",
+    "old_sha256",
+    "new_sha256",
+    "forecast",
+    "reason",
+    "UTC"
+  ],
+  "chooser_receipt_SHA_phase": "PRE_RESOURCE_REFRESH_NOT_CLAIMED_EQUAL_TO_INTENT",
+  "no_native_linkage_proven_by_CPU_fixture": true,
+  "only_allowed_changed_paths": [
+    "estimated_peak_model_RAM_bytes",
+    "limits.max_process_tree_rss_bytes",
+    "limits.max_process_tree_vms_bytes"
+  ],
+  "registry_source_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/tools/l2_registry.py",
+  "registry_source_sha256": "193feb11c91945ae5c675042e42b0f87f9e5ae714e30e937a4f918040d4d834d",
+  "required_final_equalities": [
+    "amendment.final_new_sha == q.admitted_specs[cohort] == sha(final canonical bytes) == dispatch_binding.canonical_spec_sha256 == INTENT.spec_sha256",
+    "dispatch_binding.resolved_spec_sha256 == engine.jsonsha(dict(final_canonical, host_cpu=dispatch_binding.host_cpu))",
+    "q.consumed[cohort].intent_sha256 == sha(INTENT bytes)",
+    "q.consumed[cohort].uuid == INTENT.uuid",
+    "normal launch/PID memory+IO(+padding) bindings identical and independent complete strict/archive/native restore PASS"
+  ],
+  "resource_history_root": "/root/data/dtc_l2_mlp_exploration_20261027_v1/control/resource_spec_history",
+  "schema": "PRIORITY_RECEIPT_POST_REFRESH_IDENTITY_AUDIT_V1"
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "PRIORITY_LEASE_V2_B_LIMITED_INDEPENDENT_REVIEW_V1",
+  "UTC": "2026-10-27T23:14:51.589601+00:00",
+  "status": "PASS_LIMITED_REVIEW",
+  "checks": {
+    "source_exact_requested_3fa893": true,
+    "40QA_source_driver_manifest_join": true,
+    "all_original34_checks_preserved": true,
+    "actual_source_and_driver_exact_declared_diff": true,
+    "canonical_preSHA_honest_contract": true,
+    "independent_exact_guard_runtimeerror_rollback": true,
+    "independent_original_sentinel_status_rollback": true,
+    "independent_oldCPU_exception_HOLD": true,
+    "source_uses_real_guard_class_not_lookalike": true,
+    "broad_pass_through_and_no_borrow_tests_present": true
+  },
+  "source_sha256": "3fa893ff93083ac1b4f3dd7536fe6db6467af8fb15b9fca1ba42eba2ef80f1e4",
+  "QA_sha256": "74c6cd2fabcbcbd94c3eabae8f7d7d1abf88d77453d316a155d037ff79c16c28",
+  "manifest_sha256": "ff49abb1a77e0ad1038c3b5e602e01e8eebf03a7d87423742dcb3770fd82eb96",
+  "evidence_sha256": {
+    "V2_EXACT_DIFF.json": "db73f287443381bff4b535cf694359117d454fd03d3d0aaf762ce61eff78fa0f",
+    "CANONICAL_REFRESH_AUDIT_CONTRACT.json": "27b8fa7e2a8d9d1bef1b291bbcd3aa4b26a4aa6e147c03dc7dcfdaf7557d1fc2",
+    "README.md": "a7ed1e129301ea05b5306519ccbe2f56610ad12872f3e3997015d46c4f316196",
+    "qualify_priority_lease.py": "a1424166059891a9337afb9a43bd9ce687e08e67456ce1146cb32a51bc42bd63"
+  },
+  "new_six_cases": [
+    "fallback_second_fresh_three_failures_preserve_exact_sentinel_Guard_rollback",
+    "oldCPU_call_exception_returns_HOLD_not_scheduler_escape",
+    "oldE_exact_FrameUnavailable_preserved_and_rollback",
+    "oldE_mutate_then_raise_contained_by_exact_Guard_rollback",
+    "valid_broad_scope_E_HOLD_no_canary_priority_borrowing",
+    "valid_broad_scope_normal_oldE_decision_passes_through"
+  ],
+  "short_comment": "The V1 exception-escape and broad-pass-through findings are addressed in V2. Exact FrameUnavailable from the frozen guard is preserved; ordinary oldE exceptions enter that guard rollback, CPU callable failures HOLD. Source diff leaves physical/candidate/identity/receipt logic intact except finite/broad gating. Independent isolated checks confirm oldE mutation+RuntimeError and original sentinel status rollback through the real frozen guard, and CPU failure containment. All original34 labels remain in reexecuted40 QA. README/contract honestly identify chooser pre-refresh SHA, only three permitted resource fields, required old/new history joins, and no actual INTENT proof from CPU tests. No new blocker found within this narrow diff review; actual canary plus exact canonical-amendment/native/strict/archive verification remains required.",
+  "production_mutations": 0,
+  "model_starts": 0,
+  "signals": 0,
+  "full40_fixture_reexecuted_by_B": false
+}
