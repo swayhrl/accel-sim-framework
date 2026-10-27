@@ -1,0 +1,11 @@
+# Source92 native bridge and default application NI
+
+The accepted Source78 simulator, all old specs and native engine remain unchanged. Source92 uses a separately hashed ELF and all-new matching static libraries. The four-bank organization allows at most two different physical-slot operations per bank per physical CORE tick in P2; all same-slot read/write combinations remain serialized. S/P2 also enables stricter native identity, so this defined intervention is not a pure bandwidth or area claim.
+
+Main reviewed the minimal production patch, actual constructors, 91 host-math controls, production assertion state and original unchanged ownership/drain equations. New SourceCPU qualification is expressly not application acceptance or launch permission. The Source/build package is on genuine164 with COMMIT-last and two independent native restores; restore verifies archive contents, not recompilation. Source tar, static library and main ELF have distinct identities.
+
+The additive immutable native engine preserves original budget-before-fork, input/stat/source/mapped-library/syscall checks, resource admission and terminal/archive semantics. Its new SourceQ gate requires exact restricted performance observer settings. A real Source92 Vector whole-commandlist loader check and two negative controls passed without opening Trace bodies or creating a GPU object. Ten pure native-bridge controls passed; a preparation test harness initially failed to catch the correct fail-closed TypeError for missing NI. That engineering failure is retained; no model or registry start occurred in that failed preparation.
+
+Exactly two fresh initial application points are registered: Source92/P1 Vector4M S and F with the same282 effective options, input, geometry and observation profile as their accepted Source78 default references. They are running and are not yet accepted. Old/new endpoint equality is only an engineering noninterference test; every new scientific S/F performance pair must use the same new ELF. A Main S+F archived application NI receipt is mandatory before P2 or wider Source92 performance expansion. No P2 launch is authorized by the two-point NI stage.
+
+ET global clock scientific closure remains unqualified. Four optional pressure/lifetime/event observers are OFF; unavailable pressure/detach counters are NOT_OBSERVED, not measured zeros.

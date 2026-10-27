@@ -15,3 +15,5 @@ One Main dispatcher admits only exact fresh registered finite stages, initially4
 Scientific scope is complete declared Trace commandlist. Original full capture and numericalGPU outputs remain UNKNOWN unless separately proved. Optional pressure counters OFF are NOT_OBSERVED, never manufactured zeros.
 
 Later checkpoint: MAIN35_LATEST_QUALIFICATION.csv and LATEST_QUALIFICATION_OVERLAY_INDEX.json supersede initial missing-RO readiness labels; original initial audits stay unchanged. Native-peer route compatibility, the new MS0 static64 comparison, finite causal combinations and the Source92 P2 engineering candidate are documented separately. Source92 is not yet a scientific release. Current accepted performance remains Source78; no cross-ELF splice is allowed.
+
+Source92 native checkpoint: see SOURCE92_NATIVE_AND_APPLICATION_NI_SCOPE.md. New SourceCPU qualification and exact two-point default P1 S/F engineering NI are registered; their application outcomes remain pending. No P2 performance point has started. Source78 scientific results stay separate.
