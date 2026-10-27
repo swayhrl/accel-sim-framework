@@ -23,3 +23,8 @@ For PIB analysis, distinguish independent operands, arithmetic/load chains, dive
 [heartwall](../programs/rodinia/heartwall.md) one-frame input initializes templates rather than tracking. [CFD](../programs/other/cfd.md) and [streamcluster](../programs/other/streamcluster.md) remain conditional. [convolutionSeparable](../programs/cuda_samples/convolutionSeparable.md) and [scan](../programs/cuda_samples/scan.md) expose host/shape differences between source candidates and capture metadata.
 
 No feature is defined by DTC speedup. More useful concurrency, fewer duplicate allocations and reduced traffic remain hypotheses until independently measured at the correct input/model identities. Existing numerical results and manuscript text are unchanged.
+
+
+## V1R1 phase and evidence usage
+
+For any kernel/phase comparison use [the V1R1 kernel/phase index](../KERNEL_PHASE_FEATURES_V1R1.tsv) and the [disambiguated evidence rows](../EVIDENCE_BINDINGS_V1R1.tsv). CFD remains conditional, one-frame heartwall is initialization, and historical PolyBench capture ELF lineage remains unbound. Details in [shared applicability notes](../PROJECT_SCOPE_ADVISORIES_V1R1.md). No changes to frozen DTC input registration or live L2 MLP goal are implied.

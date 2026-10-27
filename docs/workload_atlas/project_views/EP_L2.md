@@ -36,3 +36,8 @@ The r4/r5 observations above are retained historical accepted scope from EP-MAIN
 EP-L2 questions should distinguish transaction type (read/write/atomic), directory state, physical data residence, write-buffer occupancy, and downstream response lifetime. A source read-after-write between kernels establishes a dependency, but does not prove the line is resident or inflight at the relevant moment. Read-only offline certification also does not prove a nonresident read is admitted, that Tag reservation is saturated, or that detachment occurs.
 
 For shared Conv/SGEMM/SAD traces, DTC-L1's pending-tag and physical-line questions and EP-L2's directory/data/write-buffer questions can be compared at the same registered access stream. Compare within each exact simulator/config first; cross-layer conclusions require a measured bridge. No negative or near-flat result should be explained by a label derived from the performance outcome.
+
+
+## V1R1 phase and evidence usage
+
+When reading historical EP `BINARY_BOUND`, treat the simulator core/binary identity separately from the **unresolved application capture ELF**. See [V1R1 evidence namespaces](../EVIDENCE_SCHEMA_V1R1.md), [per-input projection](../EVIDENCE_BINDINGS_V1R1.tsv) and [cross-project scope notes](../PROJECT_SCOPE_ADVISORIES_V1R1.md). EP's accepted CFD five-kernel replay remains accepted in its own contract, not certified as the 14,003-launch full solver. No accepted EP cycles, rosters, active lanes or Btree HOLD are modified.

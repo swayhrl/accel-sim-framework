@@ -26,3 +26,8 @@ Each dimension is independent. A frozen identity is not a full-application certi
 Only `docs/workload_atlas/` is written in isolated branch `hrl/shared-gpu-workload-atlas-v1`, worktree `/root/workspace/shared-gpu-workload-atlas-v1`, based on `3b28d3064`. Existing experiment manifests, controllers, registries, raw data, results, budgets, manuscript v0.23 and EP-L2 paper remain outside the write scope. No benchmark build, native workload execution, capture, simulation, GPU access or model/dataset/trace download is part of this work. Lightweight source hashing and metadata/formula validation are CPU-only audit operations.
 
 The DTC authority remains `docs/dtc_l1/review_packs/DTC_PAPER42_HASH_REVIEW_20261027_V1/REPRESENTATIVE_FREEZE.json` at the recorded base; derived b+tree and hotspot do not become ordinary representatives. The L2 exploration anchor `5178408bc28819140d01520f339af76b71f61489` is contextual evidence, not a source certification.
+
+
+## V1R1 evidence and phase overlay (separate non-destructive revision)
+
+Use [EVIDENCE_SCHEMA_V1R1.md](EVIDENCE_SCHEMA_V1R1.md) and [EVIDENCE_BINDINGS_V1R1.tsv](EVIDENCE_BINDINGS_V1R1.tsv) instead of interpreting the legacy `INPUT_BOUND`/`BINARY_BOUND` as one universal certificate. This separates registered trace, raw source input, capture ELF, and simulator binary. [PROJECT_SCOPE_ADVISORIES_V1R1.md](PROJECT_SCOPE_ADVISORIES_V1R1.md) records application-vs-ROI concerns without revising historical results. [KERNEL_PHASE_FEATURES_V1R1.tsv](KERNEL_PHASE_FEATURES_V1R1.tsv) indexes source-candidate GPU phases with their evidence limits. V1 original evidence files are preserved unchanged.

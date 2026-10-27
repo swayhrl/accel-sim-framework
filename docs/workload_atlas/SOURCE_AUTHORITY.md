@@ -28,3 +28,8 @@ No same-name equivalence: Parboil SGEMM differs from PolyBench GEMM; Rodinia2.0-
 The additional [PolyBench build-variant audit](contributions/polybench/BUILD_VARIANT_AUTHORITY.md) reads fixed framework build/capture scripts and identifies a separate sgrauerg/polybenchGpu source anchor. Its ATAX, MVT, 3MM, GESUMMV and SYRK source/build details differ from the recovered collection candidate, including initialization fixes, block dimensions, coefficients and a capture-only GESUMMV transformation. These are versioned alternatives, not proof that any selected historical ELF contains the recovered candidate defect. Selected NVBit1.4/tracer3 metadata is not automatically bound to a later NVBit1.8 M5 recipe. Per-program reports retain these differences and the unresolved capture-time source/ELF chain.
 
 Exact upstream source snapshots intentionally retain original whitespace; atlas-local attributes disable whitespace diagnostics and text normalization only for these immutable evidence snapshots. Authored reports, tables and tools retain normal checks.
+
+
+## V1R1 field disambiguation
+
+The separate V1R1 [schema](EVIDENCE_SCHEMA_V1R1.md) distinguishes registered trace identity from original input numeric bytes, and application capture ELF from simulator binary. Legacy V1 field names and findings are preserved as historical observations, not silently overwritten. Source candidate matches do not imply capture source/ELF linkage; older PolyBench M5 variants remain independent of selected NVBit1.4/tracer3 registrations.
