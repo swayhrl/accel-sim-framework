@@ -1,0 +1,53 @@
+# 后处理并行协议实际续跑与161适配 — V15
+
+本报告记录实际执行与失败后的修复，不是整个资产Goal完成。用户批准升级后处理协议，并明确验收应针对精确输入实际走过的路径及实际使用的consumer；不默认要求所有潜在分支通用支持、保存所有主机数组、逐项重写独立数值oracle或穷举所有consumer组合。必要输入来源、正确性与实际读取证据仍保留。全库正文Native恢复继续取消，按需恢复能力保留。源KEEP，释放0。
+
+## 目前真正运行的后处理
+
+唯一当前进程为1663256/start_ticks983157547，代码清单a807113c5756017c6f632f1489840dfa8802e3fddcc2c4faffe1d1cf2ca30833。运行目录为receipts/rtx4080_specialist_adaptation_20261026_v1/streamcluster_pipelined_post_protocol_prepare_20261027_v3/runs/streamcluster_pipelined_cpu4_20261027_root_v2。
+
+原702个闭合kernel全部复用，并已在新版本实际完成首批8个kernel：新增27,454,720条记录，Root独立重开15,265,940字节grouped数据核整SHA，8个helper均exit0且owned闭合。因此在这份正式验收点为710/1611。CURRENT_POST_PROGRESS.json是另外带时间戳的观察，后续进度不能反推为本报告时已经全部完成。
+
+当前CPU4使用500–503，POST地址空间上限合计16GiB，并为Native采集控制预留6GiB，总规划22GiB；109未来capture20GiB是另一主机的预算。该预留不表示GPU已经启动。CPU8加采集的34GiB方案当时物理门未通过，保留失败证据；CPU4加采集22GiB真实通过后才签发新scope。原绝对截止1793241315.9269235不延长。
+
+原GPU采集及f9完整验证继续复用：1611个kernel、5,518,423,824条记录，raw压缩33,504,398,284字节。不重采、不重跑f9、不运行新的科研性能模拟。原5d分组算法、最终全SHA/CRC/记录数检查保持。协议升级先解决调度和所有权隔离；未偷偷删掉算法中的CRC或改压缩配方。
+
+## 新协议改变了什么
+
+POST使用该资产自己的POST/CAPTURE独占锁和NAS私有授权、scratch、输出。公共SOURCE/TARGET/DISPATCHER/QUEUE仅作只读内核锁表观察，POST不再全程独占它们，也不为测试空闲而短暂拿全局FLOCK。
+
+已批准且写域不相交的capture或仅刷新catalog的publisher可以共存；身份、源码、OFD、Root精确批准和路径交集检查继续执行。未知占用、共享/POSIX锁及不明记录仍拒绝。目录publisher951008/start_ticks958011786保留正常运行，没有被停止或修改。
+
+新控制器增加私有STOP_AFTER_CURRENT_BATCH接口：写入绑定本scope SHA的请求后，在当前批次ledger、私有授权退役及owned闭合后返回，供后续安全交接。GPU并行仍需真正的Root握手，不以15秒空闲窗口代替批准屏障。
+
+## 真实失败及为何现在更改
+
+原CPU8进程1630730在702项闭合后自然失败，报Unknown active tree without registered RAM planning profile。没有Root停止信号。Root核对424个原owned身份及SID/PGID清理，持原SOURCE/TARGET精确退役旧全局授权，原字节和失败保留。
+
+直接原因是新HASH18科学任务的注册表行没有内存字段，而已经批准、SHA绑定的实际SPEC已有4GiB规划和16GiB上限。AE任务原有live_RAM override没有消失；早期“AE规划字段被移除”的快速假设已被证据纠正。新本地观察器仅对该精确request，在registry admittedSPEC、实际frozen run、PID/ticks、argv、输入、配置、binary、engine、plan及resource guard均一致时复用已批准值。没有修改其他项目注册表、预算或模型，也没有按当前小RSS猜未来上限。未知或漂移仍HOLD。
+
+第一次新协议实际进程1657684完成702项复用，首批随后因锁观察器自相争用安全失败，未新增闭合kernel。旧检查器每个线程与父进程都试拿全局FLOCK来判断空闲，自己制造了冲突。原35c代码、失败和NAS私有授权保留。
+
+最终a807仅修改这一观察模块，复用完整held/pending/unknown解析，改成纯只读内核快照。真实父进程加4线程的1100次free调用、五类holder的750次检查，以及禁止全局FLOCK/write-open的审计hook均独立通过；其他13个runtime文件、资源适配、5d和f9字节未变。Root在新scope、fresh资源门与独立回执齐全后实际重开；已经有上面首批8项真实增量，不能把前一次仅启动ACK误写成成功。
+
+## 161适配目前的边界
+
+全161行/118binary已进入CPU流程，当前全链路适配合格仍0/161。117 ISA、19输入、14source/runtime、5mapping及6dynamic是最后正式主等待分类；证据项目和CPU测试数不冒充workload完成。
+
+Gaussian -s16已具备实际修改和离线编译的producer SO bd2723b387aef31343608440a76a0ccba6b276fc046f4e70f306f8f2ea2a8668。独审复现旧reader五个误接受：畸形CTA、重复insts、错误RF向量、非memory附memory、非constant附constant。新reader7808ab4b88dbdf1a595d697666eded75a622c201421d00d6ed177a54d35d0d2f修复实际执行site的格式和静态连接，Root独立重放并接受CPU组件；动态、数值和模拟器资格没有因此变true。
+
+输入输出callback也在109以独立CPU mock编译和运行，同步复制实际保存并重开16B样例，输入/输出EOF准确，异步DtoH拒绝；没有CUDA初始化或GPU运行。实际GPU输入输出仍需运行取证。
+
+Gaussian V2执行/接收组合ebcd7a7d4c5e88a90b5b5ec202c573e90db9b54965ad40076d7692449e21f8bd已完成独立真实174↔109 CPU链、30launch合成trace实际后处理/reader/数值/CFI gate及反例。它仍不能直接用于新POST并行GPU准入：拿到Native锁后会自动SSH并在15idle后签发30秒许可，没有Root发capture proof和新POST scope的明确停点。
+
+正在有限CPU实施V3 Root GO屏障：KEEPER_READY后、首次SSH前等待Native Root-only批准，绑定authority原SHA、run、keeper PID/ticks/boot、4个OFD、capture proof与新POST scope。缺失/错误/过期/重放不能启动SSH或GPU。真实Native权限测试与NAS CPU协议测试分开，NAS映射uid1011/mode0777不能伪称UID0/0600验证。
+
+另外V2采集资源门仍错误地把全部foreign未来Native ceilings算作本scope需求，并把可变registry原SHA当永不变输入。已安排精确修复：保留完整报告，NAS-only只核实际Native5GiB floor及本scope小控制/实际pending，当前RAM使用已验证的真实epoch和SPEC规划，不填0掩盖foreign承诺。旧冻结版本保留。这些未完成接线不包装成production-ready；尚未新增GPU采集。
+
+## 已完成、尚未完成
+
+V14已核的SM70 Source2精确归档、503双整SHA、125输入共享NAS访问、Code500公共元数据发布及三个项目cwd查询继续有效，不重跑。全库正文Native恢复已取消，不再列成默认欠项。共享NAS实际0777，工具只读行为不等于OS强制只读。
+
+最近RTX目录为41常规/41裁剪，均按精确资产/输入对象计数。当前streamcluster仍需全部POST、实际归档、receiver、COMMIT/CURRENT和适用consumer验收；原33待采及5失败、全161实际适配、相应裁剪、统一公共读取/按需恢复及最终全量例外目录仍需继续。
+
+没有收到外部ChatGPT审稿。SNAPSHOT_MANIFEST.json保留选定代码和回执的原始字节及SHA；候选、独审、实际Root准入和正式新批次分别标明。整个Goal保持进行中。

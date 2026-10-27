@@ -1,0 +1,139 @@
+{
+  "schema": "ROOT_INDEPENDENT_GAUSSIAN_EXECUTED_READER_V4_COMPONENT_ACCEPTANCE",
+  "status": "CPU_COMPONENT_ACCEPTED_FOR_GAUSSIAN_RUNTIME_COMPOSITION",
+  "candidate_entry": {
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_reader_executed_static_join_fix_20261027_v2_1793074761566860470/ROOT_ENTRY_V2.json",
+    "bytes": 4081,
+    "sha256": "e5f9f828f053ac49858c33a617ee542e3ab33653c0046d47d98ef424ffa845b6"
+  },
+  "reviewed_full_source_delta": {
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_reader_executed_static_join_fix_20261027_v2_1793074761566860470/FULL_SOURCE_DELTA_FROM_BRIDGE_V1.patch",
+    "bytes": 16380,
+    "sha256": "a2e97526e69dc7b5c77c7bd555767094f1a5f46342084644074c47a9cd4daae2"
+  },
+  "reader_ref": {
+    "bytes": 281304,
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_reader_executed_static_join_fix_20261027_v2_1793074761566860470/build_final/reader",
+    "sha256": "7808ab4b88dbdf1a595d697666eded75a622c201421d00d6ed177a54d35d0d2f"
+  },
+  "python_reader_ref": {
+    "bytes": 3565,
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_reader_executed_static_join_fix_20261027_v2_1793074761566860470/source/gaussian_full_record_reader_v3.py",
+    "sha256": "a0ce885a595cd6ac9b4e52629a635079bc5033d6eb9d1e97cf5433150c002418"
+  },
+  "author_replay_independently_reexecuted": {
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/root/independent_gaussian_executed_reader_v4_1793075427016548273/ROOT_REPLAY_RESULT.json",
+    "bytes": 259,
+    "sha256": "9e35cf226cf117d2ed62ef15f5f2e2b70ff94c414f631e1fe387362fdca9d5a6"
+  },
+  "independent_original_counterfixtures": [
+    {
+      "case": "positive",
+      "fixture_ref": {
+        "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_bridge_independent_review_20261027_1793074080468883163/reader_fixtures_v2/positive/kernel.traceg",
+        "bytes": 876,
+        "sha256": "e869c7341ec99c2e4393702c3ffb6acfdbc1ee629303c7622ed5249611404b87"
+      },
+      "expected_accept": true,
+      "actual_returncode": 0,
+      "stderr": "",
+      "actual_pinned_reader": {
+        "bytes": 281304,
+        "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_reader_executed_static_join_fix_20261027_v2_1793074761566860470/build_final/reader",
+        "sha256": "7808ab4b88dbdf1a595d697666eded75a622c201421d00d6ed177a54d35d0d2f"
+      }
+    },
+    {
+      "case": "malformed_CTA_coordinates",
+      "fixture_ref": {
+        "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_bridge_independent_review_20261027_1793074080468883163/reader_fixtures_v2/malformed_CTA_coordinates/kernel.traceg",
+        "bytes": 878,
+        "sha256": "ac3f853a7ccda28af8ca5cc1e885b34fbbed595f92235791950ab10abb3fce49"
+      },
+      "expected_accept": false,
+      "actual_returncode": 2,
+      "stderr": "exact CTA coordinates grammar\n",
+      "actual_pinned_reader": {
+        "bytes": 281304,
+        "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_reader_executed_static_join_fix_20261027_v2_1793074761566860470/build_final/reader",
+        "sha256": "7808ab4b88dbdf1a595d697666eded75a622c201421d00d6ed177a54d35d0d2f"
+      }
+    },
+    {
+      "case": "duplicate_insts_declaration",
+      "fixture_ref": {
+        "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_bridge_independent_review_20261027_1793074080468883163/reader_fixtures_v2/duplicate_insts_declaration/kernel.traceg",
+        "bytes": 886,
+        "sha256": "f1c3757a0690d07777cb7143ba2c819408dde7858505d648fbaa53cf01df41d7"
+      },
+      "expected_accept": false,
+      "actual_returncode": 2,
+      "stderr": "single instruction count after warp required\n",
+      "actual_pinned_reader": {
+        "bytes": 281304,
+        "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_reader_executed_static_join_fix_20261027_v2_1793074761566860470/build_final/reader",
+        "sha256": "7808ab4b88dbdf1a595d697666eded75a622c201421d00d6ed177a54d35d0d2f"
+      }
+    },
+    {
+      "case": "nonCFI_register_operands_wrong",
+      "fixture_ref": {
+        "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_bridge_independent_review_20261027_1793074080468883163/reader_fixtures_v2/nonCFI_register_operands_wrong/kernel.traceg",
+        "bytes": 880,
+        "sha256": "26ee58abc819a33fef2ffd0a570bdd952d282f23bdf91441e396fca66b7233f5"
+      },
+      "expected_accept": false,
+      "actual_returncode": 2,
+      "stderr": "GAUSSIAN16_SCOPE_REJECT:executed static physical register operands\n",
+      "actual_pinned_reader": {
+        "bytes": 281304,
+        "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_reader_executed_static_join_fix_20261027_v2_1793074761566860470/build_final/reader",
+        "sha256": "7808ab4b88dbdf1a595d697666eded75a622c201421d00d6ed177a54d35d0d2f"
+      }
+    },
+    {
+      "case": "nonmemory_opcode_with_memory_payload",
+      "fixture_ref": {
+        "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_bridge_independent_review_20261027_1793074080468883163/reader_fixtures_v2/nonmemory_opcode_with_memory_payload/kernel.traceg",
+        "bytes": 883,
+        "sha256": "f022bc342a92f12c6ff1dff004417db54f2f1add353e7dee03111da9d17d8fb6"
+      },
+      "expected_accept": false,
+      "actual_returncode": 2,
+      "stderr": "GAUSSIAN16_SCOPE_REJECT:executed static memory presence/width\n",
+      "actual_pinned_reader": {
+        "bytes": 281304,
+        "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_reader_executed_static_join_fix_20261027_v2_1793074761566860470/build_final/reader",
+        "sha256": "7808ab4b88dbdf1a595d697666eded75a622c201421d00d6ed177a54d35d0d2f"
+      }
+    },
+    {
+      "case": "nonconstant_opcode_with_constant_payload",
+      "fixture_ref": {
+        "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_bridge_independent_review_20261027_1793074080468883163/reader_fixtures_v2/nonconstant_opcode_with_constant_payload/kernel.traceg",
+        "bytes": 877,
+        "sha256": "b1436e584b6afc0821620eadceab9a5e5af475d9c25d1ff1d85f50c4c02c8da1"
+      },
+      "expected_accept": false,
+      "actual_returncode": 2,
+      "stderr": "GAUSSIAN16_SCOPE_REJECT:executed dynamic/static constant bank/offset/width\n",
+      "actual_pinned_reader": {
+        "bytes": 281304,
+        "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_reader_executed_static_join_fix_20261027_v2_1793074761566860470/build_final/reader",
+        "sha256": "7808ab4b88dbdf1a595d697666eded75a622c201421d00d6ed177a54d35d0d2f"
+      }
+    }
+  ],
+  "source_scope": "Only every actually read record in exact Gaussian loaded map; full grammar, RF vectors, memory and constant fields, per-lane CFI/frame/EXIT and decoder EOF. No requirement to qualify unexecuted synthetic placeholder declarations.",
+  "dynamic_device_observer_joined": false,
+  "input_numeric_qualification": false,
+  "simulator_qualification": false,
+  "production_GPU_admitted": false,
+  "original_producer_SO": {
+    "bytes": 3012296,
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/offline_build_corrected/producer/gaussian16_input_observer_candidate.so",
+    "sha256": "bd2723b387aef31343608440a76a0ccba6b276fc046f4e70f306f8f2ea2a8668"
+  },
+  "source_KEEP": true,
+  "released_bytes": 0
+}

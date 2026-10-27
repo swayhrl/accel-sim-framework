@@ -1,0 +1,116 @@
+--- /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/streamcluster_pipelined_post_protocol_prepare_20261027_v2/pipelined_protocol_v1.py
++++ /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/streamcluster_pipelined_post_protocol_prepare_20261027_v3/pipelined_protocol_v1.py
+@@ -1,6 +1,7 @@
+ """Exact frozen-asset POST/capture separation. No capture execution or production authorization."""
+ from pathlib import Path
+-import os,json,hashlib,stat,time,socket,re,fcntl
++import os,json,hashlib,stat,time,socket,re
++from fresh_terminal_probe_v1 import parse_locks
+ CONTROL=Path('/root/data/shared_rtx4080_trace_library_20261024_v1/control')
+ NAS=Path('/root/share/mnt164/huangrulin/traces')
+ ORIGINAL_DEADLINE=1793241315.9269235
+@@ -26,14 +27,16 @@
+ def same_owner(row):
+  a=proc(row['pid']);need(a is not None and a['start_ticks']==str(row['start_ticks'])and a['state']not in ['Z','X','x'],'LIVE_OWNER')
+  return a
++def lock_snapshot(path):
++ p=physical(path);before=p.stat();text=Path('/proc/locks').read_text().splitlines();after=p.stat()
++ need((before.st_dev,before.st_ino)==(after.st_dev,after.st_ino),'LOCK_PATH_IDENTITY_CHANGED')
++ return parse_locks(text,before.st_dev,before.st_ino)
++def exact_write(row):
++ return row['kind']=='FLOCK'and row['advisory']=='ADVISORY'and row['mode']=='WRITE'and row['pid']>0 and row['begin']=='0'and row['end']=='EOF'
+ def flock_rows(path):
+- st=Path(path).stat();answer=[]
+- for line in Path('/proc/locks').read_text().splitlines():
+-  f=line.split()
+-  if len(f)>=6 and f[1:4]==['FLOCK','ADVISORY','WRITE']:
+-   v=f[5].split(':')
+-   if len(v)==3 and(int(v[0],16),int(v[1],16),int(v[2]))==(os.major(st.st_dev),os.minor(st.st_dev),st.st_ino):answer.append(int(f[4]))
+- return answer
++ snap=lock_snapshot(path)
++ need(not snap['unknown']and all(exact_write(r)for r in snap['held']),'UNKNOWN_POSIX_SHARED_OR_MALFORMED_HELD')
++ return [r['pid']for r in snap['held']]
+ def owner_lock(row,path):
+  same_owner(row);p=physical(path);st=p.stat();fp=Path('/proc',str(row['pid']),'fd',str(row['fd']));f=fp.stat()
+  need((f.st_dev,f.st_ino)==(st.st_dev,st.st_ino),'OWNER_OFD_INODE')
+@@ -99,42 +102,45 @@
+  for r,c in captures:need(c['schema']=='ROOT_EXACT_DISJOINT_CAPTURE_PROOF_V1'and c['status']=='ROOT_APPROVED_GATED_CAPTURE_EXACT_V1','PINNED_CAPTURE_AUTHORIZATION')
+  for r,c in publishers:need(c['schema']=='ROOT_EXACT_METADATA_PUBLISHER_PROOF_V1'and c['status']=='ROOT_APPROVED_METADATA_ONLY_PUBLISHER_V1','PINNED_PUBLISHER_AUTHORIZATION')
+  observations=[]
++ def match(pid,path):
++  cm=[(r,c,l)for r,c in captures for l in c['native_locks']if l['path']==str(path)and l['pid']==pid]
++  pm=[(r,c)for r,c in publishers if c['native_owner']['pid']==pid and str(path)in c['native_lock_paths']]
++  need(len(cm)+len(pm)==1,'UNKNOWN_OR_LEGACY_GLOBAL_WRITER')
++  return cm,pm
++ def pending(snap,path):
++  need(not snap['unknown'],'UNKNOWN_MALFORMED_KERNEL_RECORD')
++  for row in snap['waiting']:
++   need(exact_write(row),'UNKNOWN_POSIX_SHARED_OR_MALFORMED_PENDING')
++   cm,pm=match(row['pid'],path)
++   if cm:
++    # Capture must already own its complete Root-acknowledged lease set;
++    # a half-started capture is not silently admitted as a mere waiter.
++    validate_capture(cm[0][0],protected,qualification)
++   else:validate_publisher(pm[0][0],protected,qualification)
+  for path in paths:
+-  p=physical(path);fd=os.open(p,os.O_RDWR|os.O_CLOEXEC|os.O_NOFOLLOW)
+-  def free_now():
+-   try:fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB);return True
+-   except BlockingIOError:return False
+-  try:
+-   if free_now():observations.append(dict(path=str(p),state='KERNEL_FREE_PROBED'));continue
+-   holders=flock_rows(p)
+-   if len(holders)!=1:
+-    # A short writer may release between nonblock failure and /proc/locks.
+-    need(free_now(),'UNKNOWN_NONFLOCK_OR_SHARED_OWNER')
+-    observations.append(dict(path=str(p),state='KERNEL_FREE_AFTER_SHORT_BUSY_RACE'));continue
+-   original=holders[0]
+-   matches=[(r,c,l)for r,c in captures for l in c['native_locks']if l['path']==str(p)and l['pid']==original]
+-   pmatches=[(r,c)for r,c in publishers if c['native_owner']['pid']==original and str(p)in c['native_lock_paths']]
+-   need(len(matches)+len(pmatches)==1,'UNKNOWN_OR_LEGACY_GLOBAL_WRITER')
+-   failure=None
+-   for attempt in range(4):
+-    try:
+-     if matches:
+-      r,c,l=matches[0];validate_capture(r,protected,qualification);owner_lock(l,p)
+-     else:
+-      r,c=pmatches[0];validate_publisher(r,protected,qualification);publisher_lock(c,p)
+-     observations.append(dict(path=str(p),state='EXACT_ROOT_WRITER_CURRENT_OFD',owner_pid=original));break
+-    except (RuntimeError,OSError)as e:
+-     # A validation exception is never permission. Only a new successful
+-     # kernel nonblock acquisition proves the formerly busy domain is free.
+-     failure=e
+-     if free_now():
+-      observations.append(dict(path=str(p),state='KNOWN_WRITER_RELEASED_KERNEL_FREE_PROVED',previous_owner_pid=original));break
+-     need(flock_rows(p)==[original],'WRITER_CHANGED_OR_UNKNOWN_WHILE_HELD')
+-     if attempt==3:raise failure
+-     time.sleep(.01)
+-   else:raise RuntimeError('PIPELINED_POST_HOLD_BOUNDED_LOCK_OBSERVATION')
+-  finally:os.close(fd)
+- return dict(status='PASS_EXACT_CURRENT_LOCK_DOMAIN',observations=observations)
++  p=physical(path);snap=lock_snapshot(p);pending(snap,p)
++  if not snap['held']:
++   observations.append(dict(path=str(p),state='KERNEL_READONLY_SNAPSHOT_FREE',known_pending=len(snap['waiting'])));continue
++  need(len(snap['held'])==1 and exact_write(snap['held'][0]),'UNKNOWN_POSIX_SHARED_OR_MULTIPLE_HELD')
++  original=snap['held'][0]['pid'];cm,pm=match(original,p);failure=None
++  for attempt in range(4):
++   try:
++    if cm:
++     r,c,l=cm[0];validate_capture(r,protected,qualification);owner_lock(l,p)
++    else:
++     r,c=pm[0];validate_publisher(r,protected,qualification);publisher_lock(c,p)
++    observations.append(dict(path=str(p),state='EXACT_ROOT_WRITER_CURRENT_OFD',owner_pid=original));break
++   except (RuntimeError,OSError)as e:
++    failure=e;fresh=lock_snapshot(p);pending(fresh,p)
++    # No active probing or lock mutation: the only evidence is a fresh,
++    # fully parsed kernel table snapshot after a known writer released.
++    if not fresh['held']:
++     observations.append(dict(path=str(p),state='KNOWN_WRITER_RELEASED_READONLY_KERNEL_FREE',previous_owner_pid=original,known_pending=len(fresh['waiting'])));break
++    need(len(fresh['held'])==1 and exact_write(fresh['held'][0])and fresh['held'][0]['pid']==original,'WRITER_CHANGED_OR_UNKNOWN_WHILE_HELD')
++    if attempt==3:raise failure
++    time.sleep(.01)
++  else:raise RuntimeError('PIPELINED_POST_HOLD_BOUNDED_LOCK_OBSERVATION')
++ return dict(status='PASS_EXACT_CURRENT_LOCK_DOMAIN',observation_mode='READ_ONLY_PROC_LOCKS_NO_FLOCK_PROBE',observations=observations)
+ 
+ def expected_asset_leases(a,qualification=False,run=None):
+  job=a['post_asset_job_id'];need(re.fullmatch('[A-Za-z0-9_]{1,100}',job),'VALIDATED_JOB_ID')
