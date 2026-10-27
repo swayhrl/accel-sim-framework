@@ -1,0 +1,137 @@
+DTC-MAIN: remaining memory tail and throughput review V1
+Read-only snapshots: 2026-10-28 03:00 capacity, 03:04 progress, 03:14 CPU (CST).
+
+Conclusion
+Current evidence supports attempting two simultaneous Lava jobs after existing
+jobs naturally release memory. It does not support promising three. The fixed
+33-generation padding certificate now saves only 0.410 GiB. Do not overwrite
+its pinned files. A single short P0 priority exception is worth engineering
+review, but the prototype is NOT production-integrated or installable.
+
+1. Remaining matrix and Lava capacity
+There are 59 admitted, unstarted points:
+Program       Points   CH/DH   Full forecast per point (GiB)
+3MM                7     0/7                         5.578
+GEMM               3     0/3                         6.117
+SYRK               8     0/8                        14.068
+cutcp              7     0/7                        16.298
+hybridsort         9     0/9                        14.287
+lavamd            10     1/9                        81.178
+scalarProd         6     0/6                        11.494
+sgemm              9     0/9                        18.670
+
+Lava points are CH-P0 and DH-P0/E384/E768/M8/M16/Q64/Q128/F128/F256.
+Each keeps its full registered forecast of 81.1779 GiB and hard RSS cap of
+122.7668 GiB. No new Lava point has run, so there is NO measured peak or wall
+time for each of these initial L2 variants. Same-input/Core/Framework/binary
+NATURAL historical RESOURCE-VALIDATION receipts give these references:
+Cell  Peak RSS (GiB)  Wall (hours)  Historical validation generation
+CM        67.317505         3.339   LAVAMEM2-CM
+CH        67.278378         3.450   LAVAMEM2-CH
+DM        67.323780         6.025   RECOVER12-DM
+DH        67.335724         6.177   RECOVER12-DH
+
+These are old resource-validation runs, NOT new P0 accepted performance and
+NOT a timing or memory guarantee for the eight L2 variants. All old failures
+are preserved in the structured data. If DH happened to remain near 6.18 h
+and CH near 3.45 h, two continuously available slots would put the ten Lava
+jobs at roughly 31 h. This is only a conditional scheduling illustration,
+not a whole-Goal ETA or an accepted simulation result.
+
+The existing aging feasibility witness estimates 168.997 GiB slack after our
+current jobs naturally drain, with peer demand unchanged. Two empty Lava
+reservations cost 162.356 GiB, leaving only 6.641 GiB. Three cost 243.534 GiB.
+Even if the first two reach the observed historical peak before admitting
+the third, the third still needs about 58.376 GiB extra admission budget,
+equivalent to 66.337 GiB additional host headroom at the unchanged 0.88 rule.
+Three observed peaks alone total about 202.007 GiB. Current host availability,
+not the CPU pool or cgroup limit alone, is the binding evidence. Two slots
+remain a forecast-based conditional possibility, not a guarantee that both
+processes can reach their 122.77-GiB hard caps simultaneously.
+
+2. Fixed certificates and compatibility with running supervisors
+Only 1 of the fixed 33 certified generations is still live; actual discount
+is 0.410 GiB. New generations do not inherit certificates automatically.
+Their eventual disappearance returns scheduler/frontends to full forecasts.
+
+Source evidence (full paths and SHAs in SOURCE_REFERENCES.json):
+- l2_resources.py:166-167: runtime fresh=False forces physical_RAM_pass=True.
+- padding_overlay.py:83: runtime preserves that base flag.
+Thus a scheduler seeing a new fresh-admission discount while an old runtime
+does not see it does NOT by itself trigger MEMORY_HEADROOM. Disk, own RSS
+caps, lifecycle and all other original guards remain active.
+The actual frozen B5 project method passed a minimal CPU counterexample:
+budget=40, old growth=50, fresh discount=15 -> fresh growth=35 passes, while
+old runtime decision remains false but physical_RAM_pass remains true.
+
+The real danger is overwriting pinned B5 policy/certificate/source paths.
+core:65 checks policy and certificate SHA on every call, including runtime
+False. In-place replacement raises; native finally:236-238 may kill the
+healthy model and leave no normal DONE. A second actual-B5 CPU case proves
+this failure. A new immutable version path leaving old bytes intact does not
+break the old runtime. Ordinary HISTORICAL_RSS appends and registered changes
+to unspent estimates are different and do not imply that failure.
+Changing shared RESOURCE_POLICY.json may not RAM-kill an old runtime, but old
+padding strict construction at core:47 still checks its old base-policy SHA.
+That can HOLD old acceptance. No-TERM does not mean old evidence is valid.
+
+Future certificate or prediction changes require a fresh-only versioned
+operational contract, qualification, registration and per-generation strict
+dispatch. Keep old files and proof paths through their natural completion
+and strict/archive closure. Complete version isolation can coexist with old
+supervisors; if the implementation requires replacing a shared pinned path,
+wait for its referencing supervisors to close naturally before retiring it.
+Existing candidate_full_original uses max(canonical,new forecast), core:60-63.
+A certificate/history refresh cannot silently lower a new Lava candidate from
+81.18 to 74.32 GiB. A properly evidenced new LIVE Lava certificate might save
+about 6.859 GiB per generation, but that is not currently registered and does
+not prove a third slot. The 128-MiB structure margin is an empirical convention,
+not a proven absolute bound.
+
+3. Near-term funding and a bounded short-P0 proposal
+At 03:00, C=49.349 and protected R=55.035 GiB; Lava needs 31.829 GiB more.
+A 238-second instruction-rate observation predicts five possible completions
+within 30 minutes, with a modeled gross release of 20.449 GiB. It still leaves
+11.380 GiB unfunded. Hybridsort is near its tail, but instruction rates and
+anonymous-PSS release are estimates, not bounds or deadlines. Strict/archive
+closure is still required for aging credit. Current evidence does not show
+that Lava will be funded within 30 minutes.
+
+The prospective short point is scalarProd DH-P0:
+E2-DTCL2MLP-2b93f70cd0666c51-DH-P0-V1, full forecast 11.49375 GiB.
+Three strictly closed same-input/binding/design/Core/FW/binary variants had
+actual walls 19.68/23.40/26.30 minutes (F256/F128/E384). P0 is NOT measured.
+Do not turn this estimate into a new 30-minute kill timeout.
+
+The independent pure-function prototype proposes at most ONE <=12-GiB DH-P0
+per aged-target generation, without changing real protected R. It rejects
+spent/claimed/INTENT/unknown/slow candidates, existing backfill, modeled
+near-term target funding, and all pressure reasons. It requires complete
+original physical gates, CPU rebinding and final frame/IO guard, followed
+by a second fresh cost/pressure/identity check. It charges the full candidate.
+Benefit: one missing P0 can complete during an idle interval. Cost: temporary
+11.49-GiB use can delay Lava if funding arrives sooner than predicted.
+This prototype has NO apply API and production_integration_qualified=False.
+Main requires a separate complete owner-instance integration and durable
+one-shot token qualification before any production use. Token-write failure
+must HOLD, and no old scientific identity may be retried or refunded.
+
+4. CPU pressure is an independent admission gate
+At 03:12 Main observed cpu_pressure_full. physical_RAM_pass=False then meant
+combined admission HOLD, not lack of RAM. At 03:14 full-PSI avg10 was 9.68 ->
+9.49; avg60 remained 10.3 -> 10.2 and measured full stall was about 10.10%.
+Actual CPU use was 54.52 equivalents versus quota384; throttle delta was0,
+cpuset was0-511 and actual addon scheduler affinity had512 CPUs. This supports
+near-threshold shared pressure, not a full quota or a 32-CPU affinity trap.
+It does not identify a specific foreign/MCP cause. The proposed one-shot must
+retain the PSI gate, even with abundant RAM.
+
+Evidence and boundaries
+B5 source publication: e85a23ac88b909dacd2667b305ace5b363b49568.
+IO source publication: 3c411b6253d3b70d98b29b24219c511683e6e706.
+CAPACITY_SNAPSHOT/ANALYSIS preserve every pending identity, historical Lava
+receipt/spec SHA, failures, live metadata and exact source locations.
+ROLLING_PROGRESS and CPU_PRESSURE_CHECK retain the independent observations.
+10 small sequential CPU checks PASS; prototype integration is NOT qualified.
+This review made no production change, model start, signal, controller restart,
+spent/spec/budget edit or intervention in another job.
