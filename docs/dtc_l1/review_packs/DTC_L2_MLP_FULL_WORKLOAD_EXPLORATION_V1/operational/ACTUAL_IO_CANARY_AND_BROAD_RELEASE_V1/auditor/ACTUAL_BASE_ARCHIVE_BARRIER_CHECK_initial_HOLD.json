@@ -1,0 +1,25 @@
+{
+  "cohort": "E2-DTCL2MLP-dd9f695c4f53b083-DH-F256-V1",
+  "model_signals": 0,
+  "model_starts": 0,
+  "not_IO_canary_released": true,
+  "production_mutations": 0,
+  "rows": [
+    {
+      "error": "PermissionError('READONLY_AUDIT_MUTATION_BLOCKED subprocess.Popen')",
+      "phase": "base",
+      "status": "HOLD",
+      "traceback": "Traceback (most recent call last):\n  File \"<stdin>\", line 7, in <module>\n  File \"/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/B/canary_rollout_audit_v1/audit_canary_rollout.py\", line 21, in base\n    def base(self,c):return load('rollout_unchanged_base_strict',self.root/'tools/l2_strict.py').terminal(c)\n  File \"/root/data/dtc_l2_mlp_exploration_20261027_v1/tools/l2_strict.py\", line 46, in terminal\n    domain=read(bp)['qualification'];e.check_input(s)\n  File \"/root/data/dtc_l2_mlp_exploration_20261027_v1/tools/l2_native.py\", line 52, in check_input\n    n=base();n.ROOT=R;return n.check_input(s)\n  File \"/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_native_cap1m.py\", line 424, in check_input\n    fs=json.loads(subprocess.check_output(['findmnt','-J','-T',str(entry)],text=True))['filesystems'][0]\n  File \"/usr/lib/python3.10/subprocess.py\", line 421, in check_output\n    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,\n  File \"/usr/lib/python3.10/subprocess.py\", line 503, in run\n    with Popen(*popenargs, **kwargs) as process:\n  File \"/usr/lib/python3.10/subprocess.py\", line 971, in __init__\n    self._execute_child(args, executable, preexec_fn, close_fds,\n  File \"/usr/lib/python3.10/subprocess.py\", line 1735, in _execute_child\n    sys.audit(\"subprocess.Popen\", executable, args, cwd, env)\n  File \"/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/B/canary_rollout_audit_v1/audit_canary_rollout.py\", line 13, in _audit\n    if event in {'os.mkdir','os.remove','os.rename','os.rmdir','os.link','os.symlink','os.truncate','os.chmod','os.chown','os.utime','os.kill','os.killpg','os.fork','os.posix_spawn','subprocess.Popen'}:raise PermissionError('READONLY_AUDIT_MUTATION_BLOCKED '+event)\nPermissionError: READONLY_AUDIT_MUTATION_BLOCKED subprocess.Popen\n"
+    },
+    {
+      "archive_sha256": "e18c5b29cece871e16422428f19c6abe101298dc133d5ac2968da1872d12b71c",
+      "independently_verified_entries": 34,
+      "native_restore": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/recovery/8086de24c9e2bc08c736eebf6139dbfc9a8ed6a70b93076236f093137587f28b",
+      "phase": "archive",
+      "source_mutations_blocked": true,
+      "status": "PASS"
+    }
+  ],
+  "schema": "ACTUAL_CLOSED_PADDING_PILOT_READONLY_BARRIER_CHECK_V1",
+  "status": "HOLD"
+}
