@@ -1,0 +1,115 @@
+DTC downstream18 分段观察报告
+2026-10-27T06:02:45.078072+00:00
+
+这是当前固定 Core/Framework 的只读周期观察，不是 accepted 全程性能结果。
+输入范围仍为已声明 trace；源码语义映射不晋升 whole-application 正确性或捕获完整性。
+
+{"cases": 18, "analysis_errors": 0, "live": 18, "DONE": 0, "accepted_states": {"PENDING": 18}, "sampled_complete_segments": 58, "total_segments": 216, "paired_available": 70, "paired_total": 294}
+
+方法：按 kernel 精确动态人口划分；0/5/25/50/75/95/100% 为完成 active-thread instructions 的前沿。
+使用真实快照夹住每个前沿；线性插值仅作图示估计，另保留 cycles/计数器单调边界。
+不能把前沿百分比解释为所有 warp 的同一循环迭代。快段采样过粗时会显示不确定。
+kernel 末尾使用最终计数器行；跨 kernel 从该行建立基线。没有基线时保留缺失。
+单位：cycles 为 core cycles；DRAM atom 字节数由实际有序配置计算；FIFO-full 为子分区-周期事件。
+FIFO-full / (子分区数 × core cycles) 只是按核心周期归一化的事件密度，并非 DRAM 调度队列等待时间。
+L2 HIT/MISS/SECTOR_MISS/RESERVATION_FAIL 原样分列，不凭未经证明的互斥性拼出 miss rate。
+段内流量按事件发生时间统计，可能包括先前工作发出的未完成请求；不等于严格请求 cohort。
+
+当前已观察到的具体情况：
+慢 kernel 的 0–5% 工作段已有 6/6 个 PQ 配对，P0/PQ 周期比值插值估计范围 0.9982–1.0070。
+其中 6 个配对的 PQ 入口 FIFO-full 事件在该采样边界内为零，而 P0 大于零；性能判断仍按下列周期比值范围，不能用事件消失直接推出加速。
+慢 kernel 的 0–5% 工作段已有 6/6 个 PS 配对，P0/PS 周期比值插值估计范围 1.9909–2.0179。
+其中 6 个配对在保守采样边界下仍确认 PS 使用更少核心周期。这是早段敏感性，不能外推完整应用加速或唯一瓶颈。
+
+已有可比较段（0–100% 为整 kernel，其余为预设分段）：
+ATAX K1 0-5% CH_P0/CH_PQ: 0.99816 [0.83333, 1.00000], UNRESOLVED_AT_SAMPLE_PRECISION, coarse=False
+ATAX K1 0-5% DH_P0/DH_PQ: 1.00000 [0.90909, 1.10000], UNRESOLVED_AT_SAMPLE_PRECISION, coarse=False
+ATAX K1 0-5% CH_P0/CH_PS: 2.00581 [1.66667, 2.20000], RIGHT_FEWER_CYCLES, coarse=False
+ATAX K1 0-5% DH_P0/DH_PS: 2.00902 [1.66667, 2.20000], RIGHT_FEWER_CYCLES, coarse=False
+ATAX K1 0-5% CH_P0/DH_P0: 1.00315 [0.90909, 1.10000], UNRESOLVED_AT_SAMPLE_PRECISION, coarse=False
+ATAX K1 0-5% CH_PQ/DH_PQ: 1.00500 [1.00000, 1.20000], UNRESOLVED_AT_SAMPLE_PRECISION, coarse=False
+ATAX K1 0-5% CH_PS/DH_PS: 1.00475 [0.83333, 1.20000], UNRESOLVED_AT_SAMPLE_PRECISION, coarse=False
+MVT K1 0-5% CH_P0/CH_PQ: 1.00113 [0.90909, 1.10000], UNRESOLVED_AT_SAMPLE_PRECISION, coarse=False
+MVT K1 0-5% DH_P0/DH_PQ: 1.00000 [0.90909, 1.10000], UNRESOLVED_AT_SAMPLE_PRECISION, coarse=False
+MVT K1 0-5% CH_P0/CH_PS: 2.01790 [1.66667, 2.20000], RIGHT_FEWER_CYCLES, coarse=False
+MVT K1 0-5% DH_P0/DH_PS: 2.00942 [1.66667, 2.20000], RIGHT_FEWER_CYCLES, coarse=False
+MVT K1 0-5% CH_P0/DH_P0: 0.99534 [0.90909, 1.10000], UNRESOLVED_AT_SAMPLE_PRECISION, coarse=False
+MVT K1 0-5% CH_PQ/DH_PQ: 0.99423 [0.90909, 1.10000], UNRESOLVED_AT_SAMPLE_PRECISION, coarse=False
+MVT K1 0-5% CH_PS/DH_PS: 0.99116 [0.83333, 1.20000], UNRESOLVED_AT_SAMPLE_PRECISION, coarse=False
+BICG K1 0-5% CH_P0/CH_PQ: 1.00000 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 5-25% CH_P0/CH_PQ: 1.00000 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 25-50% CH_P0/CH_PQ: 1.00000 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 50-75% CH_P0/CH_PQ: 1.00000 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 75-95% CH_P0/CH_PQ: 1.00000 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 95-100% CH_P0/CH_PQ: 1.00000 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 0-100% CH_P0/CH_PQ: 1.00000 [1.00000, 1.00000], UNRESOLVED_AT_SAMPLE_PRECISION, coarse=False
+BICG K2 0-5% CH_P0/CH_PQ: 1.00699 [0.91305, 1.09523], UNRESOLVED_AT_SAMPLE_PRECISION, coarse=False
+BICG K1 0-5% DH_P0/DH_PQ: 1.00000 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 5-25% DH_P0/DH_PQ: 1.00000 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 25-50% DH_P0/DH_PQ: 1.00000 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 50-75% DH_P0/DH_PQ: 1.00000 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 75-95% DH_P0/DH_PQ: 1.00000 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 95-100% DH_P0/DH_PQ: 1.00000 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 0-100% DH_P0/DH_PQ: 1.00000 [1.00000, 1.00000], UNRESOLVED_AT_SAMPLE_PRECISION, coarse=False
+BICG K2 0-5% DH_P0/DH_PQ: 1.00000 [0.91445, 1.09355], UNRESOLVED_AT_SAMPLE_PRECISION, coarse=False
+BICG K1 0-5% CH_P0/CH_PS: 1.09655 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 5-25% CH_P0/CH_PS: 1.09655 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 25-50% CH_P0/CH_PS: 1.09452 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 50-75% CH_P0/CH_PS: 1.09659 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 75-95% CH_P0/CH_PS: 1.09758 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 95-100% CH_P0/CH_PS: 1.07670 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 0-100% CH_P0/CH_PS: 1.09525 [1.09525, 1.09525], RIGHT_FEWER_CYCLES, coarse=False
+BICG K2 0-5% CH_P0/CH_PS: 1.99091 [1.80884, 2.39335], RIGHT_FEWER_CYCLES, coarse=False
+BICG K1 0-5% DH_P0/DH_PS: 1.10292 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 5-25% DH_P0/DH_PS: 1.10292 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 25-50% DH_P0/DH_PS: 1.10237 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 50-75% DH_P0/DH_PS: 1.10319 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 75-95% DH_P0/DH_PS: 1.10468 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 95-100% DH_P0/DH_PS: 1.10605 [0.00000, 548.92933], UNRESOLVED_AT_SAMPLE_PRECISION, coarse=True
+BICG K1 0-100% DH_P0/DH_PS: 1.10336 [1.10336, 1.10336], RIGHT_FEWER_CYCLES, coarse=False
+BICG K2 0-5% DH_P0/DH_PS: 2.00700 [1.78172, 2.33813], RIGHT_FEWER_CYCLES, coarse=False
+BICG K1 0-5% CH_P0/DH_P0: 1.05751 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 5-25% CH_P0/DH_P0: 1.05751 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 25-50% CH_P0/DH_P0: 1.05530 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 50-75% CH_P0/DH_P0: 1.05711 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 75-95% CH_P0/DH_P0: 1.05799 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 95-100% CH_P0/DH_P0: 1.05476 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 0-100% CH_P0/DH_P0: 1.05682 [1.05682, 1.05682], RIGHT_FEWER_CYCLES, coarse=False
+BICG K2 0-5% CH_P0/DH_P0: 0.99849 [0.89836, 1.07595], UNRESOLVED_AT_SAMPLE_PRECISION, coarse=False
+BICG K1 0-5% CH_PQ/DH_PQ: 1.05751 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 5-25% CH_PQ/DH_PQ: 1.05751 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 25-50% CH_PQ/DH_PQ: 1.05530 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 50-75% CH_PQ/DH_PQ: 1.05711 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 75-95% CH_PQ/DH_PQ: 1.05799 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 95-100% CH_PQ/DH_PQ: 1.05476 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 0-100% CH_PQ/DH_PQ: 1.05682 [1.05682, 1.05682], RIGHT_FEWER_CYCLES, coarse=False
+BICG K2 0-5% CH_PQ/DH_PQ: 0.99157 [0.89836, 1.07595], UNRESOLVED_AT_SAMPLE_PRECISION, coarse=False
+BICG K1 0-5% CH_PS/DH_PS: 1.06365 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 5-25% CH_PS/DH_PS: 1.06365 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 25-50% CH_PS/DH_PS: 1.06286 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 50-75% CH_PS/DH_PS: 1.06347 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 75-95% CH_PS/DH_PS: 1.06484 [0.00000, unbounded], UNBOUNDED_SAMPLE_PRECISION, coarse=True
+BICG K1 95-100% CH_PS/DH_PS: 1.08352 [0.00000, 343.66784], UNRESOLVED_AT_SAMPLE_PRECISION, coarse=True
+BICG K1 0-100% CH_PS/DH_PS: 1.06464 [1.06464, 1.06464], RIGHT_FEWER_CYCLES, coarse=False
+BICG K2 0-5% CH_PS/DH_PS: 1.00657 [0.80099, 1.16123], UNRESOLVED_AT_SAMPLE_PRECISION, coarse=False
+
+事实、关联和未解问题：
+事实层只使用以上快照、源码定义和区间边界。当前未完成段不补值，不借用旧 accepted 性能。
+若 PQ FIFO-full 降低但同工作前沿 cycles 区间仍重叠，只能说入口背压减少、性能改善尚未被当前精度确认。
+若 PS 段内 core cycles 明显减少，说明该配置对 DRAM 时间域速度敏感；不能单独区分带宽、排队、bank/row 或返回路径。
+DRAM 流量、L2 miss 和 SM 退休参与度与性能变化可以关联；没有请求 cohort 和队列积分就不能断言因果。
+
+明确缺失：
+DTC Tag replacement / bank arbitration / duplicate lower requests: NO_EXPLICIT_PERIODIC_DTC_COLUMNS; Generic L1D columns are not a validated DTC counter interface; no DTC attribution.
+PIB/OO occupancy, full cycles and completion service: NOT_PERIODICALLY_EXPORTED; Cannot separate DTC admission/retirement bottlenecks from this CSV.
+DRAM scheduler wait distribution / sum / count: NOT_PERIODICALLY_EXPORTED; L2 FIFO-full events are not queue latency; no segment avg_mrq_latency.
+L2-to-DRAM request roundtrip and causal request cohorts: NO_REQUEST_ID_STAGE_TIMESTAMPS; Traffic completed during an interval may originate in earlier work.
+Exact per-warp loop iteration / source line / PC: AGGREGATE_RETIRED_WORK_ONLY; Work percent is not an exact common j or i for all warps.
+Time-average active SMs / instantaneous concurrency: ONLY_RETIREMENT_PARTICIPATION_PROXY; SMs with retired warps in a segment are not active-SM occupancy.
+
+最小后续观测方案（仅设计，未实现、未编译、未启动新实验）：
+1. 优先输出每个 DRAM 调度器累计 mrq_latency_sum / mrq_count、请求注入和返回数、等待队列长度 cycle integral/max、服务 busy cycles；标清 core/DRAM 时间域。复用既有 tot_mrq_latency/tot_mrq_num，在安全采样出口追加只读字段。
+2. 若仍无法解释 DH 劣势，再输出各 SM DTC PIB/OO occupancy integral/full cycles、Tag replacement/bank arbitration、lower issue/response、completion service 累计数；复用现有观测计数，缺失才添加纯观察计数。
+3. 只有源码循环位置仍是关键疑点时，为少量 kernel/CTA/warp 记录 PC/迭代前沿；CTA/warp 进度分布不能压成一个伪精确 j。
+验证：新观测身份；默认关闭；独立工作树；CPU fixture 验证累计数/重置/边界；对同配置开关观测验证 cycles、instructions、CTA、最终统计完全一致；真实模拟验证须另行批准。
+本轮18点运行期间不注入观测、不改采样频率、不挂接调试器、不截断输入。

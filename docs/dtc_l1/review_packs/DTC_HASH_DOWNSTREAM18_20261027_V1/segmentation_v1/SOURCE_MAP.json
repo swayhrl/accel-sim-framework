@@ -1,0 +1,285 @@
+{
+  "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+  "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+  "maps": {
+    "ATAX": {
+      "program": "ATAX",
+      "source_path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/polybench-gpu-1.0/CUDA/ATAX/atax.cu",
+      "source_sha256": "bca826a6e4fbdad67b11400ef2193210f43d8181441a0b9883e19445db049cfb",
+      "size": 4096,
+      "element_bytes": 4,
+      "input_digest": "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+      "capture_scope": "NOT_NEWLY_CERTIFIED;whole_declared_trace_only",
+      "numerical_correctness": "UNPROVEN",
+      "kernels": [
+        {
+          "ordinal": 1,
+          "kernel": "_Z12atax_kernel1PfS_S_",
+          "active_thread_instructions": 71380992,
+          "complete_ctas": 16,
+          "complete_warps": 128,
+          "trace_path": "/root/workspace/assets/traces/bundles/2d610fb9d5b893ee16a8af0e178214d8a19715efb7709949ff6c89a57ce60561/tree/kernel-1.traceg",
+          "qualification_trace_sha256": "05d421c2a2833dda877e67b399ba14ebd1d54841ba68295c40953d704651820d",
+          "trace_header": "-kernel name = _Z12atax_kernel1PfS_S_\n-kernel id = 1\n-grid dim = (16,1,1)\n-block dim = (256,1,1)\n-shmem = 0\n-nregs = 22\n-binary version = 70\n-cuda stream id = 0\n-shmem base_addr = 0x00007fe72d000000\n-local mem base_addr = 0x00007fe72f000000\n-nvbit version = 1.4\n-accelsim tracer version = 3\n\n#traces format = threadblock_x threadblock_y threadblock_z warpid_tb PC mask dest_num [reg_dests] opcode src_num [reg_srcs] mem_width [adrrescompress?] [mem_addresses]\n\n\n\n",
+          "source_lines": [
+            84,
+            96
+          ],
+          "operation": "tmp = A*x",
+          "lane_matrix_stride_bytes": 16384,
+          "inner_loop_matrix_stride_bytes": 4,
+          "mapping_status": "SOURCE_SEMANTICS_AND_KERNEL_IDENTITY; NOT_DEBUG_LINE_PROOF",
+          "global_reference_histogram": {
+            "1": 524416,
+            "32": 524288
+          }
+        },
+        {
+          "ordinal": 2,
+          "kernel": "_Z12atax_kernel2PfS_S_",
+          "active_thread_instructions": 74285056,
+          "complete_ctas": 16,
+          "complete_warps": 128,
+          "trace_path": "/root/workspace/assets/traces/bundles/2d610fb9d5b893ee16a8af0e178214d8a19715efb7709949ff6c89a57ce60561/tree/kernel-2.traceg",
+          "qualification_trace_sha256": "ca18ed113fcf55069b5303b5a631e9345432204667ae46ddb5bbe57751970f13",
+          "trace_header": "-kernel name = _Z12atax_kernel2PfS_S_\n-kernel id = 2\n-grid dim = (16,1,1)\n-block dim = (256,1,1)\n-shmem = 0\n-nregs = 22\n-binary version = 70\n-cuda stream id = 0\n-shmem base_addr = 0x00007fe72d000000\n-local mem base_addr = 0x00007fe72f000000\n-nvbit version = 1.4\n-accelsim tracer version = 3\n\n#traces format = threadblock_x threadblock_y threadblock_z warpid_tb PC mask dest_num [reg_dests] opcode src_num [reg_srcs] mem_width [adrrescompress?] [mem_addresses]\n\n\n\n",
+          "source_lines": [
+            98,
+            110
+          ],
+          "operation": "y = A^T*tmp",
+          "lane_matrix_stride_bytes": 4,
+          "inner_loop_matrix_stride_bytes": 16384,
+          "mapping_status": "SOURCE_SEMANTICS_AND_KERNEL_IDENTITY; NOT_DEBUG_LINE_PROOF",
+          "global_reference_histogram": {
+            "1": 1048704
+          }
+        }
+      ],
+      "source_excerpt": "84: __global__ void atax_kernel1(DATA_TYPE *A, DATA_TYPE *x, DATA_TYPE *tmp)\n85: {\n86: \tint i = blockIdx.x * blockDim.x + threadIdx.x;\n87: \n88: \tif (i < NX)\n89: \t{\n90: \t\tint j;\n91: \t\tfor(j=0; j < NY; j++)\n92: \t\t{\n93: \t\t\ttmp[i] += A[i * NY + j] * x[j];\n94: \t\t}\n95: \t}\n96: }\n98: __global__ void atax_kernel2(DATA_TYPE *A, DATA_TYPE *y, DATA_TYPE *tmp)\n99: {\n100: \tint j = blockIdx.x * blockDim.x + threadIdx.x;\n101: \t\n102: \tif (j < NY)\n103: \t{\n104: \t\tint i;\n105: \t\tfor(i=0; i < NX; i++)\n106: \t\t{\n107: \t\t\ty[j] += A[i * NY + j] * tmp[i];\n108: \t\t}\n109: \t}\n110: }"
+    },
+    "MVT": {
+      "program": "MVT",
+      "source_path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/polybench-gpu-1.0/CUDA/MVT/mvt.cu",
+      "source_sha256": "83764e6633f3a0976423e0ba7ab351ac42b0eeb249bf59a9e3531c639d4923d6",
+      "size": 4096,
+      "element_bytes": 4,
+      "input_digest": "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+      "capture_scope": "NOT_NEWLY_CERTIFIED;whole_declared_trace_only",
+      "numerical_correctness": "UNPROVEN",
+      "kernels": [
+        {
+          "ordinal": 1,
+          "kernel": "_Z11mvt_kernel1PfS_S_",
+          "active_thread_instructions": 71380992,
+          "complete_ctas": 16,
+          "complete_warps": 128,
+          "trace_path": "/root/workspace/assets/traces/bundles/460901d4173352b272caa6876db2119b88a9e0471c6f6fa2f8f8477edef9c5a0/tree/kernel-1.traceg",
+          "qualification_trace_sha256": "5a892efc9ccf25d201be82496f375cb8dce08b09800b4c05a1f219fb821fc2e6",
+          "trace_header": "-kernel name = _Z11mvt_kernel1PfS_S_\n-kernel id = 1\n-grid dim = (16,1,1)\n-block dim = (256,1,1)\n-shmem = 0\n-nregs = 22\n-binary version = 70\n-cuda stream id = 0\n-shmem base_addr = 0x00007fabe0000000\n-local mem base_addr = 0x00007fabe2000000\n-nvbit version = 1.4\n-accelsim tracer version = 3\n\n#traces format = threadblock_x threadblock_y threadblock_z warpid_tb PC mask dest_num [reg_dests] opcode src_num [reg_srcs] mem_width [adrrescompress?] [mem_addresses]\n\n\n\n",
+          "source_lines": [
+            109,
+            121
+          ],
+          "operation": "x1 += A*y1",
+          "lane_matrix_stride_bytes": 16384,
+          "inner_loop_matrix_stride_bytes": 4,
+          "mapping_status": "SOURCE_SEMANTICS_AND_KERNEL_IDENTITY; NOT_DEBUG_LINE_PROOF",
+          "global_reference_histogram": {
+            "1": 524416,
+            "32": 524288
+          }
+        },
+        {
+          "ordinal": 2,
+          "kernel": "_Z11mvt_kernel2PfS_S_",
+          "active_thread_instructions": 74285056,
+          "complete_ctas": 16,
+          "complete_warps": 128,
+          "trace_path": "/root/workspace/assets/traces/bundles/460901d4173352b272caa6876db2119b88a9e0471c6f6fa2f8f8477edef9c5a0/tree/kernel-2.traceg",
+          "qualification_trace_sha256": "4ac7709cfe774c3200192fe97dcd8948ff692f6cf97765a5098d4438fc057151",
+          "trace_header": "-kernel name = _Z11mvt_kernel2PfS_S_\n-kernel id = 2\n-grid dim = (16,1,1)\n-block dim = (256,1,1)\n-shmem = 0\n-nregs = 22\n-binary version = 70\n-cuda stream id = 0\n-shmem base_addr = 0x00007fabe0000000\n-local mem base_addr = 0x00007fabe2000000\n-nvbit version = 1.4\n-accelsim tracer version = 3\n\n#traces format = threadblock_x threadblock_y threadblock_z warpid_tb PC mask dest_num [reg_dests] opcode src_num [reg_srcs] mem_width [adrrescompress?] [mem_addresses]\n\n\n\n",
+          "source_lines": [
+            124,
+            136
+          ],
+          "operation": "x2 += A^T*y2",
+          "lane_matrix_stride_bytes": 4,
+          "inner_loop_matrix_stride_bytes": 16384,
+          "mapping_status": "SOURCE_SEMANTICS_AND_KERNEL_IDENTITY; NOT_DEBUG_LINE_PROOF",
+          "global_reference_histogram": {
+            "1": 1048704
+          }
+        }
+      ],
+      "source_excerpt": "109: __global__ void mvt_kernel1(DATA_TYPE *a, DATA_TYPE *x1, DATA_TYPE *y_1)\n110: {\n111: \tint i = blockIdx.x * blockDim.x + threadIdx.x;\n112: \n113: \tif (i < N)\n114: \t{\n115: \t\tint j;\n116: \t\tfor(j=0; j < N; j++)\n117: \t\t{\n118: \t\t\tx1[i] += a[i * N + j] * y_1[j];\n119: \t\t}\n120: \t}\n121: }\n124: __global__ void mvt_kernel2(DATA_TYPE *a, DATA_TYPE *x2, DATA_TYPE *y_2)\n125: {\n126: \tint i = blockIdx.x * blockDim.x + threadIdx.x;\n127: \n128: \tif (i < N)\n129: \t{\n130: \t\tint j;\n131: \t\tfor(j=0; j < N; j++)\n132: \t\t{\n133: \t\t\tx2[i] += a[j * N + i] * y_2[j];\t\n134: \t\t}\n135: \t}\n136: }"
+    },
+    "BICG": {
+      "program": "BICG",
+      "source_path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/polybench-gpu-1.0/CUDA/BICG/bicg.cu",
+      "source_sha256": "c38c3b0bb1a543ce37ee6d4d7abe433a36574f05b49574e6bf1004c45b68f6fe",
+      "size": 4096,
+      "element_bytes": 4,
+      "input_digest": "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+      "capture_scope": "NOT_NEWLY_CERTIFIED;whole_declared_trace_only",
+      "numerical_correctness": "UNPROVEN",
+      "kernels": [
+        {
+          "ordinal": 1,
+          "kernel": "_Z12bicg_kernel1PfS_S_",
+          "active_thread_instructions": 74285056,
+          "complete_ctas": 16,
+          "complete_warps": 128,
+          "trace_path": "/root/workspace/assets/traces/bundles/780d5828627b7e8f35f3da81572346940932deb01c9409b8ce9f272df6f752d1/tree/kernel-1.traceg",
+          "qualification_trace_sha256": "70bde2fbbbdf123175a3b6220c721d59cb6904544d5f6539e289aeded3fc6b23",
+          "trace_header": "-kernel name = _Z12bicg_kernel1PfS_S_\n-kernel id = 1\n-grid dim = (16,1,1)\n-block dim = (256,1,1)\n-shmem = 0\n-nregs = 22\n-binary version = 70\n-cuda stream id = 0\n-shmem base_addr = 0x00007f670e000000\n-local mem base_addr = 0x00007f6710000000\n-nvbit version = 1.4\n-accelsim tracer version = 3\n\n#traces format = threadblock_x threadblock_y threadblock_z warpid_tb PC mask dest_num [reg_dests] opcode src_num [reg_srcs] mem_width [adrrescompress?] [mem_addresses]\n\n\n\n",
+          "source_lines": [
+            99,
+            113
+          ],
+          "operation": "s = A^T*r",
+          "lane_matrix_stride_bytes": 4,
+          "inner_loop_matrix_stride_bytes": 16384,
+          "mapping_status": "SOURCE_SEMANTICS_AND_KERNEL_IDENTITY; NOT_DEBUG_LINE_PROOF",
+          "global_reference_histogram": {
+            "1": 1048576
+          }
+        },
+        {
+          "ordinal": 2,
+          "kernel": "_Z12bicg_kernel2PfS_S_",
+          "active_thread_instructions": 71380992,
+          "complete_ctas": 16,
+          "complete_warps": 128,
+          "trace_path": "/root/workspace/assets/traces/bundles/780d5828627b7e8f35f3da81572346940932deb01c9409b8ce9f272df6f752d1/tree/kernel-2.traceg",
+          "qualification_trace_sha256": "6fd1dae932eae8b38477a1dea16edcb3592a6c8b3da0b2293bfeed7228c6e5c6",
+          "trace_header": "-kernel name = _Z12bicg_kernel2PfS_S_\n-kernel id = 2\n-grid dim = (16,1,1)\n-block dim = (256,1,1)\n-shmem = 0\n-nregs = 22\n-binary version = 70\n-cuda stream id = 0\n-shmem base_addr = 0x00007f670e000000\n-local mem base_addr = 0x00007f6710000000\n-nvbit version = 1.4\n-accelsim tracer version = 3\n\n#traces format = threadblock_x threadblock_y threadblock_z warpid_tb PC mask dest_num [reg_dests] opcode src_num [reg_srcs] mem_width [adrrescompress?] [mem_addresses]\n\n\n\n",
+          "source_lines": [
+            117,
+            131
+          ],
+          "operation": "q = A*p",
+          "lane_matrix_stride_bytes": 16384,
+          "inner_loop_matrix_stride_bytes": 4,
+          "mapping_status": "SOURCE_SEMANTICS_AND_KERNEL_IDENTITY; NOT_DEBUG_LINE_PROOF",
+          "global_reference_histogram": {
+            "1": 524288,
+            "32": 524288
+          }
+        }
+      ],
+      "source_excerpt": "99: __global__ void bicg_kernel1(DATA_TYPE *A, DATA_TYPE *r, DATA_TYPE *s)\n100: {\n101: \tint j = blockIdx.x * blockDim.x + threadIdx.x;\n102: \t\n103: \tif (j < NY)\n104: \t{\n105: \t\ts[j] = 0.0f;\n106: \n107: \t\tint i;\n108: \t\tfor(i = 0; i < NX; i++)\n109: \t\t{\n110: \t\t\ts[j] += A[i * NY + j] * r[i];\n111: \t\t}\n112: \t}\t\n113: }\n117: __global__ void bicg_kernel2(DATA_TYPE *A, DATA_TYPE *p, DATA_TYPE *q)\n118: {\n119: \tint i = blockIdx.x * blockDim.x + threadIdx.x;\n120: \t\n121: \tif (i < NX)\n122: \t{\n123: \t\tq[i] = 0.0f;\n124: \n125: \t\tint j;\n126: \t\tfor(j=0; j < NY; j++)\n127: \t\t{\n128: \t\t\tq[i] += A[i * NY + j] * p[j];\n129: \t\t}\n130: \t}\n131: }"
+    }
+  },
+  "counter_source": [
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/abstract_hardware_model.cc",
+      "sha256": "88f4af1a14cb64e87d20f220ec6533980afa42d52393e925c9710dcb169913b5",
+      "start_line": 1280,
+      "end_line": 1357,
+      "excerpt": "1280: inline void PerfCounter::open_for_write() {\n1281:   output_csv = gzopen(output_csv_name.c_str(), \"w\");\n1282: \n1283:   // Create/update symlink \"perf_counter.csv.gz\" -> timestamped file\n1284:   const char *symlink_name = \"perf_counter.csv.gz\";\n1285:   unlink(symlink_name);  // Remove existing symlink if any\n1286:   symlink(output_csv_name.c_str(), symlink_name);\n1287: }\n1288: \n1289: inline void PerfCounter::open_for_append() {\n1290:   output_csv = gzopen(output_csv_name.c_str(), \"a\");\n1291: }\n1292: \n1293: void PerfCounter::add_absolute_counter(std::string name,\n1294:                                        unsigned long long &counter) {\n1295:   counter = 0;\n1296:   absolute_counter_names.push_back(name);\n1297:   absolute_counters.push_back(counter);\n1298: }\n1299: \n1300: void PerfCounter::add_ratio_counter(std::string name, float &counter) {\n1301:   counter = 0.0f;\n1302:   ratio_counter_names.push_back(name);\n1303:   ratio_counters.push_back(counter);\n1304: }\n1305: \n1306: void PerfCounter::add_statistics_counter(\n1307:     Statistics::AbstractStatsCounter &counter) {\n1308:   statistics_counters.push_back(counter);\n1309: }\n1310: \n1311: void PerfCounter::print_header() {\n1312:   open_for_write();\n1313: \n1314:   for (auto &name : absolute_counter_names) {\n1315:     gzprintf(output_csv, \"%s,\", name.c_str());\n1316:   }\n1317:   for (auto &name : ratio_counter_names) {\n1318:     gzprintf(output_csv, \"%s,\", name.c_str());\n1319:   }\n1320:   for (auto &counter : statistics_counters) {\n1321:     gzprintf(output_csv, \"%s,\", counter.get().csv_header_string().c_str());\n1322:   }\n1323:   gzprintf(output_csv, \"wall_clock_ms,\");\n1324:   gzprintf(output_csv, \"\\n\");\n1325: \n1326:   close();\n1327:   header_printed = true;\n1328: }\n1329: \n1330: void PerfCounter::print_counters() {\n1331:   if (!header_printed) {\n1332:     print_header();\n1333:   }\n1334: \n1335:   open_for_append();\n1336: \n1337:   for (auto &counter : absolute_counters) {\n1338:     gzprintf(output_csv, \"%llu,\", counter.get());\n1339:   }\n1340:   for (auto &counter : ratio_counters) {\n1341:     gzprintf(output_csv, \"%f,\", counter.get());\n1342:   }\n1343:   for (auto &counter : statistics_counters) {\n1344:     gzprintf(output_csv, \"%s,\", counter.get().csv_value_string().c_str());\n1345:   }\n1346:   auto now = std::chrono::steady_clock::now();\n1347:   auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(\n1348:                 now.time_since_epoch())\n1349:                 .count();\n1350:   gzprintf(output_csv, \"%lld,\", ms);\n1351:   gzprintf(output_csv, \"\\n\");\n1352: \n1353:   close();\n1354: }\n1355: inline void PerfCounter::close() {\n1356:   gzclose(output_csv);\n1357:   output_csv = nullptr;"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+      "start_line": 1240,
+      "end_line": 1354,
+      "excerpt": "1240:   // register counters\n1241:   perf_counters.add_absolute_counter(\"gpu_tot_sim_cycle\", gpu_tot_sim_cycle);\n1242:   perf_counters.add_absolute_counter(\"gpu_sim_cycle\", gpu_sim_cycle);\n1243:   perf_counters.add_absolute_counter(\"gpu_tot_sim_insn\", gpu_tot_sim_insn);\n1244:   perf_counters.add_absolute_counter(\"gpu_sim_insn\", gpu_sim_insn);\n1245:   perf_counters.add_absolute_counter(\"gpu_tot_issued_cta\", gpu_tot_issued_cta);\n1246:   perf_counters.add_absolute_counter(\"gpu_completed_cta\", gpu_completed_cta);\n1247:   perf_counters.add_absolute_counter(\"gpgpu_n_shmem_bkconflict\",\n1248:                                      m_shader_stats->gpgpu_n_shmem_bkconflict);\n1249:   // Register additional shader stats counters\n1250:   perf_counters.add_absolute_counter(\n1251:       \"gpgpu_n_l1cache_bkconflict\", m_shader_stats->gpgpu_n_l1cache_bkconflict);\n1252:   perf_counters.add_absolute_counter(\n1253:       \"gpgpu_n_intrawarp_mshr_merge\",\n1254:       m_shader_stats->gpgpu_n_intrawarp_mshr_merge);\n1255:   perf_counters.add_absolute_counter(\"gpgpu_n_cmem_portconflict\",\n1256:                                      m_shader_stats->gpgpu_n_cmem_portconflict);\n1257:   perf_counters.add_absolute_counter(\"gpgpu_n_stall_shd_mem\",\n1258:                                      m_shader_stats->gpgpu_n_stall_shd_mem);\n1259:   perf_counters.add_absolute_counter(\"gpgpu_n_mem_read_local\",\n1260:                                      m_shader_stats->gpgpu_n_mem_read_local);\n1261:   perf_counters.add_absolute_counter(\"gpgpu_n_mem_write_local\",\n1262:                                      m_shader_stats->gpgpu_n_mem_write_local);\n1263:   perf_counters.add_absolute_counter(\"gpgpu_n_mem_read_global\",\n1264:                                      m_shader_stats->gpgpu_n_mem_read_global);\n1265:   perf_counters.add_absolute_counter(\"gpgpu_n_mem_write_global\",\n1266:                                      m_shader_stats->gpgpu_n_mem_write_global);\n1267:   perf_counters.add_absolute_counter(\"gpgpu_n_mem_texture\",\n1268:                                      m_shader_stats->gpgpu_n_mem_texture);\n1269:   perf_counters.add_absolute_counter(\"gpgpu_n_mem_const\",\n1270:                                      m_shader_stats->gpgpu_n_mem_const);\n1271:   perf_counters.add_absolute_counter(\"gpgpu_n_load_insn\",\n1272:                                      m_shader_stats->gpgpu_n_load_insn);\n1273:   perf_counters.add_absolute_counter(\"gpgpu_n_store_insn\",\n1274:                                      m_shader_stats->gpgpu_n_store_insn);\n1275:   perf_counters.add_absolute_counter(\"gpgpu_n_shmem_insn\",\n1276:                                      m_shader_stats->gpgpu_n_shmem_insn);\n1277:   perf_counters.add_absolute_counter(\"gpgpu_n_sstarr_insn\",\n1278:                                      m_shader_stats->gpgpu_n_sstarr_insn);\n1279:   perf_counters.add_absolute_counter(\"gpgpu_n_tex_insn\",\n1280:                                      m_shader_stats->gpgpu_n_tex_insn);\n1281:   perf_counters.add_absolute_counter(\"gpgpu_n_const_mem_insn\",\n1282:                                      m_shader_stats->gpgpu_n_const_insn);\n1283:   perf_counters.add_absolute_counter(\"gpgpu_n_param_mem_insn\",\n1284:                                      m_shader_stats->gpgpu_n_param_insn);\n1285: \n1286:   perf_counters.add_absolute_counter(\"partiton_replys_in_parallel\",\n1287:                                      partiton_replys_in_parallel);\n1288:   perf_counters.add_absolute_counter(\"partiton_reqs_in_parallel\",\n1289:                                      partiton_reqs_in_parallel);\n1290:   perf_counters.add_absolute_counter(\"partiton_reqs_in_parallel_util\",\n1291:                                      partiton_reqs_in_parallel_util);\n1292:   perf_counters.add_absolute_counter(\"partiton_replys_in_parallel_total\",\n1293:                                      partiton_replys_in_parallel_total);\n1294:   perf_counters.add_absolute_counter(\"partiton_reqs_in_parallel_total\",\n1295:                                      partiton_reqs_in_parallel_total);\n1296:   perf_counters.add_absolute_counter(\"partiton_reqs_in_parallel_util_total\",\n1297:                                      partiton_reqs_in_parallel_util_total);\n1298:   perf_counters.add_absolute_counter(\"gpu_sim_cycle_parition_util\",\n1299:                                      gpu_sim_cycle_parition_util);\n1300:   perf_counters.add_absolute_counter(\"gpu_tot_sim_cycle_parition_util\",\n1301:                                      gpu_tot_sim_cycle_parition_util);\n1302:   perf_counters.add_absolute_counter(\"gpu_stall_icnt2core\",\n1303:                                      gpu_stall_icnt2core);\n1304:   perf_counters.add_absolute_counter(\"gpu_stall_icnt2mem\", gpu_stall_icnt2mem);\n1305:   perf_counters.add_absolute_counter(\"gpu_stall_core2icnt\",\n1306:                                      gpu_stall_core2icnt);\n1307:   perf_counters.add_absolute_counter(\"gpu_stall_mem2icnt\", gpu_stall_mem2icnt);\n1308:   perf_counters.add_absolute_counter(\"ldst_global_writebacks\",\n1309:                                      m_shader_stats->ldst_global_writebacks);\n1310: \n1311:   for (unsigned i = 0; i < m_config.num_shader(); i++) {\n1312:     perf_counters.add_absolute_counter(\n1313:         \"gpgpu_n_tensor_core_inst_issued_\" + std::to_string(i),\n1314:         m_shader_stats->m_tensor_core_inst_issued[i]);\n1315:     perf_counters.add_absolute_counter(\"m_num_sim_winsn_\" + std::to_string(i),\n1316:                                        m_shader_stats->m_num_sim_winsn[i]);\n1317:   }\n1318: \n1319:   perf_counters.add_absolute_counter(\"shader_cycle_distro_0\",\n1320:                                      m_shader_stats->shader_cycle_distro[0]);\n1321: \n1322:   perf_counters.add_absolute_counter(\"shader_cycle_distro_1\",\n1323:                                      m_shader_stats->shader_cycle_distro[1]);\n1324: \n1325:   perf_counters.add_absolute_counter(\"shader_cycle_distro_2\",\n1326:                                      m_shader_stats->shader_cycle_distro[2]);\n1327: \n1328:   perf_counters.add_ratio_counter(\"occupancy\", gpu_occupancy_ratio);\n1329: \n1330:   // Register LRC counters\n1331:   perf_counters.add_statistics_counter(\n1332:       m_memory_stats->LRC_subpartition_num_icnt_to_lrc_sectors);\n1333:   perf_counters.add_statistics_counter(\n1334:       m_memory_stats->LRC_subpartition_num_lrc_to_l2_sectors);\n1335:   perf_counters.add_statistics_counter(\n1336:       m_memory_stats->LRC_subpartition_l2_stall_due_to_lrc_full);\n1337:   perf_counters.add_statistics_counter(\n1338:       m_memory_stats->LRC_subpartition_lrc_queue_size);\n1339:   perf_counters.add_statistics_counter(\n1340:       m_memory_stats->LRC_subpartition_current_max_coalesced_count);\n1341:   perf_counters.add_statistics_counter(\n1342:       m_memory_stats->LRC_subpartition_current_avg_coalesced_count);\n1343: \n1344:   // Register inter-chiplet counters\n1345:   perf_counters.add_statistics_counter(m_memory_stats->interchip_read_requests);\n1346:   perf_counters.add_statistics_counter(\n1347:       m_memory_stats->interchip_write_requests);\n1348:   perf_counters.add_statistics_counter(m_memory_stats->chiplet_queue_full);\n1349:   perf_counters.add_statistics_counter(m_memory_stats->chiplet_write_fail);\n1350:   perf_counters.add_statistics_counter(m_memory_stats->L2_dram_queue_full);\n1351: \n1352:   // DRAM traffic per memory controller\n1353:   perf_counters.add_statistics_counter(m_memory_stats->dram_reads_per_mc);\n1354:   perf_counters.add_statistics_counter(m_memory_stats->dram_writes_per_mc);"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+      "start_line": 1527,
+      "end_line": 1594,
+      "excerpt": "1527: void gpgpu_sim::init() {\n1528:   // run a CUDA grid on the GPU microarchitecture simulator\n1529:   gpu_sim_cycle = 0;\n1530:   gpu_sim_insn = 0;\n1531:   last_gpu_sim_insn = 0;\n1532:   m_total_cta_launched = 0;\n1533:   gpu_completed_cta = 0;\n1534:   partiton_reqs_in_parallel = 0;\n1535:   partiton_replys_in_parallel = 0;\n1536:   partiton_reqs_in_parallel_util = 0;\n1537:   gpu_sim_cycle_parition_util = 0;\n1538: \n1539: // McPAT initialization function. Called on first launch of GPU\n1540: #ifdef GPGPUSIM_POWER_MODEL\n1541:   if (m_config.g_power_simulation_enabled) {\n1542:     init_mcpat(m_config, m_gpgpusim_wrapper, m_config.gpu_stat_sample_freq,\n1543:                gpu_tot_sim_insn, gpu_sim_insn);\n1544:   }\n1545: #endif\n1546: \n1547:   reinit_clock_domains();\n1548:   gpgpu_ctx->func_sim->set_param_gpgpu_num_shaders(m_config.num_shader());\n1549:   for (unsigned i = 0; i < m_shader_config->n_simt_clusters; i++)\n1550:     m_cluster[i]->reinit();\n1551:   m_shader_stats->new_grid();\n1552:   // initialize the control-flow, memory access, memory latency logger\n1553:   if (m_config.g_visualizer_enabled) {\n1554:     create_thread_CFlogger(gpgpu_ctx, m_config.num_shader(),\n1555:                            m_shader_config->n_thread_per_shader, 0,\n1556:                            m_config.gpgpu_cflog_interval);\n1557:   }\n1558:   shader_CTA_count_create(m_config.num_shader(), m_config.gpgpu_cflog_interval);\n1559:   if (m_config.gpgpu_cflog_interval != 0) {\n1560:     insn_warp_occ_create(m_config.num_shader(), m_shader_config->warp_size);\n1561:     shader_warp_occ_create(m_config.num_shader(), m_shader_config->warp_size,\n1562:                            m_config.gpgpu_cflog_interval);\n1563:     shader_mem_acc_create(m_config.num_shader(), m_memory_config->m_n_mem, 4,\n1564:                           m_config.gpgpu_cflog_interval);\n1565:     shader_mem_lat_create(m_config.num_shader(), m_config.gpgpu_cflog_interval);\n1566:     shader_cache_access_create(m_config.num_shader(), 3,\n1567:                                m_config.gpgpu_cflog_interval);\n1568:     set_spill_interval(m_config.gpgpu_cflog_interval * 40);\n1569:   }\n1570: \n1571:   if (g_network_mode) icnt_init();\n1572: }\n1573: \n1574: void gpgpu_sim::update_stats() {\n1575:   m_memory_stats->memlatstat_lat_pw();\n1576:   gpu_tot_sim_cycle += gpu_sim_cycle;\n1577:   gpu_tot_sim_insn += gpu_sim_insn;\n1578:   gpu_tot_issued_cta += m_total_cta_launched;\n1579:   partiton_reqs_in_parallel_total += partiton_reqs_in_parallel;\n1580:   partiton_replys_in_parallel_total += partiton_replys_in_parallel;\n1581:   partiton_reqs_in_parallel_util_total += partiton_reqs_in_parallel_util;\n1582:   gpu_tot_sim_cycle_parition_util += gpu_sim_cycle_parition_util;\n1583:   gpu_tot_occupancy += gpu_occupancy;\n1584: \n1585:   gpu_sim_cycle = 0;\n1586:   partiton_reqs_in_parallel = 0;\n1587:   partiton_replys_in_parallel = 0;\n1588:   partiton_reqs_in_parallel_util = 0;\n1589:   gpu_sim_cycle_parition_util = 0;\n1590:   gpu_sim_insn = 0;\n1591:   m_total_cta_launched = 0;\n1592:   gpu_completed_cta = 0;\n1593:   gpu_occupancy = occupancy_stats();\n1594:   clear_mbarrier_trywait_stats();"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+      "start_line": 2633,
+      "end_line": 2638,
+      "excerpt": "2633:     if (!((gpu_tot_sim_cycle + gpu_sim_cycle) %\n2634:           m_config.gpu_stat_sample_freq)) {\n2635:       // update the counters before printing\n2636:       gpu_occupancy_ratio = gpu_occupancy.get_occ_fraction();\n2637:       perf_counters.print_counters();\n2638:     }"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/l2cache.cc",
+      "sha256": "1b2b0ebca49a2f5943c9350a637d849961da96159a147a70b887434bd7f37ff5",
+      "start_line": 1113,
+      "end_line": 1126,
+      "excerpt": "1113: void l2_cache::cycle() {\n1114:   if (!m_miss_queue.empty()) {\n1115:     mem_fetch *mf = m_miss_queue.front();\n1116:     uint32_t chiplet_idx = mf->get_dest_chiplet();\n1117:     if (chiplet_idx == m_chiplet_id || mf->get_type() == WRITE_REQUEST) {\n1118:       // This request belongs to the same chiplet, send it to DRAM\n1119:       // for writes, a seperate WRITE_FORWARD is generated\n1120:       // always write to local\n1121:       if (!m_memport->full(mf->size(), mf->get_is_write())) {\n1122:         m_miss_queue.pop_front();\n1123:         m_memport->push(mf);\n1124:       } else {\n1125:         ++m_mem_stats->L2_dram_queue_full[m_sub_partition_id];\n1126:       }"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/l2cache.h",
+      "sha256": "724164b9a9e97b408781cccf8efccd94c56c3cf79667941b2ea8a3105cfb7890",
+      "start_line": 448,
+      "end_line": 455,
+      "excerpt": "448: class L2interface : public mem_fetch_interface {\n449:  public:\n450:   L2interface(memory_sub_partition *unit) { m_unit = unit; }\n451:   virtual ~L2interface() {}\n452:   virtual bool full(unsigned size, bool write) const {\n453:     // assume read and write packets all same size\n454:     return m_unit->m_L2_dram_queue->full();\n455:   }"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/mem_latency_stat.cc",
+      "sha256": "bd04d9b1aa377457f512d52e414a54e0208573cb13df4be97a32e70781a29045",
+      "start_line": 283,
+      "end_line": 294,
+      "excerpt": "283: void memory_stats_t::memlatstat_dram_access(mem_fetch *mf) {\n284:   unsigned dram_id = mf->get_tlx_addr().chip;\n285:   unsigned bank = mf->get_tlx_addr().bk;\n286: \n287:   // Track DRAM traffic per memory controller\n288:   unsigned sectors =\n289:       ceil(mf->get_data_size() / m_memory_config->dram_atom_size);\n290:   if (mf->get_is_write()) {\n291:     dram_writes_per_mc[dram_id] += sectors;\n292:   } else {\n293:     dram_reads_per_mc[dram_id] += sectors;\n294:   }"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.h",
+      "sha256": "132f291114bde93102c347765c25d877e69a21867a6142a0e98ef9a6f6619f4c",
+      "start_line": 295,
+      "end_line": 298,
+      "excerpt": "295:     tWTP = (WL + (BL / data_command_freq_ratio) + tWR);\n296:     dram_atom_size =\n297:         BL * busW * gpu_n_mem_per_ctrlr;  // burst length x bus width x # chips\n298:                                           // per partition"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/dram_sched.cc",
+      "sha256": "2a0280247c5558541dc3896f86bc596549dd83b71630717cc40756248fee3e73",
+      "start_line": 231,
+      "end_line": 252,
+      "excerpt": "231:   for (i = 0; i < m_config->nbk; i++) {\n232:     unsigned b = (i + prio) % m_config->nbk;\n233:     if (!bk[b]->mrq) {\n234:       req = sched->schedule(b, bk[b]->curr_row);\n235: \n236:       if (req) {\n237:         req->data->set_status(IN_PARTITION_MC_BANK_ARB_QUEUE,\n238:                               m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);\n239:         prio = (prio + 1) % m_config->nbk;\n240:         bk[b]->mrq = req;\n241:         if (m_config->gpgpu_memlatency_stat) {\n242:           mrq_latency = m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle -\n243:                         bk[b]->mrq->timestamp;\n244:           m_stats->tot_mrq_latency += mrq_latency;\n245:           m_stats->tot_mrq_num++;\n246:           bk[b]->mrq->timestamp =\n247:               m_gpu->gpu_tot_sim_cycle + m_gpu->gpu_sim_cycle;\n248:           m_stats->mrq_lat_table[LOGB2(mrq_latency)]++;\n249:           if (mrq_latency > m_stats->max_mrq_latency) {\n250:             m_stats->max_mrq_latency = mrq_latency;\n251:           }\n252:         }"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/accel-sim.cc",
+      "sha256": "36e11eb6aa8975b208d3f5e65f2a389bc93809483c17a15d3743c8fe272a37d8",
+      "start_line": 72,
+      "end_line": 106,
+      "excerpt": "72:     // Launch all kernels within window that are on a stream that isn't already\n73:     // running\n74:     for (auto k : kernels_info) {\n75:       bool stream_busy = false;\n76:       for (auto s : busy_streams) {\n77:         if (s == k->get_cuda_stream_id()) stream_busy = true;\n78:       }\n79:       if (!stream_busy && m_gpgpu_sim->can_start_kernel() &&\n80:           !k->was_launched()) {\n81:         std::cout << \"launching kernel name: \" << k->get_name()\n82:                   << \" uid: \" << k->get_uid()\n83:                   << \" cuda_stream_id: \" << k->get_cuda_stream_id()\n84:                   << std::endl;\n85:         m_gpgpu_sim->launch(k);\n86:         k->set_launched();\n87:         busy_streams.push_back(k->get_cuda_stream_id());\n88:         if (ag7_progress.enabled()) ag7_progress.observe(\"BOUNDARY\",\n89:             m_gpgpu_sim->gpu_tot_sim_insn + m_gpgpu_sim->gpu_sim_insn,\n90:             true, true, \"NONE\", static_cast<int64_t>(k->get_cuda_stream_id()));\n91:       }\n92:     }\n93: \n94:     unsigned finished_kernel_uid = simulate();\n95:     // cleanup finished kernel\n96:     if (finished_kernel_uid || m_gpgpu_sim->cycle_insn_cta_max_hit() ||\n97:         !m_gpgpu_sim->active()) {\n98:       cleanup(finished_kernel_uid);\n99:       if (ag7_progress.enabled()) ag7_progress.observe(\"BOUNDARY\",\n100:           m_gpgpu_sim->gpu_tot_sim_insn + m_gpgpu_sim->gpu_sim_insn, true, true);\n101:     }\n102: \n103:     if (sim_cycles) {\n104:       m_gpgpu_sim->update_stats();\n105:       m_gpgpu_context->print_simulation_time();\n106:     }"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/accel-sim.cc",
+      "sha256": "36e11eb6aa8975b208d3f5e65f2a389bc93809483c17a15d3743c8fe272a37d8",
+      "start_line": 158,
+      "end_line": 200,
+      "excerpt": "158: void accel_sim_framework::cleanup(unsigned finished_kernel) {\n159:   trace_kernel_info_t *k = NULL;\n160:   unsigned long long finished_kernel_cuda_stream_id = -1;\n161:   for (unsigned j = 0; j < kernels_info.size(); j++) {\n162:     k = kernels_info.at(j);\n163:     if (k->get_uid() == finished_kernel ||\n164:         m_gpgpu_sim->cycle_insn_cta_max_hit() || !m_gpgpu_sim->active()) {\n165:       for (unsigned int l = 0; l < busy_streams.size(); l++) {\n166:         if (busy_streams.at(l) == k->get_cuda_stream_id()) {\n167:           finished_kernel_cuda_stream_id = k->get_cuda_stream_id();\n168:           busy_streams.erase(busy_streams.begin() + l);\n169:           break;\n170:         }\n171:       }\n172:       tracer.kernel_finalizer(k->get_trace_info());\n173:       delete k->entry();\n174:       delete k;\n175:       kernels_info.erase(kernels_info.begin() + j);\n176:       if (!m_gpgpu_sim->cycle_insn_cta_max_hit() && m_gpgpu_sim->active())\n177:         break;\n178:     }\n179:   }\n180:   if (k) {\n181:     m_gpgpu_sim->print_stats(finished_kernel_cuda_stream_id);\n182:     m_gpgpu_sim->perf_counters.print_counters();\n183:   }\n184: }\n185: \n186: unsigned accel_sim_framework::simulate() {\n187:   unsigned finished_kernel_uid = 0;\n188:   do {\n189:     if (!m_gpgpu_sim->active()) break;\n190: \n191:     // performance simulation\n192:     if (m_gpgpu_sim->active()) {\n193:       m_gpgpu_sim->cycle();\n194:       sim_cycles = true;\n195:       // Same-thread post-cycle observation; no queue pops, model writes or\n196:       // unsynchronized timer reads. Long blocking phases fail freshness upstream.\n197:       if (ag7_progress.enabled()) ag7_progress.observe(\"SIMULATE\",\n198:           m_gpgpu_sim->gpu_tot_sim_insn + m_gpgpu_sim->gpu_sim_insn, true, false,\n199:           \"NONE\", busy_streams.size() == 1 ?\n200:               static_cast<int64_t>(busy_streams.front()) : -1);"
+    }
+  ],
+  "missing": [
+    {
+      "metric": "DTC Tag replacement / bank arbitration / duplicate lower requests",
+      "status": "NO_EXPLICIT_PERIODIC_DTC_COLUMNS",
+      "consequence": "Generic L1D columns are not a validated DTC counter interface; no DTC attribution."
+    },
+    {
+      "metric": "PIB/OO occupancy, full cycles and completion service",
+      "status": "NOT_PERIODICALLY_EXPORTED",
+      "consequence": "Cannot separate DTC admission/retirement bottlenecks from this CSV."
+    },
+    {
+      "metric": "DRAM scheduler wait distribution / sum / count",
+      "status": "NOT_PERIODICALLY_EXPORTED",
+      "consequence": "L2 FIFO-full events are not queue latency; no segment avg_mrq_latency."
+    },
+    {
+      "metric": "L2-to-DRAM request roundtrip and causal request cohorts",
+      "status": "NO_REQUEST_ID_STAGE_TIMESTAMPS",
+      "consequence": "Traffic completed during an interval may originate in earlier work."
+    },
+    {
+      "metric": "Exact per-warp loop iteration / source line / PC",
+      "status": "AGGREGATE_RETIRED_WORK_ONLY",
+      "consequence": "Work percent is not an exact common j or i for all warps."
+    },
+    {
+      "metric": "Time-average active SMs / instantaneous concurrency",
+      "status": "ONLY_RETIREMENT_PARTICIPATION_PROXY",
+      "consequence": "SMs with retired warps in a segment are not active-SM occupancy."
+    }
+  ]
+}
