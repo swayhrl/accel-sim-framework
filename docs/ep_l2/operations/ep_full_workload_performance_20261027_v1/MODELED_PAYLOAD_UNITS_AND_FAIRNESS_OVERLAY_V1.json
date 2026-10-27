@@ -1,0 +1,171 @@
+{
+  "F_unified_reachability": {
+    "BYPASS_role_distinction": "The region historically namedbypass can hold RESIDENT/WB/TVD/RO inFT2; that is physical-ID borrowing, not proof that production assigns the BYPASS enum role.",
+    "FT_mode": 2,
+    "all1168_simultaneously_useful_or_occupied": "NOT_PROVEN; independent caps/role lifetimes/bank skew constrain practical occupancy",
+    "allocation_rule": "preview_free scans all physical IDs forFREE with requested bank colour and fixed_role_room; static role-ID interval filters apply onlyFT1.",
+    "constraints": [
+      "samebank colour payload_id%4==tag_index%4",
+      "mandatoryWB/RO/pending/pinned payload cannot be reclaimed as FREE",
+      "TVD/WAD address capacity128 and no fixed_victim_entries partition bydefault",
+      "sharedD512/per_address32/lineMSHR128 and miss/lower/return queues remain finite",
+      "one serialized pending frontend replacement may temporarily hold an extra prospective RESIDENT landing; do not equate allrole occupancy to committed Tagcount"
+    ],
+    "physical_pool": 1168,
+    "role_transfers": [
+      "resident dirty victim->WB in place; newTag gets another same-bank FREE landing",
+      "clean victim can remainTVD only with paid directory/retention and landing checks",
+      "resident->RO pin; detachedRO retains payload until actual waiter/sector retirement",
+      "retiring attachedRO->RESIDENT; detachedRO releases aftersafe retirement"
+    ],
+    "source_refs": [
+      "gpu-cache.h:2547-2555,2565-2594",
+      "ep-l2-ft-cache.inc:395-417,428-458,505-518,543-547",
+      "ep-l2-tvd-cache.inc:39-55,163-234",
+      "ep-l2-ro-store-port.h:31-56,105-110"
+    ]
+  },
+  "S_default_static_reachability": {
+    "BYPASS_production_call_inventory": [
+      {
+        "file": "src/gpgpu-sim/gpu-cache.h",
+        "line": 2502,
+        "text": "void reserve_bypass(unsigned id, new_addr_type owner, mem_fetch *mf) {"
+      },
+      {
+        "file": "src/gpgpu-sim/gpu-cache.h",
+        "line": 2514,
+        "text": "void assign_bypass(unsigned id, new_addr_type owner, mem_fetch *mf) {"
+      },
+      {
+        "file": "src/gpgpu-sim/gpu-cache.h",
+        "line": 2515,
+        "text": "reserve_bypass(id, owner, mf);"
+      }
+    ],
+    "BYPASS_status": "NO_PRODUCTION_ALLOCATION_CALL_SITE_IN_CORE_SRC; definitions plus one internal convenience call only. No dynamic occupancy claim made.",
+    "FT_mode": 1,
+    "S64_alternative": {
+      "WB": 64,
+      "bypass": 80,
+      "physical_total": 1168,
+      "regular_Tag_resident_reach_at32x8": 256,
+      "resident": 1024,
+      "source_reachable_RESIDENT_plus_WB_slot_upper_bound_per_slice": 320,
+      "status": "different stronger static partition stratum; no runtime result asserted"
+    },
+    "WB_ID_interval": [
+      1152,
+      1167
+    ],
+    "bypass_ID_interval": [
+      1024,
+      1151
+    ],
+    "production_Tag_resident_landing_rule": "landing_id=index, withindex<sets*ways. For32x8 the regular committed/reserved RESIDENT IDs are0..255.",
+    "resident_ID_interval": [
+      0,
+      1023
+    ],
+    "resident_slots_not_reachable_data_bytes_all_GPU": 6291456,
+    "resident_slots_not_reachable_from_regular_Tag_landing": 768,
+    "same_physical_capacity_does_not_mean_same_usable_role_capacity": true,
+    "source_reachable_RESIDENT_plus_WB_data_bytes_upper_bound_all_GPU": 2228224,
+    "source_reachable_RESIDENT_plus_WB_slot_upper_bound_per_slice": 272,
+    "source_rule_refs": [
+      "ep-l2-ft-cache.inc:62-87,98-102,350-359,390-393,428-432,450-458,511-518",
+      "gpu-cache.h:2547-2555,2570-2577,2839-2842"
+    ],
+    "static_unused_or_unreachable_nominal_bytes_all_GPU": 7340032,
+    "static_unused_or_unreachable_nominal_slots_per_slice_under_documented_entrypoints": 896,
+    "upper_bound_is_joint_achievability_proof": false
+  },
+  "fair_comparison": {
+    "hardware_equality": "same modeled1168line slots + common128B copy latch + sameD512/WAD128/banks/queues per pairedhardware profile",
+    "mechanism_difference": "F can reuse static-stranded physical IDs for other roles under guards; S cannot. This is a modeled organization opportunity, not proof of area savings or all-pool utilization.",
+    "reference_reporting": [
+      "report nominal logical Tag2MiB and modeled physical payload9.125MiB separately",
+      "report S stranded/static-role and F dynamic-role reachable restrictions",
+      "do not label smaller Tag geometry a smaller physical payload GPU",
+      "do not multiply bank_grants by128 or32 to invent served byte bandwidth",
+      "require actual occupancy events/role peaks for measured highwater; independent peaks cannot be added into concurrency"
+    ]
+  },
+  "frozen_catalog_modified": false,
+  "frozen_catalog_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/PARAMETER_CATALOG_V2.json",
+    "sha256": "110be382dbfee88a55d36606ac6951d83776c6cb1391556481807f2463b2baf4"
+  },
+  "frozen_factor_overlay_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/PARAMETER_FACTOR_AUDIT_V1.json",
+    "sha256": "6396acbc6012bb86fe85736fe26abd3c8cebc8c05c11490026287b186239786e"
+  },
+  "goal": "EP_L2_FULL_WORKLOAD_PERFORMANCE_POTENTIAL_EXPLORATION_V1",
+  "models_started": 0,
+  "production_source_mutations": 0,
+  "reference_D_32x8": {
+    "Tag_addressable_line_data_coverage_MiB_all_GPU": 2.0,
+    "Tag_addressable_line_data_coverage_bytes_all_GPU": 2097152,
+    "Tag_addressable_line_data_coverage_bytes_per_slice": 32768,
+    "Tag_metadata_bits_area": "UNKNOWN;2MiB is covered data-address capacity, not SRAM Tag metadata storage",
+    "area_power_clock_closure": "UNKNOWN",
+    "logical_Tag_entries_all_GPU": 16384,
+    "logical_Tag_entries_per_slice": 256,
+    "metadata_included_in_payload_byte_total": false,
+    "modeled_physical_payload_data_MiB_all_GPU": 9.125,
+    "modeled_physical_payload_data_bytes_all_GPU": 9568256,
+    "modeled_physical_payload_data_bytes_per_slice": 149504,
+    "modeled_physical_payload_slots_per_bank": 292,
+    "modeled_physical_payload_slots_per_slice": 1168,
+    "payload_plus_latch_model_bytes_all_GPU": 9576448,
+    "sets_per_slice": 32,
+    "shared_copy_latch_modeled_bytes_all_GPU": 8192,
+    "shared_copy_latch_modeled_bytes_per_slice": 128,
+    "slices": 64,
+    "ways": 8
+  },
+  "schema": "EP_FULL_PERF_MODELED_PAYLOAD_UNITS_AND_FAIRNESS_OVERLAY_V1",
+  "source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+  "source_refs": {
+    "src/gpgpu-sim/ep-l2-ft-cache.inc": {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-ft-cache.inc",
+      "sha256": "e27b7624732f3b1c30f0803caef9b3da8cb1a7b84ea82193cd3d24e667e603cc"
+    },
+    "src/gpgpu-sim/ep-l2-ro-store-port.h": {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-ro-store-port.h",
+      "sha256": "dc454e18636d686705e7871c2a8704a240ff9faabab49def2f3f8723144ea90b"
+    },
+    "src/gpgpu-sim/ep-l2-ro-transactions.h": {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-ro-transactions.h",
+      "sha256": "29fd0db9bbc260dd872140c026a9729b95a9d6de15d8396137558e7861ed20ec"
+    },
+    "src/gpgpu-sim/ep-l2-tvd-cache.inc": {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tvd-cache.inc",
+      "sha256": "16456828b6bfc34496ca973a02ff308b03ab182ee8bec11359bdb20387893578"
+    },
+    "src/gpgpu-sim/ep-l2-tvd-fixed-pool.inc": {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tvd-fixed-pool.inc",
+      "sha256": "419d91ba6226275e6cca2d0e199d8a11ac7a3117da39dac5865058e415aa6e7b"
+    },
+    "src/gpgpu-sim/gpu-cache.h": {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/gpu-cache.h",
+      "sha256": "0a12d46d92abf95f5f908cb407835a7371b828cf9f184392f5a9b9c4e577bcfa"
+    }
+  },
+  "status": "SOURCE_READ_MODEL_CAPACITY_CONTRACT_NOT_PPA_OR_RUNTIME_OCCUPANCY_PROOF",
+  "units": {
+    "bank_grant": "ONE_LOGICAL_PAYLOAD_OPERATION_TO_ONE_SLOT_ID_NOT_A_CONSTANT_BYTE_COUNT",
+    "bank_grant_domain": "at most1 per bank per physical CORE cycle atP1; four banks; no claim of4*128B useful payload/cycle",
+    "functional_data_storage": "metadata-only; mem_fetch remains functional carrier.128B is modeled data capacity, not sizeof(slot), host RSS, or an actual uint8_t[128] array in this class.",
+    "line_bytes": 128,
+    "modeled_payload_slot": "ONE128B_LINE_OWNERSHIP_SLOT",
+    "sector_bytes": 32,
+    "sectors_per_line": 4,
+    "slot_allocation_granularity": "one owner=block_addr(address), one generation, four pending/ready sector bits and four symbolic version tokens",
+    "source_line_refs": [
+      "gpu-cache.h:2262-2304,2350-2388,2547-2577,2647-2687,2724-2733,2835-2837",
+      "ep-l2-ft-cache.inc:3-5,17-35,98-113,466-490",
+      "ep-l2-ro-store-port.h:68-95"
+    ]
+  }
+}

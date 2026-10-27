@@ -1,0 +1,249 @@
+{
+  "catalog_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/PARAMETER_CATALOG_V2.json",
+    "sha256": "110be382dbfee88a55d36606ac6951d83776c6cb1391556481807f2463b2baf4"
+  },
+  "combinations": [
+    {
+      "candidate_id": "COMBO_1",
+      "component_candidate_ids": [
+        "G64_W8",
+        "U_L1MQ32",
+        "U_L2MQ256"
+      ],
+      "exact_common_effective_delta": {
+        "-gpgpu_cache:dl1": "S:4:128:128,L:T:m:L:L,A:512:8,32:0,32",
+        "-gpgpu_cache:dl2": "S:64:128:8,L:B:m:L:P,A:128:1,256:0,32"
+      },
+      "model_starts": 0,
+      "old_new_delta": {
+        "-gpgpu_cache:dl1": {
+          "new": "S:4:128:128,L:T:m:L:L,A:512:8,32:0,32",
+          "old": "S:4:128:128,L:T:m:L:L,A:512:8,16:0,32"
+        },
+        "-gpgpu_cache:dl2": {
+          "new": "S:64:128:8,L:B:m:L:P,A:128:1,256:0,32",
+          "old": "S:32:128:8,L:B:m:L:P,A:128:1,128:0,32"
+        }
+      },
+      "resource_proxies": {
+        "FRFCFS_entries_per_channel": 128,
+        "L2_MissQ_entries_per_slice": 256,
+        "WB_progress_credits_per_channel": 1,
+        "logical_tags_per_slice": 512,
+        "lower_FIFO_entries_per_slice": 128,
+        "physical_payload_lines_per_slice": 1168,
+        "private_general_credits_per_channel": 2,
+        "return_entries_per_channel": 192,
+        "shared_general_credits_per_channel": 319
+      },
+      "source_mutations": 0,
+      "status": "CONFIG_COMPOSITION_ONLY_NOT_CPU_NATIVE_OR_APPLICATION_QUALIFIED"
+    },
+    {
+      "candidate_id": "COMBO_2",
+      "component_candidate_ids": [
+        "G32_W16",
+        "U_L2MQ256"
+      ],
+      "exact_common_effective_delta": {
+        "-gpgpu_cache:dl2": "S:32:128:16,L:B:m:L:P,A:128:1,256:0,32"
+      },
+      "model_starts": 0,
+      "old_new_delta": {
+        "-gpgpu_cache:dl2": {
+          "new": "S:32:128:16,L:B:m:L:P,A:128:1,256:0,32",
+          "old": "S:32:128:8,L:B:m:L:P,A:128:1,128:0,32"
+        }
+      },
+      "resource_proxies": {
+        "FRFCFS_entries_per_channel": 128,
+        "L2_MissQ_entries_per_slice": 256,
+        "WB_progress_credits_per_channel": 1,
+        "logical_tags_per_slice": 512,
+        "lower_FIFO_entries_per_slice": 128,
+        "physical_payload_lines_per_slice": 1168,
+        "private_general_credits_per_channel": 2,
+        "return_entries_per_channel": 192,
+        "shared_general_credits_per_channel": 319
+      },
+      "source_mutations": 0,
+      "status": "CONFIG_COMPOSITION_ONLY_NOT_CPU_NATIVE_OR_APPLICATION_QUALIFIED"
+    },
+    {
+      "candidate_id": "COMBO_3",
+      "component_candidate_ids": [
+        "U_L2MQ256",
+        "D_LOWERFIFO256",
+        "U_FRFCFS256",
+        "U_RETURN384"
+      ],
+      "exact_common_effective_delta": {
+        "-gpgpu_cache:dl2": "S:32:128:8,L:B:m:L:P,A:128:1,256:0,32",
+        "-gpgpu_dram_partition_queues": "64:256:64:64",
+        "-gpgpu_dram_return_queue_size": "384",
+        "-gpgpu_frfcfs_dram_sched_queue_size": "256"
+      },
+      "model_starts": 0,
+      "old_new_delta": {
+        "-gpgpu_cache:dl2": {
+          "new": "S:32:128:8,L:B:m:L:P,A:128:1,256:0,32",
+          "old": "S:32:128:8,L:B:m:L:P,A:128:1,128:0,32"
+        },
+        "-gpgpu_dram_partition_queues": {
+          "new": "64:256:64:64",
+          "old": "64:128:64:64"
+        },
+        "-gpgpu_dram_return_queue_size": {
+          "new": "384",
+          "old": "192"
+        },
+        "-gpgpu_frfcfs_dram_sched_queue_size": {
+          "new": "256",
+          "old": "128"
+        }
+      },
+      "resource_proxies": {
+        "FRFCFS_entries_per_channel": 256,
+        "L2_MissQ_entries_per_slice": 256,
+        "WB_progress_credits_per_channel": 1,
+        "logical_tags_per_slice": 256,
+        "lower_FIFO_entries_per_slice": 256,
+        "physical_payload_lines_per_slice": 1168,
+        "private_general_credits_per_channel": 2,
+        "return_entries_per_channel": 384,
+        "shared_general_credits_per_channel": 639
+      },
+      "source_mutations": 0,
+      "status": "CONFIG_COMPOSITION_ONLY_NOT_CPU_NATIVE_OR_APPLICATION_QUALIFIED"
+    },
+    {
+      "candidate_id": "COMBO_4",
+      "component_candidate_ids": [
+        "D_DRAM_MHZ935",
+        "U_L1MQ32",
+        "U_L2MQ256"
+      ],
+      "exact_common_effective_delta": {
+        "-gpgpu_cache:dl1": "S:4:128:128,L:T:m:L:L,A:512:8,32:0,32",
+        "-gpgpu_cache:dl2": "S:32:128:8,L:B:m:L:P,A:128:1,256:0,32",
+        "-gpgpu_clock_domains": "1132.0:1132.0:1132.0:935.0"
+      },
+      "model_starts": 0,
+      "old_new_delta": {
+        "-gpgpu_cache:dl1": {
+          "new": "S:4:128:128,L:T:m:L:L,A:512:8,32:0,32",
+          "old": "S:4:128:128,L:T:m:L:L,A:512:8,16:0,32"
+        },
+        "-gpgpu_cache:dl2": {
+          "new": "S:32:128:8,L:B:m:L:P,A:128:1,256:0,32",
+          "old": "S:32:128:8,L:B:m:L:P,A:128:1,128:0,32"
+        },
+        "-gpgpu_clock_domains": {
+          "new": "1132.0:1132.0:1132.0:935.0",
+          "old": "1132.0:1132.0:1132.0:850.0"
+        }
+      },
+      "resource_proxies": {
+        "FRFCFS_entries_per_channel": 128,
+        "L2_MissQ_entries_per_slice": 256,
+        "WB_progress_credits_per_channel": 1,
+        "logical_tags_per_slice": 256,
+        "lower_FIFO_entries_per_slice": 128,
+        "physical_payload_lines_per_slice": 1168,
+        "private_general_credits_per_channel": 2,
+        "return_entries_per_channel": 192,
+        "shared_general_credits_per_channel": 319
+      },
+      "source_mutations": 0,
+      "status": "CONFIG_COMPOSITION_ONLY_NOT_CPU_NATIVE_OR_APPLICATION_QUALIFIED"
+    },
+    {
+      "candidate_id": "COMBO_5",
+      "component_candidate_ids": [
+        "N_ICNT_BUFFERS1024",
+        "D_LOWERFIFO256"
+      ],
+      "exact_common_effective_delta": {
+        "-gpgpu_dram_partition_queues": "64:256:64:64",
+        "-icnt_in_buffer_limit": "1024",
+        "-icnt_out_buffer_limit": "1024"
+      },
+      "model_starts": 0,
+      "old_new_delta": {
+        "-gpgpu_dram_partition_queues": {
+          "new": "64:256:64:64",
+          "old": "64:128:64:64"
+        },
+        "-icnt_in_buffer_limit": {
+          "new": "1024",
+          "old": "512"
+        },
+        "-icnt_out_buffer_limit": {
+          "new": "1024",
+          "old": "512"
+        }
+      },
+      "resource_proxies": {
+        "FRFCFS_entries_per_channel": 128,
+        "L2_MissQ_entries_per_slice": 128,
+        "WB_progress_credits_per_channel": 1,
+        "logical_tags_per_slice": 256,
+        "lower_FIFO_entries_per_slice": 256,
+        "physical_payload_lines_per_slice": 1168,
+        "private_general_credits_per_channel": 2,
+        "return_entries_per_channel": 192,
+        "shared_general_credits_per_channel": 319
+      },
+      "source_mutations": 0,
+      "status": "CONFIG_COMPOSITION_ONLY_NOT_CPU_NATIVE_OR_APPLICATION_QUALIFIED"
+    },
+    {
+      "candidate_id": "COMBO_6",
+      "component_candidate_ids": [
+        "G64_W16",
+        "U_L1MQ32",
+        "U_L2MQ256",
+        "D_DRAM_MHZ935"
+      ],
+      "exact_common_effective_delta": {
+        "-gpgpu_cache:dl1": "S:4:128:128,L:T:m:L:L,A:512:8,32:0,32",
+        "-gpgpu_cache:dl2": "S:64:128:16,L:B:m:L:P,A:128:1,256:0,32",
+        "-gpgpu_clock_domains": "1132.0:1132.0:1132.0:935.0"
+      },
+      "model_starts": 0,
+      "old_new_delta": {
+        "-gpgpu_cache:dl1": {
+          "new": "S:4:128:128,L:T:m:L:L,A:512:8,32:0,32",
+          "old": "S:4:128:128,L:T:m:L:L,A:512:8,16:0,32"
+        },
+        "-gpgpu_cache:dl2": {
+          "new": "S:64:128:16,L:B:m:L:P,A:128:1,256:0,32",
+          "old": "S:32:128:8,L:B:m:L:P,A:128:1,128:0,32"
+        },
+        "-gpgpu_clock_domains": {
+          "new": "1132.0:1132.0:1132.0:935.0",
+          "old": "1132.0:1132.0:1132.0:850.0"
+        }
+      },
+      "resource_proxies": {
+        "FRFCFS_entries_per_channel": 128,
+        "L2_MissQ_entries_per_slice": 256,
+        "WB_progress_credits_per_channel": 1,
+        "logical_tags_per_slice": 1024,
+        "lower_FIFO_entries_per_slice": 128,
+        "physical_payload_lines_per_slice": 1168,
+        "private_general_credits_per_channel": 2,
+        "return_entries_per_channel": 192,
+        "shared_general_credits_per_channel": 319
+      },
+      "source_mutations": 0,
+      "status": "CONFIG_COMPOSITION_ONLY_NOT_CPU_NATIVE_OR_APPLICATION_QUALIFIED"
+    }
+  ],
+  "composer_sha256": "8f154c3100b9dbb734e7af0498554a396d20827e8a8380f50f9148765738e83c",
+  "goal": "EP_L2_FULL_WORKLOAD_PERFORMANCE_POTENTIAL_EXPLORATION_V1",
+  "model_starts": 0,
+  "schema": "EP_FULL_PERF_CAUSAL_COMBINATIONS_V1",
+  "science_authority": false
+}

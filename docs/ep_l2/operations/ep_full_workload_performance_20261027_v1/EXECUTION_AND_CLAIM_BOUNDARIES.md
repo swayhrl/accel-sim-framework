@@ -1,0 +1,21 @@
+# Execution and claim boundaries
+
+This checkpoint is an interim review. The Goal remains active; neither complete ordinary-input coverage nor global candidate validation is finished. All registered points are exact finite grants for this new Goal. The old Goal and every spent start remain unchanged.
+
+The first reference batch produced ten fully archived S/F input pairs from nine programs, plus one completed ATAX S endpoint. Both particlefilter_naive S and WV attempts naturally aborted at the production inter-kernel host-prefill protection; these are retained technical negatives. Decoder used-fields qualification and RO certification did not prove that runtime boundary safe. The shared error text does not distinguish the failed clean/drain/owner subpredicate. No guard has been removed, no input changed, and no automatic repeat is scheduled.
+
+The geometry search declares Vector4M (stream), Conv3072 (stencil) and BlackScholes (arithmetic/cache) before new profile outcomes. Eighteen matched points test 64x8,32x16,64x16. Forty-two matched points test L1MQ32,L2MQ256,lowerFIFO256,FRFCFS256,return384,paired ICNT packet buffers1024 and the source-supported UD capacity combination. Actual constructor checks and strict 282-option math joins precede native prepare and consume-before-fork. All retain the original four optional observers OFF and MS/B0/M0A ON; the catalog's earlier optional stats0 suggestion is explicitly excluded.
+
+Scheduler or ReturnQ changes also change general credit according to the real scheduler+return-1 formula. These are coupled interventions. LowerFIFO-only does not change that credit. LocalICNT2 buffer units are packets, not modeled flit bandwidth. DRAM/ICNT frequency changes are not registered in these two stages; clock initialization still needs its own qualification.
+
+The bounded rolling STRUCT and indexed syscall parsers preserve all raw bytes and exact original final math. CPU regression includes actual closed reference S/F plus synthetic 5993-frame histories and corruption controls. Synthetic component throughput does not guarantee a full large-case postprocessor wall time or compressed output bound. Large cases need individual output forecasts.
+
+Existing static S64 cannot run with ms_observer1 because production guards forbid it. A stronger static role baseline is being qualified separately with both S64 and F using a matched ms_observer0 profile and fresh matched references. No cross-observer performance splice is allowed. The P strategy Source design remains unexecuted.
+
+The 35 primary and 96 ordinary input populations remain coverage targets, with seven unresolved program representatives and independently tracked lifecycle/HOLD conditions. Observed-subset GM is not a whole-set GM. Candidates must later receive independent workload and full common eligible-set validation. Original complete capture and numerical GPU output remain UNKNOWN; accepted runs prove the complete declared Trace commandlist and modeled protocol checks only. Pressure/lifetime/event observers OFF means NOT_OBSERVED, never measured zero.
+
+One dispatcher owns formal starts; three short internal agents handle bounded evidence and engineering tasks. The dispatcher may naturally exit after a finite admitted batch; resuming that same immutable dispatcher for newly registered unconsumed cohorts is continuation of this Goal, never a retry/refund or old Goal restart. Read-only reporting is bounded to24h and has a Goal-local stop control.
+
+All Trace bodies remain on genuine164. Accepted and technical-negative results use immutable genuine164 archives, full hashes and two sequential independent native verification restores.174 stores source/build/control and bounded hot results. Foreign guarantees, SOURCE_KEEP and consumed failures are preserved.
+
+Validation of this review copy: all30 Python files parse successfully; Main-authored tools and documentation pass git whitespace checks. Exact copied frozen qualification/math files retain four pre-existing cosmetic whitespace findings in lowcost_terminal variants and rolling_structure_core; changing them would invalidate their scientific content hashes. They are preserved byte-for-byte and documented rather than reformatted.
