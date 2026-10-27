@@ -31,3 +31,5 @@ The DTC authority remains `docs/dtc_l1/review_packs/DTC_PAPER42_HASH_REVIEW_2026
 ## V1R1 evidence and phase overlay (separate non-destructive revision)
 
 Use [EVIDENCE_SCHEMA_V1R1.md](EVIDENCE_SCHEMA_V1R1.md) and [EVIDENCE_BINDINGS_V1R1.tsv](EVIDENCE_BINDINGS_V1R1.tsv) instead of interpreting the legacy `INPUT_BOUND`/`BINARY_BOUND` as one universal certificate. This separates registered trace, raw source input, capture ELF, and simulator binary. [PROJECT_SCOPE_ADVISORIES_V1R1.md](PROJECT_SCOPE_ADVISORIES_V1R1.md) records application-vs-ROI concerns without revising historical results. [KERNEL_PHASE_FEATURES_V1R1.tsv](KERNEL_PHASE_FEATURES_V1R1.tsv) indexes source-candidate GPU phases with their evidence limits. V1 original evidence files are preserved unchanged.
+
+Phase index method and exceptions: [PHASE_USAGE_GUIDE_V1R1.md](PHASE_USAGE_GUIDE_V1R1.md); structural checks: [V1R1_VALIDATION.json](V1R1_VALIDATION.json). The five reviewed phase catalogs are under [phase_sources/](phase_sources/). All V1 scientific inputs remain unchanged.
