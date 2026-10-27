@@ -1,0 +1,6 @@
+{
+  "source": "/root/data/dtc_hash_downstream18_20261027_v1/DTC/env/DH_P0/config-2.config",
+  "sha256": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+  "encoding": "UTF8_TEXT_EXACT_BYTES",
+  "text": "-trace_opcode_latency_initiation_int 2,2\n-trace_opcode_latency_initiation_sp 2,2\n-trace_opcode_latency_initiation_dp 8,4\n-trace_opcode_latency_initiation_sfu 20,8\n-trace_opcode_latency_initiation_tensor 2,2\n\n#execute branch insts on spec unit 1\n#in Volta, there is a dedicated branch unit\n#<enabled>,<num_units>,<max_latency>,<ID_OC_SPEC>,<OC_EX_SPEC>,<NAME>\n-specialized_unit_1 1,4,4,4,4,BRA\n-trace_opcode_latency_initiation_spec_op_1 4,4\n\n#TEX unit, make fixed latency for all tex insts\n-specialized_unit_2 1,4,200,4,4,TEX\n-trace_opcode_latency_initiation_spec_op_2 200,4\n\n#tensor unit\n-specialized_unit_3 1,4,8,4,4,TENSOR\n-trace_opcode_latency_initiation_spec_op_3 2,2\n"
+}
