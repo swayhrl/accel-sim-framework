@@ -1,0 +1,29 @@
+Admission throughput diagnosis and independent fix proposal (read-only production investigation)
+
+Two measured30s intervals19:09:30->19:10:00->19:10:30 CST:
+1)35->34 live native model generations,0 new PID,1 natural departure; all34 shared models advancedCPU ticks.21 dispatch attempts/21 ZERO_START_DEFERRED.
+2)34->34 live,1 new PID(start985139651, CPU129),1 natural departure; all33 shared models advanced.26 attempts/25 ZERO_START_DEFERRED.
+Model CPU tick advancement corresponds to roughly31 equivalent CPUs, not stalled simulator processes.
+
+Fresh readonly resource checks, repeated at each sample:
+Small myocyte candidate: both RAM/diskPASS. Additional projected RAM58.0->54.6->64.6GiB versus safe admission budget69.9->79.5->79.9GiB; no pressure reason. Native disk40.7GiB, required18.6->18.8GiB.
+Large lavamd:81.2GiB candidate forecast, aggregate RAM138.2->134.9->144.8GiB, exceeds those budgets. DiskPASS. It is a real memory nonfit at present; no evidence justifies reducing its peak estimate. Finite queue and fairness allow eventual admission after memory-heavy runs finish, but current sampling does not prove a bounded wait. No anti-starvation draining policy was applied.
+
+Group-overadmission finding: original chooser reserves prediction-minus-observedRSS; final provider also reserves peer growth and live10% growth. Bulk pre-exec claims can consume the chooser's entire envelope before any subprocess reaches final prepare. Final provider then finds the whole group over its limit and refuses most/all members even when a smaller bounded subset would fit. This is avoidable engineering churn, not an accepted scientific run failure. In preceding10min:113 prepare-success receipts vs175 zero-startRESOURCE_HOLD receipts, median dispatch->prepare-log-completion~0.53s for both. Timing includes front-end/queue work; it is not a profiler or direct code-stage measurement. PastHOLD receipts only retain generic RESOURCE_HOLD; RAM attribution is supported by contemporaneous fresh probes and admission arithmetic, not point-specific historical denial detail.
+
+Observer cycles during measurement12.49/9.21/10.89s. Existing logs cannot partition exact CPU cost among choose, resource refresh, registry/source verification and result processing; no profiler/production attachment was used.
+
+Independent proposed wrapper (not applied by AgentB):
+Source l2_consistent_admission_amendment_v1.py SHA256f3c02834de47fdab96fdd5280cb17905f07182f69d2dd83eed99fccdac654f4e.
+Only the existing resource module instance in existing scheduler frame is wrapped. At most4 claims not yet observed in sample are allowed in the pre-exec pipeline. This is not an active-model or total-start cap; existing384 worker capacity remains. One provider baseline per chooser invocation uses an already-consumed reference identity so all current claims, old-peer growth and live10% margins are included without adding a candidate. Each candidate adds its historical forecast and bounded write cap. If it fails, smaller original-chooser candidates are tried against the same baseline; no all-matrix provider scan. Memory88% safety, peak estimates, specs, old controllers, running models, claims meanings and scientific identities remain unchanged.
+
+Coordinator-only apply: existing main-threadGIL pending callback imports source and calls apply_in_owner(4), exclusive save returned proof. Restoration: same callback calls restore_in_owner(); original function reference remains in __main__.DTC_L2_MLP_CONSISTENT_ADMISSION_V1. Restore changes only chooser function, preserving active claims/models. No restart, source edit, reset or scientific credit reuse.
+
+21CPU assertions pass both Windows and174, including live isolated scheduler-frame install/restore, original executor384 unchanged, unobserved window4, existing models not counted against window, larger-nonfit/smaller-fit fallback, one provider scan, strict RAM/disk/pressure, no candidate/claim mutation. No production parent attachment or simulator start.
+
+Evidence in agents/B:
+ADMISSION_THROUGHPUT_TWO_INTERVALS.json SHA25681af2d586b57ac67aa112921cecd195ebf7298f3c68db694de93fe2710b296e6.
+ADMISSION_PREPARE_TIMINGS.json.
+CONSISTENT_ADMISSION_CPU_QUALIFICATION.json.
+
+Final identity safeguards: candidate RAM=max(current history forecast, canonical registered estimate), preserving older high estimates already bound by zero-start dispatch identity. apply verifies precise target resource module path and its plan-pinned SHA before changing only that module instance. max_inflight must be a positive integer. CPU fixtures also check proper/wrong resource pin, old bound high estimate against lower new history, and invalid window.

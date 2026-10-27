@@ -1,0 +1,1387 @@
+{
+  "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+  "searches": [
+    {
+      "pattern": "gpu_stall_dramfull",
+      "matches": [
+        {
+          "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+          "source_sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+          "line": 1866,
+          "context": [
+            {
+              "line": 1855,
+              "text": "                                       (gpu_tot_sim_cycle + gpu_sim_cycle));"
+            },
+            {
+              "line": 1856,
+              "text": "  printf(\"gpu_tot_issued_cta = %lld\\n\","
+            },
+            {
+              "line": 1857,
+              "text": "         gpu_tot_issued_cta + m_total_cta_launched);"
+            },
+            {
+              "line": 1858,
+              "text": "  printf(\"gpu_occupancy = %.4f%% \\n\", gpu_occupancy.get_occ_fraction() * 100);"
+            },
+            {
+              "line": 1859,
+              "text": "  printf(\"gpu_tot_occupancy = %.4f%% \\n\","
+            },
+            {
+              "line": 1860,
+              "text": "         (gpu_occupancy + gpu_tot_occupancy).get_occ_fraction() * 100);"
+            },
+            {
+              "line": 1861,
+              "text": ""
+            },
+            {
+              "line": 1862,
+              "text": "  fprintf(statfout, \"max_total_param_size = %llu\\n\","
+            },
+            {
+              "line": 1863,
+              "text": "          gpgpu_ctx->device_runtime->g_max_total_param_size);"
+            },
+            {
+              "line": 1864,
+              "text": ""
+            },
+            {
+              "line": 1865,
+              "text": "  // performance counter for stalls due to congestion."
+            },
+            {
+              "line": 1866,
+              "text": "  printf(\"gpu_stall_dramfull = %lu\\n\", gpu_stall_icnt2mem);"
+            },
+            {
+              "line": 1867,
+              "text": "  printf(\"gpu_stall_icnt2sh    = %lu\\n\", gpu_stall_mem2icnt);"
+            },
+            {
+              "line": 1868,
+              "text": ""
+            },
+            {
+              "line": 1869,
+              "text": "  // printf(\"partiton_reqs_in_parallel = %lld\\n\", partiton_reqs_in_parallel);"
+            },
+            {
+              "line": 1870,
+              "text": "  // printf(\"partiton_reqs_in_parallel_total    = %lld\\n\","
+            },
+            {
+              "line": 1871,
+              "text": "  // partiton_reqs_in_parallel_total );"
+            },
+            {
+              "line": 1872,
+              "text": "  printf(\"partiton_level_parallism = %12.4f\\n\","
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pattern": "gpu_stall_icnt2mem",
+      "matches": [
+        {
+          "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+          "source_sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+          "line": 1154,
+          "context": [
+            {
+              "line": 1143,
+              "text": "  m_power_stats ="
+            },
+            {
+              "line": 1144,
+              "text": "      new power_stat_t(m_shader_config, average_pipeline_duty_cycle, active_sms,"
+            },
+            {
+              "line": 1145,
+              "text": "                       m_shader_stats, m_memory_config, m_memory_stats);"
+            },
+            {
+              "line": 1146,
+              "text": ""
+            },
+            {
+              "line": 1147,
+              "text": "  gpu_sim_insn = 0;"
+            },
+            {
+              "line": 1148,
+              "text": "  gpu_tot_sim_insn = 0;"
+            },
+            {
+              "line": 1149,
+              "text": "  gpu_tot_issued_cta = 0;"
+            },
+            {
+              "line": 1150,
+              "text": "  gpu_completed_cta = 0;"
+            },
+            {
+              "line": 1151,
+              "text": "  m_total_cta_launched = 0;"
+            },
+            {
+              "line": 1152,
+              "text": "  gpu_deadlock = false;"
+            },
+            {
+              "line": 1153,
+              "text": ""
+            },
+            {
+              "line": 1154,
+              "text": "  gpu_stall_icnt2mem = 0;"
+            },
+            {
+              "line": 1155,
+              "text": "  gpu_stall_mem2icnt = 0;"
+            },
+            {
+              "line": 1156,
+              "text": "  gpu_stall_icnt2core = 0;"
+            },
+            {
+              "line": 1157,
+              "text": "  gpu_stall_core2icnt = 0;"
+            },
+            {
+              "line": 1158,
+              "text": "  partiton_reqs_in_parallel = 0;"
+            },
+            {
+              "line": 1159,
+              "text": "  partiton_reqs_in_parallel_total = 0;"
+            },
+            {
+              "line": 1160,
+              "text": "  partiton_reqs_in_parallel_util = 0;"
+            }
+          ]
+        },
+        {
+          "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+          "source_sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+          "line": 1304,
+          "context": [
+            {
+              "line": 1293,
+              "text": "                                     partiton_replys_in_parallel_total);"
+            },
+            {
+              "line": 1294,
+              "text": "  perf_counters.add_absolute_counter(\"partiton_reqs_in_parallel_total\","
+            },
+            {
+              "line": 1295,
+              "text": "                                     partiton_reqs_in_parallel_total);"
+            },
+            {
+              "line": 1296,
+              "text": "  perf_counters.add_absolute_counter(\"partiton_reqs_in_parallel_util_total\","
+            },
+            {
+              "line": 1297,
+              "text": "                                     partiton_reqs_in_parallel_util_total);"
+            },
+            {
+              "line": 1298,
+              "text": "  perf_counters.add_absolute_counter(\"gpu_sim_cycle_parition_util\","
+            },
+            {
+              "line": 1299,
+              "text": "                                     gpu_sim_cycle_parition_util);"
+            },
+            {
+              "line": 1300,
+              "text": "  perf_counters.add_absolute_counter(\"gpu_tot_sim_cycle_parition_util\","
+            },
+            {
+              "line": 1301,
+              "text": "                                     gpu_tot_sim_cycle_parition_util);"
+            },
+            {
+              "line": 1302,
+              "text": "  perf_counters.add_absolute_counter(\"gpu_stall_icnt2core\","
+            },
+            {
+              "line": 1303,
+              "text": "                                     gpu_stall_icnt2core);"
+            },
+            {
+              "line": 1304,
+              "text": "  perf_counters.add_absolute_counter(\"gpu_stall_icnt2mem\", gpu_stall_icnt2mem);"
+            },
+            {
+              "line": 1305,
+              "text": "  perf_counters.add_absolute_counter(\"gpu_stall_core2icnt\","
+            },
+            {
+              "line": 1306,
+              "text": "                                     gpu_stall_core2icnt);"
+            },
+            {
+              "line": 1307,
+              "text": "  perf_counters.add_absolute_counter(\"gpu_stall_mem2icnt\", gpu_stall_mem2icnt);"
+            },
+            {
+              "line": 1308,
+              "text": "  perf_counters.add_absolute_counter(\"ldst_global_writebacks\","
+            },
+            {
+              "line": 1309,
+              "text": "                                     m_shader_stats->ldst_global_writebacks);"
+            },
+            {
+              "line": 1310,
+              "text": ""
+            }
+          ]
+        },
+        {
+          "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+          "source_sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+          "line": 1866,
+          "context": [
+            {
+              "line": 1855,
+              "text": "                                       (gpu_tot_sim_cycle + gpu_sim_cycle));"
+            },
+            {
+              "line": 1856,
+              "text": "  printf(\"gpu_tot_issued_cta = %lld\\n\","
+            },
+            {
+              "line": 1857,
+              "text": "         gpu_tot_issued_cta + m_total_cta_launched);"
+            },
+            {
+              "line": 1858,
+              "text": "  printf(\"gpu_occupancy = %.4f%% \\n\", gpu_occupancy.get_occ_fraction() * 100);"
+            },
+            {
+              "line": 1859,
+              "text": "  printf(\"gpu_tot_occupancy = %.4f%% \\n\","
+            },
+            {
+              "line": 1860,
+              "text": "         (gpu_occupancy + gpu_tot_occupancy).get_occ_fraction() * 100);"
+            },
+            {
+              "line": 1861,
+              "text": ""
+            },
+            {
+              "line": 1862,
+              "text": "  fprintf(statfout, \"max_total_param_size = %llu\\n\","
+            },
+            {
+              "line": 1863,
+              "text": "          gpgpu_ctx->device_runtime->g_max_total_param_size);"
+            },
+            {
+              "line": 1864,
+              "text": ""
+            },
+            {
+              "line": 1865,
+              "text": "  // performance counter for stalls due to congestion."
+            },
+            {
+              "line": 1866,
+              "text": "  printf(\"gpu_stall_dramfull = %lu\\n\", gpu_stall_icnt2mem);"
+            },
+            {
+              "line": 1867,
+              "text": "  printf(\"gpu_stall_icnt2sh    = %lu\\n\", gpu_stall_mem2icnt);"
+            },
+            {
+              "line": 1868,
+              "text": ""
+            },
+            {
+              "line": 1869,
+              "text": "  // printf(\"partiton_reqs_in_parallel = %lld\\n\", partiton_reqs_in_parallel);"
+            },
+            {
+              "line": 1870,
+              "text": "  // printf(\"partiton_reqs_in_parallel_total    = %lld\\n\","
+            },
+            {
+              "line": 1871,
+              "text": "  // partiton_reqs_in_parallel_total );"
+            },
+            {
+              "line": 1872,
+              "text": "  printf(\"partiton_level_parallism = %12.4f\\n\","
+            }
+          ]
+        },
+        {
+          "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+          "source_sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+          "line": 2467,
+          "context": [
+            {
+              "line": 2456,
+              "text": "    m_power_stats->pwr_mem_stat->l2_cache_stats[CURRENT_STAT_IDX].clear();"
+            },
+            {
+              "line": 2457,
+              "text": "    for (unsigned i = 0; i < m_memory_config->m_n_mem_sub_partition; i++) {"
+            },
+            {
+              "line": 2458,
+              "text": "      // move memory request from interconnect into memory partition (if not"
+            },
+            {
+              "line": 2459,
+              "text": "      // backed up) Note:This needs to be called in DRAM clock domain if there"
+            },
+            {
+              "line": 2460,
+              "text": "      // is no L2 cache in the system In the worst case, we may need to push"
+            },
+            {
+              "line": 2461,
+              "text": "      // SECTOR_CHUNCK_SIZE requests, so ensure you have enough buffer for them"
+            },
+            {
+              "line": 2462,
+              "text": "      if (m_memory_sub_partition[i]->full(SECTOR_CHUNCK_SIZE)) {"
+            },
+            {
+              "line": 2463,
+              "text": "        // Only count as a stall if ICNT actually has a packet waiting for"
+            },
+            {
+              "line": 2464,
+              "text": "        // this sub-partition; otherwise the L2 being full is not blocking"
+            },
+            {
+              "line": 2465,
+              "text": "        // anything."
+            },
+            {
+              "line": 2466,
+              "text": "        if (icnt_has_packet(m_shader_config->mem2device(i)))"
+            },
+            {
+              "line": 2467,
+              "text": "          gpu_stall_icnt2mem++;"
+            },
+            {
+              "line": 2468,
+              "text": "      } else if (m_memory_sub_partition[i]->lrc_full(SECTOR_CHUNCK_SIZE)) {"
+            },
+            {
+              "line": 2469,
+              "text": "        m_memory_stats->add_l2_stall_due_to_lrc_full(i);"
+            },
+            {
+              "line": 2470,
+              "text": ""
+            },
+            {
+              "line": 2471,
+              "text": "      } else {"
+            },
+            {
+              "line": 2472,
+              "text": "        mem_fetch *mf = (mem_fetch *)icnt_pop(m_shader_config->mem2device(i));"
+            },
+            {
+              "line": 2473,
+              "text": "        m_memory_sub_partition[i]->push(mf, gpu_sim_cycle + gpu_tot_sim_cycle);"
+            }
+          ]
+        },
+        {
+          "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.h",
+          "source_sha256": "132f291114bde93102c347765c25d877e69a21867a6142a0e98ef9a6f6619f4c",
+          "line": 852,
+          "context": [
+            {
+              "line": 841,
+              "text": "  } kernel_time_t;"
+            },
+            {
+              "line": 842,
+              "text": "  std::map<unsigned long long, std::map<unsigned, kernel_time_t>>"
+            },
+            {
+              "line": 843,
+              "text": "      gpu_kernel_time;"
+            },
+            {
+              "line": 844,
+              "text": "  unsigned long long last_streamID;"
+            },
+            {
+              "line": 845,
+              "text": "  unsigned long long last_uid;"
+            },
+            {
+              "line": 846,
+              "text": "  cache_stats aggregated_l1_stats;"
+            },
+            {
+              "line": 847,
+              "text": "  cache_stats aggregated_l2_stats;"
+            },
+            {
+              "line": 848,
+              "text": ""
+            },
+            {
+              "line": 849,
+              "text": "  PerfCounter perf_counters;"
+            },
+            {
+              "line": 850,
+              "text": ""
+            },
+            {
+              "line": 851,
+              "text": "  // performance counter for stalls due to congestion."
+            },
+            {
+              "line": 852,
+              "text": "  unsigned long long gpu_stall_icnt2mem;"
+            },
+            {
+              "line": 853,
+              "text": "  unsigned long long gpu_stall_mem2icnt;"
+            },
+            {
+              "line": 854,
+              "text": "  unsigned long long gpu_stall_icnt2core;"
+            },
+            {
+              "line": 855,
+              "text": "  unsigned long long gpu_stall_core2icnt;"
+            },
+            {
+              "line": 856,
+              "text": "  unsigned long long partiton_reqs_in_parallel;"
+            },
+            {
+              "line": 857,
+              "text": "  unsigned long long partiton_reqs_in_parallel_total;"
+            },
+            {
+              "line": 858,
+              "text": "  unsigned long long partiton_reqs_in_parallel_util;"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pattern": "DTC_SERVICE_V1_wb_wait",
+      "matches": []
+    },
+    {
+      "pattern": "DTC_SERVICE_V1_fully_ready_to_complete_sum",
+      "matches": []
+    },
+    {
+      "pattern": "fully_ready_to_complete_sum",
+      "matches": [
+        {
+          "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/shader.cc",
+          "source_sha256": "e67a486ef18abf2b8515bc5bb887812c058d29fe9fed8544320cc008e3b4ca11",
+          "line": 3757,
+          "context": [
+            {
+              "line": 3746,
+              "text": "void ldst_unit::print_dtc_l1_invalidation_summary(FILE *fp) const {"
+            },
+            {
+              "line": 3747,
+              "text": "  if (m_config->dtc_l1_invalidate_on_source_event)"
+            },
+            {
+              "line": 3748,
+              "text": "    m_dtc_invalidation.print(fp);"
+            },
+            {
+              "line": 3749,
+              "text": "}"
+            },
+            {
+              "line": 3750,
+              "text": ""
+            },
+            {
+              "line": 3751,
+              "text": "void ldst_unit::print_dtc_l1_stats(FILE *fp) const {"
+            },
+            {
+              "line": 3752,
+              "text": "  if (m_config->dtc_l1_invalidate_on_source_event)"
+            },
+            {
+              "line": 3753,
+              "text": "    m_dtc_invalidation.print(fp);"
+            },
+            {
+              "line": 3754,
+              "text": "  if (dtc_l1_finite_service_active()) {"
+            },
+            {
+              "line": 3755,
+              "text": "    fprintf(fp, \"DTC_SERVICE_V1 sm=%u samples=%llu pib_integral=%llu \""
+            },
+            {
+              "line": 3756,
+              "text": "                \"physical_integral=%llu collected_sectors=%llu \""
+            },
+            {
+              "line": 3757,
+              "text": "                \"fully_ready_to_complete_sum=%llu retired=%llu \""
+            },
+            {
+              "line": 3758,
+              "text": "                \"ready_to_collect_sum=%llu collection_cycles=%llu wb_wait=%llu \""
+            },
+            {
+              "line": 3759,
+              "text": "                \"map_loss_to_free_sum=%llu map_loss_to_free_count=%llu\\n\","
+            },
+            {
+              "line": 3760,
+              "text": "            m_sid, (unsigned long long)m_dtc_service_samples,"
+            },
+            {
+              "line": 3761,
+              "text": "            (unsigned long long)m_dtc_service_pib_integral,"
+            },
+            {
+              "line": 3762,
+              "text": "            (unsigned long long)m_dtc_service_physical_integral,"
+            },
+            {
+              "line": 3763,
+              "text": "            (unsigned long long)m_dtc_service_collected_sectors,"
+            }
+          ]
+        },
+        {
+          "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/shader.cc",
+          "source_sha256": "e67a486ef18abf2b8515bc5bb887812c058d29fe9fed8544320cc008e3b4ca11",
+          "line": 5920,
+          "context": [
+            {
+              "line": 5909,
+              "text": "            static_cast<unsigned long long>(total.m4_dynamic_loads));"
+            },
+            {
+              "line": 5910,
+              "text": "    fprintf(fout, \"DTC_L1_m4_dynamic_stores = %llu\\n\","
+            },
+            {
+              "line": 5911,
+              "text": "            static_cast<unsigned long long>(total.m4_dynamic_stores));"
+            },
+            {
+              "line": 5912,
+              "text": "    fprintf(fout, \"DTC_L1_m4_dynamic_atomics = %llu\\n\","
+            },
+            {
+              "line": 5913,
+              "text": "            static_cast<unsigned long long>(total.m4_dynamic_atomics));"
+            },
+            {
+              "line": 5914,
+              "text": "    fprintf(fout, \"DTC_L1_m4_source_reachable_fence_ops = %llu\\n\","
+            },
+            {
+              "line": 5915,
+              "text": "            static_cast<unsigned long long>("
+            },
+            {
+              "line": 5916,
+              "text": "                total.m4_source_reachable_fence_ops));"
+            },
+            {
+              "line": 5917,
+              "text": "  };"
+            },
+            {
+              "line": 5918,
+              "text": "  if (m_shader_config->dtc_l1_finite_service) {"
+            },
+            {
+              "line": 5919,
+              "text": "    const char *names[] = {\"samples\", \"pib_integral\", \"physical_integral\","
+            },
+            {
+              "line": 5920,
+              "text": "        \"collected_sectors\", \"fully_ready_to_complete_sum\", \"retired\","
+            },
+            {
+              "line": 5921,
+              "text": "        \"ready_to_collect_sum\", \"collection_cycles\", \"wb_wait\","
+            },
+            {
+              "line": 5922,
+              "text": "        \"map_loss_to_free_sum\", \"map_loss_to_free_count\"};"
+            },
+            {
+              "line": 5923,
+              "text": "    assert(total.finite_service[4] == total.finite_service[6] +"
+            },
+            {
+              "line": 5924,
+              "text": "           total.finite_service[7] + total.finite_service[8]);"
+            },
+            {
+              "line": 5925,
+              "text": "    for (size_t i = 0; i < total.finite_service.size(); ++i)"
+            },
+            {
+              "line": 5926,
+              "text": "      fprintf(fout, \"DTC_SERVICE_V1_%s = %llu\\n\", names[i],"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pattern": "ready_to_collect_sum",
+      "matches": [
+        {
+          "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/shader.cc",
+          "source_sha256": "e67a486ef18abf2b8515bc5bb887812c058d29fe9fed8544320cc008e3b4ca11",
+          "line": 2120,
+          "context": [
+            {
+              "line": 2109,
+              "text": "    const uint64_t tail = now - (m_dtc_service_occupancy_sample_cycle == UINT64_MAX"
+            },
+            {
+              "line": 2110,
+              "text": "                                    ? 0 : m_dtc_service_occupancy_sample_cycle);"
+            },
+            {
+              "line": 2111,
+              "text": "    const uint64_t pib = dtc_l1_paper_io_active()"
+            },
+            {
+              "line": 2112,
+              "text": "                             ? m_dtc_l1_io_pib.size() : m_dtc_l1_oo_pib.size();"
+            },
+            {
+              "line": 2113,
+              "text": "    const uint64_t physical = dtc_l1_paper_io_active()"
+            },
+            {
+              "line": 2114,
+              "text": "                                 ? m_dtc_l1_io_frontend->allocated_lines()"
+            },
+            {
+              "line": 2115,
+              "text": "                                 : m_dtc_l1_oo_frontend->allocated_lines();"
+            },
+            {
+              "line": 2116,
+              "text": "    service.finite_service = {"
+            },
+            {
+              "line": 2117,
+              "text": "        m_dtc_service_samples + tail, m_dtc_service_pib_integral + tail * pib,"
+            },
+            {
+              "line": 2118,
+              "text": "        m_dtc_service_physical_integral + tail * physical, m_dtc_service_collected_sectors,"
+            },
+            {
+              "line": 2119,
+              "text": "        m_dtc_service_ready_to_complete_sum, m_dtc_service_retired,"
+            },
+            {
+              "line": 2120,
+              "text": "        m_dtc_service_ready_to_collect_sum, m_dtc_service_collection_cycles,"
+            },
+            {
+              "line": 2121,
+              "text": "        m_dtc_service_wb_wait,"
+            },
+            {
+              "line": 2122,
+              "text": "        dtc_l1_paper_io_active() ? m_dtc_l1_io_frontend->map_loss_to_free_sum()"
+            },
+            {
+              "line": 2123,
+              "text": "                               : m_dtc_l1_oo_frontend->map_loss_to_free_sum(),"
+            },
+            {
+              "line": 2124,
+              "text": "        dtc_l1_paper_io_active() ? m_dtc_l1_io_frontend->map_loss_to_free_count()"
+            },
+            {
+              "line": 2125,
+              "text": "                               : m_dtc_l1_oo_frontend->map_loss_to_free_count()};"
+            },
+            {
+              "line": 2126,
+              "text": "    stats.add(service);"
+            }
+          ]
+        },
+        {
+          "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/shader.cc",
+          "source_sha256": "e67a486ef18abf2b8515bc5bb887812c058d29fe9fed8544320cc008e3b4ca11",
+          "line": 3048,
+          "context": [
+            {
+              "line": 3037,
+              "text": "  m_dtc_service_collected_sectors += before - service.sectors_left;"
+            },
+            {
+              "line": 3038,
+              "text": "  return collected;"
+            },
+            {
+              "line": 3039,
+              "text": "}"
+            },
+            {
+              "line": 3040,
+              "text": ""
+            },
+            {
+              "line": 3041,
+              "text": "void ldst_unit::dtc_l1_service_retired(const dtc_l1::service_entry &service) {"
+            },
+            {
+              "line": 3042,
+              "text": "  if (!dtc_l1_finite_service_active()) return;"
+            },
+            {
+              "line": 3043,
+              "text": "  const uint64_t cycle = m_core->get_gpu()->global_cycle();"
+            },
+            {
+              "line": 3044,
+              "text": "  assert(service.ready_cycle != UINT64_MAX &&"
+            },
+            {
+              "line": 3045,
+              "text": "         service.collect_done_cycle != UINT64_MAX && !service.sectors_left);"
+            },
+            {
+              "line": 3046,
+              "text": "  m_dtc_service_retire.commit(cycle);"
+            },
+            {
+              "line": 3047,
+              "text": "  m_dtc_service_ready_to_complete_sum += cycle - service.ready_cycle;"
+            },
+            {
+              "line": 3048,
+              "text": "  m_dtc_service_ready_to_collect_sum += service.collect_start_cycle - service.ready_cycle;"
+            },
+            {
+              "line": 3049,
+              "text": "  m_dtc_service_collection_cycles += service.collect_done_cycle - service.collect_start_cycle + 1;"
+            },
+            {
+              "line": 3050,
+              "text": "  m_dtc_service_wb_wait += cycle - service.collect_done_cycle - 1;"
+            },
+            {
+              "line": 3051,
+              "text": "  if (m_config->dtc_l1_progressive_wakeup) {"
+            },
+            {
+              "line": 3052,
+              "text": "    assert(service.admitted_returns_cycle != UINT64_MAX &&"
+            },
+            {
+              "line": 3053,
+              "text": "           service.admitted_returns_cycle <= service.ready_cycle);"
+            },
+            {
+              "line": 3054,
+              "text": "    m_dtc_progressive_returns_to_retire_sum += cycle - service.admitted_returns_cycle;"
+            }
+          ]
+        },
+        {
+          "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/shader.cc",
+          "source_sha256": "e67a486ef18abf2b8515bc5bb887812c058d29fe9fed8544320cc008e3b4ca11",
+          "line": 3758,
+          "context": [
+            {
+              "line": 3747,
+              "text": "  if (m_config->dtc_l1_invalidate_on_source_event)"
+            },
+            {
+              "line": 3748,
+              "text": "    m_dtc_invalidation.print(fp);"
+            },
+            {
+              "line": 3749,
+              "text": "}"
+            },
+            {
+              "line": 3750,
+              "text": ""
+            },
+            {
+              "line": 3751,
+              "text": "void ldst_unit::print_dtc_l1_stats(FILE *fp) const {"
+            },
+            {
+              "line": 3752,
+              "text": "  if (m_config->dtc_l1_invalidate_on_source_event)"
+            },
+            {
+              "line": 3753,
+              "text": "    m_dtc_invalidation.print(fp);"
+            },
+            {
+              "line": 3754,
+              "text": "  if (dtc_l1_finite_service_active()) {"
+            },
+            {
+              "line": 3755,
+              "text": "    fprintf(fp, \"DTC_SERVICE_V1 sm=%u samples=%llu pib_integral=%llu \""
+            },
+            {
+              "line": 3756,
+              "text": "                \"physical_integral=%llu collected_sectors=%llu \""
+            },
+            {
+              "line": 3757,
+              "text": "                \"fully_ready_to_complete_sum=%llu retired=%llu \""
+            },
+            {
+              "line": 3758,
+              "text": "                \"ready_to_collect_sum=%llu collection_cycles=%llu wb_wait=%llu \""
+            },
+            {
+              "line": 3759,
+              "text": "                \"map_loss_to_free_sum=%llu map_loss_to_free_count=%llu\\n\","
+            },
+            {
+              "line": 3760,
+              "text": "            m_sid, (unsigned long long)m_dtc_service_samples,"
+            },
+            {
+              "line": 3761,
+              "text": "            (unsigned long long)m_dtc_service_pib_integral,"
+            },
+            {
+              "line": 3762,
+              "text": "            (unsigned long long)m_dtc_service_physical_integral,"
+            },
+            {
+              "line": 3763,
+              "text": "            (unsigned long long)m_dtc_service_collected_sectors,"
+            },
+            {
+              "line": 3764,
+              "text": "            (unsigned long long)m_dtc_service_ready_to_complete_sum,"
+            }
+          ]
+        },
+        {
+          "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/shader.cc",
+          "source_sha256": "e67a486ef18abf2b8515bc5bb887812c058d29fe9fed8544320cc008e3b4ca11",
+          "line": 3766,
+          "context": [
+            {
+              "line": 3755,
+              "text": "    fprintf(fp, \"DTC_SERVICE_V1 sm=%u samples=%llu pib_integral=%llu \""
+            },
+            {
+              "line": 3756,
+              "text": "                \"physical_integral=%llu collected_sectors=%llu \""
+            },
+            {
+              "line": 3757,
+              "text": "                \"fully_ready_to_complete_sum=%llu retired=%llu \""
+            },
+            {
+              "line": 3758,
+              "text": "                \"ready_to_collect_sum=%llu collection_cycles=%llu wb_wait=%llu \""
+            },
+            {
+              "line": 3759,
+              "text": "                \"map_loss_to_free_sum=%llu map_loss_to_free_count=%llu\\n\","
+            },
+            {
+              "line": 3760,
+              "text": "            m_sid, (unsigned long long)m_dtc_service_samples,"
+            },
+            {
+              "line": 3761,
+              "text": "            (unsigned long long)m_dtc_service_pib_integral,"
+            },
+            {
+              "line": 3762,
+              "text": "            (unsigned long long)m_dtc_service_physical_integral,"
+            },
+            {
+              "line": 3763,
+              "text": "            (unsigned long long)m_dtc_service_collected_sectors,"
+            },
+            {
+              "line": 3764,
+              "text": "            (unsigned long long)m_dtc_service_ready_to_complete_sum,"
+            },
+            {
+              "line": 3765,
+              "text": "            (unsigned long long)m_dtc_service_retired,"
+            },
+            {
+              "line": 3766,
+              "text": "            (unsigned long long)m_dtc_service_ready_to_collect_sum,"
+            },
+            {
+              "line": 3767,
+              "text": "            (unsigned long long)m_dtc_service_collection_cycles,"
+            },
+            {
+              "line": 3768,
+              "text": "            (unsigned long long)m_dtc_service_wb_wait,"
+            },
+            {
+              "line": 3769,
+              "text": "            (unsigned long long)(dtc_l1_paper_io_active() ?"
+            },
+            {
+              "line": 3770,
+              "text": "                m_dtc_l1_io_frontend->map_loss_to_free_sum() :"
+            },
+            {
+              "line": 3771,
+              "text": "                m_dtc_l1_oo_frontend->map_loss_to_free_sum()),"
+            },
+            {
+              "line": 3772,
+              "text": "            (unsigned long long)(dtc_l1_paper_io_active() ?"
+            }
+          ]
+        },
+        {
+          "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/shader.cc",
+          "source_sha256": "e67a486ef18abf2b8515bc5bb887812c058d29fe9fed8544320cc008e3b4ca11",
+          "line": 5921,
+          "context": [
+            {
+              "line": 5910,
+              "text": "    fprintf(fout, \"DTC_L1_m4_dynamic_stores = %llu\\n\","
+            },
+            {
+              "line": 5911,
+              "text": "            static_cast<unsigned long long>(total.m4_dynamic_stores));"
+            },
+            {
+              "line": 5912,
+              "text": "    fprintf(fout, \"DTC_L1_m4_dynamic_atomics = %llu\\n\","
+            },
+            {
+              "line": 5913,
+              "text": "            static_cast<unsigned long long>(total.m4_dynamic_atomics));"
+            },
+            {
+              "line": 5914,
+              "text": "    fprintf(fout, \"DTC_L1_m4_source_reachable_fence_ops = %llu\\n\","
+            },
+            {
+              "line": 5915,
+              "text": "            static_cast<unsigned long long>("
+            },
+            {
+              "line": 5916,
+              "text": "                total.m4_source_reachable_fence_ops));"
+            },
+            {
+              "line": 5917,
+              "text": "  };"
+            },
+            {
+              "line": 5918,
+              "text": "  if (m_shader_config->dtc_l1_finite_service) {"
+            },
+            {
+              "line": 5919,
+              "text": "    const char *names[] = {\"samples\", \"pib_integral\", \"physical_integral\","
+            },
+            {
+              "line": 5920,
+              "text": "        \"collected_sectors\", \"fully_ready_to_complete_sum\", \"retired\","
+            },
+            {
+              "line": 5921,
+              "text": "        \"ready_to_collect_sum\", \"collection_cycles\", \"wb_wait\","
+            },
+            {
+              "line": 5922,
+              "text": "        \"map_loss_to_free_sum\", \"map_loss_to_free_count\"};"
+            },
+            {
+              "line": 5923,
+              "text": "    assert(total.finite_service[4] == total.finite_service[6] +"
+            },
+            {
+              "line": 5924,
+              "text": "           total.finite_service[7] + total.finite_service[8]);"
+            },
+            {
+              "line": 5925,
+              "text": "    for (size_t i = 0; i < total.finite_service.size(); ++i)"
+            },
+            {
+              "line": 5926,
+              "text": "      fprintf(fout, \"DTC_SERVICE_V1_%s = %llu\\n\", names[i],"
+            },
+            {
+              "line": 5927,
+              "text": "              (unsigned long long)total.finite_service[i]);"
+            }
+          ]
+        },
+        {
+          "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/shader.h",
+          "source_sha256": "e3315f55d3d9ca5e23430d602b8afa2b9842aba20ca901e781461b1396853476",
+          "line": 2167,
+          "context": [
+            {
+              "line": 2156,
+              "text": "  dtc_l1::service_quota m_dtc_service_refill;"
+            },
+            {
+              "line": 2157,
+              "text": "  dtc_l1::service_quota m_dtc_service_create;"
+            },
+            {
+              "line": 2158,
+              "text": "  dtc_l1::service_quota m_dtc_service_inject;"
+            },
+            {
+              "line": 2159,
+              "text": "  dtc_l1::service_quota m_dtc_service_retire;"
+            },
+            {
+              "line": 2160,
+              "text": "  dtc_l1::service_quota m_dtc_service_collect{4};"
+            },
+            {
+              "line": 2161,
+              "text": "  uint64_t m_dtc_service_sample_cycle = UINT64_MAX;"
+            },
+            {
+              "line": 2162,
+              "text": "  uint64_t m_dtc_service_occupancy_sample_cycle = UINT64_MAX;"
+            },
+            {
+              "line": 2163,
+              "text": "  uint64_t m_dtc_service_samples = 0;"
+            },
+            {
+              "line": 2164,
+              "text": "  uint64_t m_dtc_service_pib_integral = 0;"
+            },
+            {
+              "line": 2165,
+              "text": "  uint64_t m_dtc_service_physical_integral = 0;"
+            },
+            {
+              "line": 2166,
+              "text": "  uint64_t m_dtc_service_ready_to_complete_sum = 0;"
+            },
+            {
+              "line": 2167,
+              "text": "  uint64_t m_dtc_service_ready_to_collect_sum = 0;"
+            },
+            {
+              "line": 2168,
+              "text": "  uint64_t m_dtc_service_collection_cycles = 0;"
+            },
+            {
+              "line": 2169,
+              "text": "  uint64_t m_dtc_service_wb_wait = 0;"
+            },
+            {
+              "line": 2170,
+              "text": "  uint64_t m_dtc_service_retired = 0;"
+            },
+            {
+              "line": 2171,
+              "text": "  uint64_t m_dtc_progressive_collectable_entries = 0;"
+            },
+            {
+              "line": 2172,
+              "text": "  uint64_t m_dtc_progressive_returns_to_retire_sum = 0;"
+            },
+            {
+              "line": 2173,
+              "text": "  uint64_t m_dtc_service_collected_sectors = 0;"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pattern": "L2_cache_stats_fail_breakdown",
+      "matches": [
+        {
+          "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+          "source_sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+          "line": 2000,
+          "context": [
+            {
+              "line": 1989,
+              "text": "      printf(\"L2_total_cache_misses = %llu\\n\", total_l2_css.misses);"
+            },
+            {
+              "line": 1990,
+              "text": "      if (total_l2_css.accesses > 0)"
+            },
+            {
+              "line": 1991,
+              "text": "        printf(\"L2_total_cache_miss_rate = %.4lf\\n\","
+            },
+            {
+              "line": 1992,
+              "text": "               (double)total_l2_css.misses / (double)total_l2_css.accesses);"
+            },
+            {
+              "line": 1993,
+              "text": "      printf(\"L2_total_cache_pending_hits = %llu\\n\", total_l2_css.pending_hits);"
+            },
+            {
+              "line": 1994,
+              "text": "      printf(\"L2_total_cache_reservation_fails = %llu\\n\","
+            },
+            {
+              "line": 1995,
+              "text": "             total_l2_css.res_fails);"
+            },
+            {
+              "line": 1996,
+              "text": "      printf(\"L2_total_cache_breakdown:\\n\");"
+            },
+            {
+              "line": 1997,
+              "text": "      l2_stats.print_stats(stdout, streamID, \"L2_cache_stats_breakdown\");"
+            },
+            {
+              "line": 1998,
+              "text": "      printf(\"L2_total_cache_reservation_fail_breakdown:\\n\");"
+            },
+            {
+              "line": 1999,
+              "text": "      l2_stats.print_fail_stats(stdout, streamID,"
+            },
+            {
+              "line": 2000,
+              "text": "                                \"L2_cache_stats_fail_breakdown\");"
+            },
+            {
+              "line": 2001,
+              "text": "      total_l2_css.print_port_stats(stdout, \"L2_cache\");"
+            },
+            {
+              "line": 2002,
+              "text": "    }"
+            },
+            {
+              "line": 2003,
+              "text": "  }"
+            },
+            {
+              "line": 2004,
+              "text": ""
+            },
+            {
+              "line": 2005,
+              "text": "  if (m_config.gpgpu_cflog_interval != 0) {"
+            },
+            {
+              "line": 2006,
+              "text": "    spill_log_to_file(stdout, 1, gpu_sim_cycle);"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pattern": "void cache_stats::print_fail_stats",
+      "matches": [
+        {
+          "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-cache.cc",
+          "source_sha256": "f600601f96c07b6618f198e7b37dd394f07bb286a5d7b7f76c72634d7f2b1dd1",
+          "line": 1005,
+          "context": [
+            {
+              "line": 994,
+              "text": "      }"
+            },
+            {
+              "line": 995,
+              "text": "    }"
+            },
+            {
+              "line": 996,
+              "text": "    for (unsigned type = 0; type < NUM_MEM_ACCESS_TYPE; ++type) {"
+            },
+            {
+              "line": 997,
+              "text": "      if (total_access[type] > 0)"
+            },
+            {
+              "line": 998,
+              "text": "        fprintf(fout, \"\\t%s[%s][%s] = %u\\n\", m_cache_name.c_str(),"
+            },
+            {
+              "line": 999,
+              "text": "                mem_access_type_str((enum mem_access_type)type), \"TOTAL_ACCESS\","
+            },
+            {
+              "line": 1000,
+              "text": "                total_access[type]);"
+            },
+            {
+              "line": 1001,
+              "text": "    }"
+            },
+            {
+              "line": 1002,
+              "text": "  }"
+            },
+            {
+              "line": 1003,
+              "text": "}"
+            },
+            {
+              "line": 1004,
+              "text": ""
+            },
+            {
+              "line": 1005,
+              "text": "void cache_stats::print_fail_stats(FILE *fout, unsigned long long streamID,"
+            },
+            {
+              "line": 1006,
+              "text": "                                   const char *cache_name) const {"
+            },
+            {
+              "line": 1007,
+              "text": "  std::string m_cache_name = cache_name;"
+            },
+            {
+              "line": 1008,
+              "text": "  for (auto iter = m_fail_stats.begin(); iter != m_fail_stats.end(); ++iter) {"
+            },
+            {
+              "line": 1009,
+              "text": "    unsigned long long streamid = iter->first;"
+            },
+            {
+              "line": 1010,
+              "text": "    // when streamID is specified, skip stats for all other streams, otherwise,"
+            },
+            {
+              "line": 1011,
+              "text": "    // print stats from all streams"
+            },
+            {
+              "line": 1012,
+              "text": "    if ((streamID != -1) && (streamid != streamID)) continue;"
+            },
+            {
+              "line": 1013,
+              "text": "    for (unsigned type = 0; type < NUM_MEM_ACCESS_TYPE; ++type) {"
+            },
+            {
+              "line": 1014,
+              "text": "      for (unsigned fail = 0; fail < NUM_CACHE_RESERVATION_FAIL_STATUS;"
+            },
+            {
+              "line": 1015,
+              "text": "           ++fail) {"
+            },
+            {
+              "line": 1016,
+              "text": "        if (m_fail_stats.at(streamid)[type][fail] > 0) {"
+            },
+            {
+              "line": 1017,
+              "text": "          fprintf("
+            },
+            {
+              "line": 1018,
+              "text": "              fout, \"\\t%s[%s][%s] = %llu\\n\", m_cache_name.c_str(),"
+            },
+            {
+              "line": 1019,
+              "text": "              mem_access_type_str((enum mem_access_type)type),"
+            },
+            {
+              "line": 1020,
+              "text": "              cache_fail_status_str((enum cache_reservation_fail_reason)fail),"
+            },
+            {
+              "line": 1021,
+              "text": "              m_fail_stats.at(streamid)[type][fail]);"
+            },
+            {
+              "line": 1022,
+              "text": "        }"
+            },
+            {
+              "line": 1023,
+              "text": "      }"
+            },
+            {
+              "line": 1024,
+              "text": "    }"
+            },
+            {
+              "line": 1025,
+              "text": "  }"
+            },
+            {
+              "line": 1026,
+              "text": "}"
+            },
+            {
+              "line": 1027,
+              "text": ""
+            },
+            {
+              "line": 1028,
+              "text": "void cache_sub_stats::print_port_stats(FILE *fout,"
+            },
+            {
+              "line": 1029,
+              "text": "                                       const char *cache_name) const {"
+            },
+            {
+              "line": 1030,
+              "text": "  float data_port_util = 0.0f;"
+            },
+            {
+              "line": 1031,
+              "text": "  if (port_available_cycles > 0) {"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,9 @@
 # DTC L2 MLP full-workload exploration V1
 
+Latest completed read-only analysis: [three-agent current results](CURRENT_RESULTS_ANALYSIS_V1.md). This is a time-labelled partial snapshot, not a final candidate selection. [Counter clarification](COUNTER_CLARIFICATION_V1.md) distinguishes unparsed reason fields from absent raw counters.
+
+Operational follow-up: the same owner now uses provider-consistent resource reservations and a four-task pre-execution window while retaining384 model capacity. Actual native models increased41→51 in two30-second observations with zero fresh-HOLD events, versus46 HOLD events in the preceding two intervals. A qualified durable registry journal protects future extension commits and prevents scientific completion while recovery is unresolved. The85-case actual-source qualification and production ACK are preserved; installation granted no starts and changed no frozen source or old budget.
+
 This is the initial execution checkpoint, not the final scientific result. The active Goal continues in the single existing native epoch2 owner. No manuscript changes are made; English v0.23 remains the last user-confirmed master.
 
 The frozen population contains all 35 ordinary representative inputs: 9 PolyBench, 7 Parboil, 9 CUDA Samples, and 10 Rodinia. Seven scientifically unresolved programs remain unresolved. Historical 72-input data, derived b+tree/hotspot, fraction/trim inputs, old failures, and repair-validation identities are not promoted into this new population. See agents/C/INPUT_COVERAGE_README.md and contract/SCOPE.json.

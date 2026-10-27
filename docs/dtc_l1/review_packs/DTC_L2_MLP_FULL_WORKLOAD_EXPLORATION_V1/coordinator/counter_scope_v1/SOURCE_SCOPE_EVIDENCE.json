@@ -1,0 +1,145 @@
+{
+  "schema": "DTC_L2_MLP_COUNTER_SCOPE_SOURCE_EVIDENCE_V1",
+  "UTC": "2026-10-27T11:14:30.162495+00:00",
+  "scope": "source inspection only; no model, no raw rewrite, no counter reclassification",
+  "findings": [
+    {
+      "id": "L2_BREAKDOWN_STREAM_SCOPE",
+      "fact": "cache_stats::print_stats filters m_stats by supplied CUDA streamID; framework cleanup passes finished kernel streamID. A last printed bucket is not automatically an all-stream total.",
+      "consequence": "Verify frozen population stream IDs. For multi-stream inputs, independently aggregate each stream latest complete cumulative bucket snapshot from closed raw or mark whole-input totals unavailable."
+    },
+    {
+      "id": "L2_AGGREGATE_DIFFERENT_SCOPE",
+      "fact": "gpu-sim aggregates all L2 bank sub-stats before printing L2_total_cache_accesses/misses/reservation_fails, whereas named request-type breakdown is stream-filtered.",
+      "consequence": "Do not confuse global aggregate totals with GLOBAL_ACC_R per-stream breakdown. Counter shape and scope must accompany traffic claims."
+    },
+    {
+      "id": "NO_REASON_ZERO_INFERENCE",
+      "fact": "print_fail_stats prints only positive values in a stream; missing reasons may reflect omission, scope or unavailable parsing.",
+      "consequence": "Existing missing reason counters remain unavailable, never silently zero-filled."
+    },
+    {
+      "id": "DRAM_ACCUMULATION",
+      "fact": "dram_t constructor initializes n_rd=0; DRAM read issuance increments it. n_rd is a command/atom count rather than request latency.",
+      "consequence": "Read traffic increase alone does not establish L2-to-DRAM queue latency increase."
+    },
+    {
+      "id": "MEAN_LATENCY_CONDITIONAL",
+      "fact": "memlatstat_print avg_mrq_latency is emitted conditionally from tot_mrq_latency/tot_mrq_num with integer division.",
+      "consequence": "Missing printed latency remains missing; audit reset/sampling semantics before claiming an application-weighted latency or summing means."
+    },
+    {
+      "id": "L2_TOTAL_ACCESS_WIDTH",
+      "fact": "cache_stats breakdown prints per-status uint64 counts but TOTAL_ACCESS uses vector<unsigned> and %u.",
+      "consequence": "For very large counts check 32-bit overflow; prefer independently checked 64-bit sum of mutually exclusive accepted buckets. No actual overflow claim is made in this source-only note."
+    }
+  ],
+  "source_refs": [
+    {
+      "repo": "/root/data/dtc_failure_repair_20261025_v1/core",
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-cache.cc",
+      "relative_path": "src/gpgpu-sim/gpu-cache.cc",
+      "sha256": "f600601f96c07b6618f198e7b37dd394f07bb286a5d7b7f76c72634d7f2b1dd1",
+      "excerpts": [
+        {
+          "start": 657,
+          "end": 684,
+          "text": "657:cache_stats::cache_stats() {\n658:  m_cache_port_available_cycles = 0;\n659:  m_cache_data_port_busy_cycles = 0;\n660:  m_cache_fill_port_busy_cycles = 0;\n661:\n662:  m_tot_stats.resize(NUM_MEM_ACCESS_TYPE);\n663:  for (unsigned i = 0; i < NUM_MEM_ACCESS_TYPE; i++) {\n664:    m_tot_stats[i].resize(NUM_CACHE_REQUEST_STATUS, 0);\n665:  }\n666:\n667:  m_tot_fail_stats.resize(NUM_MEM_ACCESS_TYPE);\n668:  for (unsigned i = 0; i < NUM_MEM_ACCESS_TYPE; i++) {\n669:    m_tot_fail_stats[i].resize(NUM_CACHE_RESERVATION_FAIL_STATUS, 0);\n670:  }\n671:}\n672:\n673:void cache_stats::clear() {\n674:  ///\n675:  /// Zero out all current cache statistics\n676:  ///\n677:  m_stats.clear();\n678:  m_stats_pw.clear();\n679:  m_fail_stats.clear();\n680:\n681:  m_cache_port_available_cycles = 0;\n682:  m_cache_data_port_busy_cycles = 0;\n683:  m_cache_fill_port_busy_cycles = 0;\n684:}"
+        },
+        {
+          "start": 702,
+          "end": 722,
+          "text": "702:void cache_stats::inc_stats(int access_type, int access_outcome,\n703:                            unsigned long long streamID) {\n704:  ///\n705:  /// Increment the stat corresponding to (access_type, access_outcome) by 1.\n706:  ///\n707:  if (!check_valid(access_type, access_outcome))\n708:    assert(0 && \"Unknown cache access type or access outcome\");\n709:\n710:  if (m_stats.find(streamID) == m_stats.end()) {\n711:    std::vector<std::vector<unsigned long long>> new_val;\n712:    new_val.resize(NUM_MEM_ACCESS_TYPE);\n713:    for (unsigned j = 0; j < NUM_MEM_ACCESS_TYPE; ++j) {\n714:      new_val[j].resize(NUM_CACHE_REQUEST_STATUS, 0);\n715:    }\n716:    m_stats.insert(std::pair<unsigned long long,\n717:                             std::vector<std::vector<unsigned long long>>>(\n718:        streamID, new_val));\n719:  }\n720:  m_stats.at(streamID)[access_type][access_outcome]++;\n721:  m_tot_stats[access_type][access_outcome]++;\n722:}"
+        },
+        {
+          "start": 961,
+          "end": 1025,
+          "text": "961:void cache_stats::print_stats(FILE *fout, unsigned long long streamID,\n962:                              const char *cache_name) const {\n963:  ///\n964:  /// For a given CUDA stream, print out each non-zero cache statistic for every\n965:  /// memory access type and status \"cache_name\" defaults to \"Cache_stats\" when\n966:  /// no argument is provided, otherwise the provided name is used. The printed\n967:  /// format is\n968:  /// \"<cache_name>[<request_type>][<request_status>] = <stat_value>\"\n969:  /// Specify streamID to be -1 to print every stream.\n970:\n971:  std::vector<unsigned> total_access;\n972:  std::string m_cache_name = cache_name;\n973:  for (auto iter = m_stats.begin(); iter != m_stats.end(); ++iter) {\n974:    unsigned long long streamid = iter->first;\n975:    // when streamID is specified, skip stats for all other streams, otherwise,\n976:    // print stats from all streams\n977:    if ((streamID != -1) && (streamid != streamID)) continue;\n978:    total_access.clear();\n979:    total_access.resize(NUM_MEM_ACCESS_TYPE, 0);\n980:    for (unsigned type = 0; type < NUM_MEM_ACCESS_TYPE; ++type) {\n981:      for (unsigned status = 0; status < NUM_CACHE_REQUEST_STATUS; ++status) {\n982:        fprintf(fout, \"\\t%s[%s][%s] = %llu\\n\", m_cache_name.c_str(),\n983:                mem_access_type_str((enum mem_access_type)type),\n984:                cache_request_status_str((enum cache_request_status)status),\n985:                m_stats.at(streamid)[type][status]);\n986:\n987:        if (status != RESERVATION_FAIL && status != MSHR_HIT &&\n988:            status != WRITE_ALLOCATED)\n989:          // MSHR_HIT is a special type of SECTOR_MISS\n990:          // so its already included in the SECTOR_MISS.\n991:          // WRITE_ALLOCATE is a supplementary bucket (the access is also\n992:          // counted as MISS), so it must NOT be added to TOTAL_ACCESS.\n993:          total_access[type] += m_stats.at(streamid)[type][status];\n994:      }\n995:    }\n996:    for (unsigned type = 0; type < NUM_MEM_ACCESS_TYPE; ++type) {\n997:      if (total_access[type] > 0)\n998:        fprintf(fout, \"\\t%s[%s][%s] = %u\\n\", m_cache_name.c_str(),\n999:                mem_access_type_str((enum mem_access_type)type), \"TOTAL_ACCESS\",\n1000:                total_access[type]);\n1001:    }\n1002:  }\n1003:}\n1004:\n1005:void cache_stats::print_fail_stats(FILE *fout, unsigned long long streamID,\n1006:                                   const char *cache_name) const {\n1007:  std::string m_cache_name = cache_name;\n1008:  for (auto iter = m_fail_stats.begin(); iter != m_fail_stats.end(); ++iter) {\n1009:    unsigned long long streamid = iter->first;\n1010:    // when streamID is specified, skip stats for all other streams, otherwise,\n1011:    // print stats from all streams\n1012:    if ((streamID != -1) && (streamid != streamID)) continue;\n1013:    for (unsigned type = 0; type < NUM_MEM_ACCESS_TYPE; ++type) {\n1014:      for (unsigned fail = 0; fail < NUM_CACHE_RESERVATION_FAIL_STATUS;\n1015:           ++fail) {\n1016:        if (m_fail_stats.at(streamid)[type][fail] > 0) {\n1017:          fprintf(\n1018:              fout, \"\\t%s[%s][%s] = %llu\\n\", m_cache_name.c_str(),\n1019:              mem_access_type_str((enum mem_access_type)type),\n1020:              cache_fail_status_str((enum cache_reservation_fail_reason)fail),\n1021:              m_fail_stats.at(streamid)[type][fail]);\n1022:        }\n1023:      }\n1024:    }\n1025:  }"
+        },
+        {
+          "start": 1066,
+          "end": 1100,
+          "text": "1066:void cache_stats::get_sub_stats(struct cache_sub_stats &css) const {\n1067:  ///\n1068:  /// Overwrites \"css\" with the appropriate statistics from this cache.\n1069:  ///\n1070:  struct cache_sub_stats t_css;\n1071:  t_css.clear();\n1072:\n1073:  for (auto iter = m_stats.begin(); iter != m_stats.end(); ++iter) {\n1074:    unsigned long long streamID = iter->first;\n1075:    for (unsigned type = 0; type < NUM_MEM_ACCESS_TYPE; ++type) {\n1076:      for (unsigned status = 0; status < NUM_CACHE_REQUEST_STATUS; ++status) {\n1077:        if (status == HIT || status == MISS || status == SECTOR_MISS ||\n1078:            status == HIT_RESERVED)\n1079:          t_css.accesses += m_stats.at(streamID)[type][status];\n1080:\n1081:        if (status == MISS || status == SECTOR_MISS)\n1082:          t_css.misses += m_stats.at(streamID)[type][status];\n1083:\n1084:        if (status == HIT_RESERVED)\n1085:          t_css.pending_hits += m_stats.at(streamID)[type][status];\n1086:\n1087:        if (status == RESERVATION_FAIL)\n1088:          t_css.res_fails += m_stats.at(streamID)[type][status];\n1089:      }\n1090:    }\n1091:  }\n1092:\n1093:  t_css.port_available_cycles = m_cache_port_available_cycles;\n1094:  t_css.data_port_busy_cycles = m_cache_data_port_busy_cycles;\n1095:  t_css.fill_port_busy_cycles = m_cache_fill_port_busy_cycles;\n1096:\n1097:  css = t_css;\n1098:}\n1099:\n1100:void cache_stats::get_sub_stats_pw(struct cache_sub_stats_pw &css) const {"
+        }
+      ]
+    },
+    {
+      "repo": "/root/data/dtc_failure_repair_20261025_v1/core",
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+      "relative_path": "src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+      "excerpts": [
+        {
+          "start": 1952,
+          "end": 2001,
+          "text": "1952:  // performance counter that are not local to one shader\n1953:  m_memory_stats->memlatstat_print(m_memory_config->m_n_mem,\n1954:                                   m_memory_config->nbk);\n1955:  // LRC stats for all L2s\n1956:  m_memory_stats->print_lrc_stats();\n1957:  // Inter-chiplet stats\n1958:  m_memory_stats->print_interchip_stats();\n1959:  for (unsigned i = 0; i < m_memory_config->m_n_mem; i++)\n1960:    m_memory_partition_unit[i]->print(stdout);\n1961:\n1962:  // L2 cache stats\n1963:  if (!m_memory_config->m_L2_config.disabled()) {\n1964:    cache_stats l2_stats;\n1965:    struct cache_sub_stats l2_css;\n1966:    struct cache_sub_stats total_l2_css;\n1967:    l2_stats.clear();\n1968:    l2_css.clear();\n1969:    total_l2_css.clear();\n1970:\n1971:    printf(\"\\n========= L2 cache stats =========\\n\");\n1972:    for (unsigned i = 0; i < m_memory_config->m_n_mem_sub_partition; i++) {\n1973:      m_memory_sub_partition[i]->accumulate_L2cache_stats(l2_stats);\n1974:      m_memory_sub_partition[i]->get_L2cache_sub_stats(l2_css);\n1975:\n1976:      fprintf(stdout,\n1977:              \"L2_cache_bank[%d]: Access = %llu, Miss = %llu, Miss_rate = \"\n1978:              \"%.3lf, Pending_hits = %llu, Reservation_fails = %llu\\n\",\n1979:              i, l2_css.accesses, l2_css.misses,\n1980:              (double)l2_css.misses / (double)l2_css.accesses,\n1981:              l2_css.pending_hits, l2_css.res_fails);\n1982:\n1983:      total_l2_css += l2_css;\n1984:    }\n1985:    if (!m_memory_config->m_L2_config.disabled() &&\n1986:        m_memory_config->m_L2_config.get_num_lines()) {\n1987:      // L2c_print_cache_stat();\n1988:      printf(\"L2_total_cache_accesses = %llu\\n\", total_l2_css.accesses);\n1989:      printf(\"L2_total_cache_misses = %llu\\n\", total_l2_css.misses);\n1990:      if (total_l2_css.accesses > 0)\n1991:        printf(\"L2_total_cache_miss_rate = %.4lf\\n\",\n1992:               (double)total_l2_css.misses / (double)total_l2_css.accesses);\n1993:      printf(\"L2_total_cache_pending_hits = %llu\\n\", total_l2_css.pending_hits);\n1994:      printf(\"L2_total_cache_reservation_fails = %llu\\n\",\n1995:             total_l2_css.res_fails);\n1996:      printf(\"L2_total_cache_breakdown:\\n\");\n1997:      l2_stats.print_stats(stdout, streamID, \"L2_cache_stats_breakdown\");\n1998:      printf(\"L2_total_cache_reservation_fail_breakdown:\\n\");\n1999:      l2_stats.print_fail_stats(stdout, streamID,\n2000:                                \"L2_cache_stats_fail_breakdown\");\n2001:      total_l2_css.print_port_stats(stdout, \"L2_cache\");"
+        }
+      ]
+    },
+    {
+      "repo": "/root/data/dtc_failure_repair_20261025_v1/core",
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/l2cache.cc",
+      "relative_path": "src/gpgpu-sim/l2cache.cc",
+      "sha256": "1b2b0ebca49a2f5943c9350a637d849961da96159a147a70b887434bd7f37ff5",
+      "excerpts": [
+        {
+          "start": 996,
+          "end": 1019,
+          "text": "996:void memory_sub_partition::accumulate_L2cache_stats(\n997:    class cache_stats &l2_stats) const {\n998:  if (!m_config->m_L2_config.disabled()) {\n999:    l2_stats += m_L2cache->get_stats();\n1000:  }\n1001:}\n1002:\n1003:void memory_sub_partition::get_L2cache_sub_stats(\n1004:    struct cache_sub_stats &css) const {\n1005:  if (!m_config->m_L2_config.disabled()) {\n1006:    m_L2cache->get_sub_stats(css);\n1007:  }\n1008:}\n1009:\n1010:void memory_sub_partition::get_L2cache_sub_stats_pw(\n1011:    struct cache_sub_stats_pw &css) const {\n1012:  if (!m_config->m_L2_config.disabled()) {\n1013:    m_L2cache->get_sub_stats_pw(css);\n1014:  }\n1015:}\n1016:\n1017:void memory_sub_partition::clear_L2cache_stats_pw() {\n1018:  if (!m_config->m_L2_config.disabled()) {\n1019:    m_L2cache->clear_pw();"
+        }
+      ]
+    },
+    {
+      "repo": "/root/data/dtc_failure_repair_20261025_v1/core",
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/dram.cc",
+      "relative_path": "src/gpgpu-sim/dram.cc",
+      "sha256": "de8a8eca8c79549193d019a510a33ca77a9c9c41e719ec29c6e59c66871cae4f",
+      "excerpts": [
+        {
+          "start": 120,
+          "end": 140,
+          "text": "120:  returnq = new fifo_pipeline<mem_fetch>(\n121:      \"dramreturnq\", 0,\n122:      m_config->gpgpu_dram_return_queue_size == 0\n123:          ? 1024\n124:          : m_config->gpgpu_dram_return_queue_size);\n125:  m_frfcfs_scheduler = NULL;\n126:  if (m_config->scheduler_type == DRAM_FRFCFS)\n127:    m_frfcfs_scheduler = new frfcfs_scheduler(m_config, this, stats);\n128:  n_cmd = 0;\n129:  n_activity = 0;\n130:  n_nop = 0;\n131:  n_act = 0;\n132:  n_pre = 0;\n133:  n_rd = 0;\n134:  n_wr = 0;\n135:  n_wr_WB = 0;\n136:  n_rd_L2_A = 0;\n137:  n_req = 0;\n138:  max_mrqs_temp = 0;\n139:  bwutil = 0;\n140:  max_mrqs = 0;"
+        },
+        {
+          "start": 568,
+          "end": 590,
+          "text": "568:      }\n569:      rwq->push(bk[j]->mrq);\n570:      bk[j]->mrq->txbytes += m_config->dram_atom_size;\n571:      CCDc = m_config->tCCD;\n572:      bkgrp[grp]->CCDLc = m_config->tCCDL;\n573:      RTWc = m_config->tRTW;\n574:      bk[j]->RTPc = m_config->BL / m_config->data_command_freq_ratio;\n575:      bkgrp[grp]->RTPLc = m_config->tRTPL;\n576:      issued = true;\n577:      if (bk[j]->mrq->data->get_access_type() == L2_WR_ALLOC_R)\n578:        n_rd_L2_A++;\n579:      else\n580:        n_rd++;\n581:\n582:      bwutil += m_config->BL / m_config->data_command_freq_ratio;\n583:      bwutil_partial += m_config->BL / m_config->data_command_freq_ratio;\n584:      bk[j]->n_access++;\n585:\n586:#ifdef DRAM_VERIFY\n587:      PRINT_CYCLE = 1;\n588:      printf(\"\\tRD  Bk:%d Row:%03x Col:%03x \\n\", j, bk[j]->curr_row,\n589:             bk[j]->mrq->col + bk[j]->mrq->txbytes - m_config->dram_atom_size);\n590:#endif"
+        }
+      ]
+    },
+    {
+      "repo": "/root/data/dtc_failure_repair_20261025_v1/core",
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/mem_latency_stat.cc",
+      "relative_path": "src/gpgpu-sim/mem_latency_stat.cc",
+      "sha256": "bd04d9b1aa377457f512d52e414a54e0208573cb13df4be97a32e70781a29045",
+      "excerpts": [
+        {
+          "start": 340,
+          "end": 370,
+          "text": "340:}\n341:\n342:void memory_stats_t::memlatstat_print(unsigned n_mem, unsigned gpu_mem_n_bk) {\n343:  unsigned i, j, k, l, m;\n344:  unsigned max_bank_accesses, min_bank_accesses, max_chip_accesses,\n345:      min_chip_accesses;\n346:\n347:  if (m_memory_config->SST_mode) {\n348:    // in SST mode, we just calculate mem latency\n349:    printf(\"max_mem_SST_latency = %d \\n\", max_mf_latency);\n350:    if (num_mfs)\n351:      printf(\"average_mf_SST_latency = %lld \\n\", mf_total_lat / num_mfs);\n352:  } else if (m_memory_config->gpgpu_memlatency_stat) {\n353:    printf(\"maxmflatency = %d \\n\", max_mf_latency);\n354:    printf(\"max_icnt2mem_latency = %d \\n\", max_icnt2mem_latency);\n355:    printf(\"maxmrqlatency = %d \\n\", max_mrq_latency);\n356:    // printf(\"maxdqlatency = %d \\n\", max_dq_latency);\n357:    printf(\"max_icnt2sh_latency = %d \\n\", max_icnt2sh_latency);\n358:    if (num_mfs) {\n359:      printf(\"averagemflatency = %lld \\n\", mf_total_lat / num_mfs);\n360:      printf(\"avg_icnt2mem_latency = %lld \\n\", tot_icnt2mem_latency / num_mfs);\n361:      if (tot_mrq_num)\n362:        printf(\"avg_mrq_latency = %lld \\n\", tot_mrq_latency / tot_mrq_num);\n363:\n364:      printf(\"avg_icnt2sh_latency = %lld \\n\", tot_icnt2sh_latency / num_mfs);\n365:    }\n366:    printf(\"mrq_lat_table:\");\n367:    for (i = 0; i < 32; i++) {\n368:      printf(\"%d \\t\", mrq_lat_table[i]);\n369:    }\n370:    printf(\"\\n\");"
+        }
+      ]
+    },
+    {
+      "repo": "/root/data/dtc_failure_repair_20261025_v1/framework",
+      "commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+      "path": "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/accel-sim.cc",
+      "relative_path": "gpu-simulator/accel-sim.cc",
+      "sha256": "36e11eb6aa8975b208d3f5e65f2a389bc93809483c17a15d3743c8fe272a37d8",
+      "excerpts": [
+        {
+          "start": 158,
+          "end": 184,
+          "text": "158:void accel_sim_framework::cleanup(unsigned finished_kernel) {\n159:  trace_kernel_info_t *k = NULL;\n160:  unsigned long long finished_kernel_cuda_stream_id = -1;\n161:  for (unsigned j = 0; j < kernels_info.size(); j++) {\n162:    k = kernels_info.at(j);\n163:    if (k->get_uid() == finished_kernel ||\n164:        m_gpgpu_sim->cycle_insn_cta_max_hit() || !m_gpgpu_sim->active()) {\n165:      for (unsigned int l = 0; l < busy_streams.size(); l++) {\n166:        if (busy_streams.at(l) == k->get_cuda_stream_id()) {\n167:          finished_kernel_cuda_stream_id = k->get_cuda_stream_id();\n168:          busy_streams.erase(busy_streams.begin() + l);\n169:          break;\n170:        }\n171:      }\n172:      tracer.kernel_finalizer(k->get_trace_info());\n173:      delete k->entry();\n174:      delete k;\n175:      kernels_info.erase(kernels_info.begin() + j);\n176:      if (!m_gpgpu_sim->cycle_insn_cta_max_hit() && m_gpgpu_sim->active())\n177:        break;\n178:    }\n179:  }\n180:  if (k) {\n181:    m_gpgpu_sim->print_stats(finished_kernel_cuda_stream_id);\n182:    m_gpgpu_sim->perf_counters.print_counters();\n183:  }\n184:}"
+        }
+      ]
+    }
+  ],
+  "actual_stream_population_audit": "PENDING_AGENT_D_REPORT_V1",
+  "cycles_acceptance_or_launch_changed": false
+}
