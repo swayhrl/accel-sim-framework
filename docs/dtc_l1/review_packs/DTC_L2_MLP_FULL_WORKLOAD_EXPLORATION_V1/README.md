@@ -1,5 +1,7 @@
 # DTC L2 MLP full-workload exploration V1
 
+**Latest current-progress review:** [ChatGPT review checkpoint,2026-10-27 20:22 main snapshot plus20:29 resource supplement](checkpoints/CURRENT_PROGRESS_REVIEW_V1/README.md). It includes350 cells,145 accepted,80 confirmed live at the main snapshot,125 pending; newer79-live admission observation is separately labelled. [Ready-to-send review prompt](checkpoints/CURRENT_PROGRESS_REVIEW_V1/CHATGPT_REVIEW_PROMPT.md). The campaign continues.
+
 Latest counter coverage: [129 closed-log sidecar and baseline CH/DH table](agents/D/raw_reason_v1/README.md). The prior unparsed-versus-unprinted distinction is now verified across129 accepted logs, with no raw or strict rewrite. [Supplementary search V2 review](SUPPLEMENTARY_SEARCH_V2_REVIEW.md) records the coordinator-approved boundary and best-uniform-CH rules before their separate runtime activation.
 
 Latest completed read-only analysis: [three-agent current results](CURRENT_RESULTS_ANALYSIS_V1.md). This is a time-labelled partial snapshot, not a final candidate selection. [Counter clarification](COUNTER_CLARIFICATION_V1.md) distinguishes unparsed reason fields from absent raw counters.

@@ -1,0 +1,100 @@
+{
+  "schema": "DTC_LARGE_JOB_AGING_REVIEW_SUMMARY_V1",
+  "implementation_status": "PROPOSAL_ONLY_NOT_IMPLEMENTED_NOT_INSTALLED",
+  "production_changes_by_agent_B": 0,
+  "healthy_models_untouched": true,
+  "existing_operational_policy": {
+    "consistent_admission_source_sha256": "f3c02834de47fdab96fdd5280cb17905f07182f69d2dd83eed99fccdac654f4e",
+    "worker_capacity": 384,
+    "max_unobserved_preexec_claims": 4,
+    "memory_budget_fraction": 0.88,
+    "aging_reservation_installed": false
+  },
+  "snapshot_utc": "2026-10-27T12:13:51.730598+00:00",
+  "snapshot_china_time": "2026-10-27 20:13:51 CST",
+  "actual_own_native_generations": 79,
+  "host_available_GiB": 103.38737487792969,
+  "cgroup_effective_GiB": 101.33269882202148,
+  "current_committed_growth_GiB": 81.95240480452776,
+  "current_admission_budget_GiB": 82.13277496304363,
+  "pending_large_jobs": [
+    {
+      "cohort": "E2-DTCL2MLP-ddb6806316876a85-DH-P0-V1",
+      "program": "lavamd",
+      "cell": "DH",
+      "profile": "P0",
+      "canonical_GiB": 81.17786865308881,
+      "current_prediction_GiB": 81.17786865308881,
+      "required_prediction_bytes": 87164072756,
+      "eligible_wait_seconds": 5188.948559045792,
+      "has_dispatch_binding": false,
+      "current_extra_growth_deficit_GiB": 80.99749849457294,
+      "fit_after_own_natural_drain": true,
+      "full_own_drain_available_budget_GiB": 190.72104339580983,
+      "retained_peer_growth_GiB": 2.3270912170410156,
+      "release_witness_count": 11,
+      "release_witness_credit_GiB": 83.44568664867433
+    },
+    {
+      "cohort": "E2-DTCL2MLP-ffc8a89493c8a211-DH-P0-V1",
+      "program": "sgemm",
+      "cell": "DH",
+      "profile": "P0",
+      "canonical_GiB": 18.670312500558794,
+      "current_prediction_GiB": 18.670312500558794,
+      "required_prediction_bytes": 20047095399,
+      "eligible_wait_seconds": 5188.948559045792,
+      "has_dispatch_binding": false,
+      "current_extra_growth_deficit_GiB": 18.489942342042923,
+      "fit_after_own_natural_drain": true,
+      "full_own_drain_available_budget_GiB": 190.72104339580983,
+      "retained_peer_growth_GiB": 2.3270912170410156,
+      "release_witness_count": 2,
+      "release_witness_credit_GiB": 26.78589721810073
+    },
+    {
+      "cohort": "E2-DTCL2MLP-2b93f70cd0666c51-DH-P0-V1",
+      "program": "scalarProd",
+      "cell": "DH",
+      "profile": "P0",
+      "canonical_GiB": 11.493750000372529,
+      "current_prediction_GiB": 11.493750000372529,
+      "required_prediction_bytes": 12341320090,
+      "eligible_wait_seconds": 5188.948559045792,
+      "has_dispatch_binding": false,
+      "current_extra_growth_deficit_GiB": 11.313379841856658,
+      "fit_after_own_natural_drain": true,
+      "full_own_drain_available_budget_GiB": 190.72104339580983,
+      "retained_peer_growth_GiB": 2.3270912170410156,
+      "release_witness_count": 1,
+      "release_witness_credit_GiB": 13.78917236365378
+    }
+  ],
+  "observed_own_anonymous_PSS_GiB": 123.39575958251953,
+  "counterfactual_feasibility": {
+    "no_external_release_assumed": true,
+    "retained_peer_growth_GiB": 2.3270912170410156,
+    "safe_budget_after_full_own_natural_drain_GiB": 190.72104339580983,
+    "all_targets_fit_after_full_own_drain": true,
+    "non_SYRK_non_cutcp_release_credit_GiB": 150.11449540842324,
+    "no_completion_order_or_ETA_proven": true
+  },
+  "proposal_for_review": {
+    "single_target": true,
+    "minimum_eligible_wait_minutes_proposed": 30,
+    "large_prediction_threshold_GiB_proposed": 8,
+    "first_target_proposed": "E2-DTCL2MLP-ddb6806316876a85-DH-P0-V1",
+    "protected_fraction_of_verified_natural_release_proposed": 0.75,
+    "backfill_fraction_proposed": 0.25,
+    "these_fractions_are_not_existing_policy": true,
+    "unchanged_peak_predictions_and_provider_gates": true,
+    "externally_impossible_own_drain_does_not_throttle_other_jobs": true,
+    "implementation_and_CPU_qualification_not_done": true
+  },
+  "evidence": {
+    "path_164": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/B/LARGE_JOB_STARVATION_DIAGNOSIS_V1.json",
+    "sha256": "5690e764fcec1ac3000fbb9a7b2f452d089c19b1495cfdf67b0d19384a3d8937",
+    "proposal_file": "LARGE_JOB_AGING_RESERVATION_PROPOSAL_V1.txt"
+  },
+  "current_user_priority": "Publish review checkpoint first; do not implement/apply aging policy before checkpoint; continue original scientific goal afterward"
+}
