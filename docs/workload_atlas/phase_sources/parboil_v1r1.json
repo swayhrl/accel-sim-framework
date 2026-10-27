@@ -1,0 +1,133 @@
+{
+  "schema": "WORKLOAD_ATLAS_V1R1_CURATED_KERNEL_PHASES",
+  "suite": "Parboil",
+  "source_authority": "Fixed byte-verified Parboil source candidate; application capture ELF not certified",
+  "tuple_fields": [
+    "source_stage",
+    "global_access",
+    "static_reuse_opportunity",
+    "dependency_or_barrier",
+    "host_or_capture_scope"
+  ],
+  "programs": {
+    "bfs": [
+      [
+        "single-CTA frontier traversal",
+        "Texture CSR node/edge reads, irregular atomicMin/Exch, shared queue output",
+        "Graph-dependent destination convergence and edge locality",
+        "CTA barrier per level, may spill global frontier",
+        "Adaptive small-frontier path; exact capture ELF unresolved"
+      ],
+      [
+        "multi-CTA frontier traversal",
+        "Texture CSR node/edge gather, atomic updates and global frontier output",
+        "Data-dependent atomics, sparse edges",
+        "Software global spin barrier; code assumes resident CTAs",
+        "Source NUM_SM14 not an automatic match to FAST64"
+      ],
+      [
+        "large-frontier BFS",
+        "Frontier scan and graph-dependent node/edge texture fetch, global atomic state updates",
+        "Sparse traversal and eight shared queue fragments",
+        "Host checks frontier tail between launches",
+        "Eleven program launches do not prove frontier level distribution"
+      ]
+    ],
+    "cutcp": [
+      [
+        "cutoff lattice electrostatics",
+        "Halfwarps load atom bins, distance cutoff, four energy accumulators/thread",
+        "Shared AtomBinCache reused across lattice points",
+        "CTA barrier before shared cache replacement",
+        "CPU bins/overflow affects workload; 11 registered launches"
+      ]
+    ],
+    "histo": [
+      [
+        "range prescan",
+        "Sample input and global atomicMin/Max range updates",
+        "Samples do not constitute complete histogram",
+        "CTA reduction and atomic range update",
+        "Range guides later algorithm selection"
+      ],
+      [
+        "descriptor preparation",
+        "Input uint2 stream converted into packed descriptors",
+        "Sequential image input; source nonmultiple16 height tail risk",
+        "Unrolled sixteen-row processing",
+        "Tail semantics require actual input/ELF"
+      ],
+      [
+        "histogram accumulate",
+        "Packed descriptor driven shared/global histogram updates",
+        "Data-dependent bin hot spots and contention",
+        "Atomic/retry/CTA accumulation",
+        "Parboil histo distinct from CUDA histogram"
+      ],
+      [
+        "histogram finalize",
+        "Aggregate partial histogram bins",
+        "Across-partition partial reuse",
+        "Follows accumulation stages",
+        "80 registered total launches, four unique kernels"
+      ]
+    ],
+    "mri-q": [
+      [
+        "compute phi magnitude",
+        "Two global sample reads and one magnitude write",
+        "Lane-contiguous sample arrays",
+        "Independent sample arithmetic",
+        "One short preprocessing phase"
+      ],
+      [
+        "compute complex Q",
+        "Constant k-space broadcast and per-thread spatial reads/Q output updates",
+        "Constant sample reuse inside CTA",
+        "Serial sin/cos and FFMA accumulation",
+        "Three ComputeQ launches dominate prior cycles; not newly measured"
+      ]
+    ],
+    "sad": [
+      [
+        "4x4 SAD search",
+        "Reference texture reads and packed 16-bit SAD partial stores",
+        "Neighboring search positions share reference pixels",
+        "Shared frame tile and CTA barriers",
+        "61 threads/CTA;1089 valid positions plus seven padding slots"
+      ],
+      [
+        "8x8 SAD combine",
+        "Read 4x4 partials and combine into packed intermediate",
+        "Local partial reuse",
+        "Wait for 4x4 stage",
+        "Distinct second kernel, not independent application"
+      ],
+      [
+        "16x16 SAD combine",
+        "Read 8x8 intermediates and produce 16x16 SAD",
+        "Intermediate stage reuse",
+        "Wait for 8x8 stage",
+        "Three selected launches total"
+      ]
+    ],
+    "sgemm": [
+      [
+        "register-tiled SGEMM",
+        "Read global A and two B halfwarp segments into shared, accumulate16 outputs/thread and write C",
+        "512B shared B tile, reuse A across accumulators",
+        "Two barriers per K tile",
+        "Parboil medium trace selected by EP and DTC; beta0 C-read SASS unresolved"
+      ]
+    ],
+    "stencil": [
+      [
+        "3D coarsened stencil",
+        "Global top-plane stream, shared xy halo, rolling register previous plane, output coarsened x",
+        "Neighbors reused in shared and registers",
+        "Two CTA barriers per z step; ping-pong phase ordering",
+        "100 selected launches; actual L2 residency unmeasured"
+      ]
+    ]
+  }
+}
