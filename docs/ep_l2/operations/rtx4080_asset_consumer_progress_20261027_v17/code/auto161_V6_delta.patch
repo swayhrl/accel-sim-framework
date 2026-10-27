@@ -1,0 +1,178 @@
+--- /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/orchestrator/core.py
++++ /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/exact_asset_receipt_intake_prepare_20261027_v6/core_v6_candidate.py
+@@ -7,7 +7,7 @@
+ ROOT_ACCEPT=N/'auto161_pipeline_20261026_v1/root/ROOT_SCOPE_AND_ACCEPTANCE_V1.json'
+ ROOT_ACCEPT_SHA='71189b911b93201e043f6a5eeb32a62b2db16d1be3beb125bf515f2fcbe84881'
+ STAGE='METADATA_IDENTITY_STATIC'
+-WAIT={'WAIT_EXISTING_AVAILABILITY_REVIEW','WAIT_ISA_ADAPTER','WAIT_ACTUAL_INPUT_ADAPTER','WAIT_MAPPING_ADAPTER','WAIT_SOURCE_RUNTIME_ADAPTER','WAIT_ROOT_GPU_EXACT','WAIT_ROOT_GPU_VARIANT','WAIT_ROOT_GPU_SDK_ARMED','WAIT_CONSUMER_QUALIFICATION'}
++WAIT={'EXACT_ASSET_SCOPE_COMPLETE','WAIT_EXISTING_AVAILABILITY_REVIEW','WAIT_ISA_ADAPTER','WAIT_ACTUAL_INPUT_ADAPTER','WAIT_MAPPING_ADAPTER','WAIT_SOURCE_RUNTIME_ADAPTER','WAIT_ROOT_GPU_EXACT','WAIT_ROOT_GPU_VARIANT','WAIT_ROOT_GPU_SDK_ARMED','WAIT_CONSUMER_QUALIFICATION'}
+ ROUTES={'READONLY_EXISTING_WORKLOAD_AVAILABILITY_ROUTE_REVIEW_NO_HISTORICAL_ALIAS':'WAIT_EXISTING_AVAILABILITY_REVIEW','ISA_PROFILE_SPECIALIST_PREPARATION_REQUIRED':'WAIT_ISA_ADAPTER','ACTUAL_INPUT_LIFETIME_SNAPSHOT_PREPARATION_REQUIRED':'WAIT_ACTUAL_INPUT_ADAPTER','MAPPING_PROOF_HOLD':'WAIT_MAPPING_ADAPTER','SDK42_DEFAULT50000_MICROWINDOW_ARMED_NOT_EXECUTED':'WAIT_ROOT_GPU_SDK_ARMED','EXACT_RUNTIME_OR_STATIC_EVIDENCE_REVIEW_REQUIRED':'WAIT_SOURCE_RUNTIME_ADAPTER','SOURCE_INPUT_ORACLE_AND_GPU_ADMISSION_REVIEW_REQUIRED':'WAIT_SOURCE_RUNTIME_ADAPTER','ROOT_GPU_PILOT_REQUIRED_EXACT_SOURCE_BINARY':'WAIT_ROOT_GPU_EXACT','SEPARATE_REPAIRED_VARIANT_GPU_REQUIRED_NO_V3_SUPERSESSION':'WAIT_ROOT_GPU_VARIANT'}
+ def need(ok,msg):
+  if not ok:raise ValueError(msg)
+@@ -63,6 +63,9 @@
+  need(result.get('stage_execution_complete')is True,'gate not executed')
+  for k in ['qualification_granted','historical_queue_mutated','gpu_executed','simulation_executed']:need(result.get(k)is False,'forbidden result claim '+k)
+  need(result.get('next_stage')in WAIT,'forbidden next stage')
++ if result.get('next_stage')=='EXACT_ASSET_SCOPE_COMPLETE':
++  need(ctx['adapter_id']=='auto161_metadata_identity_static_v6_root_exact_asset_receipts'and result.get('missing_proofs')==[],'exact terminal restricted to typed receipt row without missing proofs')
++  need(result.get('facts',{}).get('Root_exact_asset_receipt',{}).get('receipt_ref')is not None,'exact terminal receipt missing')
+  checks=result.get('checks');need(isinstance(checks,list)and len(checks)>=3,'insufficient executed checks')
+  for c in checks:need(isinstance(c,dict)and isinstance(c.get('name'),str)and type(c.get('passed'))is bool,'check schema')
+  refs=result.get('inputs',[])+result.get('evidence',[]);need(2<=len(refs)<=64,'evidence count')
+@@ -74,3 +77,6 @@
+  need(isinstance(result.get('missing_proofs'),list)and isinstance(result.get('family_keys'),list),'gaps/family schema')
+  for dep in ctx.get('dependency_artifacts',[]):need(any(dep==r for r in refs),'dependency not reopened by worker')
+  return True
++
++def metadata_adapter_for_row(reg,queue_id):
++ return reg['exact_asset_metadata_adapter']if queue_id in reg.get('root_exact_asset_receipts',{})else reg['metadata_adapter']
+--- /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/orchestrator/worker.py
++++ /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/exact_asset_receipt_intake_prepare_20261027_v6/worker_v6_candidate.py
+@@ -31,7 +31,7 @@
+  approval=c.load(c.verify_ref(ctx['approval_ref']))
+  c.need(approval['status']=='APPROVED_PRIVATE_CPU_ONLY_EXACT161'and approval['scope_sha256']==ctx['scope_sha256']==c.SCOPE_SHA,'Root CPU approval required by worker')
+  for name in ['core.py','worker.py','orchestrator.py','FROZEN_ADMISSIONS.json']:c.need(c.rawsha(c.D/name)==approval['pins'][name],'worker approval pin '+name)
+- allowfile=c.verify_ref(ctx['allowlist_ref']);c.need(c.rawsha(allowfile)==approval['pins']['ALLOWLIST.json'],'frozen allowlist approval pin');allow=c.load(allowfile)['metadata_adapter']
++ allowfile=c.verify_ref(ctx['allowlist_ref']);c.need(c.rawsha(allowfile)==approval['pins']['ALLOWLIST.json'],'frozen allowlist approval pin');allow=c.metadata_adapter_for_row(c.load(allowfile),ctx['queue_id'])
+  for key,field in [('adapter_id','id'),('adapter_profile','profile'),('adapter_path','path'),('adapter_source_sha256','sha256')]:c.need(ctx[key]==allow[field],'unapproved fixed adapter '+key)
+  c.secure_file(ctx['adapter_path'])
+  c.need(c.rawsha(ctx['adapter_path'])==ctx['adapter_source_sha256'],'adapter source changed')
+--- /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/orchestrator/orchestrator.py
++++ /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/exact_asset_receipt_intake_prepare_20261027_v6/orchestrator_v6_candidate.py
+@@ -1,6 +1,6 @@
+ #!/usr/bin/env python3
+ """Finite exact161 private CPU stage engine. Root approval required for execute."""
+-import pathlib,sys,os,json,time,uuid,fcntl,subprocess,traceback,signal,hashlib
++import pathlib,sys,os,json,time,uuid,fcntl,subprocess,traceback,signal,hashlib,types
+ sys.dont_write_bytecode=True
+ sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))
+ import core as c
+@@ -38,10 +38,17 @@
+  c.need(a['max_workers']==2 and a['max_attempts_per_fingerprint']==MAX_ATTEMPTS,'approval resource limits')
+  for f in FILES:c.need(c.rawsha(c.D/f)==a['pins'][f],'code/config pin changed '+f)
+  c.need(c.rawsha(c.ROOT_ACCEPT)==c.ROOT_ACCEPT_SHA,'Root acceptance changed')
+- reg=c.load(c.D/'ALLOWLIST.json');m=reg['metadata_adapter']
+- c.need(m['profile']=='AUTO161_READONLY_CPU_METADATA_V1','metadata profile')
+- c.secure_file(m['path']);c.need(c.rawsha(m['path'])==m['sha256'],'adapter changed')
++ reg=c.load(c.D/'ALLOWLIST.json');adapters=[reg['metadata_adapter']]
++ if reg.get('root_exact_asset_receipts'):adapters.append(reg['exact_asset_metadata_adapter'])
++ for m in adapters:
++  c.need(m['profile']=='AUTO161_READONLY_CPU_METADATA_V1','metadata profile')
++  c.secure_file(m['path']);c.need(c.rawsha(m['path'])==m['sha256'],'adapter changed')
+  return a,reg
++def exact_asset_intake_module(reg):
++ p=reg['artifact_producers']['ROOT_AUTO161_EXACT_ASSET_RECEIPT_INTAKE_V1'];raw=c.secure_file(p['source_path']).read_bytes()
++ c.need(hashlib.sha256(raw).hexdigest()==p['source_sha256'],'exact asset intake source changed')
++ m=types.ModuleType('root_exact_asset_intake_catalog');m.__file__=p['source_path']
++ exec(compile(raw,p['source_path'],'exec'),m.__dict__);return m
+ def _fresh_artifact_catalog(reg):
+  p=c.D/'inbox/INDEX.json'
+  registry_digest=c.digest(reg)
+@@ -55,6 +62,8 @@
+   producer=reg.get('artifact_producers',{}).get(a['producer_id']);c.need(producer is not None,'unapproved artifact producer')
+   c.need(a['profile']==producer['profile']and a['producer_source_sha256']==producer['source_sha256'],'artifact producer/profile mismatch')
+   c.need(c.rawsha(producer['source_path'])==producer['source_sha256'],'artifact producer source drift')
++  if a['producer_id']=='ROOT_AUTO161_EXACT_ASSET_RECEIPT_INTAKE_V1':
++   intake=exact_asset_intake_module(reg);intake.validate_artifact(a,reg,intake.Reader())
+   c.need(a.get('qualification_granted')is False and a.get('gpu_executed')is False and a.get('historical_queue_mutated')is False,'artifact overclaim')
+   c.need(a['status']in ['PASS','HOLD']and a['next_stage']in producer['allowed_next_stages']and a['next_stage']in c.WAIT,'artifact stage')
+   for e in a['evidence']:c.verify_ref(e)
+@@ -73,6 +82,9 @@
+  relevant=[]
+  for ref,a in bysha.values():
+   targets=a.get('target_queue_ids',[]);families=a.get('family_keys',[])
++  if a['producer_id']=='ROOT_AUTO161_EXACT_ASSET_RECEIPT_INTAKE_V1':
++   qid=targets[0];entry=reg['root_exact_asset_receipts'][qid]
++   if a['root_receipt_ref']['sha256']!=entry['active_receipt_sha256']:continue
+   if row['queue_id']in targets or set(families)&set(row.get('profile_families_nonexclusive',[])):relevant.append((ref,a))
+  # Reject cycles; missing dependency remains a real wait and cannot unlock a stage.
+  def walk(h,stack):
+@@ -94,7 +106,7 @@
+    if a['next_stage'].startswith('WAIT_ROOT_GPU'):c.need(binding==c.digest(row),'GPU-admission wait requires exact row static binding')
+    if binding==c.digest(row):next_state=a['next_stage']
+  # V3/V4/V5 derive progress from exact proved CPU gates, never last-writer hints.
+- if reg['metadata_adapter']['id']in {'auto161_metadata_identity_static_v3','auto161_metadata_identity_static_v4','auto161_metadata_identity_static_v5_exact_gaussian_input'}:next_state=None
++ if c.metadata_adapter_for_row(reg,row['queue_id'])['id']in {'auto161_metadata_identity_static_v3','auto161_metadata_identity_static_v4','auto161_metadata_identity_static_v5_exact_gaussian_input','auto161_metadata_identity_static_v6_root_exact_asset_receipts'}:next_state=None
+  return sorted(ready,key=lambda x:x['sha256']),sorted(set(missing)),next_state
+ def statepath(ad):return c.D/'rows'/ad['admission_sha256']/'STATE.json'
+ def all_attempts(ad):
+@@ -102,7 +114,7 @@
+ def execution_accept(attempt,ctx):
+  ep=attempt/'EXECUTION.json';sp=attempt/'PROCESS_START.json';rp=attempt/'RESULT.json'
+  e=c.load(ep);s=c.load(sp);intent=c.load(attempt/'INTENT.json');launch=c.load(attempt/'LAUNCH.json')
+- approval=c.load(c.verify_ref(ctx['approval_ref']));allowfile=c.verify_ref(ctx['allowlist_ref']);allow=c.load(allowfile)['metadata_adapter']
++ approval=c.load(c.verify_ref(ctx['approval_ref']));allowfile=c.verify_ref(ctx['allowlist_ref']);allow=c.metadata_adapter_for_row(c.load(allowfile),ctx['queue_id'])
+  c.need(approval['status']=='APPROVED_PRIVATE_CPU_ONLY_EXACT161'and approval['scope_sha256']==ctx['scope_sha256'],'parent approval binding')
+  c.need(c.rawsha(allowfile)==approval['pins']['ALLOWLIST.json'],'parent frozen allowlist binding')
+  for key,field in [('adapter_id','id'),('adapter_profile','profile'),('adapter_path','path'),('adapter_source_sha256','sha256')]:c.need(ctx[key]==allow[field],'parent adapter allowlist binding')
+@@ -115,7 +127,10 @@
+  for k in ['attempt_id','nonce']:c.need(e[k]==s[k]==ctx[k],'execution binding '+k)
+  for k in ['worker','parent','slot_id','started_monotonic_ns','adapter_source_sha256','runner_source_sha256']:c.need(e[k]==s[k],'execution/start identity '+k)
+  c.need(e['slot_id']==ctx['slot_id']and e['adapter_source_sha256']==ctx['adapter_source_sha256'],'execution slot/adapter')
+- c.need(e['runner_source_sha256']==intent['runner_source_sha256']==c.rawsha(c.D/'worker.py'),'execution runner')
++ current_approval=c.load(c.D/'ROOT_APPROVAL.json');accepted_approval_shas={c.rawsha(c.D/'ROOT_APPROVAL.json'),*current_approval.get('accepted_prior_approval_sha256',[])}
++ c.need(ctx['approval_ref']['sha256']in accepted_approval_shas,'historical execution Root approval not accepted')
++ frozen_worker=pathlib.Path(ctx['approval_ref']['path']).parent/'PINS_FROZEN/worker.py'
++ c.need(e['runner_source_sha256']==intent['runner_source_sha256']==approval['pins']['worker.py']==c.rawsha(c.secure_file(frozen_worker)),'execution frozen approved runner')
+  c.need(e['returncode']==0 and e['ended_monotonic_ns']>e['started_monotonic_ns'],'worker exit/time')
+  c.need(e['cpu_user_seconds']>=0 and e['cpu_system_seconds']>=0,'CPU accounting')
+  c.need(e['worker']['boot_id']==e['parent']['boot_id'],'worker parent boot')
+@@ -213,8 +228,10 @@
+  event('FINITE_ROUND_START',run_id=runid)
+  todo=[];accepted_count=0;attention=[]
+  for i,row in enumerate(rows):
+-  ad=frozen['rows'][i];deps,missing,artifact_next=artifacts(row,reg);adapter=reg['metadata_adapter']
+-  fp=c.digest({'admission':ad['admission_sha256'],'stage':c.STAGE,'adapter_sha256':adapter['sha256'],'artifacts':deps,'missing_dependencies':missing})
++  ad=frozen['rows'][i];deps,missing,artifact_next=artifacts(row,reg);adapter=c.metadata_adapter_for_row(reg,row['queue_id'])
++  fingerprint={'admission':ad['admission_sha256'],'stage':c.STAGE,'adapter_sha256':adapter['sha256'],'artifacts':deps,'missing_dependencies':missing}
++  if row['queue_id']in reg.get('root_exact_asset_receipts',{}):fingerprint['Root_exact_asset_policy_sha256']=c.digest(reg['root_exact_asset_receipts'][row['queue_id']])
++  fp=c.digest(fingerprint)
+   prior,count,blocked=recover(ad,fp)
+   if prior:
+    ref,ack=prior;c.save(statepath(ad),{'schema':'AUTO161_ROW_STATE_V1','queue_id':row['queue_id'],'admission_sha256':ad['admission_sha256'],'status':ack['next_stage'],'attempt_id':ack['attempt_id'],'input_fingerprint':fp,'latest_ack_ref':ref,'attempt_count':count,'stage_execution_complete':True,'exact_trace_qualified':False});accepted_count+=1;continue
+@@ -226,6 +243,7 @@
+  active={};completed=0
+  def launch(item,slot):
+   row,ad,fp,deps,missing,next_state,count=item
++  adapter=c.metadata_adapter_for_row(reg,row['queue_id'])
+   attemptid=ad['admission_sha256'][:12]+'_'+fp[:12]+'_'+str(count+1);attempt=run/'rows'/ad['admission_sha256']/'attempts'/attemptid;attempt.mkdir(parents=True)
+   ctx={'schema':'AUTO161_CONTEXT_V1','attempt_id':attemptid,'nonce':uuid.uuid4().hex,'queue_id':row['queue_id'],'row_index':ad['row_index'],'scope_path':str(c.SCOPE),'scope_sha256':c.SCOPE_SHA,'frozen_row_sha256':ad['frozen_row_sha256'],'admission_sha256':ad['admission_sha256'],'input_fingerprint':fp,'stage':c.STAGE,'adapter_id':adapter['id'],'adapter_profile':adapter['profile'],'adapter_path':adapter['path'],'adapter_source_sha256':adapter['sha256'],'dependency_artifacts':deps,'missing_dependency_sha256':missing,'attempt_directory':str(attempt),'output_path':str(attempt/'RESULT.json'),'slot_id':slot,'approval_ref':approval_ref,'allowlist_ref':allowlist_ref}
+   c.save(attempt/'CONTEXT.json',ctx,True)
+--- /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/gaussian16_actual_progress_prepare_20261027_v1/auto161_metadata_adapter_v5_exact_gaussian_input.py
++++ /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/exact_asset_receipt_intake_prepare_20261027_v6/auto161_metadata_adapter_v6_root_receipts.py
+@@ -1,7 +1,7 @@
+ #!/usr/bin/env python3
+ """Finite readonly CPU metadata adapter. Never launches GPU, subprocesses or simulations."""
+ import argparse,hashlib,json,os,pathlib,time,types
+-ADAPTER_ID='auto161_metadata_identity_static_v5_exact_gaussian_input'
++ADAPTER_ID='auto161_metadata_identity_static_v6_root_exact_asset_receipts'
+ PROFILE='AUTO161_READONLY_CPU_METADATA_V1'
+ SCOPE_SHA='b48a9007274459184c332b77f10784c1fbb8b1c1df213543c65d18a4d8e5327a'
+ INDEX_SHA='16b323304b0d1af9cd77d1f1ae8298f2f96a93f6183617e9cbd6cb93ed19e4cc'
+@@ -179,7 +179,7 @@
+    if doc.get(flag,False)is not False:raise ValueError('ARTIFACT_FORBIDDEN_FLAG:'+flag)
+   gates=doc.get('provided_gates')
+   if not isinstance(gates,list)or not set(gates)<=set(producer.get('allowed_gates',[])):raise ValueError('ARTIFACT_GATE_NOT_ALLOWLISTED')
+-  if doc.get('next_stage')not in producer.get('allowed_next_stages',[])or doc['next_stage']not in set(ROUTES.values()):raise ValueError('ARTIFACT_NEXT_STAGE_NOT_ALLOWLISTED')
++  if doc.get('next_stage')not in producer.get('allowed_next_stages',[])or doc['next_stage']not in set(ROUTES.values())|{'WAIT_CONSUMER_QUALIFICATION','EXACT_ASSET_SCOPE_COMPLETE'}:raise ValueError('ARTIFACT_NEXT_STAGE_NOT_ALLOWLISTED')
+   ev=doc.get('evidence')
+   if not isinstance(ev,list)or not ev:raise ValueError('ARTIFACT_REAL_EVIDENCE_REFS_REQUIRED')
+   for x in ev:
+@@ -280,12 +280,12 @@
+  result=evaluate(row,projection,job,idx,reader)
+  result=resolve_CPU_proofs(row,result,artifact_feedback)
+  result=append_exact_mapping_dependencies(row,result,artifact_feedback,reader)
+- if row['queue_id']=='ORD_Rodinia_gaussian_480dbce5bed5_A001':
+-  helper_path=pathlib.Path('/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/gaussian16_actual_progress_prepare_20261027_v1/gaussian_exact_input_progress_v1.py');helper_code=reader.read(helper_path,'b8901a8c3579c911ffc2fd28477f76e6e430c75f4d4ac69036955e80296d2cfa')
+-  helper=types.ModuleType('root_exact_gaussian_input_progress');helper.__file__=str(helper_path)
++ registry=reader.refobj(ctx['allowlist_ref'])
++ if row['queue_id']in registry.get('root_exact_asset_receipts',{}):
++  helper_path=pathlib.Path('/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/auto161_pipeline_20261026_v1/exact_asset_receipt_intake_prepare_20261027_v6/root_exact_asset_receipt_intake_v1.py');helper_code=reader.read(helper_path,'9729ebcfa54bf275bd608e99670f7729297f699e5d994cc79b4b9f0bfe258518')
++  helper=types.ModuleType('root_exact_asset_receipt_intake');helper.__file__=str(helper_path)
+   exec(compile(helper_code,str(helper_path),'exec'),helper.__dict__)
+-  registry=reader.refobj(ctx['allowlist_ref'])
+-  result=helper.apply(row,result,artifact_feedback,reader,ctx.get('dependency_artifacts',[]),registry)
++  result=helper.apply(row,result,ctx,artifact_feedback,reader,registry)
+  result['facts']['CPU_artifact_feedback']=artifact_feedback
+  result['facts']['closed_CPU_candidate_gates']=artifact_feedback['closed_CPU_candidate_gates']
+  result['checks'].append({'name':'context_dependency_artifacts_reopened_and_exact_CPU_scoped','passed':True,'detail':'All supplied approved refs/source/evidence SHA rechecked; family-only dependencies never grant exact application gates'})

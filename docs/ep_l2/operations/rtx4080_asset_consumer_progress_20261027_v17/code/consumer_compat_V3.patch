@@ -1,0 +1,376 @@
+--- a/trace-parser/trace_parser.h
++++ b/trace-parser/trace_parser.h
+@@ -2,6 +2,7 @@
+ 
+ #include <assert.h>
+ #include <stdint.h>
++#include <stdexcept>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string>
+@@ -10,8 +11,8 @@
+ #define TRACE_PARSER_H
+ 
+ #define WARP_SIZE 32
+-#define MAX_DST 1
+-#define MAX_SRC 4
++#define MAX_DST 8
++#define MAX_SRC 24
+ 
+ enum command_type {
+   kernel_launch = 1,
+@@ -50,7 +51,7 @@
+   inst_trace_t(const inst_trace_t &b);
+ 
+   unsigned line_num;
+-  unsigned m_pc;
++  uint64_t m_pc;
+   unsigned mask;
+   unsigned reg_dsts_num;
+   unsigned reg_dest[MAX_DST];
+@@ -58,6 +59,17 @@
+   unsigned reg_srcs_num;
+   unsigned reg_src[MAX_SRC];
+   uint64_t imm;
++  unsigned ada_record_mem_width=0,ada_address_mode=0,ada_capture_version=0,ada_control_kind=0;
++  uint64_t ada_control_targets[32]={};
++  bool ada_typed=false;
++  unsigned ada_active=0,ada_predicate=0;
++  int ada_bank=-1,ada_offset=0;
++  unsigned ada_regoffset=0;
++  int ada_qualified=0;
++  unsigned ada_constwidth=0;
++  bool ada_aux=false;
++  uint64_t ada_constant_offsets[32]={};
++  unsigned constant_context_ordinal=0;
+ 
+   inst_memadd_info_t *memadd_info;
+ 
+@@ -110,6 +122,22 @@
+ };
+ 
+ struct kernel_trace_t {
++  // The real scheduler ABI has a 32-bit PC. Preserve raw 64-bit PCs in the
++  // records and use one checked per-kernel namespace; reject cross-window
++  // programs rather than silently truncate or discard instructions.
++  mutable bool sim_pc_namespace_set=false;
++  mutable uint64_t sim_pc_namespace_base=0;
++  uint64_t simulator_pc(uint64_t raw) const {
++    const uint64_t base=raw & 0xffffffff00000000ULL;
++    if(!sim_pc_namespace_set) {
++      sim_pc_namespace_base=base;sim_pc_namespace_set=true;
++      fprintf(stderr,"ADA_SIM_PC_NAMESPACE raw_base=%llx sim_base=0 policy=checked_single_4GiB_window_per_kernel\n",(unsigned long long)base);
++    }
++    if(base!=sim_pc_namespace_base)
++      throw std::runtime_error("raw PC spans multiple scheduler namespaces; unsupported");
++    return raw-sim_pc_namespace_base;
++  }
++
+   kernel_trace_t(const std::string &filePath);
+ 
+   std::string kernel_name;
+@@ -124,6 +152,7 @@
+   unsigned nregs;
+   unsigned long long cuda_stream_id;
+   unsigned binary_verion;
++  unsigned constant_context_ordinal=0;
+   unsigned enable_lineinfo;
+   unsigned trace_verion;
+   std::string nvbit_verion;
+--- a/trace-parser/trace_parser.cc
++++ b/trace-parser/trace_parser.cc
+@@ -2,6 +2,7 @@
+ // abdallm@purdue.edu
+ 
+ #include <bits/stdc++.h>
++#include <regex>
+ #include <math.h>
+ #include <stdio.h>
+ #include <time.h>
+@@ -42,10 +43,8 @@
+ }
+ 
+ inst_trace_t::inst_trace_t(const inst_trace_t &b) {
+-  if (memadd_info != NULL) {
+-    memadd_info = new inst_memadd_info_t();
+-    memadd_info = b.memadd_info;
+-  }
++  *this=b;
++  memadd_info=b.memadd_info?new inst_memadd_info_t(*b.memadd_info):nullptr;
+ }
+ 
+ bool inst_trace_t::check_opcode_contain(const std::vector<std::string> &opcode,
+@@ -134,6 +133,7 @@
+ 
+ bool inst_trace_t::parse_from_string(std::string trace, unsigned trace_version,
+                                      unsigned enable_lineinfo) {
++  static const std::regex gaussian_reg_token("R[0-9]+");
+   std::stringstream ss;
+   ss.str(trace);
+ 
+@@ -162,7 +162,8 @@
+   assert(reg_dsts_num <= MAX_DST);
+   for (unsigned i = 0; i < reg_dsts_num; ++i) {
+     ss >> temp;
+-    sscanf(temp.c_str(), "R%d", &reg_dest[i]);
++    if(!std::regex_match(temp,gaussian_reg_token))throw std::runtime_error("exact destination register token");
++    auto value=std::stoul(temp.substr(1));if(value>334)throw std::runtime_error("destination register range");reg_dest[i]=value;
+   }
+ 
+   ss >> opcode;
+@@ -171,7 +172,8 @@
+   assert(reg_srcs_num <= MAX_SRC);
+   for (unsigned i = 0; i < reg_srcs_num; ++i) {
+     ss >> temp;
+-    sscanf(temp.c_str(), "R%d", &reg_src[i]);
++    if(!std::regex_match(temp,gaussian_reg_token))throw std::runtime_error("exact source register token");
++    auto value=std::stoul(temp.substr(1));if(value>334)throw std::runtime_error("source register range");reg_src[i]=value;
+   }
+ 
+   // parse mem info
+@@ -179,6 +181,7 @@
+   unsigned mem_width = 0;
+ 
+   ss >> mem_width;
++  ada_record_mem_width=mem_width;
+ 
+   if (mem_width > 0)  // then it is a memory inst
+   {
+@@ -189,6 +192,8 @@
+     memadd_info->width = get_datawidth_from_opcode(opcode_tokens);
+ 
+     ss >> std::dec >> address_mode;
++    if(!ss||address_mode>address_format::base_delta)throw std::runtime_error("unknown memory address mode");
++    ada_address_mode=address_mode;
+     if (address_mode == address_format::list_all) {
+       // read addresses one by one from the file
+       for (int s = 0; s < WARP_SIZE; s++) {
+@@ -209,8 +214,8 @@
+       std::vector<long long> deltas;
+       // read addresses as base address and deltas
+       ss >> std::hex >> base_address;
+-      for (int s = 0; s < WARP_SIZE; s++) {
+-        if (mask_bits.test(s)) {
++      for (int s = 0, seen=0; s < WARP_SIZE; s++) {
++        if (mask_bits.test(s) && seen++ > 0) {
+           long long delta = 0;
+           ss >> std::dec >> delta;
+           deltas.push_back(delta);
+@@ -220,7 +225,42 @@
+     }
+   }
+ 
+-  ss >> imm;
++  ss >> std::dec >> imm;
++  if(trace_version==6 || trace_version==7 || trace_version==8 || trace_version==8) {
++    std::string tag,extra;unsigned mode=0;
++    ss>>tag>>std::hex>>ada_active>>ada_predicate>>std::dec>>ada_bank>>ada_offset;
++    if(trace_version==6)ss>>ada_regoffset>>ada_qualified>>ada_constwidth;
++    else ss>>ada_qualified>>ada_constwidth>>mode;
++    if(!ss || tag!=(trace_version==6?"ADA6":trace_version==7?"ADA7":"ADA8") || mask!=(ada_active&ada_predicate) || (ada_predicate&~ada_active)!=0 || ada_qualified!=1)
++      throw std::runtime_error("invalid or incomplete Ada semantic record");
++    if(ada_bank < -1 || ada_bank>31 || ada_offset<0 || ada_regoffset)
++      throw std::runtime_error("unsupported Ada constant bank/address");
++    for(unsigned i=0;i<reg_dsts_num;i++)if(reg_dest[i]>334)throw std::runtime_error("Ada destination namespace");
++    for(unsigned i=0;i<reg_srcs_num;i++)if(reg_src[i]>334)throw std::runtime_error("Ada source namespace");
++    if((ada_bank<0)!=(ada_constwidth==0) || ada_constwidth>16)throw std::runtime_error("invalid Ada constant width");
++    if(trace_version==7 || trace_version==8) {
++      if(mode!=unsigned(ada_bank>=0))throw std::runtime_error("invalid ADA7 constant address mode");
++      if(ada_bank>=0)for(unsigned lane=0;lane<32;lane++)if(mask&(1u<<lane)){
++        ss>>ada_constant_offsets[lane];if(!ss||ada_constant_offsets[lane]>0xffffffffULL)throw std::runtime_error("ADA7 constant offset missing/range");
++      }
++    } else if(ada_bank>=0)for(unsigned lane=0;lane<32;lane++)if(mask&(1u<<lane))ada_constant_offsets[lane]=ada_offset;
++    if(trace_version==8) {
++      ss>>ada_control_kind;
++      if(!ss||ada_control_kind>3)throw std::runtime_error("ADA8 missing control mode");
++      if(ada_control_kind)for(unsigned lane=0;lane<32;lane++)if(mask&(1u<<lane)){
++        ss>>ada_control_targets[lane];if(!ss)throw std::runtime_error("ADA8 missing control target/mask");
++      }
++      if((opcode=="CALL.REL.NOINC")!=(ada_control_kind==1) || (opcode=="RET.REL.NODEC")!=(ada_control_kind==2))
++        throw std::runtime_error("ADA8 control opcode/type mismatch");
++      if(ada_control_kind==1 && (reg_srcs_num||reg_dsts_num))throw std::runtime_error("CALL summary misrepresented as RF operations");
++    }
++    if(ada_control_kind!=0)throw std::runtime_error("ADA8 executed CFI currently unsupported by simulator compatibility profile");
++    if(ss>>extra)throw std::runtime_error("Ada unexpected trailing field");
++    if(memadd_info && ada_record_mem_width!=unsigned(memadd_info->width))throw std::runtime_error("Ada recorded/opcode memory width mismatch");
++    ada_capture_version=trace_version;
++    ada_typed=true;
++  } else if(trace_version>8)throw std::runtime_error("unsupported future tracer version");
++
+ 
+   // Finish Parsing
+ 
+@@ -399,6 +439,26 @@
+                  "finishes");
+       } else if (string1 == "#END_TB") {
+         assert(start_of_tb_stream_found);
++        if(trace_version==6 || trace_version==7 || trace_version==8) {
++          for(auto warp:threadblock_traces) {
++            std::vector<inst_trace_t> expanded;expanded.reserve(warp->size()*2);
++            for(const auto &inst:*warp) {
++              auto op=inst.opcode.substr(0,inst.opcode.find('.'));
++              bool split=inst.mask!=0 && inst.ada_bank>=0 && op!="LDC" && op!="ULDC";
++              if(split) {
++                if(inst.reg_srcs_num>=MAX_SRC)throw std::runtime_error("ADA6 aux dependency overflow");
++                inst_trace_t aux(inst);aux.ada_aux=true;aux.opcode="LDC";
++                aux.m_pc=inst.m_pc;aux.reg_srcs_num=0;aux.reg_dsts_num=1;aux.reg_dest[0]=384;
++                if(aux.memadd_info)throw std::runtime_error("ADA6 dual explicit/implicit memory unsupported");
++                expanded.push_back(aux);
++              }
++              inst_trace_t primary(inst);primary.m_pc=inst.m_pc;
++              if(split)primary.reg_src[primary.reg_srcs_num++]=384;
++              expanded.push_back(primary);
++            }
++            warp->swap(expanded);
++          }
++        }
+         break;  // end of TB stream
+       } else if (string1 == "thread" && string2 == "block") {
+         assert(start_of_tb_stream_found);
+--- a/trace-driven/trace_driven.cc
++++ b/trace-driven/trace_driven.cc
+@@ -56,6 +56,8 @@
+ #include "gpgpusim_entrypoint.h"
+ #include "option_parser.h"
+ #include "trace_driven.h"
++static_assert(MAX_SRC<=MAX_INPUT_VALUES && MAX_SRC<=MAX_REG_OPERANDS,"trace sources exceed real core arrays");
++static_assert(MAX_DST<=MAX_OUTPUT_VALUES && MAX_DST<=MAX_REG_OPERANDS,"trace destinations exceed real core arrays");
+ 
+ const trace_warp_inst_t *trace_shd_warp_t::get_next_trace_inst() {
+   if (trace_pc < warp_traces.size()) {
+@@ -80,13 +82,13 @@
+ 
+ address_type trace_shd_warp_t::get_start_trace_pc() {
+   assert(warp_traces.size() > 0);
+-  return warp_traces[0].m_pc;
++  return m_kernel_info->m_kernel_trace_info->simulator_pc(warp_traces[0].m_pc);
+ }
+ 
+ address_type trace_shd_warp_t::get_pc() {
+   assert(warp_traces.size() > 0);
+   assert(trace_pc < warp_traces.size());
+-  return warp_traces[trace_pc].m_pc;
++  return m_kernel_info->m_kernel_trace_info->simulator_pc(warp_traces[trace_pc].m_pc);
+ }
+ 
+ trace_kernel_info_t::trace_kernel_info_t(dim3 gridDim, dim3 blockDim,
+@@ -100,6 +102,8 @@
+   m_tconfig = config;
+   m_kernel_trace_info = kernel_trace_info;
+   m_was_launched = false;
++  static unsigned const_epoch=0;kernel_trace_info->constant_context_ordinal=++const_epoch;
++  if(const_epoch>0x7fffff)throw std::runtime_error("constant namespace exhausted");
+ 
+   // resolve the binary version
+   if (kernel_trace_info->binary_verion == AMPERE_RTX_BINART_VERSION ||
+@@ -166,7 +170,7 @@
+ 
+   // fill and initialize common params
+   m_decoded = true;
+-  pc = (address_type)trace.m_pc;
++  pc = kernel_trace_info->simulator_pc(trace.m_pc);
+ 
+   isize =
+       16;  // starting from MAXWELL isize=16 bytes (including the control bytes)
+@@ -231,16 +235,30 @@
+     out[m] =
+         trace.reg_dest[m] + 1;  // Increment by one because GPGPU-sim starts
+                                 // from R1, while SASS starts from R0
+-    arch_reg.dst[m] = trace.reg_dest[m] + 1;
++    arch_reg.dst[m] = (trace.ada_typed && trace.reg_dest[m]>=256)?-1:trace.reg_dest[m]+1;
+   }
+ 
+   incount = trace.reg_srcs_num;
+   for (unsigned m = 0; m < trace.reg_srcs_num; ++m) {
+     in[m] = trace.reg_src[m] + 1;  // Increment by one because GPGPU-sim starts
+                                    // from R1, while SASS starts from R0
+-    arch_reg.src[m] = trace.reg_src[m] + 1;
+-  }
+-
++    arch_reg.src[m] = (trace.ada_typed && trace.reg_src[m]>=256)?-1:trace.reg_src[m]+1;
++  }
++
++  if(trace.ada_typed) {
++    num_regs=0;
++    for(unsigned i=0;i<trace.reg_dsts_num;i++)num_regs+=(trace.reg_dest[i]<256);
++    for(unsigned i=0;i<trace.reg_srcs_num;i++)num_regs+=(trace.reg_src[i]<256);
++    num_operands=num_regs;
++  }
++  if(trace.ada_typed && trace.mask==0) {
++    outcount=0;incount=0;num_regs=0;num_operands=0;
++    std::fill(out,out+MAX_OUTPUT_VALUES,0);
++    std::fill(in,in+MAX_INPUT_VALUES,0);
++    for(unsigned j=0;j<MAX_REG_OPERANDS;j++){arch_reg.src[j]=-1;arch_reg.dst[j]=-1;}
++    for(unsigned j=0;j<trace.reg_srcs_num;j++)
++      if((trace.reg_src[j]>=320 && trace.reg_src[j]<=334))in[incount++]=trace.reg_src[j]+1;
++  }
+   // fill latency and initl
+   tconfig->set_latency(op, latency, initiation_interval);
+ 
+@@ -253,8 +271,14 @@
+ 
+   // handle special cases and fill memory space
+   switch (m_opcode) {
+-    case OP_LDC:  // handle Load from Constant
+-      data_size = 4;
++    case OP_ULDC:
++    case OP_LDC:  // ADA6 symbolic constant-bank addressing; never a GPU physical VA.
++      if(trace.ada_typed) {
++        if(trace.ada_bank<0) throw std::runtime_error("ADA6 constant load missing address");
++        data_size=trace.ada_constwidth;
++        for(unsigned i=0;i<warp_size();i++)set_addr(i, (uint64_t(kernel_trace_info->constant_context_ordinal)<<40)+(uint64_t(trace.ada_bank)<<32)+trace.ada_constant_offsets[i]);
++        op=LOAD_OP;
++      } else data_size = 4;
+       memory_op = memory_load;
+       const_cache_operand = 1;
+       space.set_type(const_space);
+@@ -404,6 +428,39 @@
+       break;
+   }
+ 
++  if(trace.ada_typed) {
++    // Check the actual decoded core fields before scheduling/local translation.
++    // Constants remain a symbolic per-kernel bank/offset address domain.
++    if(trace.memadd_info) {
++      if(data_size!=unsigned(trace.memadd_info->width))
++        throw std::runtime_error("Ada decoded direct memory width mismatch");
++      for(unsigned lane=0;lane<warp_size();lane++)if(trace.mask&(1u<<lane))
++        if(get_addr(lane)!=trace.memadd_info->addrs[lane])
++          throw std::runtime_error("Ada decoded direct memory lane address mismatch");
++    }
++    if(m_opcode==OP_LDC || m_opcode==OP_ULDC) {
++      if(data_size!=trace.ada_constwidth || space.get_type()!=const_space)
++        throw std::runtime_error("Ada decoded constant width/address space mismatch");
++      for(unsigned lane=0;lane<warp_size();lane++)if(trace.mask&(1u<<lane)) {
++        uint64_t expected=(uint64_t(kernel_trace_info->constant_context_ordinal)<<40)
++                         +(uint64_t(trace.ada_bank)<<32)+trace.ada_constant_offsets[lane];
++        if(get_addr(lane)!=expected)
++          throw std::runtime_error("Ada decoded constant per-lane bank/offset mismatch");
++      }
++    }
++    if(trace.mask) {
++      if(incount!=trace.reg_srcs_num || outcount!=trace.reg_dsts_num)
++        throw std::runtime_error("Ada decoded RF counts mismatch");
++      for(unsigned i=0;i<incount;i++)if(in[i]!=trace.reg_src[i]+1)
++        throw std::runtime_error("Ada decoded RF source identity mismatch");
++      for(unsigned i=0;i<outcount;i++)if(out[i]!=trace.reg_dest[i]+1)
++        throw std::runtime_error("Ada decoded RF destination identity mismatch");
++    }
++  }
++
++  if(trace.ada_typed && getenv("ADA6_SEMANTIC_DIAG")) {
++    fprintf(stderr,"ADA6_DECODE pc=%llx mask=%08x aux=%d op=%s src=%u dst=%u gpr_operands=%u space=%u width=%u const_bank=%d const_offset=%d\n",(unsigned long long)trace.m_pc,trace.mask,trace.ada_aux?1:0,trace.opcode.c_str(),incount,outcount,num_regs,unsigned(space.get_type()),data_size,trace.ada_bank,trace.ada_offset);
++  }
+   return true;
+ }
+ 
+@@ -621,8 +678,8 @@
+   // set the pc from the traces and ignore the functional model
+   for (unsigned i = start_warp; i < end_warp; ++i) {
+     trace_shd_warp_t *m_trace_warp = static_cast<trace_shd_warp_t *>(m_warp[i]);
++    m_trace_warp->set_kernel(&trace_kernel);
+     m_trace_warp->set_next_pc(m_trace_warp->get_start_trace_pc());
+-    m_trace_warp->set_kernel(&trace_kernel);
+   }
+ }
+ 

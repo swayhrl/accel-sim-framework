@@ -1,0 +1,27 @@
+--- a/src/gpgpu-sim/shader.cc
++++ b/src/gpgpu-sim/shader.cc
+@@ -3151,6 +3151,13 @@
+   if (!m_next_wb.empty()) {
+     if (m_operand_collector->writeback(m_next_wb)) {
+       bool insn_completed = false;
++      // Destinationless shared loads/atomics have completed this pipeline.
++      if (m_next_wb.space.get_type() == shared_space) {
++        bool has_output = false;
++        for (unsigned r = 0; r < MAX_OUTPUT_VALUES; ++r)
++          has_output |= m_next_wb.out[r] > 0;
++        if (!has_output) insn_completed = true;
++      }
+       for (unsigned r = 0; r < MAX_OUTPUT_VALUES; r++) {
+         if (m_next_wb.out[r] > 0) {
+           if (m_next_wb.space.get_type() != shared_space) {
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -1428,6 +1428,8 @@
+   partiton_reqs_in_parallel_util = 0;
+   gpu_sim_cycle_parition_util = 0;
+   gpu_sim_insn = 0;
++  // Match checkpoint domain when the per-kernel instruction count resets.
++  last_gpu_sim_insn = 0;
+   m_total_cta_launched = 0;
+   gpu_completed_cta = 0;
+   gpu_occupancy = occupancy_stats();
