@@ -1,0 +1,79 @@
+{
+  "CPU_evidence": "Source78 actualproductionpartition/L2cache/ROloader/realset_index allsets+getters;29controls not application qualification",
+  "active_geometry": {
+    "line_bytes": 128,
+    "logical_tag_count_formula": "sets*ways <=1024",
+    "sets": [
+      32,
+      64
+    ],
+    "slices": 64,
+    "ways": [
+      8,
+      16
+    ]
+  },
+  "physical_resources_fixed": {
+    "D": 512,
+    "WAD": 128,
+    "WB_static": 16,
+    "bank_ops": 1,
+    "banks": 4,
+    "bypass_nominal": 128,
+    "copy_latch_bytes": 128,
+    "lineMSHR": 128,
+    "payload_line_slots": 1168,
+    "resident_nominal": 1024
+  },
+  "schema": "EP_FULL_PERF_GEOMETRY_MAPPING_MATH_PROOF_V1",
+  "source_file_refs": {
+    "src/gpgpu-sim/ep-l2-ft-cache.inc": {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-ft-cache.inc",
+      "sha256": "e27b7624732f3b1c30f0803caef9b3da8cb1a7b84ea82193cd3d24e667e603cc"
+    },
+    "src/gpgpu-sim/gpu-cache.cc": {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/gpu-cache.cc",
+      "sha256": "9c516c0a81f591fedf1f043d0b10662ad9219fbd69aa8b43a70bdcf9d31b6b76"
+    },
+    "src/gpgpu-sim/gpu-cache.h": {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/gpu-cache.h",
+      "sha256": "0a12d46d92abf95f5f908cb407835a7371b828cf9f184392f5a9b9c4e577bcfa"
+    },
+    "src/gpgpu-sim/gpu-sim.cc": {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "d9b1e85fdf5eb33fa84dfd2fdca37bb07fb40d251e6d3940621674998f6f8908"
+    },
+    "src/gpgpu-sim/hashing.cc": {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/hashing.cc",
+      "sha256": "5c8bdeeec719cd0a713a1721813d4cdbdbe90ee76c12e8fd9ea83ddb9a8da84f"
+    },
+    "src/gpgpu-sim/l2cache.cc": {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/l2cache.cc",
+      "sha256": "629ae76b38e339d71b47f6c93f55c0fb249e8afea77df04ef1c025a9b1fba903"
+    }
+  },
+  "source_identity": {
+    "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+    "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+    "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "source_rules": [
+    "gpu-cache.cc176-189 l2_cache_config removes partition bits then base hash",
+    "hashing.cc9-97 P/IPOLY supports32/64sets",
+    "gpu-cache.h2944-2945 tag_payload vector=config.get_num_lines;3444-3456 active bound andbankcolour",
+    "ep-l2-ft-cache.inc428-432/511-518 directSlandingindex;FT2 samebank freephysical landing",
+    "gpu-sim.cc856-860/2113-2137 clocks; CORE==L2 held1132 soL2 observed_cycles=CORE cycles invariant unchanged",
+    "l2cache.cc466-488 finite sharedcredit=scheduler+return-(subparts-1); two privatecredits plus separateWB1"
+  ],
+  "unsupported": [
+    "physicalP changes",
+    "S64/rolelayout changes",
+    "bankops2",
+    "lineMSHR/descriptor/WAD capacity changes",
+    "L2hash orpolicy changes",
+    "CORE/L2frequency changes",
+    "unpaired ICNT input/output limits"
+  ]
+}

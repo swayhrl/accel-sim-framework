@@ -1,0 +1,283 @@
+diff --git a/src/gpgpu-sim/ep-l2-ft-cache.inc b/src/gpgpu-sim/ep-l2-ft-cache.inc
+index 9b8c8c9f..605ed3a0 100644
+--- a/src/gpgpu-sim/ep-l2-ft-cache.inc
++++ b/src/gpgpu-sim/ep-l2-ft-cache.inc
+@@ -683,7 +683,11 @@ void l2_cache::ft_print(FILE *fp, unsigned slice) const {
+       m_ep_l2_payload.diagnostic_services(ep_l2_payload_store::COPY_READ),
+       m_ep_l2_payload.diagnostic_services(ep_l2_payload_store::COPY_WRITE),
+       m_ep_l2_payload.bank_grants(),
++      m_config.m_ep_l2_bank_ops==1 &&
+       !(m_config.m_ep_l2_diag_copy_free || m_config.m_ep_l2_diag_l2_data_free));
++  if(m_config.m_ep_l2_bank_ops==2)
++    fprintf(fp,"EPL2SERVICEV1|P2_POLICY|slice=%u|bank_ops=2|same_slot_services_per_CORE_tick=1|retained_native_identity=1|caller_ports_unchanged=1|hardware_P2_throughput_eligible=1|same_slot_denials=%llu\n",
++        slice,m_ep_l2_payload.p2_same_slot_denials());
+   m_ep_l2_payload.rg1_print(fp,slice);
+   fprintf(fp,"EPL2SERVICEV1|MQ2|slice=%u|enabled=%u|wb_bank_waits=%llu|bypasses=%llu|window=2|lower_enqueues_per_cycle=1\n",slice,m_config.m_ep_l2_mq2,m_ft_stats.mq2_wb_bank_waits,m_ft_stats.mq2_bypasses);
+   fprintf(fp,"EPL2STRUCTV1|BANK_PEAK|slice=%u|ops_per_physical_cycle=%u|bank0=%u|bank1=%u|bank2=%u|bank3=%u\n",slice,
+diff --git a/src/gpgpu-sim/ep-l2-rg1.inc b/src/gpgpu-sim/ep-l2-rg1.inc
+index a4f972f2..1bb99704 100644
+--- a/src/gpgpu-sim/ep-l2-rg1.inc
++++ b/src/gpgpu-sim/ep-l2-rg1.inc
+@@ -97,7 +97,7 @@ request_result request_rg1(role r,unsigned id,bool write,unsigned long long cycl
+ }
+ public:
+ void cancel_transaction(unsigned token) {
+-  if(!m_rg1 && !m_tvd_identity)return;
++  if(!m_rg1 && !bank_identity_enabled())return;
+   for(unsigned b=0;b<4;++b)for(auto *q:{&m_pending[b],&m_granted[b]})
+     for(unsigned i=0;i<q->size();)
+       if((*q)[i].client!=GENERIC && (*q)[i].token==token){if(m_rg1)++m_rg_cancel[(*q)[i].client];q->erase(q->begin()+i);}
+diff --git a/src/gpgpu-sim/ep-l2-ro-store-port.h b/src/gpgpu-sim/ep-l2-ro-store-port.h
+index 86dc9f1f..6e0bc9c6 100644
+--- a/src/gpgpu-sim/ep-l2-ro-store-port.h
++++ b/src/gpgpu-sim/ep-l2-ro-store-port.h
+@@ -21,7 +21,7 @@ class store_port : public payload_port {
+   store_port(ep_l2_payload_store &store,tag_port &tags,bool native_request_ids=false)
+       : m_store(store), m_tags(tags), m_return(NULL), m_return_mask(0),
+         m_native_request_ids(native_request_ids),m_return_uid(0) {
+-    if (!store.banked() || store.ft_mode()!=2 || store.bank_service_limit()!=1 ||
++    if (!store.banked() || store.ft_mode()!=2 || (store.bank_service_limit()!=1 && store.bank_service_limit()!=2) ||
+         store.physical_slots()!=1168)
+       throw std::invalid_argument("RO requires unified banked C16 store");
+   }
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index 49f9298b..b7f8fdad 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -2334,10 +2334,14 @@ class ep_l2_payload_store {
+   }
+   #include "ep-l2-tvd-fixed-pool.inc"
+   void set_tvd_identity(bool enabled) {
+-    assert(!enabled || (banked() && m_ft_mode==2 && m_bank_ops==1 && !m_rg1));
++    assert(!enabled || (banked() && m_ft_mode==2 &&
++        (m_bank_ops==1 || m_bank_ops==2) && !m_rg1));
+     m_tvd_identity=enabled;
+   }
+   bool tvd_identity_enabled() const { return m_tvd_identity; }
++  // P2 distinguishes native heads even when static S has no TVD.
++  bool bank_identity_enabled() const { return m_tvd_identity || m_bank_ops==2; }
++  unsigned long long p2_same_slot_denials() const { return m_p2_same_slot_denials; }
+   void set_rg1_enabled(bool enabled) { assert(!enabled || (banked() && m_ft_mode && m_bank_ops==1)); m_rg1=enabled; }
+   void bind_ready_source(std::function<bool(unsigned,unsigned)> f) { m_ready_source=f; }
+   bool rg1_enabled() const { return m_rg1; }
+@@ -2579,7 +2583,7 @@ class ep_l2_payload_store {
+   void release(const payload_handle &h) {
+     slot &s = inspect_mutable(h); assert(!s.pins && s.pending_sector_mask.none());
+     assert(s.generation != std::numeric_limits<unsigned>::max());
+-    if(m_rg1 || m_tvd_identity){cancel_request(h,false);cancel_request(h,true);}
++    if(m_rg1 || bank_identity_enabled()){cancel_request(h,false);cancel_request(h,true);}
+     if(m_fixed_retention==h)m_fixed_retention=payload_handle();
+     s.status = FREE; s.owner = 0; s.ready_sector_mask.reset(); ++s.generation;
+     assert(fixed_quota_consistent());
+@@ -2699,11 +2703,18 @@ class ep_l2_payload_store {
+     for (unsigned selected=0; selected<m_granted[bank].size(); ++selected) {
+       const pending_op op = m_granted[bank][selected];
+       if (ep_l2::tvd_bank_request_matches(op,r,id,write,client,token,
+-          m_slots[global_id].generation,m_tvd_identity)) {
++          m_slots[global_id].generation,bank_identity_enabled())) {
++        // Keep selected-age order and only one service/slot/tick.
++        // A blocked selected identity never creates a duplicate queued op.
++        if (m_bank_ops==2 && (p2_slot_served(bank,global_id) ||
++            p2_selected_predecessor(bank,selected,global_id))) {
++          ++m_bank_retry_attempts; ++m_p2_same_slot_denials;
++          return p2_deny(m_granted[bank][selected],bank,cycle);
++        }
+         // Its first call was accounted as the logical operation.  This call
+         // is the retry that finally consumes an oldest-ready grant.
+         ++m_bank_retry_attempts;
+-        m_granted[bank].erase(m_granted[bank].begin()+selected); consume_bank(bank); ++m_bank_grants;
++        m_granted[bank].erase(m_granted[bank].begin()+selected); consume_bank(bank,global_id); ++m_bank_grants;
+         ++m_bank_grants_by_bank[bank];
+         if (op.true_conflict) {
+           const unsigned long long waited = cycle - op.first_conflict_cycle;
+@@ -2718,7 +2729,7 @@ class ep_l2_payload_store {
+     int pending_index = -1;
+     for (unsigned i = 0; i < m_pending[bank].size(); ++i)
+       if (ep_l2::tvd_bank_request_matches(m_pending[bank][i],r,id,write,
+-          client,token,m_slots[global_id].generation,m_tvd_identity)) pending_index=i;
++          client,token,m_slots[global_id].generation,bank_identity_enabled())) pending_index=i;
+     if (pending_index >= 0) ++m_bank_retry_attempts;
+ 
+     // No selected/queued older op: a ready operation may consume one of the
+@@ -2726,10 +2737,11 @@ class ep_l2_payload_store {
+     // There is no reason to stage it until N+1 merely to wait for hypothetical
+     // later arrivals in the same cycle.
+     if (m_granted[bank].empty() && m_pending[bank].empty() &&
+-        m_bank_services[bank] < m_bank_ops) {
++        m_bank_services[bank] < m_bank_ops &&
++        (m_bank_ops!=2 || !p2_slot_served(bank,global_id))) {
+       assert(pending_index < 0);
+       record_logical_operation(bank, op_class, client);
+-      consume_bank(bank); ++m_bank_grants; ++m_bank_grants_by_bank[bank];
++      consume_bank(bank,global_id); ++m_bank_grants; ++m_bank_grants_by_bank[bank];
+       return GRANTED;
+     }
+ 
+@@ -2740,7 +2752,7 @@ class ep_l2_payload_store {
+           sequence == (unsigned long long)-1 ? m_next_sequence++ : sequence,
+           cycle));
+       pending_index = m_pending[bank].size() - 1;
+-      if (m_tvd_identity) {
++      if (bank_identity_enabled()) {
+         auto &p=m_pending[bank][pending_index];
+         p.client=client; p.token=token; p.generation=m_slots[global_id].generation;
+         // Native response/fill/lower/frontend heads, no unbounded new queue.
+@@ -2751,6 +2763,7 @@ class ep_l2_payload_store {
+     // or an operation already consumed this cycle.  It is no longer used for
+     // first-idle-op staging bookkeeping.
+     pending_op &denied = m_pending[bank][pending_index];
++    if(m_bank_ops==2 && p2_slot_served(bank,global_id))++m_p2_same_slot_denials;
+     if (!denied.true_conflict) {
+       denied.true_conflict = true;
+       denied.first_conflict_cycle = cycle;
+@@ -2796,8 +2809,11 @@ class ep_l2_payload_store {
+     unsigned best = 0;
+     for (unsigned i = 1; i < q.size(); ++i)
+       if (q[i].sequence < q[best].sequence) best = i;
+-    pending_op op = q[best]; q.erase(q.begin() + best);
+-    consume_bank(bank); ++m_bank_grants; ++m_bank_grants_by_bank[bank];
++    pending_op op = q[best];
++    const unsigned served_id=op.r==BYPASS?k_resident_slots+op.id:op.id;
++    if(m_bank_ops==2 && p2_slot_served(bank,served_id))return false;
++    q.erase(q.begin() + best);
++    consume_bank(bank,served_id); ++m_bank_grants; ++m_bank_grants_by_bank[bank];
+     if (granted_sequence) *granted_sequence = op.sequence;
+     return op.r == r && op.id == id && op.write == write;
+   }
+@@ -2832,10 +2848,28 @@ class ep_l2_payload_store {
+     return true;
+   }
+  private:
+-  void consume_bank(unsigned bank) {
++  void consume_bank(unsigned bank,unsigned global_id=(unsigned)-1) {
+     assert(m_bank_services[bank] < m_bank_ops);
++    if(m_bank_ops==2) {
++      assert(global_id<m_slots.size() && !p2_slot_served(bank,global_id));
++      m_p2_served[bank][m_bank_services[bank]]=global_id;
++    }
+     ++m_bank_services[bank]; m_bank_peak[bank] = std::max(m_bank_peak[bank],m_bank_services[bank]);
+   }
++  bool p2_slot_served(unsigned bank,unsigned id) const {
++    assert(bank<4 && m_bank_services[bank]<=m_bank_ops);
++    for(unsigned n=0;n<m_bank_services[bank];++n)
++      if(m_p2_served[bank][n]==id)return true;
++    return false;
++  }
++  bool p2_selected_predecessor(unsigned bank,unsigned selected,unsigned id) const {
++    for(unsigned n=0;n<selected;++n) {
++      const auto &older=m_granted[bank][n];
++      const unsigned older_id=older.r==BYPASS?k_resident_slots+older.id:older.id;
++      if(older_id==id)return true;
++    }
++    return false;
++  }
+   bool static_role_matches(unsigned id, role r) const {
+     return id < physical_slots() &&
+       (r == RESIDENT ? id < k_resident_slots :
+@@ -2895,6 +2929,14 @@ class ep_l2_payload_store {
+     role r; unsigned id; bool write; unsigned long long sequence;
+     bool true_conflict; unsigned long long first_conflict_cycle;
+   };
++  request_result p2_deny(pending_op &denied,unsigned bank,unsigned long long cycle) {
++    if(!denied.true_conflict) {
++      denied.true_conflict=true; denied.first_conflict_cycle=cycle;
++      ++m_bank_true_conflict_ops; ++m_bank_true_conflict_ops_by_bank[bank];
++    }
++    ++m_bank_true_conflict_events; ++m_bank_true_conflict_events_by_bank[bank];
++    return BANK_TRUE_CONTENTION;
++  }
+   #include "ep-l2-rg1.inc"
+   unsigned m_mode, m_ft_mode, m_wbuf;
+   ep_l2::mechanism_v1::LocalDiagnostic m_local_diagnostic = ep_l2::mechanism_v1::NORMAL;
+@@ -2915,6 +2957,9 @@ class ep_l2_payload_store {
+       m_bank_bypass_read, m_bank_tvd_read;
+   unsigned long long m_next_sequence;
+   unsigned m_bank_services[4], m_bank_peak[4]; std::vector<slot> m_slots;
++  // Direct physical-ID scoreboard; P1 inert, no CAM or new modeled queue.
++  unsigned m_p2_served[4][2] = {};
++  unsigned long long m_p2_same_slot_denials = 0;
+   std::vector<pending_op> m_pending[4], m_granted[4];
+ };
+ 
+@@ -3344,7 +3389,7 @@ class l2_cache : public data_cache {
+       fprintf(stderr,"TVD requires finite native cache policy; COPY_FREE is static-only\n");
+       abort();
+     }
+-    if(m_config.ro_requested() && (m_config.m_ep_l2_ft_mode!=2 || m_config.m_ep_l2_wbuf_entries!=16 || m_config.m_ep_l2_payload_mode!=2 || m_config.m_ep_l2_descriptor_pool_size!=512 || m_config.m_ep_l2_descriptor_per_line_cap!=32 || m_config.m_mshr_entries!=128 || m_config.m_ep_l2_wad_entries!=128 || m_config.m_ep_l2_bank_ops!=1 || m_config.m_ep_l2_static_s64 || m_config.m_ep_l2_wb_local_cap || m_config.m_ep_l2_mq2 || m_config.m_ep_l2_rg1 || m_config.m_ep_l2_ideal_wb || m_config.m_ep_l2_ideal_meta || m_config.m_ep_l2_ideal_read_hit || m_config.m_ep_l2_diag_copy_free)) {fprintf(stderr,"RO requires finite U16 P1 D512/line128/WAD128; COPY_FREE is static-only\n");abort();}
++    if(m_config.ro_requested() && (m_config.m_ep_l2_ft_mode!=2 || m_config.m_ep_l2_wbuf_entries!=16 || m_config.m_ep_l2_payload_mode!=2 || m_config.m_ep_l2_descriptor_pool_size!=512 || m_config.m_ep_l2_descriptor_per_line_cap!=32 || m_config.m_mshr_entries!=128 || m_config.m_ep_l2_wad_entries!=128 || (m_config.m_ep_l2_bank_ops!=1 && m_config.m_ep_l2_bank_ops!=2) || m_config.m_ep_l2_static_s64 || m_config.m_ep_l2_wb_local_cap || m_config.m_ep_l2_mq2 || m_config.m_ep_l2_rg1 || m_config.m_ep_l2_ideal_wb || m_config.m_ep_l2_ideal_meta || m_config.m_ep_l2_ideal_read_hit || m_config.m_ep_l2_diag_copy_free)) {fprintf(stderr,"RO requires finite U16 P1/P2 D512/line128/WAD128; COPY_FREE is static-only\n");abort();}
+ 
+     const bool local_diag = m_config.m_ep_l2_diag_copy_free || m_config.m_ep_l2_diag_l2_data_free;
+     if ((m_config.m_ep_l2_diag_copy_free && m_config.m_ep_l2_diag_l2_data_free) ||
+@@ -3355,7 +3400,9 @@ class l2_cache : public data_cache {
+           m_config.m_mshr_entries != 128 || m_config.get_num_lines() > 1024 ||
+           m_config.m_write_policy != WRITE_BACK ||
+           m_config.m_write_alloc_policy != LAZY_FETCH_ON_READ ||
+-          m_config.m_cache_type != SECTOR || m_config.m_ep_l2_bank_ops != 1 ||
++          m_config.m_cache_type != SECTOR ||
++          (m_config.m_ep_l2_bank_ops != 1 &&
++           (m_config.m_ep_l2_bank_ops != 2 || local_diag)) ||
+           m_config.m_ep_l2_static_s64 || m_config.m_ep_l2_wb_local_cap ||
+           m_config.m_ep_l2_mq2 || m_config.m_ep_l2_rg1 ||
+           m_config.m_ep_l2_ideal_meta || m_config.m_ep_l2_ideal_read_hit ||
+@@ -3373,11 +3420,12 @@ class l2_cache : public data_cache {
+          m_config.m_ep_l2_descriptor_pool_size != 512 || m_config.m_mshr_entries != 128 ||
+          m_config.get_num_lines() > 1024 || m_config.m_write_policy != WRITE_BACK ||
+          m_config.m_write_alloc_policy != LAZY_FETCH_ON_READ || m_config.m_cache_type != SECTOR ||
+-         m_config.m_ep_l2_wad_entries != 128 || m_config.m_ep_l2_bank_ops != 1 ||
++         m_config.m_ep_l2_wad_entries != 128 ||
++         (m_config.m_ep_l2_bank_ops != 1 && m_config.m_ep_l2_bank_ops != 2) ||
+          m_config.m_ep_l2_mq2 || m_config.m_ep_l2_rg1 || m_config.m_ep_l2_static_s64 ||
+          m_config.m_ep_l2_wb_local_cap || m_config.m_ep_l2_ideal_wb ||
+          m_config.m_ep_l2_ideal_meta || m_config.m_ep_l2_ideal_read_hit)) {
+-      fprintf(stderr,"TVD study supports finite1168 Unified P1, CLEAN_ONLY or DIRTY_PENDING_INFLIGHT; combined modes unqualified\n"); abort();
++      fprintf(stderr,"TVD study supports finite1168 Unified P1/P2, CLEAN_ONLY or DIRTY_PENDING_INFLIGHT; combined modes unqualified\n"); abort();
+     }
+     if ((m_config.m_ep_l2_mq2 && m_config.m_ep_l2_rg1) ||
+         ((m_config.m_ep_l2_mq2 || m_config.m_ep_l2_rg1) &&
+@@ -3405,6 +3453,10 @@ class l2_cache : public data_cache {
+     if (m_config.m_ep_l2_bank_ops != 1 &&
+         (m_config.m_ep_l2_bank_ops != 2 || !ft_enabled() || m_config.m_ep_l2_wbuf_entries != 16 ||
+          m_config.m_ep_l2_static_s64 || m_config.m_ep_l2_wb_local_cap ||
++          m_config.m_ep_l2_descriptor_pool_size != 512 || m_config.m_mshr_entries != 128 ||
++          m_config.m_ep_l2_wad_entries != 128 || m_config.get_num_lines()>1024 ||
++          m_config.m_ep_l2_tvd_fixed_entries ||
++          m_config.m_ep_l2_diag_copy_free || m_config.m_ep_l2_diag_l2_data_free ||
+          m_config.m_ep_l2_ideal_wb || m_config.m_ep_l2_ideal_meta || m_config.m_ep_l2_ideal_read_hit)) {
+       fprintf(stderr,"EP-L2 P2 requires B16/U_WB16; combined S64/quota profiles not contracted\n"); abort();
+     }
+diff --git a/tests/ep_l2/ms_ro_combined/native_fixture.h b/tests/ep_l2/ms_ro_combined/native_fixture.h
+index fd38269d..d765bab1 100644
+--- a/tests/ep_l2/ms_ro_combined/native_fixture.h
++++ b/tests/ep_l2/ms_ro_combined/native_fixture.h
+@@ -15,7 +15,7 @@ struct combined_fixture : victim_fixture {
+   void step(bool consume=true) {
+     unsigned long long before[4];for(unsigned b=0;b<4;++b)before[b]=cache->ep_l2_payload_bank_grants(b);
+     part->cache_cycle(gpu->gpu_sim_cycle);
+-    for(unsigned b=0;b<4;++b)assert(cache->ep_l2_payload_bank_grants(b)-before[b]<=1);
++    for(unsigned b=0;b<4;++b)assert(cache->ep_l2_payload_bank_grants(b)-before[b]<=cache->ep_l2_payload_for_test().bank_service_limit());
+     cache->ft_assert_quota();auto &ram=cache->ep_l2_payload_for_test();
+     assert(ram.ownership_consistent() && ram.fixed_quota_consistent());
+     assert(ram.free_slots()+ram.resident_used()+ram.bypass_used()+ram.wb_used()+ram.tvd_used()+ram.ro_used()==1168);
+diff --git a/tests/ep_l2/ms_victim/native_fixture.h b/tests/ep_l2/ms_victim/native_fixture.h
+index 553315cb..430c8bc9 100644
+--- a/tests/ep_l2/ms_victim/native_fixture.h
++++ b/tests/ep_l2/ms_victim/native_fixture.h
+@@ -14,7 +14,8 @@ struct victim_fixture : fixture {
+   explicit victim_fixture(char **argv, const char *queues="512:2:64:64",
+       const char *geometry="S:64:128:16,L:B:m:L:L,A:128:1,256:0,32") : fixture(argv,queues,geometry) {
+     assert(cache->ep_l2_payload_for_test().physical_slots()==1168);
+-    assert(cache->ep_l2_payload_for_test().bank_service_limit()==1);
++    assert(cache->ep_l2_payload_for_test().bank_service_limit()==1 ||
++           cache->ep_l2_payload_for_test().bank_service_limit()==2);
+     assert(cache->ep_l2_descriptor_pool_capacity()==512);
+   }
+   void lower() {
+@@ -61,7 +62,7 @@ struct victim_fixture : fixture {
+     part->cache_cycle(gpu->gpu_sim_cycle);
+     for(unsigned b=0;b<4;++b) {
+       auto used=cache->ep_l2_payload_bank_grants(b)-grants[b];
+-      assert(used<=1); bank_max=std::max(bank_max,used);
++      assert(used<=cache->ep_l2_payload_for_test().bank_service_limit()); bank_max=std::max(bank_max,used);
+     }
+     if(cache->tvd_enabled()) {
+       auto q=cache->tvd_lookup_queries_for_test();
