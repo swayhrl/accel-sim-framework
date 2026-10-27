@@ -1,0 +1,34 @@
+--- 6c8db/stages.py
++++ 138f0d851f3635cff07ecc49ad2b1bf5b3874e8b74f4a6b3df046af35a853d27/stages.py
+@@ -27,15 +27,30 @@
+   need(spec['legacy_goal_root']=='/root/data/shared_sm70_trace_library_20261024_v1','PRODUCTION_OWNED_GOAL_ROOT')
+   # Physical bootstrap inputs are public metadata. Legacy original path strings
+   # inside proof/index/route documents remain resolver keys, never private reads.
++  native_authorities={
++   'r7_process_budget_approval_ref':Path(profile['native_work_root'])/'authority'/('R7_PROCESS_'+spec['integration_id']+'.json'),
++   'r8_parallel_approval_ref':Path(profile['native_work_root'])/'authority'/('R8_'+spec['integration_id']+'.json')}
+   for key,value in spec.items():
+    if key.endswith('_ref'):
+-    need(Path(value['path']).is_relative_to(Path(profile['nas_mount_root'])),'PUBLIC_BOOTSTRAP_REF_'+key)
++    if key in native_authorities:
++     authority=Path(value['path'])
++     need(authority==native_authorities[key] and not authority.is_symlink(),'EXACT_NATIVE_AUTHORITY_REF_'+key)
++     authority_raw=r.bounded_metadata_raw(authority,4*2**20)
++     need(len(authority_raw)==value['bytes'] and sha(authority_raw)==value['sha256'],'NATIVE_AUTHORITY_RAW_REF_'+key)
++    else:need(Path(value['path']).is_relative_to(Path(profile['nas_mount_root'])),'PUBLIC_BOOTSTRAP_REF_'+key)
+   for ref in spec.get('archive_audit_refs',[]):
+    need(Path(ref['path']).is_relative_to(Path(profile['nas_mount_root'])),'PUBLIC_ARCHIVE_AUDIT_REF')
+   for row in spec.get('archives',[]):
+    need(Path(row['source_manifest_ref']['path']).is_relative_to(Path(profile['nas_mount_root']))and Path(row['bundle']).is_relative_to(Path(profile['nas_mount_root'])),'PUBLIC_ARCHIVE_BOOTSTRAP')
+ 
+   need(spec['expected_objects']==22769 and spec['expected_assets']==125 and not spec.get('test_dimensions'),'PRODUCTION_EXACT_DIMENSIONS')
++  # Keep the original production path/UID/mode/host/code/profile validators.
++  # R7 parallel policy requires the admitted R8 coordinator slot before validation.
++  if 'r8_parallel_approval_ref' in spec:
++   need('r8_parallel'in spec and 'r7_process_budget_approval_ref'in spec,'PAIRED_R8_R7_AUTHORITY_REFS')
++   r.load_verified('parallel_restore_r8').admit(r,spec);r._r8_worker_id=-1
++  if 'r7_process_budget_approval_ref' in spec:
++   r.load_verified('process_budget_r7').validate(r,spec,spec['r6_consumer_policy'])
+  approval_path=Path(profile['native_work_root'])/'authority/ACTIVATION_APPROVAL.json'
+  need(approval_path.is_file(),'ROOT_ACTIVATION_APPROVAL_REQUIRED')
+  approval=read(approval_path)

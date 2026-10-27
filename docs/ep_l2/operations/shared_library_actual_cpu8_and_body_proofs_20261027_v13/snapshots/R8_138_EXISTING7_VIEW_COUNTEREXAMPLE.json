@@ -1,0 +1,45 @@
+{
+  "schema": "INDEPENDENT_EXISTING_SHARED7_BUNDLE_SYMLINK_COUNTEREXAMPLE",
+  "status": "CONFIRMED_CURRENT_PUBLISH_REFUSES_ACCEPTED_VIEW_SHAPE",
+  "cases": [
+    {
+      "case": "existing_exact_leaf",
+      "rejected": true,
+      "error": "Hold('symlink traversal')"
+    },
+    {
+      "case": "new_manifest_under_permanent_view",
+      "rejected": true,
+      "error": "Hold('symlink traversal')"
+    }
+  ],
+  "before": {
+    "alias": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/sm70_native_authority_independent_20261027_1793061920752788500/NAS_VIEW_SHADOW_LIBRARY/views/permanent/id7",
+    "leaf": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/sm70_native_authority_independent_20261027_1793061920752788500/NAS_VIEW_SHADOW_LIBRARY/payload/object",
+    "bodysha": "0fd70c7447955a5dea642d28c31e199b36f3eba6756861f84b94ae6b817972c3",
+    "entries": [
+      "tree",
+      "tree/leaf.traceg"
+    ]
+  },
+  "after": {
+    "alias": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/sm70_native_authority_independent_20261027_1793061920752788500/NAS_VIEW_SHADOW_LIBRARY/views/permanent/id7",
+    "leaf": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/sm70_native_authority_independent_20261027_1793061920752788500/NAS_VIEW_SHADOW_LIBRARY/payload/object",
+    "bodysha": "0fd70c7447955a5dea642d28c31e199b36f3eba6756861f84b94ae6b817972c3",
+    "entries": [
+      "tree",
+      "tree/leaf.traceg"
+    ]
+  },
+  "unchanged_permanent_backing": true,
+  "downstream_python_reference_search": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/sm70_v8_native_authority_ref_fix_prepare_20261027_v1/production/tools/versions/138f0d851f3635cff07ecc49ad2b1bf5b3874e8b74f4a6b3df046af35a853d27/stages.py:207:   writer.json(Path('bundles')/a['bundle_id']/'MANIFEST_V3.json',a)\n",
+  "proposal": [
+    "Existing leaf may only return after exact symlink target and physical resolved parent inside same library are independently validated, with no write through alias",
+    "New per-bundle metadata goes to versioned sidecar namespace and catalog explicit metadata reference; do not add files to permanent backing",
+    "Do not globally allow symlink parents for JSON/raw/new-link writers"
+  ],
+  "public_library_touched": false,
+  "actual_trace_body_read": false,
+  "Native": false,
+  "GPU": false
+}
