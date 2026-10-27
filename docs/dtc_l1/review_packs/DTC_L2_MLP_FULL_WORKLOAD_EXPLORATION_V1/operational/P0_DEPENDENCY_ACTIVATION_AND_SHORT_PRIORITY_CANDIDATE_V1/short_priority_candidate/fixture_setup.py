@@ -1,0 +1,57 @@
+"""Build actual pinned owner chooser layers with explicit synthetic resource data.
+No science model, real owner attachment or production mutation.
+"""
+from pathlib import Path as P
+import json,os,time,copy,types,hashlib,importlib.util,tempfile,threading,sys,concurrent.futures
+B=P(__file__).parent;R=P('/root/data/dtc_l2_mlp_exploration_20261027_v1');G=1024**3
+C='E2-DTCL2MLP-2b93f70cd0666c51-DH-P0-V1';T='E2-DTCL2MLP-ddb6806316876a85-DH-P0-V1';DONOR='CPU_ONLY_DONOR'
+def load(n,p):
+ sp=importlib.util.spec_from_file_location(n,p);m=importlib.util.module_from_spec(sp);sp.loader.exec_module(m);return m
+def read(p):return json.loads(P(p).read_bytes())
+def raw(v):return(json.dumps(v,sort_keys=True,indent=2)+'\n').encode()
+def sha(p):return hashlib.sha256(P(p).read_bytes()).hexdigest()
+def put(p,v):p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(raw(v))
+def setup():
+ root=P(tempfile.mkdtemp(prefix='CPU_OWNER_',dir=B));control=root/'control';(control/'specs').mkdir(parents=True);(control/'dispatch_bindings').mkdir();(control/'qualification_ledger').mkdir();(root/'analysis').mkdir();(root/'DTC/run/results').mkdir(parents=True)
+ for name in['RESOURCE_POLICY.json','HISTORICAL_RSS.json','MATRIX_CURRENT.json','ACTUAL_CANARY_QUALIFICATION.json']:(control/name).symlink_to(R/'control'/name)
+ native=load('owner_fixture_original_native',R/'tools/l2_native.py');reg,epoch,oldq,plan=native.registered();q=copy.deepcopy(oldq);hist={c:v for c,v in q['consumed'].items()if c in[C.replace('-P0-','-E384-'),C.replace('-P0-','-F128-'),C.replace('-P0-','-F256-')]};names=[C,T,*hist]
+ for c in names:
+  for rel in['specs/'+c+'.json',c+'_SPEC.json']:(control/rel).symlink_to(R/'control'/rel)
+  for suffix in['.DONE.json','.INTENT.json']:
+   src=R/'control/qualification_ledger'/(c+suffix)
+   if src.exists():(control/'qualification_ledger'/(c+suffix)).symlink_to(src)
+  rp=R/'analysis'/(c+'.RESULT.json')
+  if rp.exists():(root/'analysis'/rp.name).symlink_to(rp)
+ spec=copy.deepcopy(read(R/'control/specs'/(C+'.json')));donor=copy.deepcopy(spec);donor.update(cohort=DONOR,program='CPU_DONOR',input_digest='CPU_DONOR_INPUT');put(control/'specs'/(DONOR+'.json'),donor);put(control/(DONOR+'_SPEC.json'),donor)
+ q['admitted_specs']={c:sha(control/'specs'/(c+'.json'))for c in[*names,DONOR]};q['consumed']={DONOR:dict(uuid='CPU_DONOR_UUID'),**hist};q['budget']=len(q['admitted_specs']);q['remaining']=q['budget']-len(q['consumed']);fake=copy.deepcopy(reg);fake['registered_future_requests'][native.REQ]=q;plan=copy.deepcopy(plan);plan.update(parent_pid=os.getpid(),parent_start_ticks=int(P('/proc/self/stat').read_text().rsplit(')',1)[1].split()[19]));native.R=root;native.registered=lambda:(fake,epoch,q,plan);native.assert_parent_lease=lambda:dict(pid=os.getpid(),start_ticks=plan['parent_start_ticks'],CPU_FIXTURE=True)
+ def canonical(c):assert sha(control/'specs'/(c+'.json'))==q['admitted_specs'][c];return read(control/'specs'/(c+'.json'))
+ native.canonical=canonical
+ def spec_for(c):
+  s=canonical(c);db=read(control/'dispatch_bindings'/(c+'.json'));assert db['canonical_spec_sha256']==q['admitted_specs'][c];s['host_cpu']=db['host_cpu'];assert db['resolved_spec_sha256']==native.jsonsha(s);return s
+ native.spec_for=spec_for;claims={};put(control/'POOL_DISPATCH_RESERVATIONS.json',{'claims':claims});db=dict(cohort=C,canonical_spec_sha256=q['admitted_specs'][C],host_cpu=16,resolved_spec_sha256=native.jsonsha(dict(spec,host_cpu=16)));put(control/'dispatch_bindings'/(C+'.json'),db)
+ res=load('owner_fixture_actual_resources',R/'tools/l2_resources.py');sample=res.sample_system();sample.update(host_MemAvailable_bytes=200*G,cgroup_effective_headroom_bytes=200*G,observed_models=[dict(pid=99999901,cpus=[16],RSS_bytes=100*G,start_ticks=1)],observed_affinity_claims=[dict(pid=99999901,cpus=[16],cmdline='CPU_ONLY')]);sample['cpu_pressure']={};sample['memory_pressure']={};sample['io_pressure']={};policy=read(control/'RESOURCE_POLICY.json');dec=res.memory_admission(sample,120*G,None,policy)
+ resource_state=dict(calls=0,fail_from=None,pressure_from=None)
+ def resources(s,fresh=False):
+  resource_state['calls']+=1
+  if resource_state.get('on_call'):resource_state['on_call'](resource_state['calls'])
+  if resource_state['fail_from']is not None and resource_state['calls']>=resource_state['fail_from']:raise json.JSONDecodeError('CPU second-fresh read failure','',0)
+  total=120*G+(spec['estimated_peak_model_RAM_bytes']if C in claims else 0);current=res.memory_admission(sample,total,None,policy)
+  if resource_state['pressure_from']is not None and resource_state['calls']>=resource_state['pressure_from']:current=dict(current,pressure_reasons=['cpu_pressure_full'],pass_admission=False,pressure_pause_new=True)
+  return dict(sample,source_module_sha256=sha(R/'tools/l2_resources.py'),own_ram_forecasts=[dict(cohort=DONOR,RSS_bytes=100*G,additional_reserved_bytes=40*G,kind='LIVE_MODEL')]+([dict(cohort=C,RSS_bytes=0,additional_reserved_bytes=spec['estimated_peak_model_RAM_bytes'],kind='CLAIM_OR_CANDIDATE')]if C in claims else[]),RAM_reservation_entries=[dict(request='CPU_ONLY_PEER',additional_reserved_bytes=80*G)],total_projected_additional_RAM_bytes=total,reserved_additional_live_and_candidate_RAM_bytes=total,admission_decision=current,physical_RAM_pass=current['pass_admission'],physical_disk_pass=True,own_write_ceiling_pass=True,own_remaining_write_and_restore_bytes=G,own_reserved_write_ceiling_bytes=q['reserved_write_bytes'],required_free_bytes=5*G,native_free_bytes=200*G,free_inodes=1000000,peer_reservations=[dict(request=native.REQ,reserved_write_bytes=q['reserved_write_bytes'])],utc=sample['utc'])
+ res.resources=resources;original_raw=res.choose_dispatch;consistent=load('owner_fixture_consistent',R/'control/operational_amendments/consistent_admission_v1/l2_consistent_admission_amendment_v1.py')
+ def consistent_choose(p,s,c,h,prev=None,pol=None,index=0):return consistent.choose_consistent(original_raw,res,p,s,c,h,prev,pol,index,lambda:res.resources(canonical(DONOR),True),4)
+ res.choose_dispatch=consistent_choose
+ padding=load('owner_fixture_real_padding_owner',R/'control/operational_amendments/padding_only_v1/padding_owner.py');padding.R=root;pcfg=read(R/'control/operational_amendments/padding_only_v1/ACTIVE_FRONTEND.json');pcfg['allowed_cohorts']=[C,T];pcfg_path=control/'PADDING_FIXTURE_ACTIVE.json';put(pcfg_path,pcfg);record={k:pcfg[k]for k in['request','overlay_id','allowed_cohorts',*[r+'_sha256'for r in['source','frontend','extra_strict','owner','history_validator','policy','certificate','QA','readback']]]};record['status']='ACTIVE';q['additional_operational_overlays']={pcfg['overlay_id']:record}
+ consumer=load('owner_fixture_real_consumer',R/'tools/l2_results.py');consumer.R=root;pool=concurrent.futures.ThreadPoolExecutor(max_workers=2,thread_name_prefix='CPU_ONLY');globals_=dict(worker=lambda c:None);frame=types.SimpleNamespace(f_locals=dict(engine=native,res=res,consumer=consumer,pool=pool,claims=claims,max_workers=2),f_globals=globals_);padding.install_on_frame(frame,pcfg_path,fixture=True);core=load('owner_fixture_real_padding_core',pcfg['source_path'])
+ age=load('owner_fixture_real_aging',R/'control/operational_amendments/large_job_aging_v1/large_job_aging.py');rt=load('owner_fixture_real_frames',R/'control/operational_amendments/large_job_aging_v1/aging_runtime_frames.py');facade=types.SimpleNamespace(resources=sys.modules['__main__'].DTC_L2_MLP_PADDING_ONLY_OWNER_V1['overlay'].resources,forecast=res.forecast)
+ def generation(c,u):return dict(pid=99999901,start_ticks=1)
+ def observe(c,u):return dict(cohort=c,uuid=u,pid=99999901,start_ticks=1,anon_PSS_bytes=100*G,PSS_sample_monotonic=time.monotonic())
+ frames=rt.RuntimeFrames(root,native,facade,consumer,core.effective_own_rows,observe=observe,generation=generation);frames.first_eligible=time.monotonic()-5000;aging=age.AgingChooser(res.choose_dispatch,frames);aging.install(res,lambda:None);aging.state.target=dict(cohort=T,program='lavamd',input_digest=canonical(T)['input_digest'],cell='DH',profile='P0',cost_bytes=canonical(T)['estimated_peak_model_RAM_bytes'],first_eligible_monotonic=frames.first_eligible);aging.state.protected=55*G;aging.state.previous_C=int(48.96*G)
+ cpu=load('owner_fixture_real_cpu_rebinder',R/'control/operational_amendments/zero_start_cpu_rebind_v1/zero_start_cpu_rebind.py');cpu.install_on_frame(frame,root,scheduler_ident=threading.get_ident());guardpath=R/'control/operational_amendments/frame_read_guard_v1';guard=load('owner_fixture_real_frame_guard',guardpath/'frame_read_guard.py');prior=sys.modules.get('frame_read_guard');sys.modules['frame_read_guard']=guard
+ try:coupling=load('owner_fixture_real_guard_coupling',guardpath/'cpu_outer_coupling.py')
+ finally:
+  if prior is None:sys.modules.pop('frame_read_guard',None)
+  else:sys.modules['frame_read_guard']=prior
+ coupling.install_in_owner(sys.modules['__main__'],aging,res,lambda:None,sleeper=lambda s:None)
+ source=B/'one_shot_owner.py';deps={str(x):sha(x)for x in[R/'tools/l2_native.py',R/'tools/l2_resources.py',R/'control/operational_amendments/padding_only_v1/padding_owner.py',R/'control/operational_amendments/padding_only_v1/padding_overlay.py',R/'control/operational_amendments/large_job_aging_v1/large_job_aging.py',R/'control/operational_amendments/large_job_aging_v1/aging_runtime_frames.py',guardpath/'frame_read_guard.py',guardpath/'cpu_outer_coupling.py',R/'control/operational_amendments/zero_start_cpu_rebind_v1/zero_start_cpu_rebind.py',R/'control/operational_amendments/shared_json_io_v1/shared_json_io.py',R/'control/operational_amendments/consistent_admission_v1/l2_consistent_admission_amendment_v1.py']};opdir=control/'operational_amendments/one_shot_short_p0_v1';tokens=opdir/'tokens';tokens.mkdir(parents=True);policy_path=opdir/'POLICY.json';put(policy_path,dict(request=native.REQ,overlay_id='DTC_L2_MLP_ONE_SHOT_SHORT_P0_PRIORITY_V1',max_cost_bytes=12*G,max_history_elapsed_seconds=1800,min_history_count=2));qa=opdir/'CPU_FIXTURE_QA.json';back=opdir/'CPU_FIXTURE_READBACK.json';join=dict(source_sha256=sha(source),policy_sha256=sha(policy_path),dependency_pins=deps);put(qa,dict(join,status='PASS',owner_integration_qualified=True,native_prefix_qualified=True,CPU_FIXTURE_ONLY=True));put(back,dict(join,QA_sha256=sha(qa),verified=True,CPU_FIXTURE_ONLY=True));cfg=dict(request=native.REQ,overlay_id='DTC_L2_MLP_ONE_SHOT_SHORT_P0_PRIORITY_V1',status='ACTIVE_FUTURE_ONLY',root=str(root),source_path=str(source),source_sha256=sha(source),policy_path=str(policy_path),policy_sha256=sha(policy_path),QA_path=str(qa),QA_sha256=sha(qa),readback_path=str(back),readback_sha256=sha(back),dependency_pins=deps,allowed_cohorts=[C],token_directory=str(tokens),atomic_helper_path=str(R/'control/operational_amendments/shared_json_io_v1/shared_json_io.py'));put(opdir/'ACTIVE.json',cfg);rec={k:cfg[k]for k in['request','overlay_id','source_sha256','policy_sha256','QA_sha256','readback_sha256','dependency_pins','allowed_cohorts','token_directory']};rec['status']='ACTIVE_PRIORITY_ONLY';q['additional_operational_overlays'][cfg['overlay_id']]=rec
+ return types.SimpleNamespace(root=root,frame=frame,engine=native,q=q,reg=fake,epoch=epoch,plan=plan,res=res,aging=aging,frames=frames,cpu=cpu,guard=guard,coupling=coupling,pool=pool,claims=claims,spec=spec,scope=cfg,cfgpath=opdir/'ACTIVE.json',sample=sample,history=read(control/'HISTORICAL_RSS.json'),policy=policy,resource_state=resource_state,resource_provider=resources,pending=[canonical(C),canonical(T)],main=sys.modules['__main__'],G=G)
