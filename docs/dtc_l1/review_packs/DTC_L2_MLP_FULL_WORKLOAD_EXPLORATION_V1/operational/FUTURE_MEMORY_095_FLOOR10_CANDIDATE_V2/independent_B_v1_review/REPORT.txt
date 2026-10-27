@@ -1,0 +1,71 @@
+Independent review by Agent B: A future-only .95 / 10GiB candidate
+
+Verdict: no blocking defect found in the reviewed install/dispatch/native/consumer
+path. This is code review plus 17 isolated arithmetic/integrity checks, not an
+actual scientific run or canary completion. No production change, model start,
+signal or repeated large 97-test fixture was performed.
+
+Identity: reviewed A MANIFEST SHA f2f3373a43d802fc885eebb20c3d8e86d7ea672978acaacd492bcb6793631fe7;
+97-check QA SHA 9229440dfaea36b2f929bb7c17dc40ffb3e5c4a986979e75920f107dedc98679.
+Every manifest member and all six source roles were independently SHA/size joined.
+Published candidate commit supplied by Main: b425614654ab562dddbf8b0f3095a5ce28d7f803.
+
+1. Arithmetic and peer coverage: future_memory.py:28-43 computes
+.95*min(host_available-10GiB,cgroup_effective_headroom-10GiB), clamped at zero;
+an unlimited cgroup uses only host. It preserves the original provider growth
+rather than adding the new budget as credit. NoFlag replay independently sums
+all peer RAM_reservation_entries plus own_ram_forecasts. Padding replay retains
+the old complete own/peer rows, certified discounts and full canonical/current
+candidate topups. CPU-pressure, disk/write and inode gates remain mandatory.
+Independent negative checks reject omitted peer growth, doubled growth, a
+one-byte budget change, disk failure and CPU pressure. RuntimeFalse returns the
+identical original provider object.
+
+2. Explicit new strict: memory_owner.py:20-31 selects the original unchanged
+performance strict AND the new memory extra validator for new-bound generations;
+it does not invoke or forge an old .88 B5 PASS. joint_padding_strict.py retains
+row/certificate/generation/source/full-candidate math; _budget_replay still checks
+the old .88 arithmetic and truth of its old pass flag, then requires the separately
+bound new memory proof. joint_io_strict.py retains the IO source/config/snapshot/
+three-binding checks and ANDs the newly named padding result. The new top-level
+result explicitly sets old_B5_strict_PASS_claimed=false. Missing/rejected evidence
+cannot become accepted performance data.
+
+3. Scope and old path: memory_owner.py:7-19 leaves outer E/resource calls on the
+old budget in FINITE_CANARY mode, and filters only the already supplied pool.
+No allowlist expansion bypasses E protected reserve. memory_frontend.py:10-18
+sends archive, unavailable config and non-allowlisted cohorts through the old IO
+entry. No-memorybinding generations return the complete historical consumer
+chain. Invalid active new policy for an allowlisted cohort fails closed.
+The route candidate preserves the native CLI and EP/other routes; it does not
+change the scientific model argv. An old-route completion alone is not evidence
+that the memory canary passed.
+
+4. Lifecycle and accounting: broad update_scope_in_owner explicitly rebases only
+aging.previous_C under the existing lock. It does not alter protected_R or
+pending natural-completion release tokens, so the budget rise is not credited
+as a release. FreshFalse runtime behavior is untouched. Main must restore the
+currently installed B one-shot .88 priority adapter before broad .95 activation,
+while preserving its durable tokens, as already planned. Canary-stage E remains
+on the old budget and may legitimately decline a point despite a new physical fit.
+
+5. Closure: future_memory.py:46-58 validates the operational record and full
+source/QA/readback set before INTENT; snapshots bind fresh preflights, source
+text and config. INTENT/LAUNCH/PID receive the same new memory binding.
+memory_extra_strict.py:10-24 joins these three bindings and snapshot SHA, then
+replays memory and padding/IO evidence AND original performance strict. Three
+new explicitly named sidecars link through the final proof. Actual natural
+completion, native strict, archive/restore and result-to-sidecar identities still
+require Main's real finite canary; CPU mocked Popen is not that proof.
+
+Non-blocking dormant helper issue: joint_padding_strict.verify_result_sidecar()
+still reads result.proof.additional_padding_admission_strict, while the new
+terminal path publishes additional_future_memory_padding_strict. Calling this
+old-key helper on a new result would raise KeyError. No reviewed installed
+consumer/terminal path calls it. A future rollout checker should use the explicit
+new top-level memory/padding/IO replay, or qualify a corrected helper separately.
+This review does not silently patch the frozen candidate.
+
+Artifacts: INDEPENDENT_CHECKS.json contains the 17 results and exact six source
+SHAs. independent_checks.py is reproducible against this B-owned A_SNAPSHOT.
+The snapshot is an unchanged read-only copy; no A file was edited.
