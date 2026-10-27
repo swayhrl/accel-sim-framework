@@ -1,0 +1,18 @@
+{
+  "schema": "LIFE_WINDOW_COUNTER_INDEX10_MAPPING_CORRECTION_V1",
+  "analyzer_v3_path": "/root/data/ep_l2_matched_baseline_t_dram_latency_20261027_v1/agent_a/joint_attribution/joint_attribution_v3.py",
+  "analyzer_v3_sha256": "cae226f7bd89b61efd3406bf88956f13a96d7bb3ddaf4ac8f4f083f538fe657b",
+  "analyzer_v4_path": "/root/data/ep_l2_matched_baseline_t_dram_latency_20261027_v1/agent_a/joint_attribution/joint_attribution_v4.py",
+  "analyzer_v4_sha256": "46e3f4605f3bbc2b91ecb2aca752de6c15c3409e0996266e981cf38e1e4bfd28",
+  "only_code_change": "WINDOW_COUNTERS index10 label RESERVED_FULL_TICKS -> REENTER; value parsing, terminal counters, arithmetic, API and all analysis conditions unchanged.",
+  "source_path": "/root/data/ep_tag_capacity_scaling_20261027_v1/core/src/gpgpu-sim/ep-l2-reservation-lifetime.h",
+  "source_sha256": "d2141bee21a26b72f471a8ee96ae5d36a56c366b9c77a6e0c03007c4af9c6c6e",
+  "source_evidence": {
+    "57_58": "window_set15 counter names explicitly listreenter atindex10",
+    "192": "if(!new_incarnation){add(s.c[REENTER]);add(w.c[10]);}"
+  },
+  "correct_index10": "REENTER = reservation reentry event count, not an elapsed-time value",
+  "actual_full_reserved_ticks_rule": "WINDOW_SET area[ways]; for this fixed8way study area[8]. Never c[10].",
+  "prior_partial_conclusions": "Numeric RO/Tag lifetimes,area,R0..8,trueTagFAIL/relieve/detach/cycles comparisons remain valid. Any oldCSV RESERVED_FULL_TICKS column label is withdrawn; retain its original bytes and interpret as REENTER.",
+  "passive_mapping_only_no_model_or_authority_change": true
+}

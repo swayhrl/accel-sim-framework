@@ -1,0 +1,9 @@
+# 资源、并行与Source KEEP回执
+
+五个精确新预算各消费1、remaining0，五row CLOSED、reserved_write_bytes0、own claims/restore_windows为空。每个接受应用均直接流式真164归档，COMMIT-last完整SHA关闭重开验证，FIRST及INDEPENDENT两个不同native ext4目标恢复通过。机器可读APPLICATION_ARCHIVE_AND_RESOURCE_RECEIPT.json提供全部bundle全SHA、true164根和恢复目标；旧D保持其原独立接受归档，复用资格另列。
+
+最初S100与FMT100在CPU16/17并行；后续空出的CPU17运行F200，与S100后验处理重叠。S200与FMT200按冻结CPU16绑定顺序启动；未为改并发修改冻结spec。CPU编译、20次fixture、只读审阅/分析并行进行，模型最多2个。没有要求所有旧任务结束或CPU全空闲。
+
+输入始终真164原Trace，没有本地完整副本。174仅producer源码/原复用build、必要热结果和有界恢复工作集。准入采用真实df、RSS/cgroup、已有owner尚未写入承诺；自身紧急余量1GiB与peer明确共享SSD5GiB取max，不再额外加35GiB历史DTC池、不叠加每case大型包络。本次资源审查未因旧8/12GiB估计阻断。
+
+原O/core与O/framework最终git status均clean；未合并或改accepted EP-MAIN。共享native仅增加精确本Goal有限路由并保留全部旧入口字节；新增registry写只作用本Goal精确5case。Source KEEP，无清理其他owner、无Trace采集、无重启旧Goal。

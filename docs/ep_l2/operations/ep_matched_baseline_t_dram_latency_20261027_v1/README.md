@@ -1,0 +1,16 @@
+# EP-L2 同几何Baseline、T与L2→DRAM延迟因果审阅
+
+Goal: EP_L2_MATCHED_BASELINE_T_AND_DRAM_LATENCY_CAUSAL_V1
+附加分析: L2_TO_DRAM_LATENCY_TAG_PRESSURE_JOINT_ATTRIBUTION_V1
+
+主结论和完整cycles见[FINAL_SCIENTIFIC_REPORT.md](FINAL_SCIENTIFIC_REPORT.md)。两个实际延迟点是100/200 CORE cycles，六点共五个新启动，T独立speedup均1.0。
+
+- [附加生命周期与排队联合分析](L2_DRAM_LATENCY_AND_TAG_OVERLAP_ANALYSIS.md)，[统一比较CSV](UNIFIED_COMPARISON_TABLE.csv)，[窗口与人口定量证据](WINDOW_AND_POPULATION_OBSERVATIONS.md)。
+- [T-ON/OFF独立对照](T_ON_OFF_CAUSAL_COMPARISON.md)，[S/F及其余组合比值](SAME_GEOMETRY_CAUSAL_RATIOS.csv)。
+- [模式资源公平性](DESIGN_IDENTITY_AND_MODE_FAIRNESS.md)，[代码模式审计](MODE_FAIRNESS_AUDIT.md)，[延迟生产路径](DRAM_LATENCY_PATH_AND_UNIT_AUDIT.md)，[计数人口/单位/行号](COUNTER_POPULATIONS_AND_DOMAINS.md)。
+- [实际验证和后验解析补充](VALIDATION_AND_POSTRUN_PARSER_CORRECTION.md)，[未执行最小后续设计](MINIMAL_CONTROLLED_EXPERIMENT_PLAN.md)。
+- [完整结果身份SHA](RESULT_IDENTITIES.json)，[每应用真164双恢复](APPLICATION_ARCHIVE_AND_RESOURCE_RECEIPT.json)，[最终分片证据归档及恢复](FINAL_ARCHIVE_AND_RESTORE_RECEIPT.json)。
+
+全Set/全部窗口/完整raw与失败工程证据存真164，Git只保存汇总、小脚本和精确引用。SOURCE_KEEP，未合并accepted simulator，未修改旧结果或重启旧Goal。
+
+最终归档回执在科学证据分片完成后生成，Git保存其小型副本；真164归档根的FINAL_INDEX.json/RECEIPT.json和最终发布回执是恢复根入口，避免把自身SHA递归嵌入分片。
