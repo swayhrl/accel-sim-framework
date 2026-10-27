@@ -1,0 +1,93 @@
+{
+  "base_scientific_identity": {
+    "binary_sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d",
+    "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+    "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+    "paper_master": "Englishv0.23 unchanged"
+  },
+  "blocker_source": {
+    "path": "D:\\repo\\artifacts\\dtc-l2-mlp-full-workload-exploration-v1\\agents\\A\\guarded_admission_v1\\PAUSE_SUPERVISOR_COMPATIBILITY_BLOCKER.json",
+    "sha256": "aed2fa3594b9b02e4a323630982e076465cbee2fb3c9f37e348e010fa3d49dd0"
+  },
+  "design_scope": "Future unused point identities only; no implementation or prior running supervisor amendments.",
+  "design_sha256": "317d1247fe15ea9a81c6019b8756b80848f87e5d8e3d18aa354ac8b59f675c25",
+  "existing_required_thresholds": {
+    "maximum_resource_gap_seconds": 30,
+    "nominal_resource_sample_seconds": 10,
+    "producer_freshness_seconds": 30,
+    "real_wall_deadline_seconds": 7776000,
+    "semantic_retirement_gap_seconds": 600
+  },
+  "model_starts": 0,
+  "not_authorized_by_this_design": [
+    "Any SIGSTOP or signal to a production model",
+    "Installing a pause-aware receiver or policy",
+    "Changing current consumed/running point identity",
+    "Resetting/retrying a spent model identity",
+    "Interpreting synthetic CPU or dummy qualification as accepted scientific performance"
+  ],
+  "production_changes": false,
+  "source_evidence": [
+    {
+      "evidence": [
+        {
+          "lines": [
+            162,
+            165
+          ],
+          "text": "        last_time = self.started_ns if self.last is None else self.last['mono_ns']\n        if consumer_now() - last_time > self.MAX_FRESH_NS:\n            self._fail('MISSING_OR_STALE_PRODUCER')\n        return {'records': records, 'latest': None if self.last is None else dict(self.last),"
+        }
+      ],
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/telemetry_v2/telemetry_receiver_cap1m.py",
+      "sha256": "f523975b9780b498b988e2b3145ba5b4aebdef4d0e9b0146392d3a31a99a4ec1"
+    },
+    {
+      "evidence": [
+        {
+          "lines": [
+            94,
+            97
+          ],
+          "text": "            now = sample['monotonic_ns']\n            if type(now) is not int or now <= self.last_ns or now - self.last_ns > 30 * 10**9:\n                return self._stop(['INVALID_OR_MISSING_RESOURCE_SAMPLE_CADENCE'])\n            # Execute the exact old full host and cgroup state machines first."
+        },
+        {
+          "lines": [
+            145,
+            148
+          ],
+          "text": "                    reasons.append('MISSING_INITIAL_PRODUCER_AFTER_30S')\n            else:\n                pn = progress['mono_ns']\n                if type(pn) is not int or pn > now or now - pn > 30 * 10**9:"
+        },
+        {
+          "lines": [
+            161,
+            165
+          ],
+          "text": "                    self.completed = value\n            # Phase changes and fresh same-valued records never renew this cap.\n            if now - self.last_retired_ns >= 600 * 10**9:\n                reasons.append('NO_SEMANTIC_RETIREMENT_600S')\n            self.last_ns = now"
+        }
+      ],
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/runtime_policy_wall90_v1.py",
+      "sha256": "d1a3f21ce1c9eac89b8428f0732000d81936577d080b7bcf1c48ebe38980f187"
+    },
+    {
+      "evidence": [
+        {
+          "lines": [
+            194,
+            200
+          ],
+          "text": "    try:\n     value=dtc_guard.drain()\n     for row in value['records']:progress.write((json.dumps(row)+'\\n').encode());progress.flush()\n     why=dtc_guard.quick_stop()\n     if why:reason=why\n    except (ValueError,OSError) as error:reason='DTC_TELEMETRY:'+str(error)\n   elif s['project']=='DTC' and time.monotonic_ns()-began_ns>30*10**9:reason='DTC_ROOT_OR_PRODUCER_NOT_BOUND_WITHIN30S'"
+        },
+        {
+          "lines": [
+            225,
+            233
+          ],
+          "text": "   if reason:os.killpg(p.pid,signal.SIGTERM);break\n   time.sleep(0.01)\n  try:rc=p.wait(timeout=3)\n  except subprocess.TimeoutExpired:os.killpg(p.pid,signal.SIGKILL);rc=p.wait()\n  if dtc_guard is not None:\n   try:\n    value=dtc_guard.drain()\n    for row in value['records']:progress.write((json.dumps(row)+'\\n').encode())\n    if value['terminal']!='NATURAL' and reason is None:reason='DTC_NATURAL_TELEMETRY_CLOSURE_MISSING'"
+        }
+      ],
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_native_cap1m.py",
+      "sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d"
+    }
+  ],
+  "status": "DESIGN_ONLY_ALL_GUARDS_PRODUCTION_HOLD"
+}
