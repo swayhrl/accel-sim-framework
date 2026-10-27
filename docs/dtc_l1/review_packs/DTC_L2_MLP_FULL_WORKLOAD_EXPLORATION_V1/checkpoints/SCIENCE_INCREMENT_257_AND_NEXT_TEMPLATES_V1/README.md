@@ -1,0 +1,15 @@
+# 257-result scientific increment and future template qualification
+
+Read science_257/REVIEW.md first. This is the fixed2026-10-28 02:50:41CST snapshot:257accepted=251new+6exactP0 references,35frozen ordinary inputs,189strict DH/P0 pairs. Only59newly accepted raw logs were opened beyond the198accepted anchor; no old198/72-input raw rescan. All257closure/stream identities match;135positive rejection-reason sums close and122unprinted reason sets staynull. Actual IO chains were checked separately; no simulation, retry or scientific registration was done by this analysis.
+
+Important new outcomes: ATAX Q1280.943917, BICG Q640.961800, MVT Q1280.977938; BICG M161.012241 and Parboil histo F2561.023415. All positive, neutral and negative cases remain. Fixed-common21 F256/F128 GM1.016754/1.011497; available profile populations differ and none is full35. No nonP0 CHaccepted, so relative DTC improvement is unavailable. Do not promote a final configuration from these partial statistics.
+
+ALL35_COMPACT_TABLE.json and PAIR_OVERVIEW.md/json are readable tables with input/cohort/UUID/source SHA provenance. Full derived pair/report/raw-reason/suite tables are losslessly compressed with both compressed and original SHA in the manifest. No large raw model logs,traces,binaries or input datasets are inGit. All full source assets remain true164 under the manifest paths.
+
+Thirteen accepted nonP0 cells lack their own DH-P0: GEMM5,srad_v1 4,scalarProd3,3MM1. Baseline-dependency facts include real natural elapsed/RSS receipts, distinct from cycle speedup. Prioritizing a baseline can unlock comparisons without changing the workload population or choosing by speedup.
+
+Future_templates contains39additional CPU checks using the existing142invariant/44Core-option-parser evidence. It guards a general signed F+191 integer boundary and same-profile/different-vector collisions, and verifies CH/DH full35 candidate mappings. ExistingF512/initial350 are unaffected. The20candidate mappings/700cells are NOT registered,started or adopted; exact already-registered identity dedup does NOT prove an accepted result. High joint MSHR/reference resources require independent RSS/AS forecasting and actual fresh admission.
+
+The scan/M16 original remains an unaccepted engineering negative with a separate real archive certificate; raw primary350 tables are unchanged. A transparent independent supplemental same-configuration performance-trial candidate is being engineered, not registered or dispatched by this publication; it will not silently replace the failed original or change existing statistical contracts. Full35-only inference gate and real IO broad-release evidence are in ancestor7aaedfcfe/bf1a7050e/78a908354.
+
+Fixed Core9eedb3131937748f0492fa83aad37d3691118d70, Framework02775fd795cde5aae1480d81cee6eb481d0a08f4,binary02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d,DRAM850MHz,L2capacity/geometry/mapping,DTC/Hash and complete input semantics remain. SevenUNRESOLVED and Englishv0.23 stay unchanged. Goal continues; this is not final stage completion.
