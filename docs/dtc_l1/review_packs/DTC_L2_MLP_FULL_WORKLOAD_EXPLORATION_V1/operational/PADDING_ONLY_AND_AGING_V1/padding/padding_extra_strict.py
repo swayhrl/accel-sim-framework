@@ -1,0 +1,43 @@
+﻿"""Closed additional admission proof, always ANDed with unchanged base strict."""
+import pathlib,json,hashlib,importlib.util,math,copy,os
+P=pathlib.Path;R=P('/root/data/dtc_l2_mlp_exploration_20261027_v1')
+def read(p):return json.loads(P(p).read_bytes())
+def sha(p):return hashlib.sha256(P(p).read_bytes()).hexdigest()
+def load(n,p):
+ s=importlib.util.spec_from_file_location(n,p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
+
+def replay_proof(proof,overlay,cohort):
+ assert proof['fresh_source']is True and proof['candidate_cohort']==cohort;assert proof['candidate_full_original']and proof['all_foreign_and_claims_unchanged']and proof['no_physical_headroom_credit'];rows=proof['base_own_growth_rows'];assert len({x['cohort']for x in rows})==len(rows);by={x['cohort']:x for x in rows};assert cohort in by and by[cohort]['kind']=='CLAIM_OR_CANDIDATE';discounts=proof['discount_rows'];assert len({x['cohort']for x in discounts})==len(discounts);computed=0
+ for row in discounts:
+  c=row['cohort'];cert=overlay.rows[c];overlay.immutable_verified.clear();overlay.verify_certificate(c);assert row['uuid']==cert['uuid']and row['pid']==cert['pid']and row['start_ticks']==cert['start_ticks'];assert by[c]['kind']=='LIVE_MODEL';spec=read(cert['canonical_spec_path']);assert sha(cert['canonical_spec_path'])==cert['canonical_spec_sha256'];actual=dict(RSS_bytes=row['current_observed_RSS_bytes']);calc=overlay_module(overlay).row_arithmetic(cert,spec,by[c],actual)
+  for key in calc:assert row[key]==calc[key],key
+  identity=row['process_identity_evidence'];assert sha(identity['intent_path'])==identity['intent_sha256'];assert sha(identity['PIDproof_path'])==identity['PIDproof_sha256'];assert sha(identity['dispatch_binding_path'])==identity['dispatch_binding_sha256'];intent=read(identity['intent_path']);pid=read(identity['PIDproof_path']);db=read(identity['dispatch_binding_path']);assert intent['cohort']==c and intent['uuid']==cert['uuid'];assert pid['pid']==cert['pid']and pid['start_ticks']==cert['start_ticks'];assert identity['actual_cmdline']==pid['cmdline']and identity['actual_affinity']==pid['host_cpu_affinity_actual']==[db['host_cpu']]and identity['actual_mnt_namespace']==pid['mnt_namespace'];assert intent['dispatch_binding_sha256']==pid['dispatch_binding_sha256']==identity['dispatch_binding_sha256'];computed+=calc['discount_bytes']
+ assert computed==proof['total_discount_bytes']<=proof['snapshot_total_discount_cap_bytes']==overlay.snapshot_cap;history=proof['history_snapshot'];assert overlay_module(overlay).jsonsha(history)==proof['history_snapshot_sha256'];topups=proof['claim_candidate_topups'];assert len({x['cohort']for x in topups})==len(topups);expected_claims={x['cohort']for x in rows if x['kind']=='CLAIM_OR_CANDIDATE'};assert {x['cohort']for x in topups}==expected_claims
+ total_topup=0
+ for row in topups:
+  c=row['cohort'];spec=row['spec'];assert overlay_module(overlay).jsonsha(spec)==row['spec_sha256'];assert spec['cohort']==c;full=overlay.full_prediction(spec,history);assert row['canonical_prediction']==spec['estimated_peak_model_RAM_bytes']and row['full_max_prediction']==full and row['topup_bytes']==max(0,full-spec['estimated_peak_model_RAM_bytes']);assert by[c]['additional_reserved_bytes']==spec['estimated_peak_model_RAM_bytes'];total_topup+=row['topup_bytes']
+ assert total_topup==proof['total_topup_bytes'];old=sum(x['additional_reserved_bytes']for x in rows)+sum(x['additional_reserved_bytes']for x in proof['base_peer_RAM_rows']);assert old==proof['base_total_additional_RAM_bytes'];new=old-computed+total_topup;assert new==proof['effective_total_additional_RAM_bytes']==proof['effective_decision']['additional_reserved_RAM_bytes'];sample=proof['base_resource_sample'];p=read(overlay.root/'control/RESOURCE_POLICY.json');assert p['min_host_headroom_bytes']==8*1024**3 and p['min_cgroup_headroom_bytes']==8*1024**3 and p['memory_utilization_fraction']==.88;usable=max(0,sample['host_MemAvailable_bytes']-p['min_host_headroom_bytes']);cg=sample['cgroup_effective_headroom_bytes'];usable=min(usable,max(0,cg-p['min_cgroup_headroom_bytes']))if cg is not None else usable;budget=int(usable*.88);assert budget==proof['base_decision']['admission_RAM_budget_bytes']==proof['effective_decision']['admission_RAM_budget_bytes'];assert not proof['base_decision']['pressure_reasons']and proof['effective_decision']['pass_admission']is True and new<=budget;assert sample['physical_disk_pass']and sample['own_write_ceiling_pass']and sample['native_free_bytes']>sample['required_free_bytes']and sample['free_inodes']>=100000
+ return dict(status='PASS',discount_bytes=computed,candidate_full_max=next(x['full_max_prediction']for x in topups if x['cohort']==cohort),effective_total_bytes=new)
+
+def overlay_module(obj):
+ # Module is supplied by constructor class globals; no shared module patches.
+ import types
+ return types.SimpleNamespace(row_arithmetic=obj.__class__.project.__globals__['row_arithmetic'],jsonsha=obj.__class__.project.__globals__['jsonsha'])
+
+def terminal(c,cfg,base_proof):
+ assert base_proof['performance_accepted']is True;ip=R/'control/qualification_ledger'/(c+'.INTENT.json');i=read(ip);out=P(i['output']);launch=read(out/'NATIVE_LAUNCH.json');pid=read(out/'NATIVE_SIMULATOR_PID_AND_MAPS.json');evidence_path=out/'PADDING_ADMISSION_EVIDENCE.json';evidence=read(evidence_path);binding=dict(evidence['binding'],fresh_evidence_sha256=sha(evidence_path));assert i['additional_padding_admission_evidence_sha256']==sha(evidence_path)
+ for obj in[i,launch,pid]:assert obj['additional_padding_admission_binding']==binding
+ activation=read(out/'PADDING_ACTIVATION_CONFIG.json');record=read(out/'PADDING_OVERLAY_REGISTRY_RECORD.json');assert c in activation['allowed_cohorts'];assert binding['allowed_cohorts_sha256']==jsonhash(activation['allowed_cohorts'])
+ for key in['source_sha256','frontend_sha256','extra_strict_sha256','owner_sha256','history_validator_sha256','policy_sha256','certificate_sha256','QA_sha256','readback_sha256','allowed_cohorts']:assert activation[key]==record[key]
+ assert binding['overlay_source_sha256']==activation['source_sha256']==sha(out/'PADDING_OVERLAY_SOURCE.py');assert binding['history_validator_sha256']==sha(out/'PADDING_HISTORY_VALIDATOR.py');assert binding['frontend_sha256']==sha(out/'PADDING_FRONTEND_SOURCE.py');assert binding['owner_sha256']==sha(out/'PADDING_OWNER_SOURCE.py');assert binding['extra_strict_sha256']==sha(out/'PADDING_EXTRA_STRICT.py')==sha(__file__);assert binding['policy_sha256']==sha(out/'PADDING_POLICY.json')and binding['certificate_sha256']==sha(out/'PADDING_CERTIFICATES.json')
+ module=load('padding_extra_core',out/'PADDING_OVERLAY_SOURCE.py');overlay=module.PaddingOverlay(R,out/'PADDING_POLICY.json',out/'PADDING_CERTIFICATES.json',binding['policy_sha256'],binding['certificate_sha256'],lambda:{},lambda *_:None);assert sha(out/'PADDING_QA.json')==binding['QA_sha256']and read(out/'PADDING_QA.json')['status']=='PASS';assert sha(out/'PADDING_PUBLICATION_READBACK.json')==binding['readback_sha256']and read(out/'PADDING_PUBLICATION_READBACK.json')['verified']is True;assert evidence['fresh_preflights'];assert all(p['binding']==evidence['binding']for p in evidence['fresh_preflights']);results=[replay_proof(p,overlay,c)for p in evidence['fresh_preflights']];result=dict(status='PASS_PADDING_ADMISSION_AND_ORIGINAL_STRICT',base_strict_preserved=True,evidence_sha256=sha(evidence_path),preflight_results=results,base_binding=i['l2_mlp_execution_binding'],additional_binding=binding,no_pause_or_signals=True);sidecar=out/'PADDING_EXTRA_STRICT.json'
+ if sidecar.exists():assert read(sidecar)==result
+ else:
+  with sidecar.open('x')as h:json.dump(result,h,sort_keys=True,indent=2);h.write('\n');h.flush();os.fsync(h.fileno())
+ return dict(result,sidecar_path=str(sidecar),sidecar_sha256=sha(sidecar))
+def jsonhash(v):return hashlib.sha256((json.dumps(v,sort_keys=True,indent=2)+'\n').encode()).hexdigest()
+
+def verify_result_sidecar(result,out):
+ out=P(out);intent=read(out/'DOWNSTREAM_INTENT.json')
+ if 'additional_padding_admission_binding'not in intent:return dict(status='NOT_AN_OVERLAY_POINT_UNCHANGED')
+ link=result['proof']['additional_padding_admission_strict'];sidecar=out/'PADDING_EXTRA_STRICT.json';assert link['sidecar_sha256']==sha(sidecar);proof=read(sidecar);assert proof['status']=='PASS_PADDING_ADMISSION_AND_ORIGINAL_STRICT'and proof['base_strict_preserved']is True;assert proof['additional_binding']==intent['additional_padding_admission_binding'];assert proof['evidence_sha256']==sha(out/'PADDING_ADMISSION_EVIDENCE.json');return dict(status='PASS_SIDE_CAR_LINK',sidecar_sha256=sha(sidecar),overlay_id=proof['additional_binding']['overlay_id'])

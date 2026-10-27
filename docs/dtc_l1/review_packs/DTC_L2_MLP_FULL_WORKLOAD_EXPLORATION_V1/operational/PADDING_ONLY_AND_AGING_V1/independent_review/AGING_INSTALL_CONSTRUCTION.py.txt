@@ -1,0 +1,36 @@
+# MAIN ONLY. Construction sketch; importing this text performs nothing.
+# Run only after B47 is registered/published/attached and E38 is registered.
+import types, __main__
+
+saved = getattr(__main__, 'DTC_L2_MLP_PADDING_ONLY_OWNER_V1')
+real_res = saved['res']
+assert real_res is frame.f_locals['res']
+engine = frame.f_locals['engine']
+post_B_choose = real_res.choose_dispatch  # capture AFTER B attachment
+
+facade = types.SimpleNamespace(
+    resources=saved['overlay'].resources,  # direct B projection, bypass TLS gate
+    forecast=real_res.forecast,            # unchanged original provider
+)
+frames = final_E_runtime.RuntimeFrames(
+    R, engine, facade, saved['consumer'], final_B_core.effective_own_rows,
+)
+
+def failsoft_aging_journal(decision):
+    try:
+        main_164_journal_writer(decision)
+    except OSError as error:
+        # Fairness journal IO must not terminate the sole healthy scheduler.
+        # Retain error in the owner ACK/status; no fabricated journal success.
+        main_owner_status['aging_journal_last_error'] = repr(error)
+
+aging = final_E_age.AgingChooser(
+    post_B_choose, frames, journal=failsoft_aging_journal,
+)
+# Main's explicit final attach, on the existing parent's main thread:
+# aging.install(real_res, frames.assert_owner)
+# E remains the OUTERMOST chooser. Never install it inside B's scoped/outside
+# calls, and never pass the TLS-gated real_res as RuntimeFrames.res.
+# On rollback restore the E outer wrapper first, then B dispatch/resources;
+# retain B's mandatory additional consumer until all overlay points close.
+# No new pool, controller, worker, model, claim/spec mutation or signals.

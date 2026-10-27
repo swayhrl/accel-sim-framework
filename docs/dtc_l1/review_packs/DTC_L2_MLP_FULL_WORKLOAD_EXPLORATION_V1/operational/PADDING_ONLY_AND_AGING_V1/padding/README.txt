@@ -1,0 +1,34 @@
+﻿Padding-only overlay V1 — CPU-qualified candidate; Main alone publishes/registers/applies
+
+No production installation, model start, signal, original-result edit or running-supervisor modification was performed by AgentB. Actual fresh resources canHOLD; qualification does not authorize falsifying a fit.
+
+Final sources (full SHA in CPU_QUALIFICATION.json qualified_sources):
+padding_overlay.py665f96...; padding_frontend.py8951fa...; padding_extra_strict.py797888...; padding_owner.py0bb578...; history_evidence_validator.pyd9b410... . The validator is an exact copy of AgentA's independently reviewed source; imported validate_history only, never its main.
+PolicySHA b0e9e44ea8e97cb7b0889c13354fc48d19856e574ea6a80f22a7a6b77c8fa8f0.
+E certificateSHA b7f408346d2b513864b203aa34cd1ceedc195c4bf1ca72dcf9a2bbe8be88b9aa.
+Combined CPU_QUALIFICATIONSHA f3ff33d09c30f34b99204351f71a99f2ad367a4903850451b1fad4594637305e.
+
+47 checks pass on the same final source set:20 component/math/negative tests,12 isolated owner/CLI/consumer/restore tests,13 actual frozen native-prefix tests through INTENT/LAUNCH/PID/runtime(False), and2 original accepted full strict read-only regressions. Prefix modelPopen, authority/lease/process identities and positive headroom were isolated CPU mocks; no actual simulator executed, no scientificDONE orRESULT was manufactured. Genuine live-resource audits separately preserve PASS/HOLD as observed. Root/A router41 and E/A evidence audits are independent supporting checks, not included in47.
+
+Scope/arithmetic
+Only immutable E snapshot A_SAME_DESIGN_TARGET_FIELD_MASKED_FORECAST_TRANSFER certificates can reduce already-consumed observed LIVE future growth. Same full input/binding/Core/FW/binary/design/all268 non-target options; target differences are solely registered initialP0+8 single-factor values. Combinations/extensions get no certificate. This is not exact full-options history; exact-profile-only reference remains separately reported byE.128MiB retained structural margin is an empirical prediction convention, not a proven allocation upper bound.
+Old registered historical peakR never decreases. Original estimate must exactly equal max(768MiB,ceil(1.20R)+256MiB)+128MiB, with no failed-only premium. New estimate=max(768MiB,ceil(1.10approvedP)+128MiB)+128MiB, approvedP>=oldR and all certified peaks. Existing10% liveRSS envelope/hardcaps remain. CurrentRSS above certified same-design peak causes zero discount. Per-row savings never exceed E's immutable snapshot bound; ended/changed/unknown/unobserved/mixeddesign/foreign get zero. Candidate and all unobserved claims retain max(canonical,current original forecast), with positive topups separately recorded. No RSS is treated as newly free physical memory;8GiB floors/.88 budget/disk/pressure/CPU gates unchanged.
+
+Minimal Main activation API
+Deployment directory R/control/operational_amendments/padding_only_v1. R=/root/data/dtc_l2_mlp_exploration_20261027_v1.
+1. Publish/readback final source/QA/policy/certificate; fill PUBLICATION_READBACK.template.json with verified=True and actual blob receipts. Its qualified_sources/policy/cert must exactly matchQA.
+2. Main's existing e.update_authority transaction adds only q.additional_operational_overlays[overlay_id] from REGISTRY_RECORD.template.json. Preserve peer requests, budgets/remaining/consumed/specs. Start with one Main-selected registered unspent pilot; no identity reuse.
+3. Fill ACTIVE_FRONTEND.template.json as ACTIVE_FRONTEND.json. All nine roles have_path/_sha256: source/frontend/extra_strict/owner/history_validator/policy/certificate/QA/readback. File/SHA, record fields, allowed_cohorts, completeQA flags and publication identity all gate every future opt-in admission.
+4. Main installs AgentA's qualified opt-in router branch while preserving original native route bytes. The actual worker still calls N/bin/experiment prepare|run-native cohort --project DTC_L1 --padding-only-admission-v1. N=/root/data/ep_l2_dtc_l1_native_v2. Private frontend strips the flag; model argv remains identical.
+5. Existing parent-main GIL callback imports padding_owner.py and calls apply_in_owner(path_to_ACTIVE_FRONTEND.json). No second owner/threadpool. Existing384 capacity/4preexec window and running worker frames remain. Only allowed candidates use temporary effective claims/provider; outside scope delegates original consistent chooser/provider/fullclaims/worker.
+6. After a true pilot completes original strict AND additional strict AND archive/native restore, Main may broaden record+cfg allowed_cohorts to legal unspent initial points. This is an engineering stage gate, not a total-start cap. q/cfg transition mismatchesHOLD without crashing the scheduler. No fresh fit means wait while healthy existing models continue.
+
+Evidence/acceptance
+Original l2_mlp_execution_binding is preserved exactly as BASE provenance. All three INTENT/LAUNCH/PID objects gain identical additional_padding_admission_binding with effective_contract BASE_PLUS_A_ONLY_PADDING_V1, scope/source/policy/certificate/QA/readback hashes and frozen fresh_evidence_sha256. Runtime(False) never replaces the held fresh proof and preserves original runtime gate behavior.
+New output files PADDING_ADMISSION_EVIDENCE.json, PADDING_ACTIVATION_CONFIG.json, PADDING_OVERLAY_REGISTRY_RECORD.json, pinnedPADDING_* source/policy/certificate/QA/readback copies allow closed replay. padding_extra_strict.terminal(c,cfg,old_proof) requires original strict accepted first, replays every snapshot/certificate/envelope/topup/peer total/budget/identity, and writes out/PADDING_EXTRA_STRICT.json with status PASS_PADDING_ADMISSION_AND_ORIGINAL_STRICT. Owner consumer proxies only loading l2_strict.py: original terminal first, extra mandatory next. Old failure never promotes. RESULT.proof.additional_padding_admission_strict.sidecar_sha256 links the sidecar before archive. verify_result_sidecar(result,out) is Main's read-only post-audit entry.
+
+Reversion
+padding_owner.restore_in_owner() restores captured resource/chooser/worker functions only, without signals/restart/ABORT or claims/spec changes. Consumer additional strict remains for all spent overlay points. Main may remove only the opt-in routing bytes/disable future scopes; already-running private frontends keep their runtime behavior and evidence. Do not relabel consumed overlay points as plain original admissions, delete their validator, or drop their extra sidecar requirement.
+
+Not included/applied
+No production router/register/cfg/owner attach. No SIGSTOP/CONT. No8->10GiB floor change. No blanket20% reduction. No new simulated input or changed binary/config. No paper edit. CPU fake publication/authority fixtures are explicitly synthetic and cannot be reused as actual production grants; Main must use real signed registration and GitHub readback.

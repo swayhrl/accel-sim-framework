@@ -1,0 +1,12 @@
+import pathlib,json,importlib.util,hashlib,time,copy
+P=pathlib.Path;B=P(__file__).parent;R=P('/root/data/dtc_l2_mlp_exploration_20261027_v1');CP=P('/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/E/padding_only_admission_v1/A_ONLY_ELIGIBILITY_CERTIFICATE_V1.json')
+def load(n,p):
+ s=importlib.util.spec_from_file_location(n,p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
+m=load('padding_audit',B/'padding_overlay.py');extra=load('padding_extra_audit',B/'padding_extra_strict.py');res=load('padding_frozen_resource',R/'tools/l2_resources.py');native=load('padding_readonly_engine',R/'tools/l2_native.py');q=native.registered()[2]
+policy=dict(request=m.REQ,overlay_id='DTC_L2_MLP_PADDING_ONLY_V1',A_only=True,candidate_full_original=True,base_resource_source_sha256=m.sha(R/'tools/l2_resources.py'),base_policy_sha256=m.sha(R/'control/RESOURCE_POLICY.json'),history_validator_sha256=m.sha(B/'history_evidence_validator.py'));pp=B/'POLICY.json';pp.write_bytes(m.canonical(policy));overlay=m.PaddingOverlay(R,pp,CP,m.sha(pp),m.sha(CP),lambda:native.registered()[2],res.resources);before=time.monotonic();errors=[]
+for c in overlay.rows:
+ try:overlay.verify_certificate(c)
+ except BaseException as e:errors.append(dict(cohort=c,error=repr(e)))
+pend=[native.canonical(c)for c in q['admitted_specs']if c not in q['consumed']];s=min(pend,key=lambda x:x['estimated_peak_model_RAM_bytes']);r=overlay.resources(s,True);p=r['additional_padding_admission_proof'];replay=extra.replay_proof(p,overlay,s['cohort'])if r['physical_RAM_pass']and r['physical_disk_pass']else dict(status='CURRENT_READONLY_CANDIDATE_HOLD_NO_MODEL')
+report=dict(status='PASS'if not errors else'HOLD',source_sha256=m.sha(B/'padding_overlay.py'),certificate_sha256=m.sha(CP),certificates_verified=len(overlay.rows)-len(errors),errors=errors,rows_currently_discounted=sum(x['discount_bytes']>0 for x in p['discount_rows']),discount_bytes=p['total_discount_bytes'],topup_bytes=p['total_topup_bytes'],physical_RAM_pass=r['physical_RAM_pass'],physical_disk_pass=r['physical_disk_pass'],candidate=s['cohort'],replay=replay,certificate_holds=p['certificate_holds'],elapsed_seconds=time.monotonic()-before,model_starts=0,production_mutations=0,proof=p)
+(B/'READ_ONLY_COMPONENT_AUDIT.json').write_bytes(m.canonical(report));print(json.dumps({k:v for k,v in report.items()if k not in['proof','certificate_holds']},indent=2));print('HOLD_REASONS',p['certificate_holds'][:3])
