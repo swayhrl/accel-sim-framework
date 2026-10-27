@@ -1,0 +1,26 @@
+[
+  {
+    "id": "PS_NS_MATCH",
+    "status": "NEW_SCIENTIFIC_EXECUTION_APPROVAL_REQUIRED",
+    "goal": "Separate faster command/data opportunity from reductions in absolute DRAM timing delay.",
+    "design": "Keep DRAM=1700MHz; double each elapsed-time DRAM-clock parameter from the 850MHz P0 (RCD/RAS/RP/RC/CL/WL/RRD/WR/CDLR/RTPL, bank-group CCDL where applicable), after auditing derived expressions and constraints. Keep core-clock fixed delays such as dram_latency=100 and L2 ROP unchanged. Keep geometry, mapping, request/return queues, scheduler and input fixed.",
+    "caveat": "Do not blindly double nbk, nbkgrp or buswidth. Classify tCCD/CCDL and burst/data-command ratio explicitly: preserving all spacing in ns can also remove the intended throughput increase. State chosen sustained bandwidth and absolute-latency contract; this is not achieved by a single clock edit.",
+    "minimal_scope": "One strided kernel/input chosen before seeing new performance, both CH and DH, paired with fresh instrumented baseline only if build changes; exact budget to approve after finished18."
+  },
+  {
+    "id": "PQ_X_PS",
+    "status": "NEW_SCIENTIFIC_EXECUTION_APPROVAL_REQUIRED",
+    "goal": "Test interaction between FIFO capacity and DRAM time-domain speed.",
+    "design": "2x2 of FIFO64/256 and850/1700MHz; existing P0/PQ/PS are three corners. Only after they close strict accepted, add joint corner for matched CH/DH using identical existing binary/config contract.",
+    "interaction_formula": "I_cell=C_PQ*C_PS/(C_P0*C_PQPS); multiplicative independent speedups imply1. Compare I_DH/I_CH. No additive speedup assumption.",
+    "minimal_scope": "A preregistered sentinel input (ATAX is informative if accepted PQ regression persists); two new model points CH/DH. Broaden only with new approval."
+  },
+  {
+    "id": "INSTRUMENT_STAGE_WAIT",
+    "status": "NEW_SCIENTIFIC_EXECUTION_APPROVAL_REQUIRED",
+    "goal": "Distinguish FIFO backpressure removal, scheduler waiting, return congestion, L2 replacement/reissue and DTC completion service.",
+    "design": "Instrumentation-only build with counters for queue occupancy-cycle sums/high-water marks/full events; request UID+stage enqueue/dequeue timestamps for L2 miss/FIFO, dram-delay, FRFCFS, bank issue/data ready, return FIFO, DTC completion/retirement; per-kernel sums/counts/histograms. Bounded event sampling keyed by stable UID. Never change allocation/arbitration/admission.",
+    "qualification": "CPU tests plus at least a matched reference run verifying exact cycles, instructions, CTA and traffic against uninstrumented binary before causal consumption. Capture source hash, observer overhead, RSS/output limits, cross-kernel draining and request-cohort accounting.",
+    "minimal_scope": "One CH/DH sentinel pair at P0 and one discriminating perturbation; exact model-start budget requires new approval."
+  }
+]

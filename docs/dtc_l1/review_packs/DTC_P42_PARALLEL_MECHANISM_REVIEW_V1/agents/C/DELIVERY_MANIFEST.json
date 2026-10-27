@@ -1,0 +1,66 @@
+{
+  "schema": "AGENT_C_DELIVERY_V1",
+  "files": [
+    {
+      "path": "POSITIVE_CASE_MECHANISM_REPORT.md",
+      "bytes": 10982,
+      "sha256": "659e4bdd54cd5fb5254717a5a675152b6ff41513f4fbdad7bf7ae9763fae414f"
+    },
+    {
+      "path": "POSITIVE_CASE_MECHANISM_REPORT.json",
+      "bytes": 2191498,
+      "sha256": "32c51071418f28f5ef80bfcc90c29acee058fc3c7611ef3c3666aa55ce38eccf"
+    },
+    {
+      "path": "SOURCE_SEMANTICS.json",
+      "bytes": 57648,
+      "sha256": "8225595912ddf66642060f6bd0d1e81ff52b59666151c8d5743c354446912448"
+    },
+    {
+      "path": "ORIGINAL_SOURCE_FILES.json",
+      "bytes": 754895,
+      "sha256": "2710b9930c89c69c88d29c92bd6b3e61cd2aa6218efc9c1016430d4745c9dbc3"
+    },
+    {
+      "path": "RAW_EVIDENCE_EXTRACT.json.gz",
+      "bytes": 1962293,
+      "sha256": "0f4e81b91765863370d2d5a10422f8d6055a71b33360b3d87335f266248a96f2"
+    },
+    {
+      "path": "QUALIFIED_OPCODE_EVIDENCE.json",
+      "bytes": 256282,
+      "sha256": "bbf7edd965f27037395747dc460c14efb6524ef500d610ddf67fe8ec33a8f703"
+    },
+    {
+      "path": "VALIDATION.json",
+      "bytes": 2010,
+      "sha256": "e9df142bef741a8fa2a1d383c51f3f2057047116b73bc7992780730c34aef1e7"
+    },
+    {
+      "path": "build_report.py",
+      "bytes": 23475,
+      "sha256": "434fe107d0d82d48e3529d4af0e7afbb5585ace47d655a827ac42f917d7529c7"
+    },
+    {
+      "path": "extract_remote.py",
+      "bytes": 2766,
+      "sha256": "588c4d1565fce93d3bb0ee82aa762b0b238c6880b7f768a4995cb90179a6106c"
+    },
+    {
+      "path": "package_deliverable.py",
+      "bytes": 1301,
+      "sha256": "6da7cc3330815398fe934db01b27d08c18eda7ce8aea5beb09a798fcc5505508"
+    }
+  ],
+  "reproduction": "build_report.py reads ../A/SUITE_PERFORMANCE_ANALYSIS.json and own archived evidence; B frozen qualified opcode extract is self-contained. Full original raw logs/source files are never rewritten.",
+  "excluded_scratch": [
+    "RAW_EVIDENCE_EXTRACT.json",
+    "shader.cc",
+    "shader.h",
+    "gpu-cache.cc",
+    "gpu-cache.h",
+    "dtc-l1-common.h",
+    "dtc-l1-tag-index.h"
+  ],
+  "new_simulator_starts": 0
+}

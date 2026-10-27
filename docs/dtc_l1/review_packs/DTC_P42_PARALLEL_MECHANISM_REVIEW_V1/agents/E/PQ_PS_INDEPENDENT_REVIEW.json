@@ -1,0 +1,2137 @@
+{
+  "schema": "DTC_P42_AGENT_E_REVIEW_V1",
+  "observed_UTC": "2026-10-27T07:32:45+00:00",
+  "fixed_observation_UTC": "2026-10-27T07:18:10.392918+00:00",
+  "accepted_cells": 10,
+  "pending_cells": 8,
+  "accepted_input_identity_scope": "whole declared frozen trace; numerical values and full-application capture not newly certified",
+  "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+  "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+  "binary_sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d",
+  "core_library_sha256": "694f05ce97fe3e1552d94803c2202d8d037769c61624cde5f6a832622ed60c56",
+  "matched_comparisons": [
+    {
+      "program": "ATAX",
+      "cell": "CH",
+      "profile": "PQ",
+      "status": "ACCEPTED_NEW_DOWNSTREAM18_MATCHED",
+      "speedup": 0.924877678887348,
+      "kernel_speedups": [
+        {
+          "ordinal": 1,
+          "kernel": "_Z12atax_kernel1PfS_S_",
+          "P0_cycles": 26677630,
+          "profile_cycles": 28991063,
+          "speedup": 0.9202018566894219,
+          "verdict": "PROFILE_SLOWER"
+        },
+        {
+          "ordinal": 2,
+          "kernel": "_Z12atax_kernel2PfS_S_",
+          "P0_cycles": 1751212,
+          "profile_cycles": 1746885,
+          "speedup": 1.0024769804537792,
+          "verdict": "PROFILE_FASTER"
+        }
+      ],
+      "P0_cycles": 28428842,
+      "profile_cycles": 30737948,
+      "cycles_change_percent": 8.122406111370983,
+      "cohorts": [
+        "E2-DTCHASH18-eededb785179fc04-CH-P0-V1",
+        "E2-DTCHASH18-eededb785179fc04-CH-PQ-V1"
+      ],
+      "traffic_changes": {
+        "L2_accepted_read_32B_sectors": {
+          "P0": 65889456,
+          "profile": 66082460,
+          "percent": 0.29292091894035366
+        },
+        "L2_read_payload_bytes": {
+          "P0": 2108462592,
+          "profile": 2114638720,
+          "percent": 0.29292091894035366
+        },
+        "DRAM_issued_read_atoms": {
+          "P0": 16720180,
+          "profile": 18312608,
+          "percent": 9.523988378115543
+        },
+        "DRAM_read_payload_bytes": {
+          "P0": 535045760,
+          "profile": 586003456,
+          "percent": 9.523988378115543
+        }
+      },
+      "latency_counters": {
+        "P0": {
+          "averagemflatency": 620,
+          "avg_icnt2mem_latency": 152,
+          "avg_mrq_latency": 412,
+          "avg_icnt2sh_latency": 39
+        },
+        "profile": {
+          "averagemflatency": 628,
+          "avg_icnt2mem_latency": 160,
+          "avg_mrq_latency": 375,
+          "avg_icnt2sh_latency": 37
+        },
+        "definition": "whole_declared_input aggregates, request populations differ; no segment mean subtraction"
+      }
+    },
+    {
+      "program": "ATAX",
+      "cell": "DH",
+      "profile": "PQ",
+      "status": "PENDING",
+      "speedup": null,
+      "kernel_speedups": null
+    },
+    {
+      "program": "ATAX",
+      "cell": "CH",
+      "profile": "PS",
+      "status": "ACCEPTED_NEW_DOWNSTREAM18_MATCHED",
+      "speedup": 1.3717384600515685,
+      "kernel_speedups": [
+        {
+          "ordinal": 1,
+          "kernel": "_Z12atax_kernel1PfS_S_",
+          "P0_cycles": 26677630,
+          "profile_cycles": 19131501,
+          "speedup": 1.3944347597190623,
+          "verdict": "PROFILE_FASTER"
+        },
+        {
+          "ordinal": 2,
+          "kernel": "_Z12atax_kernel2PfS_S_",
+          "P0_cycles": 1751212,
+          "profile_cycles": 1593180,
+          "speedup": 1.0991928093498537,
+          "verdict": "PROFILE_FASTER"
+        }
+      ],
+      "P0_cycles": 28428842,
+      "profile_cycles": 20724681,
+      "cycles_change_percent": -27.099805894309725,
+      "cohorts": [
+        "E2-DTCHASH18-eededb785179fc04-CH-P0-V1",
+        "E2-DTCHASH18-eededb785179fc04-CH-PS-V1"
+      ],
+      "traffic_changes": {
+        "L2_accepted_read_32B_sectors": {
+          "P0": 65889456,
+          "profile": 69472656,
+          "percent": 5.438199398701982
+        },
+        "L2_read_payload_bytes": {
+          "P0": 2108462592,
+          "profile": 2223124992,
+          "percent": 5.438199398701982
+        },
+        "DRAM_issued_read_atoms": {
+          "P0": 16720180,
+          "profile": 23853828,
+          "percent": 42.66489954055519
+        },
+        "DRAM_read_payload_bytes": {
+          "P0": 535045760,
+          "profile": 763322496,
+          "percent": 42.66489954055519
+        }
+      },
+      "latency_counters": {
+        "P0": {
+          "averagemflatency": 620,
+          "avg_icnt2mem_latency": 152,
+          "avg_mrq_latency": 412,
+          "avg_icnt2sh_latency": 39
+        },
+        "profile": {
+          "averagemflatency": 497,
+          "avg_icnt2mem_latency": 99,
+          "avg_mrq_latency": 204,
+          "avg_icnt2sh_latency": 40
+        },
+        "definition": "whole_declared_input aggregates, request populations differ; no segment mean subtraction"
+      }
+    },
+    {
+      "program": "ATAX",
+      "cell": "DH",
+      "profile": "PS",
+      "status": "PENDING",
+      "speedup": null,
+      "kernel_speedups": null
+    },
+    {
+      "program": "MVT",
+      "cell": "CH",
+      "profile": "PQ",
+      "status": "ACCEPTED_NEW_DOWNSTREAM18_MATCHED",
+      "speedup": 1.1274199223683967,
+      "kernel_speedups": [
+        {
+          "ordinal": 1,
+          "kernel": "_Z11mvt_kernel1PfS_S_",
+          "P0_cycles": 24828424,
+          "profile_cycles": 21826950,
+          "speedup": 1.1375122955795474,
+          "verdict": "PROFILE_FASTER"
+        },
+        {
+          "ordinal": 2,
+          "kernel": "_Z11mvt_kernel2PfS_S_",
+          "P0_cycles": 1752751,
+          "profile_cycles": 1750046,
+          "speedup": 1.0015456736565782,
+          "verdict": "PROFILE_FASTER"
+        }
+      ],
+      "P0_cycles": 26581175,
+      "profile_cycles": 23576996,
+      "cycles_change_percent": -11.301904449295408,
+      "cohorts": [
+        "E2-DTCHASH18-f437190767aaed49-CH-P0-V1",
+        "E2-DTCHASH18-f437190767aaed49-CH-PQ-V1"
+      ],
+      "traffic_changes": {
+        "L2_accepted_read_32B_sectors": {
+          "P0": 65311172,
+          "profile": 67401428,
+          "percent": 3.200457036661364
+        },
+        "L2_read_payload_bytes": {
+          "P0": 2089957504,
+          "profile": 2156845696,
+          "percent": 3.200457036661364
+        },
+        "DRAM_issued_read_atoms": {
+          "P0": 15617216,
+          "profile": 13539692,
+          "percent": -13.302780726091001
+        },
+        "DRAM_read_payload_bytes": {
+          "P0": 499750912,
+          "profile": 433270144,
+          "percent": -13.302780726091001
+        }
+      },
+      "latency_counters": {
+        "P0": {
+          "averagemflatency": 620,
+          "avg_icnt2mem_latency": 153,
+          "avg_mrq_latency": 455,
+          "avg_icnt2sh_latency": 44
+        },
+        "profile": {
+          "averagemflatency": 568,
+          "avg_icnt2mem_latency": 127,
+          "avg_mrq_latency": 478,
+          "avg_icnt2sh_latency": 50
+        },
+        "definition": "whole_declared_input aggregates, request populations differ; no segment mean subtraction"
+      }
+    },
+    {
+      "program": "MVT",
+      "cell": "DH",
+      "profile": "PQ",
+      "status": "PENDING",
+      "speedup": null,
+      "kernel_speedups": null
+    },
+    {
+      "program": "MVT",
+      "cell": "CH",
+      "profile": "PS",
+      "status": "ACCEPTED_NEW_DOWNSTREAM18_MATCHED",
+      "speedup": 1.444049258917126,
+      "kernel_speedups": [
+        {
+          "ordinal": 1,
+          "kernel": "_Z11mvt_kernel1PfS_S_",
+          "P0_cycles": 24828424,
+          "profile_cycles": 16811217,
+          "speedup": 1.476896288948028,
+          "verdict": "PROFILE_FASTER"
+        },
+        {
+          "ordinal": 2,
+          "kernel": "_Z11mvt_kernel2PfS_S_",
+          "P0_cycles": 1752751,
+          "profile_cycles": 1596171,
+          "speedup": 1.0980972590029514,
+          "verdict": "PROFILE_FASTER"
+        }
+      ],
+      "P0_cycles": 26581175,
+      "profile_cycles": 18407388,
+      "cycles_change_percent": -30.75028474098681,
+      "cohorts": [
+        "E2-DTCHASH18-f437190767aaed49-CH-P0-V1",
+        "E2-DTCHASH18-f437190767aaed49-CH-PS-V1"
+      ],
+      "traffic_changes": {
+        "L2_accepted_read_32B_sectors": {
+          "P0": 65311172,
+          "profile": 70255420,
+          "percent": 7.570294405373712
+        },
+        "L2_read_payload_bytes": {
+          "P0": 2089957504,
+          "profile": 2248173440,
+          "percent": 7.570294405373712
+        },
+        "DRAM_issued_read_atoms": {
+          "P0": 15617216,
+          "profile": 20550692,
+          "percent": 31.58998377175548
+        },
+        "DRAM_read_payload_bytes": {
+          "P0": 499750912,
+          "profile": 657622144,
+          "percent": 31.58998377175548
+        }
+      },
+      "latency_counters": {
+        "P0": {
+          "averagemflatency": 620,
+          "avg_icnt2mem_latency": 153,
+          "avg_mrq_latency": 455,
+          "avg_icnt2sh_latency": 44
+        },
+        "profile": {
+          "averagemflatency": 440,
+          "avg_icnt2mem_latency": 90,
+          "avg_mrq_latency": 187,
+          "avg_icnt2sh_latency": 40
+        },
+        "definition": "whole_declared_input aggregates, request populations differ; no segment mean subtraction"
+      }
+    },
+    {
+      "program": "MVT",
+      "cell": "DH",
+      "profile": "PS",
+      "status": "PENDING",
+      "speedup": null,
+      "kernel_speedups": null
+    },
+    {
+      "program": "BICG",
+      "cell": "CH",
+      "profile": "PQ",
+      "status": "ACCEPTED_NEW_DOWNSTREAM18_MATCHED",
+      "speedup": 1.079743896702069,
+      "kernel_speedups": [
+        {
+          "ordinal": 1,
+          "kernel": "_Z12bicg_kernel1PfS_S_",
+          "P0_cycles": 1749396,
+          "profile_cycles": 1749396,
+          "speedup": 1.0,
+          "verdict": "EXACT_EQUAL"
+        },
+        {
+          "ordinal": 2,
+          "kernel": "_Z12bicg_kernel2PfS_S_",
+          "P0_cycles": 24549302,
+          "profile_cycles": 22607026,
+          "speedup": 1.0859147063395247,
+          "verdict": "PROFILE_FASTER"
+        }
+      ],
+      "P0_cycles": 26298698,
+      "profile_cycles": 24356422,
+      "cycles_change_percent": -7.385445469581797,
+      "cohorts": [
+        "E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1",
+        "E2-DTCHASH18-ae34174fbbdf83b2-CH-PQ-V1"
+      ],
+      "traffic_changes": {
+        "L2_accepted_read_32B_sectors": {
+          "P0": 64586544,
+          "profile": 65060268,
+          "percent": 0.7334716655531315
+        },
+        "L2_read_payload_bytes": {
+          "P0": 2066769408,
+          "profile": 2081928576,
+          "percent": 0.7334716655531315
+        },
+        "DRAM_issued_read_atoms": {
+          "P0": 15513224,
+          "profile": 14404480,
+          "percent": -7.147089476694202
+        },
+        "DRAM_read_payload_bytes": {
+          "P0": 496423168,
+          "profile": 460943360,
+          "percent": -7.147089476694202
+        }
+      },
+      "latency_counters": {
+        "P0": {
+          "averagemflatency": 736,
+          "avg_icnt2mem_latency": 153,
+          "avg_mrq_latency": 526,
+          "avg_icnt2sh_latency": 72
+        },
+        "profile": {
+          "averagemflatency": 702,
+          "avg_icnt2mem_latency": 135,
+          "avg_mrq_latency": 510,
+          "avg_icnt2sh_latency": 88
+        },
+        "definition": "whole_declared_input aggregates, request populations differ; no segment mean subtraction"
+      }
+    },
+    {
+      "program": "BICG",
+      "cell": "DH",
+      "profile": "PQ",
+      "status": "PENDING",
+      "speedup": null,
+      "kernel_speedups": null
+    },
+    {
+      "program": "BICG",
+      "cell": "CH",
+      "profile": "PS",
+      "status": "ACCEPTED_NEW_DOWNSTREAM18_MATCHED",
+      "speedup": 1.170176569253321,
+      "kernel_speedups": [
+        {
+          "ordinal": 1,
+          "kernel": "_Z12bicg_kernel1PfS_S_",
+          "P0_cycles": 1749396,
+          "profile_cycles": 1597258,
+          "speedup": 1.0952494838028672,
+          "verdict": "PROFILE_FASTER"
+        },
+        {
+          "ordinal": 2,
+          "kernel": "_Z12bicg_kernel2PfS_S_",
+          "P0_cycles": 24549302,
+          "profile_cycles": 20876870,
+          "speedup": 1.1759091281403773,
+          "verdict": "PROFILE_FASTER"
+        }
+      ],
+      "P0_cycles": 26298698,
+      "profile_cycles": 22474128,
+      "cycles_change_percent": -14.54281120685138,
+      "cohorts": [
+        "E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1",
+        "E2-DTCHASH18-ae34174fbbdf83b2-CH-PS-V1"
+      ],
+      "traffic_changes": {
+        "L2_accepted_read_32B_sectors": {
+          "P0": 64586544,
+          "profile": 69392780,
+          "percent": 7.441543860900812
+        },
+        "L2_read_payload_bytes": {
+          "P0": 2066769408,
+          "profile": 2220568960,
+          "percent": 7.441543860900812
+        },
+        "DRAM_issued_read_atoms": {
+          "P0": 15513224,
+          "profile": 25753500,
+          "percent": 66.00997961481121
+        },
+        "DRAM_read_payload_bytes": {
+          "P0": 496423168,
+          "profile": 824112000,
+          "percent": 66.00997961481121
+        }
+      },
+      "latency_counters": {
+        "P0": {
+          "averagemflatency": 736,
+          "avg_icnt2mem_latency": 153,
+          "avg_mrq_latency": 526,
+          "avg_icnt2sh_latency": 72
+        },
+        "profile": {
+          "averagemflatency": 599,
+          "avg_icnt2mem_latency": 117,
+          "avg_mrq_latency": 257,
+          "avg_icnt2sh_latency": 42
+        },
+        "definition": "whole_declared_input aggregates, request populations differ; no segment mean subtraction"
+      }
+    },
+    {
+      "program": "BICG",
+      "cell": "DH",
+      "profile": "PS",
+      "status": "PENDING",
+      "speedup": null,
+      "kernel_speedups": null
+    }
+  ],
+  "relative_recovery_factors": [
+    {
+      "program": "ATAX",
+      "profile": "PQ",
+      "status": "PENDING",
+      "definition": "K_PQ=(DH_P0/DH_PQ)/(CH_P0/CH_PQ)",
+      "K": null,
+      "missing_strict_accepted_cells": [
+        [
+          "ATAX",
+          "DH",
+          "P0"
+        ],
+        [
+          "ATAX",
+          "DH",
+          "PQ"
+        ]
+      ]
+    },
+    {
+      "program": "ATAX",
+      "profile": "PS",
+      "status": "PENDING",
+      "definition": "K_PS=(DH_P0/DH_PS)/(CH_P0/CH_PS)",
+      "K": null,
+      "missing_strict_accepted_cells": [
+        [
+          "ATAX",
+          "DH",
+          "P0"
+        ],
+        [
+          "ATAX",
+          "DH",
+          "PS"
+        ]
+      ]
+    },
+    {
+      "program": "MVT",
+      "profile": "PQ",
+      "status": "PENDING",
+      "definition": "K_PQ=(DH_P0/DH_PQ)/(CH_P0/CH_PQ)",
+      "K": null,
+      "missing_strict_accepted_cells": [
+        [
+          "MVT",
+          "DH",
+          "P0"
+        ],
+        [
+          "MVT",
+          "DH",
+          "PQ"
+        ]
+      ]
+    },
+    {
+      "program": "MVT",
+      "profile": "PS",
+      "status": "PENDING",
+      "definition": "K_PS=(DH_P0/DH_PS)/(CH_P0/CH_PS)",
+      "K": null,
+      "missing_strict_accepted_cells": [
+        [
+          "MVT",
+          "DH",
+          "P0"
+        ],
+        [
+          "MVT",
+          "DH",
+          "PS"
+        ]
+      ]
+    },
+    {
+      "program": "BICG",
+      "profile": "PQ",
+      "status": "PENDING",
+      "definition": "K_PQ=(DH_P0/DH_PQ)/(CH_P0/CH_PQ)",
+      "K": null,
+      "missing_strict_accepted_cells": [
+        [
+          "BICG",
+          "DH",
+          "P0"
+        ],
+        [
+          "BICG",
+          "DH",
+          "PQ"
+        ]
+      ]
+    },
+    {
+      "program": "BICG",
+      "profile": "PS",
+      "status": "PENDING",
+      "definition": "K_PS=(DH_P0/DH_PS)/(CH_P0/CH_PS)",
+      "K": null,
+      "missing_strict_accepted_cells": [
+        [
+          "BICG",
+          "DH",
+          "P0"
+        ]
+      ]
+    }
+  ],
+  "PS_first5_audit": [
+    {
+      "program": "ATAX",
+      "kernel_ordinal": 1,
+      "left": "CH_P0",
+      "right": "CH_PS",
+      "work_frontier_active_thread_instructions": 3569049.6,
+      "ratio": {
+        "low": 1.6666666666666667,
+        "estimate": 2.0058141948327664,
+        "high": 2.2
+      },
+      "source_rows": {
+        "left": [
+          {
+            "target_work": 0.0,
+            "bracket_work": [
+              0,
+              0
+            ],
+            "bracket_rows": [
+              0,
+              0
+            ],
+            "bracket_width_pp": 0.0
+          },
+          {
+            "target_work": 3569049.6,
+            "bracket_work": [
+              3273184,
+              3573856
+            ],
+            "bracket_rows": [
+              11,
+              12
+            ],
+            "bracket_width_pp": 0.42122138061628506
+          }
+        ],
+        "right": [
+          {
+            "target_work": 0.0,
+            "bracket_work": [
+              0,
+              0
+            ],
+            "bracket_rows": [
+              0,
+              0
+            ],
+            "bracket_width_pp": 0.0
+          },
+          {
+            "target_work": 3569049.6,
+            "bracket_work": [
+              3264064,
+              3904672
+            ],
+            "bracket_rows": [
+              6,
+              7
+            ],
+            "bracket_width_pp": 0.8974490015493201
+          }
+        ]
+      },
+      "status": "PROVISIONAL_FIXED_SNAPSHOT_CORE_CYCLE_OBSERVATION_ONLY",
+      "whole_input_or_kernel_speedup": false
+    },
+    {
+      "program": "ATAX",
+      "kernel_ordinal": 1,
+      "left": "DH_P0",
+      "right": "DH_PS",
+      "work_frontier_active_thread_instructions": 3569049.6,
+      "ratio": {
+        "low": 1.6666666666666667,
+        "estimate": 2.0090155069464557,
+        "high": 2.2
+      },
+      "source_rows": {
+        "left": [
+          {
+            "target_work": 0.0,
+            "bracket_work": [
+              0,
+              0
+            ],
+            "bracket_rows": [
+              0,
+              0
+            ],
+            "bracket_width_pp": 0.0
+          },
+          {
+            "target_work": 3569049.6,
+            "bracket_work": [
+              3282816,
+              3584256
+            ],
+            "bracket_rows": [
+              11,
+              12
+            ],
+            "bracket_width_pp": 0.4222972972972973
+          }
+        ],
+        "right": [
+          {
+            "target_work": 0.0,
+            "bracket_work": [
+              0,
+              0
+            ],
+            "bracket_rows": [
+              0,
+              0
+            ],
+            "bracket_width_pp": 0.0
+          },
+          {
+            "target_work": 3569049.6,
+            "bracket_work": [
+              3279360,
+              3922816
+            ],
+            "bracket_rows": [
+              6,
+              7
+            ],
+            "bracket_width_pp": 0.901438859241407
+          }
+        ]
+      },
+      "status": "PROVISIONAL_FIXED_SNAPSHOT_CORE_CYCLE_OBSERVATION_ONLY",
+      "whole_input_or_kernel_speedup": false
+    },
+    {
+      "program": "MVT",
+      "kernel_ordinal": 1,
+      "left": "CH_P0",
+      "right": "CH_PS",
+      "work_frontier_active_thread_instructions": 3569049.6,
+      "ratio": {
+        "low": 1.6666666666666667,
+        "estimate": 2.01790188017103,
+        "high": 2.2
+      },
+      "source_rows": {
+        "left": [
+          {
+            "target_work": 0.0,
+            "bracket_work": [
+              0,
+              0
+            ],
+            "bracket_rows": [
+              0,
+              0
+            ],
+            "bracket_width_pp": 0.0
+          },
+          {
+            "target_work": 3569049.6,
+            "bracket_work": [
+              3285408,
+              3592416
+            ],
+            "bracket_rows": [
+              11,
+              12
+            ],
+            "bracket_width_pp": 0.4300976932346359
+          }
+        ],
+        "right": [
+          {
+            "target_work": 0.0,
+            "bracket_work": [
+              0,
+              0
+            ],
+            "bracket_rows": [
+              0,
+              0
+            ],
+            "bracket_width_pp": 0.0
+          },
+          {
+            "target_work": 3569049.6,
+            "bracket_work": [
+              3291648,
+              3962528
+            ],
+            "bracket_rows": [
+              6,
+              7
+            ],
+            "bracket_width_pp": 0.9398580507258851
+          }
+        ]
+      },
+      "status": "PROVISIONAL_FIXED_SNAPSHOT_CORE_CYCLE_OBSERVATION_ONLY",
+      "whole_input_or_kernel_speedup": false
+    },
+    {
+      "program": "MVT",
+      "kernel_ordinal": 1,
+      "left": "DH_P0",
+      "right": "DH_PS",
+      "work_frontier_active_thread_instructions": 3569049.6,
+      "ratio": {
+        "low": 1.6666666666666667,
+        "estimate": 2.0094207691795116,
+        "high": 2.2
+      },
+      "source_rows": {
+        "left": [
+          {
+            "target_work": 0.0,
+            "bracket_work": [
+              0,
+              0
+            ],
+            "bracket_rows": [
+              0,
+              0
+            ],
+            "bracket_width_pp": 0.0
+          },
+          {
+            "target_work": 3569049.6,
+            "bracket_work": [
+              3275776,
+              3576576
+            ],
+            "bracket_rows": [
+              11,
+              12
+            ],
+            "bracket_width_pp": 0.42140070006312047
+          }
+        ],
+        "right": [
+          {
+            "target_work": 0.0,
+            "bracket_work": [
+              0,
+              0
+            ],
+            "bracket_rows": [
+              0,
+              0
+            ],
+            "bracket_width_pp": 0.0
+          },
+          {
+            "target_work": 3569049.6,
+            "bracket_work": [
+              3272576,
+              3914624
+            ],
+            "bracket_rows": [
+              6,
+              7
+            ],
+            "bracket_width_pp": 0.8994663453262179
+          }
+        ]
+      },
+      "status": "PROVISIONAL_FIXED_SNAPSHOT_CORE_CYCLE_OBSERVATION_ONLY",
+      "whole_input_or_kernel_speedup": false
+    },
+    {
+      "program": "BICG",
+      "kernel_ordinal": 2,
+      "left": "CH_P0",
+      "right": "CH_PS",
+      "work_frontier_active_thread_instructions": 3569049.6,
+      "ratio": {
+        "low": 1.808842811383168,
+        "estimate": 1.990907355375172,
+        "high": 2.3933505969429927
+      },
+      "source_rows": {
+        "left": [
+          {
+            "target_work": 0.0,
+            "bracket_work": [
+              0,
+              0
+            ],
+            "bracket_rows": [
+              5,
+              5
+            ],
+            "bracket_width_pp": 0.0
+          },
+          {
+            "target_work": 3569049.6,
+            "bracket_work": [
+              3442368,
+              3745760
+            ],
+            "bracket_rows": [
+              16,
+              17
+            ],
+            "bracket_width_pp": 0.4250319188615367
+          }
+        ],
+        "right": [
+          {
+            "target_work": 0.0,
+            "bracket_work": [
+              0,
+              0
+            ],
+            "bracket_rows": [
+              5,
+              5
+            ],
+            "bracket_width_pp": 0.0
+          },
+          {
+            "target_work": 3569049.6,
+            "bracket_work": [
+              3155040,
+              3764928
+            ],
+            "bracket_rows": [
+              10,
+              11
+            ],
+            "bracket_width_pp": 0.8544123343088311
+          }
+        ]
+      },
+      "status": "PROVISIONAL_FIXED_SNAPSHOT_CORE_CYCLE_OBSERVATION_ONLY",
+      "whole_input_or_kernel_speedup": false
+    },
+    {
+      "program": "BICG",
+      "kernel_ordinal": 2,
+      "left": "DH_P0",
+      "right": "DH_PS",
+      "work_frontier_active_thread_instructions": 3569049.6,
+      "ratio": {
+        "low": 1.7817190754994556,
+        "estimate": 2.007001242587687,
+        "high": 2.3381258758491463
+      },
+      "source_rows": {
+        "left": [
+          {
+            "target_work": 0.0,
+            "bracket_work": [
+              0,
+              0
+            ],
+            "bracket_rows": [
+              5,
+              5
+            ],
+            "bracket_width_pp": 0.0
+          },
+          {
+            "target_work": 3569049.6,
+            "bracket_work": [
+              3491072,
+              3808160
+            ],
+            "bracket_rows": [
+              16,
+              17
+            ],
+            "bracket_width_pp": 0.44421909967292134
+          }
+        ],
+        "right": [
+          {
+            "target_work": 0.0,
+            "bracket_work": [
+              0,
+              0
+            ],
+            "bracket_rows": [
+              5,
+              5
+            ],
+            "bracket_width_pp": 0.0
+          },
+          {
+            "target_work": 3569049.6,
+            "bracket_work": [
+              3280128,
+              3923456
+            ],
+            "bracket_rows": [
+              10,
+              11
+            ],
+            "bracket_width_pp": 0.9012595397945716
+          }
+        ]
+      },
+      "status": "PROVISIONAL_FIXED_SNAPSHOT_CORE_CYCLE_OBSERVATION_ONLY",
+      "whole_input_or_kernel_speedup": false
+    }
+  ],
+  "PQ_fifo_snapshot_audit": [
+    {
+      "program": "ATAX",
+      "cell": "CH",
+      "profile": "PQ",
+      "snapshot_acceptance": "PENDING",
+      "closed_now": true,
+      "observed_segments": 9,
+      "all_observed_segment_fifo_full_high_zero": true,
+      "whole_kernel_snapshot_metrics": [
+        {
+          "kernel_ordinal": 1,
+          "cycles": {
+            "low": 28991063,
+            "estimate": 28991063,
+            "high": 28991063
+          },
+          "l2_fifo_full_events": {
+            "low": 0,
+            "estimate": 0,
+            "high": 0
+          }
+        }
+      ],
+      "coverage_note": "Observed fixed snapshot only; no assertion about an unobserved tail or pending input."
+    },
+    {
+      "program": "ATAX",
+      "cell": "DH",
+      "profile": "PQ",
+      "snapshot_acceptance": "PENDING",
+      "closed_now": false,
+      "observed_segments": 1,
+      "all_observed_segment_fifo_full_high_zero": true,
+      "whole_kernel_snapshot_metrics": [],
+      "coverage_note": "Observed fixed snapshot only; no assertion about an unobserved tail or pending input."
+    },
+    {
+      "program": "MVT",
+      "cell": "CH",
+      "profile": "PQ",
+      "snapshot_acceptance": "PASS_DOWNSTREAM18_STRICT_ARCHIVE_NATIVE_RESTORE",
+      "closed_now": true,
+      "observed_segments": 12,
+      "all_observed_segment_fifo_full_high_zero": true,
+      "whole_kernel_snapshot_metrics": [
+        {
+          "kernel_ordinal": 1,
+          "cycles": {
+            "low": 21826950,
+            "estimate": 21826950,
+            "high": 21826950
+          },
+          "l2_fifo_full_events": {
+            "low": 0,
+            "estimate": 0,
+            "high": 0
+          }
+        },
+        {
+          "kernel_ordinal": 2,
+          "cycles": {
+            "low": 1750046,
+            "estimate": 1750046,
+            "high": 1750046
+          },
+          "l2_fifo_full_events": {
+            "low": 0,
+            "estimate": 0,
+            "high": 0
+          }
+        }
+      ],
+      "coverage_note": "Observed fixed snapshot only; no assertion about an unobserved tail or pending input."
+    },
+    {
+      "program": "MVT",
+      "cell": "DH",
+      "profile": "PQ",
+      "snapshot_acceptance": "PENDING",
+      "closed_now": false,
+      "observed_segments": 1,
+      "all_observed_segment_fifo_full_high_zero": true,
+      "whole_kernel_snapshot_metrics": [],
+      "coverage_note": "Observed fixed snapshot only; no assertion about an unobserved tail or pending input."
+    },
+    {
+      "program": "BICG",
+      "cell": "CH",
+      "profile": "PQ",
+      "snapshot_acceptance": "PASS_DOWNSTREAM18_STRICT_ARCHIVE_NATIVE_RESTORE",
+      "closed_now": true,
+      "observed_segments": 12,
+      "all_observed_segment_fifo_full_high_zero": true,
+      "whole_kernel_snapshot_metrics": [
+        {
+          "kernel_ordinal": 1,
+          "cycles": {
+            "low": 1749396,
+            "estimate": 1749396,
+            "high": 1749396
+          },
+          "l2_fifo_full_events": {
+            "low": 0,
+            "estimate": 0,
+            "high": 0
+          }
+        },
+        {
+          "kernel_ordinal": 2,
+          "cycles": {
+            "low": 22607026,
+            "estimate": 22607026,
+            "high": 22607026
+          },
+          "l2_fifo_full_events": {
+            "low": 0,
+            "estimate": 0,
+            "high": 0
+          }
+        }
+      ],
+      "coverage_note": "Observed fixed snapshot only; no assertion about an unobserved tail or pending input."
+    },
+    {
+      "program": "BICG",
+      "cell": "DH",
+      "profile": "PQ",
+      "snapshot_acceptance": "PENDING",
+      "closed_now": false,
+      "observed_segments": 7,
+      "all_observed_segment_fifo_full_high_zero": true,
+      "whole_kernel_snapshot_metrics": [
+        {
+          "kernel_ordinal": 1,
+          "cycles": {
+            "low": 1655347,
+            "estimate": 1655347,
+            "high": 1655347
+          },
+          "l2_fifo_full_events": {
+            "low": 0,
+            "estimate": 0,
+            "high": 0
+          }
+        }
+      ],
+      "coverage_note": "Observed fixed snapshot only; no assertion about an unobserved tail or pending input."
+    }
+  ],
+  "within_profile_CH_over_DH": [
+    {
+      "program": "ATAX",
+      "profile": "P0",
+      "status": "PENDING",
+      "ratio": null
+    },
+    {
+      "program": "ATAX",
+      "profile": "PQ",
+      "status": "PENDING",
+      "ratio": null
+    },
+    {
+      "program": "ATAX",
+      "profile": "PS",
+      "status": "PENDING",
+      "ratio": null
+    },
+    {
+      "program": "MVT",
+      "profile": "P0",
+      "status": "PENDING",
+      "ratio": null
+    },
+    {
+      "program": "MVT",
+      "profile": "PQ",
+      "status": "PENDING",
+      "ratio": null
+    },
+    {
+      "program": "MVT",
+      "profile": "PS",
+      "status": "PENDING",
+      "ratio": null
+    },
+    {
+      "program": "BICG",
+      "profile": "P0",
+      "status": "PENDING",
+      "ratio": null
+    },
+    {
+      "program": "BICG",
+      "profile": "PQ",
+      "status": "PENDING",
+      "ratio": null
+    },
+    {
+      "program": "BICG",
+      "profile": "PS",
+      "status": "ACCEPTED",
+      "ratio": 1.223867735470942
+    }
+  ],
+  "source_inventory": [
+    {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_p42_parallel_mechanism_review_v1/agents/E/ALLOWED_OBSERVATION_SNAPSHOT.json",
+      "sha256": "1986f68b29b5cef169e359154efc7eb2843e553b3cd82c21b5d858a20186410d",
+      "bytes": 4002382
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_p42_parallel_mechanism_review_v1/agents/E/ALLOWED_OBSERVATION_RECEIPT.json",
+      "sha256": "ecd1d086b1fca065266017d155c2a75275d4ff49e8e7f1abda0d2e5a684ce436",
+      "bytes": 345
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_p42_parallel_mechanism_review_v1/agents/E/CLOSED_ACCEPTED_RECEIPTS_SNAPSHOT.json",
+      "sha256": "aa08b850c6f4e9a5fb368275b2aa5db5e8cc6ca7c970228f78b645be23625785",
+      "bytes": 285895
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_p42_parallel_mechanism_review_v1/agents/E/FINAL_ALLOWED_AUTO_SUMMARY_SNAPSHOT.json",
+      "sha256": "cb2d2e17a3d97adce1b3f28570080d8c448212dc384f10f617c36c6342f7a4e4",
+      "bytes": 6207
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/FREEZE_MANIFEST.json",
+      "sha256": "1a2c0653af88d1ec31f74cc1c779919d48272f74e161744009cc48d375c16a95",
+      "bytes": 10732
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1_SPEC.json",
+      "sha256": "6d9cfcbea1c5f15e311bca3a1fe7fb70f0e0ea73a72154915e6c85ece9ea6010",
+      "bytes": 24704
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/E2-DTCHASH18-ae34174fbbdf83b2-CH-PQ-V1_SPEC.json",
+      "sha256": "8e0a1eb33f070857921b77953caa915780066e45262e2ca02cd8fdab24dcfbe0",
+      "bytes": 24705
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/E2-DTCHASH18-ae34174fbbdf83b2-CH-PS-V1_SPEC.json",
+      "sha256": "c9852b812ccd1ff4552799eb436d5b1003aa6dd1330ce898e6603b3e084f23bc",
+      "bytes": 24705
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/E2-DTCHASH18-ae34174fbbdf83b2-DH-P0-V1_SPEC.json",
+      "sha256": "75a755bb3442dc0ded99477bee486f385fd8b3b0826f8d5f0e8f640ec6ebf8cd",
+      "bytes": 24679
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/E2-DTCHASH18-ae34174fbbdf83b2-DH-PQ-V1_SPEC.json",
+      "sha256": "fd37ef9a2db5387e69f3f62aa24545af1d56af83895b1d0c97a2e23695ffd484",
+      "bytes": 24680
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/E2-DTCHASH18-ae34174fbbdf83b2-DH-PS-V1_SPEC.json",
+      "sha256": "1a6f23e082f1343ac3535eee18afa83ee0094ff84614eef5f9d3fb719d847478",
+      "bytes": 24680
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/E2-DTCHASH18-eededb785179fc04-CH-P0-V1_SPEC.json",
+      "sha256": "84a2f97f12d85942b3688a8cae51cf5952133c7237af84f70432411a007b5a4c",
+      "bytes": 24704
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/E2-DTCHASH18-eededb785179fc04-CH-PQ-V1_SPEC.json",
+      "sha256": "9713434d03bf672b3dc803998d5d9dad26e998aaa4c6e7e492ba7b15ccdb892a",
+      "bytes": 24705
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/E2-DTCHASH18-eededb785179fc04-CH-PS-V1_SPEC.json",
+      "sha256": "fe5ab8ff509322595d941b7e59d9bebb9f8be5a484fee40a174e94694b14b25e",
+      "bytes": 24705
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/E2-DTCHASH18-eededb785179fc04-DH-P0-V1_SPEC.json",
+      "sha256": "2790d6a1fa2869a69cd398da2b28240e57e70155c433324350958646902ecbbc",
+      "bytes": 24679
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/E2-DTCHASH18-eededb785179fc04-DH-PQ-V1_SPEC.json",
+      "sha256": "1d84a6141db8c697d030d27c789609432faa19361a350f7f047e9645f0d65056",
+      "bytes": 24680
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/E2-DTCHASH18-eededb785179fc04-DH-PS-V1_SPEC.json",
+      "sha256": "611143430cb445f0dcdedd7467075d2ac4262c2d93384e3f1159afeb07ca4558",
+      "bytes": 24680
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/E2-DTCHASH18-f437190767aaed49-CH-P0-V1_SPEC.json",
+      "sha256": "25428e47a516144d7220bc6180c26bacc212b2592a8180ef9aa470385c53fb44",
+      "bytes": 24703
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/E2-DTCHASH18-f437190767aaed49-CH-PQ-V1_SPEC.json",
+      "sha256": "46a6e415236ba120b7fa02ac999dc6dcafa6b1d00ae71fa2632aa29796da54e2",
+      "bytes": 24704
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/E2-DTCHASH18-f437190767aaed49-CH-PS-V1_SPEC.json",
+      "sha256": "d5e2ef15d68aedffc724966cff6b8c9ce54ef59d3b8d7bffb7434f7a3e5f58ca",
+      "bytes": 24704
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/E2-DTCHASH18-f437190767aaed49-DH-P0-V1_SPEC.json",
+      "sha256": "03e5915f1dabdffdf4f544aea065fff3927386d1110c9771b03fc50c200988ee",
+      "bytes": 24678
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/E2-DTCHASH18-f437190767aaed49-DH-PQ-V1_SPEC.json",
+      "sha256": "5cfc914fe4c2fc3960b727463223af240c0797447c26b22492d4dcca21dc1bf3",
+      "bytes": 24679
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/E2-DTCHASH18-f437190767aaed49-DH-PS-V1_SPEC.json",
+      "sha256": "dfccbb818306159545a15dc59aa0be9d339d0bbd744f8c694a4024ed114297e4",
+      "bytes": 24679
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/input_bindings/eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950.json",
+      "sha256": "fcf9289ccd69135920b0d90f6876377f52f2fb6c442fc04bc12e889ba8c2b040",
+      "bytes": 27581
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/input_bindings/f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079.json",
+      "sha256": "d05ec5d8a4e438977f8997244b9faf64e63afcd04d5040cd4a93b93192c3ece3",
+      "bytes": 13324
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/input_bindings/ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef.json",
+      "sha256": "7a6bbb1fbc0cec5a7544f103c5055610e0958229620631d98de89c9b9666d0b7",
+      "bytes": 34105
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-eededb785179fc04-CH-P0-V1.RESULT.json",
+      "sha256": "40b865fb1503bbfca32e6039770114b21ce9a6e90453f47fd3aefad3643c8368",
+      "bytes": 34969
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/qualification_ledger/E2-DTCHASH18-eededb785179fc04-CH-P0-V1.DONE.json",
+      "sha256": "95e005fb3a681ef364c91765595246245a506207fcedd1d674495bd7630200c8",
+      "bytes": 1112
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/DTC/run/results/681b81cd-4add-4802-a5f0-1994b9156847/NATIVE_EXIT.json",
+      "sha256": "95e005fb3a681ef364c91765595246245a506207fcedd1d674495bd7630200c8",
+      "bytes": 1112
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-eededb785179fc04-CH-PQ-V1.RESULT.json",
+      "sha256": "aba7fd846335a179c2291afcc293dc10279adc26621b12c75b6b46439dc3fd48",
+      "bytes": 34966
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/qualification_ledger/E2-DTCHASH18-eededb785179fc04-CH-PQ-V1.DONE.json",
+      "sha256": "794eec9044c43dc456f56e39844685503eca7a2d5f9617e26da0d9635dc7a95e",
+      "bytes": 1111
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/DTC/run/results/a52a56fa-24af-4991-881b-1d70cc2eb64d/NATIVE_EXIT.json",
+      "sha256": "794eec9044c43dc456f56e39844685503eca7a2d5f9617e26da0d9635dc7a95e",
+      "bytes": 1111
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-eededb785179fc04-CH-PS-V1.RESULT.json",
+      "sha256": "7fd8552f1be5b4b6e79bb44f1d8f64a585664f31a12a1faab89d8626eb218410",
+      "bytes": 34968
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/qualification_ledger/E2-DTCHASH18-eededb785179fc04-CH-PS-V1.DONE.json",
+      "sha256": "f3fce8a7c058799892fcea108ea70f466d88ac2964f6a8c031c8e721caedfaa3",
+      "bytes": 1111
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/DTC/run/results/d75eb219-b32e-46f1-959e-74c45995c29e/NATIVE_EXIT.json",
+      "sha256": "f3fce8a7c058799892fcea108ea70f466d88ac2964f6a8c031c8e721caedfaa3",
+      "bytes": 1111
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1.RESULT.json",
+      "sha256": "3ab976791376abcc62bbb11c5eec2943bf106a253829af86842a0036175faaaf",
+      "bytes": 34974
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/qualification_ledger/E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1.DONE.json",
+      "sha256": "4ed1dee9adb9e53c962f47e7963f981c113dbd350fdbf59ae26fda54b39e8d09",
+      "bytes": 1111
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/DTC/run/results/f93c0c73-fc16-496b-9021-87ba236f60c2/NATIVE_EXIT.json",
+      "sha256": "4ed1dee9adb9e53c962f47e7963f981c113dbd350fdbf59ae26fda54b39e8d09",
+      "bytes": 1111
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-ae34174fbbdf83b2-CH-PQ-V1.RESULT.json",
+      "sha256": "7dbc12842d3c3b6e746e9fdf7316b5781c9d3f61f08dcbcb26072e5e4f3ab673",
+      "bytes": 34975
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/qualification_ledger/E2-DTCHASH18-ae34174fbbdf83b2-CH-PQ-V1.DONE.json",
+      "sha256": "17e29b0b29b41169a00504e7bceb9ab27099e7c7332bd51600a152172c8d1666",
+      "bytes": 1111
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/DTC/run/results/60c6a98b-1f69-44aa-b0f1-084d7a1705d8/NATIVE_EXIT.json",
+      "sha256": "17e29b0b29b41169a00504e7bceb9ab27099e7c7332bd51600a152172c8d1666",
+      "bytes": 1111
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-ae34174fbbdf83b2-CH-PS-V1.RESULT.json",
+      "sha256": "64c3cdeef293e9b664483fadb74e5c8f606ffbd50fdc04dd842f06440f8bcb32",
+      "bytes": 34975
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/qualification_ledger/E2-DTCHASH18-ae34174fbbdf83b2-CH-PS-V1.DONE.json",
+      "sha256": "9051679ad2821e4990e02cb37df0e48e8800717b5194a743d07887a0edf6db06",
+      "bytes": 1112
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/DTC/run/results/b3b50adf-326a-4e7c-a50e-e0fd3c1ba77c/NATIVE_EXIT.json",
+      "sha256": "9051679ad2821e4990e02cb37df0e48e8800717b5194a743d07887a0edf6db06",
+      "bytes": 1112
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-ae34174fbbdf83b2-DH-PS-V1.RESULT.json",
+      "sha256": "8c4bedcabc26e7a120427b38ea27ecdfc90f32f742fe216cebe0386791eb50a3",
+      "bytes": 35223
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/qualification_ledger/E2-DTCHASH18-ae34174fbbdf83b2-DH-PS-V1.DONE.json",
+      "sha256": "f0a42f81626de04e0fee14fc337921e07efee3e9d60d752fc9450b60ee44f705",
+      "bytes": 1111
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/DTC/run/results/216ad78c-b361-4863-92b7-98d0eef14a0e/NATIVE_EXIT.json",
+      "sha256": "f0a42f81626de04e0fee14fc337921e07efee3e9d60d752fc9450b60ee44f705",
+      "bytes": 1111
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-f437190767aaed49-CH-P0-V1.RESULT.json",
+      "sha256": "63b775b7e0b978db717adafde92f6fe38184dfcb875b8d08485d3bb245abfccd",
+      "bytes": 34965
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/qualification_ledger/E2-DTCHASH18-f437190767aaed49-CH-P0-V1.DONE.json",
+      "sha256": "4d1a23ffca6a63ccf1d03763b4bd35a3ed42fa739bad129a9b93ef67ef1e45a1",
+      "bytes": 1112
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/DTC/run/results/bde2fff3-0d42-4920-a97c-1ed7a5be1df1/NATIVE_EXIT.json",
+      "sha256": "4d1a23ffca6a63ccf1d03763b4bd35a3ed42fa739bad129a9b93ef67ef1e45a1",
+      "bytes": 1112
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-f437190767aaed49-CH-PQ-V1.RESULT.json",
+      "sha256": "9aa9fea92c46c45e30f1b9c51d9721e280a010c7825ae1a4a9adec7262734d6e",
+      "bytes": 34964
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/qualification_ledger/E2-DTCHASH18-f437190767aaed49-CH-PQ-V1.DONE.json",
+      "sha256": "424560d5937e6ab3da3af244ecb5a0974e9d69e99ba272e1b7feade3e1ac144b",
+      "bytes": 1111
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/DTC/run/results/8c3894e0-612c-4562-bba3-bace6a45239e/NATIVE_EXIT.json",
+      "sha256": "424560d5937e6ab3da3af244ecb5a0974e9d69e99ba272e1b7feade3e1ac144b",
+      "bytes": 1111
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-f437190767aaed49-CH-PS-V1.RESULT.json",
+      "sha256": "a888b350caab974e2d6fa7badb1b47c2ff8b799300456bbaf820f14dd11d016e",
+      "bytes": 34964
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/control/qualification_ledger/E2-DTCHASH18-f437190767aaed49-CH-PS-V1.DONE.json",
+      "sha256": "6cf964f14d1ca69ac7285832fe8add39a5eeccb5dbb958aa4f382eeaf4687077",
+      "bytes": 1111
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1/DTC/run/results/457383fd-f151-48e8-9774-b14ff956c1e9/NATIVE_EXIT.json",
+      "sha256": "6cf964f14d1ca69ac7285832fe8add39a5eeccb5dbb958aa4f382eeaf4687077",
+      "bytes": 1111
+    }
+  ],
+  "PS_interpretation": "850->1700 MHz halves DRAM tick duration. Same command timing cycle counts halve corresponding absolute ns delay and change service opportunity. It is a composite frequency/timing sensitivity, not pure bandwidth doubling. Fixed core-clock dram_latency stays unchanged.",
+  "mechanism_limits": [
+    "L2 FIFO-full disappearance is not proof of scheduler/return-queue waiting disappearance.",
+    "avg_mrq_latency is an aggregate over differing request populations; not full round trip or per-segment mean.",
+    "Host wall time is not simulated GPU execution cycles.",
+    "No old2e3 baseline substitution; all matched baselines must be same new9eed build.",
+    "No final-cycle predictions from pending observations."
+  ],
+  "followup_experiment_designs": [
+    {
+      "id": "PS_NS_MATCH",
+      "status": "NEW_SCIENTIFIC_EXECUTION_APPROVAL_REQUIRED",
+      "goal": "Separate faster command/data opportunity from reductions in absolute DRAM timing delay.",
+      "design": "Keep DRAM=1700MHz; double each elapsed-time DRAM-clock parameter from the 850MHz P0 (RCD/RAS/RP/RC/CL/WL/RRD/WR/CDLR/RTPL, bank-group CCDL where applicable), after auditing derived expressions and constraints. Keep core-clock fixed delays such as dram_latency=100 and L2 ROP unchanged. Keep geometry, mapping, request/return queues, scheduler and input fixed.",
+      "caveat": "Do not blindly double nbk, nbkgrp or buswidth. Classify tCCD/CCDL and burst/data-command ratio explicitly: preserving all spacing in ns can also remove the intended throughput increase. State chosen sustained bandwidth and absolute-latency contract; this is not achieved by a single clock edit.",
+      "minimal_scope": "One strided kernel/input chosen before seeing new performance, both CH and DH, paired with fresh instrumented baseline only if build changes; exact budget to approve after finished18."
+    },
+    {
+      "id": "PQ_X_PS",
+      "status": "NEW_SCIENTIFIC_EXECUTION_APPROVAL_REQUIRED",
+      "goal": "Test interaction between FIFO capacity and DRAM time-domain speed.",
+      "design": "2x2 of FIFO64/256 and850/1700MHz; existing P0/PQ/PS are three corners. Only after they close strict accepted, add joint corner for matched CH/DH using identical existing binary/config contract.",
+      "interaction_formula": "I_cell=C_PQ*C_PS/(C_P0*C_PQPS); multiplicative independent speedups imply1. Compare I_DH/I_CH. No additive speedup assumption.",
+      "minimal_scope": "A preregistered sentinel input (ATAX is informative if accepted PQ regression persists); two new model points CH/DH. Broaden only with new approval."
+    },
+    {
+      "id": "INSTRUMENT_STAGE_WAIT",
+      "status": "NEW_SCIENTIFIC_EXECUTION_APPROVAL_REQUIRED",
+      "goal": "Distinguish FIFO backpressure removal, scheduler waiting, return congestion, L2 replacement/reissue and DTC completion service.",
+      "design": "Instrumentation-only build with counters for queue occupancy-cycle sums/high-water marks/full events; request UID+stage enqueue/dequeue timestamps for L2 miss/FIFO, dram-delay, FRFCFS, bank issue/data ready, return FIFO, DTC completion/retirement; per-kernel sums/counts/histograms. Bounded event sampling keyed by stable UID. Never change allocation/arbitration/admission.",
+      "qualification": "CPU tests plus at least a matched reference run verifying exact cycles, instructions, CTA and traffic against uninstrumented binary before causal consumption. Capture source hash, observer overhead, RSS/output limits, cross-kernel draining and request-cohort accounting.",
+      "minimal_scope": "One CH/DH sentinel pair at P0 and one discriminating perturbation; exact model-start budget requires new approval."
+    }
+  ],
+  "new_simulator_starts": 0,
+  "controller_or_lease_or_goal_changes": 0,
+  "active_raw_reads": 0,
+  "trace_reads": 0,
+  "tests": [
+    {
+      "check": "freeze_manifest_matches_published_snapshot",
+      "pass": true
+    },
+    {
+      "check": "frozen_spec_E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1_SPEC.json",
+      "pass": true
+    },
+    {
+      "check": "frozen_spec_E2-DTCHASH18-ae34174fbbdf83b2-CH-PQ-V1_SPEC.json",
+      "pass": true
+    },
+    {
+      "check": "frozen_spec_E2-DTCHASH18-ae34174fbbdf83b2-CH-PS-V1_SPEC.json",
+      "pass": true
+    },
+    {
+      "check": "frozen_spec_E2-DTCHASH18-ae34174fbbdf83b2-DH-P0-V1_SPEC.json",
+      "pass": true
+    },
+    {
+      "check": "frozen_spec_E2-DTCHASH18-ae34174fbbdf83b2-DH-PQ-V1_SPEC.json",
+      "pass": true
+    },
+    {
+      "check": "frozen_spec_E2-DTCHASH18-ae34174fbbdf83b2-DH-PS-V1_SPEC.json",
+      "pass": true
+    },
+    {
+      "check": "frozen_spec_E2-DTCHASH18-eededb785179fc04-CH-P0-V1_SPEC.json",
+      "pass": true
+    },
+    {
+      "check": "frozen_spec_E2-DTCHASH18-eededb785179fc04-CH-PQ-V1_SPEC.json",
+      "pass": true
+    },
+    {
+      "check": "frozen_spec_E2-DTCHASH18-eededb785179fc04-CH-PS-V1_SPEC.json",
+      "pass": true
+    },
+    {
+      "check": "frozen_spec_E2-DTCHASH18-eededb785179fc04-DH-P0-V1_SPEC.json",
+      "pass": true
+    },
+    {
+      "check": "frozen_spec_E2-DTCHASH18-eededb785179fc04-DH-PQ-V1_SPEC.json",
+      "pass": true
+    },
+    {
+      "check": "frozen_spec_E2-DTCHASH18-eededb785179fc04-DH-PS-V1_SPEC.json",
+      "pass": true
+    },
+    {
+      "check": "frozen_spec_E2-DTCHASH18-f437190767aaed49-CH-P0-V1_SPEC.json",
+      "pass": true
+    },
+    {
+      "check": "frozen_spec_E2-DTCHASH18-f437190767aaed49-CH-PQ-V1_SPEC.json",
+      "pass": true
+    },
+    {
+      "check": "frozen_spec_E2-DTCHASH18-f437190767aaed49-CH-PS-V1_SPEC.json",
+      "pass": true
+    },
+    {
+      "check": "frozen_spec_E2-DTCHASH18-f437190767aaed49-DH-P0-V1_SPEC.json",
+      "pass": true
+    },
+    {
+      "check": "frozen_spec_E2-DTCHASH18-f437190767aaed49-DH-PQ-V1_SPEC.json",
+      "pass": true
+    },
+    {
+      "check": "frozen_spec_E2-DTCHASH18-f437190767aaed49-DH-PS-V1_SPEC.json",
+      "pass": true
+    },
+    {
+      "check": "exactly_18_frozen_specs",
+      "pass": true
+    },
+    {
+      "check": "input_binding_sha_ATAX",
+      "pass": true
+    },
+    {
+      "check": "input_binding_sha_MVT",
+      "pass": true
+    },
+    {
+      "check": "input_binding_sha_BICG",
+      "pass": true
+    },
+    {
+      "check": "CH_P0_only_authorized_option_diff",
+      "pass": true
+    },
+    {
+      "check": "config_sha_CH_P0_config-0.config",
+      "pass": true
+    },
+    {
+      "check": "config_sha_CH_P0_config-1.config",
+      "pass": true
+    },
+    {
+      "check": "config_sha_CH_P0_config-2.config",
+      "pass": true
+    },
+    {
+      "check": "config_sha_CH_P0_config-3.config",
+      "pass": true
+    },
+    {
+      "check": "same_profile_ATAX_CH_P0",
+      "pass": true
+    },
+    {
+      "check": "same_profile_MVT_CH_P0",
+      "pass": true
+    },
+    {
+      "check": "same_profile_BICG_CH_P0",
+      "pass": true
+    },
+    {
+      "check": "CH_PQ_only_authorized_option_diff",
+      "pass": true
+    },
+    {
+      "check": "config_sha_CH_PQ_config-0.config",
+      "pass": true
+    },
+    {
+      "check": "config_sha_CH_PQ_config-1.config",
+      "pass": true
+    },
+    {
+      "check": "config_sha_CH_PQ_config-2.config",
+      "pass": true
+    },
+    {
+      "check": "config_sha_CH_PQ_config-3.config",
+      "pass": true
+    },
+    {
+      "check": "same_profile_ATAX_CH_PQ",
+      "pass": true
+    },
+    {
+      "check": "same_profile_MVT_CH_PQ",
+      "pass": true
+    },
+    {
+      "check": "same_profile_BICG_CH_PQ",
+      "pass": true
+    },
+    {
+      "check": "CH_PS_only_authorized_option_diff",
+      "pass": true
+    },
+    {
+      "check": "config_sha_CH_PS_config-0.config",
+      "pass": true
+    },
+    {
+      "check": "config_sha_CH_PS_config-1.config",
+      "pass": true
+    },
+    {
+      "check": "config_sha_CH_PS_config-2.config",
+      "pass": true
+    },
+    {
+      "check": "config_sha_CH_PS_config-3.config",
+      "pass": true
+    },
+    {
+      "check": "same_profile_ATAX_CH_PS",
+      "pass": true
+    },
+    {
+      "check": "same_profile_MVT_CH_PS",
+      "pass": true
+    },
+    {
+      "check": "same_profile_BICG_CH_PS",
+      "pass": true
+    },
+    {
+      "check": "DH_P0_only_authorized_option_diff",
+      "pass": true
+    },
+    {
+      "check": "config_sha_DH_P0_config-0.config",
+      "pass": true
+    },
+    {
+      "check": "config_sha_DH_P0_config-1.config",
+      "pass": true
+    },
+    {
+      "check": "config_sha_DH_P0_config-2.config",
+      "pass": true
+    },
+    {
+      "check": "config_sha_DH_P0_config-3.config",
+      "pass": true
+    },
+    {
+      "check": "same_profile_ATAX_DH_P0",
+      "pass": true
+    },
+    {
+      "check": "same_profile_MVT_DH_P0",
+      "pass": true
+    },
+    {
+      "check": "same_profile_BICG_DH_P0",
+      "pass": true
+    },
+    {
+      "check": "DH_PQ_only_authorized_option_diff",
+      "pass": true
+    },
+    {
+      "check": "config_sha_DH_PQ_config-0.config",
+      "pass": true
+    },
+    {
+      "check": "config_sha_DH_PQ_config-1.config",
+      "pass": true
+    },
+    {
+      "check": "config_sha_DH_PQ_config-2.config",
+      "pass": true
+    },
+    {
+      "check": "config_sha_DH_PQ_config-3.config",
+      "pass": true
+    },
+    {
+      "check": "same_profile_ATAX_DH_PQ",
+      "pass": true
+    },
+    {
+      "check": "same_profile_MVT_DH_PQ",
+      "pass": true
+    },
+    {
+      "check": "same_profile_BICG_DH_PQ",
+      "pass": true
+    },
+    {
+      "check": "DH_PS_only_authorized_option_diff",
+      "pass": true
+    },
+    {
+      "check": "config_sha_DH_PS_config-0.config",
+      "pass": true
+    },
+    {
+      "check": "config_sha_DH_PS_config-1.config",
+      "pass": true
+    },
+    {
+      "check": "config_sha_DH_PS_config-2.config",
+      "pass": true
+    },
+    {
+      "check": "config_sha_DH_PS_config-3.config",
+      "pass": true
+    },
+    {
+      "check": "same_profile_ATAX_DH_PS",
+      "pass": true
+    },
+    {
+      "check": "same_profile_MVT_DH_PS",
+      "pass": true
+    },
+    {
+      "check": "same_profile_BICG_DH_PS",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-eededb785179fc04-CH-P0-V1_done_matches_exit",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-eededb785179fc04-CH-P0-V1_accepted",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-eededb785179fc04-CH-P0-V1_strict_input_and_build",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-eededb785179fc04-CH-P0-V1_resolved_options_match_spec",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-eededb785179fc04-CH-P0-V1_population",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-eededb785179fc04-CH-P0-V1_archive_restore",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-eededb785179fc04-CH-P0-V1_raw_identity_done_strict",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-eededb785179fc04-CH-PQ-V1_done_matches_exit",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-eededb785179fc04-CH-PQ-V1_accepted",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-eededb785179fc04-CH-PQ-V1_strict_input_and_build",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-eededb785179fc04-CH-PQ-V1_resolved_options_match_spec",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-eededb785179fc04-CH-PQ-V1_population",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-eededb785179fc04-CH-PQ-V1_archive_restore",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-eededb785179fc04-CH-PQ-V1_raw_identity_done_strict",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-eededb785179fc04-CH-PS-V1_done_matches_exit",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-eededb785179fc04-CH-PS-V1_accepted",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-eededb785179fc04-CH-PS-V1_strict_input_and_build",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-eededb785179fc04-CH-PS-V1_resolved_options_match_spec",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-eededb785179fc04-CH-PS-V1_population",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-eededb785179fc04-CH-PS-V1_archive_restore",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-eededb785179fc04-CH-PS-V1_raw_identity_done_strict",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1_done_matches_exit",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1_accepted",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1_strict_input_and_build",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1_resolved_options_match_spec",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1_population",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1_archive_restore",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1_raw_identity_done_strict",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-CH-PQ-V1_done_matches_exit",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-CH-PQ-V1_accepted",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-CH-PQ-V1_strict_input_and_build",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-CH-PQ-V1_resolved_options_match_spec",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-CH-PQ-V1_population",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-CH-PQ-V1_archive_restore",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-CH-PQ-V1_raw_identity_done_strict",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-CH-PS-V1_done_matches_exit",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-CH-PS-V1_accepted",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-CH-PS-V1_strict_input_and_build",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-CH-PS-V1_resolved_options_match_spec",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-CH-PS-V1_population",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-CH-PS-V1_archive_restore",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-CH-PS-V1_raw_identity_done_strict",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-DH-PS-V1_done_matches_exit",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-DH-PS-V1_accepted",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-DH-PS-V1_strict_input_and_build",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-DH-PS-V1_resolved_options_match_spec",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-DH-PS-V1_population",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-DH-PS-V1_archive_restore",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-ae34174fbbdf83b2-DH-PS-V1_raw_identity_done_strict",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-f437190767aaed49-CH-P0-V1_done_matches_exit",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-f437190767aaed49-CH-P0-V1_accepted",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-f437190767aaed49-CH-P0-V1_strict_input_and_build",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-f437190767aaed49-CH-P0-V1_resolved_options_match_spec",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-f437190767aaed49-CH-P0-V1_population",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-f437190767aaed49-CH-P0-V1_archive_restore",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-f437190767aaed49-CH-P0-V1_raw_identity_done_strict",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-f437190767aaed49-CH-PQ-V1_done_matches_exit",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-f437190767aaed49-CH-PQ-V1_accepted",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-f437190767aaed49-CH-PQ-V1_strict_input_and_build",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-f437190767aaed49-CH-PQ-V1_resolved_options_match_spec",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-f437190767aaed49-CH-PQ-V1_population",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-f437190767aaed49-CH-PQ-V1_archive_restore",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-f437190767aaed49-CH-PQ-V1_raw_identity_done_strict",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-f437190767aaed49-CH-PS-V1_done_matches_exit",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-f437190767aaed49-CH-PS-V1_accepted",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-f437190767aaed49-CH-PS-V1_strict_input_and_build",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-f437190767aaed49-CH-PS-V1_resolved_options_match_spec",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-f437190767aaed49-CH-PS-V1_population",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-f437190767aaed49-CH-PS-V1_archive_restore",
+      "pass": true
+    },
+    {
+      "check": "E2-DTCHASH18-f437190767aaed49-CH-PS-V1_raw_identity_done_strict",
+      "pass": true
+    },
+    {
+      "check": "paired_kernel_identities_ATAX_CH_PQ",
+      "pass": true
+    },
+    {
+      "check": "paired_kernel_identities_ATAX_CH_PS",
+      "pass": true
+    },
+    {
+      "check": "paired_kernel_identities_MVT_CH_PQ",
+      "pass": true
+    },
+    {
+      "check": "paired_kernel_identities_MVT_CH_PS",
+      "pass": true
+    },
+    {
+      "check": "paired_kernel_identities_BICG_CH_PQ",
+      "pass": true
+    },
+    {
+      "check": "paired_kernel_identities_BICG_CH_PS",
+      "pass": true
+    },
+    {
+      "check": "first5_semantic_frontier_ATAX_CH_P0",
+      "pass": true
+    },
+    {
+      "check": "first5_semantic_frontier_ATAX_DH_P0",
+      "pass": true
+    },
+    {
+      "check": "first5_semantic_frontier_MVT_CH_P0",
+      "pass": true
+    },
+    {
+      "check": "first5_semantic_frontier_MVT_DH_P0",
+      "pass": true
+    },
+    {
+      "check": "first5_semantic_frontier_BICG_CH_P0",
+      "pass": true
+    },
+    {
+      "check": "first5_semantic_frontier_BICG_DH_P0",
+      "pass": true
+    }
+  ]
+}

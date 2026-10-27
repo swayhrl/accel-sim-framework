@@ -1,0 +1,93 @@
+{
+  "schema": "DTC_B_DELIVERY_MANIFEST_V1",
+  "new_simulations": 0,
+  "files": [
+    {
+      "path": "WORKLOAD_FEATURE_MATRIX.json",
+      "sha256": "0e18225243fc93c43491b999449252eaf2271365a0abdc144027101de565fc9a",
+      "bytes": 1985217
+    },
+    {
+      "path": "WORKLOAD_FEATURE_MATRIX.md",
+      "sha256": "d87385840ea9edc46d4effbebbe12afa555c233dba455f81c0238b1fd96f987c",
+      "bytes": 4102
+    },
+    {
+      "path": "CLASSIFICATION_CONTRACT.md",
+      "sha256": "f80fc914d42efe334a32c8dc36ba05258be84bf7670077e9f45e4cb42a854ad8",
+      "bytes": 4053
+    },
+    {
+      "path": "FEATURE_ANALYSIS_REPORT.md",
+      "sha256": "4ef5fedf4e7129f4458f8395f59d6447f933f3e2ea9a38a995f4bc3961f92431",
+      "bytes": 6968
+    },
+    {
+      "path": "ADDRESS_METRIC_NOTES.md",
+      "sha256": "a1c010af18a97cc1c26db5b46969ed88b5bd9d54c597da843dea218be3d7409a",
+      "bytes": 1941
+    },
+    {
+      "path": "INDEPENDENT_FEATURE_FREEZE.json",
+      "sha256": "31d93e9fa9938b0cfb12fd9fae8a82a09474af49bf92c23d437dcbba0b202c47",
+      "bytes": 1799568
+    },
+    {
+      "path": "INDEPENDENT_FEATURE_FREEZE_INITIAL_NO_ADDRESS.json",
+      "sha256": "19bb2a7670b644beeac2511e581ffc0287b5cabdca92318f29592ac73f5a015d",
+      "bytes": 1670613
+    },
+    {
+      "path": "METADATA_LIGHT.json",
+      "sha256": "85aeb28c485b052c9754a8cfe1b6c596407fe2366147f56b9a30ed1c2dc943e9",
+      "bytes": 4528600
+    },
+    {
+      "path": "ORIGINAL_PERFORMANCE_JOIN.json",
+      "sha256": "c16626ee91689c65c24c346f771909c381d27a28aa5189551f98e41a6837b9fe",
+      "bytes": 153726
+    },
+    {
+      "path": "build_features.py",
+      "sha256": "0c2eabbe5455662c63b4434e13e499fe8b1c12fa26216ee404a05977c07b1db1",
+      "bytes": 10865
+    },
+    {
+      "path": "extract_metadata.py",
+      "sha256": "daaf6c9d058884d79708e8f6ced76f304a5860484938718a9038b8fb4a1fa24b",
+      "bytes": 1758
+    },
+    {
+      "path": "shared_address_producer.py",
+      "sha256": "4fd8bd42fbe21dad70cd8bce96730394d31946a57a2d65cf57cedfdb6539535f",
+      "bytes": 8528
+    },
+    {
+      "path": "correct_receipt_warp_count.py",
+      "sha256": "824c8fdef8d83631a6a939dc60aa4b7a782c94ab417ad912761a6383ef760ad2",
+      "bytes": 1656
+    },
+    {
+      "path": "original_body_audit.py",
+      "sha256": "eb15627582a7a1bf3fa06ccf9534622344e6bcd9309dae5bd669162b0e02c97d",
+      "bytes": 7404
+    },
+    {
+      "path": "validate_features.py",
+      "sha256": "da657fb5aef7856adc394e61946ef93f4a9a3b116922a81a51a78bd21d17c60d",
+      "bytes": 3980
+    },
+    {
+      "path": "VALIDATION.json",
+      "sha256": "856e35d56d1081b6f4a23cf5935139ed6931e25eaa192f9683476162f6e9a9b1",
+      "bytes": 72279
+    }
+  ],
+  "archival_only_exclude_from_git": [
+    "METADATA.json",
+    "extract_metadata_run.py",
+    "inspect_remote.py"
+  ],
+  "shared_address_products": "../../shared_address_index/INDEX.json",
+  "reproduce": "python build_features.py; python validate_features.py (local retained metadata only; never reruns address scan)"
+}

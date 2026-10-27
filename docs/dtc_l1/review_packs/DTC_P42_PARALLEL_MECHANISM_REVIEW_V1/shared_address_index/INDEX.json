@@ -1,0 +1,97 @@
+{
+  "schema": "DTC_SINGLE_SHARED_ADDRESS_INDEX_V1",
+  "state": "COMPLETE_BOUNDED_READONLY_SCAN",
+  "producer_sha256": "4fd8bd42fbe21dad70cd8bce96730394d31946a57a2d65cf57cedfdb6539535f",
+  "qualified_decoder_source": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/original_body_audit.py",
+  "qualified_decoder_sha256": "eb15627582a7a1bf3fa06ccf9534622344e6bcd9309dae5bd669162b0e02c97d",
+  "decoder_provenance": "Address modes 0/1/2 and width parsing copied verbatim in semantics from qualified original_body_audit.py audit(), lines 32-68; no guessed address columns.",
+  "contract": {
+    "single_process": true,
+    "nice": 19,
+    "RLIMIT_AS_bytes": 1073741824,
+    "total_trace_bytes_limit": 1073741824,
+    "wall_limit_seconds": 900,
+    "read_rate_limit_bytes_s": 8388608,
+    "max_tracked_global_lines": 600000
+  },
+  "observed": {
+    "total_trace_bytes_read": 405199005,
+    "wall_seconds": 173.62558008171618,
+    "max_RSS_KiB": 75444
+  },
+  "limitations": [
+    "Serialized trace order is not simulated cross-SM execution time.",
+    "Per-warp line-event reuse interval is not stack reuse distance.",
+    "Repeated static lines are not duplicate outstanding simulator requests.",
+    "Prefix address uniqueness only describes scanned prefix.",
+    "No simulator timestamp burst analysis or L2 replacement sequence exists here."
+  ],
+  "rows": [
+    {
+      "program": "ATAX",
+      "input_digest": "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+      "kernel_ordinal": 1,
+      "kernel": "_Z12atax_kernel1PfS_S_",
+      "coverage": "FULL_DECLARED_KERNEL",
+      "scanned_bytes": 118289012,
+      "distinct_128B_lines": 524544,
+      "line_revisit_factor": 32.98413860419717,
+      "full_SHA_reverified": true
+    },
+    {
+      "program": "MVT",
+      "input_digest": "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+      "kernel_ordinal": 1,
+      "kernel": "_Z11mvt_kernel1PfS_S_",
+      "coverage": "FULL_DECLARED_KERNEL",
+      "scanned_bytes": 118289011,
+      "distinct_128B_lines": 524544,
+      "line_revisit_factor": 32.98413860419717,
+      "full_SHA_reverified": true
+    },
+    {
+      "program": "BICG",
+      "input_digest": "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+      "kernel_ordinal": 2,
+      "kernel": "_Z12bicg_kernel2PfS_S_",
+      "coverage": "FULL_DECLARED_KERNEL",
+      "scanned_bytes": 118289268,
+      "distinct_128B_lines": 524416,
+      "line_revisit_factor": 32.99194532584818,
+      "full_SHA_reverified": true
+    },
+    {
+      "program": "2DCONV",
+      "input_digest": "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+      "kernel_ordinal": 1,
+      "kernel": "_Z20Convolution2D_kernelPfS_",
+      "coverage": "PREFIX_ONLY",
+      "scanned_bytes": 16777243,
+      "distinct_128B_lines": 10683,
+      "line_revisit_factor": 14.58270148834597,
+      "full_SHA_reverified": false
+    },
+    {
+      "program": "3MM",
+      "input_digest": "977a2f7007cb1f9673fe3a5c17cdbb469335c619c172a0a882eb18410049eb3d",
+      "kernel_ordinal": 1,
+      "kernel": "_Z11mm3_kernel1PfS_S_",
+      "coverage": "PREFIX_ONLY",
+      "scanned_bytes": 16777220,
+      "distinct_128B_lines": 8590,
+      "line_revisit_factor": 16.859138533178115,
+      "full_SHA_reverified": false
+    },
+    {
+      "program": "GEMM",
+      "input_digest": "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318",
+      "kernel_ordinal": 1,
+      "kernel": "_Z11gemm_kernelPfS_S_",
+      "coverage": "PREFIX_ONLY",
+      "scanned_bytes": 16777251,
+      "distinct_128B_lines": 8444,
+      "line_revisit_factor": 15.020606347702511,
+      "full_SHA_reverified": false
+    }
+  ]
+}

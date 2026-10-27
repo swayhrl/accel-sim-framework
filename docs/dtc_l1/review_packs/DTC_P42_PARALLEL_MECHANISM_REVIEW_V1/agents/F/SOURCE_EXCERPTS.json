@@ -1,0 +1,358 @@
+{
+  "backprop": [
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/backprop/facetrain.c",
+      "sha256": "5a1c324735b4eb7ff08d6b488134a8e66b5aaddcd4168623803ccbb96c8dd293",
+      "lines": [
+        14,
+        52
+      ],
+      "excerpt": "14: backprop_face()\n15: {\n16:   BPNN *net;\n17:   int i;\n18:   float out_err, hid_err;\n19:   net = bpnn_create(layer_size, 16, 1); // (16, 1 can not be changed)\n20:   \n21:   printf(\"Input layer size : %d\\n\", layer_size);\n22:   load(net);\n23:   //entering the training kernel, only one iteration\n24:   printf(\"Starting training kernel\\n\");\n25:   bpnn_train_cuda(net, &out_err, &hid_err);\n26:   bpnn_free(net);\n27:   printf(\"Training done\\n\");\n28: }\n29: \n30: int setup(argc, argv)\n31: int argc;\n32: char *argv[];\n33: {\n34: \t\n35:   int seed;\n36: \n37:   if (argc!=2){\n38:   fprintf(stderr, \"usage: backprop <num of input elements>\\n\");\n39:   exit(0);\n40:   }\n41:   layer_size = atoi(argv[1]);\n42:   if (layer_size%16!=0){\n43:   fprintf(stderr, \"The number of input points must be divided by 16\\n\");\n44:   exit(0);\n45:   }\n46:   \n47: \n48:   seed = 7;   \n49:   bpnn_initialize(seed);\n50:   backprop_face();\n51: \n52:   exit(0);"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/backprop/backprop_cuda.cu",
+      "sha256": "1bd966c36f6277d8d0246a5411e734e69e96050532303e40c5253e06b76d6383",
+      "lines": [
+        80,
+        84
+      ],
+      "excerpt": "80:   num_blocks = in / 16;  \n81:   dim3  grid( 1 , num_blocks);\n82:   dim3  threads(16 , 16);\n83:   \n84:   input_weights_one_dim = (float *) malloc((in + 1)* (hid + 1) * sizeof(float));"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/backprop/backprop_cuda.cu",
+      "sha256": "1bd966c36f6277d8d0246a5411e734e69e96050532303e40c5253e06b76d6383",
+      "lines": [
+        118,
+        128
+      ],
+      "excerpt": "118:   cudaMemcpy(input_cuda, net->input_units, (in + 1) * sizeof(float), cudaMemcpyHostToDevice);\n119:   cudaMemcpy(input_hidden_cuda, input_weights_one_dim, (in + 1) * (hid + 1) * sizeof(float), cudaMemcpyHostToDevice);\n120: \n121:   \n122:   \n123:   bpnn_layerforward_CUDA<<< grid, threads >>>(input_cuda,\n124: \t                                          output_hidden_cuda,\n125: \t\t\t\t\t\t\t\t\t\t\t  input_hidden_cuda,\n126: \t\t\t\t\t\t\t\t\t\t\t  hidden_partial_sum,\n127: \t\t\t\t\t\t\t\t\t\t\t  in,\n128: \t\t\t\t\t\t\t\t\t\t\t  hid);"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/backprop/backprop.c",
+      "sha256": "3528b0256e55650908f4ff77fbdfa1e2bcbdb69237e5d343426652aa341ff70e",
+      "lines": [
+        132,
+        136
+      ],
+      "excerpt": "132: void bpnn_initialize(seed)\n133: {\n134:   printf(\"Random number generator seed: %d\\n\", seed);\n135:   srand(seed);\n136: }"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/backprop/imagenet.c",
+      "sha256": "c3b48529cb45eaff4136a54ba5b01c29dcedf9c2de8c79c2813b34ef8a174323",
+      "lines": [
+        8,
+        23
+      ],
+      "excerpt": "8: load(net)\n9: BPNN *net;\n10: {\n11:   float *units;\n12:   int nr, nc, imgsize, i, j, k;\n13: \n14:   nr = layer_size;\n15:   \n16:   imgsize = nr * nc;\n17:   units = net->input_units;\n18: \n19:   k = 1;\n20:   for (i = 0; i < nr; i++) {\n21: \t  units[k] = (float) rand()/RAND_MAX ;\n22: \t  k++;\n23:     }"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/backprop/run",
+      "sha256": "bf76b243af20efe1f18c9088ad3f7e49552a503ae3cb4b8e222abcabc3f51fc8",
+      "lines": [
+        1,
+        2
+      ],
+      "excerpt": "1: ./backprop 65536"
+    }
+  ],
+  "cfd": [
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/cfd/euler3d.cu",
+      "sha256": "b5015e61e413dbf711a1e928505d5591f21639644a156dfe31f2e126ce788079",
+      "lines": [
+        17,
+        27
+      ],
+      "excerpt": "17: #define iterations 2000\n18: // #ifndef block_length\n19: // \t#define block_length 192\n20: // #endif\n21: \n22: \n23: \n24: #define NDIM 3\n25: #define NNB 4\n26: \n27: #define RK 3\t// 3rd order RK"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/cfd/euler3d.cu",
+      "sha256": "b5015e61e413dbf711a1e928505d5591f21639644a156dfe31f2e126ce788079",
+      "lines": [
+        499,
+        507
+      ],
+      "excerpt": "499: \t{\n500: \t\tstd::ifstream file(data_file_name);\n501: \t\n502: \t\tfile >> nel;\n503: \t\tnelr = BLOCK_SIZE_0*((nel / BLOCK_SIZE_0 )+ std::min(1, nel % BLOCK_SIZE_0));\n504: \n505: \t\tfloat* h_areas = new float[nelr];\n506: \t\tint* h_elements_surrounding_elements = new int[nelr*NNB];\n507: \t\tfloat* h_normals = new float[nelr*NDIM*NNB];"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/cfd/euler3d.cu",
+      "sha256": "b5015e61e413dbf711a1e928505d5591f21639644a156dfe31f2e126ce788079",
+      "lines": [
+        555,
+        566
+      ],
+      "excerpt": "555: \t// Create arrays and set initial conditions\n556: \tfloat* variables = alloc<float>(nelr*NVAR);\n557: \tinitialize_variables(nelr, variables);\n558: \n559: \tfloat* old_variables = alloc<float>(nelr*NVAR);   \t\n560: \tfloat* fluxes = alloc<float>(nelr*NVAR);\n561: \tfloat* step_factors = alloc<float>(nelr); \n562: \n563: \t// make sure all memory is floatly allocated before we start timing\n564: \tinitialize_variables(nelr, old_variables);\n565: \tinitialize_variables(nelr, fluxes);\n566: \tcudaMemset( (void*) step_factors, 0, sizeof(float)*nelr );"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/cfd/euler3d.cu",
+      "sha256": "b5015e61e413dbf711a1e928505d5591f21639644a156dfe31f2e126ce788079",
+      "lines": [
+        580,
+        596
+      ],
+      "excerpt": "580: \t// Begin iterations\n581: \tfor(int i = 0; i < iterations; i++)\n582: \t{\n583: \t\tcopy<float>(old_variables, variables, nelr*NVAR);\n584: \t\t\n585: \t\t// for the first iteration we compute the time step\n586: \t\tcompute_step_factor(nelr, variables, areas, step_factors);\n587: \t\t//getLastCudaError(\"compute_step_factor failed\");\n588: \t\t\n589: \t\tfor(int j = 0; j < RK; j++)\n590: \t\t{\n591: \t\t\tcompute_flux(nelr, elements_surrounding_elements, normals, variables, fluxes);\n592: \t\t\t//getLastCudaError(\"compute_flux failed\");\t\t\t\n593: \t\t\ttime_step(j, nelr, old_variables, variables, step_factors, fluxes);\n594: \t\t\t//getLastCudaError(\"time_step failed\");\t\t\t\n595: \t\t}\n596: \t}"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/cfd/run",
+      "sha256": "073fca9db81e8b6bb7c1ab2b56488c0650af2b7e0c6719c54542d89e3461c8b5",
+      "lines": [
+        1,
+        10
+      ],
+      "excerpt": "1: There are three datasets:\n2: \n3: ./euler3d ../../data/cfd/fvcorr.domn.097K   \n4: ./euler3d ../../data/cfd/fvcorr.domn.193K   \n5: ./euler3d ../../data/cfd/missile.domn.0.2M  \n6: \n7: replace euler3d with other CFD programs"
+    }
+  ],
+  "kmeans": [
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/kmeans/kmeans.c",
+      "sha256": "3544ffbe528072518729e41b7241ceb4a699919a8bbeda7ae5f0bcc176e45646",
+      "lines": [
+        108,
+        123
+      ],
+      "excerpt": "108: \t\tchar\tline[1024];\n109: \t\tint\t\tisBinaryFile = 0;\n110: \n111: \t\tfloat\tthreshold = 0.001;\t\t/* default value */\n112: \t\tint\t\tmax_nclusters=5;\t\t/* default value */\n113: \t\tint\t\tmin_nclusters=5;\t\t/* default value */\n114: \t\tint\t\tbest_nclusters = 0;\n115: \t\tint\t\tnfeatures = 0;\n116: \t\tint\t\tnpoints = 0;\n117: \t\tfloat\tlen;\n118: \t\t         \n119: \t\tfloat **features;\n120: \t\tfloat **cluster_centres=NULL;\n121: \t\tint\t\ti, j, index;\n122: \t\tint\t\tnloops = 1;\t\t\t\t/* default value */\n123: \t\t\t\t"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/kmeans/kmeans.c",
+      "sha256": "3544ffbe528072518729e41b7241ceb4a699919a8bbeda7ae5f0bcc176e45646",
+      "lines": [
+        190,
+        220
+      ],
+      "excerpt": "190:         rewind(infile);\n191:         while (fgets(line, 1024, infile) != NULL) {\n192:             if (strtok(line, \" \\t\\n\") != 0) {\n193:                 /* ignore the id (first attribute): nfeatures = 1; */\n194:                 while (strtok(NULL, \" ,\\t\\n\") != NULL) nfeatures++;\n195:                 break;\n196:             }\n197:         }        \n198: \n199:         /* allocate space for features[] and read attributes of all objects */\n200:         buf         = (float*) malloc(npoints*nfeatures*sizeof(float));\n201:         features    = (float**)malloc(npoints*          sizeof(float*));\n202:         features[0] = (float*) malloc(npoints*nfeatures*sizeof(float));\n203:         for (i=1; i<npoints; i++)\n204:             features[i] = features[i-1] + nfeatures;\n205:         rewind(infile);\n206:         i = 0;\n207:         while (fgets(line, 1024, infile) != NULL) {\n208:             if (strtok(line, \" \\t\\n\") == NULL) continue;            \n209:             for (j=0; j<nfeatures; j++) {\n210:                 buf[i] = atof(strtok(NULL, \" ,\\t\\n\"));             \n211:                 i++;\n212:             }            \n213:         }\n214:         fclose(infile);\n215:     }\n216:     //io_timing = omp_get_wtime() - io_timing;\n217: \t\n218: \tprintf(\"\\nI/O completed\\n\");\n219: \tprintf(\"\\nNumber of objects: %d\\n\", npoints);\n220: \tprintf(\"Number of features: %d\\n\", nfeatures);\t"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/kmeans/kmeans_clustering.c",
+      "sha256": "4ebdf3a00bc41ebfc340113da816e3aa74dd85a56145df8b4826c0d796660381",
+      "lines": [
+        133,
+        171
+      ],
+      "excerpt": "133: \t/* initialize the membership to -1 for all */\n134:     for (i=0; i < npoints; i++)\n135: \t  membership[i] = -1;\n136: \n137:     /* allocate space for and initialize new_centers_len and new_centers */\n138:     new_centers_len = (int*) calloc(nclusters, sizeof(int));\n139: \n140:     new_centers    = (float**) malloc(nclusters *            sizeof(float*));\n141:     new_centers[0] = (float*)  calloc(nclusters * nfeatures, sizeof(float));\n142:     for (i=1; i<nclusters; i++)\n143:         new_centers[i] = new_centers[i-1] + nfeatures;\n144: \n145: \t/* iterate until convergence */\n146: \tdo {\n147:         delta = 0.0;\n148: \t\t// CUDA\n149: \t\tdelta = (float) kmeansCuda(feature,\t\t\t/* in: [npoints][nfeatures] */\n150: \t\t\t\t\t\t\t\t   nfeatures,\t\t/* number of attributes for each point */\n151: \t\t\t\t\t\t\t\t   npoints,\t\t\t/* number of data points */\n152: \t\t\t\t\t\t\t\t   nclusters,\t\t/* number of clusters */\n153: \t\t\t\t\t\t\t\t   membership,\t\t/* which cluster the point belongs to */\n154: \t\t\t\t\t\t\t\t   clusters,\t\t/* out: [nclusters][nfeatures] */\n155: \t\t\t\t\t\t\t\t   new_centers_len,\t/* out: number of points in each cluster */\n156: \t\t\t\t\t\t\t\t   new_centers\t\t/* sum of points in each cluster */\n157: \t\t\t\t\t\t\t\t   );\n158: \n159: \t\t/* replace old cluster centers with new_centers */\n160: \t\t/* CPU side of reduction */\n161: \t\tfor (i=0; i<nclusters; i++) {\n162: \t\t\tfor (j=0; j<nfeatures; j++) {\n163: \t\t\t\tif (new_centers_len[i] > 0)\n164: \t\t\t\t\tclusters[i][j] = new_centers[i][j] / new_centers_len[i];\t/* take average i.e. sum/n */\n165: \t\t\t\tnew_centers[i][j] = 0.0;\t/* set back to 0 */\n166: \t\t\t}\n167: \t\t\tnew_centers_len[i] = 0;\t\t\t/* set back to 0 */\n168: \t\t}\t \n169: \t\tc++;\n170:     } while ((delta > threshold) && (loop++ < 500));\t/* makes sure loop terminates */\n171: \tprintf(\"iterated %d times\\n\", c);"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/kmeans/kmeans_cuda.cu",
+      "sha256": "1c15cfeda08c5823c9fc50fa1abfcec34e2023f21a25ac3a9fee6f51e2e020c0",
+      "lines": [
+        47,
+        80
+      ],
+      "excerpt": "47: void allocateMemory(int npoints, int nfeatures, int nclusters, float **features)\n48: {\t\n49: \tnum_blocks = npoints / num_threads;\n50: \tif (npoints % num_threads > 0)\t\t/* defeat truncation */\n51: \t\tnum_blocks++;\n52: \n53: \tnum_blocks_perdim = sqrt((double) num_blocks);\n54: \twhile (num_blocks_perdim * num_blocks_perdim < num_blocks)\t// defeat truncation (should run once)\n55: \t\tnum_blocks_perdim++;\n56: \n57: \tnum_blocks = num_blocks_perdim*num_blocks_perdim;\n58: \n59: \t/* allocate memory for memory_new[] and initialize to -1 (host) */\n60: \tmembership_new = (int*) malloc(npoints * sizeof(int));\n61: \tfor(int i=0;i<npoints;i++) {\n62: \t\tmembership_new[i] = -1;\n63: \t}\n64: \n65: \t/* allocate memory for block_new_centers[] (host) */\n66: \tblock_new_centers = (float *) malloc(nclusters*nfeatures*sizeof(float));\n67: \t\n68: \t/* allocate memory for feature_flipped_d[][], feature_d[][] (device) */\n69: \tcudaMalloc((void**) &feature_flipped_d, npoints*nfeatures*sizeof(float));\n70: \tcudaMemcpy(feature_flipped_d, features[0], npoints*nfeatures*sizeof(float), cudaMemcpyHostToDevice);\n71: \tcudaMalloc((void**) &feature_d, npoints*nfeatures*sizeof(float));\n72: \t\t\n73: \t/* invert the data array (kernel execution) */\t\n74: \tinvert_mapping<<<num_blocks,num_threads>>>(feature_flipped_d,feature_d,npoints,nfeatures);\n75: \t\t\n76: \t/* allocate memory for membership_d[] and clusters_d[][] (device) */\n77: \tcudaMalloc((void**) &membership_d, npoints*sizeof(int));\n78: \tcudaMalloc((void**) &clusters_d, nclusters*nfeatures*sizeof(float));\n79: \n80: \t"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/kmeans/kmeans_cuda.cu",
+      "sha256": "1c15cfeda08c5823c9fc50fa1abfcec34e2023f21a25ac3a9fee6f51e2e020c0",
+      "lines": [
+        152,
+        156
+      ],
+      "excerpt": "152: \t/* copy membership (host to device) */\n153: \tcudaMemcpy(membership_d, membership_new, npoints*sizeof(int), cudaMemcpyHostToDevice);\n154: \n155: \t/* copy clusters (host to device) */\n156: \tcudaMemcpy(clusters_d, clusters[0], nclusters*nfeatures*sizeof(float), cudaMemcpyHostToDevice);"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/kmeans/kmeans_cuda.cu",
+      "sha256": "1c15cfeda08c5823c9fc50fa1abfcec34e2023f21a25ac3a9fee6f51e2e020c0",
+      "lines": [
+        228,
+        245
+      ],
+      "excerpt": "228: \t   and see if membership has changed:\n229: \t     if so, increase delta and change old membership, and update new_centers;\n230: \t     otherwise, update new_centers */\n231: \tdelta = 0;\n232: \tfor (i = 0; i < npoints; i++)\n233: \t{\t\t\n234: \t\tint cluster_id = membership_new[i];\n235: \t\tnew_centers_len[cluster_id]++;\n236: \t\tif (membership_new[i] != membership[i])\n237: \t\t{\n238: #ifdef CPU_DELTA_REDUCE\n239: \t\t\tdelta++;\n240: #endif\n241: \t\t\tmembership[i] = membership_new[i];\n242: \t\t}\n243: #ifdef CPU_CENTER_REDUCE\n244: \t\tfor (j = 0; j < nfeatures; j++)\n245: \t\t{\t\t\t"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/kmeans/run",
+      "sha256": "acb8afec40f122dfc56685e27a44c38d5bd9384568f7faf337ffec44d3e1e0d9",
+      "lines": [
+        1,
+        2
+      ],
+      "excerpt": "1: ./kmeans -o -i ../../data/kmeans/kdd_cup "
+    }
+  ],
+  "nn": [
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/nn/nn_cuda.cu",
+      "sha256": "f14cbe11c06073b37c61628ac9901db0f4aa00d866ba338d303113631d5dc103",
+      "lines": [
+        20,
+        30
+      ],
+      "excerpt": "20: #define MAX_ARGS 10\n21: #define REC_LENGTH 53 // size of a record in db\n22: #define LATITUDE_POS 28\t// character position of the latitude value in each record\n23: #define OPEN 10000\t// initial value of nearest neighbors\n24: \n25: \n26: typedef struct latLong\n27: {\n28:   float lat;\n29:   float lng;\n30: } LatLong;"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/nn/nn_cuda.cu",
+      "sha256": "f14cbe11c06073b37c61628ac9901db0f4aa00d866ba338d303113631d5dc103",
+      "lines": [
+        143,
+        162
+      ],
+      "excerpt": "143: \tdistances = (float *)malloc(sizeof(float) * numRecords);\n144: \tcudaMalloc((void **) &d_locations,sizeof(LatLong) * numRecords);\n145: \tcudaMalloc((void **) &d_distances,sizeof(float) * numRecords);\n146: \n147:    /**\n148:     * Transfer data from host to device\n149:     */\n150:     cudaMemcpy( d_locations, &locations[0], sizeof(LatLong) * numRecords, cudaMemcpyHostToDevice);\n151: \n152:     /**\n153:     * Execute kernel\n154:     */\n155:     euclid<<< gridDim, threadsPerBlock >>>(d_locations,d_distances,numRecords,lat,lng);\n156:     cudaThreadSynchronize();\n157: \n158:     //Copy data from device memory to host memory\n159:     cudaMemcpy( distances, d_distances, sizeof(float)*numRecords, cudaMemcpyDeviceToHost );\n160: \n161: \t// find the resultsCount least distances\n162:     findLowest(records,distances,numRecords,resultsCount);"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/nn/nn_cuda.cu",
+      "sha256": "f14cbe11c06073b37c61628ac9901db0f4aa00d866ba338d303113631d5dc103",
+      "lines": [
+        176,
+        223
+      ],
+      "excerpt": "176: int loadData(char *filename,std::vector<Record> &records,std::vector<LatLong> &locations){\n177:     FILE   *flist,*fp;\n178: \tint    i=0;\n179: \tchar dbname[64];\n180: \tint recNum=0;\n181: \n182:     /**Main processing **/\n183: \n184:     flist = fopen(filename, \"r\");\n185: \twhile(!feof(flist)) {\n186: \t\t/**\n187: \t\t* Read in all records of length REC_LENGTH\n188: \t\t* If this is the last file in the filelist, then done\n189: \t\t* else open next file to be read next iteration\n190: \t\t*/\n191: \t\tif(fscanf(flist, \"%s\\n\", dbname) != 1) {\n192:             fprintf(stderr, \"error reading filelist\\n\");\n193:             exit(0);\n194:         }\n195:         fp = fopen(dbname, \"r\");\n196:         if(!fp) {\n197:             printf(\"error opening a db\\n\");\n198:             exit(1);\n199:         }\n200:         // read each record\n201:         while(!feof(fp)){\n202:             Record record;\n203:             LatLong latLong;\n204:             fgets(record.recString,49,fp);\n205:             fgetc(fp); // newline\n206:             if (feof(fp)) break;\n207: \n208:             // parse for lat and long\n209:             char substr[6];\n210: \n211:             for(i=0;i<5;i++) substr[i] = *(record.recString+i+28);\n212:             substr[5] = '\\0';\n213:             latLong.lat = atof(substr);\n214: \n215:             for(i=0;i<5;i++) substr[i] = *(record.recString+i+33);\n216:             substr[5] = '\\0';\n217:             latLong.lng = atof(substr);\n218: \n219:             locations.push_back(latLong);\n220:             records.push_back(record);\n221:             recNum++;\n222:         }\n223:         fclose(fp);"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/nn/run",
+      "sha256": "b62906da469c51033305e3842ea521edd09da587dee57ea31b90e2f2b2f215ad",
+      "lines": [
+        1,
+        2
+      ],
+      "excerpt": "1: ./nn filelist_4 -r 5 -lat 30 -lng 90"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/2.0-ft/nn/nn_cuda.cu",
+      "sha256": "146a6bbc0661b1f424de5aed693fd0279ecd539ace85cb02ecb4fa1ecc0f6fc1",
+      "lines": [
+        13,
+        32
+      ],
+      "excerpt": "13: #define LATITUDE_POS 28\t// character position of the latitude value in each record\n14: #define OPEN 10000\t// initial value of nearest neighbors\n15: \n16: struct neighbor\n17: {\n18:   \tchar entry[REC_LENGTH];\n19:   \tfloat dist;\n20: };\n21: \n22: /**\n23: * Kernel\n24: * Executed on GPU\n25: * Calculates the Euclidean distance from each record in the database to the target position\n26: */\n27: __global__ void euclid(char *data, float x2, float y2,float *z, int N, int W, int L_POS)\n28: {\n29: \tint idx=blockIdx.x*blockDim.x+threadIdx.x;\n30: \tfloat tmp_lat=0.0, tmp_long=0.0;\n31: \tint position = ( idx * W ) + L_POS - 1;\t\n32: \t"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/2.0-ft/nn/nn_cuda.cu",
+      "sha256": "146a6bbc0661b1f424de5aed693fd0279ecd539ace85cb02ecb4fa1ecc0f6fc1",
+      "lines": [
+        147,
+        208
+      ],
+      "excerpt": "147:         //Pointers to host memory\n148: \tfloat *z;\n149: \t//Pointers to device memory\n150: \tfloat *z_d;\n151: \tchar *data;\n152: \n153: \t/**\n154: \t* Allocate memory on host and device\n155: \t*/\n156: \tz  = (float *) malloc(REC_WINDOW * sizeof(float));\n157: \tcudaMalloc((void **) &data, sizeof(char) * REC_WINDOW * REC_LENGTH);\t\n158: \tcudaMalloc((void **) &z_d, sizeof(float) * REC_WINDOW);\n159: \tfor(unsigned i=0; i<REC_WINDOW * REC_LENGTH;i++)\n160: \t{\n161: \t\tsandbox[i]=' ';\n162: \t}\n163: \twhile(!done) {\n164: \t\t/**\n165: \t\t* Read in REC_WINDOW records of length REC_LENGTH\n166: \t\t* If this is the last file in the filelist, then done\n167: \t\t* else open next file to be read next iteration\n168: \t\t*/\n169: \t\trec_count = fread(sandbox, REC_LENGTH, REC_WINDOW, fp);\n170: \t\tif(rec_count != REC_WINDOW) {\n171: \t\t\tif(!ferror(flist)) {// an eof occured\n172: \t\t\t\tfclose(fp);\n173: \n174: \t\t\t\tif(feof(flist))\n175: \t\t\t\t\tdone = 1;\n176: \t\t\t\telse {\n177: \t\t\t\t\tif(fscanf(flist, \"%s\\n\", dbname) != 1) {\n178: \t\t\t\t\t\tfprintf(stderr, \"error reading filelist\\n\");\n179: \t\t\t\t\t\texit(0);\n180: \t\t\t\t\t}\n181: \n182: \t\t\t\t\tfp = fopen(dbname, \"r\");\n183: \n184: \t\t\t\t\tif(!fp) {\n185: \t\t\t\t\t\tprintf(\"error opening a db\\n\");\n186: \t\t\t\t\t\texit(1);\n187: \t\t\t\t\t}\n188: \t\t\t\t}\n189: \t\t\t} else {\n190: \t\t\t\tperror(\"Error\");\n191: \t\t\t\texit(0);\n192: \t\t\t}\n193: \t\t}\n194: \n195: \t   \t//Initialize a and b\n196: \t\tfloat x2 = target_lat;\n197: \t\tfloat y2 = target_long;\n198: \n199: \t\t/**\n200: \t\t* Transfer data from host to device\n201: \t\t*/\n202: \t\tcudaMemcpy( data, sandbox, (sizeof(char)*REC_WINDOW*REC_LENGTH), cudaMemcpyHostToDevice);\n203: \n204: \t\t/**\n205: \t\t* Execute kernel\n206: \t\t*/\n207: \t\t//Compute the execution configuration\n208: \t\tint block_size = 16;"
+    }
+  ],
+  "nw": [
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/nw/needle.cu",
+      "sha256": "6152a04e5cd37a0c3f78efdc5cb4d8269bd10694840c23cb9b8345ac525962ee",
+      "lines": [
+        83,
+        109
+      ],
+      "excerpt": "83: \tif (argc == 3)\n84: \t{\n85: \t\tmax_rows = atoi(argv[1]);\n86: \t\tmax_cols = atoi(argv[1]);\n87: \t\tpenalty = atoi(argv[2]);\n88: \t}\n89:     else{\n90: \tusage(argc, argv);\n91:     }\n92: \t\n93: \tif(atoi(argv[1])%16!=0){\n94: \tfprintf(stderr,\"The dimension values must be a multiple of 16\\n\");\n95: \texit(1);\n96: \t}\n97: \t\n98: \n99: \tmax_rows = max_rows + 1;\n100: \tmax_cols = max_cols + 1;\n101: \treferrence = (int *)malloc( max_rows * max_cols * sizeof(int) );\n102:     input_itemsets = (int *)malloc( max_rows * max_cols * sizeof(int) );\n103: \toutput_itemsets = (int *)malloc( max_rows * max_cols * sizeof(int) );\n104: \t\n105: \n106: \tif (!input_itemsets)\n107: \t\tfprintf(stderr, \"error: can not allocate memory\");\n108: \n109:     srand ( 7 );"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/nw/needle.cu",
+      "sha256": "6152a04e5cd37a0c3f78efdc5cb4d8269bd10694840c23cb9b8345ac525962ee",
+      "lines": [
+        147,
+        165
+      ],
+      "excerpt": "147:     dim3 dimGrid;\n148: \tdim3 dimBlock(BLOCK_SIZE, 1);\n149: \tint block_width = ( max_cols - 1 )/BLOCK_SIZE;\n150: \n151: \tprintf(\"Processing top-left matrix\\n\");\n152: \t//process top-left matrix\n153: \tfor( int i = 1 ; i <= block_width ; i++){\n154: \t\tdimGrid.x = i;\n155: \t\tdimGrid.y = 1;\n156: \t\tneedle_cuda_shared_1<<<dimGrid, dimBlock>>>(referrence_cuda, matrix_cuda\n157: \t\t                                      ,max_cols, penalty, i, block_width); \n158: \t}\n159: \tprintf(\"Processing bottom-right matrix\\n\");\n160:     //process bottom-right matrix\n161: \tfor( int i = block_width - 1  ; i >= 1 ; i--){\n162: \t\tdimGrid.x = i;\n163: \t\tdimGrid.y = 1;\n164: \t\tneedle_cuda_shared_2<<<dimGrid, dimBlock>>>(referrence_cuda, matrix_cuda\n165: \t\t                                      ,max_cols, penalty, i, block_width); "
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/nw/needle.h",
+      "sha256": "38ffaf31b59432e204dff8b22e10ada572c18eae27abfd0a82ea3f08b178b180",
+      "lines": [
+        1,
+        20
+      ],
+      "excerpt": "1: #ifdef RD_WG_SIZE_0_0\n2: \t#define BLOCK_SIZE RD_WG_SIZE_0_0\n3: #elif defined(RD_WG_SIZE_0)\n4: \t#define BLOCK_SIZE RD_WG_SIZE_0\n5: #elif defined(RD_WG_SIZE)\n6: \t#define BLOCK_SIZE RD_WG_SIZE\n7: #else\n8: \t#define BLOCK_SIZE 16\n9: #endif\n10: //#define TRACE\n11: "
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/nw/run",
+      "sha256": "6dc271b38f8453cb83bf4c301635e184bf8ad12e55dae7c268e1add6a30b6d34",
+      "lines": [
+        1,
+        2
+      ],
+      "excerpt": "1: ./needle 2048 10"
+    }
+  ],
+  "pathfinder": [
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/pathfinder/pathfinder.cu",
+      "sha256": "c37fccc0b23cb385ad03a3f5cb242df3d6b433ea5e5a8c48f4a620bb04fbb0a6",
+      "lines": [
+        19,
+        65
+      ],
+      "excerpt": "19: #define M_SEED 9\n20: int pyramid_height;\n21: \n22: //#define BENCH_PRINT\n23: \n24: \n25: void\n26: init(int argc, char** argv)\n27: {\n28: \tif(argc==4){\n29: \n30: \t\tcols = atoi(argv[1]);\n31: \n32: \t\trows = atoi(argv[2]);\n33: \n34:                 pyramid_height=atoi(argv[3]);\n35: \t}else{\n36:                 printf(\"Usage: dynproc row_len col_len pyramid_height\\n\");\n37:                 exit(0);\n38:         }\n39: \tdata = new int[rows*cols];\n40: \n41: \twall = new int*[rows];\n42: \n43: \tfor(int n=0; n<rows; n++)\n44: \n45: \t\twall[n]=data+cols*n;\n46: \n47: \tresult = new int[cols];\n48: \n49: \t\n50: \n51: \tint seed = M_SEED;\n52: \n53: \tsrand(seed);\n54: \n55: \n56: \n57: \tfor (int i = 0; i < rows; i++)\n58: \n59:     {\n60: \n61:         for (int j = 0; j < cols; j++)\n62: \n63:         {\n64: \n65:             wall[i][j] = rand() % 10;"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/pathfinder/pathfinder.cu",
+      "sha256": "c37fccc0b23cb385ad03a3f5cb242df3d6b433ea5e5a8c48f4a620bb04fbb0a6",
+      "lines": [
+        188,
+        204
+      ],
+      "excerpt": "188: int calc_path(int *gpuWall, int *gpuResult[2], int rows, int cols, \\\n189: \t int pyramid_height, int blockCols, int borderCols)\n190: {\n191:         dim3 dimBlock(BLOCK_SIZE);\n192:         dim3 dimGrid(blockCols);  \n193: \t\n194:         int src = 1, dst = 0;\n195: \tfor (int t = 0; t < rows-1; t+=pyramid_height) {\n196:             int temp = src;\n197:             src = dst;\n198:             dst = temp;\n199:             dynproc_kernel<<<dimGrid, dimBlock>>>(\n200:                 MIN(pyramid_height, rows-t-1), \n201:                 gpuWall, gpuResult[src], gpuResult[dst],\n202:                 cols,rows, t, borderCols);\n203: \t}\n204:         return dst;"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/pathfinder/run",
+      "sha256": "66c7c740102940c2ed376b30fed351a41709ff1c379cc97b379cb4587f4bb777",
+      "lines": [
+        1,
+        2
+      ],
+      "excerpt": "1: ./pathfinder 100000 100 20 > result.txt"
+    }
+  ],
+  "streamcluster": [
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/streamcluster/streamcluster_cuda_cpu.cpp",
+      "sha256": "3e8a435af2552220fe143e2d8ad9c7efdad2c1a3927e08c3e79253e198631030",
+      "lines": [
+        20,
+        23
+      ],
+      "excerpt": "20: #define MAXNAMESIZE 1024 \t\t\t// max filename length\n21: #define SEED 1\n22: #define SP 1 \t\t\t\t\t\t// number of repetitions of speedy must be >=1\n23: #define ITER 3 \t\t\t\t\t\t// iterate ITER* k log k times; ITER >= 1"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/streamcluster/streamcluster_cuda_cpu.cpp",
+      "sha256": "3e8a435af2552220fe143e2d8ad9c7efdad2c1a3927e08c3e79253e198631030",
+      "lines": [
+        329,
+        348
+      ],
+      "excerpt": "329:   change = cost;\n330:   /* continue until we run iter iterations without improvement */\n331:   /* stop instead if improvement is less than e */\n332:   while (change/cost > 1.0*e) {\n333:     change = 0.0;\n334:     numberOfPoints = points->num;\n335:     /* randomize order in which centers are considered */\n336: \n337:     if( pid == 0 ) {\n338:       intshuffle(feasible, numfeasible);\n339:     }\n340: #ifdef ENABLE_THREADS\n341:     pthread_barrier_wait(barrier);\n342: #endif\n343: \t\n344:     for (i=0;i<iter;i++) {\n345: \t    x = i%numfeasible;\n346: \t    change += pgain(feasible[x], points, z, k, kmax, is_center, center_table, switch_membership, isCoordChanged,\n347: \t\t\t\t\t\t&serial_t, &cpu_to_gpu_t, &gpu_to_cpu_t, &alloc_t, &kernel_t, &free_t);\n348:     }\t\t"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/streamcluster/streamcluster_cuda_cpu.cpp",
+      "sha256": "3e8a435af2552220fe143e2d8ad9c7efdad2c1a3927e08c3e79253e198631030",
+      "lines": [
+        565,
+        585
+      ],
+      "excerpt": "565:     /* first get a rough estimate on the FL solution */\n566:     //    pthread_barrier_wait(barrier);\t\t\n567:     lastcost = cost;\n568:     cost = pFL(points, feasible, numfeasible,\n569: \t       z, &k, kmax, cost, (long)(ITER*kmax*log((float)kmax)), 0.1, pid, barrier);\n570: \n571:     /* if number of centers seems good, try a more accurate FL */\n572:     if (((k <= (1.1)*kmax)&&(k >= (0.9)*kmin))||\n573: \t((k <= kmax+2)&&(k >= kmin-2))) {\n574: \n575: #ifdef PRINTINFO\n576:       if( pid== 0)\n577: \t{\n578: \t  printf(\"Trying a more accurate local search...\\n\");\n579: \t}\n580: #endif\n581:       /* may need to run a little longer here before halting without\n582: \t improvement */\n583: \t \n584:       cost = pFL(points, feasible, numfeasible,\n585: \t\t z, &k, kmax, cost, (long)(ITER*kmax*log((float)kmax)), 0.001, pid, barrier);"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/streamcluster/streamcluster_cuda_cpu.cpp",
+      "sha256": "3e8a435af2552220fe143e2d8ad9c7efdad2c1a3927e08c3e79253e198631030",
+      "lines": [
+        887,
+        903
+      ],
+      "excerpt": "887:   kmin = atoi(argv[1]);\n888:   kmax = atoi(argv[2]);\n889:   dim = atoi(argv[3]);\n890:   n = atoi(argv[4]);\n891:   chunksize = atoi(argv[5]);\n892:   clustersize = atoi(argv[6]);\n893:   strcpy(infilename, argv[7]);\n894:   strcpy(outfilename, argv[8]);\n895:   nproc = atoi(argv[9]);\n896: \n897:   srand48(SEED);\n898:   PStream* stream;\n899:   if( n > 0 ) {\n900:     stream = new SimStream(n);\n901:   }\n902:   else {\n903:     stream = new FileStream(infilename);"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/streamcluster/streamcluster_cuda.cu",
+      "sha256": "a2eff9aaa34e08ae48d2f6d3fd37683f90c14834af53b53831688a6f806c835c",
+      "lines": [
+        132,
+        174
+      ],
+      "excerpt": "132: float pgain( long x, Points *points, float z, long int *numcenters, int kmax, bool *is_center, int *center_table, bool *switch_membership, bool isCoordChanged,\n133: \t\t\t\t\t\t\tdouble *serial_t, double *cpu_to_gpu_t, double *gpu_to_cpu_t, double *alloc_t, double *kernel_t, double *free_t)\n134: {\t\n135: #ifdef CUDATIME\n136: \tfloat tmp_t;\n137: \tcudaEvent_t start, stop;\n138: \tcudaEventCreate(&start);\n139: \tcudaEventCreate(&stop);\n140: \t\n141: \tcudaEventRecord(start, 0);\n142: #endif\n143: \n144: \tcudaError_t error;\n145: \t\n146: \tint stride\t= *numcenters + 1;\t\t\t// size of each work_mem segment\n147: \tint K\t\t= *numcenters ;\t\t\t\t// number of centers\n148: \tint num\t\t=  points->num;\t\t\t\t// number of points\n149: \tint dim\t\t=  points->dim;\t\t\t\t// number of dimension\n150: \tint nThread =  num;\t\t\t\t\t\t// number of threads == number of data points\n151: \t\n152: \t//=========================================\n153: \t// ALLOCATE HOST MEMORY + DATA PREPARATION\n154: \t//=========================================\n155: \twork_mem_h = (float*) malloc(stride * (nThread + 1) * sizeof(float) );\n156: \t// Only on the first iteration\n157: \tif(iter == 0)\n158: \t{\n159: \t\tallocHostMem(num, dim);\n160: \t}\n161: \t\n162: \t// build center-index table\n163: \tint count = 0;\n164: \tfor( int i=0; i<num; i++)\n165: \t{\n166: \t\tif( is_center[i] )\n167: \t\t{\n168: \t\t\tcenter_table[i] = count++;\n169: \t\t}\n170: \t}\n171: \n172: \t// Extract 'coord'\n173: \t// Only if first iteration OR coord has changed\n174: \tif(isCoordChanged || iter == 0)"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/streamcluster/streamcluster_cuda.cu",
+      "sha256": "a2eff9aaa34e08ae48d2f6d3fd37683f90c14834af53b53831688a6f806c835c",
+      "lines": [
+        239,
+        257
+      ],
+      "excerpt": "239: \t// Determine the number of thread blocks in the x- and y-dimension\n240: \tint num_blocks \t = (int) ((float) (num + THREADS_PER_BLOCK - 1) / (float) THREADS_PER_BLOCK);\n241: \tint num_blocks_y = (int) ((float) (num_blocks + MAXBLOCKS - 1)  / (float) MAXBLOCKS);\n242: \tint num_blocks_x = (int) ((float) (num_blocks+num_blocks_y - 1) / (float) num_blocks_y);\t\n243: \tdim3 grid_size(num_blocks_x, num_blocks_y, 1);\n244: \n245: \tkernel_compute_cost<<<grid_size, THREADS_PER_BLOCK>>>(\t\n246: \t\t\t\t\t\t\t\t\t\t\t\t\t\t\tnum,\t\t\t\t\t// in:\t# of data\n247: \t\t\t\t\t\t\t\t\t\t\t\t\t\t\tdim,\t\t\t\t\t// in:\tdimension of point coordinates\n248: \t\t\t\t\t\t\t\t\t\t\t\t\t\t\tx,\t\t\t\t\t\t// in:\tpoint to open a center at\n249: \t\t\t\t\t\t\t\t\t\t\t\t\t\t\tp,\t\t\t\t\t\t// in:\tdata point array\n250: \t\t\t\t\t\t\t\t\t\t\t\t\t\t\tK,\t\t\t\t\t\t// in:\tnumber of centers\n251: \t\t\t\t\t\t\t\t\t\t\t\t\t\t\tstride,\t\t\t\t\t// in:  size of each work_mem segment\n252: \t\t\t\t\t\t\t\t\t\t\t\t\t\t\tcoord_d,\t\t\t\t// in:\tarray of point coordinates\n253: \t\t\t\t\t\t\t\t\t\t\t\t\t\t\twork_mem_d,\t\t\t\t// out:\tcost and lower field array\n254: \t\t\t\t\t\t\t\t\t\t\t\t\t\t\tcenter_table_d,\t\t\t// in:\tcenter index table\n255: \t\t\t\t\t\t\t\t\t\t\t\t\t\t\tswitch_membership_d\t\t// out:  changes in membership\n256: \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t);\n257: \tcudaThreadSynchronize();"
+    },
+    {
+      "path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/streamcluster/run",
+      "sha256": "2d14bba219a40bb21c883222be02d0548d56c2c81a10bb28d869276df6469dae",
+      "lines": [
+        1,
+        2
+      ],
+      "excerpt": "1: ./sc_gpu 10 20 256 65536 65536 1000 none output.txt 1"
+    }
+  ]
+}

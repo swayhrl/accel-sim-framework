@@ -1,0 +1,264 @@
+{
+  "schema": "DTC_P42_SEVEN_UNRESOLVED_READONLY_V1",
+  "agent": "F",
+  "created_UTC": "2026-10-27T07:54:29.856605+00:00",
+  "baseline_framework_commit": "71584878be0c80375f9d25bcd80e171b7bf4478d",
+  "upstream_source_commit": "b059fdae25c2aabf737486aada743fca114469ce",
+  "v1_freeze_sha256": "a4157b56b48d8d8df048b9f64e62d54b091e80176d7a05169ef9c64b0c06da9d",
+  "freeze_unchanged_verified": true,
+  "frozen_count_unchanged": 35,
+  "unresolved_count_unchanged": 7,
+  "newly_frozen_inputs": 0,
+  "source_scope_consistent_proposal_count": 4,
+  "source_scope_contradiction_count": 2,
+  "convergence_data_unproven_count": 1,
+  "input_count": 21,
+  "current_commandlist_sha_matches": 21,
+  "deployed_source_records": 112,
+  "pinned_upstream_files_checked": 18,
+  "pinned_exact_matches": 16,
+  "selection_independent_of_results": {
+    "performance_fields_accessed": false,
+    "embedded_original_modes_ignored": true,
+    "strict_PASS_used": false,
+    "runtime_used": false,
+    "speedup_used": false,
+    "repair_cycles_used": false
+  },
+  "no_new_simulations": true,
+  "no_trace_body_scans": true,
+  "no_capture_execution": true,
+  "no_science_or_controller_mutation": true,
+  "ATAX_prefix_exclusion_unchanged": true,
+  "paper_master": "English v0.23 unchanged",
+  "decisions": [
+    {
+      "program": "backprop",
+      "status": "UNRESOLVED_V1_UNCHANGED",
+      "scope": "SOURCE_SCOPE_CONSISTENT_NOT_CAPTURE_CERTIFIED",
+      "new_findings": [
+        "Both versions train one network once; hidden/output sizes are 16/1 and the initialization seed is 7.",
+        "3.1 packaged run specifies 65536. Its two captured kernels and HtoD sizes 262148 and 4456516 bytes agree with (65536+1)*4 and (65536+1)*17*4.",
+        "2.0-ft is explicitly a modified functional-regression collection; its 4096 input is not an alias of the 3.1 65536 input. Two 4096 captures have different trace-format identities and member SHAs."
+      ],
+      "v2_proposal": {
+        "input_digest": "5fa6f81161d230f55179618027a07e9060d87511e79943049494e2768d2788ad",
+        "rule": "Prefer the 3.1 release run command over small 2.0-ft regression variants, if this outcome-independent suite policy is adopted explicitly for V2.",
+        "conditional": true
+      },
+      "remaining_evidence": [
+        "42-suite source-version precedence not approved/frozen",
+        "Capture executable/build/tracer linkage",
+        "Generated input content or capture-time generator/runtime binding; source seed alone is insufficient"
+      ]
+    },
+    {
+      "program": "cfd",
+      "status": "UNRESOLVED_V1_UNCHANGED",
+      "scope": "STANDARD_FULL_APPLICATION_SCOPE_CONTRADICTION",
+      "new_findings": [
+        "Pinned and deployed euler3d retain iterations=2000 and RK=3. Three initialization launches plus 2000*(one step-factor + three flux + three time-step)=14003 GPU launches are expected.",
+        "All three available candidates contain only three initialize + one step-factor + one flux kernel; no time-step occurs. Even a complete first iteration would require 10 kernels.",
+        "The local source differs from pinned b059fdae only by CUDA error-check wrapper removal; this does not explain five captured kernels.",
+        "193K grid1008*192 describes padded nelr=193536, not exact mesh nel. A historical 097K E1 reference input SHA exists, but is not bound to the capture contents."
+      ],
+      "v2_proposal": {
+        "input_digest": null,
+        "rule": "Do not promote any five-kernel candidate as a full CFD application. Recover capture executable and documented ROI/early-stop evidence first. An explicit partial-region suite would be a different scientific contract.",
+        "conditional": true
+      },
+      "remaining_evidence": [
+        "Capture-time source/binary identity and truncation/ROI configuration",
+        "Raw mesh contents, exact nel and capture-linked SHA",
+        "Full time-step/iteration capture or approved bounded-region contract; neither is granted by current authorization"
+      ]
+    },
+    {
+      "program": "kmeans",
+      "status": "UNRESOLVED_V1_UNCHANGED",
+      "scope": "DATA_DEPENDENT_CONVERGENCE_NOT_CERTIFIED",
+      "new_findings": [
+        "The 3.1 packaged run uses kdd_cup; source defaults are kmin=kmax=5, threshold=0.001 and one outer run.",
+        "All three 3.1 captures contain invert_mapping plus two kmeansPoint launches. This can be a two-iteration convergence, but neither a fixed two-iteration application nor truncation is proven from kernel count.",
+        "Source-layout conditional dimensions from independent HtoD matrix/membership/center sizes are 819200x34, 494020x34 (kdd_cup), 28672x138 (28k_4x_features), and 400x34 (2.0-ft). These are not certified raw dataset identities.",
+        "The existing official 400 capture data symlink is broken on 174-new. A result file is not the original input data."
+      ],
+      "v2_proposal": {
+        "input_digest": "2315d0e612ee7cd4ee6e711e2a673e85d7490bec9a8767ec67bde3ddafff970a",
+        "rule": "kdd_cup is the source-packaged run candidate; do not freeze until dataset and convergence/capture-completeness evidence close.",
+        "conditional": true
+      },
+      "remaining_evidence": [
+        "Actual dataset bytes/SHA and row/feature parser result",
+        "Capture stdout final iterated-N/convergence result plus tracer scope",
+        "Source-version precedence and capture binary/source/build binding"
+      ]
+    },
+    {
+      "program": "nn",
+      "status": "UNRESOLVED_V1_UNCHANGED",
+      "scope": "SOURCE_SCOPE_CONSISTENT_NOT_CAPTURE_CERTIFIED",
+      "new_findings": [
+        "3.1 packaged run matches filelist_4 -r 5 -lat 30 -lng 90 and emits one euclid GPU kernel after reading all records; -r selects the CPU-side top-N result count, not an euclid GPU argument.",
+        "The 342112-byte HtoD coordinate buffer implies 42764 LatLong records under the 3.1 two-float layout. The 2.0-ft candidates instead use four 735000-byte character-record batches. Same filelist_4 spelling is not proof of the same files or records.",
+        "3.1 has a DTC_LEGACY_NN pointer to three historical cohorts under commit b2d6121e169dd0605d3e3c51cd010e7e77effd49. Their recorded status is checked terminal scope only until comparison complete, not approval of whole-app input identity for the 42-suite.",
+        "Deployed nn_cuda.cu additionally has an emulation-only memory-size branch absent at pinned b059fdae; GPU kernel and host read/launch scope match in the inspected diff, but exact capture compile flags remain unknown."
+      ],
+      "v2_proposal": {
+        "input_digest": "8df9ee2d901953e7f4fee2732082bcfd80298003754feb6535340a9e621227cc",
+        "rule": "3.1 packaged run plus historical named reference provides the strongest provenance candidate, subject to dataset and source-version-policy closure.",
+        "conditional": true
+      },
+      "remaining_evidence": [
+        "filelist bytes plus ordered constituent data files and capture-linked SHAs",
+        "Capture executable/build/tracer identity including emulation macro state",
+        "Explicit V2 version-policy adoption; historical terminal-scope receipts are not full-app certification"
+      ]
+    },
+    {
+      "program": "nw",
+      "status": "UNRESOLVED_V1_UNCHANGED",
+      "scope": "SOURCE_SCOPE_CONSISTENT_NOT_CAPTURE_CERTIFIED",
+      "new_findings": [
+        "3.1 packaged run specifies 2048 10. Source generates equal-length sequences using seed7 and accepts a single dimension and penalty; the README usage is stale and should not override the parser.",
+        "With BLOCK_SIZE=16 the two wavefront loops emit 2*(2048/16)-1=255 launches, exactly the captured count. The 2.0-ft 128 case correspondingly emits15 launches.",
+        "2.0-ft kernel signatures include an additional output matrix pointer, so matching application name is not identical kernel implementation. Its two captures differ in format/body SHAs."
+      ],
+      "v2_proposal": {
+        "input_digest": "cf569ed4fa54b5f11746ce6c0c44e43807ac9d0164e21e4900b5bdb61377e8c7",
+        "rule": "Use 3.1 packaged run command if the V2 source-version policy is adopted. This is not a performance-based size choice.",
+        "conditional": true
+      },
+      "remaining_evidence": [
+        "Capture executable/compiler/tracer linkage",
+        "Generated sequence content binding to generator and C-library behavior",
+        "Explicit V2 version policy; whole-app numerical correctness remains separate"
+      ]
+    },
+    {
+      "program": "pathfinder",
+      "status": "UNRESOLVED_V1_UNCHANGED",
+      "scope": "SOURCE_SCOPE_CONSISTENT_NOT_CAPTURE_CERTIFIED",
+      "new_findings": [
+        "Parser binds argv1=cols, argv2=rows and argv3=pyramid_height; the packaged run is 100000 100 20 > result.txt. The output redirection is not a fourth application argument.",
+        "Source seed is9. Source loop ceil((rows-1)/height) predicts5 launches for 100000x100,height20 and4 for1000x20,height5, agreeing with the trace commandlists.",
+        "The two same-argument 2.0-ft captures differ in trace-format identity and member SHAs; no duplicate elimination by program name or outcome is justified."
+      ],
+      "v2_proposal": {
+        "input_digest": "ccdd1b98bff6187e23c60ac1b37e6358cd83539010530d6c13dfe7595bb0a228",
+        "rule": "Use the 3.1 packaged run if the V2 source-version policy is adopted; retain output redirection as shell semantics.",
+        "conditional": true
+      },
+      "remaining_evidence": [
+        "Capture executable/compiler/tracer binding",
+        "Capture-time generated wall contents or exact generator/runtime binding",
+        "Explicit V2 source-version precedence"
+      ]
+    },
+    {
+      "program": "streamcluster",
+      "status": "UNRESOLVED_V1_UNCHANGED",
+      "scope": "STANDARD_FULL_APPLICATION_SCOPE_CONTRADICTION",
+      "new_findings": [
+        "3.1 packaged run is 10 20 256 65536 65536 1000 none output.txt 1. For positive n, source generates coordinates with SimStream seeded by srand48(1); none is not an external dataset filename in this case.",
+        "The 3/6/16 candidate adds an extra output.txt argument. The inspected 3.1 parser accepts argc>=10 and reads only argv1..9, so the trailing argument is ignored under this source; it does not restore a goldfile check.",
+        "The CPU pFL path uses ITER=3 and emits floor(3*kmax*ln(kmax)) pgain calls in every entered sweep; each pgain unconditionally launches one kernel_compute_cost. This is32 calls for kmax6 or179 calls for kmax20. Five captured kernels cannot be a complete sweep under the inspected standard source.",
+        "Both candidates have exactly five complete kernels. Their missing HtoD entries also cannot certify host initialization. Capture binary/ROI or early termination must explain this before whole-application use."
+      ],
+      "v2_proposal": {
+        "input_digest": null,
+        "blocked_packaged_run_candidate": "f7d6397ed7ffa266724e124e76e896015cd71a9936a43e787d815c3c8420f348",
+        "rule": "The 10/20/256 tuple matches the packaged command, but do not freeze a five-kernel capture as complete streamcluster. Resolve the source/capture scope mismatch before a V2 identity decision.",
+        "conditional": true
+      },
+      "remaining_evidence": [
+        "Capture binary/source/compile flags and tracer kernel-window rules",
+        "Capture completion/host convergence log and complete launch range",
+        "Generated coordinate content/runtime binding; explicit parameter-policy decision"
+      ]
+    }
+  ],
+  "source_layout_conditional_kmeans_shapes": [
+    {
+      "input_digest": "1213f9ab49665a65b429c79e0511047e92524e5f9bf53cc706ab222af22634aa",
+      "matrix_HtoD_bytes": 111411200,
+      "membership_HtoD_bytes": 3276800,
+      "center_HtoD_bytes": 680,
+      "source_layout_conditional_npoints": 819200,
+      "source_layout_conditional_features": 34,
+      "inferred_clusters": 5,
+      "actual_dataset_bytes_certified": false,
+      "assumptions": "Observed copies correspond to the inspected source feature/membership/center allocations, with 4-byte float/int; capture binary identity not recovered."
+    },
+    {
+      "input_digest": "2315d0e612ee7cd4ee6e711e2a673e85d7490bec9a8767ec67bde3ddafff970a",
+      "matrix_HtoD_bytes": 67186720,
+      "membership_HtoD_bytes": 1976080,
+      "center_HtoD_bytes": 680,
+      "source_layout_conditional_npoints": 494020,
+      "source_layout_conditional_features": 34,
+      "inferred_clusters": 5,
+      "actual_dataset_bytes_certified": false,
+      "assumptions": "Observed copies correspond to the inspected source feature/membership/center allocations, with 4-byte float/int; capture binary identity not recovered."
+    },
+    {
+      "input_digest": "bd8f42c4d21e28ce7d2f6f458bae67720d5237ef8418b8581796d33e2c9d76e1",
+      "matrix_HtoD_bytes": 54400,
+      "membership_HtoD_bytes": 1600,
+      "center_HtoD_bytes": 680,
+      "source_layout_conditional_npoints": 400,
+      "source_layout_conditional_features": 34,
+      "inferred_clusters": 5,
+      "actual_dataset_bytes_certified": false,
+      "assumptions": "Observed copies correspond to the inspected source feature/membership/center allocations, with 4-byte float/int; capture binary identity not recovered."
+    },
+    {
+      "input_digest": "c7efba60561811c0652e5bb9331fc1f4c8265ef8a54b75ddc746319292817e76",
+      "matrix_HtoD_bytes": 15826944,
+      "membership_HtoD_bytes": 114688,
+      "center_HtoD_bytes": 2760,
+      "source_layout_conditional_npoints": 28672,
+      "source_layout_conditional_features": 138,
+      "inferred_clusters": 5,
+      "actual_dataset_bytes_certified": false,
+      "assumptions": "Observed copies correspond to the inspected source feature/membership/center allocations, with 4-byte float/int; capture binary identity not recovered."
+    }
+  ],
+  "streamcluster_sweep_call_counts": {
+    "6": 32,
+    "20": 179
+  },
+  "cfd_expected_standard_launches": 14003,
+  "evidence_files": [
+    "SOURCE_IDENTITY_EVIDENCE.json",
+    "SOURCE_EXCERPTS.json",
+    "UPSTREAM_SOURCE_VERIFICATION.json",
+    "INPUT_IDENTITY_CATALOG.json",
+    "CURRENT_READONLY_VERIFICATION.json",
+    "BOUNDED_DATASET_INVENTORY.json",
+    "HISTORICAL_REFERENCE_EVIDENCE.json"
+  ],
+  "v2_policy_proposal": "An explicit release-command policy may prioritize 3.1 packaged run examples over 2.0-ft functional-regression inputs, provided capture scope is consistent. This is a recommendation, not an existing approved rule or a V1 freeze mutation.",
+  "followups": [
+    {
+      "mode": "READ_ONLY",
+      "priority": 1,
+      "action": "Recover capture-time executable/build/tracer and any kernel-window limits for CFD and streamcluster; explain five-kernel scopes before whole-application claims."
+    },
+    {
+      "mode": "READ_ONLY",
+      "priority": 2,
+      "action": "Locate existing raw kmeans and NN dataset manifests/files; bind row/feature or ordered records and SHA to the actual captures, then recover convergence/completion logs."
+    },
+    {
+      "mode": "SCIENTIFIC_IDENTITY_POLICY_DECISION_REQUIRED",
+      "priority": 3,
+      "action": "Review a V2 source-release/run-command precedence policy for backprop, NW, pathfinder and NN; preserve old 35 identities and all 72 history rows."
+    },
+    {
+      "mode": "NEW_SCIENTIFIC_EXECUTION_APPROVAL_REQUIRED",
+      "priority": 4,
+      "action": "Only if existing capture provenance cannot close: propose a separately approved capture/completeness validation. No recapture, new simulation or replay is launched by this report."
+    }
+  ]
+}

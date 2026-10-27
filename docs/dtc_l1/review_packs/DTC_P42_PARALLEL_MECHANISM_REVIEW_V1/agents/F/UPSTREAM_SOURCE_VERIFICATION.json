@@ -1,0 +1,164 @@
+[
+  {
+    "relative_path": "src/cuda/rodinia/2.0-ft/README.md",
+    "pinned_url": "https://github.com/accel-sim/gpu-app-collection/blob/b059fdae25c2aabf737486aada743fca114469ce/src/cuda/rodinia/2.0-ft/README.md",
+    "pinned_utf8_sha256": "a18371d10b6c1976a57f03073b51bb24d1b4486476b5a26cda599b80b5895ac2",
+    "deployed_path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/2.0-ft/README.md",
+    "deployed_sha256": "a18371d10b6c1976a57f03073b51bb24d1b4486476b5a26cda599b80b5895ac2",
+    "exact_match": true,
+    "difference": null
+  },
+  {
+    "relative_path": "src/cuda/rodinia/3.1/cuda/backprop/run",
+    "pinned_url": "https://github.com/accel-sim/gpu-app-collection/blob/b059fdae25c2aabf737486aada743fca114469ce/src/cuda/rodinia/3.1/cuda/backprop/run",
+    "pinned_utf8_sha256": "bf76b243af20efe1f18c9088ad3f7e49552a503ae3cb4b8e222abcabc3f51fc8",
+    "deployed_path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/backprop/run",
+    "deployed_sha256": "bf76b243af20efe1f18c9088ad3f7e49552a503ae3cb4b8e222abcabc3f51fc8",
+    "exact_match": true,
+    "difference": null
+  },
+  {
+    "relative_path": "src/cuda/rodinia/3.1/cuda/cfd/euler3d.cu",
+    "pinned_url": "https://github.com/accel-sim/gpu-app-collection/blob/b059fdae25c2aabf737486aada743fca114469ce/src/cuda/rodinia/3.1/cuda/cfd/euler3d.cu",
+    "pinned_utf8_sha256": "b90fd9231e2959a399b503bf87fcbbd44b1c9bbd4008fe07f0a1502d045a7896",
+    "deployed_path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/cfd/euler3d.cu",
+    "deployed_sha256": "b5015e61e413dbf711a1e928505d5591f21639644a156dfe31f2e126ce788079",
+    "exact_match": false,
+    "difference": "--- pinned\n+++ deployed\n@@ -2,7 +2,7 @@\n // This code is from the AIAA-2009-4001 paper\n \n //#include <cutil.h>\n-#include <helper_cuda.h>\n+//#include <helper_cuda.h>\n #include <helper_timer.h>\n #include <iostream>\n #include <fstream>\n@@ -102,32 +102,37 @@\n T* alloc(int N)\n {\n \tT* t;\n-\tcheckCudaErrors(cudaMalloc((void**)&t, sizeof(T)*N));\n+\t//checkCudaErrors(cudaMalloc((void**)&t, sizeof(T)*N));\n+\tcudaMalloc((void**)&t, sizeof(T)*N);\n \treturn t;\n }\n \n template <typename T>\n void dealloc(T* array)\n {\n-\tcheckCudaErrors(cudaFree((void*)array));\n+\t//checkCudaErrors(cudaFree((void*)array));\n+\tcudaFree((void*)array);\n }\n \n template <typename T>\n void copy(T* dst, T* src, int N)\n {\n-\tcheckCudaErrors(cudaMemcpy((void*)dst, (void*)src, N*sizeof(T), cudaMemcpyDeviceToDevice));\n+\t//checkCudaErrors(cudaMemcpy((void*)dst, (void*)src, N*sizeof(T), cudaMemcpyDeviceToDevice));\n+\tcudaMemcpy((void*)dst, (void*)src, N*sizeof(T), cudaMemcpyDeviceToDevice);\n }\n \n template <typename T>\n void upload(T* dst, T* src, int N)\n {\n-\tcheckCudaErrors(cudaMemcpy((void*)dst, (void*)src, N*sizeof(T), cudaMemcpyHostToDevice));\n+\t//checkCudaErrors(cudaMemcpy((void*)dst, (void*)src, N*sizeof(T), cudaMemcpyHostToDevice));\n+\tcudaMemcpy((void*)dst, (void*)src, N*sizeof(T), cudaMemcpyHostToDevice);\n }\n \n template <typename T>\n void download(T* dst, T* src, int N)\n {\n-\tcheckCudaErrors(cudaMemcpy((void*)dst, (void*)src, N*sizeof(T), cudaMemcpyDeviceToHost));\n+\t//checkCudaErrors(cudaMemcpy((void*)dst, (void*)src, N*sizeof(T), cudaMemcpyDeviceToHost));\n+\tcudaMemcpy((void*)dst, (void*)src, N*sizeof(T), cudaMemcpyDeviceToHost);\n }\n \n void dump(float* variables, int nel, int nelr)\n@@ -180,7 +185,7 @@\n {\n \tdim3 Dg(nelr / BLOCK_SIZE_1), Db(BLOCK_SIZE_1);\n \tcuda_initialize_variables<<<Dg, Db>>>(nelr, variables);\n-\tgetLastCudaError(\"initialize_variables failed\");\n+//\tgetLastCudaError(\"initialize_variables failed\");\n }\n \n __device__ __host__ inline void compute_flux_contribution(float& density, float3& momentum, float& density_energy, float& pressure, float3& velocity, float3& fc_momentum_x, float3& fc_momentum_y, float3& fc_momentum_z, float3& fc_density_energy)\n@@ -250,7 +255,7 @@\n {\n \tdim3 Dg(nelr / BLOCK_SIZE_2), Db(BLOCK_SIZE_2);\n \tcuda_compute_step_factor<<<Dg, Db>>>(nelr, variables, areas, step_factors);\t\t\n-\tgetLastCudaError(\"compute_step_factor failed\");\n+\t//getLastCudaError(\"compute_step_factor failed\");\n }\n \n /*\n@@ -391,7 +396,7 @@\n {\n \tdim3 Dg(nelr / BLOCK_SIZE_3), Db(BLOCK_SIZE_3);\n \tcuda_compute_flux<<<Dg,Db>>>(nelr, elements_surrounding_elements, normals, variables, fluxes);\n-\tgetLastCudaError(\"compute_flux failed\");\n+\t//getLastCudaError(\"compute_flux failed\");\n }\n \n __global__ void cuda_time_step(int j, int nelr, float* old_variables, float* variables, float* step_factors, float* fluxes)\n@@ -410,7 +415,7 @@\n {\n \tdim3 Dg(nelr / BLOCK_SIZE_4), Db(BLOCK_SIZE_4);\n \tcuda_time_step<<<Dg,Db>>>(j, nelr, old_variables, variables, step_factors, fluxes);\n-\tgetLastCudaError(\"update failed\");\n+\t//getLastCudaError(\"update failed\");\n }\n \n /*\n@@ -430,9 +435,12 @@\n \tcudaDeviceProp prop;\n \tint dev;\n \t\n-\tcheckCudaErrors(cudaSetDevice(0));\n-\tcheckCudaErrors(cudaGetDevice(&dev));\n-\tcheckCudaErrors(cudaGetDeviceProperties(&prop, dev));\n+\t//checkCudaErrors(cudaSetDevice(0));\n+\tcudaSetDevice(0);\n+\t//checkCudaErrors(cudaGetDevice(&dev));\n+\tcudaGetDevice(&dev);\n+\t//checkCudaErrors(cudaGetDeviceProperties(&prop, dev));\n+\tcudaGetDeviceProperties(&prop, dev);\n \t\n \tprintf(\"Name:                     %s\\n\", prop.name);\n \n@@ -469,12 +477,17 @@\n \t\tcompute_flux_contribution(h_ff_variable[VAR_DENSITY], h_ff_momentum, h_ff_variable[VAR_DENSITY_ENERGY], ff_pressure, ff_velocity, h_ff_flux_contribution_momentum_x, h_ff_flux_contribution_momentum_y, h_ff_flux_contribution_momentum_z, h_ff_flux_contribution_density_energy);\n \n \t\t// copy far field conditions to the gpu\n-\t\tcheckCudaErrors( cudaMemcpyToSymbol(ff_variable,          h_ff_variable,          NVAR*sizeof(float)) );\n-\t\tcheckCudaErrors( cudaMemcpyToSymbol(ff_flux_contribution_momentum_x, &h_ff_flux_contribution_momentum_x, sizeof(float3)) );\n-\t\tcheckCudaErrors( cudaMemcpyToSymbol(ff_flux_contribution_momentum_y, &h_ff_flux_contribution_momentum_y, sizeof(float3)) );\n-\t\tcheckCudaErrors( cudaMemcpyToSymbol(ff_flux_contribution_momentum_z, &h_ff_flux_contribution_momentum_z, sizeof(float3)) );\n-\t\t\n-\t\tcheckCudaErrors( cudaMemcpyToSymbol(ff_flux_contribution_density_energy, &h_ff_flux_contribution_density_energy, sizeof(float3)) );\t\t\n+\t\t//checkCudaErrors( cudaMemcpyToSymbol(ff_variable,          h_ff_variable,          NVAR*sizeof(float)) );\n+\t\tcudaMemcpyToSymbol(ff_variable,          h_ff_variable,          NVAR*sizeof(float));\n+\t\t//checkCudaErrors( cudaMemcpyToSymbol(ff_flux_contribution_momentum_x, &h_ff_flux_contribution_momentum_x, sizeof(float3)) );\n+\t\tcudaMemcpyToSymbol(ff_flux_contribution_momentum_x, &h_ff_flux_contribution_momentum_x, sizeof(float3));\n+\t\t//checkCudaErrors( cudaMemcpyToSymbol(ff_flux_contribution_momentum_y, &h_ff_flux_contribution_momentum_y, sizeof(float3)) );\n+\t\tcudaMemcpyToSymbol(ff_flux_contribution_momentum_y, &h_ff_flux_contribution_momentum_y, sizeof(float3));\n+\t\t//checkCudaErrors( cudaMemcpyToSymbol(ff_flux_contribution_momentum_z, &h_ff_flux_contribution_momentum_z, sizeof(float3)) );\n+\t\tcudaMemcpyToSymbol(ff_flux_contribution_momentum_z, &h_ff_flux_contribution_momentum_z, sizeof(float3));\n+\t\t\n+\t\t//checkCudaErrors( cudaMemcpyToSymbol(ff_flux_contribution_density_energy, &h_ff_flux_contribution_density_energy, sizeof(float3)) );\t\t\n+\t\tcudaMemcpyToSymbol(ff_flux_contribution_density_energy, &h_ff_flux_contribution_density_energy, sizeof(float3));\t\t\n \t}\n \tint nel;\n \tint nelr;\n@@ -571,14 +584,14 @@\n \t\t\n \t\t// for the first iteration we compute the time step\n \t\tcompute_step_factor(nelr, variables, areas, step_factors);\n-\t\tgetLastCudaError(\"compute_step_factor failed\");\n+\t\t//getLastCudaError(\"compute_step_factor failed\");\n \t\t\n \t\tfor(int j = 0; j < RK; j++)\n \t\t{\n \t\t\tcompute_flux(nelr, elements_surrounding_elements, normals, variables, fluxes);\n-\t\t\tgetLastCudaError(\"compute_flux failed\");\t\t\t\n+\t\t\t//getLastCudaError(\"compute_flux failed\");\t\t\t\n \t\t\ttime_step(j, nelr, old_variables, variables, step_factors, fluxes);\n-\t\t\tgetLastCudaError(\"time_step failed\");\t\t\t\n+\t\t\t//getLastCudaError(\"time_step failed\");\t\t\t\n \t\t}\n \t}\n \n"
+  },
+  {
+    "relative_path": "src/cuda/rodinia/3.1/cuda/kmeans/run",
+    "pinned_url": "https://github.com/accel-sim/gpu-app-collection/blob/b059fdae25c2aabf737486aada743fca114469ce/src/cuda/rodinia/3.1/cuda/kmeans/run",
+    "pinned_utf8_sha256": "acb8afec40f122dfc56685e27a44c38d5bd9384568f7faf337ffec44d3e1e0d9",
+    "deployed_path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/kmeans/run",
+    "deployed_sha256": "acb8afec40f122dfc56685e27a44c38d5bd9384568f7faf337ffec44d3e1e0d9",
+    "exact_match": true,
+    "difference": null
+  },
+  {
+    "relative_path": "src/cuda/rodinia/3.1/cuda/nn/run",
+    "pinned_url": "https://github.com/accel-sim/gpu-app-collection/blob/b059fdae25c2aabf737486aada743fca114469ce/src/cuda/rodinia/3.1/cuda/nn/run",
+    "pinned_utf8_sha256": "b62906da469c51033305e3842ea521edd09da587dee57ea31b90e2f2b2f215ad",
+    "deployed_path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/nn/run",
+    "deployed_sha256": "b62906da469c51033305e3842ea521edd09da587dee57ea31b90e2f2b2f215ad",
+    "exact_match": true,
+    "difference": null
+  },
+  {
+    "relative_path": "src/cuda/rodinia/3.1/cuda/nw/run",
+    "pinned_url": "https://github.com/accel-sim/gpu-app-collection/blob/b059fdae25c2aabf737486aada743fca114469ce/src/cuda/rodinia/3.1/cuda/nw/run",
+    "pinned_utf8_sha256": "6dc271b38f8453cb83bf4c301635e184bf8ad12e55dae7c268e1add6a30b6d34",
+    "deployed_path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/nw/run",
+    "deployed_sha256": "6dc271b38f8453cb83bf4c301635e184bf8ad12e55dae7c268e1add6a30b6d34",
+    "exact_match": true,
+    "difference": null
+  },
+  {
+    "relative_path": "src/cuda/rodinia/3.1/cuda/pathfinder/run",
+    "pinned_url": "https://github.com/accel-sim/gpu-app-collection/blob/b059fdae25c2aabf737486aada743fca114469ce/src/cuda/rodinia/3.1/cuda/pathfinder/run",
+    "pinned_utf8_sha256": "66c7c740102940c2ed376b30fed351a41709ff1c379cc97b379cb4587f4bb777",
+    "deployed_path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/pathfinder/run",
+    "deployed_sha256": "66c7c740102940c2ed376b30fed351a41709ff1c379cc97b379cb4587f4bb777",
+    "exact_match": true,
+    "difference": null
+  },
+  {
+    "relative_path": "src/cuda/rodinia/3.1/cuda/streamcluster/run",
+    "pinned_url": "https://github.com/accel-sim/gpu-app-collection/blob/b059fdae25c2aabf737486aada743fca114469ce/src/cuda/rodinia/3.1/cuda/streamcluster/run",
+    "pinned_utf8_sha256": "2d14bba219a40bb21c883222be02d0548d56c2c81a10bb28d869276df6469dae",
+    "deployed_path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/streamcluster/run",
+    "deployed_sha256": "2d14bba219a40bb21c883222be02d0548d56c2c81a10bb28d869276df6469dae",
+    "exact_match": true,
+    "difference": null
+  },
+  {
+    "relative_path": "src/cuda/rodinia/3.1/cuda/streamcluster/streamcluster_cuda_cpu.cpp",
+    "pinned_url": "https://github.com/accel-sim/gpu-app-collection/blob/b059fdae25c2aabf737486aada743fca114469ce/src/cuda/rodinia/3.1/cuda/streamcluster/streamcluster_cuda_cpu.cpp",
+    "pinned_utf8_sha256": "3e8a435af2552220fe143e2d8ad9c7efdad2c1a3927e08c3e79253e198631030",
+    "deployed_path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/streamcluster/streamcluster_cuda_cpu.cpp",
+    "deployed_sha256": "3e8a435af2552220fe143e2d8ad9c7efdad2c1a3927e08c3e79253e198631030",
+    "exact_match": true,
+    "difference": null
+  },
+  {
+    "relative_path": "src/cuda/rodinia/3.1/cuda/kmeans/kmeans_clustering.c",
+    "pinned_url": "https://github.com/accel-sim/gpu-app-collection/blob/b059fdae25c2aabf737486aada743fca114469ce/src/cuda/rodinia/3.1/cuda/kmeans/kmeans_clustering.c",
+    "pinned_utf8_sha256": "4ebdf3a00bc41ebfc340113da816e3aa74dd85a56145df8b4826c0d796660381",
+    "deployed_path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/kmeans/kmeans_clustering.c",
+    "deployed_sha256": "4ebdf3a00bc41ebfc340113da816e3aa74dd85a56145df8b4826c0d796660381",
+    "exact_match": true,
+    "difference": null
+  },
+  {
+    "relative_path": "src/cuda/rodinia/3.1/cuda/backprop/facetrain.c",
+    "pinned_url": "https://github.com/accel-sim/gpu-app-collection/blob/b059fdae25c2aabf737486aada743fca114469ce/src/cuda/rodinia/3.1/cuda/backprop/facetrain.c",
+    "pinned_utf8_sha256": "5a1c324735b4eb7ff08d6b488134a8e66b5aaddcd4168623803ccbb96c8dd293",
+    "deployed_path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/backprop/facetrain.c",
+    "deployed_sha256": "5a1c324735b4eb7ff08d6b488134a8e66b5aaddcd4168623803ccbb96c8dd293",
+    "exact_match": true,
+    "difference": null
+  },
+  {
+    "relative_path": "src/cuda/rodinia/3.1/cuda/backprop/backprop_cuda.cu",
+    "pinned_url": "https://github.com/accel-sim/gpu-app-collection/blob/b059fdae25c2aabf737486aada743fca114469ce/src/cuda/rodinia/3.1/cuda/backprop/backprop_cuda.cu",
+    "pinned_utf8_sha256": "1bd966c36f6277d8d0246a5411e734e69e96050532303e40c5253e06b76d6383",
+    "deployed_path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/backprop/backprop_cuda.cu",
+    "deployed_sha256": "1bd966c36f6277d8d0246a5411e734e69e96050532303e40c5253e06b76d6383",
+    "exact_match": true,
+    "difference": null
+  },
+  {
+    "relative_path": "src/cuda/rodinia/3.1/cuda/nn/nn_cuda.cu",
+    "pinned_url": "https://github.com/accel-sim/gpu-app-collection/blob/b059fdae25c2aabf737486aada743fca114469ce/src/cuda/rodinia/3.1/cuda/nn/nn_cuda.cu",
+    "pinned_utf8_sha256": "c89fd5eb970ba94a56f4a94aa2fcc54235f7c602775675dbcd8a23e3e5f4e6c6",
+    "deployed_path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/nn/nn_cuda.cu",
+    "deployed_sha256": "f14cbe11c06073b37c61628ac9901db0f4aa00d866ba338d303113631d5dc103",
+    "exact_match": false,
+    "difference": "--- pinned\n+++ deployed\n@@ -101,7 +101,14 @@\n \tunsigned long threadsPerBlock = min( deviceProp.maxThreadsPerBlock, DEFAULT_THREADS_PER_BLOCK );\n \tsize_t totalDeviceMemory;\n \tsize_t freeDeviceMemory;\n-\tcudaMemGetInfo(  &freeDeviceMemory, &totalDeviceMemory );\n+\n+#ifdef __DEVICE_EMULATION__\n+        freeDeviceMemory =  512*1024*1024;\n+        totalDeviceMemory = 768*1024*1024;\n+#else\n+    cudaMemGetInfo(  &freeDeviceMemory, &totalDeviceMemory );\n+#endif\n+\n \tcudaThreadSynchronize();\n \tunsigned long usableDeviceMemory = freeDeviceMemory * 85 / 100; // 85% arbitrary throttle to compensate for known CUDA bug\n \tunsigned long maxThreads = usableDeviceMemory / 12; // 4 bytes in 3 vectors per thread\n"
+  },
+  {
+    "relative_path": "src/cuda/rodinia/3.1/cuda/nw/needle.cu",
+    "pinned_url": "https://github.com/accel-sim/gpu-app-collection/blob/b059fdae25c2aabf737486aada743fca114469ce/src/cuda/rodinia/3.1/cuda/nw/needle.cu",
+    "pinned_utf8_sha256": "6152a04e5cd37a0c3f78efdc5cb4d8269bd10694840c23cb9b8345ac525962ee",
+    "deployed_path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/nw/needle.cu",
+    "deployed_sha256": "6152a04e5cd37a0c3f78efdc5cb4d8269bd10694840c23cb9b8345ac525962ee",
+    "exact_match": true,
+    "difference": null
+  },
+  {
+    "relative_path": "src/cuda/rodinia/3.1/cuda/nw/needle.h",
+    "pinned_url": "https://github.com/accel-sim/gpu-app-collection/blob/b059fdae25c2aabf737486aada743fca114469ce/src/cuda/rodinia/3.1/cuda/nw/needle.h",
+    "pinned_utf8_sha256": "38ffaf31b59432e204dff8b22e10ada572c18eae27abfd0a82ea3f08b178b180",
+    "deployed_path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/nw/needle.h",
+    "deployed_sha256": "38ffaf31b59432e204dff8b22e10ada572c18eae27abfd0a82ea3f08b178b180",
+    "exact_match": true,
+    "difference": null
+  },
+  {
+    "relative_path": "src/cuda/rodinia/3.1/cuda/pathfinder/pathfinder.cu",
+    "pinned_url": "https://github.com/accel-sim/gpu-app-collection/blob/b059fdae25c2aabf737486aada743fca114469ce/src/cuda/rodinia/3.1/cuda/pathfinder/pathfinder.cu",
+    "pinned_utf8_sha256": "c37fccc0b23cb385ad03a3f5cb242df3d6b433ea5e5a8c48f4a620bb04fbb0a6",
+    "deployed_path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/pathfinder/pathfinder.cu",
+    "deployed_sha256": "c37fccc0b23cb385ad03a3f5cb242df3d6b433ea5e5a8c48f4a620bb04fbb0a6",
+    "exact_match": true,
+    "difference": null
+  },
+  {
+    "relative_path": "src/cuda/rodinia/3.1/cuda/streamcluster/streamcluster_cuda.cu",
+    "pinned_url": "https://github.com/accel-sim/gpu-app-collection/blob/b059fdae25c2aabf737486aada743fca114469ce/src/cuda/rodinia/3.1/cuda/streamcluster/streamcluster_cuda.cu",
+    "pinned_utf8_sha256": "a2eff9aaa34e08ae48d2f6d3fd37683f90c14834af53b53831688a6f806c835c",
+    "deployed_path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/3.1/cuda/streamcluster/streamcluster_cuda.cu",
+    "deployed_sha256": "a2eff9aaa34e08ae48d2f6d3fd37683f90c14834af53b53831688a6f806c835c",
+    "exact_match": true,
+    "difference": null
+  },
+  {
+    "relative_path": "src/cuda/rodinia/2.0-ft/nn/nn_cuda.cu",
+    "pinned_url": "https://github.com/accel-sim/gpu-app-collection/blob/b059fdae25c2aabf737486aada743fca114469ce/src/cuda/rodinia/2.0-ft/nn/nn_cuda.cu",
+    "pinned_utf8_sha256": "146a6bbc0661b1f424de5aed693fd0279ecd539ace85cb02ecb4fa1ecc0f6fc1",
+    "deployed_path": "/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/src/cuda/rodinia/2.0-ft/nn/nn_cuda.cu",
+    "deployed_sha256": "146a6bbc0661b1f424de5aed693fd0279ecd539ace85cb02ecb4fa1ecc0f6fc1",
+    "exact_match": true,
+    "difference": null
+  }
+]

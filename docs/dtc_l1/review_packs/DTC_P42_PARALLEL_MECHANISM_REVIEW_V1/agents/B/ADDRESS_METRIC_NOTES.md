@@ -1,0 +1,9 @@
+# Exact address metric semantics and limitations
+
+The frozen classification contract's phrase "intervening events" means the stored event-index gap, **current event index minus previous event index**; the literal number strictly between events would be one less. Reuse histograms bucket floor(log2(gap)). Within one warp instruction, distinct lines are assigned artificial increasing numeric-address order. Thus the result is a serialized per-warp line-event interval and is neither cycle distance, stack reuse distance, nor inter-SM execution order. The classification thresholds do not depend on this histogram and remain unchanged.
+
+`line_revisit_factor` counts all cacheable LDG distinct-line events divided by distinct lines within the stated full kernel or bounded prefix. Reads by different lanes of the same warp touching one line count once per warp instruction. Stores, local, shared and bypass traffic are not included. No inference about overlapping outstanding duplicate requests is permitted. The min/max address span includes gaps between separate allocations, so it is not a memory-footprint estimate.
+
+Three full-kernel receipts had a completed-warp set bookkeeping error (127 instead of 128) caused by finalizing a previous warp after the current CTA coordinate changed. Original receipts are preserved as `*.ORIGINAL_SCAN_RECEIPT.json`; metadata-only correction is logged in `RECEIPT_CORRECTION.json`. Full EOF declared instruction-count/terminal EXIT checks, all 128 seen warps and matching complete trace SHA justify 128. Address aggregates and per-warp reset were unaffected. No trace was rescanned and the original historical qualifier was never changed.
+
+Positive-case scans stop after one 16 MiB prefix each. These are coverage examples, not representative sampling of every CTA or the complete application. No timestamped traffic-burst conclusion or exact global reuse-distance claim is possible from this product.

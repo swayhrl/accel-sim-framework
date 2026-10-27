@@ -1,0 +1,82 @@
+[
+  {
+    "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/l2cache.cc",
+    "sha256": "1b2b0ebca49a2f5943c9350a637d849961da96159a147a70b887434bd7f37ff5",
+    "lines": [
+      488,
+      497
+    ],
+    "meaning": "The second queue field is L2-to-DRAM FIFO capacity.",
+    "excerpt": "488:   unsigned int icnt_L2;\n489:   unsigned int L2_dram;\n490:   unsigned int dram_L2;\n491:   unsigned int L2_icnt;\n492:   sscanf(m_config->gpgpu_L2_queue_config, \"%u:%u:%u:%u\", &icnt_L2, &L2_dram,\n493:          &dram_L2, &L2_icnt);\n494:   m_icnt_L2_queue = new fifo_pipeline<mem_fetch>(\"icnt-to-L2\", 0, icnt_L2);\n495:   m_L2_dram_queue = new fifo_pipeline<mem_fetch>(\"L2-to-dram\", 0, L2_dram);\n496:   m_dram_L2_queue = new fifo_pipeline<mem_fetch>(\"dram-to-L2\", 0, dram_L2);\n497:   m_L2_icnt_queue = new fifo_pipeline<mem_fetch>(\"L2-to-icnt\", 0, L2_icnt);"
+  },
+  {
+    "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/l2cache.cc",
+    "sha256": "1b2b0ebca49a2f5943c9350a637d849961da96159a147a70b887434bd7f37ff5",
+    "lines": [
+      1103,
+      1130
+    ],
+    "meaning": "L2 FIFO-full event admission check; an event count, not exclusive stalled core cycles.",
+    "excerpt": "1103: \n1104: // The l2 cache access function calls the base data_cache access\n1105: // implementation.  When the L2 needs to diverge from L1, L2 specific\n1106: // changes should be made here.\n1107: enum cache_request_status l2_cache::access(new_addr_type addr, mem_fetch *mf,\n1108:                                            unsigned time,\n1109:                                            std::list<cache_event> &events) {\n1110:   return data_cache::access(addr, mf, time, events);\n1111: }\n1112: \n1113: void l2_cache::cycle() {\n1114:   if (!m_miss_queue.empty()) {\n1115:     mem_fetch *mf = m_miss_queue.front();\n1116:     uint32_t chiplet_idx = mf->get_dest_chiplet();\n1117:     if (chiplet_idx == m_chiplet_id || mf->get_type() == WRITE_REQUEST) {\n1118:       // This request belongs to the same chiplet, send it to DRAM\n1119:       // for writes, a seperate WRITE_FORWARD is generated\n1120:       // always write to local\n1121:       if (!m_memport->full(mf->size(), mf->get_is_write())) {\n1122:         m_miss_queue.pop_front();\n1123:         m_memport->push(mf);\n1124:       } else {\n1125:         ++m_mem_stats->L2_dram_queue_full[m_sub_partition_id];\n1126:       }\n1127:     } else {\n1128:       // This request belongs to a different chiplet, send it to the chiplet\n1129:       // interface\n1130:       if (!m_chiplet_port->full(mf->size(), mf->get_is_write())) {"
+  },
+  {
+    "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/l2cache.cc",
+    "sha256": "1b2b0ebca49a2f5943c9350a637d849961da96159a147a70b887434bd7f37ff5",
+    "lines": [
+      305,
+      329
+    ],
+    "meaning": "Fixed dram_latency is scheduled against core-cycle counter; PS does not halve this delay.",
+    "excerpt": "305:     int spid = (p + last_issued_partition + 1) %\n306:                m_config->m_n_sub_partition_per_memory_channel;\n307:     if (!m_sub_partition[spid]->L2_dram_queue_empty() &&\n308:         can_issue_to_dram(spid)) {\n309:       mem_fetch *mf = m_sub_partition[spid]->L2_dram_queue_top();\n310:       if (m_dram->full(mf->is_write())) {\n311:         continue;\n312:       }\n313: \n314:       m_sub_partition[spid]->L2_dram_queue_pop();\n315:       MEMPART_DPRINTF(\n316:           \"Issue mem_fetch request %p from sub partition %d to dram\\n\", mf,\n317:           spid);\n318:       dram_delay_t d;\n319:       d.req = mf;\n320:       d.ready_cycle = m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle +\n321:                       m_config->dram_latency;\n322:       m_dram_latency_queue.push_back(d);\n323:       mf->set_status(IN_PARTITION_DRAM_LATENCY_QUEUE,\n324:                      m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);\n325:       m_arbitration_metadata.borrow_credit(spid);\n326:       processed++;\n327:       if (processed >= dram_cycles) {\n328:         break;  // the DRAM should only accept these request per cycle\n329:       }"
+  },
+  {
+    "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/dram_sched.cc",
+    "sha256": "2a0280247c5558541dc3896f86bc596549dd83b71630717cc40756248fee3e73",
+    "lines": [
+      229,
+      251
+    ],
+    "meaning": "avg_mrq interval: dram_req creation to bank assignment; core-cycle timestamps, not full L2/DRAM round trip.",
+    "excerpt": "229:   dram_req_t *req;\n230:   unsigned i;\n231:   for (i = 0; i < m_config->nbk; i++) {\n232:     unsigned b = (i + prio) % m_config->nbk;\n233:     if (!bk[b]->mrq) {\n234:       req = sched->schedule(b, bk[b]->curr_row);\n235: \n236:       if (req) {\n237:         req->data->set_status(IN_PARTITION_MC_BANK_ARB_QUEUE,\n238:                               m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);\n239:         prio = (prio + 1) % m_config->nbk;\n240:         bk[b]->mrq = req;\n241:         if (m_config->gpgpu_memlatency_stat) {\n242:           mrq_latency = m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle -\n243:                         bk[b]->mrq->timestamp;\n244:           m_stats->tot_mrq_latency += mrq_latency;\n245:           m_stats->tot_mrq_num++;\n246:           bk[b]->mrq->timestamp =\n247:               m_gpu->gpu_tot_sim_cycle + m_gpu->gpu_sim_cycle;\n248:           m_stats->mrq_lat_table[LOGB2(mrq_latency)]++;\n249:           if (mrq_latency > m_stats->max_mrq_latency) {\n250:             m_stats->max_mrq_latency = mrq_latency;\n251:           }"
+  },
+  {
+    "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/dram.cc",
+    "sha256": "de8a8eca8c79549193d019a510a33ca77a9c9c41e719ec29c6e59c66871cae4f",
+    "lines": [
+      164,
+      194
+    ],
+    "meaning": "FRFCFS queue bound and return-queue fullness are distinct constraints.",
+    "excerpt": "164: bool dram_t::full(bool is_write) const {\n165:   if (m_config->scheduler_type == DRAM_FRFCFS) {\n166:     if (m_config->gpgpu_frfcfs_dram_sched_queue_size == 0) return false;\n167:     if (m_config->seperate_write_queue_enabled) {\n168:       if (is_write)\n169:         return m_frfcfs_scheduler->num_write_pending() >=\n170:                m_config->gpgpu_frfcfs_dram_write_queue_size;\n171:       else\n172:         return m_frfcfs_scheduler->num_pending() >=\n173:                m_config->gpgpu_frfcfs_dram_sched_queue_size;\n174:     } else\n175:       return m_frfcfs_scheduler->num_pending() >=\n176:              m_config->gpgpu_frfcfs_dram_sched_queue_size;\n177:   } else\n178:     return mrqq->full();\n179: }\n180: \n181: unsigned dram_t::que_length() const {\n182:   unsigned nreqs = 0;\n183:   if (m_config->scheduler_type == DRAM_FRFCFS) {\n184:     nreqs = m_frfcfs_scheduler->num_pending();\n185:   } else {\n186:     nreqs = mrqq->get_length();\n187:   }\n188:   return nreqs;\n189: }\n190: \n191: bool dram_t::returnq_full() const { return returnq->full(); }\n192: \n193: unsigned int dram_t::queue_limit() const {\n194:   return m_config->gpgpu_frfcfs_dram_sched_queue_size;"
+  },
+  {
+    "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/dram.cc",
+    "sha256": "de8a8eca8c79549193d019a510a33ca77a9c9c41e719ec29c6e59c66871cae4f",
+    "lines": [
+      237,
+      244
+    ],
+    "meaning": "dram_req timestamp is GPU core-cycle total.",
+    "excerpt": "237:   row = tlx.row;\n238:   col = tlx.col;\n239:   nbytes = mf->get_data_size();\n240: \n241:   timestamp = m_gpu->gpu_tot_sim_cycle + m_gpu->gpu_sim_cycle;\n242:   addr = mf->get_addr();\n243:   insertion_time = (unsigned)m_gpu->gpu_sim_cycle;\n244:   rw = data->get_is_write() ? WRITE : READ;"
+  },
+  {
+    "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+    "sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+    "lines": [
+      1456,
+      1470
+    ],
+    "meaning": "DRAM frequency determines DRAM tick period; core, ICNT, L2 clocks stay fixed.",
+    "excerpt": "1456: void gpgpu_sim_config::init_clock_domains(void) {\n1457:   sscanf(gpgpu_clock_domains, \"%lf:%lf:%lf:%lf\", &core_freq, &icnt_freq,\n1458:          &l2_freq, &dram_freq);\n1459:   core_freq = core_freq MhZ;\n1460:   icnt_freq = icnt_freq MhZ;\n1461:   l2_freq = l2_freq MhZ;\n1462:   dram_freq = dram_freq MhZ;\n1463:   core_period = 1 / core_freq;\n1464:   icnt_period = 1 / icnt_freq;\n1465:   dram_period = 1 / dram_freq;\n1466:   l2_period = 1 / l2_freq;\n1467:   printf(\"GPGPU-Sim uArch: clock freqs: %lf:%lf:%lf:%lf\\n\", core_freq,\n1468:          icnt_freq, l2_freq, dram_freq);\n1469:   printf(\"GPGPU-Sim uArch: clock periods: %.20lf:%.20lf:%.20lf:%.20lf\\n\",\n1470:          core_period, icnt_period, l2_period, dram_period);"
+  },
+  {
+    "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/mem_latency_stat.cc",
+    "sha256": "bd04d9b1aa377457f512d52e414a54e0208573cb13df4be97a32e70781a29045",
+    "lines": [
+      351,
+      370
+    ],
+    "meaning": "Printed avg_mrq_latency is total wait divided by selected request count, integer truncated.",
+    "excerpt": "351:       printf(\"average_mf_SST_latency = %lld \\n\", mf_total_lat / num_mfs);\n352:   } else if (m_memory_config->gpgpu_memlatency_stat) {\n353:     printf(\"maxmflatency = %d \\n\", max_mf_latency);\n354:     printf(\"max_icnt2mem_latency = %d \\n\", max_icnt2mem_latency);\n355:     printf(\"maxmrqlatency = %d \\n\", max_mrq_latency);\n356:     // printf(\"maxdqlatency = %d \\n\", max_dq_latency);\n357:     printf(\"max_icnt2sh_latency = %d \\n\", max_icnt2sh_latency);\n358:     if (num_mfs) {\n359:       printf(\"averagemflatency = %lld \\n\", mf_total_lat / num_mfs);\n360:       printf(\"avg_icnt2mem_latency = %lld \\n\", tot_icnt2mem_latency / num_mfs);\n361:       if (tot_mrq_num)\n362:         printf(\"avg_mrq_latency = %lld \\n\", tot_mrq_latency / tot_mrq_num);\n363: \n364:       printf(\"avg_icnt2sh_latency = %lld \\n\", tot_icnt2sh_latency / num_mfs);\n365:     }\n366:     printf(\"mrq_lat_table:\");\n367:     for (i = 0; i < 32; i++) {\n368:       printf(\"%d \\t\", mrq_lat_table[i]);\n369:     }\n370:     printf(\"\\n\");"
+  }
+]
