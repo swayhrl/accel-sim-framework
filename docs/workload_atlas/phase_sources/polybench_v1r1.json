@@ -1,0 +1,130 @@
+{
+  "schema": "WORKLOAD_ATLAS_V1R1_CURATED_KERNEL_PHASES",
+  "suite": "PolyBench/GPU",
+  "source_authority": "Original Atlas V1 fixed candidate source reports; candidate-to-capture ELF remains UNRESOLVED",
+  "tuple_fields": [
+    "source_stage",
+    "global_access",
+    "static_reuse_opportunity",
+    "dependency_or_barrier",
+    "host_or_capture_scope"
+  ],
+  "programs": {
+    "2DCONV": [
+      [
+        "3x3 stencil",
+        "Nine shifted global A taps and output B accumulate/store",
+        "Aligned interior nine-tap union: 3 rows x34 FP32 values, 9 lines/18 sectors; neighboring warp/CTA halo overlap",
+        "Per-output accumulation; no explicit shared tile or CTA barrier",
+        "One selected 4096-square kernel; candidate capture source unbound"
+      ]
+    ],
+    "3DCONV": [
+      [
+        "3D plane convolution",
+        "Fifteen operand taps, eleven source coordinates and output plane write",
+        "Warp-coalesced taps; within/across-plane halo sharing conditional",
+        "Planes launched serially; no software shared tiling",
+        "254 selected launches; precise scalar plane arguments unbound"
+      ]
+    ],
+    "3MM": [
+      [
+        "E=A*B",
+        "Global dense A/B loads and E accumulation",
+        "A row broadcast and B lane-contiguous accesses; cross-warp reuse opportunity",
+        "Phase E is later consumed by G",
+        "Original candidate E lacks explicit zero initialization; capture ELF unresolved"
+      ],
+      [
+        "F=C*D",
+        "Global dense C/D loads and F accumulation",
+        "Uniform-left/coalesced-right matrix reuse opportunities",
+        "Phase F is later consumed by G",
+        "Original candidate F lacks explicit zero initialization"
+      ],
+      [
+        "G=E*F",
+        "Read intermediates E/F and update G",
+        "Interkernel E/F producer-consumer residency possible",
+        "Depends on previous E and F launches",
+        "Original candidate G lacks explicit zero initialization"
+      ]
+    ],
+    "ATAX": [
+      [
+        "row-thread tmp=A*x",
+        "A lane stride 16384B, per-thread loop stride4B; uniform x",
+        "Aligned fixed-t warp touches32 lines/32 sectors; subsequent t can reuse each fetched row line",
+        "Serial per-thread reduction, host sync before next kernel",
+        "16 CTAs; recovered candidate tmp not zero-initialized"
+      ],
+      [
+        "column-thread y=A^T*tmp",
+        "A lane stride4B and per-thread loop stride16384B; uniform tmp",
+        "Aligned matrix load 1 line/4 sectors per warp; second traversal of A",
+        "Consumes tmp from previous kernel; serial accumulation",
+        "16 CTAs; recovered candidate y not zero-initialized"
+      ]
+    ],
+    "BICG": [
+      [
+        "s=A^T*r",
+        "A lane stride4B, loop stride16384B; broadcast r",
+        "Aligned A warp 1 line/4 sectors; first matrix traversal",
+        "Source explicitly initializes s; host serializes second launch",
+        "16 CTAs; not full iterative BiCG solver"
+      ],
+      [
+        "q=A*p",
+        "A lane stride16384B, loop stride4B; broadcast p",
+        "Aligned A warp 32 lines/32 sectors; per-thread sequential reuse potential",
+        "Source explicitly initializes q; matrix visited second",
+        "16 CTAs; no producer tmp dependence as in ATAX"
+      ]
+    ],
+    "GEMM": [
+      [
+        "naive GEMM C=alpha*A*B+beta*C",
+        "A warp-uniform and B lane-contiguous, B inner-loop stride2048B; C updates",
+        "A rows reused across x-CTAs, B strips across y-CTAs in source",
+        "512-step per-thread accumulation; no explicit shared tile",
+        "One 1024-CTA GPU kernel; not Parboil tiled SGEMM"
+      ]
+    ],
+    "GESUMMV": [
+      [
+        "dual matrix-vector accumulation",
+        "Two matrices lane stride16384B, loop stride4B; uniform x; tmp/y output",
+        "Each thread revisits own row lines within loops",
+        "Two output recurrences combine after matrix walks",
+        "Recovered candidate B/tmp/y initialization gap; capture ELF unresolved"
+      ]
+    ],
+    "MVT": [
+      [
+        "x1+=A*y1",
+        "A lane stride16384B; loop stride4B; uniform vector",
+        "32-line aligned warp per t, later intra-row sequential access",
+        "Per-thread accumulation; independent of x2 output",
+        "16 CTAs; MVT explicitly initializes vectors"
+      ],
+      [
+        "x2+=A^T*y2",
+        "A lane stride4B; loop stride16384B",
+        "Coalesced aligned warp read; second A traversal",
+        "Independent mathematical product; host launches serially",
+        "16 CTAs; reverse of strided phase"
+      ]
+    ],
+    "SYRK": [
+      [
+        "rank-k update C",
+        "First A operand warp-uniform, second A lane stride4096B loop stride4B; update C",
+        "Rows reused across outputs subject to actual cache mapping",
+        "Per-output reduction over 1024 k; no shared tile",
+        "Macro coefficients rather than unused scalar kernel parameters govern source computation"
+      ]
+    ]
+  }
+}
