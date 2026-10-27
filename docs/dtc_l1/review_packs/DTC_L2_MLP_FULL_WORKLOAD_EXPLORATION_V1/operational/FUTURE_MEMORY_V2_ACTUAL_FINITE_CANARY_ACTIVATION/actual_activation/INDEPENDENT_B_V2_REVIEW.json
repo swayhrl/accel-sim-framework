@@ -1,0 +1,51 @@
+{
+  "schema": "A_FUTURE_MEMORY_V2_LIMITED_INDEPENDENT_B_REVIEW_V1",
+  "UTC": "2026-10-27T21:44:42.495759+00:00",
+  "status": "PASS_LIMITED_V2_DIFF_REVIEW",
+  "checks": {
+    "requested_manifest_SHA": true,
+    "requested108QA_SHA": true,
+    "six_actual_sources_join_manifest_QA_helperQA": true,
+    "five_other_sources_exact_V1_bytes": true,
+    "all_AST_outside_helper_identical": true,
+    "exact_two_line_helper_diff_matches_declared": true,
+    "helper_report_SHA_join108QA": true,
+    "helper_driver_SHA_join_report": true,
+    "diff_and_minimal_audit_pins": true,
+    "108QA_preserves_native_joint_and_oldchain_gates": true
+  },
+  "helper11_checks_reviewed": [
+    "actual_native_prefix_already_wrote_DOWNSTREAM_INTENT",
+    "realnew_joint_terminal_to_helper_positive",
+    "wrong_old_resultproofkey_refused",
+    "wrong_result_sidecarSHA_refused",
+    "wrong_sidecar_file_not_fixedbasename_refused",
+    "old_B5_PASS_label_wrong_sidecar_refused_even_rehashed",
+    "wrong_sidecar_binding_refused_even_rehashed",
+    "old_padding_without_memorybinding_is_untouched",
+    "memory_noflag_without_paddingbinding_is_untouched",
+    "CPU_output_preimages_restored_exactly",
+    "final_six_source_SHA_match_padding_qualification"
+  ],
+  "source_sha256": {
+    "library": "d4398a355240e81714c771f3c547e16f079570fc72498a158bf7908eb1e0d3f9",
+    "frontend": "fa3efd26a779670a5d5df09ce7b7c08d8159195c5d9eb30c889e01c2ce023edb",
+    "owner": "348650a77f4f9d88b2525ac3e8298b9c51df7e8ce0582c9bbb261ea73338098c",
+    "extra_strict": "78abb1c386e684ab250fb8e78398c79f564796cebc3f486c1e6ecff77a6236cd",
+    "joint_padding": "54a56e24ed961efcf8d0e231e6e876e1be6c47af5b33b658f77c920160cc3d0c",
+    "joint_io": "89bb2f5c36b0bde9ff5a4dad213cf19729eb2eec963ffc9c69e9e04392f62744"
+  },
+  "evidence_sha256": {
+    "MANIFEST.json": "1545e198d1dc6d09c9882a5883adee4ad3b4b69e3ac4f90da97340126bc83e1f",
+    "CPU_QUALIFICATION.json": "b23f7a4807ca285dc6eec473c7eec749256f9c016e8a706ef1b7ef445479f6b3",
+    "V2_HELPER_API_EXACT_DIFF.json": "d19a59ba9f6009aebd48f8549b6145050a9845e0d534f30052ecb35f4aa7b70c",
+    "V2_MINIMAL_SOURCE_AUDIT.json": "3b8557ea067cf65479cd104296bc15648a0f304e81edda5641f3bb011478c230",
+    "HELPER_API_CPU_QUALIFICATION.json": "3c9c688121a547294f7e810188c29b6b7cae505257e18d9a2cbf37810d3a0cb9",
+    "qualify_helper_api.py": "7e6a6e3e6b768b288527a199eeedf3f42409104a15a8d5aa5f43f7d58bfc332b"
+  },
+  "short_comment": "The V1 observed helper key defect is corrected: the helper consumes additional_future_memory_padding_strict, identifies new memory+padding points and emits an explicit new link schema/status. All code outside this helper is AST-identical and the five other sources are byte-identical to reviewed V1. The 11 tests exercise actual new joint-terminal output and reject old key, wrong SHA/file/status/binding, while leaving old/nonpadding cases unchanged. No additional blocking defect found within this deliberately limited diff review. Actual finite canary completion/archive remains mandatory; this review does not certify a production run.",
+  "independent_test_reexecution": false,
+  "production_mutations": 0,
+  "model_starts": 0,
+  "signals": 0
+}
