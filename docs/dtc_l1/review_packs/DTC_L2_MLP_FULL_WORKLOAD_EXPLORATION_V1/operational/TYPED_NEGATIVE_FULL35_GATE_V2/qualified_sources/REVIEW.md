@@ -1,0 +1,19 @@
+# 工程终态与全35科学推断：最小补充候选
+
+优先继续其它完整配置，不追加trial。原scan/M16缺真实DONE/EXIT，不能写成标准native FAIL，不能伪造execution_receipt。scan Agent正构建独立真实归档证书，状态为 `ENGINEERING_TERMINAL_NEGATIVE_ARCHIVED_NO_RETRY`，cycles=null、performance_accepted=false。
+
+原逻辑有两个不同门：initial要求350格**terminal**，不是350格都accepted；V2随后要求用于补充推断的profile具有完整35 accepted。已有terminal集合不认识新工程终态，所以需要版本化的私有terminal-membership扩展。证书必须逐次真正验证原始来源、spent UUID、输入/配置/Core身份、真实归档、进程代际消失及缺失receipt披露；仅看状态字符串或证书存在不够。普通pending/未闭合engineering事件仍不能终结初轮。
+
+另外必须在V2前加入full35 inference fence：V1原本允许终态负例后的common34 provisional搜索，V2又保留这些原提案。本轮实际源码CPU反例证明：M8/M16在共同34输入改善时，V1会提M32和含M16的组合，即使V2另外报告merge full35 HOLD。新候选完整保留原V1输出供审计，阻断非35 accepted来源的扩边/组合，再由V2生成合法完整35配置。它不更改原V1 source或历史选择。这是明确限制后续推断的补充政策，Main需要公开版本与理由，不能静默宣称原合同一直如此。
+
+在仅scan/M16一个真实工程负例、其它配置完整的CPU反例里：entries和miss-queue边界仍可继续；M8可与完整entries/queue方向组合；完整配置仍可获CH全35匹配。M16自身保持34/35 accepted，merge边界HOLD，不跳过它推更大merge；其它配置仍覆盖scan这个程序。因此无需新增模拟即可解除全局等待，同时不伪造M16完整结果。
+
+`terminal_gate.recommend(...)` 是独立CPU候选，不自动安装。它加载两个source-pinned私有base/V2模块，只扩展私有terminal集合。必须传入真实证书验证callback；示例资格使用显式synthetic CPU证书，不能当生产验证器。最后允许重施现有registry journal finalguard；绝不覆盖finalguard。scan证书API正在对接，生产接入前还需要完成真实schema和只读证书消费资格。
+
+由于证书不在标准receipt namespace，不能为了D.summarize而伪写标准RESULT。若原summary仍是PENDING/engineering，接入须生成显式 `typed-engineering analysis view`：保留原summary、raw_state、cohort及证书路径/SHA，仅经真实verifier把该格在新view中判为工程终态；accepted仍false、cycles仍null，原性能aggregates不变。该view及原350统计必须同时展示。当前候选尚未对生产summary做投影或写入。
+
+最终的 `requires_engineering_review` 与 `scientific_stage_complete=false` 也不会被本门偷清。Main可在全体已授权点自然终结、候选CH/DH完整且不再有合法新提案后，人工发布 `REVIEWED_TERMINAL_WITH_DISCLOSED_ENGINEERING_NEGATIVE` disposition，宣布研究阶段结束并披露M16缺口；这不等于350 accepted或M16全35。若要让自动FINAL_STATUS采用该disposition，需要独立公开版本的完成条件补充；本候选没有实现。
+
+低优先备用方案仅在确需M16完整35科学数据时考虑：独立 `M16_TRIAL2` profile别名、scan单格、+1合法新grant及全新UUID，所有科学字段/270选项/config内容SHA严格匹配原M16。原350失败永久保留；原raw表34、补充trial表1，显式deterministic来源映射的validated-union表35分别汇报。不能从多次试验挑最快、不能用correctness repair身份，也不能把alias单格直接喂原summary当旧M16 full35（summarizer禁止同slot重复；alias还会形成独立不完整profile）。它需要独立union分析与后续推断合同，当前没有必要，不登记不派发。
+
+CPU7只用于工程逻辑资格，数据是合成的；实际scientific收益须等真实全35结果，不能把fixture中的提案名称当实际实验方向。
