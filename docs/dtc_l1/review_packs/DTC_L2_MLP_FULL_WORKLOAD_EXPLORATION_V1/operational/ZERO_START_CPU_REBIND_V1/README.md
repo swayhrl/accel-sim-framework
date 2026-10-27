@@ -1,0 +1,11 @@
+# 零启动CPU绑定修复：源代码资格，尚未安装
+
+真实问题：mergeSort DH-F256已登记但未消耗、无claim/INTENT，原先零启动留下CPU137绑定；该CPU后来被另一个模型占用，冻结scheduler第88行持续跳过该短点，尽管当时448个CPU合法可用。只读全体检查还发现16个同类未启动绑定中12个旧CPU不可用（详见有时间标记的READONLY_AUDIT.json）。这不是实验失败或新仿真身份。
+
+本补丁只在现有唯一owner的原chooser已经按全部原门选出决策后，修复未consumed、未claimed、无INTENT的旧绑定。ATTEMPT非阻塞锁下重核当前注册/canonical/resolved身份，保留完整原字节内容寻址preimage和PREPARED/COMMITTED追加日志，只改变host_cpu及对应resolved_spec_sha256。新CPU必须来自原资源provider的合法空闲集合。任何spent/claim/INTENT/锁竞争/身份不符均不改。
+
+9项隔离CPU资格包括直接提取并执行实际冻结native.spec_for原函数；不是用改写镜像冒充真实函数。模型启动、信号、生产更改均0。源b0db8a、QA ca83ef在本包固定。科学配置、输入、canonical spec、预算和所有运行中的CPU绑定不变。
+
+Main应先完成真实远端回读，再在当前唯一owner主线程调用apply_in_owner()，包在当前E aging外层之后；这仍然只有同一个dispatcher和executor。恢复时先移除此最外层，再E aging，再B padding；已消费模型的绑定不能回滚。
+
+prior_actual_activation给出已安装的padding同一pool129593800303008和post-padding aging的真实ACK。它们不证明本CPU修复已安装；本包发布时本修复仍未应用。SIGSTOP方案仍未启用，v0.23和旧科学账本保持。
