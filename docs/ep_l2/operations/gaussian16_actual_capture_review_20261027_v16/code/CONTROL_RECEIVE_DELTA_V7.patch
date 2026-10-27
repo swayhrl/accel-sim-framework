@@ -1,0 +1,47 @@
+--- V6/receiver_join_v9.py
++++ V7/capture_control_receive_v7.py
+@@ -1,6 +1,6 @@
+ """Private V9 runtime/control evidence join. No public catalog or qualification writes."""
+ import pathlib,json,hashlib,sys,argparse
+-D=pathlib.Path(__file__).resolve().parent.parent;sys.path.insert(0,str(D/'control'))
++D=pathlib.Path('/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_inner_manifest_closure_repair_20261027_v6/runtime');sys.path.insert(0,str(D/'control'))
+ from gpu_leaf_bridge_v9 import mode,PERMISSIONS,plan
+ from inherited_leases_v5 import digest
+ from activity_proof_v3 import same_identity
+@@ -30,10 +30,10 @@
+  need(sha(D/'control/CODE_MANIFEST.json')==code_sha==scope['code_sha256'],'external immutable code pin')
+  for r in json.loads((D/'control/CODE_MANIFEST.json').read_text())['files']:need(sha(D/'control'/r['relative'])==r['sha256'],'runtime source ref bytes')
+  guard=read('GUARD_START.json');worker=read('WORKER_START.json');issuer=scope['issuer'];leases=read('GUARD_LEASES.json')
+- def identity(x):
++ def identity(x,expected_exe=None):
+   need(set(['pid','start_ticks','boot_id','namespaces','exe','cmdline_sha256','parent_pid'])<=set(x),'complete identity fields')
+   need(type(x['pid'])is int and x['pid']>0 and str(x['start_ticks']).isdigit(),'PID/ticks fields')
+-  need(x['boot_id']==scope['execution_boot_id']and x['namespaces']==scope['execution_namespaces']and x['exe']==scope['interpreter']['exe'],'local109 boot/ns/exe join')
++  need(x['boot_id']==scope['execution_boot_id']and x['namespaces']==scope['execution_namespaces']and x['exe']==(expected_exe or scope['interpreter']['exe']),'local109 boot/ns/exe join')
+  for x in [guard,worker,issuer]:identity(x)
+  for role,proof in [('guard',guard),('worker',worker),('issuer',issuer)]:
+   args=[scope['interpreter']['argv0'],'-B',str(script_root/'control'/(role+'_v9.py')),'--run',str(remote_root),'--code-sha',code_sha]
+@@ -62,12 +62,18 @@
+  response=read('ISSUER_RESPONSE_RECEIVED.json');need(response['actual_sender']['pid']==issuer['pid']and same_identity(response['issuer'],issuer) and response['message']['admission_sha256']==sha(root/'FIRST_ADMISSION.json'),'actual issuer sender')
+  need(ad['root_absolute_deadline_unix']==scope['absolute_deadline_unix']and ad['root_absolute_deadline_monotonic_ns']==scope['absolute_deadline_monotonic_ns'],'original deadlines unchanged')
+  need(prep['ready_unix']<=ad['issued_unix']<ad['expires_unix']<=ad['issued_unix']+30 and 0<ad['expires_monotonic_ns']-ad['issued_monotonic_ns']<=30000000000,'first short window')
+- start=read('LEAF_PROCESS_START.json');identity(start['proof']);need(start['proof']['parent_pid']==worker['pid']and ad['issued_unix']<=start['started_unix']<min(ad['expires_unix'],scope['absolute_deadline_unix']-60),'exact capture parent and fresh launch evidence')
++ start=read('LEAF_PROCESS_START.json');fixed_capture=plan(scope['family']);identity(start['proof'],fixed_capture['argv'][0]if which=='production'else None);need(start['proof']['cmdline_sha256']==hashlib.sha256(b'\0'.join(v.encode()for v in start['intended_argv'])+b'\0').hexdigest(),'exact actual capture argv bytes');need(start['proof']['parent_pid']==worker['pid']and ad['issued_unix']<=start['started_unix']<min(ad['expires_unix'],scope['absolute_deadline_unix']-60),'exact capture parent and fresh launch evidence')
+  fixed=plan(scope['family']);need(start['intended_argv']==fixed['argv']and start['binary_sha256']==fixed['binary_sha256']and start['SO_sha256']==fixed['SO_sha256']and start['test_executor']==(which=='test'),'fixed actual scientific identity')
+- need(read('WORKER_COMPLETE.json')['admission_sha256']==sha(root/'FIRST_ADMISSION.json')and read('GUARD_CLOSED.json')['status']=='ALL_OWNED_CLOSED_LEASES_RELEASED','complete cleanup evidence; unknown is HOLD')
+- execution=read('BRIDGE_EXECUTION.json')
+- need(execution['status']==('CPU_EXECUTOR_THROUGH_REAL_BRIDGE_FUNCTION'if which=='test'else'PRIVATE_GAUSSIAN16_CAPTURE_POST_READER_GATE_COMPLETE_REQUIRES_CONTROL_RECEIVER'),'correct executor result')
+- return dict(status='PRIVATE_CONTROL_JOIN_PASS',mode=which,family=scope['family'],scientific_validation_required=True,public_or_GPU_qualification=False,source_refs={n:sha(root/n)for n in ['CPU_STATIC_SCOPE.json','FIRST_ADMISSION.json','RUNTIME_ADMISSION_RAW_FROZEN.json','LIVE_HANDSHAKE.json','GUARD_LEASES.json','LEAF_PROCESS_START.json','BRIDGE_EXECUTION.json']})
++
++ need(which=='production','actual capture CPU derivation only')
++ need(read('GUARD_CLOSED.json')['status']=='ALL_OWNED_CLOSED_LEASES_RELEASED','complete original guard cleanup')
++ execution=read('EXECUTION.json');failed=read('WORKER_FAILED_RETAINED.json');ended=read('LEAF_CAPTURE_ENDED.json')
++ need(execution['exit_code']==0 and execution['task']['argv']==fixed['argv']and execution['binary_sha256']==fixed['binary_sha256']and execution['tool_sha256']==fixed['SO_sha256'],'actual captured binary/SO exit0')
++ need(same_identity(execution['capture_process'],start['proof'])and same_identity(execution['worker'],worker)and execution['scope_sha256']==scope_sha,'actual execution/capture/worker scope join')
++ need(ended['capture_pid']==start['proof']['pid']and ended['start_ticks']==start['proof']['start_ticks']and ended['returncode']==0,'capture really exited0 before post failure')
++ need(failed['error']=="ValueError('actual fixed post/reader failed')"and failed['scope_sha256']==scope_sha and same_identity(failed['worker'],worker),'original post failure retained, no manufactured WORKER_COMPLETE')
++ return dict(status='PRIVATE_CAPTURE_CONTROL_JOIN_PASS_ORIGINAL_POST_FAILURE_RETAINED',mode=which,family=scope['family'],original_worker_post_succeeded=False,actual_capture_exited0=True,scientific_validation_required=True,public_or_GPU_qualification=False,source_refs={n:sha(root/n)for n in ['CPU_STATIC_SCOPE.json','FIRST_ADMISSION.json','RUNTIME_ADMISSION_RAW_FROZEN.json','LIVE_HANDSHAKE.json','GUARD_LEASES.json','LEAF_PROCESS_START.json','EXECUTION.json','WORKER_FAILED_RETAINED.json','LEAF_CAPTURE_ENDED.json']})
++
+ def main():
+  p=argparse.ArgumentParser();p.add_argument('--run',required=True);p.add_argument('--scope-sha',required=True);p.add_argument('--code-sha',required=True);x=p.parse_args();print(json.dumps(verify(x.run,x.scope_sha,x.code_sha)))
+ if __name__=='__main__':main()

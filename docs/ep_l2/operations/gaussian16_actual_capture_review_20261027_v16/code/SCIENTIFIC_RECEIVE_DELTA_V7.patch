@@ -1,0 +1,35 @@
+--- V6/gaussian_leaf_v2.py
++++ V7/gaussian_receive_v7.py
+@@ -1,7 +1,7 @@
+ """Fixed Gaussian16 execution/post/receiver composition. No approval is issued here."""
+ import pathlib,sys,os,json,hashlib,subprocess,time,resource
+-G=pathlib.Path(__file__).resolve().parent.parent/'gaussian'
+-sys.path.insert(0,str(G))
++G=pathlib.Path('/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_inner_manifest_closure_repair_20261027_v6/runtime/gaussian')
++sys.path.insert(0,str(pathlib.Path(__file__).resolve().parent))
+ from gaussian16_result_gate_v1 import decide,verify_ref,BINARY,SO,need
+ ARGV=['/data/c16/rtx4080_suite_fill_20261024_v1/assets/gpu-app-collection/src/cuda/rodinia/3.1/cuda/gaussian/gaussian','-s','16']
+ PROFILE='GAUSSIAN16_DIRECT_RETPAIR_INPUT_OBSERVER_V2_CANDIDATE'
+@@ -52,7 +52,7 @@
+    remote=pathlib.Path('/data/c16/rtx4080_suite_fill_20261024_v1/nas_rtx4080/private_candidates/gaussian16_inner_manifest_closure_repair_20261027_v6/runtime')
+    need(p.is_relative_to(remote),'fixed scientific runtime code alias only');r['path']=str(G.parent/p.relative_to(remote))
+   verify_ref(r)
+- need(reader['reader_ref']['sha256']==sha(G/'consumer_full'),'explicit fixed fullreader pin')
++ need(reader['reader_ref']['sha256']=='56a1f84d8198a0c1bca3b37cf50977992962c7d45f520aec5d462dc08957ccf4','explicit V7 strict padding fullreader pin')
+  # Source raw and complete grouped objects are joined one-to-one; partial stays KEEP.
+  pp=json.loads((root/'traces/POSTPROCESS_V8.json').read_text());need(len(pp)==30,'exact30 raw/group closures')
+  need(len({x['source']for x in pp})==len({x['grouped']for x in pp})==30,'no duplicate raw or grouped')
+@@ -73,11 +73,11 @@
+  statsrows=list(csv.reader(stats[0].read_text().splitlines()));need(len(statsrows)==31 and len(statsrows[0])==12,'complete12column stats header+30')
+  for kid,(row,rp)in enumerate(zip(statsrows[1:],pp),1):
+   row=[v.strip()for v in row];need(len(row)==12,'stats12columns');name=pathlib.Path(rp['source']).name
+-  expected=[1,1,1,1,512,1,1,512]if kid%2 else[4,4,1,16,4,4,1,16]
++  expected=[1,1,1,1,128,1,1,128]if kid%2 else[1,1,1,1,16,16,1,256]
+   need(row[0]==name and row[1]==('_Z4Fan1PfS_ii'if kid%2 else'_Z4Fan2PfS_S_iii')and list(map(int,row[2:10]))==expected,'stats launch/source/dimensions order')
+   need(int(row[10])==int(row[11])==rp['records'],'unfiltered full report/source/consumer record counts')
+  q=decide(root,reader);need(int(q['independent_observer']['context'],16)==ctx,'input/observer/loaded context join')
+- q.update(schema='GAUSSIAN16_PRIVATE_RUNTIME_RECEIVER_V2',runtime_code_id='GAUSSIAN16_CROSS_HOST_RUNTIME_V4_GO_CURRENT_RESOURCES',raw_grouped_launches=30,full_reader_ref=ref(root/'FULL_READER.json'),execution_ref=ref(root/'EXECUTION.json'),maps_ref=ref(root/'LOADED_MAPS.json'),Source_KEEP=True,requires_Root_control_and_reader_independent_acceptance=True,production_qualified=False)
++ q.update(schema='GAUSSIAN16_PRIVATE_RUNTIME_RECEIVER_V2',runtime_code_id='GAUSSIAN16_CROSS_HOST_RUNTIME_V4_GO_CURRENT_RESOURCES',raw_grouped_launches=30,full_reader_ref=ref(root/'FULL_READER_V7.json'),execution_ref=ref(root/'EXECUTION.json'),maps_ref=ref(root/'LOADED_MAPS.json'),Source_KEEP=True,requires_Root_control_and_reader_independent_acceptance=True,production_qualified=False)
+  return q
+ 
+ def validate_runtime_pins(scope):

@@ -1,0 +1,26 @@
+--- accepted7808/trace_parser.cc
++++ V7/trace_parser.cc
+@@ -420,13 +420,22 @@
+   }
+   gaussian16::require(contexts.size()==1&&bases.size()==2&&bases.count(gaussian16::fan1)&&bases.count(gaussian16::fan2),"exact single context/two owner closure");
+   std::ifstream table(dir+"ada-static.tsv");gaussian16::require(bool(table),"static table missing");
+-  std::set<std::pair<std::string,uint64_t>>seen;ada_function_bases.clear();gaussian_owners.clear();gaussian_opcodes.clear();gaussian_record_sites.clear();
++  std::set<std::pair<std::string,uint64_t>>seen,padding_seen;ada_function_bases.clear();gaussian_owners.clear();gaussian_opcodes.clear();gaussian_record_sites.clear();
+   while(std::getline(table,row)){
+    std::istringstream in(row);std::string absolute,relative,fn,sass,cb,co,cw,qualified;
+    std::getline(in,absolute,'\t');std::getline(in,relative,'\t');std::getline(in,fn,'\t');std::getline(in,sass,'\t');
+    std::getline(in,cb,'\t');std::getline(in,co,'\t');std::getline(in,cw,'\t');std::getline(in,qualified,'\t');
+    uint64_t pc=std::stoull(absolute,nullptr,16),offset=std::stoull(relative,nullptr,16);
+    auto key=std::make_pair(fn,offset);auto it=expected.find(key);
++   if(qualified=="0"&&sass.empty()){
++    std::string rest;std::getline(in,rest);
++    bool exact_padding=(fn==gaussian16::fan1&&offset>=0x980&&offset<=0x9f0)||(fn==gaussian16::fan2&&offset>=0x300&&offset<=0x370);
++    gaussian16::require(exact_padding&&offset%16==0&&it==expected.end()&&cb=="-1"&&co=="0"&&cw=="0"&&rest=="0\t0\t\t","exact nonexecuted blank padding metadata");
++    gaussian16::require(bases.count(fn)&&gaussian16::add(bases[fn],offset)==pc&&padding_seen.insert(key).second,"padding owner full64 PC/unique");
++    // These nonexecuted metadata rows grant no record site. A dynamic record at
++    // any padding PC remains unknown and is rejected by the normal record join.
++    continue;
++   }
+    gaussian16::require(qualified=="1"&&it!=expected.end()&&gaussian16::compact(sass)==gaussian16::compact(it->second.sass)&&seen.insert(key).second,"static owner/PC/SASS closure");
+    gaussian16::require(bases.count(fn)&&gaussian16::add(bases[fn],offset)==pc,"full64 loaded/static base");
+    gaussian16::static_site(fn,offset,sass,it->second.src,it->second.dst);

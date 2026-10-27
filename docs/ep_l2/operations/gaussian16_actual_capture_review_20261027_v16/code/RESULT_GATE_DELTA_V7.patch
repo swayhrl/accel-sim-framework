@@ -1,0 +1,20 @@
+--- V6/gaussian16_result_gate_v1.py
++++ V7/gaussian16_result_gate_v1.py
+@@ -23,7 +23,7 @@
+    pairs[(kid,kind)]=dict(context=ctx,issues=issues,lanes=lanes);phase+=1
+   elif f[0]=='CALIBRATION':
+    need(phase==2 and len(f)==4 and int(f[1])==kid,'ordered calibration grammar')
+-   issues=int(f[2]);lanes=int(f[3]);need(issues>0 and issues<=lanes<=32*issues and lanes==(512 if kid%2 else 256),'actual allphysicalthread EXIT calibration')
++   issues=int(f[2]);lanes=int(f[3]);need(issues>0 and issues<=lanes<=32*issues and lanes==(128 if kid%2 else 256),'actual allphysicalthread EXIT calibration')
+    owner=FAN1 if kid%2 else FAN2;need({v for v in expected if v[0]==3 and v[1]==owner}<=registered,'all actual EXIT static sites registered before calibration')
+    calibration[kid]=dict(issues=issues,lanes=lanes);phase=3
+   elif f[0]=='LAUNCH_END':
+@@ -59,7 +59,7 @@
+  execution=json.loads((root/'EXECUTION.json').read_text());loaded=json.loads((root/'LOADED_MAPS.json').read_text());need(execution['binary_sha256']==BINARY and execution['tool_sha256']==SO and execution['exit_code']==0 and loaded['binary_sha256']==BINARY and loaded['producer_sha256']==SO,'actual exact binary/producer execution+hostmaps contract')
+  for kid,row in obs['calibration'].items():
+   need(reader['exit_effective_lanes_by_launch'][str(kid)]==row['lanes'],'actual trace EXIT/independent calibration join')
+-  r=reader['rows'][kid-1]['result'];need(r['CTAs']==(1 if kid%2 else 16)and r['warps_per_CTA']==(16 if kid%2 else 1)and r['EXIT_effective_lanes']==row['lanes']and r['EOF_decompressor_closed']is True,'actual all launch dimensions/EOF/EXIT joins')
++  r=reader['rows'][kid-1]['result'];need(r['CTAs']==1 and r['warps_per_CTA']==(4 if kid%2 else 8)and r['EXIT_effective_lanes']==row['lanes']and r['EOF_decompressor_closed']is True,'actual all launch dimensions/EOF/EXIT joins')
+   for kind,name in [(1,'CALL'),(2,'RET')]:
+    q=next(v for v in obs['per_site']if v['kernel_id']==kid and v['kind']==kind)
+    need(r[name+'_issue_records']==q['issues']and r[name+'_effective_lanes']==q['lanes'],'perlaunch trace/counter join')
