@@ -1,0 +1,443 @@
+{
+  "schema": "DTC_L2_MLP_PARAMETER_CONTRACT_V1",
+  "status": "CPU_QUALIFIED_PENDING_COORDINATOR_REGISTRATION",
+  "generated_utc": "2026-10-27T09:54:32.674579+00:00",
+  "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+  "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+  "binary": {
+    "path": "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+    "sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d"
+  },
+  "core_library": {
+    "path": "/root/data/dtc_failure_repair_20261025_v1/core-build/libcudart.so",
+    "sha256": "694f05ce97fe3e1552d94803c2202d8d037769c61624cde5f6a832622ed60c56"
+  },
+  "tracked_source_clean_observed": true,
+  "baseline_L2": "S:128:128:16,L:B:m:L:L,A:192:4,32:0,32",
+  "fixed_effective_options": {
+    "-gpgpu_clock_domains": "1410.0:1410.0:1410.0:850.0",
+    "-gpgpu_n_mem": "20",
+    "-gpgpu_n_sub_partition_per_mchannel": "2",
+    "-gpgpu_dram_partition_queues": "64:64:64:64",
+    "-gpgpu_dram_return_queue_size": "192",
+    "-gpgpu_dram_scheduler": "1"
+  },
+  "fixed_geometry": {
+    "cache_type": "SECTOR",
+    "sets_per_subpartition": 128,
+    "line_bytes": 128,
+    "ways": 16,
+    "controllers": 20,
+    "subpartitions_per_controller": 2,
+    "L2_data_bytes_total": 10485760,
+    "L2_set_mapping": "LINEAR",
+    "data_port_bytes": 32,
+    "result_FIFO_entries": 0,
+    "DRAM850MHz": true
+  },
+  "field_semantics": {
+    "entries": "Maximum distinct 32-byte atom-address MSHR keys per L2 subpartition; not cache tags/data capacity.",
+    "merge": "Maximum request-list length per existing MSHR key, INCLUDING the first request; baseline4 is not 4 additional merged requests.",
+    "miss_queue": "Configured per-L2-subpartition miss/send queue bound; some admission paths reserve num_miss with >= test, others use size<bound, so configured slots are not a universal usable-occupancy guarantee.",
+    "frfcfs": "FR-FCFS pending request window per DRAM/controller with write split disabled; ALSO increases shared memory-partition credits one-for-one."
+  },
+  "credit_coupling": {
+    "formula": "shared=frfcfs+return_queue-(subpartitions-1); private=1 per subpartition; add write queue only if separate writes enabled",
+    "fixed_return_queue": 192,
+    "fixed_subpartitions": 2,
+    "fixed_write_split": 0,
+    "shared_limits": {
+      "F64": 255,
+      "F128": 319,
+      "F256": 447
+    },
+    "claim_boundary": "FRFCFS experiments are a coupled scheduling-window and partition-admission-credit factor, not an isolated L2-capacity intervention."
+  },
+  "single_factor_profiles": {
+    "P0": {
+      "parameters": {
+        "entries": 192,
+        "merge": 4,
+        "miss_queue": 32,
+        "frfcfs": 64
+      },
+      "logical_resource_cost": {
+        "l2_data_bytes": 10485760,
+        "l2_banks": 40,
+        "mshr_address_entries_total": 7680,
+        "mshr_request_references_upper_bound": 30720,
+        "miss_queue_request_slots_total": 1280,
+        "frfcfs_request_slots_total": 1280,
+        "shared_credit_limit_per_controller": 255,
+        "private_credits_per_controller": 2,
+        "credit_coupling": "shared=FRFCFS+DRAMreturn-(subpartitions-1); write split disabled",
+        "physical_area_or_bytes": "UNKNOWN: request metadata, pointer/list/map overhead and hardware encoding not modeled"
+      },
+      "factor_count_changed": 0
+    },
+    "E384": {
+      "parameters": {
+        "entries": 384,
+        "merge": 4,
+        "miss_queue": 32,
+        "frfcfs": 64
+      },
+      "logical_resource_cost": {
+        "l2_data_bytes": 10485760,
+        "l2_banks": 40,
+        "mshr_address_entries_total": 15360,
+        "mshr_request_references_upper_bound": 61440,
+        "miss_queue_request_slots_total": 1280,
+        "frfcfs_request_slots_total": 1280,
+        "shared_credit_limit_per_controller": 255,
+        "private_credits_per_controller": 2,
+        "credit_coupling": "shared=FRFCFS+DRAMreturn-(subpartitions-1); write split disabled",
+        "physical_area_or_bytes": "UNKNOWN: request metadata, pointer/list/map overhead and hardware encoding not modeled"
+      },
+      "factor_count_changed": 1
+    },
+    "E768": {
+      "parameters": {
+        "entries": 768,
+        "merge": 4,
+        "miss_queue": 32,
+        "frfcfs": 64
+      },
+      "logical_resource_cost": {
+        "l2_data_bytes": 10485760,
+        "l2_banks": 40,
+        "mshr_address_entries_total": 30720,
+        "mshr_request_references_upper_bound": 122880,
+        "miss_queue_request_slots_total": 1280,
+        "frfcfs_request_slots_total": 1280,
+        "shared_credit_limit_per_controller": 255,
+        "private_credits_per_controller": 2,
+        "credit_coupling": "shared=FRFCFS+DRAMreturn-(subpartitions-1); write split disabled",
+        "physical_area_or_bytes": "UNKNOWN: request metadata, pointer/list/map overhead and hardware encoding not modeled"
+      },
+      "factor_count_changed": 1
+    },
+    "M8": {
+      "parameters": {
+        "entries": 192,
+        "merge": 8,
+        "miss_queue": 32,
+        "frfcfs": 64
+      },
+      "logical_resource_cost": {
+        "l2_data_bytes": 10485760,
+        "l2_banks": 40,
+        "mshr_address_entries_total": 7680,
+        "mshr_request_references_upper_bound": 61440,
+        "miss_queue_request_slots_total": 1280,
+        "frfcfs_request_slots_total": 1280,
+        "shared_credit_limit_per_controller": 255,
+        "private_credits_per_controller": 2,
+        "credit_coupling": "shared=FRFCFS+DRAMreturn-(subpartitions-1); write split disabled",
+        "physical_area_or_bytes": "UNKNOWN: request metadata, pointer/list/map overhead and hardware encoding not modeled"
+      },
+      "factor_count_changed": 1
+    },
+    "M16": {
+      "parameters": {
+        "entries": 192,
+        "merge": 16,
+        "miss_queue": 32,
+        "frfcfs": 64
+      },
+      "logical_resource_cost": {
+        "l2_data_bytes": 10485760,
+        "l2_banks": 40,
+        "mshr_address_entries_total": 7680,
+        "mshr_request_references_upper_bound": 122880,
+        "miss_queue_request_slots_total": 1280,
+        "frfcfs_request_slots_total": 1280,
+        "shared_credit_limit_per_controller": 255,
+        "private_credits_per_controller": 2,
+        "credit_coupling": "shared=FRFCFS+DRAMreturn-(subpartitions-1); write split disabled",
+        "physical_area_or_bytes": "UNKNOWN: request metadata, pointer/list/map overhead and hardware encoding not modeled"
+      },
+      "factor_count_changed": 1
+    },
+    "Q64": {
+      "parameters": {
+        "entries": 192,
+        "merge": 4,
+        "miss_queue": 64,
+        "frfcfs": 64
+      },
+      "logical_resource_cost": {
+        "l2_data_bytes": 10485760,
+        "l2_banks": 40,
+        "mshr_address_entries_total": 7680,
+        "mshr_request_references_upper_bound": 30720,
+        "miss_queue_request_slots_total": 2560,
+        "frfcfs_request_slots_total": 1280,
+        "shared_credit_limit_per_controller": 255,
+        "private_credits_per_controller": 2,
+        "credit_coupling": "shared=FRFCFS+DRAMreturn-(subpartitions-1); write split disabled",
+        "physical_area_or_bytes": "UNKNOWN: request metadata, pointer/list/map overhead and hardware encoding not modeled"
+      },
+      "factor_count_changed": 1
+    },
+    "Q128": {
+      "parameters": {
+        "entries": 192,
+        "merge": 4,
+        "miss_queue": 128,
+        "frfcfs": 64
+      },
+      "logical_resource_cost": {
+        "l2_data_bytes": 10485760,
+        "l2_banks": 40,
+        "mshr_address_entries_total": 7680,
+        "mshr_request_references_upper_bound": 30720,
+        "miss_queue_request_slots_total": 5120,
+        "frfcfs_request_slots_total": 1280,
+        "shared_credit_limit_per_controller": 255,
+        "private_credits_per_controller": 2,
+        "credit_coupling": "shared=FRFCFS+DRAMreturn-(subpartitions-1); write split disabled",
+        "physical_area_or_bytes": "UNKNOWN: request metadata, pointer/list/map overhead and hardware encoding not modeled"
+      },
+      "factor_count_changed": 1
+    },
+    "F128": {
+      "parameters": {
+        "entries": 192,
+        "merge": 4,
+        "miss_queue": 32,
+        "frfcfs": 128
+      },
+      "logical_resource_cost": {
+        "l2_data_bytes": 10485760,
+        "l2_banks": 40,
+        "mshr_address_entries_total": 7680,
+        "mshr_request_references_upper_bound": 30720,
+        "miss_queue_request_slots_total": 1280,
+        "frfcfs_request_slots_total": 2560,
+        "shared_credit_limit_per_controller": 319,
+        "private_credits_per_controller": 2,
+        "credit_coupling": "shared=FRFCFS+DRAMreturn-(subpartitions-1); write split disabled",
+        "physical_area_or_bytes": "UNKNOWN: request metadata, pointer/list/map overhead and hardware encoding not modeled"
+      },
+      "factor_count_changed": 1
+    },
+    "F256": {
+      "parameters": {
+        "entries": 192,
+        "merge": 4,
+        "miss_queue": 32,
+        "frfcfs": 256
+      },
+      "logical_resource_cost": {
+        "l2_data_bytes": 10485760,
+        "l2_banks": 40,
+        "mshr_address_entries_total": 7680,
+        "mshr_request_references_upper_bound": 30720,
+        "miss_queue_request_slots_total": 1280,
+        "frfcfs_request_slots_total": 5120,
+        "shared_credit_limit_per_controller": 447,
+        "private_credits_per_controller": 2,
+        "credit_coupling": "shared=FRFCFS+DRAMreturn-(subpartitions-1); write split disabled",
+        "physical_area_or_bytes": "UNKNOWN: request metadata, pointer/list/map overhead and hardware encoding not modeled"
+      },
+      "factor_count_changed": 1
+    }
+  },
+  "stage2_templates": {
+    "E384_M8": {
+      "entries": 384,
+      "merge": 8
+    },
+    "E768_M16": {
+      "entries": 768,
+      "merge": 16
+    },
+    "E384_Q64": {
+      "entries": 384,
+      "miss_queue": 64
+    },
+    "E768_Q128": {
+      "entries": 768,
+      "miss_queue": 128
+    },
+    "E384_F128": {
+      "entries": 384,
+      "frfcfs": 128
+    },
+    "E768_F256": {
+      "entries": 768,
+      "frfcfs": 256
+    },
+    "M8_Q64": {
+      "merge": 8,
+      "miss_queue": 64
+    },
+    "M8_F128": {
+      "merge": 8,
+      "frfcfs": 128
+    },
+    "E384_M8_Q64_F128": {
+      "entries": 384,
+      "merge": 8,
+      "miss_queue": 64,
+      "frfcfs": 128
+    }
+  },
+  "extension_policy": {
+    "families": [
+      "entries",
+      "merge",
+      "miss_queue",
+      "frfcfs"
+    ],
+    "next_doubling_examples": {
+      "entries": 1536,
+      "merge": 32,
+      "miss_queue": 256,
+      "frfcfs": 512
+    },
+    "configuration_limits": "Positive finite integers >= baseline; signed32 guard for all values; entries additionally <=1073741823 to avoid 2*entries constructor overflow. These are parser/integer guards, NOT realistic physical maxima.",
+    "admission_rule": "Every extension needs source/option readback, independent scientific run identity and resource forecasts; scheduler can reject unsafe predicted memory/CPU even if parser-valid.",
+    "no_zero_unlimited": "FRFCFS=0 forbidden; it changes finite-window semantics and has additional credit/unlimited behavior.",
+    "uniformity": "One unified profile per complete workload-set comparison; never construct GM from per-program best choices.",
+    "stop_basis": [
+      "whole-suite improvement saturation",
+      "performance regression",
+      "resource unrealizability",
+      "fixed scientific constraints",
+      "actual operational risk"
+    ]
+  },
+  "logical_resource_formulas": {
+    "MSHR_keys": "40*entries",
+    "request_references_upper_bound": "40*entries*merge",
+    "miss_queue_configured_slots": "40*miss_queue",
+    "FRFCFS_slots": "20*frfcfs",
+    "L2_data_bytes": "40*128*128*16 (fixed10MiB)",
+    "area_bytes_status": "UNKNOWN; do not convert pointer/list/map software allocation or reference-slot counts into physical hardware area. Entries allocate a host container; merged lists/miss queues grow with occupancy."
+  },
+  "API": {
+    "module": "l2_config_generator.py",
+    "function": "generate(base_config_texts: list[str], profile: str|dict) -> (texts: list[str], manifest: dict)",
+    "base_source": "Accepted downstream18 CH_P0 or DH_P0 ordered four config files. Preserve own cell and full input spec/expected population.",
+    "only_mutated_options": [
+      "-gpgpu_cache:dl2",
+      "-gpgpu_frfcfs_dram_sched_queue_size"
+    ],
+    "P0_byte_identical": true,
+    "all_non_target_effective_options_compared": true
+  },
+  "source_evidence": {
+    "cache_parser": {
+      "file": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-cache.h",
+      "sha256": "092946c8149946f37d381ad86eff8b4df31ece9e7dd52cb0fbe3836aa900c1c9",
+      "lines": [
+        578,
+        586
+      ]
+    },
+    "cache_guards": {
+      "file": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-cache.h",
+      "sha256": "092946c8149946f37d381ad86eff8b4df31ece9e7dd52cb0fbe3836aa900c1c9",
+      "lines": [
+        715,
+        760
+      ]
+    },
+    "mshr_atom_address": {
+      "file": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-cache.h",
+      "sha256": "092946c8149946f37d381ad86eff8b4df31ece9e7dd52cb0fbe3836aa900c1c9",
+      "lines": [
+        833,
+        834
+      ]
+    },
+    "mshr_construction": {
+      "file": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-cache.h",
+      "sha256": "092946c8149946f37d381ad86eff8b4df31ece9e7dd52cb0fbe3836aa900c1c9",
+      "lines": [
+        1044,
+        1058
+      ]
+    },
+    "kernel_parameter_invariance": {
+      "file": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-cache.h",
+      "sha256": "092946c8149946f37d381ad86eff8b4df31ece9e7dd52cb0fbe3836aa900c1c9",
+      "lines": [
+        1080,
+        1087
+      ]
+    },
+    "merge_capacity_semantics": {
+      "file": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-cache.cc",
+      "sha256": "f600601f96c07b6618f198e7b37dd394f07bb286a5d7b7f76c72634d7f2b1dd1",
+      "lines": [
+        581,
+        595
+      ]
+    },
+    "miss_queue_admission": {
+      "file": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-cache.h",
+      "sha256": "092946c8149946f37d381ad86eff8b4df31ece9e7dd52cb0fbe3836aa900c1c9",
+      "lines": [
+        1493,
+        1495
+      ]
+    },
+    "option_registration_L2": {
+      "file": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+      "lines": [
+        260,
+        264
+      ]
+    },
+    "option_registration_FRFCFS": {
+      "file": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+      "lines": [
+        293,
+        298
+      ]
+    },
+    "separate_write_default": {
+      "file": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+      "lines": [
+        331,
+        336
+      ]
+    },
+    "FRFCFS_admission": {
+      "file": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/dram_sched.cc",
+      "sha256": "2a0280247c5558541dc3896f86bc596549dd83b71630717cc40756248fee3e73",
+      "lines": [
+        72,
+        88
+      ]
+    },
+    "credit_coupling": {
+      "file": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/l2cache.cc",
+      "sha256": "1b2b0ebca49a2f5943c9350a637d849961da96159a147a70b887434bd7f37ff5",
+      "lines": [
+        130,
+        149
+      ]
+    }
+  },
+  "qualification": {
+    "path": "QUALIFICATION.json",
+    "sha256": "ad382fa63d938b5263764f9c313783c5e5bb51ea24b234f241bc9ed4fffb26ff",
+    "invariants": 142,
+    "real_option_parser_cases": 44,
+    "model_launches": 0,
+    "limitations": [
+      "Actual Core option_parser.cc exercised; cache_config sscanf format/order and fixed invariants independently mirrored, not full cache object construction.",
+      "No simulator executable, GPU trace, cycle engine, or model resource lease invoked.",
+      "CPU parsing success does not prove performance, memory boundedness, or workload liveness; actual scientific qualifications remain required."
+    ]
+  },
+  "remaining_runtime_qualification": "Coordinator performs minimal actual model qualification on distinct workload types with registered identities. Agent A did not start a simulator.",
+  "source_package_no_historical_modifications": true
+}

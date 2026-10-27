@@ -1,0 +1,61 @@
+{
+  "CH_matching": "all frozen identities for both selected uniform classes; reuse already registered exact CH cells only",
+  "FRFCFS_credit_coupling": "shared per controller = frfcfs + 191; private credits=2",
+  "area_matching": false,
+  "boundary_incremental_GM": 1.01,
+  "boundary_requires_upper_level_gain": true,
+  "candidate_classes": [
+    "baseline",
+    "moderate",
+    "high_resource"
+  ],
+  "combination_pairs": [
+    [
+      "entries",
+      "merge"
+    ],
+    [
+      "entries",
+      "miss_queue"
+    ],
+    [
+      "entries",
+      "frfcfs"
+    ],
+    [
+      "merge",
+      "miss_queue"
+    ],
+    [
+      "merge",
+      "frfcfs"
+    ]
+  ],
+  "combination_rule": "one best family level per pair; if all significant directions exist also one union, never Cartesian product",
+  "comparison_population": "identical accepted identities for every candidate compared",
+  "distinct_classes_required": true,
+  "engineering_failures": "preserve UUID; coordinator diagnoses; never retry actual consumed identity",
+  "family_extension_multiplier": 2,
+  "fixed_L2_bytes": 10485760,
+  "fixed_before_results": true,
+  "fixed_clocks": "1410:1410:1410:850 MHz",
+  "full_suite_required_for_formal_candidate": true,
+  "future_combination_escalation": "same supported direction levels can be doubled only after its whole-suite single-factor boundary evidence qualifies",
+  "high_resource_rule": "maximum normalized logical slot sum among full-suite tested profiles, tie broken by higher whole-suite DH/P0 GM; improvement_proven may be false",
+  "insufficient_distinct_classes": "fewer than two fully accepted non-P0 parameter vectors cannot be adopted as the requested three-class comparison",
+  "minimum_whole_common_population_GM": 1.01,
+  "missing_imputation": false,
+  "moderate_rule": "excluding high-resource vector, minimum normalized logical slot sum among whole-suite profiles with DH/P0 GM >=1.01; absent benefit report lowest-cost remaining tested profile as unimproved",
+  "no_total_start_cap": true,
+  "only_parameter_keys": [
+    "entries",
+    "merge",
+    "miss_queue",
+    "frfcfs"
+  ],
+  "provisional_search_with_terminal_negatives": true,
+  "schema": "DTC_L2_MLP_ADAPTIVE_CONTRACT_V1",
+  "statistics": "suite rows and negatives retained; GM never selects best profile per input",
+  "stopping": "saturation (<1.01 marginal), regression, source bounds, observed resource rejection or missing scientific evidence",
+  "whole_uniform_profile_only": true
+}
