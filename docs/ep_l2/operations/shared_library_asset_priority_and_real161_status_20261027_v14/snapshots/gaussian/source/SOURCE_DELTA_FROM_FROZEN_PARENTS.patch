@@ -1,0 +1,391 @@
+--- /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/isa_return_integration_prepare/producer/Makefile
++++ /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/producer/Makefile
+@@ -52,7 +52,7 @@
+ 
+ 
+ $(NVBIT_TOOL): $(OBJECTS) $(NVBIT_PATH)/libnvbit.a
+-	$(NVCC) -arch=$(ARCH) -O3 $(OBJECTS) $(LIBS) $(NVCC_PATH) -lcuda -lcudart_static -shared -o $@
++	$(NVCC) -arch=$(ARCH) -O3 $(OBJECTS) $(LIBS) $(NVCC_PATH) -lcuda -lcudart_static -lcrypto -shared -o $@
+ 
+ %.o: %.cu common.h
+ 	$(NVCC) -dc -c -std=c++17 $(INCLUDES) -Xptxas -cloning=no -Xcompiler -Wall -arch=$(ARCH) -O3 -Xcompiler -fPIC $< -o $@
+--- /dev/null
++++ /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/producer/gaussian_io_observer.h
+@@ -0,0 +1,41 @@
++#pragma once
++struct GaussianOutputCopy { CUcontext ctx; CUdeviceptr src; void*dst; size_t bytes; std::string api; uint64_t id; };
++static thread_local std::vector<GaussianOutputCopy> gaussian_output_stack;
++static uint64_t gaussian_output_next=0,gaussian_output_total=0;
++static void gaussian_output_event(CUcontext ctx,int is_exit,const char*name,void*params,CUresult*status){
++ std::string api(name);
++ if(api.find("DtoH")!=std::string::npos&&api!="cuMemcpyDtoH_v2"&&api!="cuMemcpyDtoH_v2_ptds")ada_input_fail("GAUSSIAN_OUTPUT_UNSUPPORTED_ASYNC_OR_COPY_API");
++ if(api!="cuMemcpyDtoH_v2"&&api!="cuMemcpyDtoH_v2_ptds")return;
++ if(!is_exit){
++  auto*p=(cuMemcpyDtoH_v2_params*)params;GaussianOutputCopy c{ctx,p->srcDevice,p->dstHost,p->ByteCount,api,++gaussian_output_next};
++  if(c.bytes>8ull*1024*1024||gaussian_output_total>32ull*1024*1024-c.bytes)ada_input_fail("GAUSSIAN_OUTPUT_CAP");
++  gaussian_output_total+=c.bytes;gaussian_output_stack.push_back(c);
++  std::ofstream l(user_folder+"/traces/ada-output.tsv",std::ios::app);l<<"ENTRY\t"<<c.id<<"\t"<<api<<"\t"<<std::hex<<(uintptr_t)ctx<<"\t"<<c.src<<"\t"<<(uintptr_t)c.dst<<"\t"<<std::dec<<c.bytes<<"\n";
++ }else{
++  if(gaussian_output_stack.empty())ada_input_fail("GAUSSIAN_OUTPUT_EXIT_WITHOUT_ENTRY");
++  auto c=gaussian_output_stack.back();gaussian_output_stack.pop_back();
++  if(c.ctx!=ctx||c.api!=api||!status||*status!=CUDA_SUCCESS)ada_input_fail("GAUSSIAN_OUTPUT_FAILED_OR_UNPAIRED_API");
++  std::string dir=user_folder+"/traces/outputs";if(mkdir(dir.c_str(),0700)&&errno!=EEXIST)ada_input_fail("GAUSSIAN_OUTPUT_MKDIR");
++  std::ostringstream p;p<<dir<<"/copy_"<<std::setw(6)<<std::setfill('0')<<c.id<<".bin";
++  struct statvfs space;if(statvfs(user_folder.c_str(),&space)||uint64_t(space.f_bavail)*space.f_frsize<5ull*1024*1024*1024+c.bytes)ada_input_fail("GAUSSIAN_OUTPUT_SPACE_FLOOR");
++  FILE*f=fopen(p.str().c_str(),"wbx");if(!f)ada_input_fail("GAUSSIAN_OUTPUT_EXCLUSIVE_OPEN");
++  SHA256_CTX h;SHA256_Init(&h);
++  for(size_t off=0;off<c.bytes;){size_t n=std::min(size_t(65536),c.bytes-off);if(fwrite((const unsigned char*)c.dst+off,1,n,f)!=n)ada_input_fail("GAUSSIAN_OUTPUT_WRITE");SHA256_Update(&h,(const unsigned char*)c.dst+off,n);off+=n;}
++  unsigned char digest[SHA256_DIGEST_LENGTH];SHA256_Final(digest,&h);auto expected=ada_hex_digest(digest);
++  if(fflush(f)||fsync(fileno(f))||fclose(f))ada_input_fail("GAUSSIAN_OUTPUT_CLOSE");
++  if(gaussian16::file_sha(p.str())!=expected)ada_input_fail("GAUSSIAN_OUTPUT_CLOSED_REOPEN_SHA");
++  std::ofstream l(user_folder+"/traces/ada-output.tsv",std::ios::app);l<<"COMPLETE\t"<<c.id<<"\t"<<api<<"\t"<<std::hex<<(uintptr_t)ctx<<"\t"<<c.src<<"\t"<<std::dec<<c.bytes<<"\t"<<expected<<"\t"<<p.str()<<"\tSYNC_DTOH_API_SUCCESS_ACTUAL_HOST_BYTES\n";
++ }
++}
++static void gaussian_lifecycle_event(CUcontext ctx,int is_exit,const char*name,void*params,CUresult*status){
++ std::string api(name);if(api!="cuMemAlloc_v2"&&api!="cuMemFree_v2")return;
++ if(!is_exit)return;if(!status||*status!=CUDA_SUCCESS)ada_input_fail("GAUSSIAN_ALLOCATION_API_FAILURE");
++ std::ofstream l(user_folder+"/traces/ada-allocation.tsv",std::ios::app);
++ if(api=="cuMemAlloc_v2"){auto*p=(cuMemAlloc_v2_params*)params;l<<"ALLOC\t"<<std::hex<<(uintptr_t)ctx<<"\t"<<*p->dptr<<"\t"<<std::dec<<p->bytesize<<"\tCUDA_SUCCESS\n";}
++ else {auto*p=(cuMemFree_v2_params*)params;l<<"FREE\t"<<std::hex<<(uintptr_t)ctx<<"\t"<<p->dptr<<"\tCUDA_SUCCESS\n";}
++}
++static void gaussian_io_finish(CUcontext ctx){
++ if(!ada_input_pending.empty()||!ada_input_stack.empty()||!gaussian_output_stack.empty())ada_input_fail("GAUSSIAN_IO_UNCLOSED_LIFECYCLE");
++ std::ofstream i(user_folder+"/traces/ada-input.tsv",std::ios::app);i<<"EOF\t"<<ada_input_next<<"\t"<<ada_input_total<<"\t"<<std::hex<<(uintptr_t)ctx<<"\n";
++ std::ofstream o(user_folder+"/traces/ada-output.tsv",std::ios::app);o<<"EOF\t"<<std::dec<<gaussian_output_next<<"\t"<<gaussian_output_total<<"\t"<<std::hex<<(uintptr_t)ctx<<"\n";
++}
+--- /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/isa_return_integration_prepare/producer/inject_funcs.cu
++++ /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/producer/inject_funcs.cu
+@@ -86,3 +86,12 @@
+     atomicAdd((unsigned long long *)preported_dynamic_instr_counter, 1);
+   }
+ }
++
++extern "C" __device__ __noinline__ void instrument_cfi_observer(int pred,int site,uint64_t counters){
++ unsigned active=__activemask();unsigned effective=__ballot_sync(active,pred);
++ if(site<0||site>2)return;
++ if(get_laneid()==__ffs(active)-1){
++  auto*p=(unsigned long long*)counters;
++  atomicAdd(p+site*2,1ULL);atomicAdd(p+site*2+1,(unsigned long long)__popc(effective));
++ }
++}
+--- /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/isa_return_integration_prepare/producer/tracer_tool.cu
++++ /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/producer/tracer_tool.cu
+@@ -99,6 +99,9 @@
+ std::string traces_location = cwd + "/traces/";
+ std::string kernelslist_location = cwd + "/traces/kernelslist";
+ std::string stats_location = cwd + "/traces/stats.csv";
++static __managed__ uint64_t gaussian_cfi_counter[6]={0,0,0,0,0,0};
++static bool gaussian_cfi_sites[3]={false,false,false};
++static uint64_t gaussian_observer_launches=0,gaussian_observer_call_issues=0,gaussian_observer_ret_issues=0;
+ 
+ std::unordered_map<CUcontext, std::string> ctx_kernelslist;
+ std::unordered_map<CUcontext, std::string> ctx_stats_location;
+@@ -384,6 +387,16 @@
+ 
+       int opcode_id = ada_register(instr, nvbit_get_func_name(ctx, f, true),nvbit_get_func_addr(ctx,f));
+ 
++      if(ada_meta.at(opcode_id).ctrl_kind==1||ada_meta.at(opcode_id).ctrl_kind==2||ada_meta.at(opcode_id).opcode=="EXIT"){
++        auto &meta=ada_meta.at(opcode_id);int site=meta.opcode=="EXIT"?2:meta.ctrl_kind-1;
++        nvbit_insert_call(instr,"instrument_cfi_observer",IPOINT_BEFORE);
++        nvbit_add_call_arg_guard_pred_val(instr);
++        nvbit_add_call_arg_const_val32(instr,site);
++        nvbit_add_call_arg_const_val64(instr,(uint64_t)gaussian_cfi_counter);
++        gaussian_cfi_sites[site]=true;
++        std::ofstream l(user_folder+"/traces/ada-cfi-observer.tsv",std::ios::app);
++        l<<"SITE_REGISTER\t"<<std::hex<<(uintptr_t)ctx<<"\t"<<std::dec<<(site+1)<<"\t"<<meta.function<<"\t"<<std::hex<<meta.pc<<"\tDEVICE_ATOMIC_INDEPENDENT_OF_TRACE_CHANNEL\n";
++      }
+       int src_oprd[MAX_SRC]; std::fill(src_oprd,src_oprd+MAX_SRC,-1);
+       int srcNum=0,dst_oprd=-1,mem_oper_idx=-1,num_mref=0;
+       uint64_t imm_value=0;int cb_id=-1,cb_offset=0,cb_reg=-1;
+@@ -482,6 +495,8 @@
+   nvbit_launch_kernel(ctx,ada_flush_function,1,1,1,1,1,1,0,stream,args,nullptr);
+ }
+ static std::set<CUcontext> ada_contexts;
++#include "ada_input_snapshot.h"
++#include "gaussian_io_observer.h"
+ static void ada_api(const char*name,CUcontext ctx,int is_exit) {
+   mkdir((std::string(getcwd(nullptr,0))+"/traces").c_str(),0755);
+   std::ofstream out(std::string(getcwd(nullptr,0))+"/traces/ada-api.tsv",std::ios::app);
+@@ -504,6 +519,11 @@
+   // The selector is always required.  For ACTIVE_FROM_START=0 it is
+   // intersected with the parent-owned profiler region; this keeps model
+   // prewarm outside both the trace payload and instrumentation work.
++  gaussian16::require(getenv("ADA_INPUT_SNAPSHOT")&&std::string(getenv("ADA_INPUT_SNAPSHOT"))=="1","mandatory C8 host-byte snapshots");
++  gaussian16::require(active_from_start&&(!getenv("DYNAMIC_KERNEL_RANGE")||std::string(getenv("DYNAMIC_KERNEL_RANGE")).empty()),"whole exact launch range");
++  gaussian16::require(instr_begin_interval==0&&instr_end_interval==UINT32_MAX,"whole static instruction range");
++  ada_input_complete(ctx,nullptr,true,"EXISTING_PRODUCER_PREKERNEL_SYNC");
++  for(unsigned i=0;i<6;i++)gaussian_cfi_counter[i]=0;
+   std::string func_name = std::string(nvbit_get_func_name(ctx, func, true));
+   bool kernel_matches_selector =
+       should_trace_kernel(ctx_kernelid[ctx], func_name);
+@@ -655,7 +675,7 @@
+   }
+ 
+   /* make sure current kernel is completed */
+-  cudaDeviceSynchronize();
++  gaussian16::require(cudaDeviceSynchronize()==cudaSuccess,"existing postlaunch sync status");
+   cudaError_t err = cudaGetLastError();
+   if (err != cudaSuccess) {
+     printf("cuda error: %s\n", cudaGetErrorName(err));
+@@ -669,9 +689,17 @@
+   /* issue flush of channel so we are sure all the memory accesses
+    * have been pushed */
+   ada_flush(ctx);
+-  cudaDeviceSynchronize();
++  gaussian16::require(cudaDeviceSynchronize()==cudaSuccess,"existing flush sync status");
+   assert(cudaGetLastError() == cudaSuccess);
+ 
++  {
++    gaussian16::require(gaussian_cfi_sites[0]&&gaussian_cfi_sites[1],"all frozen CFI sites instrumented");
++    std::ofstream l(user_folder+"/traces/ada-cfi-observer.tsv",std::ios::app);
++    for(int i=0;i<2;i++)l<<"LAUNCH\t"<<std::dec<<(ctx_kernelid[ctx]-1)<<"\t"<<std::hex<<(uintptr_t)ctx<<"\t"<<ctx_current_kernel_name[ctx]<<"\t"<<std::dec<<(i+1)<<"\t"<<gaussian16::fan1<<"\t"<<std::hex<<(i?0x960:0x280)<<"\t"<<std::dec<<gaussian_cfi_counter[i*2]<<"\t"<<gaussian_cfi_counter[i*2+1]<<"\tDEVICE_ATOMIC_INDEPENDENT_OF_TRACE_CHANNEL\n";
++    l<<"CALIBRATION\t"<<std::dec<<(ctx_kernelid[ctx]-1)<<"\t"<<gaussian_cfi_counter[4]<<"\t"<<gaussian_cfi_counter[5]<<"\n";
++    l<<"LAUNCH_END\t"<<std::dec<<(ctx_kernelid[ctx]-1)<<"\n";gaussian_observer_launches++;
++    gaussian_observer_call_issues+=gaussian_cfi_counter[0];gaussian_observer_ret_issues+=gaussian_cfi_counter[2];
++  }
+   /* unset the skip flag */
+   skip_flag = false;
+ 
+@@ -710,6 +738,9 @@
+   if (skip_flag)
+     return;
+   ada_api(name,ctx,is_exit);
++  ada_input_event(ctx,is_exit,name,params,pStatus);
++  gaussian_output_event(ctx,is_exit,name,params,pStatus);
++  gaussian_lifecycle_event(ctx,is_exit,name,params,pStatus);
+ 
+   if (first_call == true) {
+     first_call = false;
+@@ -1183,6 +1214,8 @@
+ }
+ 
+ void nvbit_at_ctx_term(CUcontext ctx) {
++  gaussian_io_finish(ctx);
++  {std::ofstream l(user_folder+"/traces/ada-cfi-observer.tsv",std::ios::app);l<<"EOF\t"<<gaussian_observer_launches<<"\t"<<gaussian_observer_call_issues<<"\t"<<gaussian_observer_ret_issues<<"\n";}
+   if (recv_thread_started) {
+     recv_thread_started = false;
+     pthread_join(recv_thread, NULL);
+--- /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/isa_return_integration_prepare/consumer/trace_parser.cc
++++ /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/consumer/trace_parser.cc
+@@ -449,6 +449,8 @@
+     threadblock_traces[i]->clear();
+   }
+ 
++  last_block=BlockResult{};
++  std::vector<unsigned>declared(threadblock_traces.size()),parsed(threadblock_traces.size());std::vector<bool>seen_warp(threadblock_traces.size());bool coordinates=false;
+   unsigned block_id_x = 0, block_id_y = 0, block_id_z = 0;
+   bool start_of_tb_stream_found = false;
+ 
+@@ -473,13 +475,19 @@
+                  "Parsing error: thread block start before the previous one "
+                  "finishes");
+       } else if (string1 == "#END_TB") {
+-        assert(start_of_tb_stream_found);
++        if(!start_of_tb_stream_found||!coordinates)throw std::runtime_error("missing TB start/coordinates");
++        for(unsigned w=0;w<seen_warp.size();w++)if(!seen_warp[w]||parsed[w]!=declared[w])throw std::runtime_error("missing/short/duplicate warp body");
++        last_block.present=true;last_block.x=block_id_x;last_block.y=block_id_y;last_block.z=block_id_z;
+         if(trace_version==8) {
+           for(unsigned wi=0;wi<threadblock_traces.size();wi++) {
+             auto warp=threadblock_traces[wi];unsigned lanes=std::min(32u,block_threads-wi*32);
+             unsigned launched=lanes==32?0xffffffffu:(1u<<lanes)-1u,live=launched;
+             std::vector<uint64_t> stack[32];uint64_t pending[32]={};
+             for(const auto &inst:*warp){
++              last_block.raw_records++;
++              if(inst.opcode=="EXIT")last_block.exit_lanes+=__builtin_popcount(inst.mask);
++              if(inst.ada_control_kind==1){last_block.call_issues++;last_block.call_lanes+=__builtin_popcount(inst.mask);}
++              if(inst.ada_control_kind==2){last_block.ret_issues++;last_block.ret_lanes+=__builtin_popcount(inst.mask);}
+               if((inst.ada_active&~live)||(inst.mask&~launched))throw std::runtime_error("ADA8 active lanes outside live/physical warp");
+               for(unsigned lane=0;lane<32;lane++)if((inst.ada_active&(1u<<lane))&&pending[lane]){
+                 if(inst.m_pc!=pending[lane])throw std::runtime_error("ADA8 control successor PC mismatch");pending[lane]=0;
+@@ -528,22 +536,23 @@
+         }
+         break;  // end of TB stream
+       } else if (string1 == "thread" && string2 == "block") {
+-        assert(start_of_tb_stream_found);
++        if(!start_of_tb_stream_found||coordinates)throw std::runtime_error("duplicate/outside TB coordinates");coordinates=true;
+         sscanf(line.c_str(), "thread block = %d,%d,%d", &block_id_x,
+                &block_id_y, &block_id_z);
+         std::cout << line << std::endl;
+       } else if (string1 == "warp") {
+         // the start of new warp stream
+         assert(start_of_tb_stream_found);
+-        sscanf(line.c_str(), "warp = %d", &warp_id);
++        if(sscanf(line.c_str(), "warp = %u", &warp_id)!=1||warp_id>=seen_warp.size()||seen_warp[warp_id])throw std::runtime_error("bad/duplicate warp id");seen_warp[warp_id]=true;
+       } else if (string1 == "insts") {
+         assert(start_of_tb_stream_found);
+-        sscanf(line.c_str(), "insts = %d", &insts_num);
++        if(sscanf(line.c_str(), "insts = %u", &insts_num)!=1||insts_num==0||insts_num>10000000||!seen_warp[warp_id])throw std::runtime_error("bad warp instruction count");declared[warp_id]=insts_num;
+         threadblock_traces[warp_id]->resize(
+             insts_num);  // allocate all the space at once
+         inst_count = 0;
+       } else {
+         assert(start_of_tb_stream_found);
++        if(warp_id>=seen_warp.size()||!seen_warp[warp_id]||inst_count>=declared[warp_id])throw std::runtime_error("record outside declared warp");parsed[warp_id]++;
+         threadblock_traces[warp_id]
+             ->at(inst_count)
+             .parse_from_string(line, trace_version, enable_lineinfo);
+@@ -551,6 +560,7 @@
+       }
+     }
+   }
++  if(start_of_tb_stream_found&&!last_block.present)throw std::runtime_error("truncated TB missing END");
+ }
+ 
+ PipeReader::PipeReader(const std::string &filePath) { OpenFile(filePath); }
+@@ -617,4 +627,7 @@
+     other.command = {};
+   }
+   return *this;
+-}+}
++void PipeReader::close_checked(){
++ if(pipe){FILE*p=pipe;pipe=nullptr;int rc=pclose(p);if(rc!=0)throw std::runtime_error("trace decompressor/CRC nonzero");}
++}
+--- /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/isa_return_integration_prepare/consumer/trace_parser.h
++++ /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/consumer/trace_parser.h
+@@ -109,6 +109,7 @@
+ 
+   // Read one line
+   bool readLine(std::string &line);
++  void close_checked();
+ 
+  private:
+   FILE *pipe = NULL;    // Store the pipe
+@@ -147,6 +148,8 @@
+ 
+ class trace_parser {
+  public:
++  struct BlockResult { bool present=false; unsigned x=0,y=0,z=0; uint64_t raw_records=0,call_issues=0,ret_issues=0,call_lanes=0,ret_lanes=0,exit_lanes=0; };
++  BlockResult last_block;
+   trace_parser() {}
+   trace_parser(const char *kernellist_filepath);
+ 
+--- /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/root/isa_return_consumer_strict_kind_v2/shared/gaussian_scope_v1.h
++++ /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/shared/gaussian_scope_v1.h
+@@ -9,7 +9,7 @@
+ #include <stdexcept>
+ #include <unistd.h>
+ namespace gaussian16 {
+-static const char* profile="GAUSSIAN16_DIRECT_RETPAIR_V1_CANDIDATE";
++static const char* profile="GAUSSIAN16_DIRECT_RETPAIR_INPUT_OBSERVER_V2_CANDIDATE";
+ static const char* binary="50fad6fdc65b005af1384c83a1b825df405f7b894ed649b98ee145a0b7cd01d1";
+ static const char* cubin="690c2d76dff5785f9d5d253a04b3ccd725db59f94d2893077e456fa8de35a5a1";
+ static const char* mapsha="09a8918db2494e8a498fdafb84125a79bfde9ea7c871315220dd72ae38b9099b";
+--- /dev/null
++++ /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/tests/gaussian_consumer_full.cc
+@@ -0,0 +1,21 @@
++#include <bits/stdc++.h>
++#include "../consumer/trace_parser.h"
++int main(int argc,char**argv){try{
++ if(argc!=2)throw std::runtime_error("one exact grouped trace path required");
++ trace_parser p;auto*k=p.parse_kernel_info(argv[1]);
++ uint64_t threads=uint64_t(k->tb_dim_x)*k->tb_dim_y*k->tb_dim_z;
++ uint64_t blocks=uint64_t(k->grid_dim_x)*k->grid_dim_y*k->grid_dim_z;
++ if(!threads||threads>1024||!blocks||blocks>1000000)throw std::runtime_error("finite exact launch dimensions");
++ unsigned nw=(threads+31)/32;std::vector<std::vector<inst_trace_t>>v(nw);std::vector<std::vector<inst_trace_t>*>w;for(auto&x:v)w.push_back(&x);
++ std::set<std::tuple<unsigned,unsigned,unsigned>>seen;uint64_t records=0,calls=0,rets=0,cl=0,rl=0,el=0;
++ for(uint64_t i=0;i<blocks;i++){
++  p.get_next_threadblock_traces(w,k->trace_verion,k->enable_lineinfo,k->pipeReader,unsigned(threads));auto a=p.last_block;
++  if(!a.present||a.x>=k->grid_dim_x||a.y>=k->grid_dim_y||a.z>=k->grid_dim_z||!seen.emplace(a.x,a.y,a.z).second)throw std::runtime_error("missing/duplicate/out-of-range CTA");
++  records+=a.raw_records;calls+=a.call_issues;rets+=a.ret_issues;cl+=a.call_lanes;rl+=a.ret_lanes;el+=a.exit_lanes;
++ }
++ p.get_next_threadblock_traces(w,k->trace_verion,k->enable_lineinfo,k->pipeReader,unsigned(threads));
++ if(p.last_block.present)throw std::runtime_error("extra CTA beyond exact launch");
++ k->pipeReader.close_checked();
++ std::cout<<"GAUSSIAN_CPU_FULL_TRACE_JSON {\"schema\":\"GAUSSIAN16_CONSUMER_FULL_RECORD_V2\",\"kernel_id\":"<<k->kernel_id<<",\"CTAs\":"<<seen.size()<<",\"warps_per_CTA\":"<<nw<<",\"source_records\":"<<records<<",\"CALL_issue_records\":"<<calls<<",\"RET_issue_records\":"<<rets<<",\"CALL_effective_lanes\":"<<cl<<",\"RET_effective_lanes\":"<<rl<<",\"EXIT_effective_lanes\":"<<el<<",\"all_CTA_warp_EXIT_CFI_closed\":true,\"EOF_decompressor_closed\":true,\"dynamic_device_observer_joined\":false,\"input_numeric_qualification\":false,\"simulator_qualification\":false}\n";
++ p.kernel_finalizer(k);return 0;
++}catch(const std::exception&e){std::cerr<<e.what()<<"\n";return 2;}}
+--- /dev/null
++++ /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/gaussian_full_record_reader_v3.py
+@@ -0,0 +1,29 @@
++#!/usr/bin/python3
++"""Exact Gaussian16 full grouped-record CPU reader. No GPU/application execution."""
++from pathlib import Path
++import argparse,json,hashlib,subprocess,re
++def ref(p):
++ b=p.read_bytes();return dict(path=str(p),bytes=len(b),sha256=hashlib.sha256(b).hexdigest())
++def main():
++ p=argparse.ArgumentParser();p.add_argument('--traces',required=True);p.add_argument('--reader',required=True);p.add_argument('--out',required=True);p.add_argument('--expected-launches',type=int,default=30);a=p.parse_args()
++ root=Path(a.traces).resolve();reader=Path(a.reader).resolve();assert 1<=a.expected_launches<=30
++ lists=sorted(root.glob('kernelslist*.g'));assert len(lists)==1,'one exact grouped commandlist required'
++ commands=[x.strip()for x in lists[0].read_text().splitlines()if x.strip()];memcpy=[x for x in commands if x.startswith('Memcpy')];assert all(re.fullmatch(r'MemcpyHtoD,\s*(?:0x)?[0-9a-fA-F]+,\s*[0-9]+',x)for x in memcpy),'unknown memcpy command';names=[x for x in commands if not x.startswith('Memcpy')];assert len(names)==a.expected_launches and len(set(names))==len(names)
++ rows=[]
++ for name in names:
++  assert re.fullmatch(r'kernel-[0-9]+(?:-ctx_0x[0-9a-fA-F]+)?\.traceg(?:\.xz)?',name),'unknown grouped command'
++  target=root/name;assert target.resolve().is_relative_to(root)
++  c=subprocess.run([str(reader),str(target)],capture_output=True,text=True,timeout=120)
++  assert c.returncode==0,(name,c.returncode,c.stderr[-1000:])
++  matches=[x.split('GAUSSIAN_CPU_FULL_TRACE_JSON ',1)[1]for x in c.stdout.splitlines()if x.startswith('GAUSSIAN_CPU_FULL_TRACE_JSON ')]
++  assert len(matches)==1;v=json.loads(matches[0]);assert v['all_CTA_warp_EXIT_CFI_closed']and v['EOF_decompressor_closed'];rows.append(dict(trace_ref=ref(target),result=v))
++ assert sorted(x['result']['kernel_id']for x in rows)==list(range(1,a.expected_launches+1))
++ report=dict(schema='GAUSSIAN16_FULL_RECORD_CFI_READER_V3',status='PASS',launches=len(rows),
++  call_issues=sum(x['result']['CALL_issue_records']for x in rows),ret_issues=sum(x['result']['RET_issue_records']for x in rows),
++  call_effective_lanes=sum(x['result']['CALL_effective_lanes']for x in rows),ret_effective_lanes=sum(x['result']['RET_effective_lanes']for x in rows),
++  exit_effective_lanes_by_launch={str(x["result"]["kernel_id"]):x["result"]["EXIT_effective_lanes"]for x in rows},source_records=sum(x['result']['source_records']for x in rows),
++  static_control_sites=[dict(owner='_Z4Fan1PfS_ii',pc=0x280,kind=1),dict(owner='_Z4Fan1PfS_ii',pc=0x960,kind=2)],
++  commandlist_memcpy_commands=memcpy,full_record_complete=True,loaded_map_complete=True,reader_ref=ref(reader),raw_inputs_refs=[],sidecar_refs=[ref(root/x)for x in ['semantic-map.tsv','ada-loaded.tsv','ada-static.tsv']],rows=rows,
++  profile='GAUSSIAN16_DIRECT_RETPAIR_INPUT_OBSERVER_V2_CANDIDATE',device_observer_joined=False,input_numeric_qualification=False,simulator_qualification=False,trace_zero_is_not_independent_zero_evidence=True,fixture_or_partial_launch_override=a.expected_launches!=30)
++ Path(a.out).write_text(json.dumps(report,indent=2));print(json.dumps({k:v for k,v in report.items()if k not in ['rows','sidecar_refs','raw_inputs_refs']}))
++if __name__=='__main__':main()
+--- /dev/null
++++ /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/postprocess_v8_frozen.py
+@@ -0,0 +1,60 @@
++#!/usr/bin/env python3
++"""Stable external CTA/warp grouping. Explicitly waits for sort and XZ close/EOF."""
++import argparse,collections,hashlib,itertools,json,lzma,os,pathlib,re,shutil,subprocess,tempfile
++def sha(path):
++ h=hashlib.sha256()
++ with path.open('rb')as f:
++  while True:
++   block=f.read(2**20)
++   if not block:break
++   h.update(block)
++ return h.hexdigest()
++def main():
++ p=argparse.ArgumentParser();p.add_argument('traces');p.add_argument('--scratch-budget',type=int,default=64*2**30);a=p.parse_args();R=pathlib.Path(a.traces).resolve()
++ lists=[x for x in sorted(R.glob('kernelslist*'))if not x.name.endswith('.g')];assert lists
++ receipts=[]
++ for ci,cmd in enumerate(lists):
++  output=R/('kernelslist.g'if len(lists)==1 else cmd.name+'.g')
++  with output.open('x')as commands:
++   for command in cmd.read_text().splitlines():
++    if not command.strip():continue
++    if command.startswith('Memcpy'):commands.write(command+'\n');continue
++    source=R/command;assert source.parent==R and source.name.startswith('kernel-') and source.name.endswith('.trace.xz')
++    dest=source.with_name(source.name.replace('.trace.xz','.traceg.xz'));counts=collections.Counter();header=[];total=0;records=0
++    with tempfile.TemporaryDirectory(prefix='ada-sort-',dir=R.parent)as temp:
++     temp=pathlib.Path(temp);body=temp/'body';ordered=temp/'ordered'
++     with lzma.open(source,'rt')as inp,body.open('w')as spool:
++      for line in inp:
++       if not re.match(r'^\d+ \d+ \d+ \d+ ',line):
++        if records:raise RuntimeError('header after records')
++        header.append(line);continue
++       keys=line.split(maxsplit=4);key=tuple(map(int,keys[:4]));counts[key]+=1;records+=1;total+=len(line);spool.write(line)
++       if total*3>a.scratch_budget or (records%4096==0 and shutil.disk_usage(temp).free<5*2**30):raise RuntimeError('postprocess scratch reserve')
++     assert records and any('-accelsim tracer version = 8'in x for x in header)
++     subprocess.run(['/usr/bin/sort','-s','--parallel=1','-S64M','-T',str(temp),'-k3,3n','-k2,2n','-k1,1n','-k4,4n','-o',str(ordered),str(body)],env={'PATH':'/usr/bin:/bin','LC_ALL':'C'},check=True)
++     with dest.open('xb')as raw:
++      with lzma.LZMAFile(raw,'w',format=lzma.FORMAT_XZ,preset=1)as compressed:
++       def write(x):compressed.write(x.encode())
++       write(''.join(header)+'\n');previous_cta=None;previous_warp=None
++       with ordered.open()as seq:
++        for line in seq:
++         keys=line.split(maxsplit=4);cta=tuple(map(int,keys[:3]));warp=int(keys[3])
++         if cta!=previous_cta:
++          if previous_cta is not None:write('\n#END_TB\n')
++          write('\n#BEGIN_TB\nthread block = %d,%d,%d\n'%cta);previous_cta=cta;previous_warp=None
++         if warp!=previous_warp:write('\nwarp = %d\ninsts = %d\n'%(warp,counts[(*cta,warp)]));previous_warp=warp
++         write(keys[4])
++       write('\n#END_TB\n')
++      raw.flush();os.fsync(raw.fileno())
++    # Complete reopen/decompression is mandatory; returning before compressor EOF is forbidden.
++    expanded=0
++    with lzma.open(dest,'rb')as readback:
++     while True:
++      block=readback.read(2**20)
++      if not block:break
++      expanded+=len(block)
++    receipts.append(dict(source=str(source),grouped=str(dest),source_sha256=sha(source),grouped_sha256=sha(dest),records=records,warps=len(counts),ctas=len(set(x[:3]for x in counts)),expanded_bytes=expanded,compressor_eof_and_reopen=True))
++    commands.write(dest.name+'\n');commands.flush();os.fsync(commands.fileno())
++ with(R/'POSTPROCESS_V8.json').open('x')as f:json.dump(receipts,f,indent=2);f.write('\n')
++ print(json.dumps(receipts))
++if __name__=='__main__':main()

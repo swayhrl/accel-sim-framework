@@ -1,0 +1,196 @@
+{
+  "schema": "GAUSSIAN16_PRODUCER_CONSUMER_BRIDGE_CONTRACT_V1",
+  "status": "OFFLINE_COMPILED_CPU_CANDIDATE_REQUIRES_ROOT_REVIEW_AND_DYNAMIC_WITNESS",
+  "exact_queue_id": "ORD_Rodinia_gaussian_480dbce5bed5_A001",
+  "binary_sha256": "50fad6fdc65b005af1384c83a1b825df405f7b894ed649b98ee145a0b7cd01d1",
+  "argv_suffix": [
+    "-s",
+    "16"
+  ],
+  "profile": "GAUSSIAN16_DIRECT_RETPAIR_INPUT_OBSERVER_V2_CANDIDATE",
+  "semantic_map_sha256": "09a8918db2494e8a498fdafb84125a79bfde9ea7c871315220dd72ae38b9099b",
+  "loaded_cubin_sha256": "690c2d76dff5785f9d5d253a04b3ccd725db59f94d2893077e456fa8de35a5a1",
+  "required_environment": {
+    "ADA_INPUT_SNAPSHOT": "1",
+    "ACTIVE_FROM_START": "1",
+    "DYNAMIC_KERNEL_RANGE": "UNSET_OR_EMPTY",
+    "INSTR_BEGIN": "0",
+    "INSTR_END": "4294967295",
+    "TRACE_FILE_COMPRESS": "1",
+    "ENABLE_SPINLOCK_FAST_FORWARD": "0",
+    "ADA_DUMP_ONLY": "UNSET",
+    "ADA_SEMANTIC_MAP": "EXACT_FROZEN_MAP_PATH"
+  },
+  "io": {
+    "input_journal": "traces/ada-input.tsv",
+    "output_journal": "traces/ada-output.tsv",
+    "allocation_journal": "traces/ada-allocation.tsv",
+    "exact_copy_bytes": [
+      1024,
+      1024,
+      64
+    ],
+    "directions": [
+      "HtoD",
+      "DtoH"
+    ],
+    "input_entry": [
+      "ENTRY",
+      "id",
+      "api",
+      "context_hex",
+      "stream_hex",
+      "device_pointer_hex",
+      "host_pointer_hex",
+      "bytes",
+      "sha256",
+      "path"
+    ],
+    "input_api_exit": [
+      "API_EXIT",
+      "id",
+      "CUresult_int"
+    ],
+    "input_complete": [
+      "COMPLETE",
+      "id",
+      "boundary",
+      "bytes",
+      "sha256",
+      "scope"
+    ],
+    "output_entry": [
+      "ENTRY",
+      "id",
+      "api",
+      "context_hex",
+      "device_pointer_hex",
+      "host_pointer_hex",
+      "bytes"
+    ],
+    "output_complete": [
+      "COMPLETE",
+      "id",
+      "api",
+      "context_hex",
+      "device_pointer_hex",
+      "bytes",
+      "sha256",
+      "path",
+      "SYNC_DTOH_API_SUCCESS_ACTUAL_HOST_BYTES"
+    ],
+    "eof": [
+      "EOF",
+      "copy_count",
+      "total_bytes",
+      "context_hex"
+    ],
+    "input_scope": "actual host source unchanged over successful API plus existing completion boundary, not device readback",
+    "output_scope": "actual host bytes after successful synchronous DtoH API, closed-reopen SHA",
+    "unsupported_async_DtoH": "FAIL_CLOSED",
+    "extra_synchronization": false
+  },
+  "observer": {
+    "path": "traces/ada-cfi-observer.tsv",
+    "site_register": [
+      "SITE_REGISTER",
+      "context_hex",
+      "kind_1CALL_2RET_3EXIT",
+      "owner",
+      "relative_pc_hex",
+      "DEVICE_ATOMIC_INDEPENDENT_OF_TRACE_CHANNEL"
+    ],
+    "launch": [
+      "LAUNCH",
+      "kernel_id",
+      "context_hex",
+      "launch_owner",
+      "kind_1CALL_2RET",
+      "site_owner",
+      "relative_pc_hex",
+      "issued_warps",
+      "effective_lanes",
+      "DEVICE_ATOMIC_INDEPENDENT_OF_TRACE_CHANNEL"
+    ],
+    "calibration": [
+      "CALIBRATION",
+      "kernel_id",
+      "EXIT_issued_warps",
+      "EXIT_effective_lanes"
+    ],
+    "launch_end": [
+      "LAUNCH_END",
+      "kernel_id"
+    ],
+    "eof": [
+      "EOF",
+      "launches",
+      "total_CALL_issues",
+      "total_RET_issues"
+    ],
+    "expected_launches": 30,
+    "expected_CFI_site_rows": 60,
+    "calibration_required": true,
+    "expected_physical_EXIT_lanes": {
+      "Fan1": 512,
+      "Fan2": 256
+    },
+    "must_join_actual_trace_EXIT_masks": true,
+    "not_trace_channel": true,
+    "not_stop_report": true
+  },
+  "reader": {
+    "cli": [
+      "python3",
+      "-B",
+      "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/gaussian_full_record_reader_v3.py",
+      "--traces",
+      "TRACE_ROOT",
+      "--reader",
+      "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/build/gaussian_consumer_full",
+      "--out",
+      "RESULT"
+    ],
+    "schema": "GAUSSIAN16_FULL_RECORD_CFI_READER_V3",
+    "expected_launches": 30,
+    "partial_fixture_override_never_qualifies": true,
+    "exit_effective_lanes_by_launch": "actual parsed EXIT masks per launch",
+    "standalone_PASS": "format/full-record closure only; observer/numeric/simulator flags remain false"
+  },
+  "postprocess": {
+    "cli": [
+      "python3",
+      "-B",
+      "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/postprocess_v8_frozen.py",
+      "TRACE_ROOT"
+    ],
+    "lineage": "frozen dedicated ADA8 postprocess; not old5d sharded postprocessor",
+    "raw_to_grouped_actual_CPU_fixture_PASS": true
+  },
+  "qualification": {
+    "nonzero": "Root-reviewed producer+all records/static/loaded+lane-wise CALL return-frame closure+independent site-counter match+30 EXIT calibrations+3HtoD/3DtoH actual source numerical oracle",
+    "zero": "Only exact input/profile restricted candidate when independent device all-site counters zero AND all 30 EXIT calibrations match actual trace plus physical lanes AND loaded/static/30launch/actual IO/numeric closed; zero trace alone never sufficient",
+    "general_CALL_gate_unchanged": true,
+    "old55_unchanged": true,
+    "simulator_qualification": false,
+    "actual_GPU_witness": false
+  },
+  "remaining_unknown": [
+    "REL-register target",
+    "ABS target",
+    "predicated CALL/RET",
+    "cross-owner CFI",
+    "other frozen binaries/input profiles",
+    "full simulator Core integration and science/performance qualification",
+    "Root V9 Gaussian family runtime composition",
+    "final oracle/calibration gate full fixture replay and independent Root review"
+  ],
+  "retracted_SO": {
+    "sha256": "c7645880061ff56ee295455603ec2896f15b9f13ce6334e551f6f318a5a708a7",
+    "reason": "EXIT site2 wrote bool sites[2]; caught final source review before any GPU execution; corrected to three-element array and rebuilt",
+    "executed": false
+  },
+  "source_KEEP": true,
+  "release_bytes": 0,
+  "production_deployed": false
+}

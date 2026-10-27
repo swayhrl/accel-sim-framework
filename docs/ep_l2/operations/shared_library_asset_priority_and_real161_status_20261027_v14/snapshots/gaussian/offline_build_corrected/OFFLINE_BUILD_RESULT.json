@@ -1,0 +1,129 @@
+{
+  "status": "PASS_OFFLINE_BUILD_NO_EXECUTION",
+  "steps": [
+    {
+      "step": 0,
+      "argv": [
+        "/usr/local/cuda-12.8/bin/nvcc",
+        "--threads=1",
+        "-std=c++17",
+        "-ccbin",
+        "/usr/bin/g++",
+        "-D_FORCE_INLINES",
+        "-arch=sm_89",
+        "-I/data/c16/env/nvbit-1.7.7.1/core",
+        "-I.",
+        "-O1",
+        "-fatbin",
+        "tool_func/flush_channel.cu",
+        "-o",
+        "tool_func/flush_channel.fatbin"
+      ],
+      "returncode": 0,
+      "seconds": 0.6344568729400635
+    },
+    {
+      "step": 1,
+      "argv": [
+        "/usr/local/cuda-12.8/bin/bin2c",
+        "-c",
+        "--name",
+        "ada_flush_bin",
+        "tool_func/flush_channel.fatbin"
+      ],
+      "returncode": 0,
+      "seconds": 0.023594141006469727
+    },
+    {
+      "step": 2,
+      "argv": [
+        "/usr/local/cuda-12.8/bin/nvcc",
+        "--threads=1",
+        "-std=c++17",
+        "-ccbin",
+        "/usr/bin/g++",
+        "-D_FORCE_INLINES",
+        "-arch=sm_89",
+        "-I/data/c16/env/nvbit-1.7.7.1/core",
+        "-I.",
+        "-Xptxas",
+        "-astoolspatch",
+        "--keep-device-functions",
+        "-Xcompiler",
+        "-fPIC",
+        "-c",
+        "inject_funcs.cu",
+        "-o",
+        "inject_funcs.o"
+      ],
+      "returncode": 0,
+      "seconds": 1.4983530044555664
+    },
+    {
+      "step": 3,
+      "argv": [
+        "/usr/local/cuda-12.8/bin/nvcc",
+        "--threads=1",
+        "-std=c++17",
+        "-ccbin",
+        "/usr/bin/g++",
+        "-D_FORCE_INLINES",
+        "-arch=sm_89",
+        "-I/data/c16/env/nvbit-1.7.7.1/core",
+        "-I.",
+        "-dc",
+        "-c",
+        "-Xptxas",
+        "-cloning=no",
+        "-Xcompiler",
+        "-Wall",
+        "-O1",
+        "-Xcompiler",
+        "-fPIC",
+        "tracer_tool.cu",
+        "-o",
+        "tracer_tool.o"
+      ],
+      "returncode": 0,
+      "seconds": 25.65612530708313
+    },
+    {
+      "step": 4,
+      "argv": [
+        "/usr/local/cuda-12.8/bin/nvcc",
+        "--threads=1",
+        "-arch=sm_89",
+        "-O1",
+        "inject_funcs.o",
+        "tracer_tool.o",
+        "-L/data/c16/env/nvbit-1.7.7.1/core",
+        "-lnvbit",
+        "-L/usr/local/cuda-12.8/lib64/stubs",
+        "-L/usr/local/cuda-12.8/lib64",
+        "-lcuda",
+        "-lcudart_static",
+        "-lcrypto",
+        "-shared",
+        "-o",
+        "gaussian16_input_observer_candidate.so"
+      ],
+      "returncode": 0,
+      "seconds": 9.41772723197937
+    }
+  ],
+  "files": [
+    {
+      "path": "producer/gaussian16_input_observer_candidate.so",
+      "bytes": 3012296,
+      "sha256": "bd2723b387aef31343608440a76a0ccba6b276fc046f4e70f306f8f2ea2a8668"
+    }
+  ],
+  "CPU_ids": [
+    0,
+    1
+  ],
+  "nice": 15,
+  "CUDA_init_or_query": false,
+  "compiled_products_executed": false,
+  "GPU": false
+}

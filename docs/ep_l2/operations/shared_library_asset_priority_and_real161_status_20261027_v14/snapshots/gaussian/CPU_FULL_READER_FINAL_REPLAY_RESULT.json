@@ -1,0 +1,61 @@
+{
+  "status": "PASS",
+  "cases": [
+    {
+      "case": "positive",
+      "returncode": 0,
+      "expected_success": true,
+      "stdout": "Processing kernel /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/tests/full_positive/kernel.traceg\n-kernel name = _Z4Fan1PfS_ii\n-kernel id = 1\n-grid dim = (1,1,1)\n-block dim = (1,1,1)\n-binary version = 89\n-accelsim tracer version = 8\n-ada gaussian contract = GAUSSIAN16_DIRECT_RETPAIR_INPUT_OBSERVER_V2_CANDIDATE\n-ada binary sha256 = 50fad6fdc65b005af1384c83a1b825df405f7b894ed649b98ee145a0b7cd01d1\n-ada map sha256 = 09a8918db2494e8a498fdafb84125a79bfde9ea7c871315220dd72ae38b9099b\n-ada cubin sha256 = 690c2d76dff5785f9d5d253a04b3ccd725db59f94d2893077e456fa8de35a5a1\nthread block = 0,0,0\nGAUSSIAN_CPU_FULL_TRACE_JSON {\"schema\":\"GAUSSIAN16_CONSUMER_FULL_RECORD_V2\",\"kernel_id\":1,\"CTAs\":1,\"warps_per_CTA\":1,\"source_records\":5,\"CALL_issue_records\":1,\"RET_issue_records\":1,\"CALL_effective_lanes\":1,\"RET_effective_lanes\":1,\"EXIT_effective_lanes\":1,\"all_CTA_warp_EXIT_CFI_closed\":true,\"EOF_decompressor_closed\":true,\"dynamic_device_observer_joined\":false,\"input_numeric_qualification\":false,\"simulator_qualification\":false}\n",
+      "stderr": ""
+    },
+    {
+      "case": "truncated_TB",
+      "returncode": 2,
+      "expected_success": false,
+      "stdout": "Processing kernel /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/tests/full_truncated_TB/kernel.traceg\n-kernel name = _Z4Fan1PfS_ii\n-kernel id = 1\n-grid dim = (1,1,1)\n-block dim = (1,1,1)\n-binary version = 89\n-accelsim tracer version = 8\n-ada gaussian contract = GAUSSIAN16_DIRECT_RETPAIR_INPUT_OBSERVER_V2_CANDIDATE\n-ada binary sha256 = 50fad6fdc65b005af1384c83a1b825df405f7b894ed649b98ee145a0b7cd01d1\n-ada map sha256 = 09a8918db2494e8a498fdafb84125a79bfde9ea7c871315220dd72ae38b9099b\n-ada cubin sha256 = 690c2d76dff5785f9d5d253a04b3ccd725db59f94d2893077e456fa8de35a5a1\nthread block = 0,0,0\n",
+      "stderr": "truncated TB missing END\n"
+    },
+    {
+      "case": "missing_CTA",
+      "returncode": 2,
+      "expected_success": false,
+      "stdout": "Processing kernel /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/tests/full_missing_CTA/kernel.traceg\n-kernel name = _Z4Fan1PfS_ii\n-kernel id = 1\n-grid dim = (2,1,1)\n-block dim = (1,1,1)\n-binary version = 89\n-accelsim tracer version = 8\n-ada gaussian contract = GAUSSIAN16_DIRECT_RETPAIR_INPUT_OBSERVER_V2_CANDIDATE\n-ada binary sha256 = 50fad6fdc65b005af1384c83a1b825df405f7b894ed649b98ee145a0b7cd01d1\n-ada map sha256 = 09a8918db2494e8a498fdafb84125a79bfde9ea7c871315220dd72ae38b9099b\n-ada cubin sha256 = 690c2d76dff5785f9d5d253a04b3ccd725db59f94d2893077e456fa8de35a5a1\nthread block = 0,0,0\n",
+      "stderr": "missing/duplicate/out-of-range CTA\n"
+    },
+    {
+      "case": "missing_warp",
+      "returncode": 2,
+      "expected_success": false,
+      "stdout": "Processing kernel /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/tests/full_missing_warp/kernel.traceg\n-kernel name = _Z4Fan1PfS_ii\n-kernel id = 1\n-grid dim = (1,1,1)\n-block dim = (33,1,1)\n-binary version = 89\n-accelsim tracer version = 8\n-ada gaussian contract = GAUSSIAN16_DIRECT_RETPAIR_INPUT_OBSERVER_V2_CANDIDATE\n-ada binary sha256 = 50fad6fdc65b005af1384c83a1b825df405f7b894ed649b98ee145a0b7cd01d1\n-ada map sha256 = 09a8918db2494e8a498fdafb84125a79bfde9ea7c871315220dd72ae38b9099b\n-ada cubin sha256 = 690c2d76dff5785f9d5d253a04b3ccd725db59f94d2893077e456fa8de35a5a1\nthread block = 0,0,0\n",
+      "stderr": "missing/short/duplicate warp body\n"
+    },
+    {
+      "case": "extra_CTA",
+      "returncode": 2,
+      "expected_success": false,
+      "stdout": "Processing kernel /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/tests/full_extra_CTA/kernel.traceg\n-kernel name = _Z4Fan1PfS_ii\n-kernel id = 1\n-grid dim = (1,1,1)\n-block dim = (1,1,1)\n-binary version = 89\n-accelsim tracer version = 8\n-ada gaussian contract = GAUSSIAN16_DIRECT_RETPAIR_INPUT_OBSERVER_V2_CANDIDATE\n-ada binary sha256 = 50fad6fdc65b005af1384c83a1b825df405f7b894ed649b98ee145a0b7cd01d1\n-ada map sha256 = 09a8918db2494e8a498fdafb84125a79bfde9ea7c871315220dd72ae38b9099b\n-ada cubin sha256 = 690c2d76dff5785f9d5d253a04b3ccd725db59f94d2893077e456fa8de35a5a1\nthread block = 0,0,0\nthread block = 0,0,0\n",
+      "stderr": "extra CTA beyond exact launch\n"
+    },
+    {
+      "case": "duplicate_CTA",
+      "returncode": 2,
+      "expected_success": false,
+      "stdout": "Processing kernel /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/tests/full_duplicate_CTA/kernel.traceg\n-kernel name = _Z4Fan1PfS_ii\n-kernel id = 1\n-grid dim = (2,1,1)\n-block dim = (1,1,1)\n-binary version = 89\n-accelsim tracer version = 8\n-ada gaussian contract = GAUSSIAN16_DIRECT_RETPAIR_INPUT_OBSERVER_V2_CANDIDATE\n-ada binary sha256 = 50fad6fdc65b005af1384c83a1b825df405f7b894ed649b98ee145a0b7cd01d1\n-ada map sha256 = 09a8918db2494e8a498fdafb84125a79bfde9ea7c871315220dd72ae38b9099b\n-ada cubin sha256 = 690c2d76dff5785f9d5d253a04b3ccd725db59f94d2893077e456fa8de35a5a1\nthread block = 0,0,0\nthread block = 0,0,0\n",
+      "stderr": "missing/duplicate/out-of-range CTA\n"
+    },
+    {
+      "case": "XZ_CRC_truncated",
+      "returncode": 2,
+      "expected_success": false,
+      "stdout": "Processing kernel /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/tests/full_crc/kernel.traceg.xz\n-kernel name = _Z4Fan1PfS_ii\n-kernel id = 1\n-grid dim = (1,1,1)\n-block dim = (1,1,1)\n-binary version = 89\n-accelsim tracer version = 8\n-ada gaussian contract = GAUSSIAN16_DIRECT_RETPAIR_INPUT_OBSERVER_V2_CANDIDATE\n-ada binary sha256 = 50fad6fdc65b005af1384c83a1b825df405f7b894ed649b98ee145a0b7cd01d1\n-ada map sha256 = 09a8918db2494e8a498fdafb84125a79bfde9ea7c871315220dd72ae38b9099b\n-ada cubin sha256 = 690c2d76dff5785f9d5d253a04b3ccd725db59f94d2893077e456fa8de35a5a1\nthread block = 0,0,0\n",
+      "stderr": "xz: /root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/tests/full_crc/kernel.traceg.xz: Unexpected end of input\ntrace decompressor/CRC nonzero\n"
+    }
+  ],
+  "reader": {
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/gaussian16_input_observer_consumer_bridge_20261027_v1_1793070359598171006/build/gaussian_consumer_full",
+    "bytes": 138432,
+    "sha256": "03f4879a1a04aba67fc47ac676b9e61062f1c594ba3a2c6ab3e7777732adde1f"
+  },
+  "GPU": false,
+  "synthetic_records_from_real_frozen_SASS": true
+}
