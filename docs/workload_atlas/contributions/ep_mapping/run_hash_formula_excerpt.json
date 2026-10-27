@@ -1,0 +1,79 @@
+{
+  "commit": "7c2f830175f40e16651eab4a3cd3a7af73e9927b",
+  "path": "util/ep_l2/ft_lane5/run.py",
+  "git_blob": "6ad68d5afa91e1be51cbed74f0bfa065a96ff77c",
+  "lines": [
+    {
+      "line": 57,
+      "text": "def asset_manifest(assets, ordered=False):"
+    },
+    {
+      "line": 58,
+      "text": "    names = set()"
+    },
+    {
+      "line": 59,
+      "text": "    result = []"
+    },
+    {
+      "line": 60,
+      "text": "    for item in assets:"
+    },
+    {
+      "line": 61,
+      "text": "        name = Path(item['name'])"
+    },
+    {
+      "line": 62,
+      "text": "        require(not name.is_absolute() and '..' not in name.parts and str(name) not in names,"
+    },
+    {
+      "line": 63,
+      "text": "                'unsafe or duplicate asset name')"
+    },
+    {
+      "line": 64,
+      "text": "        names.add(str(name))"
+    },
+    {
+      "line": 65,
+      "text": "        path = Path(item['path']).resolve(strict=True)"
+    },
+    {
+      "line": 66,
+      "text": "        require(path.is_file(), 'asset is not a regular file')"
+    },
+    {
+      "line": 67,
+      "text": "        result.append({'name': str(name), 'sha256': digest(path), 'bytes': path.stat().st_size})"
+    },
+    {
+      "line": 68,
+      "text": "    require(bool(result), 'empty input content manifest')"
+    },
+    {
+      "line": 69,
+      "text": "    return result if ordered else sorted(result, key=lambda item: item['name'])"
+    },
+    {
+      "line": 70,
+      "text": ""
+    },
+    {
+      "line": 71,
+      "text": ""
+    },
+    {
+      "line": 72,
+      "text": "def content_hash(manifest):"
+    },
+    {
+      "line": 73,
+      "text": "    return hashlib.sha256(canonical(manifest)).hexdigest()"
+    },
+    {
+      "line": 74,
+      "text": ""
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "status": "SOURCE_AUDIT_SELF_CHECK_PASS_WITH_DECLARED_GAPS",
+  "program_reports": 10,
+  "required_sections_per_report": 10,
+  "fixed_source_commit": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+  "read_source_identity_records": 58,
+  "trace_headers_programs": 10,
+  "runtime_starts": 0,
+  "binary_binding_newly_certified": false,
+  "input_content_binding_newly_certified": false,
+  "trace_body_completeness_newly_certified": false,
+  "independent_reviews": [
+    "../polybench/INDEPENDENT_REVIEW.md (particlefilter_naive)",
+    "conditional-agent review of myocyte/float/srad risks (root integrates)"
+  ],
+  "source_risks": [
+    {
+      "program": "particlefilter_float",
+      "path_line": "ex_particle_CUDA_float_seq.cu:276-295",
+      "issue": "CTA barriers do not order all normalized weights or u0 across2CTAs"
+    },
+    {
+      "program": "myocyte",
+      "path_line": "kernel_cam.cu:348; kernel_ecc.cu:694-696",
+      "issue": "CAM writes d_finavalu[0..2], races ECC; d_com unwritten in selectedmode0"
+    },
+    {
+      "program": "srad_v1",
+      "path_line": "reduce_kernel.cu:25,93-95",
+      "issue": "tail omits d_mul on secondselectedreductionpass"
+    }
+  ],
+  "selected_path_caveats": [
+    {
+      "program": "heartwall",
+      "issue": "oneframe0 initializes templates only; tracking branch frame_no!=0excluded"
+    },
+    {
+      "program": "myocyte",
+      "issue": "5993=13*461RHSattemptgroups doesnot prove100acceptedsteps; mode0only2activelanes"
+    }
+  ]
+}

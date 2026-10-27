@@ -1,0 +1,274 @@
+[
+  {
+    "program": "BlackScholes",
+    "report": "programs/cuda_samples/BlackScholes.md",
+    "source_authority": "accel-sim/gpu-app-collection@b059fdae25c2aabf737486aada743fca114469ce/src/cuda/sdk/4.2/BlackScholes (candidate,not capture source identity)",
+    "source_verified": true,
+    "source_verification_scope": "fixed candidate implementation,not exact capture binary ancestry",
+    "kernels": [
+      "_Z15BlackScholesGPUPfS_S_S_S_ffi"
+    ],
+    "unique_kernel_count": 1,
+    "trace_launch_count": 1,
+    "address_pattern": "3 contiguous read streams + 2 stores; grid-stride options",
+    "input_digest": "b31a85e4eb8d32ef5d706c2a84c999f6e3af598b1df43c85e149d03fa1568ac0",
+    "bundle_id": "e99c1422efa58ea35a2bdfefbdfd3300215d3e47b5bfc1f32f761c4569898cc6",
+    "source_evidence": "contributions/cuda_samples/source_evidence/manifest.json",
+    "trace_evidence": "contributions/cuda_samples/trace_metadata.json",
+    "evidence_gaps": [
+      "Capture-time source revision/ELF/input-content linkage not newly certified; historical cudasdk9.1 path is not candidate4.2 identity.",
+      "No new runtime measurements; static reuse is not measured hit/merge/MLP."
+    ],
+    "evidence_dimensions": {
+      "SOURCE_VERIFIED": "candidate source verified",
+      "INPUT_BOUND": "frozen digest/shape recorded; original contents linkage incomplete",
+      "BINARY_BOUND": false,
+      "TRACE_SCOPE_BOUND": "headers/launch recipe inspected; exact full application provenance incomplete",
+      "RUNTIME_MEASURED": "no new measurements"
+    }
+  },
+  {
+    "program": "convolutionSeparable",
+    "report": "programs/cuda_samples/convolutionSeparable.md",
+    "source_authority": "accel-sim/gpu-app-collection@b059fdae25c2aabf737486aada743fca114469ce/src/cuda/sdk/4.2/convolutionSeparable (candidate,not capture source identity)",
+    "source_verified": true,
+    "source_verification_scope": "fixed candidate implementation,not exact capture binary ancestry",
+    "kernels": [
+      "_Z21convolutionRowsKernelPfS_iii",
+      "_Z24convolutionColumnsKernelPfS_iii"
+    ],
+    "unique_kernel_count": 2,
+    "trace_launch_count": 2,
+    "address_pattern": "two16-lane row segments/warp; shared17-tap filter; cross-CTA halo overlap",
+    "input_digest": "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+    "bundle_id": "869cdb7901fded18d39e37189b70a1d1eac3dcc6f3551f5bde2b583dfb36c474",
+    "source_evidence": "contributions/cuda_samples/source_evidence/manifest.json",
+    "trace_evidence": "contributions/cuda_samples/trace_metadata.json",
+    "evidence_gaps": [
+      "Capture-time source revision/ELF/input-content linkage not newly certified; historical cudasdk9.1 path is not candidate4.2 identity.",
+      "No new runtime measurements; static reuse is not measured hit/merge/MLP.",
+      "Candidatehost size3072->384x192 and4launches conflicts with trace3072x3072 and2launches."
+    ],
+    "evidence_dimensions": {
+      "SOURCE_VERIFIED": "candidate source verified",
+      "INPUT_BOUND": "frozen digest/shape recorded; original contents linkage incomplete",
+      "BINARY_BOUND": false,
+      "TRACE_SCOPE_BOUND": "headers/launch recipe inspected; exact full application provenance incomplete",
+      "RUNTIME_MEASURED": "no new measurements"
+    }
+  },
+  {
+    "program": "fastWalshTransform",
+    "report": "programs/cuda_samples/fastWalshTransform.md",
+    "source_authority": "accel-sim/gpu-app-collection@b059fdae25c2aabf737486aada743fca114469ce/src/cuda/sdk/4.2/fastWalshTransform (candidate,not capture source identity)",
+    "source_verified": true,
+    "source_verification_scope": "fixed candidate implementation,not exact capture binary ancestry",
+    "kernels": [
+      "_Z15fwtBatch2KernelPfS_i",
+      "_Z15fwtBatch1KernelPfS_i",
+      "_Z14modulateKernelPfS_i"
+    ],
+    "unique_kernel_count": 3,
+    "trace_launch_count": 16,
+    "address_pattern": "4 warp-contiguous global butterfly streams; shared final transforms; modulation",
+    "input_digest": "f7f22a2ccc836a8a9b2096d4df50caf00a2c4bcebc7b16d064b8b0287ce593d3",
+    "bundle_id": "7295c0b77d36f02fd699de71d408b97b8598e425fac4d5ef489283bdd56bd7db",
+    "source_evidence": "contributions/cuda_samples/source_evidence/manifest.json",
+    "trace_evidence": "contributions/cuda_samples/trace_metadata.json",
+    "evidence_gaps": [
+      "Capture-time source revision/ELF/input-content linkage not newly certified; historical cudasdk9.1 path is not candidate4.2 identity.",
+      "No new runtime measurements; static reuse is not measured hit/merge/MLP."
+    ],
+    "evidence_dimensions": {
+      "SOURCE_VERIFIED": "candidate source verified",
+      "INPUT_BOUND": "frozen digest/shape recorded; original contents linkage incomplete",
+      "BINARY_BOUND": false,
+      "TRACE_SCOPE_BOUND": "headers/launch recipe inspected; exact full application provenance incomplete",
+      "RUNTIME_MEASURED": "no new measurements"
+    }
+  },
+  {
+    "program": "histogram",
+    "report": "programs/cuda_samples/histogram.md",
+    "source_authority": "accel-sim/gpu-app-collection@b059fdae25c2aabf737486aada743fca114469ce/src/cuda/sdk/4.2/histogram (candidate,not capture source identity)",
+    "source_verified": true,
+    "source_verification_scope": "fixed candidate implementation,not exact capture binary ancestry",
+    "kernels": [
+      "_Z17histogram64KernelPjP5uint4j",
+      "_Z22mergeHistogram64KernelPjS_j",
+      "_Z18histogram256KernelPjS_j",
+      "_Z23mergeHistogram256KernelPjS_j"
+    ],
+    "unique_kernel_count": 4,
+    "trace_launch_count": 8,
+    "address_pattern": "uint4/uint input streams; data-dependent shared counts; strided global partial reduction",
+    "input_digest": "3722a5c85d91a9482233c2bf128a6721e3fb194db3e5e54be6cbec9598518a58",
+    "bundle_id": "b30068c776cf6db748e750d5ccead8d9a3144ed2c86af3250aa828570f1f566e",
+    "source_evidence": "contributions/cuda_samples/source_evidence/manifest.json",
+    "trace_evidence": "contributions/cuda_samples/trace_metadata.json",
+    "evidence_gaps": [
+      "Capture-time source revision/ELF/input-content linkage not newly certified; historical cudasdk9.1 path is not candidate4.2 identity.",
+      "No new runtime measurements; static reuse is not measured hit/merge/MLP."
+    ],
+    "evidence_dimensions": {
+      "SOURCE_VERIFIED": "candidate source verified",
+      "INPUT_BOUND": "frozen digest/shape recorded; original contents linkage incomplete",
+      "BINARY_BOUND": false,
+      "TRACE_SCOPE_BOUND": "headers/launch recipe inspected; exact full application provenance incomplete",
+      "RUNTIME_MEASURED": "no new measurements"
+    }
+  },
+  {
+    "program": "mergeSort",
+    "report": "programs/cuda_samples/mergeSort.md",
+    "source_authority": "accel-sim/gpu-app-collection@b059fdae25c2aabf737486aada743fca114469ce/src/cuda/sdk/4.2/mergeSort (candidate,not capture source identity)",
+    "source_verified": true,
+    "source_verification_scope": "fixed candidate implementation,not exact capture binary ancestry",
+    "kernels": [
+      "_Z21mergeSortSharedKernelILj1EEvPjS0_S0_S0_j",
+      "_Z25generateSampleRanksKernelILj1EEvPjS0_S0_jjj",
+      "_Z26mergeRanksAndIndicesKernelPjS_jjj",
+      "_Z30mergeElementaryIntervalsKernelILj1EEvPjS0_S0_S0_S0_S0_jj"
+    ],
+    "unique_kernel_count": 4,
+    "trace_launch_count": 13,
+    "address_pattern": "coalesced tiles; sampled/data-dependent global searches; shared fine merge",
+    "input_digest": "dd9f695c4f53b08394e7fd53a9eecedfd8372aa5cda7aae047f8a70162a40c48",
+    "bundle_id": "0c9aff46860f7c298e1c9b503b7d2ecb7193049f9d72f79c7e8cc125dee03d81",
+    "source_evidence": "contributions/cuda_samples/source_evidence/manifest.json",
+    "trace_evidence": "contributions/cuda_samples/trace_metadata.json",
+    "evidence_gaps": [
+      "Capture-time source revision/ELF/input-content linkage not newly certified; historical cudasdk9.1 path is not candidate4.2 identity.",
+      "No new runtime measurements; static reuse is not measured hit/merge/MLP."
+    ],
+    "evidence_dimensions": {
+      "SOURCE_VERIFIED": "candidate source verified",
+      "INPUT_BOUND": "frozen digest/shape recorded; original contents linkage incomplete",
+      "BINARY_BOUND": false,
+      "TRACE_SCOPE_BOUND": "headers/launch recipe inspected; exact full application provenance incomplete",
+      "RUNTIME_MEASURED": "no new measurements"
+    }
+  },
+  {
+    "program": "scalarProd",
+    "report": "programs/cuda_samples/scalarProd.md",
+    "source_authority": "accel-sim/gpu-app-collection@b059fdae25c2aabf737486aada743fca114469ce/src/cuda/sdk/4.2/scalarProd (candidate,not capture source identity)",
+    "source_verified": true,
+    "source_verification_scope": "fixed candidate implementation,not exact capture binary ancestry",
+    "kernels": [
+      "_Z13scalarProdGPUPfS_S_ii"
+    ],
+    "unique_kernel_count": 1,
+    "trace_launch_count": 1,
+    "address_pattern": "contiguous A/B; fixed128CTA outer vector loop; shared reduction",
+    "input_digest": "2b93f70cd0666c5112f5550aae7b3a8d0565de1de40604d494bdc36c503f6954",
+    "bundle_id": "e33656401fa816a1c972c86c6af3949a3ade54c43fb4a0f471bb5a49febfe46a",
+    "source_evidence": "contributions/cuda_samples/source_evidence/manifest.json",
+    "trace_evidence": "contributions/cuda_samples/trace_metadata.json",
+    "evidence_gaps": [
+      "Capture-time source revision/ELF/input-content linkage not newly certified; historical cudasdk9.1 path is not candidate4.2 identity.",
+      "No new runtime measurements; static reuse is not measured hit/merge/MLP."
+    ],
+    "evidence_dimensions": {
+      "SOURCE_VERIFIED": "candidate source verified",
+      "INPUT_BOUND": "frozen digest/shape recorded; original contents linkage incomplete",
+      "BINARY_BOUND": false,
+      "TRACE_SCOPE_BOUND": "headers/launch recipe inspected; exact full application provenance incomplete",
+      "RUNTIME_MEASURED": "no new measurements"
+    }
+  },
+  {
+    "program": "scan",
+    "report": "programs/cuda_samples/scan.md",
+    "source_authority": "accel-sim/gpu-app-collection@b059fdae25c2aabf737486aada743fca114469ce/src/cuda/sdk/4.2/scan (candidate,not capture source identity)",
+    "source_verified": true,
+    "source_verification_scope": "fixed candidate implementation,not exact capture binary ancestry",
+    "kernels": [
+      "_Z19scanExclusiveSharedP5uint4S0_j",
+      "_Z20scanExclusiveShared2PjS_S_jj",
+      "_Z13uniformUpdateP5uint4Pj"
+    ],
+    "unique_kernel_count": 3,
+    "trace_launch_count": 33,
+    "address_pattern": "uint4 contiguous first pass;4096B-lane-stride chunk-total gather; uniform update",
+    "input_digest": "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+    "bundle_id": "9dafd3ce91a942b189a896845862f4e5baa57ea845d0688852065d757a342fe8",
+    "source_evidence": "contributions/cuda_samples/source_evidence/manifest.json",
+    "trace_evidence": "contributions/cuda_samples/trace_metadata.json",
+    "evidence_gaps": [
+      "Capture-time source revision/ELF/input-content linkage not newly certified; historical cudasdk9.1 path is not candidate4.2 identity.",
+      "No new runtime measurements; static reuse is not measured hit/merge/MLP.",
+      "CandidatehostN26624 differs from traceN6815744;33-launch recipe matches at recordedN."
+    ],
+    "evidence_dimensions": {
+      "SOURCE_VERIFIED": "candidate source verified",
+      "INPUT_BOUND": "frozen digest/shape recorded; original contents linkage incomplete",
+      "BINARY_BOUND": false,
+      "TRACE_SCOPE_BOUND": "headers/launch recipe inspected; exact full application provenance incomplete",
+      "RUNTIME_MEASURED": "no new measurements"
+    }
+  },
+  {
+    "program": "transpose",
+    "report": "programs/cuda_samples/transpose.md",
+    "source_authority": "accel-sim/gpu-app-collection@b059fdae25c2aabf737486aada743fca114469ce/src/cuda/sdk/4.2/transpose (candidate,not capture source identity)",
+    "source_verified": true,
+    "source_verification_scope": "fixed candidate implementation,not exact capture binary ancestry",
+    "kernels": [
+      "_Z4copyPfS_iii",
+      "_Z13copySharedMemPfS_iii",
+      "_Z14transposeNaivePfS_iii",
+      "_Z18transposeCoalescedPfS_iii",
+      "_Z24transposeNoBankConflictsPfS_iii",
+      "_Z22transposeCoarseGrainedPfS_iii",
+      "_Z20transposeFineGrainedPfS_iii",
+      "_Z17transposeDiagonalPfS_iii"
+    ],
+    "unique_kernel_count": 8,
+    "trace_launch_count": 24,
+    "address_pattern": "8 variants; naive stores16 lines/warp versus two row segments; shared transpose/padding",
+    "input_digest": "65151d2c661f88f3b463dba9a3ce49d98848affabe19a36ccf23295f3b1e8fdc",
+    "bundle_id": "0045bfe998cfd19353dc7624132c67077ee241043c6c04e4b0b35d1f1c56f097",
+    "source_evidence": "contributions/cuda_samples/source_evidence/manifest.json",
+    "trace_evidence": "contributions/cuda_samples/trace_metadata.json",
+    "evidence_gaps": [
+      "Capture-time source revision/ELF/input-content linkage not newly certified; historical cudasdk9.1 path is not candidate4.2 identity.",
+      "No new runtime measurements; static reuse is not measured hit/merge/MLP."
+    ],
+    "evidence_dimensions": {
+      "SOURCE_VERIFIED": "candidate source verified",
+      "INPUT_BOUND": "frozen digest/shape recorded; original contents linkage incomplete",
+      "BINARY_BOUND": false,
+      "TRACE_SCOPE_BOUND": "headers/launch recipe inspected; exact full application provenance incomplete",
+      "RUNTIME_MEASURED": "no new measurements"
+    }
+  },
+  {
+    "program": "vectorAdd",
+    "report": "programs/cuda_samples/vectorAdd.md",
+    "source_authority": "accel-sim/gpu-app-collection@b059fdae25c2aabf737486aada743fca114469ce/src/cuda/sdk/4.2/vectorAdd (candidate,not capture source identity)",
+    "source_verified": true,
+    "source_verification_scope": "fixed candidate implementation,not exact capture binary ancestry",
+    "kernels": [
+      "_Z6VecAddPKfS0_Pfi"
+    ],
+    "unique_kernel_count": 1,
+    "trace_launch_count": 1,
+    "address_pattern": "two contiguous loads + one contiguous store; finalCTA half active",
+    "input_digest": "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+    "bundle_id": "d57ff01eded73f7a62a3d71b5c8e8a1b16e003d4217acaa337d591f401312326",
+    "source_evidence": "contributions/cuda_samples/source_evidence/manifest.json",
+    "trace_evidence": "contributions/cuda_samples/trace_metadata.json",
+    "evidence_gaps": [
+      "Capture-time source revision/ELF/input-content linkage not newly certified; historical cudasdk9.1 path is not candidate4.2 identity.",
+      "No new runtime measurements; static reuse is not measured hit/merge/MLP."
+    ],
+    "evidence_dimensions": {
+      "SOURCE_VERIFIED": "candidate source verified",
+      "INPUT_BOUND": "frozen digest/shape recorded; original contents linkage incomplete",
+      "BINARY_BOUND": false,
+      "TRACE_SCOPE_BOUND": "headers/launch recipe inspected; exact full application provenance incomplete",
+      "RUNTIME_MEASURED": "no new measurements"
+    }
+  }
+]

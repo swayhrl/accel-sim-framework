@@ -1,0 +1,73 @@
+{
+  "status": "PASS",
+  "kind": "SOURCE_DERIVED_ADDRESS_ENUMERATION_NOT_RUNTIME",
+  "conditions": [
+    "32-lane full interior warp",
+    "FP32 except particlefilter FP64",
+    "allocation base and row starts 128B aligned",
+    "4096 row pitch except GEMM512",
+    "line/sector sets ignore issue time, cache state and compiler transformations"
+  ],
+  "cases": {
+    "strided_row_thread_A": {
+      "unique_start_addresses": 32,
+      "lines128": 32,
+      "sectors32": 32
+    },
+    "contiguous_column_thread_A": {
+      "unique_start_addresses": 32,
+      "lines128": 1,
+      "sectors32": 4
+    },
+    "uniform_vector_load": {
+      "unique_start_addresses": 1,
+      "lines128": 1,
+      "sectors32": 1
+    },
+    "gemm_A_broadcast": {
+      "unique_start_addresses": 1,
+      "lines128": 1,
+      "sectors32": 1
+    },
+    "gemm_B_row": {
+      "unique_start_addresses": 32,
+      "lines128": 1,
+      "sectors32": 4
+    },
+    "conv2d_left_tap": {
+      "unique_start_addresses": 32,
+      "lines128": 2,
+      "sectors32": 5
+    },
+    "conv2d_center_tap": {
+      "unique_start_addresses": 32,
+      "lines128": 1,
+      "sectors32": 4
+    },
+    "conv2d_right_tap": {
+      "unique_start_addresses": 32,
+      "lines128": 2,
+      "sectors32": 5
+    },
+    "conv2d_nine_tap_union": {
+      "unique_start_addresses": 102,
+      "lines128": 9,
+      "sectors32": 18
+    },
+    "conv2d_interior_CTA_input_union": {
+      "unique_start_addresses": 340,
+      "lines128": 30,
+      "sectors32": 60
+    },
+    "pf_naive_CDF_uniform_step": {
+      "unique_start_addresses": 1,
+      "lines128": 1,
+      "sectors32": 1
+    },
+    "pf_naive_output_contiguous": {
+      "unique_start_addresses": 32,
+      "lines128": 2,
+      "sectors32": 8
+    }
+  }
+}

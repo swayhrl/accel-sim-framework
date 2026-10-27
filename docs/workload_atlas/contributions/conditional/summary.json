@@ -1,0 +1,191 @@
+[
+  {
+    "program": "backprop",
+    "report": "programs/other/backprop.md",
+    "source_authority": "gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1; exact upstream Git blob verification",
+    "source_verified": true,
+    "kernels": [
+      "bpnn_layerforward_CUDA",
+      "bpnn_adjust_weights_cuda"
+    ],
+    "address_pattern": "17-float weight pitch; input/delta broadcasts; shared reduction; CPU interphase update",
+    "evidence_gaps": "2.0-ft4096 versus3.1 65536; distinct4096 captures; original binary/input not jointly linked",
+    "identity_state": "UNRESOLVED",
+    "input_bound": false,
+    "binary_bound": false,
+    "trace_scope_bound": false,
+    "runtime_measured": false,
+    "candidate_input_digests": [
+      "66a2ff40b5b4f8daee8b489afd05afbcd68725361ea49d50e2e29dfefea76ece",
+      "6dad43cf98e6624064e55e543a0fc20ebdcb9c7378a34ccae0fee2890e91c39f",
+      "5fa6f81161d230f55179618027a07e9060d87511e79943049494e2768d2788ad"
+    ],
+    "capture_kernel_counts": [
+      2,
+      2,
+      2
+    ]
+  },
+  {
+    "program": "cfd",
+    "report": "programs/other/cfd.md",
+    "source_authority": "gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1; exact upstream Git blob verification",
+    "source_verified": true,
+    "kernels": [
+      "cuda_initialize_variables",
+      "cuda_compute_step_factor",
+      "cuda_compute_flux",
+      "cuda_time_step"
+    ],
+    "address_pattern": "coalesced SoA planes plus mesh-dependent gathers; boundary branches; four unique kernels",
+    "evidence_gaps": "Source14003 launches versus captured5; missing every time_step; raw mesh SHA/unpadded nel and capture ELF/ROI unresolved",
+    "identity_state": "UNRESOLVED",
+    "input_bound": false,
+    "binary_bound": false,
+    "trace_scope_bound": false,
+    "runtime_measured": false,
+    "candidate_input_digests": [
+      "45cba351972ddf30016bd9bd4859e3ebb531eb53ecae5276e836b59fddc1b088",
+      "f9edab43938e7bf465a95ddec5eb3934582df86b287ea546432620d7b24829ad",
+      "85700545918390d7a5cb33340f2043b13bf86a86d6141de238916cc60eb941cd"
+    ],
+    "capture_kernel_counts": [
+      5,
+      5,
+      5
+    ]
+  },
+  {
+    "program": "kmeans",
+    "report": "programs/other/kmeans.md",
+    "source_authority": "gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1; exact upstream Git blob verification",
+    "source_verified": true,
+    "kernels": [
+      "invert_mapping",
+      "kmeansPoint"
+    ],
+    "address_pattern": "AoS-to-SoA transpose; texture features; constant centers; CPU convergence/reduction",
+    "evidence_gaps": "Dataset/feature semantics and version differ; source data-dependent convergence not certified by3 or17 captured launches",
+    "identity_state": "UNRESOLVED",
+    "input_bound": false,
+    "binary_bound": false,
+    "trace_scope_bound": false,
+    "runtime_measured": false,
+    "candidate_input_digests": [
+      "1213f9ab49665a65b429c79e0511047e92524e5f9bf53cc706ab222af22634aa",
+      "c7efba60561811c0652e5bb9331fc1f4c8265ef8a54b75ddc746319292817e76",
+      "2315d0e612ee7cd4ee6e711e2a673e85d7490bec9a8767ec67bde3ddafff970a",
+      "bd8f42c4d21e28ce7d2f6f458bae67720d5237ef8418b8581796d33e2c9d76e1"
+    ],
+    "capture_kernel_counts": [
+      3,
+      3,
+      3,
+      17
+    ]
+  },
+  {
+    "program": "nn",
+    "report": "programs/other/nn.md",
+    "source_authority": "gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1; exact upstream Git blob verification",
+    "source_verified": true,
+    "kernels": [
+      "euclid(char records,2.0-ft)",
+      "euclid(LatLong,3.1)"
+    ],
+    "address_pattern": "2.0-ft 49-byte character stride/block16 vs 3.1 8-byte LatLong stride/block256",
+    "evidence_gaps": "Different GPU data/parsing implementation; k3 versus5; window macro/database identity and original ELF unresolved",
+    "identity_state": "UNRESOLVED",
+    "input_bound": false,
+    "binary_bound": false,
+    "trace_scope_bound": false,
+    "runtime_measured": false,
+    "candidate_input_digests": [
+      "fff1afd00c2eb305a08f67233cb21718f780bcddac2a81649087a270cf80bfbb",
+      "7530ee6952c967c574b81bbf6b2abe768d937e414eda9fe902711fd743972d8c",
+      "8df9ee2d901953e7f4fee2732082bcfd80298003754feb6535340a9e621227cc"
+    ],
+    "capture_kernel_counts": [
+      4,
+      4,
+      1
+    ]
+  },
+  {
+    "program": "nw",
+    "report": "programs/other/nw.md",
+    "source_authority": "gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1; exact upstream Git blob verification",
+    "source_verified": true,
+    "kernels": [
+      "needle_cuda_shared_1",
+      "needle_cuda_shared_2"
+    ],
+    "address_pattern": "16-lane contiguous score rows; strided west boundaries; shared diagonal DP; wavefront launches",
+    "evidence_gaps": "2.0-ft128 versus3.1 2048; extra pointer ABI differs; no approved precedence or original ELF binding",
+    "identity_state": "UNRESOLVED",
+    "input_bound": false,
+    "binary_bound": false,
+    "trace_scope_bound": false,
+    "runtime_measured": false,
+    "candidate_input_digests": [
+      "cf569ed4fa54b5f11746ce6c0c44e43807ac9d0164e21e4900b5bdb61377e8c7",
+      "2982f1db6fe849710e62f66ae7c4cdf45f0143a403df440e66110bf40dc1344d",
+      "ec1461f2c83fe1bd4d0ca8aefecc4874db6f1c8621ae8b5365003666842c717f"
+    ],
+    "capture_kernel_counts": [
+      255,
+      15,
+      15
+    ]
+  },
+  {
+    "program": "pathfinder",
+    "report": "programs/other/pathfinder.md",
+    "source_authority": "gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1; exact upstream Git blob verification",
+    "source_verified": true,
+    "kernels": [
+      "dynproc_kernel"
+    ],
+    "address_pattern": "contiguous rows with overlapping halos, shrinking masks and shared temporal reuse",
+    "evidence_gaps": "Source2.0-ft lacks3.1 shared barriers; shape/H change; 3.1 alias carries extra CLI argument incompatible with fixed host source",
+    "identity_state": "UNRESOLVED",
+    "input_bound": false,
+    "binary_bound": false,
+    "trace_scope_bound": false,
+    "runtime_measured": false,
+    "candidate_input_digests": [
+      "030e87a45e9c6dae2c164392ab7dbbf9ea8511802f04258628b5d0830ebd5e67",
+      "6811f98b1edd34f6ea0496797625a38322fc6125f92e94572555366aaa7418d8",
+      "ccdd1b98bff6187e23c60ac1b37e6358cd83539010530d6c13dfe7595bb0a228"
+    ],
+    "capture_kernel_counts": [
+      4,
+      4,
+      5
+    ]
+  },
+  {
+    "program": "streamcluster",
+    "report": "programs/other/streamcluster.md",
+    "source_authority": "gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1; exact upstream Git blob verification",
+    "source_verified": true,
+    "kernels": [
+      "kernel_compute_cost"
+    ],
+    "address_pattern": "SoA coordinate streams/candidate broadcasts; dependent center-table lookup; sparse private work rows",
+    "evidence_gaps": "Only5 captured gains versus normal source pFL groups32 or179; CPU early exit yields0 and cannot explain5; modified binary/abnormal stop/ROI unresolved",
+    "identity_state": "UNRESOLVED",
+    "input_bound": false,
+    "binary_bound": false,
+    "trace_scope_bound": false,
+    "runtime_measured": false,
+    "candidate_input_digests": [
+      "322bdf9f1830fad4464c03da9c2367fa7c1b74ffbc72098673bec76529c7bc7e",
+      "f7d6397ed7ffa266724e124e76e896015cd71a9936a43e787d815c3c8420f348"
+    ],
+    "capture_kernel_counts": [
+      5,
+      5
+    ]
+  }
+]

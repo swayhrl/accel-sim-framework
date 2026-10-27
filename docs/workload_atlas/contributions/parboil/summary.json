@@ -1,0 +1,213 @@
+[
+  {
+    "program": "bfs",
+    "suite": "Parboil",
+    "report": "programs/parboil/bfs.md",
+    "source_authority": "accel-sim/gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1/src/cuda/parboil/benchmarks/bfs/src/cuda",
+    "source_verified": true,
+    "kernels": [
+      "BFS_in_GPU_kernel",
+      "BFS_kernel_multi_blk_inGPU",
+      "BFS_kernel"
+    ],
+    "trace_kernel_names": [
+      "_Z17BFS_in_GPU_kernelPiS_P4int2S1_S_S_iS_iiS_",
+      "_Z26BFS_kernel_multi_blk_inGPUPiS_P4int2S1_S_S_S_S_iiS_S_S_S_"
+    ],
+    "trace_launch_count": 11,
+    "address_pattern": "frontier contiguous -> texture CSR gather -> irregular global atomics;8 interleaved queue stores",
+    "input_digest": "1df9d5479504d9c7c5f5ef176e9604ce1b43421c7b6be440597259607d3971c0",
+    "bundle_id": "ff506808c7f46b0aafb46ae6deef722cd7f82cc59d438e6b2b035edca147594c",
+    "input_bound": "REGISTERED_IDENTITY_ONLY",
+    "binary_bound": false,
+    "trace_scope_bound": "REGISTERED_SEQUENCE_ONLY_FULL_APPLICATION_UNCERTIFIED",
+    "runtime_measured": false,
+    "evidence_gaps": [
+      "Capture-time source/ELF/input-byte linkage unresolved",
+      "Historical effective nvcc command and macro overrides unresolved",
+      "No new native correctness or runtime mechanism measurements"
+    ],
+    "l1_hypothesis": "See report section9; separate ordinary global from texture/constant/shared paths",
+    "l2_hypothesis": "See report section9; test sharing/retention/atomic traffic with valid runtime evidence"
+  },
+  {
+    "program": "cutcp",
+    "suite": "Parboil",
+    "report": "programs/parboil/cutcp.md",
+    "source_authority": "accel-sim/gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1/src/cuda/parboil/benchmarks/cutcp/src/cuda",
+    "source_verified": true,
+    "kernels": [
+      "cuda_cutoff_potential_lattice6overlap"
+    ],
+    "trace_kernel_names": [
+      "_Z37cuda_cutoff_potential_lattice6overlapiiP6float4fffPfi"
+    ],
+    "trace_launch_count": 11,
+    "address_pattern": "halfwarp64B atom-bin runs;shared reuse;four64B output runs perhalfwarp",
+    "input_digest": "af7320f9d9dc662971b1856cac87f29f9b8e4b2a65a7f9d4223bb7a74803fef8",
+    "bundle_id": "c8d37e06b1bc773df62f434a04c1052dd647ab85bc1ab1f181c576e8f2685b2a",
+    "input_bound": "REGISTERED_IDENTITY_ONLY",
+    "binary_bound": false,
+    "trace_scope_bound": "REGISTERED_SEQUENCE_ONLY_FULL_APPLICATION_UNCERTIFIED",
+    "runtime_measured": false,
+    "evidence_gaps": [
+      "Capture-time source/ELF/input-byte linkage unresolved",
+      "Historical effective nvcc command and macro overrides unresolved",
+      "No new native correctness or runtime mechanism measurements"
+    ],
+    "l1_hypothesis": "See report section9; separate ordinary global from texture/constant/shared paths",
+    "l2_hypothesis": "See report section9; test sharing/retention/atomic traffic with valid runtime evidence"
+  },
+  {
+    "program": "histo",
+    "suite": "Parboil",
+    "report": "programs/parboil/histo.md",
+    "source_authority": "accel-sim/gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1/src/cuda/parboil/benchmarks/histo/src/cuda",
+    "source_verified": true,
+    "kernels": [
+      "histo_prescan_kernel",
+      "histo_intermediates_kernel",
+      "histo_main_kernel",
+      "histo_final_kernel"
+    ],
+    "trace_kernel_names": [
+      "_Z17histo_main_kernelP6uchar4jjjjjPjS1_S1_",
+      "_Z18histo_final_kerneljjjjPjS_S_S_",
+      "_Z20histo_prescan_kernelPjiS_",
+      "_Z26histo_intermediates_kernelP5uint2jjjP6uchar4"
+    ],
+    "trace_launch_count": 80,
+    "address_pattern": "coalesced mapping scans;data-dependent packed shared/global atomics;14-way reduction",
+    "input_digest": "2c506bf13c81ff5dd4c286fa2f6d7a9edea513a5c8f38c60cfc746e36e9c5f64",
+    "bundle_id": "7e62ee69713480076957f59f2cdc346681853f67fff52449cc82cafede3a7ccc",
+    "input_bound": "REGISTERED_IDENTITY_ONLY",
+    "binary_bound": false,
+    "trace_scope_bound": "REGISTERED_SEQUENCE_ONLY_FULL_APPLICATION_UNCERTIFIED",
+    "runtime_measured": false,
+    "evidence_gaps": [
+      "Capture-time source/ELF/input-byte linkage unresolved",
+      "Historical effective nvcc command and macro overrides unresolved",
+      "No new native correctness or runtime mechanism measurements"
+    ],
+    "l1_hypothesis": "See report section9; separate ordinary global from texture/constant/shared paths",
+    "l2_hypothesis": "See report section9; test sharing/retention/atomic traffic with valid runtime evidence"
+  },
+  {
+    "program": "mri-q",
+    "suite": "Parboil",
+    "report": "programs/parboil/mri-q.md",
+    "source_authority": "accel-sim/gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1/src/cuda/parboil/benchmarks/mri-q/src/cuda",
+    "source_verified": true,
+    "kernels": [
+      "ComputePhiMag_GPU",
+      "ComputeQ_GPU"
+    ],
+    "trace_kernel_names": [
+      "_Z12ComputeQ_GPUiiPfS_S_S_S_",
+      "_Z17ComputePhiMag_GPUPfS_S_i"
+    ],
+    "trace_launch_count": 4,
+    "address_pattern": "lane-contiguous float streams;constant member broadcast;repeated partial-Q updates",
+    "input_digest": "dc7a91531846c1134c197a6e83509c91b2768151692a7b1286f6be9c431cabd4",
+    "bundle_id": "1ece1cea31a1048a3aab8bde6bc064c4aaf2b9ffeff64d2d18794157fb12e379",
+    "input_bound": "REGISTERED_IDENTITY_ONLY",
+    "binary_bound": false,
+    "trace_scope_bound": "REGISTERED_SEQUENCE_ONLY_FULL_APPLICATION_UNCERTIFIED",
+    "runtime_measured": false,
+    "evidence_gaps": [
+      "Capture-time source/ELF/input-byte linkage unresolved",
+      "Historical effective nvcc command and macro overrides unresolved",
+      "No new native correctness or runtime mechanism measurements"
+    ],
+    "l1_hypothesis": "See report section9; separate ordinary global from texture/constant/shared paths",
+    "l2_hypothesis": "See report section9; test sharing/retention/atomic traffic with valid runtime evidence"
+  },
+  {
+    "program": "sad",
+    "suite": "Parboil",
+    "report": "programs/parboil/sad.md",
+    "source_authority": "accel-sim/gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1/src/cuda/parboil/benchmarks/sad/src/cuda",
+    "source_verified": true,
+    "kernels": [
+      "mb_sad_calc",
+      "larger_sad_calc_8",
+      "larger_sad_calc_16"
+    ],
+    "trace_kernel_names": [
+      "_Z11mb_sad_calcPtS_ii",
+      "_Z17larger_sad_calc_8Ptii",
+      "_Z18larger_sad_calc_16Ptii"
+    ],
+    "trace_launch_count": 3,
+    "address_pattern": "4x4 row-gapped frame loads;texture2D overlapping search;8B vector SAD stores;packed contiguous reductions",
+    "input_digest": "db89be14146b916373c1adb28803767aa725a592119901ffd78d9c223e1611a9",
+    "bundle_id": "178d2727ac4c62dcdf43759fad32f91229d01e916f7b7b10877bbfa99ae2acb2",
+    "input_bound": "REGISTERED_IDENTITY_ONLY",
+    "binary_bound": false,
+    "trace_scope_bound": "REGISTERED_SEQUENCE_ONLY_FULL_APPLICATION_UNCERTIFIED",
+    "runtime_measured": false,
+    "evidence_gaps": [
+      "Capture-time source/ELF/input-byte linkage unresolved",
+      "Historical effective nvcc command and macro overrides unresolved",
+      "No new native correctness or runtime mechanism measurements"
+    ],
+    "l1_hypothesis": "See report section9; separate ordinary global from texture/constant/shared paths",
+    "l2_hypothesis": "See report section9; test sharing/retention/atomic traffic with valid runtime evidence"
+  },
+  {
+    "program": "sgemm",
+    "suite": "Parboil",
+    "report": "programs/parboil/sgemm.md",
+    "source_authority": "accel-sim/gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1/src/cuda/parboil/benchmarks/sgemm/src/cuda",
+    "source_verified": true,
+    "kernels": [
+      "mysgemmNT"
+    ],
+    "trace_kernel_names": [
+      "_Z9mysgemmNTPKfiS0_iPfiiff"
+    ],
+    "trace_launch_count": 1,
+    "address_pattern": "lane-contiguous A/C;two64B B halfwarp runs;128x16 register tile",
+    "input_digest": "ffc8a89493c8a21151320d1cfdaccbfca2706eb1c395fcb58e94a1b01e6ea453",
+    "bundle_id": "3745de69edb9414642035192656ae7890477988814781a0150cb82ed2516e90b",
+    "input_bound": "REGISTERED_IDENTITY_ONLY",
+    "binary_bound": false,
+    "trace_scope_bound": "REGISTERED_SEQUENCE_ONLY_FULL_APPLICATION_UNCERTIFIED",
+    "runtime_measured": false,
+    "evidence_gaps": [
+      "Capture-time source/ELF/input-byte linkage unresolved",
+      "Historical effective nvcc command and macro overrides unresolved",
+      "No new native correctness or runtime mechanism measurements"
+    ],
+    "l1_hypothesis": "See report section9; separate ordinary global from texture/constant/shared paths",
+    "l2_hypothesis": "See report section9; test sharing/retention/atomic traffic with valid runtime evidence"
+  },
+  {
+    "program": "stencil",
+    "suite": "Parboil",
+    "report": "programs/parboil/stencil.md",
+    "source_authority": "accel-sim/gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1/src/cuda/parboil/benchmarks/stencil/src/cuda",
+    "source_verified": true,
+    "kernels": [
+      "block2D_hybrid_coarsen_x"
+    ],
+    "trace_kernel_names": [
+      "_Z24block2D_hybrid_coarsen_xffPfS_iii"
+    ],
+    "trace_launch_count": 100,
+    "address_pattern": "coalesced xy planes;x2 coarsening;shared xy halos;register rolling z",
+    "input_digest": "c885293ad99e21ee6f270647dc47f1e6b214c71856b189cd011266ce4ae21266",
+    "bundle_id": "a42e996921c44fb398e05d3f791995022b5c5c3980047817e81dab111b598a20",
+    "input_bound": "REGISTERED_IDENTITY_ONLY",
+    "binary_bound": false,
+    "trace_scope_bound": "REGISTERED_SEQUENCE_ONLY_FULL_APPLICATION_UNCERTIFIED",
+    "runtime_measured": false,
+    "evidence_gaps": [
+      "Capture-time source/ELF/input-byte linkage unresolved",
+      "Historical effective nvcc command and macro overrides unresolved",
+      "No new native correctness or runtime mechanism measurements"
+    ],
+    "l1_hypothesis": "See report section9; separate ordinary global from texture/constant/shared paths",
+    "l2_hypothesis": "See report section9; test sharing/retention/atomic traffic with valid runtime evidence"
+  }
+]

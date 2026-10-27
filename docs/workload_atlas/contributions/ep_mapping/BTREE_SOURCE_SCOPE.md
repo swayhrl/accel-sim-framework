@@ -1,0 +1,33 @@
+# Btree - additional EP source/scope audit
+
+Btree is additional to the 35 ordinary frozen DTC programs. Its original EP input remains HOLD, and DTC's input is derived-only. This audit explains the inspected implementation without transferring that source identity to either capture ELF.
+
+## Source authority, build and host flow
+
+Source: gpu-app-collection `dad09cb0487845edc7524ded814c6cde9f0ef6a1`, `src/cuda/rodinia/3.1/cuda/b+tree/`. The atlas's `SOURCE_BLOB_VERIFICATION.json` authenticates the inspected local tree against the fixed Git blobs. Local source path is `/root/workspace/offline-sim-v1/cache/apps/gpu-app-collection/` plus that suffix. `common.h:36-44` selects DEFAULT_ORDER from RD_WG_SIZE macros, default256; the knode structure contains location, indices[order+1], keys[order+1], leaf flag, num_keys (`common.h:139-145`). `Makefile:63` consumes architecture GENCODE variables from common configuration; the actual capture compiler command/macros/ELF are unknown.
+
+`main.c:1931-1947` reads the command file into CPU memory; `1982-2005` reads the key count and inserts values into a CPU B+tree. The CPU constructs the flattened nodes/records used by the GPU. A `k count` command makes random point keys and invokes the point-query wrapper (`2142-2211`); a `j count rSize` command makes random start/end keys and invokes the range wrapper (`2272-2365`). Command data and libc rand state therefore matter. Each wrapper allocates/copies its per-command GPU inputs, invokes one kernel, synchronizes, and returns results: point launch at `kernel/kernel_gpu_cuda_wrapper.cu:215-227`; range launch at `kernel/kernel_gpu_cuda_wrapper_2.cu:263-276`. Grid=count and block=min(order,1024), see wrapper lines86-89. A source application's complete kernel sequence depends on all commands in command.txt; two captured launches do not authenticate that original file.
+
+## Device implementation and dependencies
+
+`findK` (`kernel/kernel_gpu_cuda.cu:6-50`) maps CTA b to query b and thread t to key slot t. For each tree level it tests key[t] <= query < key[t+1]. A matching thread reads a child index and updates offset[b], then all threads synchronize. Thread0 writes curr[b]=offset[b], and a second barrier makes the next level depend on that update (`23-40`). At the leaf a matching key thread gathers `records[indices[t]].value` into answer[b] (`46-47`). The actual point implementation's child bounds check/index lookup uses `knodes[offset[b]]` (`30-31`), whereas comparison uses `knodes[curr[b]]`; preserving that distinction matters when interpreting data dependence or malformed inputs.
+
+`findRangeK` (`kernel/kernel_gpu_cuda_2.cu:6-66`) follows two node streams, for start[b] and end[b], in the same CTA. Matching threads update offset and offset2, barrier, then thread0 advances curr and last, barrier (`27-53`). At the leaves it writes Recstart[b], synchronizes, then writes Reclen[b]=end-index-Recstart[b]+1 (`55-63`). This returns record boundaries and length; it does not read every record in the result range. No shared-memory array or atomic instruction appears in these kernel definitions. Query arrays, traversal state, flattened nodes, records and output are global objects; scalars/loop index are thread-local.
+
+## Address derivation and locality
+
+Let S=sizeof(knode), K=offsetof(knode,keys), I=offsetof(knode,indices), N be the current data-dependent node index, b=CTA index and t=threadIdx.x. The key addresses are
+
+`Bnodes + S*N + K + 4*t`, and the neighboring comparison key adds4. Child-index address is `Bnodes + S*N' + I + 4*t`, with N' following the exact point/range expression described above. The leaf point-record address is `Brecords + sizeof(record)*indices[t] + offsetof(record,value)`. On the source's usual ABI with 4-byte int and1-byte bool, defaultorder256 gives K=1032, I=4 and S=2068; use symbolic offsets if ABI/macros are not bound. LP64 traversal arrays address element b at `Bstate+8*b`; query and output int objects address b at `B+4*b`.
+
+For a fixed N, adjacent active warp lanes touch consecutive4-byte keys and indices; t+1 overlaps the neighboring key stream. An aligned complete32-lane FP32/int span covers128 bytes, requiring1-2 128B lines or4-5 32B sectors depending on its actual alignment. These are address-span bounds, not cache hit or transaction counts, and partial predicates reduce the active set. All lanes in a CTA also refer to the same query[b]/state[b] elements (broadcast/reuse opportunity). Across levels, N is data-dependent rather than a fixed stride. Different CTAs initially reference the root, permitting cross-CTA key-line reuse; later traversal paths diverge with input keys. Outputs are separate per query, with a Recstart->Reclen dependency in the range kernel. Root sharing is not a measured merge or hit.
+
+Independent CTA queries supply potential concurrency, but each query has a child-pointer/next-level dependency and two barriers per level. The start/end range streams offer two logical lookup streams; compiler scheduling and the runtime determine actual simultaneous outstanding loads. Height, key distribution, node layout, occupancy and cache/queue capacity are unbound here, so no exact latency, MSHR merge rate or live-request count is claimed.
+
+## Frozen trace and unresolved scope
+
+EP registration `D_V1_btree` at E2 commit7c2f830175f40e16651eab4a3cd3a7af73e9927b records `file ./data/mil.txt command ./data/command.txt`, CUDA9.1 capture label, two launches, expected444,467,849 instructions and content digest `b3e132f184918f30485a2296d606cc833a6b0edf264f6c6f2489077053f65ea7`. Its list has HtoD commands before the first launch and new HtoD updates before the second. Its source revision and numeric payload identity are unknown. The historical `BTREE_NONZERO_MASK_ADDRESS_SCOPE_FAILURE.json` SHA `c4f416037b0afebe1cfb0b3b680dd9172d33f74bb57dc4a37f89120db5402d0c` remains a scope HOLD; copying/matching a program name does not resolve it.
+
+DTC derived input e7c791ce... has `findRangeK` grid6000/block256 then `findK` grid10000/block256, but a different command-list/member identity (EP-formula digest ed2a6f1fc235...). Its conditioned data may be used only as an independent mechanism reference. The original EP headers/bodies were not read, and original data/command SHA, source build, executable, and complete address-scope proof remain unresolved.
+
+For DTC-L1, candidate questions are shared root-line pending tags versus serial child dependencies and CTA query parallelism. For EP-L2, candidate questions are immutable node reads versus mutable per-query traversal state, root residence and two-endpoint range lookups. Both require valid input/address scope and measured model evidence before any mechanism conclusion.
