@@ -1,0 +1,145 @@
+{
+  "status": "PASS",
+  "passed": 12,
+  "checks": [
+    "control_subprocess_exit_zero",
+    "hook_subprocess_exit_zero",
+    "control_reproduces_global_shutdown_before_new_submit",
+    "hook_global_shutdown_false_on_new_submit",
+    "hook_existing_executor_accepts_post_main_jobs",
+    "hook_new_executor_creates_threads_after_main_return",
+    "hook_addon_naturally_closed",
+    "global_shutdown_only_after_addon_finished",
+    "missing_38_private_api_fails_closed",
+    "repeat_registration_idempotent",
+    "reverse_hook_order_understood",
+    "hook_enters_before_global_tpe_exit"
+  ],
+  "simulator_starts": 0,
+  "production_parent_attached": false,
+  "amendment_sha256": "9a47a06ff4ff7dd9f677ef08a50099620f756876e024c192a4d958cbd785b7fa",
+  "driver_sha256": "613455318fc84bb92fba2dc65ac25c4726a6365501ee18180de6c11e06136467",
+  "python_version": "3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0]",
+  "subprocess_cases": {
+    "control": {
+      "result": {
+        "mode": "control",
+        "events": [
+          "OLD_MAIN_RETURNS",
+          "OLDER_HOOK",
+          "ADDON_AFTER_OLD_MAIN_RETURN"
+        ],
+        "shutdown_at_first_new_submit": true,
+        "caught_error": "RuntimeError('cannot schedule new futures after shutdown')",
+        "futures_shutdown_at_final_atexit": true
+      },
+      "stdout": "",
+      "stderr": ""
+    },
+    "hook": {
+      "result": {
+        "mode": "hook",
+        "events": [
+          "OLD_MAIN_RETURNS",
+          "LATER_HOOK",
+          "ADDON_AFTER_OLD_MAIN_RETURN",
+          "ADDON_NATURALLY_CLOSED",
+          "OLDER_HOOK"
+        ],
+        "missing_private_api_rejected": true,
+        "proof": {
+          "status": "REGISTERED_OWNER_LIFETIME_PREJOIN_HOOK",
+          "owner_pid": 1742184,
+          "addon_ident": 129975571187264,
+          "addon_native_id": 1742185,
+          "addon_name": "DTC_L2_MLP_ONE_OWNER",
+          "python_version": "3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0]",
+          "prior_hook_count": 2,
+          "prior_hooks": [
+            {
+              "module": "concurrent.futures.thread",
+              "name": "_python_exit"
+            },
+            {
+              "module": "__main__",
+              "name": "older_hook"
+            }
+          ],
+          "registered_hook_index": 2,
+          "hook_order": "REVERSE_REGISTRATION_NEW_KEEPALIVE_BEFORE_ALL_CURRENT_HOOKS",
+          "earlier_threadpool_exit_index": 0,
+          "threadpool_shutdown_state_before": false,
+          "no_shutdown_flag_reset": true,
+          "no_frozen_source_or_registry_or_lease_write": true,
+          "no_old_mainloop_interception": true
+        },
+        "repeat_proof": {
+          "status": "REGISTERED_OWNER_LIFETIME_PREJOIN_HOOK",
+          "owner_pid": 1742184,
+          "addon_ident": 129975571187264,
+          "addon_native_id": 1742185,
+          "addon_name": "DTC_L2_MLP_ONE_OWNER",
+          "python_version": "3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0]",
+          "prior_hook_count": 2,
+          "prior_hooks": [
+            {
+              "module": "concurrent.futures.thread",
+              "name": "_python_exit"
+            },
+            {
+              "module": "__main__",
+              "name": "older_hook"
+            }
+          ],
+          "registered_hook_index": 2,
+          "hook_order": "REVERSE_REGISTRATION_NEW_KEEPALIVE_BEFORE_ALL_CURRENT_HOOKS",
+          "earlier_threadpool_exit_index": 0,
+          "threadpool_shutdown_state_before": false,
+          "no_shutdown_flag_reset": true,
+          "no_frozen_source_or_registry_or_lease_write": true,
+          "no_old_mainloop_interception": true,
+          "idempotent_existing_registration": true
+        },
+        "shutdown_at_first_new_submit": false,
+        "existing_pool_results": [
+          0,
+          1,
+          4,
+          9,
+          16,
+          25,
+          36,
+          49,
+          64
+        ],
+        "new_pool_results": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "shutdown_at_addon_natural_end": false,
+        "addon_complete": true,
+        "futures_shutdown_at_final_atexit": true,
+        "hook_state": {
+          "hook_entered": true,
+          "addon_naturally_completed": true,
+          "futures_shutdown_on_entry": false,
+          "futures_shutdown_on_return": false
+        }
+      },
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  "cpython38_source_notes": {
+    "threading_private_register_atexit_available": false,
+    "thread_pool_workers_daemon": true,
+    "thread_pool_exit_registration": "atexit.register(_python_exit)",
+    "sources": [
+      "https://raw.githubusercontent.com/python/cpython/v3.8.20/Lib/threading.py",
+      "https://raw.githubusercontent.com/python/cpython/v3.8.20/Lib/concurrent/futures/thread.py"
+    ],
+    "source_inspection_only_not_a_38_runtime_test": true
+  }
+}
