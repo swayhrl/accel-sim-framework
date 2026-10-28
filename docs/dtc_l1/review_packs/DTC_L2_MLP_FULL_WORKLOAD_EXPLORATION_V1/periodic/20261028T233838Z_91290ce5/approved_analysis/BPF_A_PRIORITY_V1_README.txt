@@ -1,0 +1,9 @@
+Finite engineering4 CPU2 scope/ordering candidate; NOT installed or registered.
+
+API: propose_scope_append(oldcfg,q,CanaryScope,contract,matrix,scope,canonical,lib) returns pure proposal after official registration; it refuses unregistered/contaminated/missing-exclusion identities. Full old config/row preimages returned. Existing CPU2 source6 and historical native/strict snapshots are unchanged. Scope22f auto-discovery remains primary-only.
+
+Priority(frame,cfg,gate,memory,CanaryScope,atomichelper) captures existing gate.original_choose and current outer res.choose_dispatch. install/restore are Main-only under existing aging RLock. Ordinary E decisions win; fallback examines only the exact approved4 already in pending. Two original frame reads and complete current CPU2 choose calls produce full-cost real CPU2 proofs, with exact candidate row, actual fresh source/lease/CPU/disk/pressure/claim gates. Virtual R, tokens, prior C and release credit stay unchanged. Immutable reservation and CPU-return receipts are fsynced before CLAIM/INTENT. Ordinary CPU/FrameGuard/ScopeSYNC references are preserved via captured outer chain.
+
+CPU30 qualification uses real frozen CPU2 validate/project/verify and source-pinned evidence fixture, private authority clones plus explicitly mocked E/outer/frame interfaces. No actual owner install, native execution, grant or model. It does NOT replace B real-prefix/activation qualification or E full strict/archive role closure. Main must provide real publication/QA, official new grants and CPU2 append transaction, same-owner context update, and reviewed actual frame integration. Template intentionally cannot activate as-is.
+
+The 19 root ScopeBridge tests are referenced, not rerun. Main remains sole production authority. No old whitelist/source/worker-generation snapshot is overwritten by this candidate.

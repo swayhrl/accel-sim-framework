@@ -1,0 +1,35 @@
+{
+  "schema": "DTC_STRACE_FUTURE_ENTRY_V2",
+  "source_roles": ["entry", "frontend", "producer", "extra_strict", "consumer"],
+  "config_keys": ["schema", "request", "overlay_id", "status", "root", "qualification_only", "modes", "future_primary_policy", "source_paths", "qualified_sources", "expected_pins", "QA_path", "QA_sha256", "readback_path", "readback_sha256", "native_source_path", "memory_frontend_path", "memory_frontend_sha256", "default_native_entry", "exclusion_contract_path", "exclusion_contract_sha256"],
+  "modes": ["BPF_REQUIRED", "DEFAULT_CONTROL"],
+  "binding_field": "additional_strace_bpf_observation_binding",
+  "binding_keys": ["schema", "request", "overlay_id", "cohort", "uuid", "mode", "snapshot_sha256", "config_sha256", "qualified_sources", "QA_sha256", "readback_sha256", "canonical_spec_sha256", "resolved_spec_sha256", "dispatch_binding_sha256", "expected_argv_before_sha256", "expected_argv_after_sha256", "scientific_identity"],
+  "scientific_identity_keys": ["input_digest", "input_binding_sha256", "core_commit", "framework_commit", "binary_sha256", "expected_options_sha256", "native_simulator_argv_sha256", "cell", "profile"],
+  "snapshot": {
+    "file": "STRACE_BPF_OBSERVATION_SNAPSHOT.json",
+    "keys": ["schema", "request", "cohort", "uuid", "mode", "config", "overlay_record", "source_snapshots", "QA_utf8", "readback_utf8", "canonical_spec_utf8", "canonical_spec_sha256", "resolved_spec", "resolved_spec_sha256", "dispatch_binding_utf8", "dispatch_binding_sha256", "scientific_identity", "baseline_preINTENT", "expected_argv_before", "expected_argv_after", "parent_lease", "exclusion_contract_utf8"]
+  },
+  "proc_capture": {
+    "keys": ["pid", "start_ticks", "stat_before_utf8", "stat_after_utf8", "status_utf8", "mnt_namespace", "observed_UTC"],
+    "stat_start_index": "rsplit(')',1)[1].split()[19]",
+    "baseline": "pid=self frontend, TracerPid0/Seccomp0/filters0",
+    "no_environ_dump": true
+  },
+  "fork_plan": {
+    "file": "STRACE_BPF_FORK_PLAN.json",
+    "keys": ["schema", "cohort", "uuid", "mode", "snapshot_sha256", "intent_sha256", "baseline_prePopen", "argv_before", "argv_after", "argv_list_mutated_in_place", "scientific_identity"],
+    "launch_extra_field": "strace_fork_plan_sha256"
+  },
+  "activation": {
+    "file": "STRACE_BPF_ACTIVATION.json",
+    "keys": ["schema", "cohort", "uuid", "mode", "snapshot_sha256", "fork_plan_sha256", "model", "tracer", "baseline_preINTENT", "baseline_prePopen", "verdict"],
+    "model_and_tracer": "proc_capture shape",
+    "PID_extra_field": "strace_observation_activation_sha256",
+    "verdict_status": ["PASS_BPF_REQUIRED_ACTIVE", "PASS_DEFAULT_CONTROL_NO_BPF", "HOLD_ACTIVATION_UNPROVEN"]
+  },
+  "canonical_json_hash": "sha256((json.dumps(value,sort_keys=True,indent=2)+'\\n').encode())",
+  "qualification_only_cannot_release_production": true,
+  "future_primary_policy": "NONE",
+  "note": "Implemented producer schema; final immutable source set and combined QA/readback required."
+}
