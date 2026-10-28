@@ -1,0 +1,16 @@
+--- original_b4e_advance
++++ candidate_selection_only
+@@ -15,11 +15,9 @@
+         elif c in pending:self.target=copy.deepcopy(pending[c])
+     if self.target is None:
+         active_inputs=set(frame.get('active_input_digests',[]));started=set(frame['started_programs'])
+-        choices=[r for r in frame['pending']if r['cell']=='DH'and r['profile']=='P0'and r['cost_bytes']>=p['large_bytes']
+-            and now-r['first_eligible_monotonic']>=p['wait_seconds']and r['cohort']not in consumed
+-            and r['cohort']not in claims and r['input_digest']not in active_inputs]
++        choices=_qualified_primary_choices(frame,p,now,consumed,claims,active_inputs)
+         if choices:
+-            self.target=copy.deepcopy(min(choices,key=lambda r:(r['program']in started,r['first_eligible_monotonic'],r['input_digest'],r['cohort'])))
++            self.target=copy.deepcopy(min(choices,key=lambda r:(r['program']in started,r['first_eligible_monotonic'],r['profile']!='P0',r['input_digest'],r['cohort'])))
+             self.protected=0;events.append(dict(kind='TARGET_ARMED',cohort=self.target['cohort'],never_started_program=self.target['program']not in started))
+     target=self.target;feasibility=None;throttle=False
+     accounted=frame.get('accounted_growth_by_cohort',{}).get(target['cohort'],0)if target else 0

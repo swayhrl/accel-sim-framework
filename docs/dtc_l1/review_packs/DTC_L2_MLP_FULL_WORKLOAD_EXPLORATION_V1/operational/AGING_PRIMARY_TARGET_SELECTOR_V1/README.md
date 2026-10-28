@@ -1,0 +1,13 @@
+# Primary large-target coverage correction — qualified, not yet installed
+
+The original 75/25 aging target selector considered only unspent DH-P0 cells. Once lavamd DH-P0 completed, lavamd CH-P0 and its eight DH variants could no longer accumulate protection from subsequent natural releases. They remained valid and launchable; this was a scheduling coverage gap, not an experiment failure. The actual read-only finding and original source lines are retained here.
+
+The candidate expands only the target filter and deterministic tie-break: current registered, qualified, unspent primary CH/DH P0/variant cells may become the one protected large target. Original never-started-program and waiting-age order remain; P0 wins an equal-age tie. No performance score is consulted. Unknown, supplemental, reference, spent, claimed, active-input and INTENT identities are excluded using the existing current authority/matrix/spec/ScopeSYNC. There is no second saved cohort allowlist.
+
+The exact old advance function is compiled with only those two substitutions. It is called by one plain closure on the same existing state under the same lock. The original chooser, frames, FrameGuard, CPU2 resource leaf, memory dictionary, claims, journal and pool remain. Plain-function identity is preserved during real FrameGuard deepcopy/rollback; a bound method would risk cloning its state. Reverse removes only the instance override, retaining credit history.
+
+17 candidate CPU checks and 12 independent focused checks passed. Synthetic release fixtures are not actual credits. The old 75% realized strict-natural-release protection, 25% backfill, full forecasts, own-drain feasibility, PSS freshness and all CPU/RAM/pressure/IO gates remain. No historical releases are replayed; no forecast discount, model signal, new budget or scientific configuration change is authorized by this correction.
+
+This commit publishes the candidate before actual Main installation. Main must validate the then-current owner/CPU2/Scope/FrameGuard identities, original source pins and current actual eligibility, register an operational-only record without changing scientific cells or budget, and install once in the same owner. A later actual decision must demonstrate the intended target. A publication or CPU fixture alone is not a production-installation claim.
+
+The policy can temporarily reduce short-job throughput while reserving resources for an old large job. Active-input exclusion is retained. The existing shared broad-qualification age witness is retained and does not prove every later-added profile personally waited 30 minutes. English v0.23 and all historical scientific results stay unchanged.

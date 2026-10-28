@@ -1,0 +1,27 @@
+Confirmed: current 75% natural-release protection does not cover the remaining lavamd points.
+
+large_job_aging.py:37-39 restricts new targets to unconsumed DH-P0 >=8GiB;
+actual lavamd DH-P0 is closed. CH-P0 is unconsumed but is excluded by CH;
+the eight remaining DH variants are excluded by non-P0. No unconsumed DH-P0
+>=8GiB remains in the read-only matrix snapshot. Therefore target=None/R=0
+is expected, even when positive natural release occurs.
+
+Credit is conditional on target and proven own-drain feasibility (:77-102).
+Without a target, :103-104 marks closures seen without reserving75%. Cutcp/scan
+natural closures therefore will not currently accumulate lavamd protection.
+External free, padding changes and non-natural failures do not earn credit.
+The journal's latest complete decisions and exact matrix snapshot are in JSON.
+
+CPU2 is not bypassing a live fence: cpu_owner.py:43-55 uses the supplied pool;
+its fullcost gates remain at:74-96. AgingChooser:168-177 filters backfill and
+enforces a second-fresh C-cost>=protected check. With R0, fitting smaller points
+can legally consume headroom. The finite matrix need not starve forever, but
+the current policy provides no intermediate protection for remaining lavamd.
+
+Minimal future candidate: keep DH-P0 precedence, then eligible CH-P0, then
+oldest remaining high-memory primary point when P0s are already consumed.
+Retain full forecasts,30min/input-active/claim/spent/INTENT exclusions,75/25,
+strict natural realized-release accounting and all memory/CPU/disk gates.
+Requires focused qualification before Main-only installation; not applied.
+The pure two-frame illustration uses fictional memory release, never an
+actual observed release or source of production reservation credit.
