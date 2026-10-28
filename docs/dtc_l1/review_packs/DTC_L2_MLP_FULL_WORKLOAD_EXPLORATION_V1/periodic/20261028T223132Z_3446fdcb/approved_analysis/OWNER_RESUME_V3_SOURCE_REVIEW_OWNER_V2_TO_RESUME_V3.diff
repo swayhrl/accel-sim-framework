@@ -1,0 +1,72 @@
+--- owner_v2.py
++++ owner_resume_v3.py
+@@ -2,7 +2,7 @@
+ import pathlib,json,hashlib,importlib.util,os,sys,threading,copy,datetime,traceback
+ P=pathlib.Path
+ ROOT=P('/root/data/dtc_l2_mlp_exploration_20261027_v1')
+-MARKER='DTC_MAIN_BPF_ENGINEERING_CANARIES_V1'
++MARKER='DTC_MAIN_BPF_ENGINEERING_CANARIES_RESUME_V3'
+ def read(p):return json.loads(P(p).read_bytes())
+ def sha(p):return hashlib.sha256(P(p).read_bytes()).hexdigest()
+ def load(n,p):
+@@ -10,12 +10,16 @@
+ def put(p,value):
+     p=P(p)
+     with p.open('x')as f:json.dump(value,f,sort_keys=True,indent=2);f.write('\n');f.flush();os.fsync(f.fileno())
+-def apply(directory,config_filename='OWNER_CONFIG_V2.json'):
++def apply(directory,config_filename='OWNER_RESUME_CONFIG_V3.json'):
+     d=P(directory);cfg=read(d/config_filename);main=sys.modules['__main__']
+     assert threading.current_thread()is threading.main_thread()
+     assert os.getpid()==cfg['owner']['pid']==1498278
+     assert int(P('/proc/self/stat').read_text().rsplit(')',1)[1].split()[19])==cfg['owner']['start_ticks']==977758783
+     assert not hasattr(main,MARKER),'OBSERVE_PRIOR_INSTALLATION_DO_NOT_REPEAT'
++    previous=main.DTC_MAIN_BPF_ENGINEERING_CANARIES_V1
++    assert previous['phase']=='INSTALL_ENGINEERING_HOLD_PRESERVE'and previous['ever_exposed']is False
++    assert previous['actual_grants']['registered_count']==4 and previous['actual_grants']['consumed']==[]
++    assert read(cfg['recovery_lineage_path'])['new_grants_authorized']==0
+     for p,h in cfg['source_pins'].items():assert sha(p)==h,p
+     frame=sys._current_frames()[main.DTC_L2_MLP_ADDON_THREAD.ident]
+     while frame and not(frame.f_code.co_name=='run_scheduler'and P(frame.f_code.co_filename)==ROOT/'tools/l2_ops.py'):frame=frame.f_back
+@@ -48,10 +52,11 @@
+             entry_cfg=read(cfg['entry_config_path']);registration_cfg=read(cfg['registration_config_path'])
+             store=modules['registration'].EngineeringCanaryRegistry(ROOT,engine,frame,registration_cfg)
+             state['store']=store
+-            authorization=store.expected_authorization();put(d/'MAIN_AUTHORIZATION.json',authorization)
+-            prepared=store.prepare(authorization);put(d/'REGISTRATION_PREPARED_RECEIPT.json',prepared)
+-            registration=store.register(authorization);state.update(phase='REGISTERED_EXACT4',new_grants=registration['new_grants'])
+-            put(d/'REGISTRATION_RECEIPT.json',registration)
++            registration=store.reconcile()
++            assert registration['state']=='COMMITTED_RECONCILED'and registration['new_grants']==0
++            state.update(phase='RECONCILED_EXISTING_EXACT4_NO_NEW_GRANT',new_grants=0)
++            put(d/'REGISTRATION_RECONCILED_RECEIPT.json',registration)
++            assert not(set(scope.rows)&set(engine.registered()[2]['consumed']))
+             transaction=modules['scope_transaction'].ScopeTransaction(sync,scope,cfg['exclusion_contract_path'],modules['priority'],cfg['source_pins'],cfg['owner'],d/'memory_scope_transactions')
+             state['memory_scope_transaction']=transaction
+             prepared_memory=transaction.prepare();state['memory_scope_prepared']=str(prepared_memory)
+@@ -93,7 +98,7 @@
+             assert ids=={k:id(frame.f_locals[k])for k in ids}
+             assert sha(ROOT/'control/SCOPE.json')==before_scope and sha(ROOT/'control/MATRIX_CURRENT.json')==before_matrix
+             assert aging.state.protected==protected and aging.state.pending_releases==tokens
+-            after=engine.registered()[2];assert after['budget']==before_q['budget']+4
++            after=engine.registered()[2];assert after['budget']==before_q['budget']
+             assert after['remaining']==after['budget']-len(after['consumed'])
+             modules['containment'].verify_old_consumption(before_q['consumed'],after['consumed'])
+             assert not(set(scope.rows)&set(after['consumed'])),'CANARY_BORN_BEFORE_CALLBACK_RELEASE'
+@@ -106,7 +111,7 @@
+             sync.stable_memory();tiny.guard();adapter.active()
+             for p,h in cfg['source_pins'].items():assert sha(p)==h
+             ack=dict(schema='MAIN_BPF_ENGINEERING_CANARY_OWNER_INSTALL_V1',status=state['phase'],UTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),owner=cfg['owner'],same_runtime_objects=ids,
+-                budget_before=before_q['budget'],budget_after=after['budget'],new_grants=4,model_starts_by_callback=0,
++                budget_before=before_q['budget'],budget_after=after['budget'],new_grants=0,previously_registered_engineering_grants=4,model_starts_by_callback=0,recovery_lineage_sha256=sha(cfg['recovery_lineage_path']),
+                 private_dispatch_points=len(view['points']),primary_points=len(read(ROOT/'control/MATRIX_CURRENT.json')['points']),primary_matrix_sha256=before_matrix,primary_scope_sha256=before_scope,
+                 engineering_cohorts=sorted(scope.rows),primary_rollout_policy='NONE',validated_union_authorized=False,
+                 registration=registration,memory_scope=memory_ack,consumer=consumer_receipt,worker=worker_receipt,priority=priority_receipt,
+@@ -121,7 +126,7 @@
+             # A scheduler may have cached the new view outside aging.lock.
+             # Retain exact4 execution barriers before altering any old route.
+             if ever_exposed:
+-                try:state['failure_execution_guards']=containment.install_execution_guards(frame,scope.rows,engine,'MAIN_OWNER_INSTALL_V2_FAILED')
++                try:state['failure_execution_guards']=containment.install_execution_guards(frame,scope.rows,engine,'MAIN_OWNER_RESUME_V3_FAILED')
+                 except BaseException as e:guard_errors.append(dict(stage='EXECUTION_GUARD',error=repr(e)))
+             actions=[]
+             if ever_exposed:
