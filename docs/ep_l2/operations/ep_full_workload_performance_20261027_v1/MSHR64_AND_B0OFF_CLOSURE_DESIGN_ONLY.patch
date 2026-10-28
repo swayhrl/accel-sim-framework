@@ -1,0 +1,227 @@
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -899,8 +899,16 @@
+     return m_ep_l2_descriptor_pool_size != 0;
+   }
+   bool ep_l2_b0_stats_enabled() const { return m_ep_l2_b0_stats; }
++  bool ep_l2_ms_observer_enabled() const { return m_ep_l2_ms_observer; }
+   bool ep_l2_m0a_stats_enabled() const { return m_ep_l2_m0a_stats; }
+   bool ro_requested() const { return m_ro_tag_detach||m_ro_line_mshr_bypass; }
++  // Reviewed single-resource sensitivity only. The128 default remains byte-for-byte semantics;
++  // first new64 point is P1 without simultaneous service-diagnostic intervention.
++  bool ep_l2_reviewed_line_mshr_budget() const {
++    return m_mshr_entries == 128 ||
++        (m_mshr_entries == 64 && m_ep_l2_bank_ops == 1 &&
++         !m_ep_l2_diag_copy_free && !m_ep_l2_diag_l2_data_free);
++  }
+   unsigned ep_l2_ft_mode() const { return m_ep_l2_ft_mode; }
+   // ALL_DATA is an independent reference scope on the B16 OFF background.
+   // Expose a read-only compatibility query, never protected mutable fields.
+@@ -3335,16 +3343,23 @@
+   ep_l2_ro_runtime *m_ro;
+   void ro_init();
+   void validate_ep_l2_mode_config() const {
++    // The finite D512 line-budget family is independent of observation flags.
++    // Preserve all128 configurations; admit64 only through the reviewed P1 helper.
++    if (ft_enabled() && m_config.m_ep_l2_descriptor_pool_size == 512 &&
++        !m_config.ep_l2_reviewed_line_mshr_budget()) {
++      fprintf(stderr, "EP-L2 D512 reviewed line-MSHR family requires128 or64@P1 without local diagnostics\n");
++      abort();
++    }
+     if ((m_config.m_ep_l2_tvd_clean || m_config.m_ep_l2_tvd_dirty) &&
+         (m_config.m_ep_l2_diag_copy_free || m_config.m_ep_l2_payload_mode != 2 ||
+-         m_config.m_ep_l2_descriptor_pool_size != 512 || m_config.m_mshr_entries != 128 ||
++         m_config.m_ep_l2_descriptor_pool_size != 512 || !m_config.ep_l2_reviewed_line_mshr_budget() ||
+          m_config.get_num_lines() > 1024 || m_config.m_cache_type != SECTOR ||
+          m_config.m_write_policy != WRITE_BACK ||
+          m_config.m_write_alloc_policy != LAZY_FETCH_ON_READ)) {
+       fprintf(stderr,"TVD requires finite native cache policy; COPY_FREE is static-only\n");
+       abort();
+     }
+-    if(m_config.ro_requested() && (m_config.m_ep_l2_ft_mode!=2 || m_config.m_ep_l2_wbuf_entries!=16 || m_config.m_ep_l2_payload_mode!=2 || m_config.m_ep_l2_descriptor_pool_size!=512 || m_config.m_ep_l2_descriptor_per_line_cap!=32 || m_config.m_mshr_entries!=128 || m_config.m_ep_l2_wad_entries!=128 || m_config.m_ep_l2_bank_ops!=1 || m_config.m_ep_l2_static_s64 || m_config.m_ep_l2_wb_local_cap || m_config.m_ep_l2_mq2 || m_config.m_ep_l2_rg1 || m_config.m_ep_l2_ideal_wb || m_config.m_ep_l2_ideal_meta || m_config.m_ep_l2_ideal_read_hit || m_config.m_ep_l2_diag_copy_free)) {fprintf(stderr,"RO requires finite U16 P1 D512/line128/WAD128; COPY_FREE is static-only\n");abort();}
++    if(m_config.ro_requested() && (m_config.m_ep_l2_ft_mode!=2 || m_config.m_ep_l2_wbuf_entries!=16 || m_config.m_ep_l2_payload_mode!=2 || m_config.m_ep_l2_descriptor_pool_size!=512 || m_config.m_ep_l2_descriptor_per_line_cap!=32 || !m_config.ep_l2_reviewed_line_mshr_budget() || m_config.m_ep_l2_wad_entries!=128 || m_config.m_ep_l2_bank_ops!=1 || m_config.m_ep_l2_static_s64 || m_config.m_ep_l2_wb_local_cap || m_config.m_ep_l2_mq2 || m_config.m_ep_l2_rg1 || m_config.m_ep_l2_ideal_wb || m_config.m_ep_l2_ideal_meta || m_config.m_ep_l2_ideal_read_hit || m_config.m_ep_l2_diag_copy_free)) {fprintf(stderr,"RO requires finite U16 P1 D512/(line64@P1 or line128)/WAD128; COPY_FREE is static-only\n");abort();}
+ 
+     const bool local_diag = m_config.m_ep_l2_diag_copy_free || m_config.m_ep_l2_diag_l2_data_free;
+     if ((m_config.m_ep_l2_diag_copy_free && m_config.m_ep_l2_diag_l2_data_free) ||
+@@ -3352,7 +3367,7 @@
+          (!ft_enabled() || m_config.m_ep_l2_wbuf_entries != 16 ||
+           m_config.m_ep_l2_payload_mode != 2 || m_config.m_ep_l2_wad_entries != 128 ||
+           m_config.m_ep_l2_descriptor_pool_size != 512 ||
+-          m_config.m_mshr_entries != 128 || m_config.get_num_lines() > 1024 ||
++          !m_config.ep_l2_reviewed_line_mshr_budget() || m_config.get_num_lines() > 1024 ||
+           m_config.m_write_policy != WRITE_BACK ||
+           m_config.m_write_alloc_policy != LAZY_FETCH_ON_READ ||
+           m_config.m_cache_type != SECTOR || m_config.m_ep_l2_bank_ops != 1 ||
+@@ -3370,7 +3385,7 @@
+     }
+     if ((m_config.m_ep_l2_tvd_clean || m_config.m_ep_l2_tvd_dirty) &&
+         (m_config.m_ep_l2_ft_mode != 2 || m_config.m_ep_l2_wbuf_entries != 16 ||
+-         m_config.m_ep_l2_descriptor_pool_size != 512 || m_config.m_mshr_entries != 128 ||
++         m_config.m_ep_l2_descriptor_pool_size != 512 || !m_config.ep_l2_reviewed_line_mshr_budget() ||
+          m_config.get_num_lines() > 1024 || m_config.m_write_policy != WRITE_BACK ||
+          m_config.m_write_alloc_policy != LAZY_FETCH_ON_READ || m_config.m_cache_type != SECTOR ||
+          m_config.m_ep_l2_wad_entries != 128 || m_config.m_ep_l2_bank_ops != 1 ||
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -3120,7 +3120,7 @@
+  }else{
+    if((p.needs_new_mshr||p.needs_mshr_merge)&&m_mshrs.descriptor_count_used()>=512){d->add(mask_descriptor);if(!primary)primary=primary_descriptor;}
+    if((p.needs_new_mshr||p.needs_mshr_merge)&&m_mshrs.targets_on_line(m_config.block_addr(m->get_addr()))>=32){d->add(mask_address);if(!primary)primary=primary_address;}
+-   if(p.needs_new_mshr&&m_mshrs.num_entries_used()>=128){d->add(mask_line);if(!primary)primary=primary_line;}
++   if(p.needs_new_mshr&&m_mshrs.num_entries_used()>=mshr_entry_capacity()){d->add(mask_line);if(!primary)primary=primary_line;}
+  }
+  if(!missq&&p.new_missq_entries){d->add(mask_missq);if(!primary)primary=primary_missq;}
+  if(p.needs_data_port&&!data_port_free()){d->add(mask_data);if(!primary)primary=primary_data;}
+--- a/src/gpgpu-sim/ep-l2-ro-runtime.inc
++++ b/src/gpgpu-sim/ep-l2-ro-runtime.inc
+@@ -36,8 +36,8 @@
+     reply(),response_cycle(0),cursor(0),accepted_global_reads(0),accepted_candidates(0),accepted_ro(0) {
+     const auto &cfg=c.m_config;
+     if(cfg.get_line_sz()!=128 || cfg.get_atom_sz()!=32 || cfg.m_alloc_policy!=ON_MISS ||
+-       cfg.m_mshr_entries!=128 || cfg.m_ep_l2_descriptor_per_line_cap!=32)
+-      throw std::invalid_argument("RO requires reviewed sector128/32 LineMSHR128 D512/address32 geometry");
++       !cfg.ep_l2_reviewed_line_mshr_budget() || cfg.m_ep_l2_descriptor_per_line_cap!=32)
++      throw std::invalid_argument("RO requires reviewed sector128/32 reviewed LineMSHR64@P1 or128 D512/address32 geometry");
+     if(!cfg.m_ro_ranges || !cfg.m_ro_ranges_sha256 || !cfg.m_ro_manifest_sha256 || !cfg.m_ro_scope)
+       throw std::invalid_argument("RO input binding absent");
+     std::ifstream f(cfg.m_ro_ranges,std::ios::binary);
+@@ -124,7 +124,7 @@
+     const bool existing=p.mshr_hit || target_for_observer(m);
+     if (c.m_mshrs.descriptor_count_used()>=512) observe_block(m,2);
+     if (c.m_mshrs.targets_on_line(c.m_config.block_addr(m->get_addr()))>=32) observe_block(m,3);
+-    if (!existing && !c.m_config.m_ro_line_mshr_bypass && c.m_mshrs.num_entries_used()>=128) observe_block(m,1);
++    if (!existing && !c.m_config.m_ro_line_mshr_bypass && c.m_mshrs.num_entries_used()>=c.mshr_entry_capacity()) observe_block(m,1);
+   }
+   bool target_for_observer(mem_fetch *m) const {handle h;return target(m,h);}
+   bool directory_ready(mem_fetch *m) const {
+@@ -233,7 +233,7 @@
+     const bool line_absent=!c.m_mshrs.probe(line);
+     if(o)o->line_probe_check=line_absent;
+     if(!line_absent)return false;
+-    const bool line_room=c.m_mshrs.num_entries_used()<128;
++    const bool line_room=c.m_mshrs.num_entries_used()<c.mshr_entry_capacity();
+     if(o)o->line_slots_check=line_room;
+     return line_room;
+   }
+@@ -447,11 +447,11 @@
+     slice,m_ft_stats.descriptor_responses,(unsigned long long)s.responses,
+     m_mshrs.descriptor_count_used(),m_mshrs.num_entries_used(),m_ro->tx->live_transactions(),
+     unsigned(m_ro->ever_open&&!m_ro->open));
+-  fprintf(f,"EPL2ROC1|RESOURCE|slice=%u|normal_line_allocations=%llu|avoided_line_allocations=%llu|peak_transactions=%u|peak_shared_descriptors=%u|peak_shared_lines=%u|lower_read_bytes=%llu|concurrent_duplicate_read_bytes=%llu|query_count=%llu|query_latency_gpu_cycles=1|query_ports_per_slice=1|query_wait_cycles=%llu|query_port_wait_attempts=%llu|shared_descriptor_capacity=512|payload_capacity=1168|line_capacity=128|oracle=%s\n",
++  fprintf(f,"EPL2ROC1|RESOURCE|slice=%u|normal_line_allocations=%llu|avoided_line_allocations=%llu|peak_transactions=%u|peak_shared_descriptors=%u|peak_shared_lines=%u|lower_read_bytes=%llu|concurrent_duplicate_read_bytes=%llu|query_count=%llu|query_latency_gpu_cycles=1|query_ports_per_slice=1|query_wait_cycles=%llu|query_port_wait_attempts=%llu|shared_descriptor_capacity=512|payload_capacity=1168|line_capacity=%u|oracle=%s\n",
+     slice,(unsigned long long)s.normal_line_allocations,(unsigned long long)s.avoided_line_allocations,
+     s.peak_transactions,s.peak_shared_descriptors,s.peak_shared_lines,
+     (unsigned long long)s.lower_sectors*32,(unsigned long long)s.duplicate_sectors*32,
+-    (unsigned long long)m_ro->query_count,(unsigned long long)m_ro->query_wait_cycles,(unsigned long long)m_ro->query_port_waits,m_config.m_ro_scope);
++    (unsigned long long)m_ro->query_count,(unsigned long long)m_ro->query_wait_cycles,(unsigned long long)m_ro->query_port_waits,mshr_entry_capacity(),m_config.m_ro_scope);
+   const std::string begin=m_ro->ever_open?std::to_string(m_ro->epoch_begin_cycle):"NA";
+   const std::string end=m_ro->ever_open&&!m_ro->open?std::to_string(m_ro->epoch_end_cycle):"NA";
+   const std::string last=s.responses?std::to_string(m_ro->last_response_cycle):"NA";
+--- a/src/gpgpu-sim/ep-l2-mechanism-interface.h
++++ b/src/gpgpu-sim/ep-l2-mechanism-interface.h
+@@ -14,6 +14,7 @@
+ static const unsigned k_sectors = 4;
+ static const unsigned k_banks = 4;
+ static const unsigned k_wad_and_victim_entries = 128;
++// Legacy/default declaration, not runtime capacity; admission/telemetry must use the cache getter.
+ static const unsigned k_line_mshrs = 128;
+ static const unsigned k_request_descriptors = 512;
+ static const unsigned k_victim_query_cycles = 1;
+--- a/src/gpgpu-sim/l2cache.h
++++ b/src/gpgpu-sim/l2cache.h
+@@ -360,6 +360,8 @@
+   // C7: a separate target schema. uid is a kernel-launch UID for boundary
+   // snapshots; this is statistics-only and never resets cache resources.
+   void print_ep_l2_b0_snapshot(FILE *fp, unsigned long long uid) const;
++  // Output-only final tail; sampling and production resource checks are unchanged.
++  void print_ep_l2_protocol_closure(FILE *fp, unsigned long long uid) const;
+   void begin_ep_l2_b0_kernel(unsigned long long uid);
+   void end_ep_l2_b0_kernel(FILE *fp, unsigned long long uid);
+   bool l2_char_no_resource_leak() const;
+--- a/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/l2cache.cc
+@@ -2528,6 +2528,46 @@
+            m_L2cache->ep_l2_payload_pending_operations() == 0) ? 1 : 0);
+ }
+ 
++void memory_sub_partition::print_ep_l2_protocol_closure(
++    FILE *fp, unsigned long long uid) const {
++  assert(uid == (unsigned long long)-1);
++  if (uid == (unsigned long long)-1 && m_L2cache->ft_enabled()) {
++    m_L2cache->ft_print(fp, m_id);
++    m_L2cache->ro_print(fp, m_id);
++    fprintf(fp, "EPL2FTV1|TERMINAL|slice=%u|unique_requesters=%llu|responses=%llu|"
++        "absorbed_writebacks=%llu|requester_live=%u|requester_exact_once=%u|"
++        "hardware_drained=%u|pending_lower_reads=%u|pending_returns=%u|pending_responses=%u\n",
++        m_id, m_ft_unique_requesters, m_ft_response_count, m_ft_absorbed_count,
++        (unsigned)m_ft_live_requesters.size(),
++        m_ft_live_requesters.empty() && m_ft_unique_requesters == m_ft_response_count ? 1 : 0,
++        l2_char_no_resource_leak() ? 1 : 0, m_L2cache->ft_pending_lower_reads(),
++        m_dram_L2_queue->get_length(), m_L2_icnt_queue->get_length());
++  }
++  fprintf(fp,
++          "EPL2B0V1|INVARIANT|slice=%u|kernel_uid=%llu|line_mshr_used=%u|"
++          "line_mshr_capacity=%u|descriptor_used=%u|descriptor_free=%u|"
++          "descriptor_capacity=%u|wad_live=%u|wad_capacity=%u|resident_live=%u|"
++          "resident_capacity=1024|resident_pending=%u|bypass_live=%u|bypass_capacity=%u|bank_pending=%u|"
++          "resident_tag_payload_consistent=%u|payload_double_owner=%u|terminal_clean=%u\n",
++          m_id, uid, m_L2cache->mshr_entries_used(),
++          m_L2cache->mshr_entry_capacity(), m_L2cache->ep_l2_descriptor_count_used(),
++          m_L2cache->ep_l2_descriptor_pool_capacity() - m_L2cache->ep_l2_descriptor_count_used(),
++          m_L2cache->ep_l2_descriptor_pool_capacity(),
++          m_L2cache->ep_l2_wad_occupancy(), m_L2cache->ep_l2_wad_capacity(),
++          m_L2cache->ep_l2_resident_payload_occupancy(),
++          m_L2cache->ep_l2_resident_pending(),
++          m_L2cache->ep_l2_bypass_payload_occupancy(),
++          m_L2cache->ep_l2_payload_for_test().bypass_capacity(),
++          m_L2cache->ep_l2_payload_pending_operations(),
++          m_L2cache->ep_l2_payload_ownership_consistent() ? 1 : 0,
++          m_L2cache->ep_l2_payload_ownership_consistent() ? 0 : 1,
++          (m_L2cache->ep_l2_descriptor_count_used() == 0 &&
++           m_L2cache->ep_l2_wad_occupancy() == 0 &&
++           m_L2cache->ep_l2_resident_pending() == 0 &&
++           m_L2cache->ep_l2_bypass_payload_occupancy() == 0 &&
++           m_L2cache->ep_l2_payload_pending_operations() == 0) ? 1 : 0);
++}
++
+ bool memory_sub_partition::l2_char_no_resource_leak() const {
+   return m_request_tracker.empty() && m_icnt_L2_queue->empty() &&
+          m_L2_dram_queue->empty() && m_dram_L2_queue->empty() &&
+--- a/src/gpgpu-sim/gpu-sim.h
++++ b/src/gpgpu-sim/gpu-sim.h
+@@ -692,6 +692,8 @@
+  protected:
+   // clocks
+   void reinit_clock_domains(void);
++  // One host output-state bit, never used by cycle/admission/resource logic.
++  bool m_ep_l2_b0_off_closure_printed = false;
+   int next_clock_domain(void);
+   void issue_block2core();
+   void print_dram_stats(FILE *fout) const;
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -1442,6 +1442,24 @@
+         "----------------------------END-of-Interconnect-DETAILS---------------"
+         "----------\n");
+   }
++  // B0OFF retains the mandatory production protocol closure only at the
++  // Framework9dd final sentinel. Per-kernel cumulative print() is NOT final.
++  // B0ON short-circuits here before any new drain query/state/output.
++  if (!m_memory_config->m_L2_config.ep_l2_b0_stats_enabled() &&
++      !m_memory_config->m_L2_config.disabled() &&
++      (m_memory_config->m_L2_config.ep_l2_ft_mode() == 1 ||
++       m_memory_config->m_L2_config.ep_l2_ft_mode() == 2) &&
++      streamID == ~0ULL && !m_ep_l2_b0_off_closure_printed &&
++      !active() && !cycle_insn_cta_max_hit()) {
++    m_ep_l2_b0_off_closure_printed = true;
++    const unsigned slices = m_memory_config->m_n_mem_sub_partition;
++    fprintf(stdout, "EP_L2_PROTOCOL_FINAL_V1|BEGIN|slices=%u|B0=0|MS=%u|M0A=%u|basis=FRAMEWORK9DD_FINAL_BACKEND_DRAINED\n",
++            slices, unsigned(m_memory_config->m_L2_config.ep_l2_ms_observer_enabled()),
++            unsigned(m_memory_config->m_L2_config.ep_l2_m0a_stats_enabled()));
++    for (unsigned i = 0; i < slices; ++i)
++      m_memory_sub_partition[i]->print_ep_l2_protocol_closure(stdout, ~0ULL);
++    fprintf(stdout, "EP_L2_PROTOCOL_FINAL_V1|END|slices=%u|complete=1\n", slices);
++  }
+   // Exact Framework9dd final backend-drained commandlist sentinel only.
+   // No early per-kernel stats finalize; OFF does not invoke extra drain queries.
+   if(ep_et::enabled() && streamID==~0ULL && !active() && !cycle_insn_cta_max_hit()) {
