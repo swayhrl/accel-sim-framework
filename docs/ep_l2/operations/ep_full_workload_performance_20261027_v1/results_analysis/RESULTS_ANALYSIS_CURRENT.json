@@ -3,14 +3,14 @@
     "matched_details_ref": {
       "bytes": 179913,
       "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/analysis/live/MATCHED_RESULT_DETAILS.json",
-      "sha256": "3009da84ecd694892a31b56acbc212876eb7bc6dc67e96f2daee922e3e0bc29b"
+      "sha256": "6a007bb92583150c2a92140754c8f7405bed69ad333f7590101913430aa4aac9"
     },
     "status_ref": {
       "bytes": 2158,
       "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/analysis/live/CURRENT_STATUS.json",
-      "sha256": "1c4b9392156485258608814e740a4ea2f9cbb2f012604b422fb7631aed46dee0"
+      "sha256": "046adb90e16f8ab051c5d70f1d1d16989b258fb1f9404293efc9b206c808975d"
     },
-    "utc": "2026-10-28T06:25:12.864878+00:00"
+    "utc": "2026-10-28T07:55:18.131219+00:00"
   },
   "actual_smallG_final_RO_detaches": [
     {
@@ -99,9 +99,9 @@
     }
   ],
   "analysis_code_ref": {
-    "bytes": 28195,
-    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/results_analysis_20261028_v1/analyze_current.py",
-    "sha256": "7c6580b354398dc38b00c4fae428b395280495658742f13793eb67c40e604c8d"
+    "bytes": 31233,
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/results_analysis_20261028_v1/analyze_current_incremental_v2.py",
+    "sha256": "d3b68e4bc4f98c86dd5cce7324a0032507256f47977d64ea9517132cede6ce08"
   },
   "boundary": {
     "Tag_coveragebytes_not_TagRAM_area": true,
@@ -142,15 +142,15 @@
   },
   "counts": {
     "consumed": 218,
-    "independently_metadata_joined_closed_accepted": 208,
+    "independently_metadata_joined_closed_accepted": 210,
     "join_holds": 0,
     "live_pair_exclusions": 0,
     "matched_same_hardware_pairs": 103,
     "registered": 227,
     "states": {
-      "CLOSED_ACCEPTED": 208,
+      "CLOSED_ACCEPTED": 210,
       "CLOSED_UNACCEPTED": 2,
-      "CONSUMED_BEFORE_FORK": 8,
+      "CONSUMED_BEFORE_FORK": 6,
       "NOT_STARTED": 9
     }
   },
@@ -265,6 +265,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_2DCONV_0AE13552_F_REF_V1",
       "matched_same_mode_REF_cycles": 377404,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -372,6 +373,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_2DCONV_0AE13552_S_REF_V1",
       "matched_same_mode_REF_cycles": 376480,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -479,6 +481,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_2DCONV_0AE13552_WV_ZERO_RO_REF_V1",
       "matched_same_mode_REF_cycles": 378354,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "WV_ZERO_RO",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -591,6 +594,7 @@
       "kernels": 254,
       "matched_same_mode_REF_cohort": "EP_PERF_3DCONV_8F268365_F_REF_V1",
       "matched_same_mode_REF_cycles": 1933385,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -698,6 +702,7 @@
       "kernels": 254,
       "matched_same_mode_REF_cohort": "EP_PERF_3DCONV_8F268365_S_REF_V1",
       "matched_same_mode_REF_cycles": 1928729,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -805,6 +810,7 @@
       "kernels": 254,
       "matched_same_mode_REF_cohort": "EP_PERF_3DCONV_8F268365_WV_ZERO_RO_REF_V1",
       "matched_same_mode_REF_cycles": 1928654,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "WV_ZERO_RO",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -930,11 +936,17 @@
       "state": "CONSUMED_BEFORE_FORK"
     },
     {
+      "CTA": 3072,
+      "IPC": 1068.8983566129796,
       "M": false,
       "RO_applicability": "S_NOT_APPLICABLE",
       "T": false,
-      "accepted": false,
-      "archive_ref": null,
+      "accepted": true,
+      "archive_ref": {
+        "bytes": 1835,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_3MM_F9F80028_S_REF_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "434a5b5828d87cfe45b97bd59abe71fba2c346617b629986a59e6e6bcceedd12"
+      },
       "cohort": "EP_PERF_3MM_F9F80028_S_REF_V1",
       "cost_proxy": {
         "DRAM_MHz": 850.0,
@@ -963,17 +975,26 @@
         "physical_payload_line_slots_per_slice": 1168,
         "static_s64": false
       },
-      "done_ref": null,
-      "failure_ref": null,
+      "cycles": 1696618,
+      "done_ref": {
+        "bytes": 5140,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_3MM_F9F80028_S_REF_V1.DONE.json",
+        "sha256": "5f3666af7ca5822193f2602b970949601b3d16a906c572ad1f5f79f12e47f3ed"
+      },
+      "exact_delta_from_same_mode_REF": {},
       "geometry": {
         "line_bytes": 128,
         "sets": 32,
         "slices": 64,
         "ways": 8
       },
+      "hardware_drained": true,
       "input_identity_sha256": "f9f80028887c1347afd5a8d68deeb0e9b68bc273766e62e912fdfb5aa4619e73",
+      "instructions": 1813512192,
+      "kernels": 3,
+      "matched_same_mode_REF_cohort": "EP_PERF_3MM_F9F80028_S_REF_V1",
+      "matched_same_mode_REF_cycles": 1696618,
       "mode": "S",
-      "negative_scope": "PENDING_NO_RATIO",
       "numeric_output": "UNKNOWN",
       "observer": {
         "B0": "1",
@@ -988,9 +1009,21 @@
         }
       },
       "option282_digest": "2a1dc8b8c51e172a6aee68c62a53794381402e67418dcec01d03cbb73ac13f67",
+      "point_ref": {
+        "bytes": 2380,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_3MM_F9F80028_S_REF_V1/run/151b8a25-5d94-428f-9bc0-8903f55735e7/ACCEPTED_POINT.json",
+        "sha256": "7fa4e75d1606cbb5a039025540bdaf11f4d3c86772ad3142bee5163c1fdf97a7"
+      },
+      "postrun_qualification_ref": null,
       "profile": "REF32x8_L100",
       "program": "3MM",
-      "scientific_status": "UNSPECIFIED",
+      "raw_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_3MM_F9F80028_S_REF_V1/run/151b8a25-5d94-428f-9bc0-8903f55735e7/raw.log.gz",
+        "sha256": "692213778ebef71737c6743eb3408da8733eb7d669df9ece075419cebbba1931"
+      },
+      "same_mode_REF_over_cycles": 1.0,
+      "same_mode_cycle_reduction_fraction": 0.0,
+      "semantic_population_digest": "d5636bc40ed4cf0a81a41130ef684c10afd24e637a5f340df2dd210bfcc06ec1",
       "source_identity": {
         "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
         "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
@@ -1003,7 +1036,11 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_3MM_F9F80028_S_REF_V1/control/FROZEN_SPEC.json",
         "sha256": "1270cc701c115b89bc59c4d4749050f7ceb575556ab9b61349997841584e90c1"
       },
-      "state": "CONSUMED_BEFORE_FORK"
+      "state": "CLOSED_ACCEPTED",
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_3MM_F9F80028_S_REF_V1/run/151b8a25-5d94-428f-9bc0-8903f55735e7/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "dafe12be58c5983ee5bee9b5268906f0810cd8eb352f805eacb1d8733d3d3f6b"
+      }
     },
     {
       "CTA": 32,
@@ -1068,6 +1105,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_ATAX_F_REF_V1",
       "matched_same_mode_REF_cycles": 3017428,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -1175,6 +1213,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_ATAX_S_REF_V1",
       "matched_same_mode_REF_cycles": 3001729,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -1287,6 +1326,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_BICG_192C29C0_F_REF_V1",
       "matched_same_mode_REF_cycles": 3018437,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -1394,6 +1434,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_BICG_192C29C0_S_REF_V1",
       "matched_same_mode_REF_cycles": 3003250,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -1501,6 +1542,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_BICG_192C29C0_WV_ZERO_RO_REF_V1",
       "matched_same_mode_REF_cycles": 3004344,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "WV_ZERO_RO",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -1617,6 +1659,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_F_REF_V1",
       "matched_same_mode_REF_cycles": 8520,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -1749,6 +1792,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_F_REF_V1",
       "matched_same_mode_REF_cycles": 8520,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -1869,6 +1913,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_F_REF_V1",
       "matched_same_mode_REF_cycles": 8520,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -1993,6 +2038,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_F_REF_V1",
       "matched_same_mode_REF_cycles": 8520,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -2109,6 +2155,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_F_REF_V1",
       "matched_same_mode_REF_cycles": 8520,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -2225,6 +2272,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_F_REF_V1",
       "matched_same_mode_REF_cycles": 8520,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -2341,6 +2389,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_F_REF_V1",
       "matched_same_mode_REF_cycles": 8520,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -2457,6 +2506,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_F_REF_V1",
       "matched_same_mode_REF_cycles": 8520,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -2573,6 +2623,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_F_REF_V1",
       "matched_same_mode_REF_cycles": 8520,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -2689,6 +2740,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_F_REF_V1",
       "matched_same_mode_REF_cycles": 8520,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -2805,6 +2857,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_F_REF_V1",
       "matched_same_mode_REF_cycles": 8520,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -2925,6 +2978,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_F_REF_V1",
       "matched_same_mode_REF_cycles": 8520,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -3036,6 +3090,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_F_REF_G32_W8_P1168_MS0_V1",
       "matched_same_mode_REF_cycles": 8520,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -3147,6 +3202,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_F_REF_V1",
       "matched_same_mode_REF_cycles": 8520,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -3279,6 +3335,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_F_REF_V1",
       "matched_same_mode_REF_cycles": 8520,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -3395,6 +3452,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_F_REF_V1",
       "matched_same_mode_REF_cycles": 8520,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -3511,6 +3569,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_F_REF_V1",
       "matched_same_mode_REF_cycles": 8520,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -3627,6 +3686,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_F_REF_V1",
       "matched_same_mode_REF_cycles": 8520,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -3743,6 +3803,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_F_REF_V1",
       "matched_same_mode_REF_cycles": 8520,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -3855,6 +3916,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_S_REF_V1",
       "matched_same_mode_REF_cycles": 8456,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -3983,6 +4045,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_S_REF_V1",
       "matched_same_mode_REF_cycles": 8456,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -4099,6 +4162,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_S_REF_V1",
       "matched_same_mode_REF_cycles": 8456,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -4219,6 +4283,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_S_REF_V1",
       "matched_same_mode_REF_cycles": 8456,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -4331,6 +4396,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_S_REF_V1",
       "matched_same_mode_REF_cycles": 8456,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -4443,6 +4509,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_S_REF_V1",
       "matched_same_mode_REF_cycles": 8456,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -4555,6 +4622,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_S_REF_V1",
       "matched_same_mode_REF_cycles": 8456,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -4667,6 +4735,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_S_REF_V1",
       "matched_same_mode_REF_cycles": 8456,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -4779,6 +4848,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_S_REF_V1",
       "matched_same_mode_REF_cycles": 8456,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -4891,6 +4961,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_S_REF_G32_W8_P1168_MS0_V1",
       "matched_same_mode_REF_cycles": 8456,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -5003,6 +5074,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_S_REF_V1",
       "matched_same_mode_REF_cycles": 8456,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -5115,6 +5187,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_S_REF_V1",
       "matched_same_mode_REF_cycles": 8456,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -5231,6 +5304,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_S_REF_V1",
       "matched_same_mode_REF_cycles": 8456,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -5338,6 +5412,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_S_REF_G32_W8_P1168_MS0_V1",
       "matched_same_mode_REF_cycles": 8456,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -5445,6 +5520,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_S_REF_V1",
       "matched_same_mode_REF_cycles": 8456,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -5573,6 +5649,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_S_REF_V1",
       "matched_same_mode_REF_cycles": 8456,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -5685,6 +5762,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_S_REF_V1",
       "matched_same_mode_REF_cycles": 8456,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -5797,6 +5875,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_S_REF_V1",
       "matched_same_mode_REF_cycles": 8456,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -5909,6 +5988,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_S_REF_V1",
       "matched_same_mode_REF_cycles": 8456,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -6021,6 +6101,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_BLACKSCHOLES_09EFF62B_S_REF_V1",
       "matched_same_mode_REF_cycles": 8456,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -6137,6 +6218,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_F_REF_V1",
       "matched_same_mode_REF_cycles": 335088,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -6269,6 +6351,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_F_REF_V1",
       "matched_same_mode_REF_cycles": 335088,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -6389,6 +6472,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_F_REF_V1",
       "matched_same_mode_REF_cycles": 335088,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -6513,6 +6597,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_F_REF_V1",
       "matched_same_mode_REF_cycles": 335088,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -6629,6 +6714,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_F_REF_V1",
       "matched_same_mode_REF_cycles": 335088,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -6745,6 +6831,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_F_REF_V1",
       "matched_same_mode_REF_cycles": 335088,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -6861,6 +6948,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_F_REF_V1",
       "matched_same_mode_REF_cycles": 335088,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -6977,6 +7065,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_F_REF_V1",
       "matched_same_mode_REF_cycles": 335088,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -7093,6 +7182,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_F_REF_V1",
       "matched_same_mode_REF_cycles": 335088,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -7209,6 +7299,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_F_REF_V1",
       "matched_same_mode_REF_cycles": 335088,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -7325,6 +7416,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_F_REF_V1",
       "matched_same_mode_REF_cycles": 335088,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -7441,6 +7533,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_F_REF_V1",
       "matched_same_mode_REF_cycles": 335088,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -7561,6 +7654,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_F_REF_V1",
       "matched_same_mode_REF_cycles": 335088,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -7672,6 +7766,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_F_REF_G32_W8_P1168_MS0_V1",
       "matched_same_mode_REF_cycles": 335088,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -7783,6 +7878,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_F_REF_V1",
       "matched_same_mode_REF_cycles": 335088,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -7915,6 +8011,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_F_REF_V1",
       "matched_same_mode_REF_cycles": 335088,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -8031,6 +8128,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_F_REF_V1",
       "matched_same_mode_REF_cycles": 335088,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -8147,6 +8245,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_F_REF_V1",
       "matched_same_mode_REF_cycles": 335088,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -8263,6 +8362,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_F_REF_V1",
       "matched_same_mode_REF_cycles": 335088,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -8379,6 +8479,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_F_REF_V1",
       "matched_same_mode_REF_cycles": 335088,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -8491,6 +8592,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_S_REF_V1",
       "matched_same_mode_REF_cycles": 331234,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -8619,6 +8721,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_S_REF_V1",
       "matched_same_mode_REF_cycles": 331234,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -8735,6 +8838,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_S_REF_V1",
       "matched_same_mode_REF_cycles": 331234,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -8855,6 +8959,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_S_REF_V1",
       "matched_same_mode_REF_cycles": 331234,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -8967,6 +9072,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_S_REF_V1",
       "matched_same_mode_REF_cycles": 331234,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -9079,6 +9185,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_S_REF_V1",
       "matched_same_mode_REF_cycles": 331234,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -9191,6 +9298,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_S_REF_V1",
       "matched_same_mode_REF_cycles": 331234,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -9303,6 +9411,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_S_REF_V1",
       "matched_same_mode_REF_cycles": 331234,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -9415,6 +9524,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_S_REF_V1",
       "matched_same_mode_REF_cycles": 331234,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -9527,6 +9637,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_S_REF_V1",
       "matched_same_mode_REF_cycles": 331234,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -9639,6 +9750,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_S_REF_G32_W8_P1168_MS0_V1",
       "matched_same_mode_REF_cycles": 331234,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -9751,6 +9863,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_S_REF_V1",
       "matched_same_mode_REF_cycles": 331234,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -9863,6 +9976,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_S_REF_V1",
       "matched_same_mode_REF_cycles": 331234,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -9979,6 +10093,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_S_REF_V1",
       "matched_same_mode_REF_cycles": 331234,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -10086,6 +10201,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_S_REF_G32_W8_P1168_MS0_V1",
       "matched_same_mode_REF_cycles": 331234,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -10193,6 +10309,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_S_REF_V1",
       "matched_same_mode_REF_cycles": 331234,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -10321,6 +10438,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_S_REF_V1",
       "matched_same_mode_REF_cycles": 331234,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -10433,6 +10551,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_S_REF_V1",
       "matched_same_mode_REF_cycles": 331234,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -10545,6 +10664,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_S_REF_V1",
       "matched_same_mode_REF_cycles": 331234,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -10657,6 +10777,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_S_REF_V1",
       "matched_same_mode_REF_cycles": 331234,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -10769,6 +10890,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_CONV_S_REF_V1",
       "matched_same_mode_REF_cycles": 331234,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -10901,6 +11023,7 @@
       "kernels": 10,
       "matched_same_mode_REF_cohort": "EP_PERF_DWT2D_8E07074A_F_REF_V1",
       "matched_same_mode_REF_cycles": 72078,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -11021,6 +11144,7 @@
       "kernels": 10,
       "matched_same_mode_REF_cohort": "EP_PERF_DWT2D_8E07074A_F_REF_V1",
       "matched_same_mode_REF_cycles": 72078,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -11132,6 +11256,7 @@
       "kernels": 10,
       "matched_same_mode_REF_cohort": "EP_PERF_DWT2D_8E07074A_F_REF_V1",
       "matched_same_mode_REF_cycles": 72078,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -11248,6 +11373,7 @@
       "kernels": 10,
       "matched_same_mode_REF_cohort": "EP_PERF_DWT2D_8E07074A_F_REF_V1",
       "matched_same_mode_REF_cycles": 72078,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -11376,6 +11502,7 @@
       "kernels": 10,
       "matched_same_mode_REF_cohort": "EP_PERF_DWT2D_8E07074A_S_REF_V1",
       "matched_same_mode_REF_cycles": 72052,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -11492,6 +11619,7 @@
       "kernels": 10,
       "matched_same_mode_REF_cohort": "EP_PERF_DWT2D_8E07074A_S_REF_V1",
       "matched_same_mode_REF_cycles": 72052,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -11599,6 +11727,7 @@
       "kernels": 10,
       "matched_same_mode_REF_cohort": "EP_PERF_DWT2D_8E07074A_S_REF_V1",
       "matched_same_mode_REF_cycles": 72052,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -11711,6 +11840,7 @@
       "kernels": 10,
       "matched_same_mode_REF_cohort": "EP_PERF_DWT2D_8E07074A_S_REF_V1",
       "matched_same_mode_REF_cycles": 72052,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -11818,6 +11948,7 @@
       "kernels": 16,
       "matched_same_mode_REF_cohort": "EP_PERF_FASTWALSHTRANSFORM_FC3A9062_S_REF_V1",
       "matched_same_mode_REF_cycles": 181827,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -11925,6 +12056,7 @@
       "kernels": 16,
       "matched_same_mode_REF_cohort": "EP_PERF_FASTWALSHTRANSFORM_FC3A9062_WV_ZERO_RO_REF_V1",
       "matched_same_mode_REF_cycles": 178951,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "WV_ZERO_RO",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -12057,6 +12189,7 @@
       "kernels": 126,
       "matched_same_mode_REF_cohort": "EP_PERF_GAUSSIAN_B5FC8DF0_F_REF_V1",
       "matched_same_mode_REF_cycles": 727673,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -12177,6 +12310,7 @@
       "kernels": 126,
       "matched_same_mode_REF_cohort": "EP_PERF_GAUSSIAN_B5FC8DF0_F_REF_V1",
       "matched_same_mode_REF_cycles": 727673,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -12288,6 +12422,7 @@
       "kernels": 126,
       "matched_same_mode_REF_cohort": "EP_PERF_GAUSSIAN_B5FC8DF0_F_REF_V1",
       "matched_same_mode_REF_cycles": 727673,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -12404,6 +12539,7 @@
       "kernels": 126,
       "matched_same_mode_REF_cohort": "EP_PERF_GAUSSIAN_B5FC8DF0_F_REF_V1",
       "matched_same_mode_REF_cycles": 727673,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -12532,6 +12668,7 @@
       "kernels": 126,
       "matched_same_mode_REF_cohort": "EP_PERF_GAUSSIAN_B5FC8DF0_S_REF_V1",
       "matched_same_mode_REF_cycles": 727673,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -12648,6 +12785,7 @@
       "kernels": 126,
       "matched_same_mode_REF_cohort": "EP_PERF_GAUSSIAN_B5FC8DF0_S_REF_V1",
       "matched_same_mode_REF_cycles": 727673,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -12755,6 +12893,7 @@
       "kernels": 126,
       "matched_same_mode_REF_cohort": "EP_PERF_GAUSSIAN_B5FC8DF0_S_REF_V1",
       "matched_same_mode_REF_cycles": 727673,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -12867,6 +13006,7 @@
       "kernels": 126,
       "matched_same_mode_REF_cohort": "EP_PERF_GAUSSIAN_B5FC8DF0_S_REF_V1",
       "matched_same_mode_REF_cycles": 727673,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -12978,6 +13118,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_GEMM_140F6ED3_F_REF_V1",
       "matched_same_mode_REF_cycles": 552065,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -13085,6 +13226,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_GEMM_140F6ED3_S_REF_V1",
       "matched_same_mode_REF_cycles": 558588,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -13192,6 +13334,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_GEMM_140F6ED3_WV_ZERO_RO_REF_V1",
       "matched_same_mode_REF_cycles": 550642,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "WV_ZERO_RO",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -13303,6 +13446,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_GESUMMV_A953FB7D_F_REF_V1",
       "matched_same_mode_REF_cycles": 3296001,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -13410,6 +13554,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_GESUMMV_A953FB7D_S_REF_V1",
       "matched_same_mode_REF_cycles": 3299323,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -13542,6 +13687,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_HEARTWALL_81949DE8_F_REF_V1",
       "matched_same_mode_REF_cycles": 8301,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -13662,6 +13808,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_HEARTWALL_81949DE8_F_REF_V1",
       "matched_same_mode_REF_cycles": 8301,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -13773,6 +13920,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_HEARTWALL_81949DE8_F_REF_V1",
       "matched_same_mode_REF_cycles": 8301,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -13889,6 +14037,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_HEARTWALL_81949DE8_F_REF_V1",
       "matched_same_mode_REF_cycles": 8301,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -14017,6 +14166,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_HEARTWALL_81949DE8_S_REF_V1",
       "matched_same_mode_REF_cycles": 8356,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -14133,6 +14283,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_HEARTWALL_81949DE8_S_REF_V1",
       "matched_same_mode_REF_cycles": 8356,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -14240,6 +14391,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_HEARTWALL_81949DE8_S_REF_V1",
       "matched_same_mode_REF_cycles": 8356,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -14352,6 +14504,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_HEARTWALL_81949DE8_S_REF_V1",
       "matched_same_mode_REF_cycles": 8356,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -14484,6 +14637,7 @@
       "kernels": 8,
       "matched_same_mode_REF_cohort": "EP_PERF_HISTOGRAM_85ECC480_F_REF_V1",
       "matched_same_mode_REF_cycles": 74110,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -14604,6 +14758,7 @@
       "kernels": 8,
       "matched_same_mode_REF_cohort": "EP_PERF_HISTOGRAM_85ECC480_F_REF_V1",
       "matched_same_mode_REF_cycles": 74110,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -14715,6 +14870,7 @@
       "kernels": 8,
       "matched_same_mode_REF_cohort": "EP_PERF_HISTOGRAM_85ECC480_F_REF_V1",
       "matched_same_mode_REF_cycles": 74110,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -14831,6 +14987,7 @@
       "kernels": 8,
       "matched_same_mode_REF_cohort": "EP_PERF_HISTOGRAM_85ECC480_F_REF_V1",
       "matched_same_mode_REF_cycles": 74110,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -14959,6 +15116,7 @@
       "kernels": 8,
       "matched_same_mode_REF_cohort": "EP_PERF_HISTOGRAM_85ECC480_S_REF_V1",
       "matched_same_mode_REF_cycles": 73975,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -15075,6 +15233,7 @@
       "kernels": 8,
       "matched_same_mode_REF_cohort": "EP_PERF_HISTOGRAM_85ECC480_S_REF_V1",
       "matched_same_mode_REF_cycles": 73975,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -15182,6 +15341,7 @@
       "kernels": 8,
       "matched_same_mode_REF_cohort": "EP_PERF_HISTOGRAM_85ECC480_S_REF_V1",
       "matched_same_mode_REF_cycles": 73975,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -15294,6 +15454,7 @@
       "kernels": 8,
       "matched_same_mode_REF_cohort": "EP_PERF_HISTOGRAM_85ECC480_S_REF_V1",
       "matched_same_mode_REF_cycles": 73975,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -15578,6 +15739,7 @@
       "kernels": 46,
       "matched_same_mode_REF_cohort": "EP_PERF_LUD_28B97CD0_F_REF_V1",
       "matched_same_mode_REF_cycles": 456406,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -15698,6 +15860,7 @@
       "kernels": 46,
       "matched_same_mode_REF_cohort": "EP_PERF_LUD_28B97CD0_F_REF_V1",
       "matched_same_mode_REF_cycles": 456406,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -15809,6 +15972,7 @@
       "kernels": 46,
       "matched_same_mode_REF_cohort": "EP_PERF_LUD_28B97CD0_F_REF_V1",
       "matched_same_mode_REF_cycles": 456406,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -15925,6 +16089,7 @@
       "kernels": 46,
       "matched_same_mode_REF_cohort": "EP_PERF_LUD_28B97CD0_F_REF_V1",
       "matched_same_mode_REF_cycles": 456406,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -16053,6 +16218,7 @@
       "kernels": 46,
       "matched_same_mode_REF_cohort": "EP_PERF_LUD_28B97CD0_S_REF_V1",
       "matched_same_mode_REF_cycles": 456406,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -16169,6 +16335,7 @@
       "kernels": 46,
       "matched_same_mode_REF_cohort": "EP_PERF_LUD_28B97CD0_S_REF_V1",
       "matched_same_mode_REF_cycles": 456406,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -16276,6 +16443,7 @@
       "kernels": 46,
       "matched_same_mode_REF_cohort": "EP_PERF_LUD_28B97CD0_S_REF_V1",
       "matched_same_mode_REF_cycles": 456406,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -16388,6 +16556,7 @@
       "kernels": 46,
       "matched_same_mode_REF_cohort": "EP_PERF_LUD_28B97CD0_S_REF_V1",
       "matched_same_mode_REF_cycles": 456406,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -16520,6 +16689,7 @@
       "kernels": 13,
       "matched_same_mode_REF_cohort": "EP_PERF_MERGESORT_ADD5C722_F_REF_V1",
       "matched_same_mode_REF_cycles": 112763,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -16640,6 +16810,7 @@
       "kernels": 13,
       "matched_same_mode_REF_cohort": "EP_PERF_MERGESORT_ADD5C722_F_REF_V1",
       "matched_same_mode_REF_cycles": 112763,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -16751,6 +16922,7 @@
       "kernels": 13,
       "matched_same_mode_REF_cohort": "EP_PERF_MERGESORT_ADD5C722_F_REF_V1",
       "matched_same_mode_REF_cycles": 112763,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -16867,6 +17039,7 @@
       "kernels": 13,
       "matched_same_mode_REF_cohort": "EP_PERF_MERGESORT_ADD5C722_F_REF_V1",
       "matched_same_mode_REF_cycles": 112763,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -16995,6 +17168,7 @@
       "kernels": 13,
       "matched_same_mode_REF_cohort": "EP_PERF_MERGESORT_ADD5C722_S_REF_V1",
       "matched_same_mode_REF_cycles": 112753,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -17111,6 +17285,7 @@
       "kernels": 13,
       "matched_same_mode_REF_cohort": "EP_PERF_MERGESORT_ADD5C722_S_REF_V1",
       "matched_same_mode_REF_cycles": 112753,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -17218,6 +17393,7 @@
       "kernels": 13,
       "matched_same_mode_REF_cohort": "EP_PERF_MERGESORT_ADD5C722_S_REF_V1",
       "matched_same_mode_REF_cycles": 112753,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -17330,6 +17506,7 @@
       "kernels": 13,
       "matched_same_mode_REF_cohort": "EP_PERF_MERGESORT_ADD5C722_S_REF_V1",
       "matched_same_mode_REF_cycles": 112753,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -17441,6 +17618,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_MVT_39D1748B_F_REF_V1",
       "matched_same_mode_REF_cycles": 3020333,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -17548,6 +17726,7 @@
       "kernels": 2,
       "matched_same_mode_REF_cohort": "EP_PERF_MVT_39D1748B_S_REF_V1",
       "matched_same_mode_REF_cycles": 3004030,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -17655,6 +17834,7 @@
       "kernels": 36,
       "matched_same_mode_REF_cohort": "EP_PERF_PARTICLEFILTERFLOAT_3904B55B_S_REF_V1",
       "matched_same_mode_REF_cycles": 2378894,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -17762,6 +17942,7 @@
       "kernels": 36,
       "matched_same_mode_REF_cohort": "EP_PERF_PARTICLEFILTERFLOAT_3904B55B_WV_ZERO_RO_REF_V1",
       "matched_same_mode_REF_cycles": 2377647,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "WV_ZERO_RO",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -18042,6 +18223,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_SCALARPROD_3F9F4D1A_F_REF_V1",
       "matched_same_mode_REF_cycles": 331656,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -18243,11 +18425,17 @@
       "state": "CONSUMED_BEFORE_FORK"
     },
     {
+      "CTA": 166608,
+      "IPC": 907.9419201494538,
       "M": false,
       "RO_applicability": "S_NOT_APPLICABLE",
       "T": false,
-      "accepted": false,
-      "archive_ref": null,
+      "accepted": true,
+      "archive_ref": {
+        "bytes": 1842,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCAN_CF8D1C4D_S_REF_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "c8631c66162cda1a85124ba860610dd0993d460ebc34e9dae533451bc6c27d12"
+      },
       "cohort": "EP_PERF_SCAN_CF8D1C4D_S_REF_V1",
       "cost_proxy": {
         "DRAM_MHz": 850.0,
@@ -18276,17 +18464,26 @@
         "physical_payload_line_slots_per_slice": 1168,
         "static_s64": false
       },
-      "done_ref": null,
-      "failure_ref": null,
+      "cycles": 2162540,
+      "done_ref": {
+        "bytes": 14035,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_SCAN_CF8D1C4D_S_REF_V1.DONE.json",
+        "sha256": "5f28984aae08abd51341bd6099e96ee05b1faee54f583d0f5bbc279d42ebe071"
+      },
+      "exact_delta_from_same_mode_REF": {},
       "geometry": {
         "line_bytes": 128,
         "sets": 32,
         "slices": 64,
         "ways": 8
       },
+      "hardware_drained": true,
       "input_identity_sha256": "cf8d1c4d8e4956779ee5dbe0e836c6c77b595cb86cd2dc731e9897dd75504690",
+      "instructions": 1963460720,
+      "kernels": 33,
+      "matched_same_mode_REF_cohort": "EP_PERF_SCAN_CF8D1C4D_S_REF_V1",
+      "matched_same_mode_REF_cycles": 2162540,
       "mode": "S",
-      "negative_scope": "PENDING_NO_RATIO",
       "numeric_output": "UNKNOWN",
       "observer": {
         "B0": "1",
@@ -18301,9 +18498,21 @@
         }
       },
       "option282_digest": "553ff5b3c1ab180fdd828f54fffd3300d6abef5fc10cccb2ba285f749afb1544",
+      "point_ref": {
+        "bytes": 2390,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCAN_CF8D1C4D_S_REF_V1/run/f921c53f-d58b-41a9-a282-3a63390c12da/ACCEPTED_POINT.json",
+        "sha256": "130ab6ac973b173621dddda210ee9c072fa5f0709f5ccd59bf425c4b322fdfd3"
+      },
+      "postrun_qualification_ref": null,
       "profile": "REF32x8_L100",
       "program": "scan",
-      "scientific_status": "UNSPECIFIED",
+      "raw_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCAN_CF8D1C4D_S_REF_V1/run/f921c53f-d58b-41a9-a282-3a63390c12da/raw.log.gz",
+        "sha256": "120468a13643d16534ec9032262defb28ec527ec4ba193b6aa50a8213f8d3e22"
+      },
+      "same_mode_REF_over_cycles": 1.0,
+      "same_mode_cycle_reduction_fraction": 0.0,
+      "semantic_population_digest": "ece9c43e602846b375c6463fc83149fa62f23654f20616fb5e4c175e0c792583",
       "source_identity": {
         "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
         "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
@@ -18316,7 +18525,11 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCAN_CF8D1C4D_S_REF_V1/control/FROZEN_SPEC.json",
         "sha256": "6f1bc9371101b592038a29ebcd15419787bafc43c9002ca44c9f96dc292c9e13"
       },
-      "state": "CONSUMED_BEFORE_FORK"
+      "state": "CLOSED_ACCEPTED",
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCAN_CF8D1C4D_S_REF_V1/run/f921c53f-d58b-41a9-a282-3a63390c12da/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "79e1b754b5a05ddfa70b57993da54207debb246826961fe75d2ae26f4141bfeb"
+      }
     },
     {
       "M": true,
@@ -18533,6 +18746,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_SGEMM_F_REF_V1",
       "matched_same_mode_REF_cycles": 357466,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -18868,6 +19082,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_SGEMM_S_REF_V1",
       "matched_same_mode_REF_cycles": 353921,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -19203,6 +19418,7 @@
       "kernels": 100,
       "matched_same_mode_REF_cohort": "EP_PERF_STENCIL_BD0309DF_S_REF_V1",
       "matched_same_mode_REF_cycles": 5242939,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -19467,6 +19683,7 @@
       "kernels": 24,
       "matched_same_mode_REF_cohort": "EP_PERF_TRANSPOSE_DA6CAAE1_F_REF_V1",
       "matched_same_mode_REF_cycles": 200972,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -19574,6 +19791,7 @@
       "kernels": 24,
       "matched_same_mode_REF_cohort": "EP_PERF_TRANSPOSE_DA6CAAE1_S_REF_V1",
       "matched_same_mode_REF_cycles": 200330,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -19681,6 +19899,7 @@
       "kernels": 24,
       "matched_same_mode_REF_cohort": "EP_PERF_TRANSPOSE_DA6CAAE1_WV_ZERO_RO_REF_V1",
       "matched_same_mode_REF_cycles": 200972,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "WV_ZERO_RO",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -19797,6 +20016,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_F_REF_V1",
       "matched_same_mode_REF_cycles": 77237,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -19929,6 +20149,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_F_REF_V1",
       "matched_same_mode_REF_cycles": 77237,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -20049,6 +20270,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_F_REF_V1",
       "matched_same_mode_REF_cycles": 77237,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -20173,6 +20395,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_F_REF_V1",
       "matched_same_mode_REF_cycles": 77237,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -20289,6 +20512,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_F_REF_V1",
       "matched_same_mode_REF_cycles": 77237,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -20405,6 +20629,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_F_REF_V1",
       "matched_same_mode_REF_cycles": 77237,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -20521,6 +20746,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_F_REF_V1",
       "matched_same_mode_REF_cycles": 77237,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -20637,6 +20863,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_F_REF_V1",
       "matched_same_mode_REF_cycles": 77237,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -20753,6 +20980,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_F_REF_V1",
       "matched_same_mode_REF_cycles": 77237,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -20869,6 +21097,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_F_REF_V1",
       "matched_same_mode_REF_cycles": 77237,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -20985,6 +21214,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_F_REF_V1",
       "matched_same_mode_REF_cycles": 77237,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -21105,6 +21335,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_F_REF_V1",
       "matched_same_mode_REF_cycles": 77237,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -21216,6 +21447,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_F_REF_G32_W8_P1168_MS0_V1",
       "matched_same_mode_REF_cycles": 77237,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -21327,6 +21559,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_F_REF_V1",
       "matched_same_mode_REF_cycles": 77237,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -21438,6 +21671,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_F_SOURCE92_P1_NI_V1",
       "matched_same_mode_REF_cycles": 77237,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -21554,6 +21788,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_F_SOURCE92_P1_NI_V1",
       "matched_same_mode_REF_cycles": 77237,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -21686,6 +21921,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_F_REF_V1",
       "matched_same_mode_REF_cycles": 77237,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -21802,6 +22038,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_F_REF_V1",
       "matched_same_mode_REF_cycles": 77237,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -21918,6 +22155,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_F_REF_V1",
       "matched_same_mode_REF_cycles": 77237,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -22034,6 +22272,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_F_REF_V1",
       "matched_same_mode_REF_cycles": 77237,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -22150,6 +22389,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_F_REF_V1",
       "matched_same_mode_REF_cycles": 77237,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -22262,6 +22502,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_S_REF_V1",
       "matched_same_mode_REF_cycles": 77184,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -22390,6 +22631,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_S_REF_V1",
       "matched_same_mode_REF_cycles": 77184,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -22506,6 +22748,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_S_REF_V1",
       "matched_same_mode_REF_cycles": 77184,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -22626,6 +22869,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_S_REF_V1",
       "matched_same_mode_REF_cycles": 77184,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -22738,6 +22982,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_S_REF_V1",
       "matched_same_mode_REF_cycles": 77184,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -22850,6 +23095,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_S_REF_V1",
       "matched_same_mode_REF_cycles": 77184,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -22962,6 +23208,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_S_REF_V1",
       "matched_same_mode_REF_cycles": 77184,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -23074,6 +23321,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_S_REF_V1",
       "matched_same_mode_REF_cycles": 77184,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -23186,6 +23434,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_S_REF_V1",
       "matched_same_mode_REF_cycles": 77184,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -23298,6 +23547,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_S_REF_G32_W8_P1168_MS0_V1",
       "matched_same_mode_REF_cycles": 77184,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -23410,6 +23660,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_S_REF_V1",
       "matched_same_mode_REF_cycles": 77184,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -23522,6 +23773,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_S_REF_V1",
       "matched_same_mode_REF_cycles": 77184,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -23638,6 +23890,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_S_REF_V1",
       "matched_same_mode_REF_cycles": 77184,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -23745,6 +23998,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_S_REF_G32_W8_P1168_MS0_V1",
       "matched_same_mode_REF_cycles": 77184,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -23852,6 +24106,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_S_REF_V1",
       "matched_same_mode_REF_cycles": 77184,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -23959,6 +24214,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_S_SOURCE92_P1_NI_V1",
       "matched_same_mode_REF_cycles": 77184,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -24071,6 +24327,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_S_SOURCE92_P1_NI_V1",
       "matched_same_mode_REF_cycles": 77184,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -24199,6 +24456,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_S_REF_V1",
       "matched_same_mode_REF_cycles": 77184,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -24311,6 +24569,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_S_REF_V1",
       "matched_same_mode_REF_cycles": 77184,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -24423,6 +24682,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_S_REF_V1",
       "matched_same_mode_REF_cycles": 77184,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -24535,6 +24795,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_S_REF_V1",
       "matched_same_mode_REF_cycles": 77184,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -24647,6 +24908,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR4M_S_REF_V1",
       "matched_same_mode_REF_cycles": 77184,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -24779,6 +25041,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR6M_F_REF_V1",
       "matched_same_mode_REF_cycles": 112617,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -24899,6 +25162,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR6M_F_REF_V1",
       "matched_same_mode_REF_cycles": 112617,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -25010,6 +25274,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR6M_F_REF_V1",
       "matched_same_mode_REF_cycles": 112617,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -25126,6 +25391,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR6M_F_REF_V1",
       "matched_same_mode_REF_cycles": 112617,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -25254,6 +25520,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR6M_S_REF_V1",
       "matched_same_mode_REF_cycles": 112272,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -25370,6 +25637,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR6M_S_REF_V1",
       "matched_same_mode_REF_cycles": 112272,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -25477,6 +25745,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR6M_S_REF_V1",
       "matched_same_mode_REF_cycles": 112272,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -25589,6 +25858,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_VECTOR6M_S_REF_V1",
       "matched_same_mode_REF_cycles": 112272,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -25782,6 +26052,231 @@
     }
   ],
   "goal": "EP_L2_FULL_WORKLOAD_PERFORMANCE_POTENTIAL_EXPLORATION_V1",
+  "incremental_refresh": {
+    "current_spec_SHA_and_registry_pointer_join_checked": true,
+    "new_or_changed_rejoined": [
+      "EP_PERF_3MM_F9F80028_S_REF_V1",
+      "EP_PERF_SCAN_CF8D1C4D_S_REF_V1"
+    ],
+    "prior_analysis_ref": {
+      "bytes": 1711151,
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/results_analysis_20261028_v1/versions/20261028T062536Z_f8ecbc8e/RESULTS_ANALYSIS_CURRENT.json",
+      "publish_name": "RESULTS_ANALYSIS_CURRENT.json",
+      "sha256": "0ae3b18035a56cf3467f3a8cd342333e0124db5ce40bd41533f17a2bc2325e18"
+    },
+    "prior_utc": "2026-10-28T06:25:36.600466+00:00",
+    "reused_unchanged": [
+      "EP_PERF_2DCONV_0AE13552_F_REF_V1",
+      "EP_PERF_2DCONV_0AE13552_S_REF_V1",
+      "EP_PERF_2DCONV_0AE13552_WV_ZERO_RO_REF_V1",
+      "EP_PERF_3DCONV_8F268365_F_REF_V1",
+      "EP_PERF_3DCONV_8F268365_S_REF_V1",
+      "EP_PERF_3DCONV_8F268365_WV_ZERO_RO_REF_V1",
+      "EP_PERF_ATAX_F_REF_V1",
+      "EP_PERF_ATAX_S_REF_V1",
+      "EP_PERF_BICG_192C29C0_F_REF_V1",
+      "EP_PERF_BICG_192C29C0_S_REF_V1",
+      "EP_PERF_BICG_192C29C0_WV_ZERO_RO_REF_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_F_COMBO_G32W16_L2MQ2_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_F_COMBO_G64W16_UD2_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_F_COMBO_G64W8_L1L2MQ2_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_F_COMBO_ICNT_LOWER2_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_F_D_DRAM_MHZ1020_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_F_D_LOWERFIFO256_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_F_G16_W8_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_F_G32_W16_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_F_G32_W4_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_F_G64_W16_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_F_G64_W8_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_F_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_F_REF_G32_W8_P1168_MS0_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_F_REF_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_F_UD_REQUEST_HEADROOM2_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_F_U_FRFCFS256_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_F_U_L1MQ32_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_F_U_L2MQ256_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_F_U_RETURN384_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_S_COMBO_G32W16_L2MQ2_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_S_COMBO_G64W16_UD2_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_S_COMBO_G64W8_L1L2MQ2_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_S_COMBO_ICNT_LOWER2_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_S_D_DRAM_MHZ1020_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_S_D_LOWERFIFO256_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_S_G16_W8_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_S_G32_W16_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_S_G32_W4_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_S_G32_W8_STATIC64_MS0_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_S_G64_W16_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_S_G64_W8_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_S_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_S_REF_G32_W8_P1168_MS0_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_S_REF_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_S_UD_REQUEST_HEADROOM2_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_S_U_FRFCFS256_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_S_U_L1MQ32_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_S_U_L2MQ256_V1",
+      "EP_PERF_BLACKSCHOLES_09EFF62B_S_U_RETURN384_V1",
+      "EP_PERF_CONV_F_COMBO_G32W16_L2MQ2_V1",
+      "EP_PERF_CONV_F_COMBO_G64W16_UD2_V1",
+      "EP_PERF_CONV_F_COMBO_G64W8_L1L2MQ2_V1",
+      "EP_PERF_CONV_F_COMBO_ICNT_LOWER2_V1",
+      "EP_PERF_CONV_F_DIAG_L2_DATA_FREE_V1",
+      "EP_PERF_CONV_F_D_DRAM_MHZ1020_V1",
+      "EP_PERF_CONV_F_D_LOWERFIFO256_V1",
+      "EP_PERF_CONV_F_G16_W8_V1",
+      "EP_PERF_CONV_F_G32_W16_V1",
+      "EP_PERF_CONV_F_G32_W4_V1",
+      "EP_PERF_CONV_F_G64_W16_V1",
+      "EP_PERF_CONV_F_G64_W8_V1",
+      "EP_PERF_CONV_F_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_CONV_F_REF_G32_W8_P1168_MS0_V1",
+      "EP_PERF_CONV_F_REF_V1",
+      "EP_PERF_CONV_F_UD_REQUEST_HEADROOM2_V1",
+      "EP_PERF_CONV_F_U_FRFCFS256_V1",
+      "EP_PERF_CONV_F_U_L1MQ32_V1",
+      "EP_PERF_CONV_F_U_L2MQ256_V1",
+      "EP_PERF_CONV_F_U_RETURN384_V1",
+      "EP_PERF_CONV_S_COMBO_G32W16_L2MQ2_V1",
+      "EP_PERF_CONV_S_COMBO_G64W16_UD2_V1",
+      "EP_PERF_CONV_S_COMBO_G64W8_L1L2MQ2_V1",
+      "EP_PERF_CONV_S_COMBO_ICNT_LOWER2_V1",
+      "EP_PERF_CONV_S_DIAG_COPY_FREE_V1",
+      "EP_PERF_CONV_S_D_DRAM_MHZ1020_V1",
+      "EP_PERF_CONV_S_D_LOWERFIFO256_V1",
+      "EP_PERF_CONV_S_G16_W8_V1",
+      "EP_PERF_CONV_S_G32_W16_V1",
+      "EP_PERF_CONV_S_G32_W4_V1",
+      "EP_PERF_CONV_S_G32_W8_STATIC64_MS0_V1",
+      "EP_PERF_CONV_S_G64_W16_V1",
+      "EP_PERF_CONV_S_G64_W8_V1",
+      "EP_PERF_CONV_S_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_CONV_S_REF_G32_W8_P1168_MS0_V1",
+      "EP_PERF_CONV_S_REF_V1",
+      "EP_PERF_CONV_S_UD_REQUEST_HEADROOM2_V1",
+      "EP_PERF_CONV_S_U_FRFCFS256_V1",
+      "EP_PERF_CONV_S_U_L1MQ32_V1",
+      "EP_PERF_CONV_S_U_L2MQ256_V1",
+      "EP_PERF_CONV_S_U_RETURN384_V1",
+      "EP_PERF_DWT2D_8E07074A_F_COMBO_G64W16_UD2_V1",
+      "EP_PERF_DWT2D_8E07074A_F_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_DWT2D_8E07074A_F_REF_V1",
+      "EP_PERF_DWT2D_8E07074A_F_U_L2MQ256_V1",
+      "EP_PERF_DWT2D_8E07074A_S_COMBO_G64W16_UD2_V1",
+      "EP_PERF_DWT2D_8E07074A_S_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_DWT2D_8E07074A_S_REF_V1",
+      "EP_PERF_DWT2D_8E07074A_S_U_L2MQ256_V1",
+      "EP_PERF_FASTWALSHTRANSFORM_FC3A9062_S_REF_V1",
+      "EP_PERF_FASTWALSHTRANSFORM_FC3A9062_WV_ZERO_RO_REF_V1",
+      "EP_PERF_GAUSSIAN_B5FC8DF0_F_COMBO_G64W16_UD2_V1",
+      "EP_PERF_GAUSSIAN_B5FC8DF0_F_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_GAUSSIAN_B5FC8DF0_F_REF_V1",
+      "EP_PERF_GAUSSIAN_B5FC8DF0_F_U_L2MQ256_V1",
+      "EP_PERF_GAUSSIAN_B5FC8DF0_S_COMBO_G64W16_UD2_V1",
+      "EP_PERF_GAUSSIAN_B5FC8DF0_S_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_GAUSSIAN_B5FC8DF0_S_REF_V1",
+      "EP_PERF_GAUSSIAN_B5FC8DF0_S_U_L2MQ256_V1",
+      "EP_PERF_GEMM_140F6ED3_F_REF_V1",
+      "EP_PERF_GEMM_140F6ED3_S_REF_V1",
+      "EP_PERF_GEMM_140F6ED3_WV_ZERO_RO_REF_V1",
+      "EP_PERF_GESUMMV_A953FB7D_F_REF_V1",
+      "EP_PERF_GESUMMV_A953FB7D_S_REF_V1",
+      "EP_PERF_HEARTWALL_81949DE8_F_COMBO_G64W16_UD2_V1",
+      "EP_PERF_HEARTWALL_81949DE8_F_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_HEARTWALL_81949DE8_F_REF_V1",
+      "EP_PERF_HEARTWALL_81949DE8_F_U_L2MQ256_V1",
+      "EP_PERF_HEARTWALL_81949DE8_S_COMBO_G64W16_UD2_V1",
+      "EP_PERF_HEARTWALL_81949DE8_S_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_HEARTWALL_81949DE8_S_REF_V1",
+      "EP_PERF_HEARTWALL_81949DE8_S_U_L2MQ256_V1",
+      "EP_PERF_HISTOGRAM_85ECC480_F_COMBO_G64W16_UD2_V1",
+      "EP_PERF_HISTOGRAM_85ECC480_F_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_HISTOGRAM_85ECC480_F_REF_V1",
+      "EP_PERF_HISTOGRAM_85ECC480_F_U_L2MQ256_V1",
+      "EP_PERF_HISTOGRAM_85ECC480_S_COMBO_G64W16_UD2_V1",
+      "EP_PERF_HISTOGRAM_85ECC480_S_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_HISTOGRAM_85ECC480_S_REF_V1",
+      "EP_PERF_HISTOGRAM_85ECC480_S_U_L2MQ256_V1",
+      "EP_PERF_LUD_28B97CD0_F_COMBO_G64W16_UD2_V1",
+      "EP_PERF_LUD_28B97CD0_F_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_LUD_28B97CD0_F_REF_V1",
+      "EP_PERF_LUD_28B97CD0_F_U_L2MQ256_V1",
+      "EP_PERF_LUD_28B97CD0_S_COMBO_G64W16_UD2_V1",
+      "EP_PERF_LUD_28B97CD0_S_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_LUD_28B97CD0_S_REF_V1",
+      "EP_PERF_LUD_28B97CD0_S_U_L2MQ256_V1",
+      "EP_PERF_MERGESORT_ADD5C722_F_COMBO_G64W16_UD2_V1",
+      "EP_PERF_MERGESORT_ADD5C722_F_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_MERGESORT_ADD5C722_F_REF_V1",
+      "EP_PERF_MERGESORT_ADD5C722_F_U_L2MQ256_V1",
+      "EP_PERF_MERGESORT_ADD5C722_S_COMBO_G64W16_UD2_V1",
+      "EP_PERF_MERGESORT_ADD5C722_S_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_MERGESORT_ADD5C722_S_REF_V1",
+      "EP_PERF_MERGESORT_ADD5C722_S_U_L2MQ256_V1",
+      "EP_PERF_MVT_39D1748B_F_REF_V1",
+      "EP_PERF_MVT_39D1748B_S_REF_V1",
+      "EP_PERF_PARTICLEFILTERFLOAT_3904B55B_S_REF_V1",
+      "EP_PERF_PARTICLEFILTERFLOAT_3904B55B_WV_ZERO_RO_REF_V1",
+      "EP_PERF_SCALARPROD_3F9F4D1A_F_REF_V1",
+      "EP_PERF_SGEMM_F_REF_V1",
+      "EP_PERF_SGEMM_S_REF_V1",
+      "EP_PERF_STENCIL_BD0309DF_S_REF_V1",
+      "EP_PERF_TRANSPOSE_DA6CAAE1_F_REF_V1",
+      "EP_PERF_TRANSPOSE_DA6CAAE1_S_REF_V1",
+      "EP_PERF_TRANSPOSE_DA6CAAE1_WV_ZERO_RO_REF_V1",
+      "EP_PERF_VECTOR4M_F_COMBO_G32W16_L2MQ2_V1",
+      "EP_PERF_VECTOR4M_F_COMBO_G64W16_UD2_V1",
+      "EP_PERF_VECTOR4M_F_COMBO_G64W8_L1L2MQ2_V1",
+      "EP_PERF_VECTOR4M_F_COMBO_ICNT_LOWER2_V1",
+      "EP_PERF_VECTOR4M_F_D_DRAM_MHZ1020_V1",
+      "EP_PERF_VECTOR4M_F_D_LOWERFIFO256_V1",
+      "EP_PERF_VECTOR4M_F_G16_W8_V1",
+      "EP_PERF_VECTOR4M_F_G32_W16_V1",
+      "EP_PERF_VECTOR4M_F_G32_W4_V1",
+      "EP_PERF_VECTOR4M_F_G64_W16_V1",
+      "EP_PERF_VECTOR4M_F_G64_W8_V1",
+      "EP_PERF_VECTOR4M_F_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_VECTOR4M_F_REF_G32_W8_P1168_MS0_V1",
+      "EP_PERF_VECTOR4M_F_REF_V1",
+      "EP_PERF_VECTOR4M_F_SOURCE92_P1_NI_V1",
+      "EP_PERF_VECTOR4M_F_SOURCE92_P2_G32W8_V1",
+      "EP_PERF_VECTOR4M_F_UD_REQUEST_HEADROOM2_V1",
+      "EP_PERF_VECTOR4M_F_U_FRFCFS256_V1",
+      "EP_PERF_VECTOR4M_F_U_L1MQ32_V1",
+      "EP_PERF_VECTOR4M_F_U_L2MQ256_V1",
+      "EP_PERF_VECTOR4M_F_U_RETURN384_V1",
+      "EP_PERF_VECTOR4M_S_COMBO_G32W16_L2MQ2_V1",
+      "EP_PERF_VECTOR4M_S_COMBO_G64W16_UD2_V1",
+      "EP_PERF_VECTOR4M_S_COMBO_G64W8_L1L2MQ2_V1",
+      "EP_PERF_VECTOR4M_S_COMBO_ICNT_LOWER2_V1",
+      "EP_PERF_VECTOR4M_S_D_DRAM_MHZ1020_V1",
+      "EP_PERF_VECTOR4M_S_D_LOWERFIFO256_V1",
+      "EP_PERF_VECTOR4M_S_G16_W8_V1",
+      "EP_PERF_VECTOR4M_S_G32_W16_V1",
+      "EP_PERF_VECTOR4M_S_G32_W4_V1",
+      "EP_PERF_VECTOR4M_S_G32_W8_STATIC64_MS0_V1",
+      "EP_PERF_VECTOR4M_S_G64_W16_V1",
+      "EP_PERF_VECTOR4M_S_G64_W8_V1",
+      "EP_PERF_VECTOR4M_S_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_VECTOR4M_S_REF_G32_W8_P1168_MS0_V1",
+      "EP_PERF_VECTOR4M_S_REF_V1",
+      "EP_PERF_VECTOR4M_S_SOURCE92_P1_NI_V1",
+      "EP_PERF_VECTOR4M_S_SOURCE92_P2_G32W8_V1",
+      "EP_PERF_VECTOR4M_S_UD_REQUEST_HEADROOM2_V1",
+      "EP_PERF_VECTOR4M_S_U_FRFCFS256_V1",
+      "EP_PERF_VECTOR4M_S_U_L1MQ32_V1",
+      "EP_PERF_VECTOR4M_S_U_L2MQ256_V1",
+      "EP_PERF_VECTOR4M_S_U_RETURN384_V1",
+      "EP_PERF_VECTOR6M_F_COMBO_G64W16_UD2_V1",
+      "EP_PERF_VECTOR6M_F_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_VECTOR6M_F_REF_V1",
+      "EP_PERF_VECTOR6M_F_U_L2MQ256_V1",
+      "EP_PERF_VECTOR6M_S_COMBO_G64W16_UD2_V1",
+      "EP_PERF_VECTOR6M_S_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_VECTOR6M_S_REF_V1",
+      "EP_PERF_VECTOR6M_S_U_L2MQ256_V1"
+    ],
+    "unchanged_artifact_SHA_refs_reused_without_full_reread": true
+  },
   "join_holds": [],
   "live_pair_exclusions": [],
   "new_models": 0,
@@ -42130,20 +42625,162 @@
       "sha256": "03539f43b9f9ec75a5aeaaa96fc1e6b868ae96ef87e4bc5943d7f6dbabdccfb5"
     }
   },
+  "presentation_append_code_ref": {
+    "bytes": 4200,
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/results_analysis_20261028_v1/append_refresh_summary.py",
+    "sha256": "941e882f24ab119b9e435d4fc5f668af39255be8c89a4f06840fd8419de312d7"
+  },
+  "refresh_delta_summary": {
+    "independent_T_benefit": "UNKNOWN_REQUIRES_SAME_CORE_ELF_GEOMETRY_INPUT_F_WVM_BACKGROUND_T_OFF_M1",
+    "matched_pairs": 103,
+    "new_accepted_endpoints": 2,
+    "new_fully_matched_pairs": 0,
+    "new_reference_sides": [
+      {
+        "CTA": 3072,
+        "archive_ref": {
+          "bytes": 1835,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_3MM_F9F80028_S_REF_V1/control/ARCHIVE_RECEIPT.json",
+          "sha256": "434a5b5828d87cfe45b97bd59abe71fba2c346617b629986a59e6e6bcceedd12"
+        },
+        "cohort": "EP_PERF_3MM_F9F80028_S_REF_V1",
+        "cycles": 1696618,
+        "done_ref": {
+          "bytes": 5140,
+          "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_3MM_F9F80028_S_REF_V1.DONE.json",
+          "sha256": "5f3666af7ca5822193f2602b970949601b3d16a906c572ad1f5f79f12e47f3ed"
+        },
+        "geometry": {
+          "line_bytes": 128,
+          "sets": 32,
+          "slices": 64,
+          "ways": 8
+        },
+        "hardware_drained": true,
+        "input_identity_sha256": "f9f80028887c1347afd5a8d68deeb0e9b68bc273766e62e912fdfb5aa4619e73",
+        "instructions": 1813512192,
+        "kernels": 3,
+        "mode": "S",
+        "observer": {
+          "B0": "1",
+          "M0a": "1",
+          "MS": "1",
+          "env": {
+            "EPL2_DETACH_DIAG": "0",
+            "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
+            "EPL2_TAGPRESSURE_DIAG": "0",
+            "EPL2_TAG_LIFETIME": "0",
+            "EP_L2_EVENT_TIMELINE": "0"
+          }
+        },
+        "point_ref": {
+          "bytes": 2380,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_3MM_F9F80028_S_REF_V1/run/151b8a25-5d94-428f-9bc0-8903f55735e7/ACCEPTED_POINT.json",
+          "sha256": "7fa4e75d1606cbb5a039025540bdaf11f4d3c86772ad3142bee5163c1fdf97a7"
+        },
+        "program": "3MM",
+        "source_identity": {
+          "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+          "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+          "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+          "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+          "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+        }
+      },
+      {
+        "CTA": 166608,
+        "archive_ref": {
+          "bytes": 1842,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCAN_CF8D1C4D_S_REF_V1/control/ARCHIVE_RECEIPT.json",
+          "sha256": "c8631c66162cda1a85124ba860610dd0993d460ebc34e9dae533451bc6c27d12"
+        },
+        "cohort": "EP_PERF_SCAN_CF8D1C4D_S_REF_V1",
+        "cycles": 2162540,
+        "done_ref": {
+          "bytes": 14035,
+          "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_SCAN_CF8D1C4D_S_REF_V1.DONE.json",
+          "sha256": "5f28984aae08abd51341bd6099e96ee05b1faee54f583d0f5bbc279d42ebe071"
+        },
+        "geometry": {
+          "line_bytes": 128,
+          "sets": 32,
+          "slices": 64,
+          "ways": 8
+        },
+        "hardware_drained": true,
+        "input_identity_sha256": "cf8d1c4d8e4956779ee5dbe0e836c6c77b595cb86cd2dc731e9897dd75504690",
+        "instructions": 1963460720,
+        "kernels": 33,
+        "mode": "S",
+        "observer": {
+          "B0": "1",
+          "M0a": "1",
+          "MS": "1",
+          "env": {
+            "EPL2_DETACH_DIAG": "0",
+            "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
+            "EPL2_TAGPRESSURE_DIAG": "0",
+            "EPL2_TAG_LIFETIME": "0",
+            "EP_L2_EVENT_TIMELINE": "0"
+          }
+        },
+        "point_ref": {
+          "bytes": 2390,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCAN_CF8D1C4D_S_REF_V1/run/f921c53f-d58b-41a9-a282-3a63390c12da/ACCEPTED_POINT.json",
+          "sha256": "130ab6ac973b173621dddda210ee9c072fa5f0709f5ccd59bf425c4b322fdfd3"
+        },
+        "program": "scan",
+        "source_identity": {
+          "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+          "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+          "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+          "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+          "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+        }
+      }
+    ],
+    "no_new_workloads_or_ratios_imputed": true,
+    "prior_analysis_ref": {
+      "bytes": 1711151,
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/results_analysis_20261028_v1/versions/20261028T062536Z_f8ecbc8e/RESULTS_ANALYSIS_CURRENT.json",
+      "publish_name": "RESULTS_ANALYSIS_CURRENT.json",
+      "sha256": "0ae3b18035a56cf3467f3a8cd342333e0124db5ce40bd41533f17a2bc2325e18"
+    },
+    "reason_no_new_ratio": "Both new endpoints are S references; corresponding F endpoints remain live.",
+    "remaining_live": [
+      "EP_PERF_3MM_F9F80028_F_REF_V1",
+      "EP_PERF_LAVAMD_51FAFFD2_S_REF_V1",
+      "EP_PERF_SCAN_CF8D1C4D_F_REF_V1",
+      "EP_PERF_SRADV1_6CE41710_S_REF_V1",
+      "EP_PERF_STENCIL_BD0309DF_F_REF_V1",
+      "EP_PERF_SYRK_90B0CC9D_S_REF_V1"
+    ],
+    "unconsumed": [
+      "EP_PERF_LAVAMD_51FAFFD2_F_REF_V1",
+      "EP_PERF_SCALARPROD_3F9F4D1A_S_REF_V1",
+      "EP_PERF_SGEMM_F_COMBO_G64W16_UD2_V1",
+      "EP_PERF_SGEMM_F_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_SGEMM_F_U_L2MQ256_V1",
+      "EP_PERF_SGEMM_S_COMBO_G64W16_UD2_V1",
+      "EP_PERF_SGEMM_S_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_SGEMM_S_U_L2MQ256_V1",
+      "EP_PERF_SYRK_90B0CC9D_F_REF_V1"
+    ]
+  },
   "registry_mutations": 0,
   "resource": {
     "AS_limit_bytes": 134217728,
     "CPU": 511,
-    "maxRSS_bytes": 54525952,
+    "maxRSS_bytes": 45948928,
     "nice": 10,
-    "seconds": 0.31238503754138947
+    "seconds": 0.1743680089712143
   },
   "schema": "EP_AGENT_B_ACCEPTED_RESULTS_ANALYSIS_V1",
   "source_snapshot": {
     "epoch": 2,
-    "epoch_sha256": "840bb22f6642968ca31c6b1e365bd1c5fffd7b1a8e20e39406d9a8f634ef1a86",
-    "registry_sha256": "d3cb8e155f73fd9eb0c23340c421e1d90932d174bf0f3d82cc3b4fa217861072"
+    "epoch_sha256": "166bde192acbc8511755444733b04c0ccba06939f3e4347df847ed9b3ab2bac1",
+    "registry_sha256": "36506e4ef96418e0b8f3fccdf0704d45304e287c998c1af72d9b2842aa4e4d19"
   },
   "trace_or_raw_rereads": 0,
-  "utc": "2026-10-28T06:25:36.600466+00:00"
+  "utc": "2026-10-28T07:55:32.642109+00:00"
 }

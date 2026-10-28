@@ -1,8 +1,25 @@
 # Accepted experiment results: bounded current analysis
 
-Analysis UTC: 2026-10-28T06:25:36.600466+00:00. Registry: 227 registered; 218 consumed; states {'CLOSED_ACCEPTED': 208, 'CONSUMED_BEFORE_FORK': 8, 'NOT_STARTED': 9, 'CLOSED_UNACCEPTED': 2}. Independently joined CLOSED_ACCEPTED endpoints: 208. Joins cover frozen spec, natural DONE, point, canonical Source5, validation SHA and genuine164/two-native-restore receipts. No raw or Trace rereads; Main remains the acceptance authority.
+Analysis UTC: 2026-10-28T07:55:32.642109+00:00. Registry: 227 registered; 218 consumed; states {'CLOSED_ACCEPTED': 210, 'CONSUMED_BEFORE_FORK': 6, 'NOT_STARTED': 9, 'CLOSED_UNACCEPTED': 2}. Independently joined CLOSED_ACCEPTED endpoints: 210. Joins cover frozen spec, natural DONE, point, canonical Source5, validation SHA and genuine164/two-native-restore receipts. No raw or Trace rereads; Main remains the acceptance authority.
 
 Each row is an endpoint, not a distinct workload. This is a bounded snapshot; live counts may advance. There is no full35/full96 geometric mean or global-optimum claim.
+
+Incremental refresh reuses 208 prior closed endpoints with unchanged frozen-spec SHA and exact current registry point/DONE/archive references. 2 new or changed endpoints were freshly joined. Old artifact SHA references remain the sealed prior evidence; they were not all rehashed.
+
+## New closures since the previous analysis
+
+Previous analysis UTC: 2026-10-28T06:25:36.600466+00:00. Two new S reference sides closed; zero new fully matched comparisons. Their F endpoints remain live, so no S/F speedup is assigned.
+
+|new endpoint|mode|cycles|instructions|CTA|ordered kernels|drain|
+|---|---|---:|---:|---:|---:|---|
+|3MM (f9f80028)|S|1696618|1813512192|3072|3|True|
+|scan (cf8d1c4d)|S|2162540|1963460720|166608|33|True|
+
+All new points retain exact Source/input/spec/DONE/validation/genuine164 and two-native-restore joins. The 208 previous endpoints reuse unchanged sealed evidence references. Current population is210 accepted endpoints,2 technical negatives,6 live endpoints and9 unconsumed points. This is not210 workloads. Reference S/F coverage remains19 input pairs/18 programs; it does not become a completed35/96 population.
+
+Remaining live endpoints: EP_PERF_3MM_F9F80028_F_REF_V1, EP_PERF_LAVAMD_51FAFFD2_S_REF_V1, EP_PERF_SCAN_CF8D1C4D_F_REF_V1, EP_PERF_SRADV1_6CE41710_S_REF_V1, EP_PERF_STENCIL_BD0309DF_F_REF_V1, EP_PERF_SYRK_90B0CC9D_S_REF_V1.
+
+An independently attributable T performance benefit remains UNKNOWN until an exact same-Core/ELF/geometry/input/F WVM background T-OFF(M1) endpoint closes. Actual detaches alone do not supply that counterfactual.
 
 ## What the completed comparisons show
 
@@ -162,6 +179,6 @@ ParticlefilterNaive S and WV_ZERO_RO are both CLOSED_UNACCEPTED, spent with no a
 
 Physical payload data RAM is 1168 x 128 B x 64 = 9,568,256 B (9.125 MiB). Tag address coverage is not Tag RAM storage or area. Pareto results use only explicit modeled capacity proxies within the same input/mode/Source/observer profile; they omit technology area, energy and metadata PPA. F also has RO/TVD metadata and is not claimed to have identical total area.
 
-Unclosed endpoints: 17. Technical negatives retained: 2. Metadata join HOLDs: 0; live pair exclusions: 0. Exact refs, 282-option deltas, pending cases and population membership are in JSON/CSV.
+Unclosed endpoints: 15. Technical negatives retained: 2. Metadata join HOLDs: 0; live pair exclusions: 0. Exact refs, 282-option deltas, pending cases and population membership are in JSON/CSV.
 
 Disabled R4/R5/LIFE/ET observations are NOT_OBSERVED, not measured zero. TagFAIL/reuse/timing populations cannot be reconstructed from unrelated marginal counters. Original-capture completeness and numeric SASS correctness remain UNKNOWN.
