@@ -1,0 +1,59 @@
+{
+  "APIs": {
+    "consumer.consumer_check": "(frame,cfg)",
+    "consumer.install_on_frame": "(frame,cfg_path,owner_assert,main=None,qualification_loader_sha256=None)",
+    "consumer.make_private_consumer": "(consumer,contract,extra,authority_provider)",
+    "consumer.restore_in_owner": "(owner_assert,main=None)",
+    "extra.capture_release_prerequisite": "(actual_frame,actual_main,path) explicit Main-only real4 full replay receipt writer",
+    "extra.normalize_contract": "(cfg,root,source_sha256=None,qualification_only=False)",
+    "extra.terminal": "(c,base_proof,root,contract,authority,readonly=False)",
+    "extra.verify_archive": "(c,archive,root,contract)",
+    "extra.verify_release_prerequisite": "(cfg,q) -> ACTUAL_CANARY4_GATE_VERIFIED or private CPU_ONLY_GATE_QUALIFIED_NOT_PRODUCTION_RELEASE; raises HOLD on all missing/invalid cases"
+  },
+  "B_runtime_sources": {
+    "entry": "2a21ba7d62ea9094dd1dc6de7c4d0c699c9baf491e07467228f1b307d60c8792",
+    "frontend": "c1557a219ada13fb0478830209f137036324048d8387cdffaa850f3744a5e8d2",
+    "producer": "06e52cd8e359791a912ba081b9e3cb16d7e23baae1d7a8511eefa8d74528c675"
+  },
+  "CPU_qualification": {
+    "actual_prefix_consumer": {
+      "count": 28,
+      "sha256": "cdcb832ada29a7d135a694c18ed3559c32c71fb5d47d98120b07d9e2f2cb7bc6"
+    },
+    "gate_routing": {
+      "count": 15,
+      "sha256": "769c15b15d8dde9928b2fb2b623f57922d1e48721e38379c2aef9d063c218774"
+    }
+  },
+  "ID": "DTC_STRACE_FUTURE_ENTRY_V3",
+  "IR_statistical_union_authorized": false,
+  "actual_models_qualified": false,
+  "consumer_sha256": "de70cede8876fca5bf909f5b8d685b74da43a6ca08880e18e09d59e924c0225b",
+  "current_status": "NOT_ELIGIBLE_NOT_INSTALLED",
+  "extra_sha256": "702a0a3e27645ece6cf15a68c598bce4067b69132a74c1fb1e3cfde03a621c3b",
+  "install_order": [
+    "Real4 V2 fullchain qualification and source-bound capture",
+    "Main official source/QA/readback and required q/memory/scope amendments",
+    "E V3 actual frame-private consumer outer route",
+    "B V3 same-owner private dispatcher",
+    "Main explicit activation"
+  ],
+  "markers": {
+    "Bdispatcher": "DTC_STRACE_FUTURE_DISPATCH_V3",
+    "consumer": "DTC_STRACE_BPF_PRIVATE_CONSUMER_V3"
+  },
+  "physics_and_archive_transport": "Explicit CPU stand-ins; no real simulation/true164 transport qualified by these fixtures",
+  "policy_source_sha256": "389be2e9dc01e071bc4c3edae10f8fa67ba1555c357840225b4a9687b8622b91",
+  "primary350_unchanged": true,
+  "prior_A_joint_preimage_sha256": "cf114279f3347f0dcad2c48f8f2ca366933b6bb43d00e3155d38d798eddc6522",
+  "production_ready": false,
+  "restore_order": "B V3 before E V3; admitted dangling routeclaim/unresolved spent identity retains mandatory route and requires Main disposition",
+  "schema": "DTC_BPF_V3_EXTRA_CONSUMER_CANDIDATE_INTERFACE",
+  "source_roles": [
+    "entry",
+    "frontend",
+    "producer",
+    "extra_strict",
+    "consumer"
+  ]
+}

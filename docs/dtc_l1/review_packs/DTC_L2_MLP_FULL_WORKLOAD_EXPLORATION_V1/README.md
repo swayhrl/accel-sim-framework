@@ -1,7 +1,7 @@
 <!-- DTC_PERIODIC_CURRENT_START -->
 # DTC L2 MLP full-workload exploration V1
 
-Latest read-only snapshot: [2026-10-28T19:56:44.225311+00:00](periodic/20261028T195643Z_fd0d6c6b/README.md) · [323/350 primary accepted cells](periodic/20261028T195643Z_fd0d6c6b/dashboard.html). [Machine-readable report](periodic/20261028T195643Z_fd0d6c6b/report.json) · [Snapshot member hashes](periodic/20261028T195643Z_fd0d6c6b/MEMBER_MANIFEST.json).
+Latest read-only snapshot: [2026-10-28T20:27:34.276111+00:00](periodic/20261028T202733Z_f2c81351/README.md) · [323/350 primary accepted cells](periodic/20261028T202733Z_f2c81351/dashboard.html). [Machine-readable report](periodic/20261028T202733Z_f2c81351/report.json) · [Snapshot member hashes](periodic/20261028T202733Z_f2c81351/MEMBER_MANIFEST.json).
 
 Coverage is partial until all valid planned cells are accepted. Original negatives remain visible; independent R2 is supplemental and never replaces a primary negative. CH non-P0 controls may be absent; available-subset GMs are not final suite winners. Sources are coherent per file, not one global transaction. The old BATCH_STATE .88 label is historical, not evidence of the active admission policy. English v0.23 is unchanged.
 
