@@ -171,9 +171,21 @@ Source92 P2 is compared with Source92 P1 only. It includes the conservative nati
 3. **L2MissQ256 / ICNT1024 / combined geometry-headroom.** Finish the preselected fixed8 validation population before any complete-population GM. Keep per-input exceptions and absolute F gains separate from same-hardware EP gains; resource increases improve both modes.
 4. **Payload/bank organization.** S64 tests equal physical1168 data budget with different role reachability. Physical0.5x/2x requires a new qualified Source. Source92 P2 currently has Vector-only performance evidence; no multiworkload claim follows. Future lean/native/merge candidates remain separate engineering qualifications.
 
-## Technical negatives retained
+## Technical failures: actual evidence and boundary
 
-ParticlefilterNaive S and WV_ZERO_RO are both CLOSED_UNACCEPTED, spent with no accepted speedup ratio. The existing Source audit identifies the protected host-prefill path assertion; this is not evidence of a certificate or resource failure, and no guard was removed. Exact DONE/archive refs remain in JSON and the rows remain in CSV.
+Metadata-only annotation UTC: 2026-10-28T10:11:16.550678+00:00; Main failure audit UTC: 2026-10-28T10:09:22.329206+00:00. Accepted-results population and analysis as-of remain unchanged at 2026-10-28T07:55:32.642109+00:00 (210 accepted endpoints).
+
+The two spent CLOSED_UNACCEPTED points are the same ParticlefilterNaive input in S and WV_ZERO_RO, both T=0/M=0, same Source78/ELF. **PROVEN:** kernel1 completed at91440 cycles/8 CTA; command ordinal9, the third subsequent HtoD to0x7ff9f3504000 for8000 B, reaches the explicit host-prefill refusal and SIGABRT. Peak RSS is336 MiB and the resource stop reason is null. These are partial-kernel measurements, never whole-application performance endpoints.
+
+At the last printed boundary all64 slices have pending-resource fields0 and terminal_clean1. That establishes no inflight work; it does not establish a cache without dirty resident data. The first kernel records500 resident-bank write operations,0 DRAM read/write issues and0 production Tag-way allocation blocks. Historical per-slice dirty maxima are not final occupancy or a simultaneous GPU count.
+
+**LIKELY:** the selected owner is dirty due to kernel1 stores, supported by exact address overlap and dirty history. **UNKNOWN:** the rejected sector, selected way, owner snapshot and precise failing Boolean subpredicate were not logged. The generic refusal must not be promoted to a logged proof of that one predicate.
+
+The shared FT interkernel host-overwrite path lacks the required dirty-overwrite compatibility protocol. The existing CPU dirty-host-prefill test intentionally expects refusal/SIGABRT; it does not prove successful dirty overwrite. This is neither a T failure nor a performance negative, resource-stop result or evidence of a bad Trace. A repair requires a new Source, protocol CPU proof and matched application NI; none is executed or qualified by this annotation. No retry or refund follows.
+
+Pinned Main audit: `/root/data/ep_l2_full_workload_performance_20261027_v1/control/TECHNICAL_FAILURE_ROOTCAUSE_20261028_V1/EVIDENCE.json`, SHA `4a42772a59fa2d04b45f6437bc3d3c23c2fdbbf9b08e42ddc50abbe138fd0956`. Its exact Source excerpts, prior first-kernel store-population join, actual raw/archive checks and both native restores are retained by reference; this updater did not reread raw or Trace bodies. JSON and both CSV failure rows carry this evidence reference.
+
+Original detailed Main report (read-only source): `/root/data/ep_l2_full_workload_performance_20261027_v1/control/TECHNICAL_FAILURE_ROOTCAUSE_20261028_V1/TECHNICAL_FAILURE_ROOTCAUSE.md`, SHA `f4ce23bde393007c3f02fc0dec5c54ebdec7134bd8a12d563b851f4c81ccea8a`. The accepted-results population remains the07:55:32 UTC snapshot; this failure annotation is not a refresh of later live counts.
 
 ## Units, costs and unavailable observations
 

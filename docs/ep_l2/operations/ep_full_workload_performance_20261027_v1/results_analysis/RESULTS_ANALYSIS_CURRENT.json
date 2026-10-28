@@ -18034,6 +18034,86 @@
         "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_PARTICLEFILTERNAIVE_07BA78B1_S_REF_V1.DONE.json",
         "sha256": "6d567695f5359a09232af2fb9d9c21bce0cdc96196fbfe5672dd4e63c3cf9135"
       },
+      "failure_evidence_summary": {
+        "M": false,
+        "T": false,
+        "archive_receipt_ref": {
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_PARTICLEFILTERNAIVE_07BA78B1_S_REF_V1/control/ARCHIVE_RECEIPT.json",
+          "sha256": "fc16c122dcdd67ebdb8e293a6344823465c65c4d93011ed364b1a2404b387bb9"
+        },
+        "category": "SHARED_FT_INTERKERNEL_HOST_OVERWRITE_COMPATIBILITY_GAP",
+        "cohort": "EP_PERF_PARTICLEFILTERNAIVE_07BA78B1_S_REF_V1",
+        "completed_partial_kernel": {
+          "CTA": 8,
+          "cycles": 91440,
+          "instructions": 3614144,
+          "launch_uid": 1,
+          "scope": "FIRST_KERNEL_ONLY_NOT_WHOLE_APPLICATION"
+        },
+        "evidence_ref": {
+          "bytes": 24308,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/control/TECHNICAL_FAILURE_ROOTCAUSE_20261028_V1/EVIDENCE.json",
+          "sha256": "4a42772a59fa2d04b45f6437bc3d3c23c2fdbbf9b08e42ddc50abbe138fd0956"
+        },
+        "exact_failing_subpredicate": "UNKNOWN_NOT_LOGGED",
+        "exit_signal": "SIGABRT",
+        "failing_command": {
+          "bytes": 8000,
+          "command_ordinal": 9,
+          "destination": "0x7ff9f3504000",
+          "post_kernel_HtoD_ordinal": 3
+        },
+        "functional_counters": {
+          "c7d_bank_resident_write": 500,
+          "c7d_dram_read_issues": 0,
+          "c7d_dram_write_issues": 0,
+          "c7d_tag_set_all_reserved_block": 0,
+          "c7e_tag_way_alloc_block": 0,
+          "c7e_tag_way_alloc_need": 0
+        },
+        "input_identity_sha256": "07ba78b1d5e2a843123635ca340d30b295d018244c7796b59de39c9e0f98b2e1",
+        "mode": "S",
+        "no_refund": true,
+        "no_retry": true,
+        "peak_RSS_bytes": 352321536,
+        "prior_actual_two_native_restores": [
+          {
+            "archive_sha256": "a013ac7ea594c9b9d277ec63627d692537e8ca55f10370eaa5d622bc564be0ed",
+            "file_count": 17,
+            "logical_bytes": 234799,
+            "permanent_scientific_source_deleted": false,
+            "restore_label": "FIRST",
+            "source_keep": true,
+            "status": "INDEPENDENT_NATIVE_TARGET_COMPLETE_SHA_RESTORE_PASS",
+            "target": "/root/data/ep_l2_full_workload_performance_20261027_v1/restore_windows/EP_PERF_PARTICLEFILTERNAIVE_07BA78B1_S_REF_V1_FIRST_o20atfug/fresh_target",
+            "temporary_native_working_set_released_after_verification": true
+          },
+          {
+            "archive_sha256": "a013ac7ea594c9b9d277ec63627d692537e8ca55f10370eaa5d622bc564be0ed",
+            "file_count": 17,
+            "logical_bytes": 234799,
+            "permanent_scientific_source_deleted": false,
+            "restore_label": "INDEPENDENT",
+            "source_keep": true,
+            "status": "INDEPENDENT_NATIVE_TARGET_COMPLETE_SHA_RESTORE_PASS",
+            "target": "/root/data/ep_l2_full_workload_performance_20261027_v1/restore_windows/EP_PERF_PARTICLEFILTERNAIVE_07BA78B1_S_REF_V1_INDEPENDENT_vxoyjfnv/fresh_target",
+            "temporary_native_working_set_released_after_verification": true
+          }
+        ],
+        "resource_stop_reason": null,
+        "same_owner_dirty": "LIKELY_NOT_PROVEN",
+        "source_identity": {
+          "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+          "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+          "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+          "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+          "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+        },
+        "status": "TECHNICAL_UNACCEPTED_NOT_PERFORMANCE_NEGATIVE",
+        "terminal_all64_pending_zero": true,
+        "terminal_clean_all64": true,
+        "terminal_clean_does_not_mean_no_dirty_data": true
+      },
       "failure_ref": null,
       "geometry": {
         "line_bytes": 128,
@@ -18043,7 +18123,7 @@
       },
       "input_identity_sha256": "07ba78b1d5e2a843123635ca340d30b295d018244c7796b59de39c9e0f98b2e1",
       "mode": "S",
-      "negative_scope": "TECHNICAL_UNACCEPTED_NO_SPEEDUP_RATIO",
+      "negative_scope": "TECHNICAL_COMPATIBILITY_GAP_NOT_EP_T_PERFORMANCE_NEGATIVE",
       "numeric_output": "UNKNOWN",
       "observer": {
         "B0": "1",
@@ -18118,6 +18198,86 @@
         "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_PARTICLEFILTERNAIVE_07BA78B1_WV_ZERO_RO_REF_V1.DONE.json",
         "sha256": "8ae4424c703dda9eff4d81847d500389ebe474deffb90458bd0f97093090e12d"
       },
+      "failure_evidence_summary": {
+        "M": false,
+        "T": false,
+        "archive_receipt_ref": {
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_PARTICLEFILTERNAIVE_07BA78B1_WV_ZERO_RO_REF_V1/control/ARCHIVE_RECEIPT.json",
+          "sha256": "ace9ea0f83e7c061621acca831be75d0fc1c4cd2d0f316ee02f33a87f420a958"
+        },
+        "category": "SHARED_FT_INTERKERNEL_HOST_OVERWRITE_COMPATIBILITY_GAP",
+        "cohort": "EP_PERF_PARTICLEFILTERNAIVE_07BA78B1_WV_ZERO_RO_REF_V1",
+        "completed_partial_kernel": {
+          "CTA": 8,
+          "cycles": 91440,
+          "instructions": 3614144,
+          "launch_uid": 1,
+          "scope": "FIRST_KERNEL_ONLY_NOT_WHOLE_APPLICATION"
+        },
+        "evidence_ref": {
+          "bytes": 24308,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/control/TECHNICAL_FAILURE_ROOTCAUSE_20261028_V1/EVIDENCE.json",
+          "sha256": "4a42772a59fa2d04b45f6437bc3d3c23c2fdbbf9b08e42ddc50abbe138fd0956"
+        },
+        "exact_failing_subpredicate": "UNKNOWN_NOT_LOGGED",
+        "exit_signal": "SIGABRT",
+        "failing_command": {
+          "bytes": 8000,
+          "command_ordinal": 9,
+          "destination": "0x7ff9f3504000",
+          "post_kernel_HtoD_ordinal": 3
+        },
+        "functional_counters": {
+          "c7d_bank_resident_write": 500,
+          "c7d_dram_read_issues": 0,
+          "c7d_dram_write_issues": 0,
+          "c7d_tag_set_all_reserved_block": 0,
+          "c7e_tag_way_alloc_block": 0,
+          "c7e_tag_way_alloc_need": 0
+        },
+        "input_identity_sha256": "07ba78b1d5e2a843123635ca340d30b295d018244c7796b59de39c9e0f98b2e1",
+        "mode": "WV_ZERO_RO",
+        "no_refund": true,
+        "no_retry": true,
+        "peak_RSS_bytes": 352321536,
+        "prior_actual_two_native_restores": [
+          {
+            "archive_sha256": "e8431ff7cf4df31be434870c513098fe3358d8be47873cf467b2853d5225f5d6",
+            "file_count": 17,
+            "logical_bytes": 282252,
+            "permanent_scientific_source_deleted": false,
+            "restore_label": "FIRST",
+            "source_keep": true,
+            "status": "INDEPENDENT_NATIVE_TARGET_COMPLETE_SHA_RESTORE_PASS",
+            "target": "/root/data/ep_l2_full_workload_performance_20261027_v1/restore_windows/EP_PERF_PARTICLEFILTERNAIVE_07BA78B1_WV_ZERO_RO_REF_V1_FIRST_z_eew4p7/fresh_target",
+            "temporary_native_working_set_released_after_verification": true
+          },
+          {
+            "archive_sha256": "e8431ff7cf4df31be434870c513098fe3358d8be47873cf467b2853d5225f5d6",
+            "file_count": 17,
+            "logical_bytes": 282252,
+            "permanent_scientific_source_deleted": false,
+            "restore_label": "INDEPENDENT",
+            "source_keep": true,
+            "status": "INDEPENDENT_NATIVE_TARGET_COMPLETE_SHA_RESTORE_PASS",
+            "target": "/root/data/ep_l2_full_workload_performance_20261027_v1/restore_windows/EP_PERF_PARTICLEFILTERNAIVE_07BA78B1_WV_ZERO_RO_REF_V1_INDEPENDENT_sfjci024/fresh_target",
+            "temporary_native_working_set_released_after_verification": true
+          }
+        ],
+        "resource_stop_reason": null,
+        "same_owner_dirty": "LIKELY_NOT_PROVEN",
+        "source_identity": {
+          "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+          "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+          "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+          "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+          "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+        },
+        "status": "TECHNICAL_UNACCEPTED_NOT_PERFORMANCE_NEGATIVE",
+        "terminal_all64_pending_zero": true,
+        "terminal_clean_all64": true,
+        "terminal_clean_does_not_mean_no_dirty_data": true
+      },
       "failure_ref": null,
       "geometry": {
         "line_bytes": 128,
@@ -18127,7 +18287,7 @@
       },
       "input_identity_sha256": "07ba78b1d5e2a843123635ca340d30b295d018244c7796b59de39c9e0f98b2e1",
       "mode": "WV_ZERO_RO",
-      "negative_scope": "TECHNICAL_UNACCEPTED_NO_SPEEDUP_RATIO",
+      "negative_scope": "TECHNICAL_COMPATIBILITY_GAP_NOT_EP_T_PERFORMANCE_NEGATIVE",
       "numeric_output": "UNKNOWN",
       "observer": {
         "B0": "1",
@@ -26051,6 +26211,273 @@
       }
     }
   ],
+  "failure_annotation_code_ref": {
+    "bytes": 8480,
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/results_analysis_20261028_v1/append_failure_evidence_v1.py",
+    "sha256": "c44eddb5bfe94c17d0a117da575ebdcfc24802811fb2dd3c777caefdba6ad424"
+  },
+  "failure_evidence_summary": {
+    "LIKELY": [
+      "The failing selected owner is dirty from kernel1 stores; exact first-kernel address overlap and resident dirty history support this."
+    ],
+    "Main_audit_utc": "2026-10-28T10:09:22.329206+00:00",
+    "PROVEN": [
+      "Both closed attempts are same-input S/WV with T and M OFF, same Source78/ELF.",
+      "Kernel1 completed; command ordinal9, the third subsequent HtoD region, reaches the explicit prefill refusal and abort.",
+      "Both closed raw streams, exact specs, cited source bytes and small genuine164 archives passed SHA checks.",
+      "64/64 terminal slices show no inflight MSHR/descriptor/WAD/resident-pending/bypass/bank resources.",
+      "The same first kernel had 500 resident bank write operations, no lower DRAM issues, and no production Tag-way allocation blocks.",
+      "Current shared FT host-prefill requires a drained frontend and clean selected Tag/Payload; dirty host-overwrite handling is absent.",
+      "Existing dirty-host-prefill CPU test explicitly expects refusal/SIGABRT; it does not implement successful dirty overwrite."
+    ],
+    "UNKNOWN": [
+      "The exact rejected sector, selected way, owner snapshot and failing Boolean subpredicate were not logged.",
+      "A safe host-write protocol fix, its timing policy, and application equivalence have not been executed or validated."
+    ],
+    "accepted_210_unchanged": true,
+    "analysis_population_asof_utc": "2026-10-28T07:55:32.642109+00:00",
+    "annotation_not_live_registry_refresh": true,
+    "annotation_utc": "2026-10-28T10:11:16.550678+00:00",
+    "attempts": [
+      {
+        "M": false,
+        "T": false,
+        "archive_receipt_ref": {
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_PARTICLEFILTERNAIVE_07BA78B1_S_REF_V1/control/ARCHIVE_RECEIPT.json",
+          "sha256": "fc16c122dcdd67ebdb8e293a6344823465c65c4d93011ed364b1a2404b387bb9"
+        },
+        "category": "SHARED_FT_INTERKERNEL_HOST_OVERWRITE_COMPATIBILITY_GAP",
+        "cohort": "EP_PERF_PARTICLEFILTERNAIVE_07BA78B1_S_REF_V1",
+        "completed_partial_kernel": {
+          "CTA": 8,
+          "cycles": 91440,
+          "instructions": 3614144,
+          "launch_uid": 1,
+          "scope": "FIRST_KERNEL_ONLY_NOT_WHOLE_APPLICATION"
+        },
+        "evidence_ref": {
+          "bytes": 24308,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/control/TECHNICAL_FAILURE_ROOTCAUSE_20261028_V1/EVIDENCE.json",
+          "sha256": "4a42772a59fa2d04b45f6437bc3d3c23c2fdbbf9b08e42ddc50abbe138fd0956"
+        },
+        "exact_failing_subpredicate": "UNKNOWN_NOT_LOGGED",
+        "exit_signal": "SIGABRT",
+        "failing_command": {
+          "bytes": 8000,
+          "command_ordinal": 9,
+          "destination": "0x7ff9f3504000",
+          "post_kernel_HtoD_ordinal": 3
+        },
+        "functional_counters": {
+          "c7d_bank_resident_write": 500,
+          "c7d_dram_read_issues": 0,
+          "c7d_dram_write_issues": 0,
+          "c7d_tag_set_all_reserved_block": 0,
+          "c7e_tag_way_alloc_block": 0,
+          "c7e_tag_way_alloc_need": 0
+        },
+        "input_identity_sha256": "07ba78b1d5e2a843123635ca340d30b295d018244c7796b59de39c9e0f98b2e1",
+        "mode": "S",
+        "no_refund": true,
+        "no_retry": true,
+        "peak_RSS_bytes": 352321536,
+        "prior_actual_two_native_restores": [
+          {
+            "archive_sha256": "a013ac7ea594c9b9d277ec63627d692537e8ca55f10370eaa5d622bc564be0ed",
+            "file_count": 17,
+            "logical_bytes": 234799,
+            "permanent_scientific_source_deleted": false,
+            "restore_label": "FIRST",
+            "source_keep": true,
+            "status": "INDEPENDENT_NATIVE_TARGET_COMPLETE_SHA_RESTORE_PASS",
+            "target": "/root/data/ep_l2_full_workload_performance_20261027_v1/restore_windows/EP_PERF_PARTICLEFILTERNAIVE_07BA78B1_S_REF_V1_FIRST_o20atfug/fresh_target",
+            "temporary_native_working_set_released_after_verification": true
+          },
+          {
+            "archive_sha256": "a013ac7ea594c9b9d277ec63627d692537e8ca55f10370eaa5d622bc564be0ed",
+            "file_count": 17,
+            "logical_bytes": 234799,
+            "permanent_scientific_source_deleted": false,
+            "restore_label": "INDEPENDENT",
+            "source_keep": true,
+            "status": "INDEPENDENT_NATIVE_TARGET_COMPLETE_SHA_RESTORE_PASS",
+            "target": "/root/data/ep_l2_full_workload_performance_20261027_v1/restore_windows/EP_PERF_PARTICLEFILTERNAIVE_07BA78B1_S_REF_V1_INDEPENDENT_vxoyjfnv/fresh_target",
+            "temporary_native_working_set_released_after_verification": true
+          }
+        ],
+        "resource_stop_reason": null,
+        "same_owner_dirty": "LIKELY_NOT_PROVEN",
+        "source_identity": {
+          "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+          "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+          "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+          "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+          "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+        },
+        "status": "TECHNICAL_UNACCEPTED_NOT_PERFORMANCE_NEGATIVE",
+        "terminal_all64_pending_zero": true,
+        "terminal_clean_all64": true,
+        "terminal_clean_does_not_mean_no_dirty_data": true
+      },
+      {
+        "M": false,
+        "T": false,
+        "archive_receipt_ref": {
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_PARTICLEFILTERNAIVE_07BA78B1_WV_ZERO_RO_REF_V1/control/ARCHIVE_RECEIPT.json",
+          "sha256": "ace9ea0f83e7c061621acca831be75d0fc1c4cd2d0f316ee02f33a87f420a958"
+        },
+        "category": "SHARED_FT_INTERKERNEL_HOST_OVERWRITE_COMPATIBILITY_GAP",
+        "cohort": "EP_PERF_PARTICLEFILTERNAIVE_07BA78B1_WV_ZERO_RO_REF_V1",
+        "completed_partial_kernel": {
+          "CTA": 8,
+          "cycles": 91440,
+          "instructions": 3614144,
+          "launch_uid": 1,
+          "scope": "FIRST_KERNEL_ONLY_NOT_WHOLE_APPLICATION"
+        },
+        "evidence_ref": {
+          "bytes": 24308,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/control/TECHNICAL_FAILURE_ROOTCAUSE_20261028_V1/EVIDENCE.json",
+          "sha256": "4a42772a59fa2d04b45f6437bc3d3c23c2fdbbf9b08e42ddc50abbe138fd0956"
+        },
+        "exact_failing_subpredicate": "UNKNOWN_NOT_LOGGED",
+        "exit_signal": "SIGABRT",
+        "failing_command": {
+          "bytes": 8000,
+          "command_ordinal": 9,
+          "destination": "0x7ff9f3504000",
+          "post_kernel_HtoD_ordinal": 3
+        },
+        "functional_counters": {
+          "c7d_bank_resident_write": 500,
+          "c7d_dram_read_issues": 0,
+          "c7d_dram_write_issues": 0,
+          "c7d_tag_set_all_reserved_block": 0,
+          "c7e_tag_way_alloc_block": 0,
+          "c7e_tag_way_alloc_need": 0
+        },
+        "input_identity_sha256": "07ba78b1d5e2a843123635ca340d30b295d018244c7796b59de39c9e0f98b2e1",
+        "mode": "WV_ZERO_RO",
+        "no_refund": true,
+        "no_retry": true,
+        "peak_RSS_bytes": 352321536,
+        "prior_actual_two_native_restores": [
+          {
+            "archive_sha256": "e8431ff7cf4df31be434870c513098fe3358d8be47873cf467b2853d5225f5d6",
+            "file_count": 17,
+            "logical_bytes": 282252,
+            "permanent_scientific_source_deleted": false,
+            "restore_label": "FIRST",
+            "source_keep": true,
+            "status": "INDEPENDENT_NATIVE_TARGET_COMPLETE_SHA_RESTORE_PASS",
+            "target": "/root/data/ep_l2_full_workload_performance_20261027_v1/restore_windows/EP_PERF_PARTICLEFILTERNAIVE_07BA78B1_WV_ZERO_RO_REF_V1_FIRST_z_eew4p7/fresh_target",
+            "temporary_native_working_set_released_after_verification": true
+          },
+          {
+            "archive_sha256": "e8431ff7cf4df31be434870c513098fe3358d8be47873cf467b2853d5225f5d6",
+            "file_count": 17,
+            "logical_bytes": 282252,
+            "permanent_scientific_source_deleted": false,
+            "restore_label": "INDEPENDENT",
+            "source_keep": true,
+            "status": "INDEPENDENT_NATIVE_TARGET_COMPLETE_SHA_RESTORE_PASS",
+            "target": "/root/data/ep_l2_full_workload_performance_20261027_v1/restore_windows/EP_PERF_PARTICLEFILTERNAIVE_07BA78B1_WV_ZERO_RO_REF_V1_INDEPENDENT_sfjci024/fresh_target",
+            "temporary_native_working_set_released_after_verification": true
+          }
+        ],
+        "resource_stop_reason": null,
+        "same_owner_dirty": "LIKELY_NOT_PROVEN",
+        "source_identity": {
+          "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+          "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+          "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+          "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+          "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+        },
+        "status": "TECHNICAL_UNACCEPTED_NOT_PERFORMANCE_NEGATIVE",
+        "terminal_all64_pending_zero": true,
+        "terminal_clean_all64": true,
+        "terminal_clean_does_not_mean_no_dirty_data": true
+      }
+    ],
+    "category": "SHARED_FT_INTERKERNEL_HOST_OVERWRITE_COMPATIBILITY_GAP",
+    "code_evidence_refs": [
+      {
+        "Core": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "file_ref": {
+          "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/l2cache.cc",
+          "sha256": "629ae76b38e339d71b47f6c93f55c0fb249e8afea77df04ef1c025a9b1fba903"
+        },
+        "first_line": 413,
+        "last_line": 442
+      },
+      {
+        "Core": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "file_ref": {
+          "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-ft-cache.inc",
+          "sha256": "e27b7624732f3b1c30f0803caef9b3da8cb1a7b84ea82193cd3d24e667e603cc"
+        },
+        "first_line": 17,
+        "last_line": 42
+      },
+      {
+        "Core": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "file_ref": {
+          "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/gpu-cache.h",
+          "sha256": "0a12d46d92abf95f5f908cb407835a7371b828cf9f184392f5a9b9c4e577bcfa"
+        },
+        "first_line": 3190,
+        "last_line": 3193
+      },
+      {
+        "Core": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "file_ref": {
+          "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/l2cache.cc",
+          "sha256": "629ae76b38e339d71b47f6c93f55c0fb249e8afea77df04ef1c025a9b1fba903"
+        },
+        "first_line": 2531,
+        "last_line": 2543
+      },
+      {
+        "Core": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "file_ref": {
+          "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/gpu-sim.cc",
+          "sha256": "d9b1e85fdf5eb33fa84dfd2fdca37bb07fb40d251e6d3940621674998f6f8908"
+        },
+        "first_line": 2436,
+        "last_line": 2464
+      },
+      {
+        "Core": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "file_ref": {
+          "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/tests/ep_l2/test_ft_host_prefill.cc",
+          "sha256": "05a8e13b01815b5b6e54777f4a835c2451b6932a918ace79039a7963b86bbc62"
+        },
+        "first_line": 157,
+        "last_line": 178
+      }
+    ],
+    "evidence_ref": {
+      "bytes": 24308,
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/control/TECHNICAL_FAILURE_ROOTCAUSE_20261028_V1/EVIDENCE.json",
+      "sha256": "4a42772a59fa2d04b45f6437bc3d3c23c2fdbbf9b08e42ddc50abbe138fd0956"
+    },
+    "fix_qualification": "NEW_SOURCE_PROTOCOL_CPU_AND_MATCHED_APPLICATION_NI_REQUIRED_NOT_EXECUTED",
+    "no_refund": true,
+    "no_retry": true,
+    "not_T_failure": true,
+    "not_bad_Trace_evidence": true,
+    "not_performance_negative": true,
+    "original_Main_report_ref": {
+      "bytes": 4807,
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/control/TECHNICAL_FAILURE_ROOTCAUSE_20261028_V1/TECHNICAL_FAILURE_ROOTCAUSE.md",
+      "sha256": "f4ce23bde393007c3f02fc0dec5c54ebdec7134bd8a12d563b851f4c81ccea8a"
+    },
+    "prior_exact_kernel1_store_population_ref": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_a/inter_kernel_prefill_compatibility_20261028_v1/EXACT_KERNEL1_STORE_LINE_AND_POST_HTOD_JOIN.json",
+      "sha256": "d22e29ed5df646e09abcc41216ddf80ad652634c12a4f6798ab1a174c1567375"
+    }
+  },
   "goal": "EP_L2_FULL_WORKLOAD_PERFORMANCE_POTENTIAL_EXPLORATION_V1",
   "incremental_refresh": {
     "current_spec_SHA_and_registry_pointer_join_checked": true,
