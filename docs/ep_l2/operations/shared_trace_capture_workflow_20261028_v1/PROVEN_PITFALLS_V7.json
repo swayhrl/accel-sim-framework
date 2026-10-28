@@ -1,0 +1,42 @@
+{
+  "cases": [
+    {
+      "evidence": "simpleStreams501 actual boundedheader5streams",
+      "rule": "Reject or reroute by boundedheaders before a 5.69B record loop reaches the old final single-stream gate.",
+      "topic": "early_stream_profile"
+    },
+    {
+      "evidence": "producer stats vs actual POST and Sobol aux",
+      "rule": "Producer-declared records, POST-verified records, aux record counts and actual retired active lanes remain separate units.",
+      "topic": "units"
+    },
+    {
+      "evidence": "actual tiny2 perkernel 18groups/28738records",
+      "rule": "Per-kernel record and group PASS does not establish cross-stream happens-before or global concurrent model compatibility.",
+      "topic": "multistream"
+    },
+    {
+      "evidence": "original LEAF raw_file_body_SHA deferred to CPU POST",
+      "rule": "RAW archive must derive actual sender wholeSHA and closed-reopen receiver SHA; never invent expected source SHA or inherit fullPOST flags.",
+      "topic": "raw_archive_unknown_SHA"
+    },
+    {
+      "evidence": "Root accepted unified63 then next Sobol public64",
+      "rule": "Immutable discovery snapshot is asof data. Record its exact version separately from live catalogs and perform final incremental refresh.",
+      "topic": "catalog_snapshot"
+    },
+    {
+      "evidence": "frozen sampler selects linear CTA0 of each1CTA kernel",
+      "rule": "At least one completeCTA perkernel can yield effective100%; do not label every stride40 input as2.5%.",
+      "topic": "non_reducing_crop"
+    },
+    {
+      "evidence": "accepted streamcluster public57 realNAS relocation",
+      "rule": "Successful sameNAS publication can retire the private staging pathname. Resolve real receipt+publicobject before reporting lostasset or restarting.",
+      "topic": "source_staging_relocation"
+    }
+  ],
+  "historical_V4_25_cases_preserved": true,
+  "no_new_qualification_or_experiments": true,
+  "schema": "V7_ADDITIONAL_EVIDENCED_ENGINEERING_LESSONS"
+}

@@ -27,3 +27,7 @@
 ## V6资产优先范围修订
 
 [最新交付范围与Gaussian后处理完成情况](CURRENT_PROGRESS_V6.md)。[增量证据索引](EVIDENCE_INDEX_V6.json)。161项全量适配已取消为本轮硬门槛，未启动专项延后。V4/V5保留其时间戳状态。
+
+## V7实际归档与范围收尾
+
+[公共64/64、typed8/153及超大多流RAW归档例外](CURRENT_PROGRESS_V7.md)。[15份增量验收证据](EVIDENCE_INDEX_V7.json)。[当前交付范围规则](WORKFLOW_DELIVERY_SCOPE_V7.json)。全量161与全库SM70正文恢复均不再是本轮硬门槛；超大多流fullPOST按用户选择留明确缺口。
