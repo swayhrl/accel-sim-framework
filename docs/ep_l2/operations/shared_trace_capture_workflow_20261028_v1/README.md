@@ -35,3 +35,7 @@
 ## V8 公共68与原33交付总账
 
 [当前68常规与68裁剪、独立RAW3及24完成9待办](CURRENT_PROGRESS_V8.md)。[25份原始增量证据](EVIDENCE_INDEX_V8.json)。[原33项精确表](ORIGINAL33_DELIVERY_TABLE_V8.md)。[机器缺口总账](CURRENT_DELIVERY_GAPS_AND_DEFERRED_EXCEPTIONS_V8.json)。统一66保持冻结时点，live68可独立读取；旧版本原样保留。
+
+## V9 中型三输入公共71增量
+
+[公共71/71与原33项27完成6待办](CURRENT_PROGRESS_V9.md)。[薄增量证据索引](EVIDENCE_INDEX_V9.json)。[机器时点增量](CURRENT_DELTA_V9.json)。V8及原33账本保持其原始时点，新6对象consumer保持UNKNOWN。

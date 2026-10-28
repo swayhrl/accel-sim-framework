@@ -1,0 +1,75 @@
+
+"""Exact1 ordinary then real-parent derived immutable COPY; stable reviewed MVT transfer/wholeSHA functions."""
+from pathlib import Path
+import os,sys,json,hashlib,time,types,resource,signal,shutil
+D=Path(__file__).resolve().parent;NATIVE='/root/share/mnt164/huangrulin/traces/rtx4080_sm89/bulk_20261024_v1';REMOTE='/data/c16/rtx4080_suite_fill_20261024_v1/nas_fast_sc_copy_st_20261029_v2';SLOW='/data/c16/rtx4080_suite_fill_20261024_v1/nas_rtx4080';G=2**30
+def need(v,m):
+ if not v:raise RuntimeError(m)
+def sha(p):
+ h=hashlib.sha256()
+ with Path(p).open('rb')as f:
+  for b in iter(lambda:f.read(65536),b''):h.update(b)
+ return h.hexdigest()
+def remote(p):
+ p=Path(p)
+ for base in[NATIVE,SLOW,REMOTE]:
+  if p.is_relative_to(Path(base)):
+   rel=p.relative_to(base);need('..'not in rel.parts,'canonical alias relative path');return Path(REMOTE)/rel
+ raise RuntimeError('EXACT_NAS_ST_SOURCE_DOMAIN')
+def native(p):
+ p=Path(p)
+ for base in[REMOTE,SLOW,NATIVE]:
+  if p.is_relative_to(Path(base)):return str(Path(NATIVE)/p.relative_to(base))
+ raise RuntimeError('EXACT_NAS_REFERENCE_DOMAIN')
+def ref(p):return dict(path=native(p),bytes=Path(p).stat().st_size,sha256=sha(p))
+def save(p,j):
+ with Path(p).open('x')as f:json.dump(j,f,indent=2,sort_keys=True);f.write('\n');f.flush();os.fsync(f.fileno())
+def mod(p,n):
+ m=types.ModuleType(n);m.__file__=str(p);exec(compile(Path(p).read_bytes(),str(p),'exec'),m.__dict__);return m
+def owned_main(a,h,control):
+ need(a['runtime_root']==str(D)and a['not_before_unix']<=time.time()<a['absolute_deadline_unix']<=a['not_before_unix']+7200,'exact finite COPY');need(a['peer_bytes']==28*G,'peer28');need(a['rate_bytes_per_second']==64*2**20,'exact Root local engineering phase pace64MiB/s; not sharedquota');need(sha(D/'COPY_SOURCE_MANIFEST_V1.json')==a['code_manifest_sha256'],'copyMF')
+ for n,r in json.loads((D/'COPY_SOURCE_MANIFEST_V1.json').read_text())['files'].items():need((D/n).stat().st_size==r['bytes']and sha(D/n)==r['sha256'],'source pin '+n)
+ packetpath=D/'ACTUAL_PREPARED_MIDDLE3_PACKAGE_INPUT_V1.json';need(sha(packetpath)==a['data_packet_sha256'],'actual5package');packet=json.loads(packetpath.read_text());need(len(packet['rows'])==3 and a['asset_ids']==[x for r in packet['rows']for x in[r['ordinary_asset_id'],r['derived_asset_id']]],'only6 objects');data=remote(a['Root_data_acceptance_ref']['path']);need(sha(data)==a['Root_data_acceptance_ref']['sha256'],'Root actual1data')
+ resource.setrlimit(resource.RLIMIT_AS,(512*2**20,512*2**20));resource.setrlimit(resource.RLIMIT_CORE,(0,0));os.sched_setaffinity(0,{2});need(os.nice(0)==0,'initialnice0');os.nice(15)
+ H=mod(D/'tools/reviewed_mvt_committer.py','reviewed_stable_copy');need(sha(D/'tools/reviewed_mvt_committer.py')=='1dd52a5789936d0ae19ce0388d39c09b29615e49218fed11a7a0b0cf3f74521f','stable copy helper');need(sha(D/'exact_middlef9_six_manifest_member_guard_v1.py')=='8fde97d77618d1273a3e6ba4f7fbd8606c21df1bd5baa0102d0e6a215bbe9248','exact scoped member guard pin');Guard=mod(D/'exact_middlef9_six_manifest_member_guard_v1.py','exact_four_manifest_guard');H.member_rows=Guard.member_rows;need(sha(D/'existing_st_alias_guard_reused_v1.py')=='268fe67e14d8709987efb971593ed6d6f5d83a117f9c3d20a7be6e728b61d7fc','reviewed ST alias checker pin');Alias=mod(D/'existing_st_alias_guard_reused_v1.py','existing_alias');alias_state=Alias.exact_existing_ST_alias(a,H);R=mod(D/'archive512_resource_peer28_v1.py','resource512');cg=R.service();need(str(cg).endswith('/'+a['service_unit']+'.service'),'exact unit');last=0;snapshots=[];oldfresh=H.fresh
+ def deep(v):
+  if isinstance(v,dict):return sys.getsizeof(v)+sum(deep(k)+deep(z)for k,z in v.items())
+  if isinstance(v,(list,tuple)):return sys.getsizeof(v)+sum(deep(z)for z in v)
+  return sys.getsizeof(v)
+ def fresh(deadline):
+  nonlocal last
+  control.check();oldfresh(deadline)
+  if time.monotonic()-last>=1:
+   s=R.fresh(cg,a['peer_bytes']);need(s['PASS'],'PHYSICAL16_ANCESTOR_OOM_PSI');need(len(snapshots)<7202 and deep(s)<=32768 and len(json.dumps({'rows':[s]},indent=2).encode())<=16384,'FINITE7200_RESOURCE_BUFFER_BOUND');snapshots.append(s);last=time.monotonic()
+ H.fresh=fresh;fresh(a['absolute_deadline_unix']);run=D/'actual_copy_a001';run.mkdir(exist_ok=False);(D/'committed').mkdir(exist_ok=True);objects=[]
+ save(run/'START.json',dict(pid=os.getpid(),ticks=Path('/proc/self/stat').read_text().rsplit(')',1)[1].split()[19],cgroup=str(cg),scope_sha256=h,run_id=a['run_id'],AS=resource.getrlimit(resource.RLIMIT_AS),CPU=[2],existing_ST_alias=alias_state,no_GPU_POST_model=True))
+ signal.signal(signal.SIGALRM,lambda *_:(_ for _ in()).throw(TimeoutError('COPY7200')));signal.alarm(max(1,int(a['absolute_deadline_unix']-time.time())))
+ def copy(row,phase,manifest,sources,parent=None):
+  aid=row['ordinary_asset_id']if phase=='FULL'else row['derived_asset_id'];target=D/'committed'/aid;stage=D/('own_staging_'+aid);need(not target.exists()and not stage.exists(),'no overwrite');stage.mkdir();H.member_rows(manifest);need(set(sources)=={r['path']for r in manifest['files']},'complete source set')
+  for r in manifest['files']:fresh(a['absolute_deadline_unix']);source=remote(sources[r['path']]);need(str(source).startswith(REMOTE+'/'),'NAS only');H.transfer(source,stage/r['path'],r,a['absolute_deadline_unix'],rate=a['rate_bytes_per_second'])
+  H.save_new(stage/'MANIFEST.json',manifest);mh=sha(stage/'MANIFEST.json');need(phase!='FULL'or mh==row['ordinary_manifest_ref']['sha256'],'sameRootacceptedfullMF');H.verify_members(stage,mh,a['absolute_deadline_unix'],rate=a['rate_bytes_per_second']);need(shutil.disk_usage(D).free>=5*G,'NAS floor');asset=json.loads((stage/'ASSET.json').read_text());need(asset['source_queue_id']==row['job_id']and asset['producer_sha256']=='55c6f4829e8c92e11e0ab54496bf8f507f6cfa3a10cd01a857c6de147ee68b73','manifest bound actual55')
+  commit=dict(schema='RTX4080_SHARED_IMMUTABLE_COMMIT_V1',kind=manifest['kind'],status='COMMITTED_VERIFIED',asset_id=aid,manifest_sha256=mh,files=len(manifest['files']),logical_bytes=manifest['logical_bytes'],producer_sha256=asset['producer_sha256'],producer_semantic_status=asset['producer_semantic_qualification'],consumer_per_profile_qualification='UNKNOWN_NOT_EXECUTED_NOT_GRANTED',record_qualification_scope='ORIGINAL_F9_SINGLE_STREAM_FULL_RECORD_ONLY_NO_CONSUMER',strict_single_stream_ordinary=True,inter_stream_happens_before='NOT_APPLICABLE_SINGLE_EXPLICIT_STREAM',full_application_concurrent_model=False,actual_all_DSO_mapping_coverage='UNKNOWN_NOT_PERSISTED',capture_history=asset['capture_history'],original_leaf_capture_exit=0,Root_private_acceptance_sha256=a['Root_data_acceptance_ref']['sha256'],Root_private_scope_sha256=h,all_members_closed_reopened_wholeSHA=True,science_or_performance_qualification=False,source_keep=True,release_bytes=0,ssd_payload_staging_bytes=0,phase=phase,utc_unix=time.time())
+  if parent:commit.update(parent_asset_id=row['ordinary_asset_id'],parent_commit_sha256=parent[0],parent_manifest_sha256=parent[1],input_payload_duplicate_bytes=0,nominal_fraction=.025,effective_fraction=row['effective_fraction'],ctas_retained=row['selected_CTAs'],records_retained=row['selected_records'])
+  H.save_new(stage/'COMMIT.json',commit);need(json.loads(H.raw(stage/'COMMIT.json'))==commit,'COMMIT readback');need(stage.stat().st_dev==target.parent.stat().st_dev,'same NAS rename');os.rename(stage,target);r=dict(asset_id=aid,kind='ordinary'if phase=='FULL'else'derived',commit_ref=ref(target/'COMMIT.json'),manifest_ref=ref(target/'MANIFEST.json'),member_count=len(manifest['files']),logical_bytes=manifest['logical_bytes'],public_path=None,SourceKEEP=True,release_bytes=0);objects.append(r);save(run/(aid+'_CLOSED.json'),r);return target,manifest
+ for row in packet['rows']:
+  fullpath=remote(row['ordinary_manifest_ref']['path']);planpath=remote(row['ordinary_sender_plan_ref']['path']);need(sha(fullpath)==row['ordinary_manifest_ref']['sha256']and sha(planpath)==row['ordinary_sender_plan_ref']['sha256'],'accepted full sourceplan');full=json.loads(fullpath.read_text());sources=json.loads(planpath.read_text())['sources'];parent,pm=copy(row,'FULL',full,sources);cb=sha(parent/'COMMIT.json');mh=sha(parent/'MANIFEST.json');table={x['path']:x for x in pm['files']};draftpath=remote(row['derived_draft_ref']['path']);need(sha(draftpath)==row['derived_draft_ref']['sha256'],'actualderive draft');draft=json.loads(draftpath.read_text());need(draft['parent_recorded_input_table']==table['traces/kernelslist.g']and draft['parent_binary_member']==table['bin/application']and draft['parent_input_members']==[],'real parent input table/binary')
+  ready=run/('derived_ready_'+row['ordinary_asset_id']);ready.mkdir();parentasset=json.loads((parent/'ASSET.json').read_text());ad=remote(draft['ASSET_draft_ref']['path']);need(sha(ad)==draft['ASSET_draft_ref']['sha256'],'derivedbodyASSETdraft');selected=json.loads(ad.read_text());sel=draft['selected'];child=dict(parentasset);child.pop('selected_consumer_witness',None);child.update(schema='RTX4080_DERIVED_CTA_ASSET_V1',kind='DERIVED_COMPLETE_CTA_TRACE',asset_id=row['derived_asset_id'],parent_asset_id=row['ordinary_asset_id'],parent_commit_sha256=cb,parent_manifest_sha256=mh,full_application_capture_complete=False,full_application=dict(kernel_launches=len(selected['kernels']),ctas=sel['selected_CTAs'],warps=sel['selected_warps'],records=sel['selected_records'],all_warps_terminate=True,commandlist='traces/kernelslist.g',sampling='DETERMINISTIC_COMPLETE_CTA_STRIDE_40'),sampling=selected['sampling'],kernels=selected['kernels'],CTAs=sel['selected_CTAs'],warps=sel['selected_warps'],records=sel['selected_records'],selected_records=sel['selected_records'],selected_CTAs=sel['selected_CTAs'],parent_CTAs=sel['parent_CTAs'],effective_fraction=sel['effective_fraction'],nominal_fraction=.025,input_payload_duplicate_bytes=0,consumer_qualification='UNKNOWN_NOT_EXECUTED_NOT_GRANTED; PARENT_ORIGINAL_F9_SINGLE_STREAM_DATA_CONTRACT_ONLY',record_qualification_scope='PARENT_ORIGINAL_F9_SINGLE_STREAM_RECORD_CONTRACT_NO_CONSUMER',actual_model_executed_for_derived=False,input_identity=dict(kind='DERIVED_EXACT_PARENT_REFERENCE',member='PARENT_INPUT_REFERENCE.json',input_payload_duplicate_bytes=0))
+  child.pop('portable_binary_member',None);child['portable_binary_parent_reference']=dict(parent_asset_id=row['ordinary_asset_id'],parent_commit_sha256=cb,parent_manifest_sha256=mh,binary_manifest_member=table['bin/application']);child['portable_binary_scope']='EXACT_BINARY_IN_REAL_PARENT_NOT_CHILD_MEMBER'
+  dep=dict(schema='RTX4080_DERIVED_PARENT_INPUT_REFERENCE_V1',parent_asset_id=row['ordinary_asset_id'],parent_commit_sha256=cb,parent_manifest_sha256=mh,input_members=[],recorded_input_commandlist_member=table['traces/kernelslist.g'],binary_member=table['bin/application'],host_input_capsule_status='UNKNOWN_NOT_RECORDED_BY_ORIGINAL55; no hostbyte payload claim',input_payload_duplicate_bytes=0,resolution='Exact real immutable parent manifest members; no109only operational dependency');H.save_new(ready/'ASSET.json',child);H.save_new(ready/'PARENT_INPUT_REFERENCE.json',dep)
+  ds=dict(draft['derived_sources'])
+  for rel,f in{'ASSET.json':ready/'ASSET.json','PARENT_INPUT_REFERENCE.json':ready/'PARENT_INPUT_REFERENCE.json','tools/reviewed_complete_cta_sampler.py':D/'tools/reviewed_complete_cta_sampler.py','contract/frozen_parser_f4.py':D/'tools/frozen_parser_f4.py'}.items():ds[rel]=dict(source=str(f),bytes=f.stat().st_size,sha256=sha(f))
+  dm=dict(schema='RTX4080_SHARED_IMMUTABLE_MANIFEST_V1',asset_id=row['derived_asset_id'],kind='DERIVED_COMPLETE_CTA_TRACE',parent_asset_id=row['ordinary_asset_id'],parent_commit_sha256=cb,parent_manifest_sha256=mh,files=[dict(path=k,bytes=v['bytes'],sha256=v['sha256'])for k,v in sorted(ds.items())],logical_bytes=sum(v['bytes']for v in ds.values()),source_keep=True,release_bytes=0);copy(row,'DERIVED',dm,{k:v['source']for k,v in ds.items()},(cb,mh))
+ save(D/'ALL_MIDDLEF9_PRIVATE_PAIRS_CLOSED.json',dict(status='SIX_OBJECTS_COMMITTED_ALL_MEMBER_WHOLESHA_PASS',objects=objects,Root_data_acceptance_ref=a['Root_data_acceptance_ref'],no_GPU_POST_model=True,SourceKEEP=True,release_bytes=0));save(run/'RESOURCE_SNAPSHOTS.json',dict(rows=snapshots));signal.alarm(0)
+def main():
+ reader=None;error=None;a=None
+ try:
+  need(len(sys.argv)==3,'Root exactscope/hash');sp=Path(sys.argv[1]);h=sys.argv[2];need(sha(sp)==h,'Root rawscope');a=json.loads(sp.read_text());need(a['schema']=='ROOT_EXACT_MIDDLEF955_ST_PRIVATE_COPY_V1'and a['status']=='ROOT_APPROVED_EXACT_MIDDLEF955_ST_PRIVATE_COPY_ONCE','Root COPY role');need(sha(D/'ssh_stdin_light_control_v2.py')=='63a962a8f9bda7ebb652f07ec143d519d632f98006c540c39e6691b8a6bcda7f','approved channel');C=mod(D/'ssh_stdin_light_control_v2.py','channel');reader=C.RemoteReader(0,h,a['run_id']).start();reader.wait_ready();owned_main(a,h,reader)
+ except BaseException as e:
+  error=dict(error=repr(e),structured_error=e.as_dict()if hasattr(e,'as_dict')else None,control_error_snapshot=reader.error_snapshot()if reader is not None else None,traceback=__import__('traceback').format_exc())
+  if a is not None:d=D/'actual_copy_a001';d.mkdir(exist_ok=True);save(d/'FAILURE_RETAINED.json',error)
+ finally:
+  if reader is not None:need(not Path('/proc/self/task',str(os.getpid()),'children').read_text().strip(),'owned children first');reader.finish_after_owned_closed()
+ if a is not None:
+  d=D/'actual_copy_a001';d.mkdir(exist_ok=True);cg=Path('/sys/fs/cgroup')/Path('/proc/self/cgroup').read_text().strip().split('::',1)[1].lstrip('/');save(d/'FINAL_OWNED_TERMINAL.json',dict(status='PASS'if error is None else'FAILED_RETAINED',error=error,pid=os.getpid(),ticks=Path('/proc/self/stat').read_text().rsplit(')',1)[1].split()[19],scope_sha256=h,run_id=a['run_id'],cgroup=str(cg),all_owned_children_closed=True,all_control_threads_closed=True,control_reader_started=reader is not None,control_reader_joined=reader is not None,memory_peak=int((cg/'memory.peak').read_text())))
+ if error:raise RuntimeError(error['error'])
+if __name__=='__main__':main()
