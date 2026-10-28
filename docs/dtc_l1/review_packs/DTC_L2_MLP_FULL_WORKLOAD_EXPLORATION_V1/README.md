@@ -1,3 +1,15 @@
+<!-- DTC_PERIODIC_CURRENT_START -->
+# DTC L2 MLP full-workload exploration V1
+
+Latest read-only snapshot: [2026-10-28T10:34:36.271584+00:00](periodic/20261028T103435Z_b61f6182/README.md) · [317/350 primary accepted cells](periodic/20261028T103435Z_b61f6182/dashboard.html). [Machine-readable report](periodic/20261028T103435Z_b61f6182/report.json) · [Snapshot member hashes](periodic/20261028T103435Z_b61f6182/MEMBER_MANIFEST.json).
+
+Coverage is partial until all valid planned cells are accepted. Original negatives remain visible; independent R2 is supplemental and never replaces a primary negative. CH non-P0 controls may be absent; available-subset GMs are not final suite winners. Sources are coherent per file, not one global transaction. The old BATCH_STATE .88 label is historical, not evidence of the active admission policy. English v0.23 is unchanged.
+
+The root MEMBER_MANIFEST.json and historical checkpoint manifests describe their original snapshots; they are not manifests for later appended files. Use each snapshot MEMBER_MANIFEST.json.
+<!-- DTC_PERIODIC_CURRENT_END -->
+
+<details><summary>Historical root README, preserved in full</summary>
+
 # DTC L2 MLP full-workload exploration V1
 
 **Latest current-progress review:** [ChatGPT review checkpoint,2026-10-27 20:22 main snapshot plus20:29 resource supplement](checkpoints/CURRENT_PROGRESS_REVIEW_V1/README.md). It includes350 cells,145 accepted,80 confirmed live at the main snapshot,125 pending; newer79-live admission observation is separately labelled. [Ready-to-send review prompt](checkpoints/CURRENT_PROGRESS_REVIEW_V1/CHATGPT_REVIEW_PROMPT.md). The campaign continues.
@@ -42,3 +54,5 @@ Live native root: /root/data/dtc_l2_mlp_exploration_20261027_v1
 True164 archive: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1
 
 This checkpoint includes immutable contracts, exact configs, execution/consumer/search code, CPU qualifications, input provenance and a time-labelled partial result snapshot. Large raw logs, traces, binaries and datasets remain outside Git. Snapshots are individually coherent closed records, not an atomic snapshot of all concurrent processes. Final workload tables, sensitivity plots, uniform moderate/high-resource candidates and CH/DH comparisons will follow natural completion of the scientific stage.
+
+</details>
