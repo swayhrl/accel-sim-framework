@@ -1,0 +1,11 @@
+IR11 runtime-only scientific-isolation component; NOT installed or registered.
+
+API: IncidentScope(frozenBplan, legacy_nonprimary_cohorts). The caller supplies the exact existing source-pinned R2 whitelist plus approved engineering4 (currently5 identities), never all untrusted q.admitted. No fixed primary count: realMATRIX N + existinglegacy5 + IR11 = N+16; current stage350→355→366 only. Future legal primary extensions remain dynamic.
+
+q.authorized_incident_recovery_trials must have exactly11 unique records. authorization_record(c) produces the required subset and AUTHORIZATION_RECORDS.template.json lists all11. It binds current q.admitted_specs[c]==current canonicalSHA and host_cpu=None, frozen science projection and old cohort/UUID/negativeRESULT/DONE/raw/canonical mapping, excludedprimary/unionFalse/noUUIDreuse/noautomaticretry/norefund. DRAFT fullspec SHA is provenance, not a permanent current-resource binding: later officially amended RSS/limits with unchanged science/lineage remains valid.
+
+IR11.dispatch_view(previousCanaryView,matrix,scope,q,canonical) appends only exact11. Adaptive outer must call IR11.primary_view first, then unchanged Canary2a.primary_view, then unchanged R2 adapter. Stripping exactly restores prior runtime view digest; unknown identity/role or tampering fails closed. Primary summaries must call assert_primary_summary on only the primary table: any trial/unknown row yields explicit NONFINAL_HOLD. No new trial is a primaryGM/full35parent, no oldnegative or323accepted replacement.
+
+optional_dispatch_view returns unchanged trusted prior queue plus explicit nonfinalHOLD when optional new11 is missing/invalid; it does not suspend ordinary known work. If even prior view contains an unknown identity/role, it returns viewNone/legacy_queue_usableFalse, never forwards contamination. Caller must not ignore this status.
+
+7 pureCPU cases PASS using real current primary/scopes/Canary2a source and private cloned q+synthetic registeredIR11; this is not actualowner or actualregistration. No selector, memorypolicy, credit, worker/consumer, source, budget or lease change. Main can integrate only after existing engineering4 real qualification and explicit once-registration/consumer/memory gates; this component does not authorize activation.
