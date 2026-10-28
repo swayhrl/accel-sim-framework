@@ -1,0 +1,16 @@
+--- producer/aca9b704364cc370b4135c75836ed931bc9dcbe2fa5488c38129a3a99d791a9c
++++ producer/06e52cd8e359791a912ba081b9e3cb16d7e23baae1d7a8511eefa8d74528c675
+@@ -224,5 +224,13 @@
+ def restore_owner_dispatch(main=None):
+  assert threading.current_thread()is threading.main_thread();main=main or sys.modules['__main__'];v=getattr(main,OWNER_MARKER);v['frame'].f_locals['engine'].assert_parent_lease()
+  with v['aging'].lock:
++  engine=v['frame'].f_locals['engine'];q=engine.registered()[2];root=P(engine.R)
++  for path in(root/'control/strace_bpf_v3_route_claims').glob('*.json'):
++   claim=read(path);assert claim['schema']=='STRACE_BPF_V3_FUTURE_ROUTE_CLAIM_V1'and claim['overlay_id']==ID;c=claim['cohort']
++   if c not in q['admitted_specs']:continue
++   rp=root/'analysis'/(c+'.RESULT.json');assert rp.exists(),'PENDING_V3_ROUTE_CLAIM_RETAINS_WORKER'
++   result=read(rp);proof=result['proof'];extra=proof['additional_strace_bpf_observation_strict'];row=q['consumed'][c]
++   assert result['state']=='PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE'and proof['performance_accepted']is True and result['uuid']==proof['uuid']==row['uuid']and result['archive']
++   assert extra['schema']==ID and extra['status']=='PASS_STRACE_V3_AND_ORIGINAL_CPU2_IO'and sha(extra['sidecar_path'])==extra['sidecar_sha256'],'V3_CLAIM_WITHOUT_ACCEPTED_GENERATION_RETAINS_WORKER'
+   assert v['frame'].f_globals['worker']is v['wrapper'];v['frame'].f_globals['worker']=v['previous'];delattr(main,OWNER_MARKER)
+  return dict(status='EXACT_PREVIOUS_FUTURE_WORKER_RESTORED',retained_new_generation_consumer_required=True,new_grants=0,model_starts=0)
