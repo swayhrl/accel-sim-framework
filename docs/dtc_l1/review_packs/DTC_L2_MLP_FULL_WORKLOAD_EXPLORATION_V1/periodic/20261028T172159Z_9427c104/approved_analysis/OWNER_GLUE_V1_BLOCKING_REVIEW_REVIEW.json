@@ -1,0 +1,50 @@
+{
+  "schema": "E_MAIN_BPF_OWNER_GLUE_V1_BLOCKING_REVIEW",
+  "UTC": "2026-10-28T16:25:02.278882+00:00",
+  "status": "BLOCKED_DO_NOT_EXECUTE_V1_REQUIRES_VERSIONED_FAILURE_CONTAINMENT",
+  "owner_source_sha256": "ae79b00e90fa450ec912cd540efe6f37b896dc01cbba92287f9c79d4e5a5406c",
+  "owner_config_sha256": "32ae28f7b30a796dcc927942ae30c3cc6d4568fffaf15f7b2a12d810460d2046",
+  "actual_models_qualified": false,
+  "findings": [
+    {
+      "severity": "BLOCKING",
+      "location": "owner.py:39,89-90; l2_ops.py choose-to-claim path",
+      "finding": "The aging lock does not stop old model receipt updates, or cover the entire read/choose/claim/submit interval. Exact consumed-dict/remaining+4 equality can reject legitimate old completion or a previously selected old-primary start.",
+      "required_fix": "Keep budget+4 exact; close remaining against actual consumed count. Preserve immutable old UUID/fields, allow legitimate receipts/old-primary starts, compare unspent resource amendments through science identity."
+    },
+    {
+      "severity": "BLOCKING",
+      "location": "owner.py:84,105-110; l2_ops.py cached matrix/pending before choose",
+      "finding": "Once optional355 view has been visible, restoring only reader/adaptive and removing B/E routes does not erase cached engineering pending. Grants and CPU2 allowed4 remain, so a cached exactC could reach the old entry/consumer without the observation contract.",
+      "required_fix": "Mark exposure before publication. On failure install exact4 fail-closed safe/worker fences before cleanup; retain mandatory B/E for exposed identities, best-effort remove view/priority and filter exact4 from returned admission decisions. Non-scope paths must exact-delegate."
+    },
+    {
+      "severity": "BLOCKING_RECOVERY",
+      "location": "owner.py:108-112",
+      "finding": "Cleanup is a sequence of unprotected restores; one cleanup exception prevents later protection and ERROR evidence. new_grants may incorrectly remain0 if registration raised after granting but before return.",
+      "required_fix": "Best-effort each cleanup and persist error/fence evidence in finally. Observe actual authority grant state or label unknown with prepared transaction; never imply refund or safe repeat."
+    }
+  ],
+  "other_static_checks": [
+    "57 current source pins match, including five runtime sources, old46/fa3/CPU2 and staged readbacks. owner/OWNER_CONFIG match requested hashes.",
+    "DRAFT45c/exclusion4d7 are indirectly fixed by pinned REGISTRATION_CONFIG and independently checked by E install; no additional source-pin block identified there.",
+    "Component interfaces match: B prepare/register, A scope prepare/apply, E consumer install/readiness, B owner dispatch and priority install. Lock order aging RLock then sync lock matches the transaction; no additional deadlock identified in this static review.",
+    "Initial engineering policy NONE, exact4 modes, original SCOPE/MATRIX and R2 outer-adapter preservation are appropriate. Genuine native+164 byte readback is acceptable; no Git/HTTPS prerequisite added."
+  ],
+  "disposition": "Main acknowledged and held V1 before execution; a separately pinned V2 is required. This review does not approve or certify that V2.",
+  "V2_reported_not_reviewed": {
+    "owner_source_sha256": "213e8d53c15127a3355645b8135d33e0a862e6f0fa6cbc67b32a525de0363a10",
+    "containment_source_sha256": "f24fb29faff65d28237c63c908c2cb352a933e5035c9f829d64af109a6827ad7",
+    "scope": "A source-only/private CPU candidate; native V2 config still to be supplied"
+  },
+  "remaining_gates": [
+    "New V2 staged source/config and exact pinned containment review, followed by explicit same-owner installation only by Main.",
+    "Legal fresh4 technical grants/reconcile, official CPU2 append, actual runtime routing, full resource/fresh/lease gates.",
+    "Actual canaries must prove activation/mode, original+CPU2+IO+observation strict, natural closure, true164/native restore and frozen reference counts/cycles before any optimization adoption."
+  ],
+  "review_method": "Read-only source/config/hash review; no component test rerun, owner invocation or live introspection mutation.",
+  "model_starts": 0,
+  "registry_writes": 0,
+  "production_changes": 0,
+  "Git_accessed": false
+}
