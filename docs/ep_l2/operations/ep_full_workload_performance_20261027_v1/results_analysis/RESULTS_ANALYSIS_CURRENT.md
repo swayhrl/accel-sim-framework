@@ -1,31 +1,44 @@
 # Accepted experiment results: bounded current analysis
 
-Analysis UTC: 2026-10-28T07:55:32.642109+00:00. Registry: 227 registered; 218 consumed; states {'CLOSED_ACCEPTED': 210, 'CONSUMED_BEFORE_FORK': 6, 'NOT_STARTED': 9, 'CLOSED_UNACCEPTED': 2}. Independently joined CLOSED_ACCEPTED endpoints: 210. Joins cover frozen spec, natural DONE, point, canonical Source5, validation SHA and genuine164/two-native-restore receipts. No raw or Trace rereads; Main remains the acceptance authority.
+Analysis UTC: 2026-10-28T13:06:35.522030+00:00. Registry: 227 registered; 220 consumed; states {'CLOSED_ACCEPTED': 215, 'NOT_STARTED': 7, 'CLOSED_UNACCEPTED': 2, 'CONSUMED_BEFORE_FORK': 3}. Independently joined CLOSED_ACCEPTED endpoints: 215. Joins cover frozen spec, natural DONE, point, canonical Source5, validation SHA and genuine164/two-native-restore receipts. No raw or Trace rereads; Main remains the acceptance authority.
 
 Each row is an endpoint, not a distinct workload. This is a bounded snapshot; live counts may advance. There is no full35/full96 geometric mean or global-optimum claim.
 
-Incremental refresh reuses 208 prior closed endpoints with unchanged frozen-spec SHA and exact current registry point/DONE/archive references. 2 new or changed endpoints were freshly joined. Old artifact SHA references remain the sealed prior evidence; they were not all rehashed.
+Incremental refresh reuses 210 prior closed endpoints with unchanged frozen-spec SHA and exact current registry point/DONE/archive references. 5 new or changed endpoints were freshly joined. Old artifact SHA references remain the sealed prior evidence; they were not all rehashed.
 
-## New closures since the previous analysis
+## Newly closed endpoints and newly matched comparisons
 
-Previous analysis UTC: 2026-10-28T06:25:36.600466+00:00. Two new S reference sides closed; zero new fully matched comparisons. Their F endpoints remain live, so no S/F speedup is assigned.
+This refresh reuses 210 closed endpoint references and freshly joins 5 new/changed endpoints. New fully matched pairs: 3. REF S/F coverage is 22 inputs / 21 programs. This is not completed35/96 coverage.
 
-|new endpoint|mode|cycles|instructions|CTA|ordered kernels|drain|
-|---|---|---:|---:|---:|---:|---|
-|3MM (f9f80028)|S|1696618|1813512192|3072|3|True|
-|scan (cf8d1c4d)|S|2162540|1963460720|166608|33|True|
+|new endpoint|mode|cycles|instructions|CTA|kernels|
+|---|---|---:|---:|---:|---:|
+|3MM (f9f80028)|F|1669413|1813512192|3072|3|
+|lavamd (51faffd2)|S|5581479|10396775488|1000|1|
+|scan (cf8d1c4d)|F|2224142|1963460720|166608|33|
+|srad_v1 (6ce41710)|S|8649629|10136693400|181000|502|
+|stencil (bd0309df)|F|4769712|2193446000|6400|100|
 
-All new points retain exact Source/input/spec/DONE/validation/genuine164 and two-native-restore joins. The 208 previous endpoints reuse unchanged sealed evidence references. Current population is210 accepted endpoints,2 technical negatives,6 live endpoints and9 unconsumed points. This is not210 workloads. Reference S/F coverage remains19 input pairs/18 programs; it does not become a completed35/96 population.
+|new matched input|S cycles|F cycles|S/F|F cycle change vs S|
+|---|---:|---:|---:|---:|
+|3MM (f9f80028)|1696618|1669413|1.016296|-1.6035%|
+|stencil (bd0309df)|5242939|4769712|1.099215|-9.0260%|
+|scan (cf8d1c4d)|2162540|2224142|0.972303|+2.8486%|
 
-Remaining live endpoints: EP_PERF_3MM_F9F80028_F_REF_V1, EP_PERF_LAVAMD_51FAFFD2_S_REF_V1, EP_PERF_SCAN_CF8D1C4D_F_REF_V1, EP_PERF_SRADV1_6CE41710_S_REF_V1, EP_PERF_STENCIL_BD0309DF_F_REF_V1, EP_PERF_SYRK_90B0CC9D_S_REF_V1.
+Per-candidate fixed8 closure:
 
-An independently attributable T performance benefit remains UNKNOWN until an exact same-Core/ELF/geometry/input/F WVM background T-OFF(M1) endpoint closes. Actual detaches alone do not supply that counterfactual.
+- COMBO_G64W16_UD2: 7/8; full-population GM=UNKNOWN; missing=SGEMM.
+- N_ICNT_BUFFERS1024: 7/8; full-population GM=UNKNOWN; missing=SGEMM.
+- U_L2MQ256: 7/8; full-population GM=UNKNOWN; missing=SGEMM.
+
+The new default-profile comparisons show same-model F cycle improvements for3MM and stencil and a regression for scan. Thus default EP opportunity is workload-dependent, and the positive pairs merit W/V/M/T attribution with their original negative controls retained. These observations do not isolate T or select a global configuration. Completing the already preselected SGEMM parameter endpoints remains necessary before judging the fixed8 candidates.
+
+Only complete fixed populations receive a full GM. Actual detach occurrence remains separate from an independently attributable T speedup; same-Core/ELF/geometry/input/F WVM background T-OFF(M1) is still required.
 
 ## What the completed comparisons show
 
 On the predeclared development3 inputs, G16x8 raises S/F GM to 1.010887 but slows F in absolute terms (REF/F GM 0.968467) and slows S still more (0.951736). It is a relative EP advantage under smaller Tags, not an absolute performance winner. The G64x16+UD2 combination improves absolute F GM to 1.078870 and S to 1.084268, while S/F remains 0.988478: most benefit is common hardware headroom. DRAM850-to1020 similarly improves absolute F GM to 1.080864 and S to 1.079279, with S/F 0.994883. These are fixed3 observations, not global conclusions.
 
-The three preselected validation candidates each have 7/8 closed pairs; SGEMM remains pending. Their full8 GM is UNKNOWN. Source92 bank-ops2 evidence is one Vector input only. The frozen coverage ledger separately reports main35 REF S/F18 and S/WV2, ordinary96 REF S/F19 and S/WV2; these labels must not be added as disjoint workload counts.
+Per-candidate fixed8 completeness is reported in the refresh section above; incomplete groups retain GM UNKNOWN. Source92 bank-ops2 evidence remains one Vector input only. The separately pinned coverage ledger carries its own older as-of; its main35/ordinary96 classifications are historical evidence, not substituted for the current joined REF coverage.
 
 ## Fixed populations and matched comparisons
 
@@ -173,7 +186,7 @@ Source92 P2 is compared with Source92 P1 only. It includes the conservative nati
 
 ## Technical failures: actual evidence and boundary
 
-Metadata-only annotation UTC: 2026-10-28T10:11:16.550678+00:00; Main failure audit UTC: 2026-10-28T10:09:22.329206+00:00. Accepted-results population and analysis as-of remain unchanged at 2026-10-28T07:55:32.642109+00:00 (210 accepted endpoints).
+Metadata-only annotation UTC: 2026-10-28T10:11:16.550678+00:00; Main failure audit UTC: 2026-10-28T10:09:22.329206+00:00. This technical-failure evidence was first attached to the210-endpoint snapshot at07:55:32 UTC; the accepted population above is newer, and the failure evidence is reused unchanged.
 
 The two spent CLOSED_UNACCEPTED points are the same ParticlefilterNaive input in S and WV_ZERO_RO, both T=0/M=0, same Source78/ELF. **PROVEN:** kernel1 completed at91440 cycles/8 CTA; command ordinal9, the third subsequent HtoD to0x7ff9f3504000 for8000 B, reaches the explicit host-prefill refusal and SIGABRT. Peak RSS is336 MiB and the resource stop reason is null. These are first-kernel-only / partial-application measurements: kernel1 completed, but the nine-kernel application did not. They are never whole-application performance endpoints.
 
@@ -185,12 +198,12 @@ The shared FT interkernel host-overwrite path lacks the required dirty-overwrite
 
 Pinned Main audit: `/root/data/ep_l2_full_workload_performance_20261027_v1/control/TECHNICAL_FAILURE_ROOTCAUSE_20261028_V1/EVIDENCE.json`, SHA `4a42772a59fa2d04b45f6437bc3d3c23c2fdbbf9b08e42ddc50abbe138fd0956`. Its exact Source excerpts, prior first-kernel store-population join, actual raw/archive checks and both native restores are retained by reference; this updater did not reread raw or Trace bodies. JSON and both CSV failure rows carry this evidence reference.
 
-Original detailed Main report (read-only source): `/root/data/ep_l2_full_workload_performance_20261027_v1/control/TECHNICAL_FAILURE_ROOTCAUSE_20261028_V1/TECHNICAL_FAILURE_ROOTCAUSE.md`, SHA `f4ce23bde393007c3f02fc0dec5c54ebdec7134bd8a12d563b851f4c81ccea8a`. The accepted-results population remains the07:55:32 UTC snapshot; this failure annotation is not a refresh of later live counts.
+Original detailed Main report (read-only source): `/root/data/ep_l2_full_workload_performance_20261027_v1/control/TECHNICAL_FAILURE_ROOTCAUSE_20261028_V1/TECHNICAL_FAILURE_ROOTCAUSE.md`, SHA `f4ce23bde393007c3f02fc0dec5c54ebdec7134bd8a12d563b851f4c81ccea8a`. The original failure annotation and Main audit times are separate from the current accepted-results snapshot above.
 
 ## Units, costs and unavailable observations
 
 Physical payload data RAM is 1168 x 128 B x 64 = 9,568,256 B (9.125 MiB). Tag address coverage is not Tag RAM storage or area. Pareto results use only explicit modeled capacity proxies within the same input/mode/Source/observer profile; they omit technology area, energy and metadata PPA. F also has RO/TVD metadata and is not claimed to have identical total area.
 
-Unclosed endpoints: 15. Technical negatives retained: 2. Metadata join HOLDs: 0; live pair exclusions: 0. Exact refs, 282-option deltas, pending cases and population membership are in JSON/CSV.
+Unclosed endpoints: 10. Technical negatives retained: 2. Metadata join HOLDs: 0; live pair exclusions: 0. Exact refs, 282-option deltas, pending cases and population membership are in JSON/CSV.
 
 Disabled R4/R5/LIFE/ET observations are NOT_OBSERVED, not measured zero. TagFAIL/reuse/timing populations cannot be reconstructed from unrelated marginal counters. Original-capture completeness and numeric SASS correctness remain UNKNOWN.
