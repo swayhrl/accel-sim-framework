@@ -1,16 +1,16 @@
 {
   "Main_live_snapshot": {
     "matched_details_ref": {
-      "bytes": 183053,
+      "bytes": 185173,
       "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/analysis/live/MATCHED_RESULT_DETAILS.json",
-      "sha256": "0e34aa464e7dfb3b14ee7ab3fa92f21426f5e0d62186eba29d2f7de0b6194e4e"
+      "sha256": "4ea3214fe05e215e564095181a9dcb6530297bed5fd659c3b4e719135bb6cb75"
     },
     "status_ref": {
       "bytes": 2158,
       "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/analysis/live/CURRENT_STATUS.json",
-      "sha256": "fedc7b032bb3c3f8d094ff7125709177cfc3a3b182fd98e66f956e25f18c76b5"
+      "sha256": "0f0aee6df45c3e115aba6b16cabe3b55e542e1e5710b896ee8f013afe7213474"
     },
-    "utc": "2026-10-28T13:05:36.459217+00:00"
+    "utc": "2026-10-28T16:18:58.627272+00:00"
   },
   "actual_smallG_final_RO_detaches": [
     {
@@ -141,17 +141,17 @@
     }
   },
   "counts": {
-    "consumed": 220,
-    "independently_metadata_joined_closed_accepted": 215,
+    "consumed": 225,
+    "independently_metadata_joined_closed_accepted": 220,
     "join_holds": 0,
     "live_pair_exclusions": 0,
-    "matched_same_hardware_pairs": 106,
+    "matched_same_hardware_pairs": 108,
     "registered": 227,
     "states": {
-      "CLOSED_ACCEPTED": 215,
+      "CLOSED_ACCEPTED": 220,
       "CLOSED_UNACCEPTED": 2,
       "CONSUMED_BEFORE_FORK": 3,
-      "NOT_STARTED": 7
+      "NOT_STARTED": 2
     }
   },
   "coverage_ledger": {
@@ -202,8 +202,8 @@
     }
   },
   "current_reference_coverage": {
-    "S_F_input_pairs": 22,
-    "S_F_programs": 21,
+    "S_F_input_pairs": 23,
+    "S_F_programs": 22,
     "S_WV_pairs": 7,
     "not_disjoint_workload_totals": true,
     "scope": "CLOSED_ACCEPTED_EXACT_CURRENT_PAIRS_NOT_FULL35_OR96"
@@ -930,6 +930,7 @@
       "kernels": 3,
       "matched_same_mode_REF_cohort": "EP_PERF_3MM_F9F80028_F_REF_V1",
       "matched_same_mode_REF_cycles": 1669413,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -15682,6 +15683,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_LAVAMD_51FAFFD2_S_REF_V1",
       "matched_same_mode_REF_cycles": 5581479,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -18508,11 +18510,17 @@
       }
     },
     {
+      "CTA": 128,
+      "IPC": 2198.145810768527,
       "M": false,
       "RO_applicability": "S_NOT_APPLICABLE",
       "T": false,
-      "accepted": false,
-      "archive_ref": null,
+      "accepted": true,
+      "archive_ref": {
+        "bytes": 1870,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCALARPROD_3F9F4D1A_S_REF_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "4da70b4c640a96d0a9cc5450246ed02b42a9064809e1ff2c03df67dd1ff81bee"
+      },
       "cohort": "EP_PERF_SCALARPROD_3F9F4D1A_S_REF_V1",
       "cost_proxy": {
         "DRAM_MHz": 850.0,
@@ -18541,17 +18549,26 @@
         "physical_payload_line_slots_per_slice": 1168,
         "static_s64": false
       },
-      "done_ref": null,
-      "failure_ref": null,
+      "cycles": 332376,
+      "done_ref": {
+        "bytes": 4601,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_SCALARPROD_3F9F4D1A_S_REF_V1.DONE.json",
+        "sha256": "c73a8a0ec8443db1adf90cba58c6966bdc468e197167763eedcc851fe71caa39"
+      },
+      "exact_delta_from_same_mode_REF": {},
       "geometry": {
         "line_bytes": 128,
         "sets": 32,
         "slices": 64,
         "ways": 8
       },
+      "hardware_drained": true,
       "input_identity_sha256": "3f9f4d1a526d34f7105d332e97e7ff06b78ea3ff81dc5d46539bd448c64327fd",
+      "instructions": 730610912,
+      "kernels": 1,
+      "matched_same_mode_REF_cohort": "EP_PERF_SCALARPROD_3F9F4D1A_S_REF_V1",
+      "matched_same_mode_REF_cycles": 332376,
       "mode": "S",
-      "negative_scope": "PENDING_NO_RATIO",
       "numeric_output": "UNKNOWN",
       "observer": {
         "B0": "1",
@@ -18566,9 +18583,21 @@
         }
       },
       "option282_digest": "e30928b7e1ce558631034e318a5b8535b0abf12ea8dc3c2a4bbebc9404482ef5",
+      "point_ref": {
+        "bytes": 2410,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCALARPROD_3F9F4D1A_S_REF_V1/run/c679e980-3e90-44ac-a0f0-aa1209e6d4db/ACCEPTED_POINT.json",
+        "sha256": "33874e8e2a753a711a901d70c4c786840955db23afcec300bcd30b759d31999b"
+      },
+      "postrun_qualification_ref": null,
       "profile": "REF32x8_L100",
       "program": "scalarProd",
-      "scientific_status": "UNSPECIFIED",
+      "raw_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCALARPROD_3F9F4D1A_S_REF_V1/run/c679e980-3e90-44ac-a0f0-aa1209e6d4db/raw.log.gz",
+        "sha256": "e9cb79588cdbc33aed98368cdd37c73d7879bcc2f435ea5ae4904b9a94d323f4"
+      },
+      "same_mode_REF_over_cycles": 1.0,
+      "same_mode_cycle_reduction_fraction": 0.0,
+      "semantic_population_digest": "74259691e381776594f4e846cede6b4469276071b2386fca4c719bd933a01fcf",
       "source_identity": {
         "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
         "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
@@ -18581,7 +18610,11 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCALARPROD_3F9F4D1A_S_REF_V1/control/FROZEN_SPEC.json",
         "sha256": "325caf6c7c6df0a261b58dfd76b178011a14923f4b4c4801fc6020ff51ee5850"
       },
-      "state": "NOT_STARTED"
+      "state": "CLOSED_ACCEPTED",
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCALARPROD_3F9F4D1A_S_REF_V1/run/c679e980-3e90-44ac-a0f0-aa1209e6d4db/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "e93a28aca928016eb8342df708f31e6f8f01526fce06b99d75a1ad4ecc611b79"
+      }
     },
     {
       "CTA": 166608,
@@ -18647,6 +18680,7 @@
       "kernels": 33,
       "matched_same_mode_REF_cohort": "EP_PERF_SCAN_CF8D1C4D_F_REF_V1",
       "matched_same_mode_REF_cycles": 2224142,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -18804,11 +18838,21 @@
       }
     },
     {
+      "CTA": 528,
+      "IPC": 4832.4629143046905,
       "M": true,
-      "RO_applicability": "EXACT_RO_QUALIFICATION_REQUIRED",
+      "RO_applicability": "EXACT_WHOLECMD_SOURCE_LOADER_QUALIFIED",
+      "RO_qualification_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_REF_V1/control/RO_QUALIFICATION.json",
+        "sha256": "258192de72a86bc43855415de2c3c396bd7d6b40592ea96d0f261342b826038c"
+      },
       "T": true,
-      "accepted": false,
-      "archive_ref": null,
+      "accepted": true,
+      "archive_ref": {
+        "bytes": 1865,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_COMBO_G64W16_UD2_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "3e5f97ef6e5e8e2457a4aaa31e59affd31d41449b97a3e10a7b4f988cdc7a67e"
+      },
       "cohort": "EP_PERF_SGEMM_F_COMBO_G64W16_UD2_V1",
       "cost_proxy": {
         "DRAM_MHz": 850.0,
@@ -18837,17 +18881,47 @@
         "physical_payload_line_slots_per_slice": 1168,
         "static_s64": false
       },
-      "done_ref": null,
-      "failure_ref": null,
+      "cycles": 343286,
+      "done_ref": {
+        "bytes": 4008,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_SGEMM_F_COMBO_G64W16_UD2_V1.DONE.json",
+        "sha256": "c645c4224f9f80e2987de51e15401034cfd34da32138c00cb03e57ada450b34f"
+      },
+      "exact_delta_from_same_mode_REF": {
+        "-gpgpu_cache:dl1": {
+          "REF": "S:4:128:128,L:T:m:L:L,A:512:8,16:0,32",
+          "actual": "S:4:128:128,L:T:m:L:L,A:512:8,32:0,32"
+        },
+        "-gpgpu_cache:dl2": {
+          "REF": "S:32:128:8,L:B:m:L:P,A:128:1,128:0,32",
+          "actual": "S:64:128:16,L:B:m:L:P,A:128:1,256:0,32"
+        },
+        "-gpgpu_dram_partition_queues": {
+          "REF": "64:128:64:64",
+          "actual": "64:256:64:64"
+        },
+        "-gpgpu_dram_return_queue_size": {
+          "REF": "192",
+          "actual": "384"
+        },
+        "-gpgpu_frfcfs_dram_sched_queue_size": {
+          "REF": "128",
+          "actual": "256"
+        }
+      },
       "geometry": {
         "line_bytes": 128,
         "sets": 64,
         "slices": 64,
         "ways": 16
       },
+      "hardware_drained": true,
       "input_identity_sha256": "ab4ac5dd144400741deffc898870309644c8c187a18fd685464623cb63317a7b",
+      "instructions": 1658916864,
+      "kernels": 1,
+      "matched_same_mode_REF_cohort": "EP_PERF_SGEMM_F_REF_V1",
+      "matched_same_mode_REF_cycles": 357466,
       "mode": "F",
-      "negative_scope": "PENDING_NO_RATIO",
       "numeric_output": "UNKNOWN",
       "observer": {
         "B0": "1",
@@ -18862,9 +18936,21 @@
         }
       },
       "option282_digest": "e28049135a79c36c45a206d41442e123f619be266b5ac91f6c198182ab215fff",
+      "point_ref": {
+        "bytes": 2410,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_COMBO_G64W16_UD2_V1/run/b8f5b7b4-3a8d-4db6-9c5c-14683c044111/ACCEPTED_POINT.json",
+        "sha256": "4a69f34a21a4879dc7bc7b9b8ace1c8bc8ee9cd102d764eec561274d158367f3"
+      },
+      "postrun_qualification_ref": null,
       "profile": "COMBO_G64W16_UD2",
       "program": "sgemm",
-      "scientific_status": "UNSPECIFIED",
+      "raw_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_COMBO_G64W16_UD2_V1/run/b8f5b7b4-3a8d-4db6-9c5c-14683c044111/raw.log.gz",
+        "sha256": "3fefe017f086bf6b25a5b24bdc102622359adfcfc08a5331a2330fd9b014d0c8"
+      },
+      "same_mode_REF_over_cycles": 1.041306665579138,
+      "same_mode_cycle_reduction_fraction": 0.03966810829561418,
+      "semantic_population_digest": "ecce0fbedf7f59843e1c23fd78ea5032ba82e7ec13e583ba3ff002512618fec4",
       "source_identity": {
         "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
         "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
@@ -18877,14 +18963,28 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_COMBO_G64W16_UD2_V1/control/FROZEN_SPEC.json",
         "sha256": "b097508bb37731d6730817b6007d1980f644492d096f1c5bdbdb4ef3b83bc3f7"
       },
-      "state": "CONSUMED_BEFORE_FORK"
+      "state": "CLOSED_ACCEPTED",
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_COMBO_G64W16_UD2_V1/run/b8f5b7b4-3a8d-4db6-9c5c-14683c044111/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "bbc12494bb64caeb47ffd8b245fb30450038e04cafe2b021d90846743aa06958"
+      }
     },
     {
+      "CTA": 528,
+      "IPC": 4640.768252085513,
       "M": true,
-      "RO_applicability": "EXACT_RO_QUALIFICATION_REQUIRED",
+      "RO_applicability": "EXACT_WHOLECMD_SOURCE_LOADER_QUALIFIED",
+      "RO_qualification_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_REF_V1/control/RO_QUALIFICATION.json",
+        "sha256": "258192de72a86bc43855415de2c3c396bd7d6b40592ea96d0f261342b826038c"
+      },
       "T": true,
-      "accepted": false,
-      "archive_ref": null,
+      "accepted": true,
+      "archive_ref": {
+        "bytes": 1875,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_N_ICNT_BUFFERS1024_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "5fdabfe4b55eecb8b3132234dbf4281b9fb98a9111a6a8133bd950cb4394faec"
+      },
       "cohort": "EP_PERF_SGEMM_F_N_ICNT_BUFFERS1024_V1",
       "cost_proxy": {
         "DRAM_MHz": 850.0,
@@ -18913,17 +19013,35 @@
         "physical_payload_line_slots_per_slice": 1168,
         "static_s64": false
       },
-      "done_ref": null,
-      "failure_ref": null,
+      "cycles": 357466,
+      "done_ref": {
+        "bytes": 4024,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_SGEMM_F_N_ICNT_BUFFERS1024_V1.DONE.json",
+        "sha256": "9cfc44bb7dde21f36b24190f24ba96f98a5c5712291067483b908515a2aa6e5a"
+      },
+      "exact_delta_from_same_mode_REF": {
+        "-icnt_in_buffer_limit": {
+          "REF": "512",
+          "actual": "1024"
+        },
+        "-icnt_out_buffer_limit": {
+          "REF": "512",
+          "actual": "1024"
+        }
+      },
       "geometry": {
         "line_bytes": 128,
         "sets": 32,
         "slices": 64,
         "ways": 8
       },
+      "hardware_drained": true,
       "input_identity_sha256": "ab4ac5dd144400741deffc898870309644c8c187a18fd685464623cb63317a7b",
+      "instructions": 1658916864,
+      "kernels": 1,
+      "matched_same_mode_REF_cohort": "EP_PERF_SGEMM_F_REF_V1",
+      "matched_same_mode_REF_cycles": 357466,
       "mode": "F",
-      "negative_scope": "PENDING_NO_RATIO",
       "numeric_output": "UNKNOWN",
       "observer": {
         "B0": "1",
@@ -18938,9 +19056,21 @@
         }
       },
       "option282_digest": "a51773db5525cdc81df0a0673950cdf4d2fa98238ae7ada993e83a1b38d474c8",
+      "point_ref": {
+        "bytes": 2422,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_N_ICNT_BUFFERS1024_V1/run/3bc4ec65-66d5-497a-bcab-7c59374c09b7/ACCEPTED_POINT.json",
+        "sha256": "3bb784beaec6a50e09bde448223e13fc01de5c9f54a9a408a6aca320ead0b904"
+      },
+      "postrun_qualification_ref": null,
       "profile": "N_ICNT_BUFFERS1024",
       "program": "sgemm",
-      "scientific_status": "UNSPECIFIED",
+      "raw_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_N_ICNT_BUFFERS1024_V1/run/3bc4ec65-66d5-497a-bcab-7c59374c09b7/raw.log.gz",
+        "sha256": "afb3c99a8665cd15002329059538032fed6fb8d15e76cc10dd87062b376d7ecb"
+      },
+      "same_mode_REF_over_cycles": 1.0,
+      "same_mode_cycle_reduction_fraction": 0.0,
+      "semantic_population_digest": "ecce0fbedf7f59843e1c23fd78ea5032ba82e7ec13e583ba3ff002512618fec4",
       "source_identity": {
         "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
         "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
@@ -18953,7 +19083,11 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_N_ICNT_BUFFERS1024_V1/control/FROZEN_SPEC.json",
         "sha256": "22e202bf74faa708227fcab3571461aa4bbf712ed4cc5729711520ca6437fbc5"
       },
-      "state": "CONSUMED_BEFORE_FORK"
+      "state": "CLOSED_ACCEPTED",
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_N_ICNT_BUFFERS1024_V1/run/3bc4ec65-66d5-497a-bcab-7c59374c09b7/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "61168ee677497ff5b63994609419cfa2c7ea94403e7ee360a8dc6a8f8c3883ba"
+      }
     },
     {
       "CTA": 528,
@@ -19068,11 +19202,21 @@
       }
     },
     {
+      "CTA": 528,
+      "IPC": 4640.768252085513,
       "M": true,
-      "RO_applicability": "EXACT_RO_QUALIFICATION_REQUIRED",
+      "RO_applicability": "EXACT_WHOLECMD_SOURCE_LOADER_QUALIFIED",
+      "RO_qualification_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_REF_V1/control/RO_QUALIFICATION.json",
+        "sha256": "258192de72a86bc43855415de2c3c396bd7d6b40592ea96d0f261342b826038c"
+      },
       "T": true,
-      "accepted": false,
-      "archive_ref": null,
+      "accepted": true,
+      "archive_ref": {
+        "bytes": 1830,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_U_L2MQ256_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "5036890af899d90a2495cb6e6f2b0d32b726b88e0e68af5fad3cc468546c30f8"
+      },
       "cohort": "EP_PERF_SGEMM_F_U_L2MQ256_V1",
       "cost_proxy": {
         "DRAM_MHz": 850.0,
@@ -19101,17 +19245,31 @@
         "physical_payload_line_slots_per_slice": 1168,
         "static_s64": false
       },
-      "done_ref": null,
-      "failure_ref": null,
+      "cycles": 357466,
+      "done_ref": {
+        "bytes": 3953,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_SGEMM_F_U_L2MQ256_V1.DONE.json",
+        "sha256": "88109d5293ba7e496c0ac5c6d0cb629195ef91e2322787c8cbb53e224c745583"
+      },
+      "exact_delta_from_same_mode_REF": {
+        "-gpgpu_cache:dl2": {
+          "REF": "S:32:128:8,L:B:m:L:P,A:128:1,128:0,32",
+          "actual": "S:32:128:8,L:B:m:L:P,A:128:1,256:0,32"
+        }
+      },
       "geometry": {
         "line_bytes": 128,
         "sets": 32,
         "slices": 64,
         "ways": 8
       },
+      "hardware_drained": true,
       "input_identity_sha256": "ab4ac5dd144400741deffc898870309644c8c187a18fd685464623cb63317a7b",
+      "instructions": 1658916864,
+      "kernels": 1,
+      "matched_same_mode_REF_cohort": "EP_PERF_SGEMM_F_REF_V1",
+      "matched_same_mode_REF_cycles": 357466,
       "mode": "F",
-      "negative_scope": "PENDING_NO_RATIO",
       "numeric_output": "UNKNOWN",
       "observer": {
         "B0": "1",
@@ -19126,9 +19284,21 @@
         }
       },
       "option282_digest": "28977f7031c7e1d80c9634b477e3d9fe174d27c152ef08aeb2e59a46bc11cea8",
+      "point_ref": {
+        "bytes": 2368,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_U_L2MQ256_V1/run/1d2f9938-6d50-49c1-9f3b-f324075e713b/ACCEPTED_POINT.json",
+        "sha256": "4bda59fea7441ebd53fcb2ece92cffe9007e0261ce4c19741123e55e10b3c7cf"
+      },
+      "postrun_qualification_ref": null,
       "profile": "U_L2MQ256",
       "program": "sgemm",
-      "scientific_status": "UNSPECIFIED",
+      "raw_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_U_L2MQ256_V1/run/1d2f9938-6d50-49c1-9f3b-f324075e713b/raw.log.gz",
+        "sha256": "563a8ec88f4181ddfa56d0d2efb7f027c746326510ecf3959abe316d837a4956"
+      },
+      "same_mode_REF_over_cycles": 1.0,
+      "same_mode_cycle_reduction_fraction": 0.0,
+      "semantic_population_digest": "ecce0fbedf7f59843e1c23fd78ea5032ba82e7ec13e583ba3ff002512618fec4",
       "source_identity": {
         "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
         "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
@@ -19141,14 +19311,24 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_U_L2MQ256_V1/control/FROZEN_SPEC.json",
         "sha256": "612adf5a6cdbf92a1980ecd6d2e25cb18beb531068ec716f7a88382917ae2556"
       },
-      "state": "NOT_STARTED"
+      "state": "CLOSED_ACCEPTED",
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_U_L2MQ256_V1/run/1d2f9938-6d50-49c1-9f3b-f324075e713b/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "4a34b858ac64d2dde016846d4ad82535b7611f71153e2f9443cf34af38a66c3f"
+      }
     },
     {
+      "CTA": 528,
+      "IPC": 4835.604142679333,
       "M": false,
       "RO_applicability": "S_NOT_APPLICABLE",
       "T": false,
-      "accepted": false,
-      "archive_ref": null,
+      "accepted": true,
+      "archive_ref": {
+        "bytes": 1865,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_S_COMBO_G64W16_UD2_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "14e2a958fb5fa62c98d6ea39b2f09f89e00bb67538a704cdb96615e88e51e3c0"
+      },
       "cohort": "EP_PERF_SGEMM_S_COMBO_G64W16_UD2_V1",
       "cost_proxy": {
         "DRAM_MHz": 850.0,
@@ -19177,17 +19357,47 @@
         "physical_payload_line_slots_per_slice": 1168,
         "static_s64": false
       },
-      "done_ref": null,
-      "failure_ref": null,
+      "cycles": 343063,
+      "done_ref": {
+        "bytes": 4005,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_SGEMM_S_COMBO_G64W16_UD2_V1.DONE.json",
+        "sha256": "e9b564de5e77e752b98b57a102e8faa2ea8b8a0b3d19615cd05fdedc376a6bbc"
+      },
+      "exact_delta_from_same_mode_REF": {
+        "-gpgpu_cache:dl1": {
+          "REF": "S:4:128:128,L:T:m:L:L,A:512:8,16:0,32",
+          "actual": "S:4:128:128,L:T:m:L:L,A:512:8,32:0,32"
+        },
+        "-gpgpu_cache:dl2": {
+          "REF": "S:32:128:8,L:B:m:L:P,A:128:1,128:0,32",
+          "actual": "S:64:128:16,L:B:m:L:P,A:128:1,256:0,32"
+        },
+        "-gpgpu_dram_partition_queues": {
+          "REF": "64:128:64:64",
+          "actual": "64:256:64:64"
+        },
+        "-gpgpu_dram_return_queue_size": {
+          "REF": "192",
+          "actual": "384"
+        },
+        "-gpgpu_frfcfs_dram_sched_queue_size": {
+          "REF": "128",
+          "actual": "256"
+        }
+      },
       "geometry": {
         "line_bytes": 128,
         "sets": 64,
         "slices": 64,
         "ways": 16
       },
+      "hardware_drained": true,
       "input_identity_sha256": "ab4ac5dd144400741deffc898870309644c8c187a18fd685464623cb63317a7b",
+      "instructions": 1658916864,
+      "kernels": 1,
+      "matched_same_mode_REF_cohort": "EP_PERF_SGEMM_S_REF_V1",
+      "matched_same_mode_REF_cycles": 353921,
       "mode": "S",
-      "negative_scope": "PENDING_NO_RATIO",
       "numeric_output": "UNKNOWN",
       "observer": {
         "B0": "1",
@@ -19202,9 +19412,21 @@
         }
       },
       "option282_digest": "a2ce80ef37c2cc43d74928a2842d5dc6c5c227b42bab99d265507c5689658957",
+      "point_ref": {
+        "bytes": 2409,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_S_COMBO_G64W16_UD2_V1/run/1fa4a1d6-58a9-4b7a-9653-8a07fafdf8a6/ACCEPTED_POINT.json",
+        "sha256": "35b621f2b0a636134e751a26a497ad6a3f696f1b94bf78d9439ea4ba337b7798"
+      },
+      "postrun_qualification_ref": null,
       "profile": "COMBO_G64W16_UD2",
       "program": "sgemm",
-      "scientific_status": "UNSPECIFIED",
+      "raw_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_S_COMBO_G64W16_UD2_V1/run/1fa4a1d6-58a9-4b7a-9653-8a07fafdf8a6/raw.log.gz",
+        "sha256": "4c9214f815f28eed1af28e4dff240a3d105ab74cf66376aa008a8a9ce914fbe8"
+      },
+      "same_mode_REF_over_cycles": 1.03165016338107,
+      "same_mode_cycle_reduction_fraction": 0.03067916286402894,
+      "semantic_population_digest": "ecce0fbedf7f59843e1c23fd78ea5032ba82e7ec13e583ba3ff002512618fec4",
       "source_identity": {
         "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
         "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
@@ -19217,7 +19439,11 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_S_COMBO_G64W16_UD2_V1/control/FROZEN_SPEC.json",
         "sha256": "dc5588dab606b9f89e2cc241a52c7321ce597ba2cd3a87db0c14216be0eef909"
       },
-      "state": "NOT_STARTED"
+      "state": "CLOSED_ACCEPTED",
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_S_COMBO_G64W16_UD2_V1/run/1fa4a1d6-58a9-4b7a-9653-8a07fafdf8a6/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "1406031871b4b581e5e2b2386e19d2dd0eb66616ff9e9a7d2d1cfe580e9c3770"
+      }
     },
     {
       "M": false,
@@ -19293,7 +19519,7 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_S_N_ICNT_BUFFERS1024_V1/control/FROZEN_SPEC.json",
         "sha256": "8c9607f06509c736613a9aca77134826916dfd8b65aa7845900b88c85f25c88e"
       },
-      "state": "NOT_STARTED"
+      "state": "CONSUMED_BEFORE_FORK"
     },
     {
       "CTA": 528,
@@ -19538,6 +19764,7 @@
       "kernels": 502,
       "matched_same_mode_REF_cohort": "EP_PERF_SRADV1_6CE41710_S_REF_V1",
       "matched_same_mode_REF_cycles": 8649629,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -19650,6 +19877,7 @@
       "kernels": 100,
       "matched_same_mode_REF_cohort": "EP_PERF_STENCIL_BD0309DF_F_REF_V1",
       "matched_same_mode_REF_cycles": 4769712,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "F",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -19880,7 +20108,7 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_F_REF_V1/control/FROZEN_SPEC.json",
         "sha256": "85e25ebeeff3a3a7cb543774a5b7ba4cd883b7165cadb2fdaaffd722ae689ebf"
       },
-      "state": "NOT_STARTED"
+      "state": "CONSUMED_BEFORE_FORK"
     },
     {
       "M": false,
@@ -26247,6 +26475,73 @@
       }
     }
   ],
+  "engineering_annotation_code_ref": {
+    "bytes": 7257,
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/results_analysis_20261028_v1/append_engineering_progress_v1.py",
+    "sha256": "0b068afe25b6c54424e371b28ecf97af5299a0e08039ccecfbb5749349c23ea3"
+  },
+  "engineering_progress": {
+    "SRAD_portable_loader": {
+      "RO_certified_lines": 62,
+      "Source5": {
+        "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+        "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+        "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "all_controls_PASS": true,
+      "application_qualification": "NOT_GRANTED_BY_LOCAL_TEST",
+      "derived_SQL_archive_two_native_restore": "NOT_EXECUTED_YET_REQUIRES_SEPARATE_CORRECT_POSTRUN_QUALIFICATION",
+      "handoff_ref": {
+        "bytes": 17161,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_a/srad_portable_wsl_loader_preparation_v1/PORTABLE_WSL_SOURCE78_LOADER_HANDOFF.json",
+        "sha256": "f8d081fa480fb56afa38d7a50d8d3579a441eb634c55d5a2f62f2b20c9618157"
+      },
+      "input_identity_sha256": "6ce417106984c7d41a617a3e7f4705106def43091b3d25dc94c79ff8da8e8359",
+      "native174_actual_loader": "NOT_EXECUTED",
+      "negative_controls": 2,
+      "new_scientific_budget_or_registry_or_app_starts": 0,
+      "no_Trace_body_read_by_this_analysis": true,
+      "no_full_syscall_proof_claim": "Only4 runtime files shipped; static same-source loader path audit. No syscall trace was run; no full-syscall measurement claim.",
+      "ordered_launches": 502,
+      "platform": "LOCAL_WSL_NOT_NATIVE174",
+      "positive_controls": 1,
+      "result_ref": {
+        "bytes": 119039,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_a/srad_portable_wsl_loader_preparation_v1/LOCAL_WSL_A4_V1/results/RESULT.json",
+        "sha256": "7f0a4571f303aa91d3cf254184559cb5ba19cfc5a97231eda2058e8a48656971"
+      },
+      "same_original_loader_ELF_sha256": "bfb9b4783106b7701f0631e099b3395a7a1da4af569f23e77c9fbda48665a7ce",
+      "status": "PORTABLE_LOCAL_WSL_SAME_ELF_CPU_PASS_PENDING_MAIN_REVIEW_NOT_NATIVE174_QUALIFICATION",
+      "whole_commands": 507
+    },
+    "annotation_utc": "2026-10-28T16:21:35.272130+00:00",
+    "host_write_protocol_first_stage": {
+      "actual_stdout_evidence_ref": {
+        "bytes": 3573,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_c/host_write_protocol_repair_20261028_v1/cpu_runs/ACTUAL_PURE_PASS_STDOUT_CAPTURE.json",
+        "sha256": "7b560d91ac89361f3d69709576633e19ef0a8a69394d17b189d085fa9a2066ae"
+      },
+      "existing_tmp_evidence_gap": "Transcribed actual functions.exec stdout; original WSL/tmp workset unavailable in later invocation. No closed-reopen artifactSHA claim.",
+      "full_application_starts": 0,
+      "manifest_ref": {
+        "bytes": 7458,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_c/host_write_protocol_repair_20261028_v1/DELIVERY_MANIFEST.json",
+        "sha256": "e0cd2216eff69840f7472b8bd3f62d7229535274a51ed363c59ef8caddb7c598"
+      },
+      "native174_CPU_runs": 0,
+      "production_API_CPU_runs": 0,
+      "production_Source_builds": 0,
+      "pure_protocol_assertion_checks": 447,
+      "qualification_boundary": "The actual run proves this exact standalone protocol implementation/test population. It cannot prove the uncompiled production adapter, exact native platform semantics, full commandlist consumption, or artifact reopen. Future actual Source tests must use persistent workset+same-call evidence return.",
+      "repair_completed": false,
+      "status": "PURE_CORE_ACTUALLY_TESTED_PRODUCTION_API_UNWIRED_REVIEW_REQUIRED",
+      "whole_particlefilter_naive_commandlist_compatibility": "UNKNOWN_HOLD"
+    },
+    "not_application_acceptance_or_launch_authority": true,
+    "read_only_metadata": true
+  },
   "explicit_S64_mode_layout_comparisons": [
     {
       "F_cycles": 8520,
@@ -26636,8 +26931,8 @@
         "last_line": 178
       }
     ],
-    "current_analysis_accepted_count": 215,
-    "current_analysis_population_asof_utc": "2026-10-28T13:06:35.522030+00:00",
+    "current_analysis_accepted_count": 220,
+    "current_analysis_population_asof_utc": "2026-10-28T16:19:34.410171+00:00",
     "evidence_ref": {
       "bytes": 24308,
       "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/control/TECHNICAL_FAILURE_ROOTCAUSE_20261028_V1/EVIDENCE.json",
@@ -26663,75 +26958,75 @@
   "goal": "EP_L2_FULL_WORKLOAD_PERFORMANCE_POTENTIAL_EXPLORATION_V1",
   "incremental_refresh": {
     "current_spec_SHA_and_registry_pointer_join_checked": true,
-    "new_matched_pairs": 3,
+    "new_matched_pairs": 2,
     "new_or_changed_rejoined": [
-      "EP_PERF_3MM_F9F80028_F_REF_V1",
-      "EP_PERF_LAVAMD_51FAFFD2_S_REF_V1",
-      "EP_PERF_SCAN_CF8D1C4D_F_REF_V1",
-      "EP_PERF_SRADV1_6CE41710_S_REF_V1",
-      "EP_PERF_STENCIL_BD0309DF_F_REF_V1"
+      "EP_PERF_SCALARPROD_3F9F4D1A_S_REF_V1",
+      "EP_PERF_SGEMM_F_COMBO_G64W16_UD2_V1",
+      "EP_PERF_SGEMM_F_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_SGEMM_F_U_L2MQ256_V1",
+      "EP_PERF_SGEMM_S_COMBO_G64W16_UD2_V1"
     ],
     "new_pairs": [
       {
-        "F_absolute_REF_over_F": 1.0,
+        "F_absolute_REF_over_F": 1.041306665579138,
         "F_archive_ref": {
-          "bytes": 1835,
-          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_3MM_F9F80028_F_REF_V1/control/ARCHIVE_RECEIPT.json",
-          "sha256": "1a389dcc00cd09f394a7fca8c1588b80bd2f0deaba9e2b8a5e411bf168cd61c5"
+          "bytes": 1865,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_COMBO_G64W16_UD2_V1/control/ARCHIVE_RECEIPT.json",
+          "sha256": "3e5f97ef6e5e8e2457a4aaa31e59affd31d41449b97a3e10a7b4f988cdc7a67e"
         },
-        "F_cohort": "EP_PERF_3MM_F9F80028_F_REF_V1",
-        "F_cycles": 1669413,
+        "F_cohort": "EP_PERF_SGEMM_F_COMBO_G64W16_UD2_V1",
+        "F_cycles": 343286,
         "F_point_ref": {
-          "bytes": 2380,
-          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_3MM_F9F80028_F_REF_V1/run/768d1871-b88e-4cd5-8cb9-8cf9c19cebed/ACCEPTED_POINT.json",
-          "sha256": "d57093dc1efffbf06d7726049b30d1d983869ff29351fa553a7e6599c7d62438"
+          "bytes": 2410,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_COMBO_G64W16_UD2_V1/run/b8f5b7b4-3a8d-4db6-9c5c-14683c044111/ACCEPTED_POINT.json",
+          "sha256": "4a69f34a21a4879dc7bc7b9b8ace1c8bc8ee9cd102d764eec561274d158367f3"
         },
         "F_spec_ref": {
-          "bytes": 29370,
-          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_3MM_F9F80028_F_REF_V1/control/FROZEN_SPEC.json",
-          "sha256": "98768206fa7f1d6c78d7bef23a4a38122574b13088c1b4744516f5cecb7e03c6"
+          "bytes": 26967,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_COMBO_G64W16_UD2_V1/control/FROZEN_SPEC.json",
+          "sha256": "b097508bb37731d6730817b6007d1980f644492d096f1c5bdbdb4ef3b83bc3f7"
         },
         "RO_applicability": "EXACT_WHOLECMD_SOURCE_LOADER_QUALIFIED",
-        "S_absolute_REF_over_S": 1.0,
+        "S_absolute_REF_over_S": 1.03165016338107,
         "S_archive_ref": {
-          "bytes": 1835,
-          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_3MM_F9F80028_S_REF_V1/control/ARCHIVE_RECEIPT.json",
-          "sha256": "434a5b5828d87cfe45b97bd59abe71fba2c346617b629986a59e6e6bcceedd12"
+          "bytes": 1865,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_S_COMBO_G64W16_UD2_V1/control/ARCHIVE_RECEIPT.json",
+          "sha256": "14e2a958fb5fa62c98d6ea39b2f09f89e00bb67538a704cdb96615e88e51e3c0"
         },
-        "S_cohort": "EP_PERF_3MM_F9F80028_S_REF_V1",
-        "S_cycles": 1696618,
+        "S_cohort": "EP_PERF_SGEMM_S_COMBO_G64W16_UD2_V1",
+        "S_cycles": 343063,
         "S_point_ref": {
-          "bytes": 2380,
-          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_3MM_F9F80028_S_REF_V1/run/151b8a25-5d94-428f-9bc0-8903f55735e7/ACCEPTED_POINT.json",
-          "sha256": "7fa4e75d1606cbb5a039025540bdaf11f4d3c86772ad3142bee5163c1fdf97a7"
+          "bytes": 2409,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_S_COMBO_G64W16_UD2_V1/run/1fa4a1d6-58a9-4b7a-9653-8a07fafdf8a6/ACCEPTED_POINT.json",
+          "sha256": "35b621f2b0a636134e751a26a497ad6a3f696f1b94bf78d9439ea4ba337b7798"
         },
         "S_spec_ref": {
-          "bytes": 26907,
-          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_3MM_F9F80028_S_REF_V1/control/FROZEN_SPEC.json",
-          "sha256": "1270cc701c115b89bc59c4d4749050f7ceb575556ab9b61349997841584e90c1"
+          "bytes": 26756,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_S_COMBO_G64W16_UD2_V1/control/FROZEN_SPEC.json",
+          "sha256": "dc5588dab606b9f89e2cc241a52c7321ce597ba2cd3a87db0c14216be0eef909"
         },
         "cost_proxy": {
           "DRAM_MHz": 850.0,
-          "DRAM_return": 192,
-          "FRFCFS": 128,
+          "DRAM_return": 384,
+          "FRFCFS": 256,
           "F_pool": "UNIFIED1168",
           "ICNT_in": 512,
           "ICNT_out": 512,
-          "L1_MissQ": 16,
-          "L2_MissQ": 128,
+          "L1_MissQ": 32,
+          "L2_MissQ": 256,
           "S_static_role_partition": [
             1024,
             128,
             16
           ],
-          "Tag_address_coverage_GPU_bytes": 2097152,
+          "Tag_address_coverage_GPU_bytes": 8388608,
           "Tag_storage_area_bytes": "UNKNOWN; coveragebytes not TagRAM bytes",
           "WAD128": 128,
           "bank_ops_per_CORE": 1,
           "descriptor512": 512,
           "line_MSHR": 128,
-          "logical_Tag_slots_per_slice": 256,
-          "lower_FIFO": 128,
+          "logical_Tag_slots_per_slice": 1024,
+          "lower_FIFO": 256,
           "metadata_PPA": "UNKNOWN",
           "physical_payload_data_GPU_bytes": 9568256,
           "physical_payload_line_slots_per_slice": 1168,
@@ -26739,12 +27034,12 @@
         },
         "geometry": {
           "line_bytes": 128,
-          "sets": 32,
+          "sets": 64,
           "slices": 64,
-          "ways": 8
+          "ways": 16
         },
-        "hardware_background_digest": "7f45ea6c40053e0bd4855274c7f74e96f013c19808f6828e4b9e6ea316914610",
-        "input_identity_sha256": "f9f80028887c1347afd5a8d68deeb0e9b68bc273766e62e912fdfb5aa4619e73",
+        "hardware_background_digest": "41e086d861c45bb1bdaff135cff872e3b0df8e5ca60050b54e0b4cf6447d651a",
+        "input_identity_sha256": "ab4ac5dd144400741deffc898870309644c8c187a18fd685464623cb63317a7b",
         "observer": {
           "B0": "1",
           "M0a": "1",
@@ -26764,226 +27059,10 @@
           "EPL2_TAG_LIFETIME": "0",
           "EP_L2_EVENT_TIMELINE": "0"
         },
-        "pair_key": "3452c8e578f87e214f314d5227632bf83d096646b6aec35bb557ddefb392d2aa",
-        "profile": "REF32x8_L100",
-        "program": "3MM",
-        "relative_EP_ratio_change_vs_reference": 1.0,
-        "slowdown": false,
-        "source_identity": {
-          "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
-          "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
-          "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
-          "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
-          "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
-        },
-        "speedup_S_over_treatment": 1.0162961472086296,
-        "treatment": "F",
-        "treatment_cycle_reduction_fraction": 0.016034841077956274
-      },
-      {
-        "F_absolute_REF_over_F": 1.0,
-        "F_archive_ref": {
-          "bytes": 1857,
-          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_STENCIL_BD0309DF_F_REF_V1/control/ARCHIVE_RECEIPT.json",
-          "sha256": "8bb8d65c30e1826e96ea5e41902af4111844bec421aa6c5f8b2b0e7d64863a0a"
-        },
-        "F_cohort": "EP_PERF_STENCIL_BD0309DF_F_REF_V1",
-        "F_cycles": 4769712,
-        "F_point_ref": {
-          "bytes": 2405,
-          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_STENCIL_BD0309DF_F_REF_V1/run/57d3bea8-9b67-4d29-bcdc-2310d9854ff5/ACCEPTED_POINT.json",
-          "sha256": "cb8199a778e277474dc68bf0cf981e52c73477c679d3ae31b269f4e80983302f"
-        },
-        "F_spec_ref": {
-          "bytes": 81009,
-          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_STENCIL_BD0309DF_F_REF_V1/control/FROZEN_SPEC.json",
-          "sha256": "6aba1c8f97485bb2a7c7a056d85eb7389a364ed0d8a2461b0cbf7472a2d26e70"
-        },
-        "RO_applicability": "EXACT_WHOLECMD_SOURCE_LOADER_QUALIFIED",
-        "S_absolute_REF_over_S": 1.0,
-        "S_archive_ref": {
-          "bytes": 1857,
-          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_STENCIL_BD0309DF_S_REF_V1/control/ARCHIVE_RECEIPT.json",
-          "sha256": "4ea331092f302038ac125e549ddd1cbc9fac9861c66c2f5df8b3710e44b29f76"
-        },
-        "S_cohort": "EP_PERF_STENCIL_BD0309DF_S_REF_V1",
-        "S_cycles": 5242939,
-        "S_point_ref": {
-          "bytes": 2405,
-          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_STENCIL_BD0309DF_S_REF_V1/run/d2ba4deb-286b-4361-bc01-67a44f72de17/ACCEPTED_POINT.json",
-          "sha256": "3270d23d7d7e9407c69b3ce3e08188d4eb895485d6373f91398dce378f817934"
-        },
-        "S_spec_ref": {
-          "bytes": 77419,
-          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_STENCIL_BD0309DF_S_REF_V1/control/FROZEN_SPEC.json",
-          "sha256": "4580e841c9478363e853d4ff6ecb09fcc591ec11d4ce29ee8236a3ab692e0bd4"
-        },
-        "cost_proxy": {
-          "DRAM_MHz": 850.0,
-          "DRAM_return": 192,
-          "FRFCFS": 128,
-          "F_pool": "UNIFIED1168",
-          "ICNT_in": 512,
-          "ICNT_out": 512,
-          "L1_MissQ": 16,
-          "L2_MissQ": 128,
-          "S_static_role_partition": [
-            1024,
-            128,
-            16
-          ],
-          "Tag_address_coverage_GPU_bytes": 2097152,
-          "Tag_storage_area_bytes": "UNKNOWN; coveragebytes not TagRAM bytes",
-          "WAD128": 128,
-          "bank_ops_per_CORE": 1,
-          "descriptor512": 512,
-          "line_MSHR": 128,
-          "logical_Tag_slots_per_slice": 256,
-          "lower_FIFO": 128,
-          "metadata_PPA": "UNKNOWN",
-          "physical_payload_data_GPU_bytes": 9568256,
-          "physical_payload_line_slots_per_slice": 1168,
-          "static_s64": false
-        },
-        "geometry": {
-          "line_bytes": 128,
-          "sets": 32,
-          "slices": 64,
-          "ways": 8
-        },
-        "hardware_background_digest": "7f45ea6c40053e0bd4855274c7f74e96f013c19808f6828e4b9e6ea316914610",
-        "input_identity_sha256": "bd0309dfeec5745ba97400978c2c5f1413fa9c604376b3dd97e1dd3d5c8cc146",
-        "observer": {
-          "B0": "1",
-          "M0a": "1",
-          "MS": "1",
-          "env": {
-            "EPL2_DETACH_DIAG": "0",
-            "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
-            "EPL2_TAGPRESSURE_DIAG": "0",
-            "EPL2_TAG_LIFETIME": "0",
-            "EP_L2_EVENT_TIMELINE": "0"
-          }
-        },
-        "observer_env": {
-          "EPL2_DETACH_DIAG": "0",
-          "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
-          "EPL2_TAGPRESSURE_DIAG": "0",
-          "EPL2_TAG_LIFETIME": "0",
-          "EP_L2_EVENT_TIMELINE": "0"
-        },
-        "pair_key": "9fd127646eb8958c40513b26b2ce7f5fdb76420099f2e25e74a0a194181443a6",
-        "profile": "REF32x8_L100",
-        "program": "stencil",
-        "relative_EP_ratio_change_vs_reference": 1.0,
-        "slowdown": false,
-        "source_identity": {
-          "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
-          "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
-          "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
-          "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
-          "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
-        },
-        "speedup_S_over_treatment": 1.0992150050149778,
-        "treatment": "F",
-        "treatment_cycle_reduction_fraction": 0.09025987141944625
-      },
-      {
-        "F_absolute_REF_over_F": 1.0,
-        "F_archive_ref": {
-          "bytes": 1842,
-          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCAN_CF8D1C4D_F_REF_V1/control/ARCHIVE_RECEIPT.json",
-          "sha256": "8081c943efd02c57d16f453a06b9f83d681a0ea9ffe34fbc1164cc1f9f9ca572"
-        },
-        "F_cohort": "EP_PERF_SCAN_CF8D1C4D_F_REF_V1",
-        "F_cycles": 2224142,
-        "F_point_ref": {
-          "bytes": 2389,
-          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCAN_CF8D1C4D_F_REF_V1/run/08571f48-e6cb-473b-b1d9-8fca5b421b63/ACCEPTED_POINT.json",
-          "sha256": "25c4c976eac3fd7e59b78decd4c7e35448061073becea030822b359bb1267542"
-        },
-        "F_spec_ref": {
-          "bytes": 44722,
-          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCAN_CF8D1C4D_F_REF_V1/control/FROZEN_SPEC.json",
-          "sha256": "ea3331aaa9a2b3e3ea988c698df0b5fc099efd4285c486cbb9c8a7000ca27967"
-        },
-        "RO_applicability": "EXACT_WHOLECMD_SOURCE_LOADER_QUALIFIED",
-        "S_absolute_REF_over_S": 1.0,
-        "S_archive_ref": {
-          "bytes": 1842,
-          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCAN_CF8D1C4D_S_REF_V1/control/ARCHIVE_RECEIPT.json",
-          "sha256": "c8631c66162cda1a85124ba860610dd0993d460ebc34e9dae533451bc6c27d12"
-        },
-        "S_cohort": "EP_PERF_SCAN_CF8D1C4D_S_REF_V1",
-        "S_cycles": 2162540,
-        "S_point_ref": {
-          "bytes": 2390,
-          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCAN_CF8D1C4D_S_REF_V1/run/f921c53f-d58b-41a9-a282-3a63390c12da/ACCEPTED_POINT.json",
-          "sha256": "130ab6ac973b173621dddda210ee9c072fa5f0709f5ccd59bf425c4b322fdfd3"
-        },
-        "S_spec_ref": {
-          "bytes": 42244,
-          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCAN_CF8D1C4D_S_REF_V1/control/FROZEN_SPEC.json",
-          "sha256": "6f1bc9371101b592038a29ebcd15419787bafc43c9002ca44c9f96dc292c9e13"
-        },
-        "cost_proxy": {
-          "DRAM_MHz": 850.0,
-          "DRAM_return": 192,
-          "FRFCFS": 128,
-          "F_pool": "UNIFIED1168",
-          "ICNT_in": 512,
-          "ICNT_out": 512,
-          "L1_MissQ": 16,
-          "L2_MissQ": 128,
-          "S_static_role_partition": [
-            1024,
-            128,
-            16
-          ],
-          "Tag_address_coverage_GPU_bytes": 2097152,
-          "Tag_storage_area_bytes": "UNKNOWN; coveragebytes not TagRAM bytes",
-          "WAD128": 128,
-          "bank_ops_per_CORE": 1,
-          "descriptor512": 512,
-          "line_MSHR": 128,
-          "logical_Tag_slots_per_slice": 256,
-          "lower_FIFO": 128,
-          "metadata_PPA": "UNKNOWN",
-          "physical_payload_data_GPU_bytes": 9568256,
-          "physical_payload_line_slots_per_slice": 1168,
-          "static_s64": false
-        },
-        "geometry": {
-          "line_bytes": 128,
-          "sets": 32,
-          "slices": 64,
-          "ways": 8
-        },
-        "hardware_background_digest": "7f45ea6c40053e0bd4855274c7f74e96f013c19808f6828e4b9e6ea316914610",
-        "input_identity_sha256": "cf8d1c4d8e4956779ee5dbe0e836c6c77b595cb86cd2dc731e9897dd75504690",
-        "observer": {
-          "B0": "1",
-          "M0a": "1",
-          "MS": "1",
-          "env": {
-            "EPL2_DETACH_DIAG": "0",
-            "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
-            "EPL2_TAGPRESSURE_DIAG": "0",
-            "EPL2_TAG_LIFETIME": "0",
-            "EP_L2_EVENT_TIMELINE": "0"
-          }
-        },
-        "observer_env": {
-          "EPL2_DETACH_DIAG": "0",
-          "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
-          "EPL2_TAGPRESSURE_DIAG": "0",
-          "EPL2_TAG_LIFETIME": "0",
-          "EP_L2_EVENT_TIMELINE": "0"
-        },
-        "pair_key": "abed83e69ca26e375f418c1508fe389496088e07f99896ba6e02ed9714145015",
-        "profile": "REF32x8_L100",
-        "program": "scan",
-        "relative_EP_ratio_change_vs_reference": 1.0,
+        "pair_key": "b3fac2a42722a9fa7d2666867849fd42621f12737c08ecbc7eb15166c18adebc",
+        "profile": "COMBO_G64W16_UD2",
+        "program": "sgemm",
+        "relative_EP_ratio_change_vs_reference": 1.0093602487944366,
         "slowdown": true,
         "source_identity": {
           "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
@@ -26992,18 +27071,126 @@
           "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
           "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
         },
-        "speedup_S_over_treatment": 0.9723030274146165,
+        "speedup_S_over_treatment": 0.9993503958798203,
         "treatment": "F",
-        "treatment_cycle_reduction_fraction": -0.028485947080747698
+        "treatment_cycle_reduction_fraction": -0.0006500263799944506
+      },
+      {
+        "F_absolute_REF_over_F": 1.0,
+        "F_archive_ref": {
+          "bytes": 1870,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCALARPROD_3F9F4D1A_F_REF_V1/control/ARCHIVE_RECEIPT.json",
+          "sha256": "9fbe4ea617b163870bddb616ed29c4064650fb6c5f8f1bc24ed319cbd691413a"
+        },
+        "F_cohort": "EP_PERF_SCALARPROD_3F9F4D1A_F_REF_V1",
+        "F_cycles": 331656,
+        "F_point_ref": {
+          "bytes": 2410,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCALARPROD_3F9F4D1A_F_REF_V1/run/5ccd8563-404c-4db0-8b98-f09ea8e50b11/ACCEPTED_POINT.json",
+          "sha256": "8f1bcdb71d772f3bfb04666653fa07575dffde652aa66f97dce2d4a1b159abdf"
+        },
+        "F_spec_ref": {
+          "bytes": 28539,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCALARPROD_3F9F4D1A_F_REF_V1/control/FROZEN_SPEC.json",
+          "sha256": "26ffb8204459fd3c0b4ea6647d32f4fb476a5d90d896f091291d0d3f8e0c8464"
+        },
+        "RO_applicability": "EXACT_WHOLECMD_SOURCE_LOADER_QUALIFIED",
+        "S_absolute_REF_over_S": 1.0,
+        "S_archive_ref": {
+          "bytes": 1870,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCALARPROD_3F9F4D1A_S_REF_V1/control/ARCHIVE_RECEIPT.json",
+          "sha256": "4da70b4c640a96d0a9cc5450246ed02b42a9064809e1ff2c03df67dd1ff81bee"
+        },
+        "S_cohort": "EP_PERF_SCALARPROD_3F9F4D1A_S_REF_V1",
+        "S_cycles": 332376,
+        "S_point_ref": {
+          "bytes": 2410,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCALARPROD_3F9F4D1A_S_REF_V1/run/c679e980-3e90-44ac-a0f0-aa1209e6d4db/ACCEPTED_POINT.json",
+          "sha256": "33874e8e2a753a711a901d70c4c786840955db23afcec300bcd30b759d31999b"
+        },
+        "S_spec_ref": {
+          "bytes": 25992,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCALARPROD_3F9F4D1A_S_REF_V1/control/FROZEN_SPEC.json",
+          "sha256": "325caf6c7c6df0a261b58dfd76b178011a14923f4b4c4801fc6020ff51ee5850"
+        },
+        "cost_proxy": {
+          "DRAM_MHz": 850.0,
+          "DRAM_return": 192,
+          "FRFCFS": 128,
+          "F_pool": "UNIFIED1168",
+          "ICNT_in": 512,
+          "ICNT_out": 512,
+          "L1_MissQ": 16,
+          "L2_MissQ": 128,
+          "S_static_role_partition": [
+            1024,
+            128,
+            16
+          ],
+          "Tag_address_coverage_GPU_bytes": 2097152,
+          "Tag_storage_area_bytes": "UNKNOWN; coveragebytes not TagRAM bytes",
+          "WAD128": 128,
+          "bank_ops_per_CORE": 1,
+          "descriptor512": 512,
+          "line_MSHR": 128,
+          "logical_Tag_slots_per_slice": 256,
+          "lower_FIFO": 128,
+          "metadata_PPA": "UNKNOWN",
+          "physical_payload_data_GPU_bytes": 9568256,
+          "physical_payload_line_slots_per_slice": 1168,
+          "static_s64": false
+        },
+        "geometry": {
+          "line_bytes": 128,
+          "sets": 32,
+          "slices": 64,
+          "ways": 8
+        },
+        "hardware_background_digest": "7f45ea6c40053e0bd4855274c7f74e96f013c19808f6828e4b9e6ea316914610",
+        "input_identity_sha256": "3f9f4d1a526d34f7105d332e97e7ff06b78ea3ff81dc5d46539bd448c64327fd",
+        "observer": {
+          "B0": "1",
+          "M0a": "1",
+          "MS": "1",
+          "env": {
+            "EPL2_DETACH_DIAG": "0",
+            "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
+            "EPL2_TAGPRESSURE_DIAG": "0",
+            "EPL2_TAG_LIFETIME": "0",
+            "EP_L2_EVENT_TIMELINE": "0"
+          }
+        },
+        "observer_env": {
+          "EPL2_DETACH_DIAG": "0",
+          "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
+          "EPL2_TAGPRESSURE_DIAG": "0",
+          "EPL2_TAG_LIFETIME": "0",
+          "EP_L2_EVENT_TIMELINE": "0"
+        },
+        "pair_key": "eb6915dd5db77f1f31258f891d5ddd7e57a893a0566dedfe2ab768391c2e8c95",
+        "profile": "REF32x8_L100",
+        "program": "scalarProd",
+        "relative_EP_ratio_change_vs_reference": 1.0,
+        "slowdown": false,
+        "source_identity": {
+          "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+          "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+          "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+          "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+          "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+        },
+        "speedup_S_over_treatment": 1.002170924090021,
+        "treatment": "F",
+        "treatment_cycle_reduction_fraction": 0.0021662213878258507
       }
     ],
     "prior_analysis_ref": {
-      "bytes": 1774850,
-      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/results_analysis_20261028_v1/versions/20261028T101231Z_d1d830f9/RESULTS_ANALYSIS_CURRENT.json",
+      "bytes": 1812781,
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/results_analysis_20261028_v1/versions/20261028T130855Z_b9b383f9/RESULTS_ANALYSIS_CURRENT.json",
       "publish_name": "RESULTS_ANALYSIS_CURRENT.json",
-      "sha256": "589c7557f1611bfa7b450965df613df9a7413676676f0c4b3101b7cb27d5539f"
+      "sha256": "a0e7762415177081237bc48f93c42c09c9f432b4a208a59c871f5657a5f295f4"
     },
-    "prior_utc": "2026-10-28T07:55:32.642109+00:00",
+    "prior_utc": "2026-10-28T13:06:35.522030+00:00",
     "reused_unchanged": [
       "EP_PERF_2DCONV_0AE13552_F_REF_V1",
       "EP_PERF_2DCONV_0AE13552_S_REF_V1",
@@ -27011,6 +27198,7 @@
       "EP_PERF_3DCONV_8F268365_F_REF_V1",
       "EP_PERF_3DCONV_8F268365_S_REF_V1",
       "EP_PERF_3DCONV_8F268365_WV_ZERO_RO_REF_V1",
+      "EP_PERF_3MM_F9F80028_F_REF_V1",
       "EP_PERF_3MM_F9F80028_S_REF_V1",
       "EP_PERF_ATAX_F_REF_V1",
       "EP_PERF_ATAX_S_REF_V1",
@@ -27136,6 +27324,7 @@
       "EP_PERF_HISTOGRAM_85ECC480_S_N_ICNT_BUFFERS1024_V1",
       "EP_PERF_HISTOGRAM_85ECC480_S_REF_V1",
       "EP_PERF_HISTOGRAM_85ECC480_S_U_L2MQ256_V1",
+      "EP_PERF_LAVAMD_51FAFFD2_S_REF_V1",
       "EP_PERF_LUD_28B97CD0_F_COMBO_G64W16_UD2_V1",
       "EP_PERF_LUD_28B97CD0_F_N_ICNT_BUFFERS1024_V1",
       "EP_PERF_LUD_28B97CD0_F_REF_V1",
@@ -27157,9 +27346,12 @@
       "EP_PERF_PARTICLEFILTERFLOAT_3904B55B_S_REF_V1",
       "EP_PERF_PARTICLEFILTERFLOAT_3904B55B_WV_ZERO_RO_REF_V1",
       "EP_PERF_SCALARPROD_3F9F4D1A_F_REF_V1",
+      "EP_PERF_SCAN_CF8D1C4D_F_REF_V1",
       "EP_PERF_SCAN_CF8D1C4D_S_REF_V1",
       "EP_PERF_SGEMM_F_REF_V1",
       "EP_PERF_SGEMM_S_REF_V1",
+      "EP_PERF_SRADV1_6CE41710_S_REF_V1",
+      "EP_PERF_STENCIL_BD0309DF_F_REF_V1",
       "EP_PERF_STENCIL_BD0309DF_S_REF_V1",
       "EP_PERF_TRANSPOSE_DA6CAAE1_F_REF_V1",
       "EP_PERF_TRANSPOSE_DA6CAAE1_S_REF_V1",
@@ -30772,6 +30964,104 @@
       "profile": "REF32x8_L100"
     },
     {
+      "cohort": "EP_PERF_SGEMM_F_COMBO_G64W16_UD2_V1",
+      "costs": {
+        "DRAM_MHz": 850.0,
+        "DRAM_return": 384,
+        "FRFCFS": 256,
+        "F_pool": "UNIFIED1168",
+        "ICNT_in": 512,
+        "ICNT_out": 512,
+        "L1_MissQ": 32,
+        "L2_MissQ": 256,
+        "S_static_role_partition": [
+          1024,
+          128,
+          16
+        ],
+        "Tag_address_coverage_GPU_bytes": 8388608,
+        "Tag_storage_area_bytes": "UNKNOWN; coveragebytes not TagRAM bytes",
+        "WAD128": 128,
+        "bank_ops_per_CORE": 1,
+        "descriptor512": 512,
+        "line_MSHR": 128,
+        "logical_Tag_slots_per_slice": 1024,
+        "lower_FIFO": 256,
+        "metadata_PPA": "UNKNOWN",
+        "physical_payload_data_GPU_bytes": 9568256,
+        "physical_payload_line_slots_per_slice": 1168,
+        "static_s64": false
+      },
+      "cycles": 343286,
+      "dimensions": [
+        "logical_Tag_slots_per_slice",
+        "bank_ops_per_CORE",
+        "L1_MissQ",
+        "L2_MissQ",
+        "lower_FIFO",
+        "FRFCFS",
+        "DRAM_return",
+        "ICNT_in",
+        "ICNT_out",
+        "DRAM_MHz"
+      ],
+      "dominated_by": [],
+      "input_identity_sha256": "ab4ac5dd144400741deffc898870309644c8c187a18fd685464623cb63317a7b",
+      "locally_nondominated_in_observed_same_source_mode_population": true,
+      "not_area_or_global_optimum": true,
+      "profile": "COMBO_G64W16_UD2"
+    },
+    {
+      "cohort": "EP_PERF_SGEMM_F_N_ICNT_BUFFERS1024_V1",
+      "costs": {
+        "DRAM_MHz": 850.0,
+        "DRAM_return": 192,
+        "FRFCFS": 128,
+        "F_pool": "UNIFIED1168",
+        "ICNT_in": 1024,
+        "ICNT_out": 1024,
+        "L1_MissQ": 16,
+        "L2_MissQ": 128,
+        "S_static_role_partition": [
+          1024,
+          128,
+          16
+        ],
+        "Tag_address_coverage_GPU_bytes": 2097152,
+        "Tag_storage_area_bytes": "UNKNOWN; coveragebytes not TagRAM bytes",
+        "WAD128": 128,
+        "bank_ops_per_CORE": 1,
+        "descriptor512": 512,
+        "line_MSHR": 128,
+        "logical_Tag_slots_per_slice": 256,
+        "lower_FIFO": 128,
+        "metadata_PPA": "UNKNOWN",
+        "physical_payload_data_GPU_bytes": 9568256,
+        "physical_payload_line_slots_per_slice": 1168,
+        "static_s64": false
+      },
+      "cycles": 357466,
+      "dimensions": [
+        "logical_Tag_slots_per_slice",
+        "bank_ops_per_CORE",
+        "L1_MissQ",
+        "L2_MissQ",
+        "lower_FIFO",
+        "FRFCFS",
+        "DRAM_return",
+        "ICNT_in",
+        "ICNT_out",
+        "DRAM_MHz"
+      ],
+      "dominated_by": [
+        "EP_PERF_SGEMM_F_REF_V1"
+      ],
+      "input_identity_sha256": "ab4ac5dd144400741deffc898870309644c8c187a18fd685464623cb63317a7b",
+      "locally_nondominated_in_observed_same_source_mode_population": false,
+      "not_area_or_global_optimum": true,
+      "profile": "N_ICNT_BUFFERS1024"
+    },
+    {
       "cohort": "EP_PERF_SGEMM_F_REF_V1",
       "costs": {
         "DRAM_MHz": 850.0,
@@ -30818,6 +31108,56 @@
       "locally_nondominated_in_observed_same_source_mode_population": true,
       "not_area_or_global_optimum": true,
       "profile": "REF32x8_L100"
+    },
+    {
+      "cohort": "EP_PERF_SGEMM_F_U_L2MQ256_V1",
+      "costs": {
+        "DRAM_MHz": 850.0,
+        "DRAM_return": 192,
+        "FRFCFS": 128,
+        "F_pool": "UNIFIED1168",
+        "ICNT_in": 512,
+        "ICNT_out": 512,
+        "L1_MissQ": 16,
+        "L2_MissQ": 256,
+        "S_static_role_partition": [
+          1024,
+          128,
+          16
+        ],
+        "Tag_address_coverage_GPU_bytes": 2097152,
+        "Tag_storage_area_bytes": "UNKNOWN; coveragebytes not TagRAM bytes",
+        "WAD128": 128,
+        "bank_ops_per_CORE": 1,
+        "descriptor512": 512,
+        "line_MSHR": 128,
+        "logical_Tag_slots_per_slice": 256,
+        "lower_FIFO": 128,
+        "metadata_PPA": "UNKNOWN",
+        "physical_payload_data_GPU_bytes": 9568256,
+        "physical_payload_line_slots_per_slice": 1168,
+        "static_s64": false
+      },
+      "cycles": 357466,
+      "dimensions": [
+        "logical_Tag_slots_per_slice",
+        "bank_ops_per_CORE",
+        "L1_MissQ",
+        "L2_MissQ",
+        "lower_FIFO",
+        "FRFCFS",
+        "DRAM_return",
+        "ICNT_in",
+        "ICNT_out",
+        "DRAM_MHz"
+      ],
+      "dominated_by": [
+        "EP_PERF_SGEMM_F_REF_V1"
+      ],
+      "input_identity_sha256": "ab4ac5dd144400741deffc898870309644c8c187a18fd685464623cb63317a7b",
+      "locally_nondominated_in_observed_same_source_mode_population": false,
+      "not_area_or_global_optimum": true,
+      "profile": "U_L2MQ256"
     },
     {
       "cohort": "EP_PERF_STENCIL_BD0309DF_F_REF_V1",
@@ -41030,6 +41370,114 @@
       "treatment_cycle_reduction_fraction": -8.868943620132796e-05
     },
     {
+      "F_absolute_REF_over_F": 1.041306665579138,
+      "F_archive_ref": {
+        "bytes": 1865,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_COMBO_G64W16_UD2_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "3e5f97ef6e5e8e2457a4aaa31e59affd31d41449b97a3e10a7b4f988cdc7a67e"
+      },
+      "F_cohort": "EP_PERF_SGEMM_F_COMBO_G64W16_UD2_V1",
+      "F_cycles": 343286,
+      "F_point_ref": {
+        "bytes": 2410,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_COMBO_G64W16_UD2_V1/run/b8f5b7b4-3a8d-4db6-9c5c-14683c044111/ACCEPTED_POINT.json",
+        "sha256": "4a69f34a21a4879dc7bc7b9b8ace1c8bc8ee9cd102d764eec561274d158367f3"
+      },
+      "F_spec_ref": {
+        "bytes": 26967,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_COMBO_G64W16_UD2_V1/control/FROZEN_SPEC.json",
+        "sha256": "b097508bb37731d6730817b6007d1980f644492d096f1c5bdbdb4ef3b83bc3f7"
+      },
+      "RO_applicability": "EXACT_WHOLECMD_SOURCE_LOADER_QUALIFIED",
+      "S_absolute_REF_over_S": 1.03165016338107,
+      "S_archive_ref": {
+        "bytes": 1865,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_S_COMBO_G64W16_UD2_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "14e2a958fb5fa62c98d6ea39b2f09f89e00bb67538a704cdb96615e88e51e3c0"
+      },
+      "S_cohort": "EP_PERF_SGEMM_S_COMBO_G64W16_UD2_V1",
+      "S_cycles": 343063,
+      "S_point_ref": {
+        "bytes": 2409,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_S_COMBO_G64W16_UD2_V1/run/1fa4a1d6-58a9-4b7a-9653-8a07fafdf8a6/ACCEPTED_POINT.json",
+        "sha256": "35b621f2b0a636134e751a26a497ad6a3f696f1b94bf78d9439ea4ba337b7798"
+      },
+      "S_spec_ref": {
+        "bytes": 26756,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_S_COMBO_G64W16_UD2_V1/control/FROZEN_SPEC.json",
+        "sha256": "dc5588dab606b9f89e2cc241a52c7321ce597ba2cd3a87db0c14216be0eef909"
+      },
+      "cost_proxy": {
+        "DRAM_MHz": 850.0,
+        "DRAM_return": 384,
+        "FRFCFS": 256,
+        "F_pool": "UNIFIED1168",
+        "ICNT_in": 512,
+        "ICNT_out": 512,
+        "L1_MissQ": 32,
+        "L2_MissQ": 256,
+        "S_static_role_partition": [
+          1024,
+          128,
+          16
+        ],
+        "Tag_address_coverage_GPU_bytes": 8388608,
+        "Tag_storage_area_bytes": "UNKNOWN; coveragebytes not TagRAM bytes",
+        "WAD128": 128,
+        "bank_ops_per_CORE": 1,
+        "descriptor512": 512,
+        "line_MSHR": 128,
+        "logical_Tag_slots_per_slice": 1024,
+        "lower_FIFO": 256,
+        "metadata_PPA": "UNKNOWN",
+        "physical_payload_data_GPU_bytes": 9568256,
+        "physical_payload_line_slots_per_slice": 1168,
+        "static_s64": false
+      },
+      "geometry": {
+        "line_bytes": 128,
+        "sets": 64,
+        "slices": 64,
+        "ways": 16
+      },
+      "hardware_background_digest": "41e086d861c45bb1bdaff135cff872e3b0df8e5ca60050b54e0b4cf6447d651a",
+      "input_identity_sha256": "ab4ac5dd144400741deffc898870309644c8c187a18fd685464623cb63317a7b",
+      "observer": {
+        "B0": "1",
+        "M0a": "1",
+        "MS": "1",
+        "env": {
+          "EPL2_DETACH_DIAG": "0",
+          "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
+          "EPL2_TAGPRESSURE_DIAG": "0",
+          "EPL2_TAG_LIFETIME": "0",
+          "EP_L2_EVENT_TIMELINE": "0"
+        }
+      },
+      "observer_env": {
+        "EPL2_DETACH_DIAG": "0",
+        "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
+        "EPL2_TAGPRESSURE_DIAG": "0",
+        "EPL2_TAG_LIFETIME": "0",
+        "EP_L2_EVENT_TIMELINE": "0"
+      },
+      "pair_key": "b3fac2a42722a9fa7d2666867849fd42621f12737c08ecbc7eb15166c18adebc",
+      "profile": "COMBO_G64W16_UD2",
+      "program": "sgemm",
+      "relative_EP_ratio_change_vs_reference": 1.0093602487944366,
+      "slowdown": true,
+      "source_identity": {
+        "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+        "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+        "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "speedup_S_over_treatment": 0.9993503958798203,
+      "treatment": "F",
+      "treatment_cycle_reduction_fraction": -0.0006500263799944506
+    },
+    {
       "F_absolute_REF_over_F": 1.1494432667174348,
       "F_archive_ref": {
         "bytes": 1860,
@@ -42436,6 +42884,114 @@
     {
       "F_absolute_REF_over_F": 1.0,
       "F_archive_ref": {
+        "bytes": 1870,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCALARPROD_3F9F4D1A_F_REF_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "9fbe4ea617b163870bddb616ed29c4064650fb6c5f8f1bc24ed319cbd691413a"
+      },
+      "F_cohort": "EP_PERF_SCALARPROD_3F9F4D1A_F_REF_V1",
+      "F_cycles": 331656,
+      "F_point_ref": {
+        "bytes": 2410,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCALARPROD_3F9F4D1A_F_REF_V1/run/5ccd8563-404c-4db0-8b98-f09ea8e50b11/ACCEPTED_POINT.json",
+        "sha256": "8f1bcdb71d772f3bfb04666653fa07575dffde652aa66f97dce2d4a1b159abdf"
+      },
+      "F_spec_ref": {
+        "bytes": 28539,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCALARPROD_3F9F4D1A_F_REF_V1/control/FROZEN_SPEC.json",
+        "sha256": "26ffb8204459fd3c0b4ea6647d32f4fb476a5d90d896f091291d0d3f8e0c8464"
+      },
+      "RO_applicability": "EXACT_WHOLECMD_SOURCE_LOADER_QUALIFIED",
+      "S_absolute_REF_over_S": 1.0,
+      "S_archive_ref": {
+        "bytes": 1870,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCALARPROD_3F9F4D1A_S_REF_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "4da70b4c640a96d0a9cc5450246ed02b42a9064809e1ff2c03df67dd1ff81bee"
+      },
+      "S_cohort": "EP_PERF_SCALARPROD_3F9F4D1A_S_REF_V1",
+      "S_cycles": 332376,
+      "S_point_ref": {
+        "bytes": 2410,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCALARPROD_3F9F4D1A_S_REF_V1/run/c679e980-3e90-44ac-a0f0-aa1209e6d4db/ACCEPTED_POINT.json",
+        "sha256": "33874e8e2a753a711a901d70c4c786840955db23afcec300bcd30b759d31999b"
+      },
+      "S_spec_ref": {
+        "bytes": 25992,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCALARPROD_3F9F4D1A_S_REF_V1/control/FROZEN_SPEC.json",
+        "sha256": "325caf6c7c6df0a261b58dfd76b178011a14923f4b4c4801fc6020ff51ee5850"
+      },
+      "cost_proxy": {
+        "DRAM_MHz": 850.0,
+        "DRAM_return": 192,
+        "FRFCFS": 128,
+        "F_pool": "UNIFIED1168",
+        "ICNT_in": 512,
+        "ICNT_out": 512,
+        "L1_MissQ": 16,
+        "L2_MissQ": 128,
+        "S_static_role_partition": [
+          1024,
+          128,
+          16
+        ],
+        "Tag_address_coverage_GPU_bytes": 2097152,
+        "Tag_storage_area_bytes": "UNKNOWN; coveragebytes not TagRAM bytes",
+        "WAD128": 128,
+        "bank_ops_per_CORE": 1,
+        "descriptor512": 512,
+        "line_MSHR": 128,
+        "logical_Tag_slots_per_slice": 256,
+        "lower_FIFO": 128,
+        "metadata_PPA": "UNKNOWN",
+        "physical_payload_data_GPU_bytes": 9568256,
+        "physical_payload_line_slots_per_slice": 1168,
+        "static_s64": false
+      },
+      "geometry": {
+        "line_bytes": 128,
+        "sets": 32,
+        "slices": 64,
+        "ways": 8
+      },
+      "hardware_background_digest": "7f45ea6c40053e0bd4855274c7f74e96f013c19808f6828e4b9e6ea316914610",
+      "input_identity_sha256": "3f9f4d1a526d34f7105d332e97e7ff06b78ea3ff81dc5d46539bd448c64327fd",
+      "observer": {
+        "B0": "1",
+        "M0a": "1",
+        "MS": "1",
+        "env": {
+          "EPL2_DETACH_DIAG": "0",
+          "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
+          "EPL2_TAGPRESSURE_DIAG": "0",
+          "EPL2_TAG_LIFETIME": "0",
+          "EP_L2_EVENT_TIMELINE": "0"
+        }
+      },
+      "observer_env": {
+        "EPL2_DETACH_DIAG": "0",
+        "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
+        "EPL2_TAGPRESSURE_DIAG": "0",
+        "EPL2_TAG_LIFETIME": "0",
+        "EP_L2_EVENT_TIMELINE": "0"
+      },
+      "pair_key": "eb6915dd5db77f1f31258f891d5ddd7e57a893a0566dedfe2ab768391c2e8c95",
+      "profile": "REF32x8_L100",
+      "program": "scalarProd",
+      "relative_EP_ratio_change_vs_reference": 1.0,
+      "slowdown": false,
+      "source_identity": {
+        "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+        "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+        "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "speedup_S_over_treatment": 1.002170924090021,
+      "treatment": "F",
+      "treatment_cycle_reduction_fraction": 0.0021662213878258507
+    },
+    {
+      "F_absolute_REF_over_F": 1.0,
+      "F_archive_ref": {
         "bytes": 1865,
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_HISTOGRAM_85ECC480_F_REF_V1/control/ARCHIVE_RECEIPT.json",
         "sha256": "270c2a70eb4e2180f1b0332cba7134c02fd1700cc92a16ab4036eaeca0e2d40e"
@@ -43556,18 +44112,16 @@
       "worst": 0.9830881109419922
     },
     {
-      "F_absolute_REF_GM": 1.0119246618673847,
-      "S_absolute_REF_GM": 1.0155095315444533,
+      "F_absolute_REF_GM": 1.01555158623866,
+      "S_absolute_REF_GM": 1.0175132187239817,
       "best": 1.0001757065430414,
-      "closed_pairs": 7,
-      "complete": false,
-      "complete_population_GM": null,
+      "closed_pairs": 8,
+      "complete": true,
+      "complete_population_GM": 0.9969868679257263,
       "equal": 2,
-      "interim_observed_set_GM": 0.9966496777018384,
-      "missing_inputs": [
-        "ab4ac5dd144400741deffc898870309644c8c187a18fd685464623cb63317a7b"
-      ],
-      "negative": 4,
+      "interim_observed_set_GM": 0.9969868679257263,
+      "missing_inputs": [],
+      "negative": 5,
       "never_full35_or96_GM": true,
       "population": "PRESELECTED_VALIDATION8",
       "positive": 1,
@@ -44036,40 +44590,35 @@
   },
   "refresh_delta_summary": {
     "T_independent_gain": "UNKNOWN_NEEDS_EXACT_F_BACKGROUND_T_OFF_M1",
-    "interpretation": "Default same-model F improves3MM/stencil and regresses scan; workload-dependent end-to-end EP opportunity, independent T contribution UNKNOWN; fixed8 SGEMM gap retained.",
+    "candidate_conclusion": "COMBO fixed8 now complete: S/F GM0.9969868679, F absolute REF/F GM1.015551586 and S1.017513219; common hardware gain exceeds independent EP advantage. ICNT/L2MQ fixed8 remain incomplete, no full GM. T contribution remains UNKNOWN.",
     "new_accepted_endpoints": 5,
-    "new_fully_matched_pairs": 3,
-    "prior_analysis_utc": "2026-10-28T07:55:32.642109+00:00",
+    "new_fully_matched_pairs": 2,
+    "prior_analysis_utc": "2026-10-28T13:06:35.522030+00:00",
     "remaining_live": [
-      "EP_PERF_SGEMM_F_COMBO_G64W16_UD2_V1",
-      "EP_PERF_SGEMM_F_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_SGEMM_S_N_ICNT_BUFFERS1024_V1",
+      "EP_PERF_SYRK_90B0CC9D_F_REF_V1",
       "EP_PERF_SYRK_90B0CC9D_S_REF_V1"
     ],
-    "unchanged_endpoints_reused": 210,
+    "unchanged_endpoints_reused": 215,
     "unconsumed": [
       "EP_PERF_LAVAMD_51FAFFD2_F_REF_V1",
-      "EP_PERF_SCALARPROD_3F9F4D1A_S_REF_V1",
-      "EP_PERF_SGEMM_F_U_L2MQ256_V1",
-      "EP_PERF_SGEMM_S_COMBO_G64W16_UD2_V1",
-      "EP_PERF_SGEMM_S_N_ICNT_BUFFERS1024_V1",
-      "EP_PERF_SGEMM_S_U_L2MQ256_V1",
-      "EP_PERF_SYRK_90B0CC9D_F_REF_V1"
+      "EP_PERF_SGEMM_S_U_L2MQ256_V1"
     ]
   },
   "registry_mutations": 0,
   "resource": {
     "AS_limit_bytes": 134217728,
     "CPU": 511,
-    "maxRSS_bytes": 45867008,
+    "maxRSS_bytes": 41783296,
     "nice": 10,
-    "seconds": 0.18300463818013668
+    "seconds": 0.3258568346500397
   },
   "schema": "EP_AGENT_B_ACCEPTED_RESULTS_ANALYSIS_V1",
   "source_snapshot": {
     "epoch": 2,
-    "epoch_sha256": "f656a4e012eaea6eb0d545d91ce91d3c9d31017e75d7e2d4c19ce0eb3e72364e",
-    "registry_sha256": "45984c3d370c151442662089294d160239e11ab4b940506b7f3200e2ea152e3a"
+    "epoch_sha256": "83004706c98241bfe012e9d33d82fa0e4a97ab701d11eea5bf73cd62d4cd03ba",
+    "registry_sha256": "38cf4456e5d875280b671704074613b9ee1374f71bc7b9fb84f791cad24a7e84"
   },
   "trace_or_raw_rereads": 0,
-  "utc": "2026-10-28T13:06:35.522030+00:00"
+  "utc": "2026-10-28T16:19:34.410171+00:00"
 }

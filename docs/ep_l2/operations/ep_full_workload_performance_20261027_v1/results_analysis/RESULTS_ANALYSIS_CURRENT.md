@@ -1,38 +1,45 @@
 # Accepted experiment results: bounded current analysis
 
-Analysis UTC: 2026-10-28T13:06:35.522030+00:00. Registry: 227 registered; 220 consumed; states {'CLOSED_ACCEPTED': 215, 'NOT_STARTED': 7, 'CLOSED_UNACCEPTED': 2, 'CONSUMED_BEFORE_FORK': 3}. Independently joined CLOSED_ACCEPTED endpoints: 215. Joins cover frozen spec, natural DONE, point, canonical Source5, validation SHA and genuine164/two-native-restore receipts. No raw or Trace rereads; Main remains the acceptance authority.
+Analysis UTC: 2026-10-28T16:19:34.410171+00:00. Registry: 227 registered; 225 consumed; states {'CLOSED_ACCEPTED': 220, 'NOT_STARTED': 2, 'CLOSED_UNACCEPTED': 2, 'CONSUMED_BEFORE_FORK': 3}. Independently joined CLOSED_ACCEPTED endpoints: 220. Joins cover frozen spec, natural DONE, point, canonical Source5, validation SHA and genuine164/two-native-restore receipts. No raw or Trace rereads; Main remains the acceptance authority.
 
 Each row is an endpoint, not a distinct workload. This is a bounded snapshot; live counts may advance. There is no full35/full96 geometric mean or global-optimum claim.
 
-Incremental refresh reuses 210 prior closed endpoints with unchanged frozen-spec SHA and exact current registry point/DONE/archive references. 5 new or changed endpoints were freshly joined. Old artifact SHA references remain the sealed prior evidence; they were not all rehashed.
+Incremental refresh reuses 215 prior closed endpoints with unchanged frozen-spec SHA and exact current registry point/DONE/archive references. 5 new or changed endpoints were freshly joined. Old artifact SHA references remain the sealed prior evidence; they were not all rehashed.
 
 ## Newly closed endpoints and newly matched comparisons
 
-This refresh reuses 210 closed endpoint references and freshly joins 5 new/changed endpoints. New fully matched pairs: 3. REF S/F coverage is 22 inputs / 21 programs. This is not completed35/96 coverage.
+This refresh reuses 215 closed endpoint references and freshly joins 5 new/changed endpoints. New fully matched pairs: 2. REF S/F coverage is 23 inputs / 22 programs. This is not completed35/96 coverage.
 
 |new endpoint|mode|cycles|instructions|CTA|kernels|
 |---|---|---:|---:|---:|---:|
-|3MM (f9f80028)|F|1669413|1813512192|3072|3|
-|lavamd (51faffd2)|S|5581479|10396775488|1000|1|
-|scan (cf8d1c4d)|F|2224142|1963460720|166608|33|
-|srad_v1 (6ce41710)|S|8649629|10136693400|181000|502|
-|stencil (bd0309df)|F|4769712|2193446000|6400|100|
+|scalarProd (3f9f4d1a)|S|332376|730610912|128|1|
+|sgemm (ab4ac5dd)|F|343286|1658916864|528|1|
+|sgemm (ab4ac5dd)|F|357466|1658916864|528|1|
+|sgemm (ab4ac5dd)|F|357466|1658916864|528|1|
+|sgemm (ab4ac5dd)|S|343063|1658916864|528|1|
 
 |new matched input|S cycles|F cycles|S/F|F cycle change vs S|
 |---|---:|---:|---:|---:|
-|3MM (f9f80028)|1696618|1669413|1.016296|-1.6035%|
-|stencil (bd0309df)|5242939|4769712|1.099215|-9.0260%|
-|scan (cf8d1c4d)|2162540|2224142|0.972303|+2.8486%|
+|sgemm (ab4ac5dd)|343063|343286|0.999350|+0.0650%|
+|scalarProd (3f9f4d1a)|332376|331656|1.002171|-0.2166%|
 
 Per-candidate fixed8 closure:
 
-- COMBO_G64W16_UD2: 7/8; full-population GM=UNKNOWN; missing=SGEMM.
+- COMBO_G64W16_UD2: 8/8; full-population GM=0.996987; missing=NONE.
 - N_ICNT_BUFFERS1024: 7/8; full-population GM=UNKNOWN; missing=SGEMM.
 - U_L2MQ256: 7/8; full-population GM=UNKNOWN; missing=SGEMM.
 
-The new default-profile comparisons show same-model F cycle improvements for3MM and stencil and a regression for scan. Thus default EP opportunity is workload-dependent, and the positive pairs merit W/V/M/T attribution with their original negative controls retained. These observations do not isolate T or select a global configuration. Completing the already preselected SGEMM parameter endpoints remains necessary before judging the fixed8 candidates.
-
 Only complete fixed populations receive a full GM. Actual detach occurrence remains separate from an independently attributable T speedup; same-Core/ELF/geometry/input/F WVM background T-OFF(M1) is still required.
+
+## Completed candidate and engineering progress
+
+COMBO_G64W16_UD2 has now completed its preselected fixed8 population. Same-hardware S/F GM is0.996986868 (1 positive,5 negative,2 equal). Absolute REF/F GM is1.015551586 and REF/S is1.017513219: both modes gain from the hardware configuration, with S benefiting more. This is not evidence that EP wins on that fixed population or that the configuration is globally optimal. ICNT1024 and L2MissQ256 remain7/8; SGEMM S is respectively live/unconsumed, so neither gets a complete-population GM.
+
+**Host-write repair, first engineering stage only:**447 assertion checks passed for the standalone pure protocol core. These did not link Source78 libraries, construct GPU objects, test the production cache API, rebuild production Source or consume an application. The production API remains unwired/unqualified. The original WSL/tmp artifact evidence gap is explicitly disclosed: retained evidence is the actual tool stdout transcription; the original temporary workset cannot be reopened, and no closed-reopen artifact-SHA claim is made. The ParticlefilterNaive whole-commandlist repair remains UNKNOWN/HOLD.
+
+**SRAD portable loader:** the unchanged existing Source78 RO-loader executable passed one positive and two expected-rejection controls in local WSL, binding62 certified RO lines,502 ordered launches and507 complete command bytes. This is a loader CPU qualification component, not an accel-sim application run or native174 qualification. Native174 loader execution, application NI/Source/launch authority, and the derived-SQL genuine164 archive plus two native restores are not completed by this result. No full syscall-trace proof is claimed.
+
+Pinned engineering references: `/root/data/ep_l2_full_workload_performance_20261027_v1/agent_c/host_write_protocol_repair_20261028_v1/DELIVERY_MANIFEST.json` SHA `e0cd2216eff69840f7472b8bd3f62d7229535274a51ed363c59ef8caddb7c598`; `/root/data/ep_l2_full_workload_performance_20261027_v1/agent_a/srad_portable_wsl_loader_preparation_v1/PORTABLE_WSL_SOURCE78_LOADER_HANDOFF.json` SHA `f8d081fa480fb56afa38d7a50d8d3579a441eb634c55d5a2f62f2b20c9618157`. Their engineering timestamps are separate from the accepted-results as-of above. No scientific result is promoted by this annotation.
 
 ## What the completed comparisons show
 
@@ -48,7 +55,7 @@ S/F compares S and F on the same hardware. REF/S and REF/F compare absolute cycl
 |---|---|---:|---:|---:|---:|---:|
 |COMBO_G32W16_L2MQ2|DEVELOPMENT_FIXED3|3/3|0.992405|0/3/0|1.029694|1.028639|
 |COMBO_G64W16_UD2|DEVELOPMENT_FIXED3|3/3|0.988478|0/3/0|1.084268|1.078870|
-|COMBO_G64W16_UD2|PRESELECTED_VALIDATION8|7/8|UNKNOWN|1/4/2|1.015510|1.011925|
+|COMBO_G64W16_UD2|PRESELECTED_VALIDATION8|8/8|0.996987|1/5/2|1.017513|1.015552|
 |COMBO_G64W8_L1L2MQ2|DEVELOPMENT_FIXED3|3/3|0.993775|0/3/0|1.027835|1.028199|
 |COMBO_ICNT_LOWER2|DEVELOPMENT_FIXED3|3/3|0.993258|0/3/0|1.002071|1.001904|
 |D_DRAM_MHZ1020|DEVELOPMENT_FIXED3|3/3|0.994883|0/3/0|1.079279|1.080864|
@@ -132,6 +139,7 @@ S/F compares S and F on the same hardware. REF/S and REF/F compare absolute cycl
 |COMBO_G64W8_L1L2MQ2|BlackScholes:09eff62b|8440|8489|0.994228|1.003652|
 |U_FRFCFS256|BlackScholes:09eff62b|8456|8520|0.992488|1.000000|
 |U_L2MQ256|MERGESORT_ADD5C722|112753|112763|0.999911|1.000000|
+|COMBO_G64W16_UD2|SGEMM|343063|343286|0.999350|1.041307|
 |COMBO_G64W16_UD2|convolutionSeparable:438eefd6|288067|291522|0.988148|1.149443|
 |COMBO_G64W16_UD2|GAUSSIAN_B5FC8DF0|728027|728027|1.000000|0.999514|
 |UD_REQUEST_HEADROOM2|vectorAdd:ddf26d4f|73592|74027|0.994124|1.043363|
@@ -204,6 +212,6 @@ Original detailed Main report (read-only source): `/root/data/ep_l2_full_workloa
 
 Physical payload data RAM is 1168 x 128 B x 64 = 9,568,256 B (9.125 MiB). Tag address coverage is not Tag RAM storage or area. Pareto results use only explicit modeled capacity proxies within the same input/mode/Source/observer profile; they omit technology area, energy and metadata PPA. F also has RO/TVD metadata and is not claimed to have identical total area.
 
-Unclosed endpoints: 10. Technical negatives retained: 2. Metadata join HOLDs: 0; live pair exclusions: 0. Exact refs, 282-option deltas, pending cases and population membership are in JSON/CSV.
+Unclosed endpoints: 5. Technical negatives retained: 2. Metadata join HOLDs: 0; live pair exclusions: 0. Exact refs, 282-option deltas, pending cases and population membership are in JSON/CSV.
 
 Disabled R4/R5/LIFE/ET observations are NOT_OBSERVED, not measured zero. TagFAIL/reuse/timing populations cannot be reconstructed from unrelated marginal counters. Original-capture completeness and numeric SASS correctness remain UNKNOWN.
