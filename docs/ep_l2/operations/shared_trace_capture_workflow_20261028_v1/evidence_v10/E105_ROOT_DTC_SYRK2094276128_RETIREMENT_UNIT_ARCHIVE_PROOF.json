@@ -1,0 +1,90 @@
+{
+  "RESULT_ref": {
+    "bytes": 2088,
+    "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-b51811aca9dc70cf-CH-P0-V1.RESULT.json",
+    "sha256": "9178f4717558fe87ebcd4df44852ece32e9b9dc843df511888502422f4e76e3a"
+  },
+  "SIMULATE_rows": 10702,
+  "accepted_negative_archive_manifest_ref": {
+    "bytes": 5933,
+    "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/results/E2-DTCL2MLP-b51811aca9dc70cf-CH-P0-V1/d09bdb3f1fb20ed5a96da7664cf35e162501013afd157d96298248d9b4e7c2dd/SOURCE_MANIFEST.json",
+    "sha256": "299a65233045b15580701ec5634d9709dff6c0c58f5a9070da894ea4a8cfbc27"
+  },
+  "audit_V2_62_is_earlier_scope_asof_not_mutated": "Root supplemental proof adds only DTC_SYRK retirement evidence; 63/64 rows now have retirement, EP_SYRK remains unknown; fullaccepted61 unchanged.",
+  "bundle": "82d001fc8941d5715620b6e8793091dfbf4749eccc1364c60b42a469894a2fa8",
+  "code_provenance": [
+    {
+      "exact_git_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+      "raw_git_object_bytes_match": true,
+      "ref": {
+        "bytes": 10792,
+        "path": "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/accel-sim.cc",
+        "sha256": "36e11eb6aa8975b208d3f5e65f2a389bc93809483c17a15d3743c8fe272a37d8"
+      }
+    },
+    {
+      "exact_git_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+      "raw_git_object_bytes_match": true,
+      "ref": {
+        "bytes": 8867,
+        "path": "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/ag7_policyb_progress.h",
+        "sha256": "9b5b8767e7c1db2b729a6eaae91a50f56d8c6189aa415a5c36ff760f5a213201"
+      }
+    },
+    {
+      "exact_git_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "raw_git_object_bytes_match": true,
+      "ref": {
+        "bytes": 346652,
+        "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/shader.cc",
+        "sha256": "e67a486ef18abf2b8515bc5bb887812c058d29fe9fed8544320cc008e3b4ca11"
+      }
+    }
+  ],
+  "current_input_digest": "b51811aca9dc70cfe109fad8de73d5305647bc16d70b9289c1c918f4d3ab5d39",
+  "frozen_spec_ref": {
+    "bytes": 24043,
+    "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/34172369-6b57-4231-82a4-76f0e2b3e9e7/DOWNSTREAM_FROZEN_SPEC.json",
+    "sha256": "454b47f9b09b596308134696db9e29155622d6253c309332ee9ed95f4381350e"
+  },
+  "max_row": {
+    "completed": 2094276128,
+    "end": "NONE",
+    "epoch": 0,
+    "generation": "34172369-6b57-4231-82a4-76f0e2b3e9e7",
+    "input": "b51811aca9dc70cfe109fad8de73d5305647bc16d70b9289c1c918f4d3ab5d39",
+    "mono_ns": 9957075784438626,
+    "phase": "SIMULATE",
+    "phase_epoch": 5,
+    "pid": 1726908,
+    "roi": "fd3fbbf4975c2a1fe190a3394af1dd22978754eb75100e71308a5289591f0bf2",
+    "seq": 10707,
+    "start_ticks": 985001840,
+    "stream_id": 0,
+    "stream_scope": "whole_input",
+    "v": 1
+  },
+  "narrow_existing_route_retirement_evidence": true,
+  "native_pid_maps_ref": {
+    "bytes": 11653,
+    "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/34172369-6b57-4231-82a4-76f0e2b3e9e7/NATIVE_SIMULATOR_PID_AND_MAPS.json",
+    "sha256": "6b9a6066d2d0c45e6c1ea072290e484f92d91ccadb5fb61cd1a782016d849953"
+  },
+  "new_model_GPU_restore": false,
+  "new_scientific_or_performance_acceptance": false,
+  "observed_partial_retired_active_lane_instructions": 2094276128,
+  "original_resource_stop_unchanged": "DTC_ORIGINAL_RESOURCE_POLICY:INVALID_OR_MISSING_RESOURCE_SAMPLE_CADENCE",
+  "progress_ref": {
+    "bytes": 364449,
+    "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/34172369-6b57-4231-82a4-76f0e2b3e9e7/progress.jsonl.gz",
+    "sha256": "2555170952b3864feb673a1e04839daa4ce0fff0271d1dc4f2f58a1be6e926ad"
+  },
+  "progress_rows": 10707,
+  "release_bytes": 0,
+  "schema": "ROOT_DTC_SYRK_CLOSED_PROGRESS_ACTUAL_RETIRED_ACTIVE_LANE_INSTRUCTION_UNIT_PROOF_V1",
+  "sourceKEEP": true,
+  "trace_body_reads": 0,
+  "unit_chain": "shader_core_ctx::warp_inst_complete increments gpu_sim_insn by inst.active_count(); exact framework post-cycle SIMULATE passes gpu_tot_sim_insn+gpu_sim_insn; original producer serializes that uint64 as completed. Unit is retired active-lane instructions, not bytes/cycles/header count.",
+  "unix": 1793221957.8363354,
+  "whole_program_natural_completion": false
+}

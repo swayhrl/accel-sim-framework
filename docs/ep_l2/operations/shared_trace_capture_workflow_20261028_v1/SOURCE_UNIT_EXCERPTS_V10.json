@@ -1,0 +1,51 @@
+{
+  "schema": "V10_RETIRED_ACTIVE_LANE_UNIT_SOURCE_EXCERPTS_ONLY",
+  "Root_unit_proof_ref": {
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/current_EP_DTC64_existing_consumer_witness_audit_20261029_v1/ROOT_DTC_SYRK_PARTIAL2094276128_RETIRED_INSTRUCTION_UNIT_AND_ARCHIVE_BINDING_PROOF_V1.json",
+    "bytes": 4355,
+    "sha256": "4ca282fbcf54dfe9c5ac0ccb1473721d3d3694b12eb37e98f51b8891321c4588"
+  },
+  "whole_files_not_copied": true,
+  "excerpts": [
+    {
+      "source_ref": {
+        "bytes": 10792,
+        "path": "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/accel-sim.cc",
+        "sha256": "36e11eb6aa8975b208d3f5e65f2a389bc93809483c17a15d3743c8fe272a37d8"
+      },
+      "exact_git_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+      "Root_original_Git_object_bytes_match": true,
+      "line_first": 193,
+      "line_last": 202,
+      "excerpt_text": "      m_gpgpu_sim->cycle();\n      sim_cycles = true;\n      // Same-thread post-cycle observation; no queue pops, model writes or\n      // unsynchronized timer reads. Long blocking phases fail freshness upstream.\n      if (ag7_progress.enabled()) ag7_progress.observe(\"SIMULATE\",\n          m_gpgpu_sim->gpu_tot_sim_insn + m_gpgpu_sim->gpu_sim_insn, true, false,\n          \"NONE\", busy_streams.size() == 1 ?\n              static_cast<int64_t>(busy_streams.front()) : -1);\n      m_gpgpu_sim->deadlock_check();\n    } else {\n",
+      "excerpt_only_not_whole_source_snapshot": true
+    },
+    {
+      "source_ref": {
+        "bytes": 8867,
+        "path": "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/ag7_policyb_progress.h",
+        "sha256": "9b5b8767e7c1db2b729a6eaae91a50f56d8c6189aa415a5c36ff760f5a213201"
+      },
+      "exact_git_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+      "Root_original_Git_object_bytes_match": true,
+      "line_first": 100,
+      "line_last": 114,
+      "excerpt_text": "    const int bytes = std::snprintf(\n        packet, sizeof(packet),\n        \"{\\\"v\\\":1,\\\"pid\\\":%ld,\\\"start_ticks\\\":%llu,\"\n        \"\\\"generation\\\":\\\"%s\\\",\\\"input\\\":\\\"%s\\\",\\\"roi\\\":\\\"%s\\\",\"\n        \"\\\"seq\\\":%llu,\\\"mono_ns\\\":%llu,\\\"epoch\\\":0,\"\n        \"\\\"phase_epoch\\\":%llu,\\\"phase\\\":\\\"%s\\\",\\\"stream_id\\\":%lld,\"\n        \"\\\"stream_scope\\\":\\\"whole_input\\\",\\\"completed\\\":%llu,\"\n        \"\\\"end\\\":\\\"%s\\\"}\\n\",\n        static_cast<long>(pid_), static_cast<unsigned long long>(start_ticks_),\n        generation_, input_, roi_,\n        static_cast<unsigned long long>(sequence_ + 1),\n        static_cast<unsigned long long>(now),\n        static_cast<unsigned long long>(phase_epoch_), phase_,\n        static_cast<long long>(stream_id),\n        static_cast<unsigned long long>(completed), terminal);\n",
+      "excerpt_only_not_whole_source_snapshot": true
+    },
+    {
+      "source_ref": {
+        "bytes": 346652,
+        "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/shader.cc",
+        "sha256": "e67a486ef18abf2b8515bc5bb887812c058d29fe9fed8544320cc008e3b4ca11"
+      },
+      "exact_git_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "Root_original_Git_object_bytes_match": true,
+      "line_first": 2363,
+      "line_last": 2371,
+      "excerpt_text": "\n  if (m_config->gpgpu_clock_gated_lanes == false)\n    m_stats->m_num_sim_insn[m_sid] += m_config->warp_size;\n  else\n    m_stats->m_num_sim_insn[m_sid] += inst.active_count();\n\n  m_stats->m_num_sim_winsn[m_sid]++;\n  m_gpu->gpu_sim_insn += inst.active_count();\n  inst.completed(m_gpu->gpu_tot_sim_cycle + m_gpu->gpu_sim_cycle);\n",
+      "excerpt_only_not_whole_source_snapshot": true
+    }
+  ],
+  "unit": "retired active-lane instructions, not SASS records, bytes, cycles or kernel count"
+}
