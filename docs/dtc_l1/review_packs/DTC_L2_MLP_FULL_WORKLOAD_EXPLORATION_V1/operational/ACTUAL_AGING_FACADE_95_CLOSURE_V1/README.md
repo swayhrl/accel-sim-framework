@@ -1,0 +1,9 @@
+# Actual E-memory-facade95 closure
+
+The original owner1498278 installed qualified sourcebeecbf03 at09:47:21CST and a REAL subsequent E RuntimeFrames snapshot at09:49:48 reports.95. This closes the previously documented captured-facade88 gap. The same sample retains51,821,537,698B full growth; budget changes65,208,467,456→68,355,395,174B through the already-qualified memory formula, with no cost reduction. R/release tokens stay unchanged and no policy-change completion credit is minted.
+
+Only existing RuntimeFrames.res.resources was replaced. The actual post-install registry chain remains ScopeSYNC→qualified E resource gate→same journal→original registry. Same executor129593800303008,claims129593845997184,journal129593481701904 and addon thread are verified. E/resource/SYNC/queue errors are allnull. Source17+independent7CPU candidate and all-byte readback were published in9ec972e7 before this operation. Source/config drift uses the exact original guard sentinel and rollback; no worker strict/policy source or native46 bytes changed.
+
+The original scheduler automatically admitted another existing primary hybridsort DH-E384 afterward (PID2080834); Main installer did not submit a model or add a grant. Current fresh request budget remains345 with35 unspent at the recorded observation. Healthy simulations continue. The separate initial-negative and supplemental scan/M16 identities remain intact. Initial350/full35 scientific gates and mandatory uniform CH matching remain required, with no early inference/adoption.
+
+The user-requested existing results300 packet43d3db1a stays immutable; this is a small operational closure, not another performance analysis or result replacement. FixedCore/FW/binary/library,DRAM850,L2 capacity,DTC/Hash,input35/7UNRESOLVED,v0.23 and historical ledgers remain. Goal ACTIVE.
