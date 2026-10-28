@@ -1,0 +1,7 @@
+# Existing-result delta V2
+
+UTC 2026-10-28T04:46:06.897364+00:00: **312/350 accepted**, adding **12** existing naturally completed strict+archive/native-restore results beyond the immutable300-result checkpoint43d3db1a. Every old300 RESULT SHA,UUID and cycle count is unchanged. Read CYCLES_BY_PROGRAM.json and ALL_350_POINTS.json for current full35/profile/design coverage; NEW_RESULT_DOCUMENTS.json.gz contains only newly accepted byte-reconstructible RESULT documents and original SHAs. Combine this delta with the300 base for the complete existing result set. Snapshot is per-file, not a single global transaction.
+
+No raw-log rescan,new simulation,new GM or parameter selection was performed for this publication. Original engineering-negative and the independent scan/M16-V2 stay separate; no automatic replacement/union. Missing points are shown, not filled0/1. The matrices,Core/FW/binary/library,DRAM850,L2 capacity,DTC/Hash,input35/7UNRESOLVED,v0.23 and historical ledgers remain unchanged.
+
+The included short read-only CPU probe records17/384 visible cores used,no quota throttling,many idle physical cores,but real fullPSI24–25% triggering the original10% gate. It is not proof that hidden ancestor limits are absent. The CPU-spare single-point policy is still under CPU-only qualification and NOT activated by this publication. Existing healthy jobs continue; request budget remains345 with no new grant here. Non-P0 CH and full scientific phase remain incomplete; Goal ACTIVE.

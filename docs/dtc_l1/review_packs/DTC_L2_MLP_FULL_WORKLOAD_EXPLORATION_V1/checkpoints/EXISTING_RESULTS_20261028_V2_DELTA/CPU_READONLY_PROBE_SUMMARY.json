@@ -1,0 +1,111 @@
+{
+  "schema": "B_TIMED_CPU_PSI_READONLY_CONCLUSION_V1",
+  "UTC": "2026-10-28T04:05:33.139377+00:00",
+  "verdict": "VISIBLE_CPU_CAPACITY_NOT_SATURATED_UNCONDITIONAL_PSI_GATE_CONSERVATIVE_IN_MEASURED_WINDOW",
+  "measurement_seconds": 30.052625006064773,
+  "interval_metrics": [
+    {
+      "seconds": 15.02600072696805,
+      "used_cpu_cores": 17.022260656552668,
+      "quota_cores": 384.0,
+      "usage_fraction_of_quota": 0.04432880379310591,
+      "nr_periods_delta": 150,
+      "nr_throttled_delta": 0,
+      "throttled_usec_delta": 0,
+      "cgroup_CPU_PSI_full_interval_pct": 24.302068570023465,
+      "cgroup_CPU_PSI_some_interval_pct": 24.86336230035472,
+      "full_avg10": 24.0,
+      "some_avg10": 24.81,
+      "pressure_reasons": [
+        "cpu_pressure_full"
+      ],
+      "logical_busy_cores": 76.08051050204477,
+      "logical_cpu_count": 512,
+      "logical_idle_under5pct": 406,
+      "logical_busy_over50pct": 73,
+      "logical_busy_over90pct": 66,
+      "source_legal_cpu_candidate_count": 487,
+      "occupied_single_affinity_CPU_count": 24
+    },
+    {
+      "seconds": 15.026624279096723,
+      "used_cpu_cores": 17.325745234887176,
+      "quota_cores": 384.0,
+      "usage_fraction_of_quota": 0.04511912821585202,
+      "nr_periods_delta": 150,
+      "nr_throttled_delta": 0,
+      "throttled_usec_delta": 0,
+      "cgroup_CPU_PSI_full_interval_pct": 25.415249154213697,
+      "cgroup_CPU_PSI_some_interval_pct": 25.99019531906978,
+      "full_avg10": 24.81,
+      "some_avg10": 25.31,
+      "pressure_reasons": [
+        "cpu_pressure_full"
+      ],
+      "logical_busy_cores": 76.94130668456427,
+      "logical_cpu_count": 512,
+      "logical_idle_under5pct": 410,
+      "logical_busy_over50pct": 73,
+      "logical_busy_over90pct": 70,
+      "source_legal_cpu_candidate_count": 487,
+      "occupied_single_affinity_CPU_count": 24
+    }
+  ],
+  "own_models": 8,
+  "all_observed_models": 20,
+  "own_model_start_identity_matches": true,
+  "own_model_cpu_cores_sum": 7.482053048760887,
+  "own_model_cpu_cores_min": 0.8777753243187414,
+  "own_model_cpu_cores_max": 0.992904309236969,
+  "max_foreign_model_runqueue_wait_seconds": 8.483149784,
+  "namespace_constraints": {
+    "self_cgroup": "0::/",
+    "owner_cgroup": "0::/",
+    "pid1_cgroup": "0::/",
+    "self_cgroup_namespace": "cgroup:[4026535157]",
+    "pid1_cgroup_namespace": "cgroup:[4026535157]",
+    "cgroup2_mountinfo": [
+      "3175 3174 0:30 / /sys/fs/cgroup rw,nosuid,nodev,noexec,relatime - cgroup2 cgroup rw,nsdelegate,memory_recursiveprot"
+    ],
+    "visible_cgroup_files": {
+      "cpu.max": "38400000 100000",
+      "cpu.max.burst": "0",
+      "cpu.weight": "100",
+      "cpu.idle": "0",
+      "cpu.uclamp.min": "0.00",
+      "cpu.uclamp.max": "max",
+      "cpuset.cpus": "",
+      "cpuset.cpus.effective": "0-511",
+      "cpuset.cpus.partition": "member",
+      "cpuset.mems.effective": "0-1",
+      "cgroup.type": "domain",
+      "cgroup.controllers": "cpuset cpu io memory hugetlb pids rdma misc",
+      "cgroup.subtree_control": "",
+      "cpu.stat.local": "throttled_usec 0"
+    },
+    "cpu_online": "0-511",
+    "loadavg": "91.29 92.23 86.96 95/36912 2099189",
+    "owner_thread_affinity_masks": {
+      "32-63": 5,
+      "0-511": 81
+    },
+    "visible_ancestor_paths": [],
+    "ancestor_visibility_note": "Only hierarchy visible inside current cgroup mount/namespace is inspected; constraints above its mount root cannot be excluded."
+  },
+  "source_sha256": "6ad97e35de88ff5876bc0af674324f979f35c211f31d182976d2f66abb9c4854",
+  "policy_sha256": "6327541fff1ef0e4858e0494e9f7a43da271669500ac2e2bd57983b56d7c46c4",
+  "source_gate": "tools/l2_resources.py pressure_reasons: cpu_pressure.full.avg10 > cpu_pressure_full_avg10_pause(10), independent of low usage/no throttling/free legal cores",
+  "facts": [
+    "The PSI full counter really increased; this is not a stale cached avg10 assertion.",
+    "Visible cgroup quota384cores/cpuset0-511 are not close to saturation; no measured throttling.",
+    "All model-assigned logical CPUs were busy100%; some external models showed substantial runqueue wait. There are simultaneously hundreds of idle logical CPUs and487 source-legal candidates, with initial legal choices idle on distinct physical socket1 cores.",
+    "All8 measured own generations made substantial CPU progress, with matching PID/start identity.",
+    "No visible ancestor exists above namespace root0::/; constraints outside that visible mount/namespace remain unknown."
+  ],
+  "interpretation": "Evidence favors local affinity/runqueue contention plus an overconservative global PSI-only admission stop, rather than visible overall CPU/quota exhaustion. This is a resource-policy suitability issue, not demonstrated kernel or arithmetic corruption. A30s sample does not prove the reported20min history or rule out hidden ancestors.",
+  "recommendation": "If Main chooses a follow-up change, qualify an explicit versioned joint CPU-admission contract using usage/quota, throttling, legal idle physical cores and PSI together. Preserve RAM/disk/full forecast and existing healthy jobs. Match scheduler, native fresh gates and additional strict evidence; changing only chooser would cause native HOLD or mismatched proof. This report changes nothing.",
+  "production_mutations": 0,
+  "hooks_added": 0,
+  "model_starts": 0,
+  "signals": 0
+}
