@@ -1,0 +1,27 @@
+from pathlib import Path as P
+import sys,json,hashlib,copy,importlib.util,math,datetime
+sys.dont_write_bytecode=True
+B=P('/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/B/cpu_spare_policy_review_v1');A=B.parents[1]/'A/cpu_spare_memory_v1';E=B.parents[1]/'E/cpu_spare_execution_v1';source=A/'cpu_memory.py';s=importlib.util.spec_from_file_location('B_final_CPU_spare_pure_review',source);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);read=lambda p:json.loads(P(p).read_bytes());sha=lambda p:hashlib.sha256(P(p).read_bytes()).hexdigest();snap=read(E/'strict_fixture_20261028T052749764788Z/out/CPU_SPARE_MEMORY_ADMISSION_SNAPSHOT.json');p=snap['fresh_preflights'][0];e=p['cpu_evidence'];selected=p['context']['selected_cpu'];checks=[]
+def ck(name,v):assert v,name;checks.append(dict(name=name,result='PASS'))
+def reject(name,fn):
+ try:fn()
+ except (RuntimeError,AssertionError,KeyError,TypeError,ValueError)as err:checks.append(dict(name=name,result='EXPECTED_HOLD',error=str(err)[:230]));return
+ raise AssertionError(name+' unexpected acceptance')
+ck('positive_real_final_CPU_evidence_arithmetic',m.verify_cpu_evidence(e,selected)['status']=='PASS_VISIBLE_QUOTA_AND_PHYSICAL_SPARE_ONLY')
+ck('positive_complete_final_Native_memory_proof',m.verify_memory_proof(p,require_native=True)['status']=='PASS_NEW_CPU_SPARE_MEMORY_AND_ORIGINAL_BOUNDS')
+x=copy.deepcopy(e);x['first']['monotonic']=x['second']['monotonic']-.49;reject('sample_delta_below_0_5s',lambda:m.verify_cpu_evidence(x,selected))
+x=copy.deepcopy(e);old=x['first']['cgroups']['visible'][0];new=x['second']['cgroups']['visible'][0];dt=x['second']['cgroups']['sample_monotonic']-x['first']['cgroups']['sample_monotonic'];quota=int(new['quota'][0])/int(new['quota'][1]);new['stat']['usage_usec']=old['stat']['usage_usec']+math.ceil(quota*.75*dt*1e6);reject('used_plus_prospective_above_0_75quota',lambda:m.verify_cpu_evidence(x,selected))
+x=copy.deepcopy(e);x['second']['cgroups']['visible'][0]['stat']['nr_throttled']=x['first']['cgroups']['visible'][0]['stat']['nr_throttled']+1;reject('any_visible_throttle_delta',lambda:m.verify_cpu_evidence(x,selected))
+x=copy.deepcopy(e);del x['second']['cgroups']['visible'][0]['stat']['usage_usec'];reject('missing_usage_counter_cannot_default_to_zero',lambda:m.verify_cpu_evidence(x,selected))
+x=copy.deepcopy(e);top=x['second']['topology'];keys=sorted({(r['socket'],r['core'])for r in top});keep=set(keys[:3]);cpus=[r['cpu']for r in top if(r['socket'],r['core'])not in keep]
+for sample in[x['first'],x['second']]:sample['other_task_claims'].append(dict(pid=99999991,tid=99999991,start_ticks=1,state='S',processor=cpus[0],affinity=cpus,affinity_width=len(cpus),kind='PINNED_AFFINITY_JOB'))
+reject('fewer_than4_unoccupied_physical_cores',lambda:m.verify_cpu_evidence(x,None))
+x=copy.deepcopy(p);x['context']['kind']='OWNER_FRAME';reject('OWNER_FRAME_cannot_stand_in_for_Native',lambda:m.verify_memory_proof(x,require_native=True))
+x=copy.deepcopy(p);base=x['base_resource_snapshot'];c=x['context']['cohort'];rows=[r for r in base['own_ram_forecasts']if r['cohort']==c];assert len(rows)==1;removed=rows[0]['additional_reserved_bytes'];base['own_ram_forecasts']=[r for r in base['own_ram_forecasts']if r['cohort']!=c];base['total_projected_additional_RAM_bytes']-=removed
+for key in ['reserved_additional_live_and_candidate_RAM_bytes']:
+ if key in base:base[key]=base['total_projected_additional_RAM_bytes']
+if'own_ram_forecast_count'in base:base['own_ram_forecast_count']=len(base['own_ram_forecasts'])
+if'own_forecast_additional_RAM_bytes'in base:base['own_forecast_additional_RAM_bytes']=sum(r['additional_reserved_bytes']for r in base['own_ram_forecasts'])
+old95=m._OLD.project(base);x['old95_resource_snapshot']=old95;x['growth_unchanged_bytes']=old95['total_projected_additional_RAM_bytes'];raw=old95['admission_decision']['pressure_reasons'];effective=[v for v in raw if v!='cpu_pressure_full'];x['raw_pressure_reasons']=raw;x['effective_pressure_reasons']=effective;x['effective_decision']=dict(old95['admission_decision'],pressure_reasons=effective,pressure_pause_new=bool(effective),pass_admission=not effective and old95['total_projected_additional_RAM_bytes']<=m.budget(old95));reject('drop_candidate_and_recompute_all_resource_math',lambda:m.verify_memory_proof(x,require_native=True))
+reject('another_cohort_cannot_borrow_singleton_exception',lambda:m.project_for_candidate(p['base_resource_snapshot'],p['config'],'NOT_THE_REGISTERED_SINGLETON',selected_cpu=selected,evidence=e,context={'kind':'NATIVE'}))
+q=read(A/'candidate/CPU_JOINT_QUALIFICATION.json');owner=E/'cpu_owner.py';extra=E/'cpu_extra_strict.py';assert sha(source)==q['qualified_sources']['library']and sha(owner)==q['qualified_sources']['owner']and sha(extra)==q['qualified_sources']['extra_strict'];report=dict(schema='B_CPU_SPARE_FINAL_INDEPENDENT_10_CASES_V1',status='PASS',UTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),source_sha256=dict(library=sha(source),owner=sha(owner),extra_strict=sha(extra)),joint_QA_sha256=sha(A/'candidate/CPU_JOINT_QUALIFICATION.json'),source_fixture=str(E/'strict_fixture_20261028T052749764788Z'),fixture_read_only=True,cases=checks,total_cases=len(checks),negative_cases=8,full_original_performance_not_executed_by_this_review=True,production_mutations=0,model_starts=0,new_grants=0,hooks=0);(B/'INDEPENDENT_CPU_CHECKS.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report))

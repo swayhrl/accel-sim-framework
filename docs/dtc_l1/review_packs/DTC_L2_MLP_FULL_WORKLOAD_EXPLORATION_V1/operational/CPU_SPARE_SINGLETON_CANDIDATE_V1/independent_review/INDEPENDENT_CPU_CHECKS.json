@@ -1,0 +1,70 @@
+{
+  "schema": "B_CPU_SPARE_FINAL_INDEPENDENT_10_CASES_V1",
+  "status": "PASS",
+  "UTC": "2026-10-28T05:42:14.321062+00:00",
+  "source_sha256": {
+    "library": "5b081e91077d84856f077d3f2fcbbf9f2aee97af6a6ed3297942cae44a304b54",
+    "owner": "332ee16198f6d13cd36992ac941371e46800a45902ad89df06ecd1a04a7f4b8d",
+    "extra_strict": "625d9d89153dec54137c8915b4b439d1fd77baf4b1e3bd29458d46976b6b74c4"
+  },
+  "joint_QA_sha256": "3e301f60c7cb58e31e56a08dee8dbce129f778e6ccca1d59cd3e91784e9127ce",
+  "source_fixture": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/E/cpu_spare_execution_v1/strict_fixture_20261028T052749764788Z",
+  "fixture_read_only": true,
+  "cases": [
+    {
+      "name": "positive_real_final_CPU_evidence_arithmetic",
+      "result": "PASS"
+    },
+    {
+      "name": "positive_complete_final_Native_memory_proof",
+      "result": "PASS"
+    },
+    {
+      "name": "sample_delta_below_0_5s",
+      "result": "EXPECTED_HOLD",
+      "error": "RESOURCE_HOLD_CPU_SPARE: invalid CPU sample duration"
+    },
+    {
+      "name": "used_plus_prospective_above_0_75quota",
+      "result": "EXPECTED_HOLD",
+      "error": "RESOURCE_HOLD_CPU_SPARE: used+prospective exceeds .75 quota"
+    },
+    {
+      "name": "any_visible_throttle_delta",
+      "result": "EXPECTED_HOLD",
+      "error": "RESOURCE_HOLD_CPU_SPARE: visible quota throttled"
+    },
+    {
+      "name": "missing_usage_counter_cannot_default_to_zero",
+      "result": "EXPECTED_HOLD",
+      "error": "'usage_usec'"
+    },
+    {
+      "name": "fewer_than4_unoccupied_physical_cores",
+      "result": "EXPECTED_HOLD",
+      "error": "RESOURCE_HOLD_CPU_SPARE: fewer than4 unoccupied idle physical cores"
+    },
+    {
+      "name": "OWNER_FRAME_cannot_stand_in_for_Native",
+      "result": "EXPECTED_HOLD",
+      "error": "RESOURCE_HOLD_CPU_SPARE: OWNER_FRAME/CHOOSE or padding not a new NOFLAG native proof"
+    },
+    {
+      "name": "drop_candidate_and_recompute_all_resource_math",
+      "result": "EXPECTED_HOLD",
+      "error": "RESOURCE_HOLD_CPU_SPARE: native candidate claim RAM absent/duplicated/discounted"
+    },
+    {
+      "name": "another_cohort_cannot_borrow_singleton_exception",
+      "result": "EXPECTED_HOLD",
+      "error": "RESOURCE_HOLD_CPU_SPARE: not the finite CPU exception"
+    }
+  ],
+  "total_cases": 10,
+  "negative_cases": 8,
+  "full_original_performance_not_executed_by_this_review": true,
+  "production_mutations": 0,
+  "model_starts": 0,
+  "new_grants": 0,
+  "hooks": 0
+}
