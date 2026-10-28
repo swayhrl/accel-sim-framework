@@ -23,3 +23,7 @@
 ## V5增量进展
 
 [公共56/56、Gaussian部分结果复用与CPU流水恢复](CURRENT_PROGRESS_V5.md)。[增量证据索引](EVIDENCE_INDEX_V5.json)。历史版本保持原样。
+
+## V6资产优先范围修订
+
+[最新交付范围与Gaussian后处理完成情况](CURRENT_PROGRESS_V6.md)。[增量证据索引](EVIDENCE_INDEX_V6.json)。161项全量适配已取消为本轮硬门槛，未启动专项延后。V4/V5保留其时间戳状态。
