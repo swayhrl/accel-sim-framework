@@ -31,3 +31,7 @@
 ## V7实际归档与范围收尾
 
 [公共64/64、typed8/153及超大多流RAW归档例外](CURRENT_PROGRESS_V7.md)。[15份增量验收证据](EVIDENCE_INDEX_V7.json)。[当前交付范围规则](WORKFLOW_DELIVERY_SCOPE_V7.json)。全量161与全库SM70正文恢复均不再是本轮硬门槛；超大多流fullPOST按用户选择留明确缺口。
+
+## V8 公共68与原33交付总账
+
+[当前68常规与68裁剪、独立RAW3及24完成9待办](CURRENT_PROGRESS_V8.md)。[25份原始增量证据](EVIDENCE_INDEX_V8.json)。[原33项精确表](ORIGINAL33_DELIVERY_TABLE_V8.md)。[机器缺口总账](CURRENT_DELIVERY_GAPS_AND_DEFERRED_EXCEPTIONS_V8.json)。统一66保持冻结时点，live68可独立读取；旧版本原样保留。
