@@ -1,0 +1,7 @@
+# Existing-result delta V3
+
+UTC 2026-10-28T07:37:50.809299+00:00: **314/350 accepted**, adding **2** existing naturally completed strict+archive/native-restore results beyond the immutable312-result checkpointa3695d2a. Every old312 RESULT SHA,UUID and cycle count is unchanged. Read CYCLES_BY_PROGRAM.json and ALL_350_POINTS.json for current full35/profile/design coverage; NEW_RESULT_DOCUMENTS.json.gz contains only newly accepted byte-reconstructible RESULT documents and original SHAs. Combine this delta with the312 result set for the complete existing result set. Snapshot is per-file, not a single global transaction.
+
+No raw-log rescan,new simulation,new GM or parameter selection was performed for this publication. Original engineering-negative and the independent scan/M16-V2 stay separate; no automatic replacement/union. Missing points are shown, not filled0/1. The matrices,Core/FW/binary/library,DRAM850,L2 capacity,DTC/Hash,input35/7UNRESOLVED,v0.23 and historical ledgers remain unchanged.
+
+CPU2 is now actually active on the same original owner/controller (deployment1194c64a). The first CPU2 sgemm DH-Q128 naturally completed409417 cycles and independently replayed original physics strict+CPU2/IO, genuine164 archive/native2128 restore25entries. Its small actual readonly proof and manifest are included. The earlier CPU1 sgemm DH-M8 accepted409430 cycles; both remain distinct scientific cells. The request budget remains345 with no new grant here. Non-P0 matched CH and full scientific phase remain incomplete; Goal ACTIVE.
