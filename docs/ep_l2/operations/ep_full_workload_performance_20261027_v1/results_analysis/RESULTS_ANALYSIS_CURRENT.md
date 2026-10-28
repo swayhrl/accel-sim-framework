@@ -175,7 +175,7 @@ Source92 P2 is compared with Source92 P1 only. It includes the conservative nati
 
 Metadata-only annotation UTC: 2026-10-28T10:11:16.550678+00:00; Main failure audit UTC: 2026-10-28T10:09:22.329206+00:00. Accepted-results population and analysis as-of remain unchanged at 2026-10-28T07:55:32.642109+00:00 (210 accepted endpoints).
 
-The two spent CLOSED_UNACCEPTED points are the same ParticlefilterNaive input in S and WV_ZERO_RO, both T=0/M=0, same Source78/ELF. **PROVEN:** kernel1 completed at91440 cycles/8 CTA; command ordinal9, the third subsequent HtoD to0x7ff9f3504000 for8000 B, reaches the explicit host-prefill refusal and SIGABRT. Peak RSS is336 MiB and the resource stop reason is null. These are partial-kernel measurements, never whole-application performance endpoints.
+The two spent CLOSED_UNACCEPTED points are the same ParticlefilterNaive input in S and WV_ZERO_RO, both T=0/M=0, same Source78/ELF. **PROVEN:** kernel1 completed at91440 cycles/8 CTA; command ordinal9, the third subsequent HtoD to0x7ff9f3504000 for8000 B, reaches the explicit host-prefill refusal and SIGABRT. Peak RSS is336 MiB and the resource stop reason is null. These are first-kernel-only / partial-application measurements: kernel1 completed, but the nine-kernel application did not. They are never whole-application performance endpoints.
 
 At the last printed boundary all64 slices have pending-resource fields0 and terminal_clean1. That establishes no inflight work; it does not establish a cache without dirty resident data. The first kernel records500 resident-bank write operations,0 DRAM read/write issues and0 production Tag-way allocation blocks. Historical per-slice dirty maxima are not final occupancy or a simultaneous GPU count.
 
