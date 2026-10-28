@@ -19,10 +19,15 @@
 | 心跳瞬时不可见 | SC已完成472项后，一次ENOENT导致退出。 | 仅对短暂读取竞争有界重读，身份和新鲜期限不放宽；采用已闭472而非重算。 | [E016](evidence/E016_REMOTE_DERIVED_TERMINAL.json) [E017](evidence/E017_CURRENT109_BODY_SHA_ADOPTION472_REPLAY.json) |
 | 容量文本替换误伤余量 | 2GiB模型容量改动连带将16GiB物理余量变成12GiB。 | 保留真实运行偏差，单独修正并测边界；以后按精确语法表达式修改。 | [E010](evidence/E010_ROOT_INDEPENDENT_FULL126_FUNCTIONAL_ACCEPTANCE_V1.json) |
 
+| 握手JSON提前可见 | 文件已出现但JSON尚未写完，ACK读取失败。 | 关闭并同步临时文件后原子发布；仅短暂不存在或JSON读取竞争有界重读。 | [E018](evidence/E018_SOP_HANDSHAKE_VISIBILITY_ADDITION_V18.json) |
+| SSH不保留传入的锁FD | pass_fds参数正确，实际SSH仍关闭FD，远端未结束而锁已空闲。 | 由不exec的Python relay持有真实锁FD，独立核实远端闭合后释放。 | [E019](evidence/E019_ACTUAL_PYTHON_RELAY_4LEASE_REALSSH_PARENTCLOSE_LIFECYCLE_V4.json) |
+| CURRENT时间戳触发误拒 | 版本不变，仅时间刷新导致发布CAS失败。 | 仅忽略明确时间字段的值；完整键集、版本、路径、计数及不可变目录SHA仍严格核对。 | [E020](evidence/E020_ROOT_INDEPENDENT_PUBLIC48_PAIR_ACCEPTANCE_V1.json) |
+| 心跳线程执行NAS操作 | 旧失败没有精确停止原因；源码显示资源采样会读取NAS自身文件。 | 发送与物理采样分开；缓存已验证源码SHA，保留实际资源超时和失败停止；用真实函数与管道验证。旧失败原因仍标未知。 | [E021](evidence/E021_ROOT_INDEPENDENT_SOURCE_RUNTIME_AND_CONDITIONAL_CONTINUOUS19_ADMISSION_V20R3.json) [E022](evidence/E022_ACTUAL_CACHED_COLLECTOR_AND_HB_DELAY_STOP_CASES_V20R3.json) [E023](evidence/E023_REMOTE_CLOSED_PROPOSAL.json) |
+
 ## 状态和适用范围
 
 表中的历史运行事实保持原样。部分后续修复仍处于候选或续跑阶段，是否实际部署和完成以对应运行回执为准。特别是心跳有界重读不能凭文档当作已续跑成功。
 
 Gaussian64已有的完整功能回放可以复用。零有效CALL或RET不证明通用CFI支持；历史12GiB资源门的运行也不声称全程符合16GiB要求。新增默认采用轻量准入，归档和公共发布仍须实际完成。
 
-详细原因、适用限制、原始路径和完整SHA见[机器可读问题清单](PROVEN_PITFALLS_V1.json)及[证据索引](EVIDENCE_INDEX.json)。
+详细原因、适用限制、原始路径和完整SHA见[机器可读问题清单](PROVEN_PITFALLS_V2.json)及[证据索引](EVIDENCE_INDEX.json)。

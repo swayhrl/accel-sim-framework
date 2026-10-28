@@ -1,0 +1,35 @@
+{
+  "Root_existing_SOP_addition_candidate": true,
+  "actual_observation": "D17 capture exit0 and full original remote ACK chain closed; NativeHOLD recorded JSONDecodeError char0 without durable traceback/rawbytes; line96 ACK-consumed read is inferred by receipt order and still-held Native4.",
+  "cause_status": "SOURCE_MECHANISM_PROVEN_ACTUAL_FIRST_FAILED_RAW_NOT_CAPTURED",
+  "id": "SHARED_HANDSHAKE_PUBLISH_VISIBILITY",
+  "no_original_NativeReleased_fabricated": true,
+  "not_production_approved": true,
+  "prevention": "Run the actual common writer/reader concurrency case, preserve first failed raw metadata in diagnostic, never equate path existence with full publication, and separate launch resource admission from already-closed resource release.",
+  "proofs": [
+    {
+      "bytes": 8918,
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/remaining22_sc_v7_cpu6_coactivity_prepare_20261029_v17/actual_continuous22_1793155122762292318/ACTUAL_CAPTURE0_ACK_READ_HOLD_ROOT_RECONCILE_EVIDENCE_V17.json",
+      "sha256": "1208011654a479d41db4db66d5fc0acb7c7aab5d3a2d9b2c200a88ec03eb5567"
+    },
+    {
+      "bytes": 7200,
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/remaining21_sc_v7_json_handshake_prepare_20261029_v18/ACTUAL_SHARED_HANDSHAKE_VISIBILITY_AND_BINDING_TEST_V18.json",
+      "sha256": "bcd9a80b66cafc9c7fa306c9a4d7924cdb42141ca62411878962771a8349c664"
+    },
+    {
+      "bytes": 5736,
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/remaining21_sc_v7_json_handshake_prepare_20261029_v18/test_shared_handshake_visibility_v18.py",
+      "sha256": "f1a055a94bbced189170a3a93274520269820fe0e11dfb16564256f22279c465"
+    },
+    {
+      "bytes": 1766,
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/remaining21_sc_v7_json_handshake_prepare_20261029_v18/SHARED_CODE_AND_ACTUAL_TEST_REVIEW_V18.json",
+      "sha256": "41b9140f334f1512ce376646a9c7e1c025ccab2cdac799dd2952abba6cf05b75"
+    }
+  ],
+  "repair_candidate": "Shared C.save publish-once hardlink, EEXIST non-overwrite; Native ACK reader retries only ENOENT/JSONDecode <=2s within old deadline; valid wrong scope/hash rejects immediately; failure saves explicit stage+traceback+raw length/SHA, no rawnonce.",
+  "reproducer": "Actual frozen old C.save writer paused after real create and before write; another process saw empty final name and JSONDecode. New closed/fsynced temporary hardlink publication did not expose final until complete.",
+  "source_mechanism": "Original C.save creates the final path with open xb before writing and fsync; exists does not establish complete JSON visibility.",
+  "unix": 1793157064.668335
+}
