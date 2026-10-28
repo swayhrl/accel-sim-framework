@@ -1,0 +1,15 @@
+--- frozen_v4/shared/cfi_v4.h
++++ private_candidate/shared/cfi_v4.h
+@@ -21,7 +21,11 @@
+  std::string opcode,sass,reason;
+ };
+ inline std::string op_token(const std::string&s) {
+- std::istringstream in(s);std::string x;in>>x;if(!x.empty()&&x[0]=='@')in>>x;return x;
++ std::istringstream in(s);std::string x;in>>x;if(!x.empty()&&x[0]=='@')in>>x;
++ // NVBit emits operandless padding as NOP;. Preserve full SASS but normalize
++ // one final statement delimiter only when no further token follows.
++ if(x.size()>1&&x.back()==';'){std::string extra;if(!(in>>extra))x.pop_back();}
++ return x;
+ }
+ inline Plan classify(const std::string& sass,const std::vector<unsigned>& src,
+                      const std::vector<unsigned>&dst,const std::set<uint64_t>&pcs) {

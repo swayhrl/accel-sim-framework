@@ -1,0 +1,98 @@
+{
+  "schema": "SHARED_TRACE_CAPTURE_AND_LIGHT_SIMULATOR_ADMISSION_POLICY_V1",
+  "status": "USER_AUTHORIZED_WORKFLOW_POLICY_EXECUTION_ADAPTER_PENDING_ACCEPTANCE",
+  "effective_user_instruction": "不用每个程序都在模拟器完整重放，应该有更轻量级的方法验证下能上模拟器即可；总结遇到的问题并将采集流程归档。",
+  "scope": {
+    "Native": "hrl-174-new",
+    "GPU": "gpu109 RTX4080",
+    "durable_storage": "/root/share/mnt164/huangrulin/traces",
+    "public_entry": "/root/workspace/assets/traces",
+    "identity": [
+      "binary_sha256",
+      "argv",
+      "input_identity_or_generation_recipe",
+      "producer_sha256",
+      "format_profile"
+    ]
+  },
+  "consumer_acceptance": {
+    "default": "SIMULATOR_ADMISSION_SMOKE_PASS",
+    "full_application_model_required": false,
+    "reuse_existing_full_functional_evidence": true,
+    "phases": [
+      "EXACT_CONTRACT_AND_ALL_INDEX_HEADERS",
+      "REUSED_POST_FORMAT_AND_ACTUAL_FEATURE_INVENTORY",
+      "BOUNDED_REAL_CONSUMER_COMPLETE_CTA_SMOKE"
+    ],
+    "suggested_starting_subset": {
+      "complete_CTAs": [
+        1,
+        8
+      ],
+      "representative_kernels_max": 3
+    },
+    "suggested_initial_budget": {
+      "wall_seconds": 60,
+      "max_cycles": 250000
+    },
+    "suggestions_are_not_runtime_enforcement": true,
+    "new_feature_escalation": "Targeted complete CTA witness and producer/format family regression; no automatic full application replay",
+    "required_receipt_fields": [
+      "parent_asset_and_subset_sha",
+      "consumer_core_config_sha",
+      "represented_features",
+      "actual_CTA_selection",
+      "nonzero_retirement",
+      "real_wait_returncode",
+      "natural_subset_completion",
+      "uncovered_features"
+    ],
+    "not_granted": [
+      "WHOLE_INPUT_FUNCTIONAL_BY_SMOKE",
+      "NUMERIC_CORRECTNESS",
+      "PERFORMANCE_ACCURACY",
+      "GENERIC_CALL_RET_SUPPORT",
+      "SCIENTIFIC_QUALIFICATION"
+    ]
+  },
+  "delivery_requirements": {
+    "capture": true,
+    "necessary_POST_and_integrity": true,
+    "regular_archive": true,
+    "complete_CTA_derived_archive": true,
+    "receiver_and_COMMIT_closure": true,
+    "public_catalog": true,
+    "applicable_consumer": true,
+    "archive_or_public_NA_promotion_for_counter_increase": false
+  },
+  "parallelism": {
+    "GPU": "One EP capture at a time using actual shared canonical lock and real-time Comfy queue per job",
+    "CPU": "Continue bounded POST, derivation, adapters and archive work during GPU wait; use current admitted resource envelope",
+    "no_foreign_signal_unload_or_lease_mutation": true
+  },
+  "reuse_and_recovery": {
+    "never_recapture_closed_capture_for_POST_failure": true,
+    "reuse_accepted_SHA_and_POST": true,
+    "failed_stage_only_retry": true,
+    "old_receipts_immutable": true,
+    "source_KEEP": true,
+    "release_bytes": 0,
+    "full_SM70_Native_body_restore": "CANCELLED_BY_USER",
+    "heartbeat_retry_candidate": {
+      "only": [
+        "ENOENT",
+        "JSON_DECODE_READ_RACE"
+      ],
+      "max_total_seconds": 2,
+      "interval_seconds": 0.1,
+      "scope_and_run_match": true,
+      "max_age_seconds": 20,
+      "persistent_missing_or_mismatch": "FAIL_CLOSED_AND_DIAGNOSE"
+    }
+  },
+  "implementation_status": {
+    "existing_capture_POST_COPY_publication": "Continue exact admitted frozen entries",
+    "new_light_consumer_adapter": "CANDIDATE_UNTIL_ROOT_CODE_REVIEW_AND_ACTUAL_SMOKE_RECEIPT",
+    "pipeline_requirement_change": "Preserve four delivery levels; type consumer acceptance as SMOKE, retain old FULL evidence"
+  }
+}
