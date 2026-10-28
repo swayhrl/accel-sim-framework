@@ -1,0 +1,7 @@
+# Small E-priority memory-facade correction: qualified candidate
+
+The actual09:08 post-install observation revealed that the old E RuntimeFrames used a SEPARATE facade captured directly from B5, so E still read.88 while actual native workers already bound.95. Source/strict/performance of those workers are valid; the extra E gate was conservative. This packet records the real gap rather than claiming global throughput had already changed everywhere.
+
+Candidate beecbf03 changes ONLY existing RuntimeFrames.res.resources. In broad mode it projects the complete existing B5 snapshot using the already-qualified memory library's.95/10GiB arithmetic. All future growth/costs/discounts/CPU/disk/pressure fields survive; finite/freshFalse semantics stay exact and already95 data cannot be double projected. Source/config errors use the exact original FrameUnavailable and original rollback. Main installation/restore holds existing agingRLock and rebases previousC without changingR or minting release credit.
+
+17 focused real-interface CPU checks plus7 independent B checks pass. Existing RuntimeFrames,FrameGuard,CPU,SYNC,E qualifier,global resource function,journal/executor/claims and immutable MEM6/native46 remain intact. No model/grant/signal by candidate or publication. This is NOT deployment evidence; Main will next install and observe a real Eframe95. Existing results300 checkpoint43d3db1a is already published and unchanged. Fixed35 inputs/7UNRESOLVED,DRAM850,L2 capacity,DTC/Hash,v0.23 and old ledgers remain. Goal ACTIVE.
