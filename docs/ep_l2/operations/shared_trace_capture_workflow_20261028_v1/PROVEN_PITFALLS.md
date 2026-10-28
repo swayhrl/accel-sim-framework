@@ -1,7 +1,6 @@
 # trace采集与处理的已证实问题
 
 先区分环境、控制入口、采集正文和消费者问题，再按失败阶段修复。原始日志和失败回执保留，已有采集、POST与归档结果直接复用。
-
 | 问题 | 实际表现 | 处理和防再犯 | 证据 |
 | --- | --- | --- | --- |
 | 空闲状态过期 | 历史空闲回复不能代表当前GPU可用。 | 逐项核实时队列，取同一共享锁后复核；真实FD随所属进程继承，闭合后释放。 | [E001](evidence/E001_ACTUAL_FIRST_JOB_POSITIVE_CAPTURE_HAND_BACK_V15.json) |
@@ -18,7 +17,6 @@
 | NAS控制锁属性映射 | NAS私有锁呈现的owner和mode与本地期望不同。 | 仅0字节控制锁转109本地0700目录和0600文件；正文与日志继续164。 | [E014](evidence/E014_ROOT_INDEPENDENT_LOCAL_PACER_SINGLE_ADMISSION_V6.json) [E015](evidence/E015_REMOTE_DERIVED_START.json) |
 | 心跳瞬时不可见 | SC已完成472项后，一次ENOENT导致退出。 | 仅对短暂读取竞争有界重读，身份和新鲜期限不放宽；采用已闭472而非重算。 | [E016](evidence/E016_REMOTE_DERIVED_TERMINAL.json) [E017](evidence/E017_CURRENT109_BODY_SHA_ADOPTION472_REPLAY.json) |
 | 容量文本替换误伤余量 | 2GiB模型容量改动连带将16GiB物理余量变成12GiB。 | 保留真实运行偏差，单独修正并测边界；以后按精确语法表达式修改。 | [E010](evidence/E010_ROOT_INDEPENDENT_FULL126_FUNCTIONAL_ACCEPTANCE_V1.json) |
-
 | 握手JSON提前可见 | 文件已出现但JSON尚未写完，ACK读取失败。 | 关闭并同步临时文件后原子发布；仅短暂不存在或JSON读取竞争有界重读。 | [E018](evidence/E018_SOP_HANDSHAKE_VISIBILITY_ADDITION_V18.json) |
 | SSH不保留传入的锁FD | pass_fds参数正确，实际SSH仍关闭FD，远端未结束而锁已空闲。 | 由不exec的Python relay持有真实锁FD，独立核实远端闭合后释放。 | [E019](evidence/E019_ACTUAL_PYTHON_RELAY_4LEASE_REALSSH_PARENTCLOSE_LIFECYCLE_V4.json) |
 | CURRENT时间戳触发误拒 | 版本不变，仅时间刷新导致发布CAS失败。 | 仅忽略明确时间字段的值；完整键集、版本、路径、计数及不可变目录SHA仍严格核对。 | [E020](evidence/E020_ROOT_INDEPENDENT_PUBLIC48_PAIR_ACCEPTANCE_V1.json) |
@@ -30,4 +28,13 @@
 
 Gaussian64已有的完整功能回放可以复用。零有效CALL或RET不证明通用CFI支持；历史12GiB资源门的运行也不声称全程符合16GiB要求。新增默认采用轻量准入，归档和公共发布仍须实际完成。
 
-详细原因、适用限制、原始路径和完整SHA见[机器可读问题清单](PROVEN_PITFALLS_V2.json)及[证据索引](EVIDENCE_INDEX.json)。
+详细原因、适用限制、原始路径和完整SHA见[机器可读问题清单](PROVEN_PITFALLS_V3.json)及[证据索引](EVIDENCE_INDEX.json)。
+
+## 后续实际故障及修复边界
+
+- **远端采集与Native控制预算混用**：旧入口把67GiB预测余量用于只做调度的Native进程。现在按实际2GiB控制角色验收，保留主机16GiB、cgroup8GiB物理余量和独立心跳；这不授予Native重计算资格，也不改其他项目预算。证据：[E024](evidence/E024_ROOT_REMOTE_CAPTURE_CONTROL_ROLE4_PHYS16_CG8_DECISION_V1.json)。
+- **普通CPU进程被当作GPU冲突**：scan曾因fwupd约214MiB RSS超过旧128MiB阈值而保留退出。CPU进程现作为观测信息；实际内存、OOM、PSI、GPU/显存和共享锁检查继续严格执行。此次partial仍不算采集成功。证据：[E025](evidence/E025_ROOT_109_BOUNDED_CPU_COACTIVITY_POLICY_V1.json)、[E026](evidence/E026_REMOTE_CLOSED_PROPOSAL.json)。
+- **参数契约沿用旧输入**：Gaussian-s256旧尝试仍绑定-s64参数SHA，4.445秒后真实返回-6。修复只改精确参数绑定，并在GPU启动前核对profile、binary、NUL分隔argv、语义映射和cubin五个字段。新尝试171.055秒正常退出，但不因此宣称后处理、模拟器或归档完成。证据：[E027](evidence/E027_application.stderr.log)、[E028](evidence/E028_ROOT_INDEPENDENT18_AND_EXACT_SCOPE_CONTRACT_ADMISSION_V6.json)、[E029](evidence/E029_LEAF_TERMINAL.json)。
+- **有界SSHFS客户端线程分配失败**：旧私有挂载报告线程创建和内存分配失败，复制任务无法写终态。AS与线程数限制的独立贡献尚未完全隔离。新挂载固定单线程-s，保留AS128及旧挂载；仅在确认远端任务消失、cgroup空、精确PID身份后回收故障守护。小规模检查通过，长复制仍待COMMIT、全接收SHA和清理回执闭合。证据：[E030](evidence/E030_ACTUAL_FAST_PROVIDER_FAILURE_AND_OWNED_STATE_EVIDENCE_V8.json)、[E031](evidence/E031_ACTUAL_SINGLETHREAD_ALIAS_METADATA_AND_SMALL_SHA_STABILITY_V2.json)、[E032](evidence/E032_ROOT_FAILED_RETAINERS_RETIREMENT_1793174718206039746.json)。
+
+新协议实际轻量验收：template完整CTA正常退出，17条源记录，544个源lane操作加128个辅助操作，实际退休672个lane操作、5416周期；仅授予SMOKE_NOT_FULL。证据：[E033](evidence/E033_ROOT_INDEPENDENT_ACTUAL_TEMPLATE_SMOKE_ACCEPTANCE_V1.json)。
