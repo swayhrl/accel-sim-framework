@@ -28,7 +28,7 @@
 
 Gaussian64已有的完整功能回放可以复用。零有效CALL或RET不证明通用CFI支持；历史12GiB资源门的运行也不声称全程符合16GiB要求。新增默认采用轻量准入，归档和公共发布仍须实际完成。
 
-详细原因、适用限制、原始路径和完整SHA见[机器可读问题清单](PROVEN_PITFALLS_V3.json)及[证据索引](EVIDENCE_INDEX.json)。
+详细原因、适用限制、原始路径和完整SHA见[机器可读问题清单](PROVEN_PITFALLS_V4.json)及[证据索引](EVIDENCE_INDEX.json)。
 
 ## 后续实际故障及修复边界
 
@@ -38,3 +38,9 @@ Gaussian64已有的完整功能回放可以复用。零有效CALL或RET不证明
 - **有界SSHFS客户端线程分配失败**：旧私有挂载报告线程创建和内存分配失败，复制任务无法写终态。AS与线程数限制的独立贡献尚未完全隔离。新挂载固定单线程-s，保留AS128及旧挂载；仅在确认远端任务消失、cgroup空、精确PID身份后回收故障守护。小规模检查通过，长复制仍待COMMIT、全接收SHA和清理回执闭合。证据：[E030](evidence/E030_ACTUAL_FAST_PROVIDER_FAILURE_AND_OWNED_STATE_EVIDENCE_V8.json)、[E031](evidence/E031_ACTUAL_SINGLETHREAD_ALIAS_METADATA_AND_SMALL_SHA_STABILITY_V2.json)、[E032](evidence/E032_ROOT_FAILED_RETAINERS_RETIREMENT_1793174718206039746.json)。
 
 新协议实际轻量验收：template完整CTA正常退出，17条源记录，544个源lane操作加128个辅助操作，实际退休672个lane操作、5416周期；仅授予SMOKE_NOT_FULL。证据：[E033](evidence/E033_ROOT_INDEPENDENT_ACTUAL_TEMPLATE_SMOKE_ACCEPTANCE_V1.json)。
+
+## 控制通道、资源锁和计数单位
+
+- **心跳不再依赖NAS审计文件**：G6在读取自身频繁替换的心跳时触发同FD元数据检查失败；另一个CPU批次虽物理门通过、STOP为false，仍在NAS诊断间隔47.9秒后触发心跳断言。旧失败没有保存全部比较操作数，不虚构唯一底层FUSE原因。新通道把sender与kernel sampler独立运行，通过SSH stdin给远端读取线程传递严格scope/run/序号/20秒新鲜度/STOP与EOF状态。真实SSH/systemd验证中，审计线程暂停22.022秒，控制消息和新采样继续到达。证据：[E037](evidence/E037_ACTUAL_CPU_A001_FAILURE_PREFIX_AND_POSITIVE_RESOURCE_HAND_BACK_V1.json),[E034](evidence/E034_ROOT_SHARED_STDIN_CONTROL_COMPONENT_ADMISSION_V1.json),[E035](evidence/E035_ssh_stdin_light_control_v1.py),[E036](evidence/E036_ACTUAL_SSH_SYSTEMD_PIPE_E2E_RESULT_V1.json)。
+- **精确旧锁不能代表新的CPU角色**：旧SC7规则把合法G6 CPU2所持的EP_MAIN_CPU6锁当成遗弃锁，导致GPU采集中止。新CPU角色使用自有memfd持有生命周期，并按实际硬内存、CPU和并行预算准入；原共享GPU锁和其他项目规则保留。证据：[E038](evidence/E038_ACTUAL_GPU_FALSE_STOP_CPU_SLOT_CONFLICT_DIAGNOSIS_V1.json),[E039](evidence/E039_ROOT_INDEPENDENT_PRIVATE_MEMFD_COMPONENT_ACCEPTANCE_V7.json)。
+- **辅助记录数与lane退休量分别统计**：旧POST的aux_uops为记录级操作计数，不能直接当成lane-uops。保留原数据，只更正汇总单位；未保存的全输入辅助lane数标未知。72个实际选中CTA有883220个源lane操作与133394个辅助lane操作，模型实际退休1016614，均为限定SMOKE证据。证据：[E040](evidence/E040_CORRECTED_WHOLE7_POST_UNITS_AND_SELECTED_SMOKE_LANES_V1.json),[E041](evidence/E041_ROOT_INDEPENDENT_ALL7_ACTUAL_SMOKE_ACCEPTANCE_V1.json)。
