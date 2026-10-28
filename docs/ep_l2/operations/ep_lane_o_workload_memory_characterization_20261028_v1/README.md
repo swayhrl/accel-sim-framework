@@ -21,10 +21,21 @@
 - scan参考S：WBUF峰16、均值10.661；1,737,618个独立请求遇WB_DATA_SPACE，对应49,938,625次检查。Conv有16,791个同址WB独立受阻请求。已有MS等待统计应直接复用。
 - 当前23个F参考端点中10个有V读响应、13个为零；FWT WV存在3,312次dirty-forward。它们证明服务事件，不直接给出victim命中率或所需容量。
 - Vector约75%的RO requester合并到存活事务，严格fill前重访比例仍未知。Conv普通MSHR满载与SGEMM同址chain上限是不同现象。
-- Conv已测同Set满路preview压力；较晚Vector4M的32×4已出现27次detach。当前仍不能声称独立T加速。
+- Conv已测同Set满路preview压力；当前接受点中Conv 16×8和32×4分别实际detach **237/1,141** 次，Vector4M 32×4为**27**次。缩容点完整F均慢于相应S；没有同背景F−T/F，不能声称T的独立正负收益。
 - 历史Motivation已有reuse distance及post-eviction统计；Streaming prefinal已揭示空间sector触达与真正时间复用的区别。应先补历史小CSV/manifest索引，不重复扫描大Trace。
 
 后续建议先由Main增量导出现有小汇总，再审查轻量统计候选；如批准工程，使用独立工程分支。计划中的pilot与全代表覆盖均未启动，也不在本轮注册预算。
+
+## V1R1 只读复审修订（不新增科学运行）
+
+本次仅在独立Lane O文档分支补齐审查意见，**原始冻结统计投影和Main实验接受状态不回写**；报告时点仍固定于2026-10-28 18:30:57（北京时间）。
+
+- **T证据补全**：补录同一冻结接受人口中的Conv 237/1,141次实际detach及匹配S/F cycles，保留Vector27和没有T独立因果对照的边界。
+- **首批观察加入Scan**：与Conv、FWT、Vector6M组成四类互补输入；先复用已接受小统计，pilot最多4个缺口ON和必要时1个新Source OFF作为计划上限，**不等于启动许可**。
+- **分开S/F观察**：S用于地址复用、WBUF/WAD、普通MSHR及Tag需求；F/WV用于实际Victim、RO、Detach与联合机会；禁止跨模式拼接事件或把F机制行为叫作程序固有特征。
+- **四条论文主观察**：按W、V、M、T四项资源需求组织，原O1–O8保留为证据条目而非八个并列贡献。
+
+原 `REPORT_QA.json` 的PASS仅对应Lane O第一阶段文档/数据一致性检查；本次修改未开展仿真、实验重验或额外Trace扫描。新的文件内容SHA列于同步更新的 `SHA256SUMS`。所有新增采集仍由Main在独立资格和预算确认后决定。
 
 ## 保存与审计
 

@@ -4,6 +4,16 @@
 
 `已有` 表示至少一个明确人口的已验收产物可回答，并非全42覆盖。参考模型 Source78 的当前几何为64 slices、32 sets×8 ways、128B line/4 sectors、D512/M128、固定DRAM latency100；其它几何及 Source92 分层。老架构意图中的64×16、1152 payload 不能代替实际1168槽与本轮配置。
 
+## S与F的观察分层（V1R1补充）
+
+| 观察背景 | 主要回答的问题 | 不应直接得出的结论 |
+|---|---|---|
+| **静态参考S** | 请求类型、同址访问/复用距离、真实脏替换及写回等待、普通MSHR/Tag压力；如需V潜在机会，可做不改变行为的淘汰后再访观察 | S无RO事务不代表程序没有只读请求；S无V读响应不是“无淘汰后复用” |
+| **完整F或合法W/V** | 实际Victim读取与对象年龄、RO候选/准入/合并、可Detach RO和目标Set新请求的联合、实际机制状态与服务 | F的实际读服务、Detach和资源占用不是独立于机制的程序固有特征，也不能直接证明净加速 |
+| **同源同背景对照** | 单独评估W、V、M、T的性能增量及新观察器不干扰性 | 不以S的Tag压力与另一F配置的RO数量拼成同时机会；T需同背景F−T/F |
+
+第一批统一基线特征以**S参考模型**为主；F指标优先从已接受的F数据提取，确实缺联合机会时再由Main安排必要的F补充。历史证据必须核对输入身份与几何后单列。新增采集不要求每个输入都无条件补跑S和F；以缺口为依据。RO静态证书是模型范围下的资格信息，不等同于S实际产生RO事务。
+
 | 类别与指标 | 定义及分母 | 记录与推荐统计 | 现有覆盖与可靠边界 | 最小补采成本 |
 |---|---|---|---|---|
 | W dirty replacement / WB | 实际 dirty-victim 提交与 WB 创建；有 demand 分母时另报每千 demand | create、lower_accept、true set_done；完成闭合 | 已有 FT/WAD，Source78参考 S/F 48端点可提取；不能把程序 store 等同 dirty eviction | 0，先解析 |
@@ -24,3 +34,7 @@
 | T RO占Tag期间的竞争 | 同一NEW/目标Set/时刻 `R=ways ∧ structural RO eligible`；与policy允许分开 | joint count、eligible ways、blocked unique、relieve/detach→commit | 现有边际NEW_WITH_PENDING/ELIGIBLE不能相乘；T-OFF会令policy eligible=0；Vector32×4实际detach27已验收 | 读取既有preview/RO状态的联合counter；不扫描额外Tag |
 
 统一输出必须带输入内容身份、Source/ELF、模式/feature、几何/资源、observer开关、统计人口/clock、count/sum及缺失状态。Per-slice p95不能平均成全芯片p95；各slice峰值不代表同时峰。周期时间是参考模型条件下的行为；只有精确输入地址覆盖与声明序列的请求类型/重复性可作为更接近程序的证据。
+
+### 缩容T正例的观察范围（V1R1补充）
+
+与Vector4M 32×4的27次实际detach并列，当前Source78的Conv F在16×8已观察到237次detach，在32×4观察到1,141次；同几何S/F分别为360,380/367,152和395,820/425,074 cycles。它们说明实际释放存在且配置敏感，**不证明T的独立性能收益，也不能从更高detach次数推导更快的F**。现有可选Tag lifetime统计在这些缩容点未完整启用，缺失联合人口仍为未观测。

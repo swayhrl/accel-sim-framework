@@ -73,9 +73,17 @@ RO候选/accepted global reads是已有可靠比例，未必是all-L2 demand比�
 
 较晚Vector4M 32×4已验收F端点detach27，archive与两次native恢复已核对；32×8和16×8为0。它不含完整optional Tag lifetime，因此该点缺失的TagFAIL/寿命仍UNKNOWN，不为补细节立即重跑。
 
+**同一冻结接受快照还包含两组Conv缩容F正例**：16×8实际detach **237**，匹配S/F为**360,380/367,152** cycles；32×4实际detach **1,141**，匹配S/F为**395,820/425,074** cycles。二者均为Source78，不能只以Vector27概括“当前实际detach”。这些数据证明T确实发生、数量随配置变化；但F均慢于匹配S且没有同背景F−T/F，不能据此断定T自身有害或有益。该组缩容点的可选Tag寿命/满路联合数据缺失仍是UNKNOWN。
+
 已有每set Reserved时间面积/episode寿命、首NEW占用分布、preview→actual→detach漏斗及有限快照。但LIFE的NEW_UNIQUE是首次NEW暴露，非后来曾遇满路的全部请求；WAIT是首NEW→commit总准入延迟，非Tag-only。cached eligible还包含T开关，T-OFF为0不能表示结构上无机会。
 
 最小缺口是ever-full独立请求、真实Tag拒绝等待、同NEW∧满路∧structural可释放RO联合。现有NEW_WITH_PENDING和NEW_WITH_ELIGIBLE是边际，不能相乘。无需新Tag probe或全Set周期扫描。
+
+## S基线特征与F机制结果的分层（V1R1补充）
+
+以**S完整参考模型**观察脏写回、独立请求重访、普通MSHR及Tag需求；必要时新增被动历史/ghost统计，但不能把S没有RO事务或Victim服务记为语义零。以**F/WV模式**观察真正进入RO事务的requester、Victim成功服务、RO/Tag资源联合以及detach。S/F差异是全方案对照，不自动等于W/V/M/T中某个机制的独立贡献。
+
+因此四组论文观察首先陈述请求与资源现象；只有在Source/ELF、输入、几何、观察器及其它资源完全匹配的对照中，才讨论机制性能收益。不同模式/历史谱系不直接混合人口。详见METRICS与COLLECTION_PLAN。
 
 ## 统计解释与可靠性约定
 

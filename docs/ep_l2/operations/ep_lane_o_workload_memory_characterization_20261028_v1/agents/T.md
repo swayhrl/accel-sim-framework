@@ -57,6 +57,17 @@ R/ep_full_workload_performance_20261027_v1/SMALL_G_VECTOR_MATCHED_RESULTS_V2.jso
 
 V2明确保留早期V1错误：V1手写“全三点0”与自己的逐行27冲突，不能引用其结论。此点optional Tag-pressure/lifetime stats absent时，production TagFAIL和寿命机会为UNKNOWN；RO summary实际27是可靠独立证据。不能为补细节立即重跑。
 
+### B2. 当前Source78 Conv缩容的真实Detach正例（V1R1新增）
+
+Lane O自身冻结的 `coverage_snapshot/RUN_STATUS.csv` 和 `MATCHED_PERFORMANCE.csv` 已含以下接受点，不能因原审查仅列Vector而遗漏。
+
+| Conv同输入 `438eefd6` | F实际RO detach | 匹配S cycles | F cycles | S/F |
+|---|---:|---:|---:|---:|
+| 16 Set×8 Way | **237** | 360,380 | 367,152 | 0.981555 |
+| 32 Set×4 Way | **1,141** | 395,820 | 425,074 | 0.931179 |
+
+两组均为Core78/ELF78d4、同一输入与几何下的完整S/F正式接受结果；不同配置间不可拼成T的因果比较。这里直接引用已接受真实detach，不将optional Tag lifetime/详细TagFAIL缺失补0。**Detach次数增多并未带来更快的F，但还不能判断T自身是正收益还是负收益**：必须在同一Source/ELF/背景下完成F−T/F后才有独立贡献。应保留Conv 16×8和32×4作为后续低成本T候选对照，不再单纯追求更多detach。
+
 ### C. 历史谱系保留为独立负证据
 
 - r5/E057 Core1093d262…/e511 ELF：CFD RO51678，covered Rmax4/16（NEW子集3）；DWT RO9965，Rmax3/16；Vector RO250118，covered NEW Rmax3/16，生产TagFAIL/relieve/detach0。TVDskip保持未覆盖NA。旧r5不可与current78拼性能pair。
@@ -96,7 +107,7 @@ V2明确保留早期V1错误：V1手写“全三点0”与自己的逐行27冲�
 已证实：
 1. “Tag需求与保留占用须联合度量。相同32×8观察配置下，Conv与CFD存在同Set满路新地址需求，分别289和1个first-unique到达；其42717与11次preview失败不会进入actual-access失败人口，故后者0不能排除真实Tag压力。”
 2. “工作负载间预约压力差异显著；观察到的低峰和低NEW-at-high-occupancy均保留为负证据。单个全局峰不能概括需求到达时机会。”
-3. “真实Vector中有限4way配置出现27次Tag detach，但全机制F较匹配S慢99cycles。触发事实、结构释放机会和独立性能收益属于不同证据层级。”
+3. “真实Vector4M在32×4出现27次Tag detach；Conv在16×8和32×4分别出现237和1,141次。对应完整F均慢于匹配S。触发事实、结构释放机会及T自身的独立性能收益分属不同证据层，不能互相替代。”
 4. “Vector64×16的预约寿命呈0tick大量短episode与约1142tick的正寿命群体并存，仍没有满路到达。平均寿命/单独事务数不足预测释放机会。”
 
 待验证：
