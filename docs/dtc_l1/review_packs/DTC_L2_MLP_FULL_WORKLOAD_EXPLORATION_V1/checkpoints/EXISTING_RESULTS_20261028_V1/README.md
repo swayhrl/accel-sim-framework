@@ -1,0 +1,11 @@
+# Existing experimental results snapshot
+
+Captured UTC 2026-10-28T01:34:22.818817+00:00. Primary matrix350: **300 accepted**, **12 running**, **37 pending**; remaining original engineering-negative evidence is preserved separately. Accepted includes6 exact references and294 fresh strict+archive/native-restore results. Supplemental scan/M16-V2 remains independent and is not substituted into the failed original cell.
+
+Read CYCLES_BY_PROGRAM.json for all35 frozen inputs and each CH/DH/profile state and accepted cycles. ALL_350_POINTS.json adds exact cohort/UUID/RESULT SHA and live PID/start. RESULT_DOCUMENTS.json.gz contains byte-reconstructible existing RESULT documents with original SHA and source path, including strict/counters/archive provenance. Existing AUTO_SUMMARY/BATCH_STATE are copied, not recomputed. SHA inventory and164 archive make the snapshot reproducible. No new simulation, raw-log rescan, mechanism analysis or configuration selection was performed for this publication. Results naturally completing after capture are outside this checkpoint.
+
+The current runtime95 policy is active and a real broad worker is evidenced. A post-install check also found that the E priority-layer private facade still read88%; that distinct engineering coupling is being repaired and is NOT falsely declared fixed here. Actual E-search and memory-scope-SYNC installation receipts are included. No new adaptive configurations have yet been registered; initial350-terminal/full35-parent gates remain. Current fresh grant count345 includes exactly one supplemental trial.
+
+One additive correction to the older293 checkpoint is included: GEMM DRAM percentage null comes from explicit0→0, not absent read counts. Its accepted kernel has all L2 hits under the existing memcpy-preload model; this does not establish zero real-application DRAM traffic. Original cycles/data remain untouched. No non-P0 CH matching is complete, so this snapshot does not establish improved relative DTC performance or a final uniform winner.
+
+Core9eedb313, Framework02775fd7,pinned binary/library,DRAM850MHz,fixed L2 capacity/mapping,DTC/Hash,input35/7UNRESOLVED,old ledgers/failures and Englishv0.23 remain unchanged. Experiments continue in background; Goal ACTIVE.
