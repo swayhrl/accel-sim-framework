@@ -1,0 +1,565 @@
+{
+  "utc": "2026-10-29T01:29:46.832031+00:00",
+  "models_started": 0,
+  "production_writes": 0,
+  "findings": [
+    "Both original guard decisions STOP on actual host MemAvailable below 8GiB; cgroup has around 90GB raw headroom, no new oom/max event in shown tail.",
+    "The compound host-or-cgroup condition is emitted by both resource domains; duplicate labels do not prove cgroup headroom exhaustion.",
+    "Actual original runner maps STOP to SIGTERM then SIGKILL after3s. This conflicts with newer admission-only pressure contract.",
+    "Per-run historical light resource samples omit observed_models/process inventories; these files alone cannot precisely allocate host pressure to own versus external processes."
+  ],
+  "points": [
+    {
+      "cohort": "E2-DTCL2MLP-ddb6806316876a85-CH-P0-V1",
+      "uuid": "98d83595-84a4-43de-8e4b-472df204e8b5",
+      "stop": {
+        "sample": {
+          "monotonic_ns": 9988508289254987,
+          "host": "huangrulin-sshfs-174",
+          "uid": 0,
+          "host_MemAvailable_bytes": 8552062976,
+          "cgroup": {
+            "memory.max": "274877906944",
+            "memory.current": "183246376960",
+            "memory.swap.current": "20725760",
+            "memory.pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=689116734\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=685316756",
+            "io.pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=16699344404\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=16076478555",
+            "events": {
+              "low": 0,
+              "high": 0,
+              "max": 0,
+              "oom": 0,
+              "oom_kill": 0,
+              "oom_group_kill": 0
+            }
+          },
+          "pressure": {
+            "memory": {
+              "some": {
+                "avg10": "0.00",
+                "avg60": "0.00",
+                "avg300": "0.00",
+                "total": "41707012416"
+              },
+              "full": {
+                "avg10": "0.00",
+                "avg60": "0.00",
+                "avg300": "0.00",
+                "total": "41328316535"
+              }
+            },
+            "io": {
+              "some": {
+                "avg10": "2.74",
+                "avg60": "2.96",
+                "avg300": "2.18",
+                "total": "239894844556"
+              },
+              "full": {
+                "avg10": "2.01",
+                "avg60": "2.17",
+                "avg300": "1.57",
+                "total": "218285775351"
+              }
+            }
+          },
+          "pswpin": 3743746,
+          "pswpout": 11012926,
+          "host_oom_kill": 366,
+          "output_filesystem_device": 2128,
+          "disk_free_bytes": 29796503552,
+          "cgroup_pressure_parsed": {
+            "memory": {
+              "some": {
+                "avg10": "0.00",
+                "avg60": "0.00",
+                "avg300": "0.00",
+                "total": "689116734"
+              },
+              "full": {
+                "avg10": "0.00",
+                "avg60": "0.00",
+                "avg300": "0.00",
+                "total": "685316756"
+              }
+            },
+            "io": {
+              "some": {
+                "avg10": "0.00",
+                "avg60": "0.00",
+                "avg300": "0.00",
+                "total": "16699344404"
+              },
+              "full": {
+                "avg10": "0.00",
+                "avg60": "0.00",
+                "avg300": "0.00",
+                "total": "16076478555"
+              }
+            }
+          }
+        },
+        "decision": {
+          "decision": "STOP",
+          "stop_reasons": [
+            "host:HOST_OR_CGROUP_HEADROOM_LT8GiB",
+            "cgroup:HOST_OR_CGROUP_HEADROOM_LT8GiB"
+          ],
+          "warnings": [],
+          "domains": {
+            "host": {
+              "version": "AG3_DISCOVERY_RESOURCE_R2_V1",
+              "decision": "STOP",
+              "stop_reasons": [
+                "HOST_OR_CGROUP_HEADROOM_LT8GiB"
+              ],
+              "warnings": [],
+              "global_page_deltas": {
+                "pswpin": 0,
+                "pswpout": 0
+              },
+              "cgroup_swap_growth_bytes": -61440,
+              "own_major_fault_delta": 0,
+              "qualified_swap_samples": 0,
+              "memory_PSI_samples": 0,
+              "io_PSI_samples": 0,
+              "next_full_sample_seconds": 10,
+              "no_signal_in_this_policy_module": true
+            },
+            "cgroup": {
+              "version": "AG3_DISCOVERY_RESOURCE_R2_V1",
+              "decision": "STOP",
+              "stop_reasons": [
+                "HOST_OR_CGROUP_HEADROOM_LT8GiB"
+              ],
+              "warnings": [],
+              "global_page_deltas": {
+                "pswpin": 0,
+                "pswpout": 0
+              },
+              "cgroup_swap_growth_bytes": -61440,
+              "own_major_fault_delta": 0,
+              "qualified_swap_samples": 0,
+              "memory_PSI_samples": 0,
+              "io_PSI_samples": 0,
+              "next_full_sample_seconds": 10,
+              "no_signal_in_this_policy_module": true
+            }
+          },
+          "next_full_sample_seconds": 10,
+          "profile": {
+            "nominal_sample_s": 10,
+            "max_sample_gap_s": 30,
+            "max_progress_age_s": 30,
+            "no_retirement_s": 600,
+            "max_cgroup_high_episode_s": 1800,
+            "wall_deadline_s": 7776000
+          },
+          "scientific_acceptance": false,
+          "no_signal_in_this_policy_module": true
+        }
+      },
+      "timeline": [
+        {
+          "utc": "2026-10-29T00:45:39.405826+00:00",
+          "monotonic": 9986710.748720968,
+          "host_MemAvailable_bytes": 85632593920,
+          "cgroup_memory_current": 190810693632,
+          "cgroup_memory_max": "274877906944",
+          "cgroup_effective_headroom_bytes": 88522330112,
+          "host_pswpout_pages": 11012734,
+          "host_oom_kill_count": 366,
+          "cgroup_memory_events": {
+            "low": 0,
+            "high": 0,
+            "max": 0,
+            "oom": 0,
+            "oom_kill": 0,
+            "oom_group_kill": 0
+          },
+          "process_tree_observed_rss_bytes": 71896621056,
+          "observed_model_count": 11,
+          "own_forecast_additional_RAM_bytes": 72213723552,
+          "runtime_pressure_does_not_terminate_healthy_model": true,
+          "physical_RAM_pass": true
+        },
+        {
+          "utc": "2026-10-29T01:05:34.730549+00:00",
+          "monotonic": 9987906.073455008,
+          "host_MemAvailable_bytes": 32154005504,
+          "cgroup_memory_current": 185808302080,
+          "cgroup_memory_max": "274877906944",
+          "cgroup_effective_headroom_bytes": 89069604864,
+          "host_pswpout_pages": 11012860,
+          "host_oom_kill_count": 366,
+          "cgroup_memory_events": {
+            "low": 0,
+            "high": 0,
+            "max": 0,
+            "oom": 0,
+            "oom_kill": 0,
+            "oom_group_kill": 0
+          },
+          "process_tree_observed_rss_bytes": 72211140608,
+          "observed_model_count": 11,
+          "own_forecast_additional_RAM_bytes": 70867405216,
+          "runtime_pressure_does_not_terminate_healthy_model": true,
+          "physical_RAM_pass": true
+        },
+        {
+          "utc": "2026-10-29T01:10:37.987644+00:00",
+          "monotonic": 9988209.330534464,
+          "host_MemAvailable_bytes": 24660230144,
+          "cgroup_memory_current": 186664329216,
+          "cgroup_memory_max": "274877906944",
+          "cgroup_effective_headroom_bytes": 88213577728,
+          "host_pswpout_pages": 11012860,
+          "host_oom_kill_count": 366,
+          "cgroup_memory_events": {
+            "low": 0,
+            "high": 0,
+            "max": 0,
+            "oom": 0,
+            "oom_kill": 0,
+            "oom_group_kill": 0
+          },
+          "process_tree_observed_rss_bytes": 72211140608,
+          "observed_model_count": 11,
+          "own_forecast_additional_RAM_bytes": 70867405216,
+          "runtime_pressure_does_not_terminate_healthy_model": true,
+          "physical_RAM_pass": true
+        },
+        {
+          "utc": "2026-10-29T01:14:32.601986+00:00",
+          "monotonic": 9988443.944883026,
+          "host_MemAvailable_bytes": 13531697152,
+          "cgroup_memory_current": 185321992192,
+          "cgroup_memory_max": "274877906944",
+          "cgroup_effective_headroom_bytes": 89555914752,
+          "host_pswpout_pages": 11012926,
+          "host_oom_kill_count": 366,
+          "cgroup_memory_events": {
+            "low": 0,
+            "high": 0,
+            "max": 0,
+            "oom": 0,
+            "oom_kill": 0,
+            "oom_group_kill": 0
+          },
+          "process_tree_observed_rss_bytes": 72211140608,
+          "observed_model_count": 11,
+          "own_forecast_additional_RAM_bytes": 70804490656,
+          "runtime_pressure_does_not_terminate_healthy_model": true,
+          "physical_RAM_pass": true
+        },
+        {
+          "utc": "2026-10-29T01:15:36.849875+00:00",
+          "monotonic": 9988508.192770092,
+          "host_MemAvailable_bytes": 8675880960,
+          "cgroup_memory_current": 184285323264,
+          "cgroup_memory_max": "274877906944",
+          "cgroup_effective_headroom_bytes": 90592583680,
+          "host_pswpout_pages": 11012926,
+          "host_oom_kill_count": 366,
+          "cgroup_memory_events": {
+            "low": 0,
+            "high": 0,
+            "max": 0,
+            "oom": 0,
+            "oom_kill": 0,
+            "oom_group_kill": 0
+          },
+          "process_tree_observed_rss_bytes": 72211140608,
+          "observed_model_count": 10,
+          "own_forecast_additional_RAM_bytes": 75145595296,
+          "runtime_pressure_does_not_terminate_healthy_model": true,
+          "physical_RAM_pass": true
+        }
+      ],
+      "strace_tail": [
+        "2294196 <... wait4 resumed>0x7ffeb11d2e7c, 0, NULL) = ? ERESTARTSYS (To be restarted if SA_RESTART is set)",
+        "2294196 --- SIGTERM {si_signo=SIGTERM, si_code=SI_USER, si_pid=2293939, si_uid=0} ---",
+        "2294196 +++ killed by SIGTERM +++",
+        "2294169 --- SIGTERM {si_signo=SIGTERM, si_code=SI_USER, si_pid=2293939, si_uid=0} ---",
+        "2294197 +++ killed by SIGTERM +++"
+      ],
+      "source_resource_samples_sha256": "9d5fa009db278513e4522a8f0b00f60a9b71d8fcb24c05934b94af1e1855492f"
+    },
+    {
+      "cohort": "E2-DTCL2MLP-09f94fcc7494a03b-DH-E768-IR1-V1",
+      "uuid": "eda14f50-7a15-4f54-b038-e5a6a3ddd593",
+      "stop": {
+        "sample": {
+          "monotonic_ns": 9988508011217820,
+          "host": "huangrulin-sshfs-174",
+          "uid": 0,
+          "host_MemAvailable_bytes": 8566185984,
+          "cgroup": {
+            "memory.max": "274877906944",
+            "memory.current": "184817139712",
+            "memory.swap.current": "20725760",
+            "memory.pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=689116734\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=685316756",
+            "io.pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=16699344369\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=16076478520",
+            "events": {
+              "low": 0,
+              "high": 0,
+              "max": 0,
+              "oom": 0,
+              "oom_kill": 0,
+              "oom_group_kill": 0
+            }
+          },
+          "pressure": {
+            "memory": {
+              "some": {
+                "avg10": "0.00",
+                "avg60": "0.00",
+                "avg300": "0.00",
+                "total": "41707011427"
+              },
+              "full": {
+                "avg10": "0.00",
+                "avg60": "0.00",
+                "avg300": "0.00",
+                "total": "41328315559"
+              }
+            },
+            "io": {
+              "some": {
+                "avg10": "2.74",
+                "avg60": "2.96",
+                "avg300": "2.18",
+                "total": "239894838239"
+              },
+              "full": {
+                "avg10": "2.01",
+                "avg60": "2.17",
+                "avg300": "1.57",
+                "total": "218285770488"
+              }
+            }
+          },
+          "pswpin": 3743746,
+          "pswpout": 11012926,
+          "host_oom_kill": 366,
+          "output_filesystem_device": 2128,
+          "disk_free_bytes": 29796499456,
+          "cgroup_pressure_parsed": {
+            "memory": {
+              "some": {
+                "avg10": "0.00",
+                "avg60": "0.00",
+                "avg300": "0.00",
+                "total": "689116734"
+              },
+              "full": {
+                "avg10": "0.00",
+                "avg60": "0.00",
+                "avg300": "0.00",
+                "total": "685316756"
+              }
+            },
+            "io": {
+              "some": {
+                "avg10": "0.00",
+                "avg60": "0.00",
+                "avg300": "0.00",
+                "total": "16699344369"
+              },
+              "full": {
+                "avg10": "0.00",
+                "avg60": "0.00",
+                "avg300": "0.00",
+                "total": "16076478520"
+              }
+            }
+          }
+        },
+        "decision": {
+          "decision": "STOP",
+          "stop_reasons": [
+            "host:HOST_OR_CGROUP_HEADROOM_LT8GiB",
+            "cgroup:HOST_OR_CGROUP_HEADROOM_LT8GiB"
+          ],
+          "warnings": [],
+          "domains": {
+            "host": {
+              "version": "AG3_DISCOVERY_RESOURCE_R2_V1",
+              "decision": "STOP",
+              "stop_reasons": [
+                "HOST_OR_CGROUP_HEADROOM_LT8GiB"
+              ],
+              "warnings": [],
+              "global_page_deltas": {
+                "pswpin": 0,
+                "pswpout": 0
+              },
+              "cgroup_swap_growth_bytes": -61440,
+              "own_major_fault_delta": 0,
+              "qualified_swap_samples": 0,
+              "memory_PSI_samples": 0,
+              "io_PSI_samples": 0,
+              "next_full_sample_seconds": 10,
+              "no_signal_in_this_policy_module": true
+            },
+            "cgroup": {
+              "version": "AG3_DISCOVERY_RESOURCE_R2_V1",
+              "decision": "STOP",
+              "stop_reasons": [
+                "HOST_OR_CGROUP_HEADROOM_LT8GiB"
+              ],
+              "warnings": [],
+              "global_page_deltas": {
+                "pswpin": 0,
+                "pswpout": 0
+              },
+              "cgroup_swap_growth_bytes": -61440,
+              "own_major_fault_delta": 0,
+              "qualified_swap_samples": 0,
+              "memory_PSI_samples": 0,
+              "io_PSI_samples": 0,
+              "next_full_sample_seconds": 10,
+              "no_signal_in_this_policy_module": true
+            }
+          },
+          "next_full_sample_seconds": 10,
+          "profile": {
+            "nominal_sample_s": 10,
+            "max_sample_gap_s": 30,
+            "max_progress_age_s": 30,
+            "no_retirement_s": 600,
+            "max_cgroup_high_episode_s": 1800,
+            "wall_deadline_s": 7776000
+          },
+          "scientific_acceptance": false,
+          "no_signal_in_this_policy_module": true
+        }
+      },
+      "timeline": [
+        {
+          "utc": "2026-10-29T00:45:30.415992+00:00",
+          "monotonic": 9986701.758879775,
+          "host_MemAvailable_bytes": 84733603840,
+          "cgroup_memory_current": 190750453760,
+          "cgroup_memory_max": "274877906944",
+          "cgroup_effective_headroom_bytes": 88522174464,
+          "host_pswpout_pages": 11012734,
+          "host_oom_kill_count": 366,
+          "cgroup_memory_events": {
+            "low": 0,
+            "high": 0,
+            "max": 0,
+            "oom": 0,
+            "oom_kill": 0,
+            "oom_group_kill": 0
+          },
+          "process_tree_observed_rss_bytes": 4341104640,
+          "observed_model_count": 11,
+          "own_forecast_additional_RAM_bytes": 72217917856,
+          "runtime_pressure_does_not_terminate_healthy_model": true,
+          "physical_RAM_pass": true
+        },
+        {
+          "utc": "2026-10-29T01:05:34.730549+00:00",
+          "monotonic": 9987906.073455008,
+          "host_MemAvailable_bytes": 32154005504,
+          "cgroup_memory_current": 185808302080,
+          "cgroup_memory_max": "274877906944",
+          "cgroup_effective_headroom_bytes": 89069604864,
+          "host_pswpout_pages": 11012860,
+          "host_oom_kill_count": 366,
+          "cgroup_memory_events": {
+            "low": 0,
+            "high": 0,
+            "max": 0,
+            "oom": 0,
+            "oom_kill": 0,
+            "oom_group_kill": 0
+          },
+          "process_tree_observed_rss_bytes": 4341104640,
+          "observed_model_count": 11,
+          "own_forecast_additional_RAM_bytes": 70867405216,
+          "runtime_pressure_does_not_terminate_healthy_model": true,
+          "physical_RAM_pass": true
+        },
+        {
+          "utc": "2026-10-29T01:10:37.699419+00:00",
+          "monotonic": 9988209.042307695,
+          "host_MemAvailable_bytes": 24642433024,
+          "cgroup_memory_current": 186667393024,
+          "cgroup_memory_max": "274877906944",
+          "cgroup_effective_headroom_bytes": 88210513920,
+          "host_pswpout_pages": 11012860,
+          "host_oom_kill_count": 366,
+          "cgroup_memory_events": {
+            "low": 0,
+            "high": 0,
+            "max": 0,
+            "oom": 0,
+            "oom_kill": 0,
+            "oom_group_kill": 0
+          },
+          "process_tree_observed_rss_bytes": 4341104640,
+          "observed_model_count": 11,
+          "own_forecast_additional_RAM_bytes": 70867405216,
+          "runtime_pressure_does_not_terminate_healthy_model": true,
+          "physical_RAM_pass": true
+        },
+        {
+          "utc": "2026-10-29T01:14:32.601986+00:00",
+          "monotonic": 9988443.944883026,
+          "host_MemAvailable_bytes": 13531697152,
+          "cgroup_memory_current": 185321992192,
+          "cgroup_memory_max": "274877906944",
+          "cgroup_effective_headroom_bytes": 89555914752,
+          "host_pswpout_pages": 11012926,
+          "host_oom_kill_count": 366,
+          "cgroup_memory_events": {
+            "low": 0,
+            "high": 0,
+            "max": 0,
+            "oom": 0,
+            "oom_kill": 0,
+            "oom_group_kill": 0
+          },
+          "process_tree_observed_rss_bytes": 4341104640,
+          "observed_model_count": 11,
+          "own_forecast_additional_RAM_bytes": 70804490656,
+          "runtime_pressure_does_not_terminate_healthy_model": true,
+          "physical_RAM_pass": true
+        },
+        {
+          "utc": "2026-10-29T01:15:36.571803+00:00",
+          "monotonic": 9988507.914702516,
+          "host_MemAvailable_bytes": 8780898304,
+          "cgroup_memory_current": 184878608384,
+          "cgroup_memory_max": "274877906944",
+          "cgroup_effective_headroom_bytes": 89999298560,
+          "host_pswpout_pages": 11012926,
+          "host_oom_kill_count": 366,
+          "cgroup_memory_events": {
+            "low": 0,
+            "high": 0,
+            "max": 0,
+            "oom": 0,
+            "oom_kill": 0,
+            "oom_group_kill": 0
+          },
+          "process_tree_observed_rss_bytes": 4341104640,
+          "observed_model_count": 11,
+          "own_forecast_additional_RAM_bytes": 70804490656,
+          "runtime_pressure_does_not_terminate_healthy_model": true,
+          "physical_RAM_pass": true
+        }
+      ],
+      "strace_tail": [
+        "2306588 sendto(6, \"{\\\"v\\\":1,\\\"pid\\\":2306588,\\\"start_tick\"..., 407, MSG_DONTWAIT|MSG_NOSIGNAL, NULL, 0) = 407",
+        "2306588 sendto(6, \"{\\\"v\\\":1,\\\"pid\\\":2306588,\\\"start_tick\"..., 407, MSG_DONTWAIT|MSG_NOSIGNAL, NULL, 0) = 407",
+        "2306588 sendto(6, \"{\\\"v\\\":1,\\\"pid\\\":2306588,\\\"start_tick\"..., 407, MSG_DONTWAIT|MSG_NOSIGNAL, NULL, 0) = 407",
+        "2306588 --- SIGTERM {si_signo=SIGTERM, si_code=SI_USER, si_pid=2306531, si_uid=0} ---",
+        "2306588 +++ killed by SIGTERM +++"
+      ],
+      "source_resource_samples_sha256": "644d31e680d7b8f77a8df66e218084ba61f1e63922cb138bf7d16c458cbdd663"
+    }
+  ]
+}
