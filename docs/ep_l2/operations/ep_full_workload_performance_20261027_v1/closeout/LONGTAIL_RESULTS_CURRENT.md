@@ -1,0 +1,22 @@
+# Finite longtail result update
+
+UTC: 2026-10-29T01:33:43.059584+00:00. Status: SCOPED_LONGTAIL_RUNNING.
+
+Accepted experiment points: 222; matched comparisons: 110.
+
+|program|mode|state|whole-application cycles|
+|---|---|---|---:|
+|lavamd|F|CONSUMED_BEFORE_FORK|PENDING_OR_UNACCEPTED|
+|SYRK|S|CONSUMED_BEFORE_FORK|PENDING_OR_UNACCEPTED|
+|SYRK|F|CONSUMED_BEFORE_FORK|PENDING_OR_UNACCEPTED|
+
+All scientific inputs/source remain unchanged. No new simulator start, retry, refund or budget was used.
+Acceptance requires the original complete-population/native qualification, genuine164 archive and two independent restore receipts.
+A PARSE_HOLD/technical negative is reported as such; it is never filled with zero or treated as performance evidence.
+
+## Matched comparisons available after longtail closure
+
+|program|S cycles|F cycles|S/F|
+|---|---:|---:|---:|
+
+Full35/96 GM and T-independent speedup remain unproved by these updates. No new workload expansion is automatic.
