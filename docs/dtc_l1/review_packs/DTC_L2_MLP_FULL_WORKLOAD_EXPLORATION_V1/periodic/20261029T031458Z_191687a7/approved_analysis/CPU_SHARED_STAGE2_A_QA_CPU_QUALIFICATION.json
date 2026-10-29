@@ -1,0 +1,111 @@
+{
+  "UTC": "2026-10-28T20:31:36.457585+00:00",
+  "cases": [
+    {
+      "details": {
+        "C0_not_resubmitted": true,
+        "budget_UUIDs_preserved": true,
+        "concurrent_receipt_preserved": true,
+        "external_modules": "EXPLICIT_STANDINS",
+        "independent_FD_EX": true,
+        "sequence": [
+          "B1_RESTORE",
+          "E1_RESTORE_MASK_PRESERVED",
+          "INDEPENDENT_FD_SH_CORRECTLY_BLOCKED",
+          "CAS",
+          "E2_INSTALL_CLOSED",
+          "B2_INSTALL_UNARMED",
+          "ARM"
+        ],
+        "source": "actual_apply_controlflow"
+      },
+      "name": "actual_apply_order_exact_CAS_preimages_and_no_reentry",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "rejected_before_mutation": [
+          "row_conflict",
+          "alias_drift",
+          "prepared_canonical_drift",
+          "UUID_drift",
+          "scope_spent",
+          "persistent_claim"
+        ]
+      },
+      "name": "CAS_conflicts_alias_currentcanonical_UUID_scope_claim",
+      "status": "PASS"
+    },
+    {
+      "details": [
+        {
+          "mandatory_consumer_retained": true,
+          "no_worker_invoked_by_apply": true,
+          "phase": "B1",
+          "typed_unused_spent_unknown": true
+        },
+        {
+          "mandatory_consumer_retained": true,
+          "no_worker_invoked_by_apply": true,
+          "phase": "E1",
+          "typed_unused_spent_unknown": true
+        },
+        {
+          "mandatory_consumer_retained": true,
+          "no_worker_invoked_by_apply": true,
+          "phase": "E2",
+          "typed_unused_spent_unknown": true
+        },
+        {
+          "mandatory_consumer_retained": true,
+          "no_worker_invoked_by_apply": true,
+          "phase": "B2",
+          "typed_unused_spent_unknown": true
+        },
+        {
+          "mandatory_consumer_retained": true,
+          "no_worker_invoked_by_apply": true,
+          "phase": "ARM",
+          "typed_unused_spent_unknown": true
+        }
+      ],
+      "name": "exposed_BaseException_failure_containment_five_boundaries",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "final_06aee_preload_guard_cases": [
+          "module_source_join",
+          "old_generation_source_drift",
+          "initial_source_pin_drift"
+        ],
+        "mutation_or_route_exposure": false
+      },
+      "name": "new_06aee_source_join_and_old_generation_drift_guards",
+      "status": "PASS"
+    }
+  ],
+  "coverage": {
+    "actual_apply_controlflow": true,
+    "actual_main_handoff_source_functions": true,
+    "actual_models_started": 0,
+    "independent_FD_EX": true,
+    "new_grants": 0,
+    "old_suite_rerun": false,
+    "owner_lease_B_E_library_validators": "EXPLICIT_PRIVATE_STANDINS_NOT_ACTUAL_MAIN_OR_B_E_QUALIFICATION",
+    "production_authority_mutations": 0,
+    "signals": 0
+  },
+  "driver_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/cpu_shared_stage2_main_handoff_qualification_v1/qualify_main_handoff_private.py",
+  "driver_sha256": "499a93cbd44258450b80016d3f45f61973b520a31b5bd98deb074850baa0ad24",
+  "fixture_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/cpu_shared_stage2_main_handoff_qualification_v1/PRIVATE_MAIN2_07ddgy67",
+  "limitations": [
+    "No actual owner/lease/install or scientific simulation",
+    "Private module contracts test source-join logic, not final production configuration readiness",
+    "B/E own prefix/consumer qualifications remain separate required evidence"
+  ],
+  "schema": "CPU_SHARED_STAGE2_MAIN_HANDOFF_PRIVATE_COMPONENT_QUALIFICATION_V1",
+  "source_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/B/cpu_shared_stage2_main_handoff_v1/main_handoff.py",
+  "source_sha256": "06aee02a8a6476c4ea071063b5aa9cfb989ca7ec149b86093d7e62a904dd2118",
+  "status": "PASS"
+}
