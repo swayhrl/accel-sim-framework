@@ -1,0 +1,443 @@
+{
+  "schema": "LANE_O_PILOT_GAPS_V1R2",
+  "status": "READY_FOR_MAIN_READBACK_NOT_READY_TO_LAUNCH",
+  "base_commit": "4e026ac982e7802357810efe7be683a57794ef0b",
+  "data_snapshot_Asia_Shanghai": "2026-10-28 18:30:57",
+  "future_source_base": "MAIN_TO_SELECT_NOT_ASSIGNED",
+  "population": "four candidate exact inputs; not full42 and not four authorized launches",
+  "constraints": [
+    "reuse existing accepted compact data first",
+    "no new simulations or builds by Lane O",
+    "no data or NI transferred across Source/ELF/mode",
+    "no raw or Trace scan requested",
+    "S and F/WV feature populations separated"
+  ],
+  "rows": [
+    {
+      "candidate": "scan",
+      "program": "scan",
+      "input_identity_sha256": "cf8d1c4d8e4956779ee5dbe0e836c6c77b595cb86cd2dc731e9897dd75504690",
+      "evidence_profile": "REF32x8_L100, Source78; exact refs below",
+      "existing_modes": [
+        "F",
+        "S"
+      ],
+      "artifact_refs": [
+        {
+          "kind": "W_reference",
+          "mode": "F",
+          "cohort": "EP_PERF_SCAN_CF8D1C4D_F_REF_V1",
+          "bundle_path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCAN_CF8D1C4D_F_REF_V1/run/08571f48-e6cb-473b-b1d9-8fca5b421b63/VALIDATED_APPLICATION_BUNDLE.json",
+          "bundle_sha256": "043e6eec296b25570e283c28fd4bbb8daa3a8034bb6264612baa8af8cc4c02e7"
+        },
+        {
+          "kind": "W_reference",
+          "mode": "S",
+          "cohort": "EP_PERF_SCAN_CF8D1C4D_S_REF_V1",
+          "bundle_path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCAN_CF8D1C4D_S_REF_V1/run/f921c53f-d58b-41a9-a282-3a63390c12da/VALIDATED_APPLICATION_BUNDLE.json",
+          "bundle_sha256": "79e1b754b5a05ddfa70b57993da54207debb246826961fe75d2ae26f4141bfeb"
+        },
+        {
+          "kind": "V_reference",
+          "mode": "F",
+          "cohort": "EP_PERF_SCAN_CF8D1C4D_F_REF_V1",
+          "bundle_path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SCAN_CF8D1C4D_F_REF_V1/run/08571f48-e6cb-473b-b1d9-8fca5b421b63/VALIDATED_APPLICATION_BUNDLE.json",
+          "bundle_sha256": "043e6eec296b25570e283c28fd4bbb8daa3a8034bb6264612baa8af8cc4c02e7"
+        }
+      ],
+      "ordinary_MSHR_subset": [],
+      "gaps": [
+        {
+          "metric": "W_count_copy_MS_first_wait_WBUF_area",
+          "status": "REUSE_EXISTING",
+          "action": "use W_reference_metrics; no new model"
+        },
+        {
+          "metric": "W_segment_lifetime_histogram_RW_atomic_by_WB_age",
+          "status": "MISSING_DYNAMIC_JOINT_OR_NOT_PROJECTED",
+          "action": "first check FT terminal staging fields; unified segment/RWA age may need isolated observer"
+        },
+        {
+          "metric": "head_gap_and_post_eviction_next_touch",
+          "status": "NOT_COLLECTED_IN_CURRENT_SUMMARIES",
+          "action": "historical small CSV/manifest identity first; if essential, bounded head history"
+        },
+        {
+          "metric": "ingress_gap_and_ingress_before_ready",
+          "status": "NOT_COLLECTED_AT_INGRESS",
+          "action": "never infer from MS/LIFE head; only real ingress hook if Main includes it"
+        },
+        {
+          "metric": "ordinary_MSHR_MS_pressure",
+          "status": "EXISTING_SCHEMA_NOT_IN_44_ENDPOINT_SUBSET",
+          "action": "reuse accepted bundle projection; absence from subset is not disabled"
+        },
+        {
+          "metric": "V_actual_service",
+          "status": "REUSE_EXISTING_LEGAL_F_OR_WV",
+          "by_mode": {
+            "F": {
+              "responses": 5584,
+              "dirty_forward": 296
+            }
+          },
+          "action": "service counts are mechanism outcomes, not victim hit rate"
+        },
+        {
+          "metric": "V_entry_age_service_kind_capacity_capture",
+          "status": "MISSING_DYNAMIC_DISTRIBUTIONS",
+          "action": "optional only if needed; actual capture curve not inferred from ordinary reuse CDF"
+        },
+        {
+          "metric": "RO_accepted_candidates_transactions_merges",
+          "status": "REUSE_EXISTING_F_SUMMARY",
+          "action": "missing F/RO runtime does not mean semantically no read-only data"
+        },
+        {
+          "metric": "normal_plus_RO_address_union_and_before_ready",
+          "status": "MISSING_DYNAMIC_JOINT",
+          "action": "head and ingress before-ready separate; a new legal F needs separate certification"
+        },
+        {
+          "metric": "T_same_head_full_structural_RO_joint_and_wait",
+          "status": "MISSING_DYNAMIC_JOINT",
+          "action": "legal F only; structural vs policy; no S/F marginal splicing"
+        },
+        {
+          "metric": "exact_demand_same_address_WB_incidence",
+          "status": "WITHDRAWN_PENDING_CLASS_DENOMINATOR_PROOF",
+          "action": "keep MS counts; 22 small metadata JSON inspection did not prove L1_WRBK exceptions zero; no raw/Trace scan requested"
+        }
+      ],
+      "new_model_authorization": 0,
+      "new_source_qualification": "NOT_PREPARED_BY_LANE_O",
+      "new_NI_qualification": "NOT_QUALIFIED",
+      "suggested_mode_constraint": "S demand; legal F mechanism metrics only when necessary"
+    },
+    {
+      "candidate": "conv",
+      "program": "convolutionSeparable",
+      "input_identity_sha256": "438eefd67b073f1ca0e2c08be6aa99b3b9b9619d7832cc6cad9cc4467e63654e",
+      "evidence_profile": "REF32x8_L100, Source78; exact refs below",
+      "existing_modes": [
+        "F",
+        "S"
+      ],
+      "artifact_refs": [
+        {
+          "kind": "W_reference",
+          "mode": "F",
+          "cohort": "EP_PERF_CONV_F_REF_V1",
+          "bundle_path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_CONV_F_REF_V1/run/7ca3920a-c7c6-4b62-8266-d8c10eb886fd/VALIDATED_APPLICATION_BUNDLE.json",
+          "bundle_sha256": "7da7d68c6036767185d727fa3b6baa5c5d3c525c5e0cb970bb18a686c51527a2"
+        },
+        {
+          "kind": "W_reference",
+          "mode": "S",
+          "cohort": "EP_PERF_CONV_S_REF_V1",
+          "bundle_path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_CONV_S_REF_V1/run/6b2ed072-bc0c-4cca-8cbd-5366535d892f/VALIDATED_APPLICATION_BUNDLE.json",
+          "bundle_sha256": "435f88a8972779761cb99612e32da8f112ed07c3a51a2e2db60ff155499ad805"
+        },
+        {
+          "kind": "V_reference",
+          "mode": "F",
+          "cohort": "EP_PERF_CONV_F_REF_V1",
+          "bundle_path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_CONV_F_REF_V1/run/7ca3920a-c7c6-4b62-8266-d8c10eb886fd/VALIDATED_APPLICATION_BUNDLE.json",
+          "bundle_sha256": "7da7d68c6036767185d727fa3b6baa5c5d3c525c5e0cb970bb18a686c51527a2"
+        }
+      ],
+      "ordinary_MSHR_subset": [
+        {
+          "cohort": "EP_PERF_CONV_F_REF_V1",
+          "mode": "F",
+          "line_peak": 128,
+          "line_full_head_observations": 2986
+        },
+        {
+          "cohort": "EP_PERF_CONV_S_REF_V1",
+          "mode": "S",
+          "line_peak": 128,
+          "line_full_head_observations": 6499
+        }
+      ],
+      "gaps": [
+        {
+          "metric": "W_count_copy_MS_first_wait_WBUF_area",
+          "status": "REUSE_EXISTING",
+          "action": "use W_reference_metrics; no new model"
+        },
+        {
+          "metric": "W_segment_lifetime_histogram_RW_atomic_by_WB_age",
+          "status": "MISSING_DYNAMIC_JOINT_OR_NOT_PROJECTED",
+          "action": "first check FT terminal staging fields; unified segment/RWA age may need isolated observer"
+        },
+        {
+          "metric": "head_gap_and_post_eviction_next_touch",
+          "status": "NOT_COLLECTED_IN_CURRENT_SUMMARIES",
+          "action": "historical small CSV/manifest identity first; if essential, bounded head history"
+        },
+        {
+          "metric": "ingress_gap_and_ingress_before_ready",
+          "status": "NOT_COLLECTED_AT_INGRESS",
+          "action": "never infer from MS/LIFE head; only real ingress hook if Main includes it"
+        },
+        {
+          "metric": "ordinary_MSHR_MS_pressure",
+          "status": "REUSE_EXISTING",
+          "action": "reuse accepted bundle projection; absence from subset is not disabled"
+        },
+        {
+          "metric": "V_actual_service",
+          "status": "REUSE_EXISTING_LEGAL_F_OR_WV",
+          "by_mode": {
+            "F": {
+              "responses": 44974,
+              "dirty_forward": 0
+            }
+          },
+          "action": "service counts are mechanism outcomes, not victim hit rate"
+        },
+        {
+          "metric": "V_entry_age_service_kind_capacity_capture",
+          "status": "MISSING_DYNAMIC_DISTRIBUTIONS",
+          "action": "optional only if needed; actual capture curve not inferred from ordinary reuse CDF"
+        },
+        {
+          "metric": "RO_accepted_candidates_transactions_merges",
+          "status": "REUSE_EXISTING_F_SUMMARY",
+          "action": "missing F/RO runtime does not mean semantically no read-only data"
+        },
+        {
+          "metric": "normal_plus_RO_address_union_and_before_ready",
+          "status": "MISSING_DYNAMIC_JOINT",
+          "action": "head and ingress before-ready separate; a new legal F needs separate certification"
+        },
+        {
+          "metric": "T_same_head_full_structural_RO_joint_and_wait",
+          "status": "MISSING_DYNAMIC_JOINT",
+          "action": "legal F only; structural vs policy; no S/F marginal splicing"
+        },
+        {
+          "metric": "exact_demand_same_address_WB_incidence",
+          "status": "WITHDRAWN_PENDING_CLASS_DENOMINATOR_PROOF",
+          "action": "keep MS counts; 22 small metadata JSON inspection did not prove L1_WRBK exceptions zero; no raw/Trace scan requested"
+        }
+      ],
+      "new_model_authorization": 0,
+      "new_source_qualification": "NOT_PREPARED_BY_LANE_O",
+      "new_NI_qualification": "NOT_QUALIFIED",
+      "suggested_mode_constraint": "S demand; legal F mechanism metrics only when necessary"
+    },
+    {
+      "candidate": "fwt",
+      "program": "fastWalshTransform",
+      "input_identity_sha256": "fc3a90622744ba1f63bec264284983747a372e3a34543249c3977d4bd285fe2e",
+      "evidence_profile": "REF32x8_L100, Source78; exact refs below",
+      "existing_modes": [
+        "S",
+        "WV_ZERO_RO"
+      ],
+      "artifact_refs": [
+        {
+          "kind": "W_reference",
+          "mode": "S",
+          "cohort": "EP_PERF_FASTWALSHTRANSFORM_FC3A9062_S_REF_V1",
+          "bundle_path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_FASTWALSHTRANSFORM_FC3A9062_S_REF_V1/run/1de868e7-e434-4ead-85b3-a2caf283695b/VALIDATED_APPLICATION_BUNDLE.json",
+          "bundle_sha256": "3dd4102e63200837e509c1a8bda3fc179668fc584f1412bbc3a9c114d1608177"
+        },
+        {
+          "kind": "V_reference",
+          "mode": "WV_ZERO_RO",
+          "cohort": "EP_PERF_FASTWALSHTRANSFORM_FC3A9062_WV_ZERO_RO_REF_V1",
+          "bundle_path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_FASTWALSHTRANSFORM_FC3A9062_WV_ZERO_RO_REF_V1/run/f7f6e8a3-18d4-4c30-be5e-2965f752eaa5/VALIDATED_APPLICATION_BUNDLE.json",
+          "bundle_sha256": "901100fc30ee5606a2f7415f5ea83ed6d1c053f443c18017f83f8bc4b020f6ea"
+        }
+      ],
+      "ordinary_MSHR_subset": [
+        {
+          "cohort": "EP_PERF_FASTWALSHTRANSFORM_FC3A9062_S_REF_V1",
+          "mode": "S",
+          "line_peak": 99,
+          "line_full_head_observations": 0
+        },
+        {
+          "cohort": "EP_PERF_FASTWALSHTRANSFORM_FC3A9062_WV_ZERO_RO_REF_V1",
+          "mode": "WV_ZERO_RO",
+          "line_peak": 103,
+          "line_full_head_observations": 0
+        }
+      ],
+      "gaps": [
+        {
+          "metric": "W_count_copy_MS_first_wait_WBUF_area",
+          "status": "REUSE_EXISTING",
+          "action": "use W_reference_metrics; no new model"
+        },
+        {
+          "metric": "W_segment_lifetime_histogram_RW_atomic_by_WB_age",
+          "status": "MISSING_DYNAMIC_JOINT_OR_NOT_PROJECTED",
+          "action": "first check FT terminal staging fields; unified segment/RWA age may need isolated observer"
+        },
+        {
+          "metric": "head_gap_and_post_eviction_next_touch",
+          "status": "NOT_COLLECTED_IN_CURRENT_SUMMARIES",
+          "action": "historical small CSV/manifest identity first; if essential, bounded head history"
+        },
+        {
+          "metric": "ingress_gap_and_ingress_before_ready",
+          "status": "NOT_COLLECTED_AT_INGRESS",
+          "action": "never infer from MS/LIFE head; only real ingress hook if Main includes it"
+        },
+        {
+          "metric": "ordinary_MSHR_MS_pressure",
+          "status": "REUSE_EXISTING",
+          "action": "reuse accepted bundle projection; absence from subset is not disabled"
+        },
+        {
+          "metric": "V_actual_service",
+          "status": "REUSE_EXISTING_LEGAL_F_OR_WV",
+          "by_mode": {
+            "WV_ZERO_RO": {
+              "responses": 88069,
+              "dirty_forward": 3312
+            }
+          },
+          "action": "service counts are mechanism outcomes, not victim hit rate"
+        },
+        {
+          "metric": "V_entry_age_service_kind_capacity_capture",
+          "status": "MISSING_DYNAMIC_DISTRIBUTIONS",
+          "action": "optional only if needed; actual capture curve not inferred from ordinary reuse CDF"
+        },
+        {
+          "metric": "RO_accepted_candidates_transactions_merges",
+          "status": "NOT_APPLICABLE_TO_EXISTING_WV_MODE",
+          "action": "missing F/RO runtime does not mean semantically no read-only data"
+        },
+        {
+          "metric": "normal_plus_RO_address_union_and_before_ready",
+          "status": "NOT_APPLICABLE_WITHOUT_QUALIFIED_RO_MODE",
+          "action": "head and ingress before-ready separate; a new legal F needs separate certification"
+        },
+        {
+          "metric": "T_same_head_full_structural_RO_joint_and_wait",
+          "status": "NOT_APPLICABLE_TO_EXISTING_MODE",
+          "action": "legal F only; structural vs policy; no S/F marginal splicing"
+        }
+      ],
+      "new_model_authorization": 0,
+      "new_source_qualification": "NOT_PREPARED_BY_LANE_O",
+      "new_NI_qualification": "NOT_QUALIFIED",
+      "suggested_mode_constraint": "S first; existing legal WV only, no implicit RO-F"
+    },
+    {
+      "candidate": "vector6m",
+      "program": "vectorAdd",
+      "input_identity_sha256": "efced2c394f1e9799f8e2951eec4a377b4e95bb3c9ed462caff6b50af5b5f6d8",
+      "evidence_profile": "REF32x8_L100, Source78; exact refs below",
+      "existing_modes": [
+        "F",
+        "S"
+      ],
+      "artifact_refs": [
+        {
+          "kind": "W_reference",
+          "mode": "F",
+          "cohort": "EP_PERF_VECTOR6M_F_REF_V1",
+          "bundle_path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_VECTOR6M_F_REF_V1/run/38ec0afb-8560-43a2-a199-87cc7cba83ae/VALIDATED_APPLICATION_BUNDLE.json",
+          "bundle_sha256": "713f52c5a999ee7755469d1615a5ea3db24e983c23dd6d256c62919547573960"
+        },
+        {
+          "kind": "W_reference",
+          "mode": "S",
+          "cohort": "EP_PERF_VECTOR6M_S_REF_V1",
+          "bundle_path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_VECTOR6M_S_REF_V1/run/2bf1c80b-d57d-4a07-9274-73d820978c04/VALIDATED_APPLICATION_BUNDLE.json",
+          "bundle_sha256": "b7879dc58b2a3e703561eeaa59f1e3b5240afba2f05d0e5ba2361e574da6f133"
+        },
+        {
+          "kind": "V_reference",
+          "mode": "F",
+          "cohort": "EP_PERF_VECTOR6M_F_REF_V1",
+          "bundle_path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_VECTOR6M_F_REF_V1/run/38ec0afb-8560-43a2-a199-87cc7cba83ae/VALIDATED_APPLICATION_BUNDLE.json",
+          "bundle_sha256": "713f52c5a999ee7755469d1615a5ea3db24e983c23dd6d256c62919547573960"
+        }
+      ],
+      "ordinary_MSHR_subset": [
+        {
+          "cohort": "EP_PERF_VECTOR6M_F_REF_V1",
+          "mode": "F",
+          "line_peak": 0,
+          "line_full_head_observations": 0
+        },
+        {
+          "cohort": "EP_PERF_VECTOR6M_S_REF_V1",
+          "mode": "S",
+          "line_peak": 110,
+          "line_full_head_observations": 0
+        }
+      ],
+      "gaps": [
+        {
+          "metric": "W_count_copy_MS_first_wait_WBUF_area",
+          "status": "REUSE_EXISTING",
+          "action": "use W_reference_metrics; no new model"
+        },
+        {
+          "metric": "W_segment_lifetime_histogram_RW_atomic_by_WB_age",
+          "status": "MISSING_DYNAMIC_JOINT_OR_NOT_PROJECTED",
+          "action": "first check FT terminal staging fields; unified segment/RWA age may need isolated observer"
+        },
+        {
+          "metric": "head_gap_and_post_eviction_next_touch",
+          "status": "NOT_COLLECTED_IN_CURRENT_SUMMARIES",
+          "action": "historical small CSV/manifest identity first; if essential, bounded head history"
+        },
+        {
+          "metric": "ingress_gap_and_ingress_before_ready",
+          "status": "NOT_COLLECTED_AT_INGRESS",
+          "action": "never infer from MS/LIFE head; only real ingress hook if Main includes it"
+        },
+        {
+          "metric": "ordinary_MSHR_MS_pressure",
+          "status": "REUSE_EXISTING",
+          "action": "reuse accepted bundle projection; absence from subset is not disabled"
+        },
+        {
+          "metric": "V_actual_service",
+          "status": "REUSE_EXISTING_LEGAL_F_OR_WV",
+          "by_mode": {
+            "F": {
+              "responses": 0,
+              "dirty_forward": 0
+            }
+          },
+          "action": "service counts are mechanism outcomes, not victim hit rate"
+        },
+        {
+          "metric": "V_entry_age_service_kind_capacity_capture",
+          "status": "MISSING_DYNAMIC_DISTRIBUTIONS",
+          "action": "optional only if needed; actual capture curve not inferred from ordinary reuse CDF"
+        },
+        {
+          "metric": "RO_accepted_candidates_transactions_merges",
+          "status": "REUSE_EXISTING_F_SUMMARY",
+          "action": "missing F/RO runtime does not mean semantically no read-only data"
+        },
+        {
+          "metric": "normal_plus_RO_address_union_and_before_ready",
+          "status": "MISSING_DYNAMIC_JOINT",
+          "action": "head and ingress before-ready separate; a new legal F needs separate certification"
+        },
+        {
+          "metric": "T_same_head_full_structural_RO_joint_and_wait",
+          "status": "MISSING_DYNAMIC_JOINT",
+          "action": "legal F only; structural vs policy; no S/F marginal splicing"
+        }
+      ],
+      "new_model_authorization": 0,
+      "new_source_qualification": "NOT_PREPARED_BY_LANE_O",
+      "new_NI_qualification": "NOT_QUALIFIED",
+      "suggested_mode_constraint": "S demand; legal F mechanism metrics only when necessary"
+    }
+  ]
+}
