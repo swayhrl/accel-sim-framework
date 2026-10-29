@@ -1,5 +1,7 @@
 # 共享trace采集与轻量兼容验收流程
 
+最新工程功能见[V16：两架构按资产恢复已验收](CURRENT_PROGRESS_V16.md)、[按需读取恢复流程](ON_DEMAND_READ_RESTORE_INCREMENT_V16.md)和[当前范围总账](FINAL_DELIVERY_SCOPE_SUMMARY_V16.json)。共享NAS数据与bounded restore分别有实际证据，保留153延期、RAW/Pilot缺口和原科学例外；以下版本均保留历史时点。
+
 当前状态见[V15：75对资产与逐资产恢复边界](CURRENT_PROGRESS_V15.md)、[可复用完整流程](R2_REUSABLE_CAPTURE_POST_ARCHIVE_READ_SOP_V15.md)和[证据引用](FINAL_R2_PUBLIC75_EVIDENCE_REFS_V15.json)。统一发现75／75、RAW7及SM70125 NAS访问已验收；旧默认物化门仍待隔离restore-one修复。以下V4—V13段落均保留各自历史时点，不能作为当前运行状态。
 
 本流程供174-new所有项目线复用。174-new负责调度，109提供RTX4080采集和CPU工程计算，真164保存正文、归档和回执。默认交付包括精确输入身份、采集、必要后处理、常规与完整CTA裁剪资产、归档提交、公共目录及适用模拟器的轻量准入证据。
