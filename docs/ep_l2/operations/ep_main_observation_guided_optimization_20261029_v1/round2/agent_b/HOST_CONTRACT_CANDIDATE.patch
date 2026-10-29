@@ -1,0 +1,11 @@
+--- original_draft/mode_contract.py
++++ private_candidate/mode_contract.py
+@@ -30,7 +30,7 @@
+  need(type(o)is dict and len(o)==282 and all(type(k)is str and type(v)is str for k,v in o.items()),'actual282 string values');base=r['expected_effective_options'];need(set(o)==set(base),'actual282 keys differ')
+  for k,v in base.items():
+   if k not in VARIABLE|set(flags(s['mode'])):need(o[k]==v,'undeclaredbackground/geometry/clock/queue/resource/stat option:'+k)
+- need(o['-trace']==s['trace_entry'],'trace option mismatch');need(all(o[k]==v for k,v in flags(s['mode']).items()),'formal five-flag mismatch');need(set(s['observer_env'])==set(HEAVY)and all(s['observer_env'][k]=='0'for k in HEAVY),'exact fourheavyOFF scope')
++ need(o['-trace']==s['trace_entry'],'trace option mismatch');need(all(o[k]==v for k,v in flags(s['mode']).items()),'formal five-flag mismatch');need(set(s['observer_env'])==set(HEAVY)|{'EPL2_LIFE_WIRE'}and all(s['observer_env'][k]=='0'for k in HEAVY)and s['observer_env']['EPL2_LIFE_WIRE']=='SUMMARY_STAGE','exact fourheavyOFF plus SUMMARY_STAGE scope')
+  return o
+ 
+ def validate_anchor(s):

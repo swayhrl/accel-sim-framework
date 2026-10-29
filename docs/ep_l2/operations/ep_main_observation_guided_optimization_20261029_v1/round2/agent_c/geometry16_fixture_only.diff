@@ -1,0 +1,41 @@
+--- Source78/test_tag_capacity_geometry.cc
++++ C_private/test_mt_geometry16.cc
+@@ -10,8 +10,8 @@
+ class mem_fetch;
+ static void diag_test_witness(unsigned,unsigned long long,mem_fetch*);
+ #define DIAG_TEST_WITNESS_ACTIVE 1
+-#include "ms_ro_combined/native_fixture.h"
+-#include "../../src/gpgpu-sim/ep-l2-detach-diag.h"
++#include "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/tests/ep_l2/ms_ro_combined/native_fixture.h"
++#include "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-detach-diag.h"
+ static uint64_t digest=1469598103934665603ULL;
+ static void mix(uint64_t x){digest^=x;digest*=1099511628211ULL;}
+ static void diag_test_witness(unsigned k,unsigned long long cycle,mem_fetch*m){
+@@ -19,7 +19,7 @@
+  mix(m->get_ep_l2_payload_id());mix(m->get_ep_l2_payload_generation());
+  if(m->has_ft_wb_data())for(auto x:m->get_ft_wb_data())mix(x);
+ }
+-static std::string geometry(unsigned s,unsigned w){return "S:"+std::to_string(s)+":128:"+std::to_string(w)+",L:B:m:L:P,A:128:1,256:0,32";}
++static std::string geometry(unsigned s,unsigned w){return "S:"+std::to_string(s)+":128:"+std::to_string(w)+",L:B:m:L:P,A:128:1,128:0,32";}
+ struct capacity_fixture:combined_fixture{
+  capacity_fixture(char**argv,const std::string&g,bool response_small=false):combined_fixture(argv,true,response_small?"1024:16:64:1":"1024:16:64:64",g.c_str()){
+   auto*mc=gpu->getMemoryConfig();auto&ram=cache->ep_l2_payload_for_test();
+@@ -35,7 +35,8 @@
+   bool differs=false;new_addr_type example=0;
+   for(new_addr_type a=0;a<(1ull<<22);a+=128){
+    auto a32=c32.set_index(a),a64=c64.set_index(a);assert(a32<32&&a64<64);
+-   assert(mc->m_L2_config.set_index(a)==(logical_tag_sets==32?a32:a64));
++   assert(mc->m_L2_config.set_index(a)<logical_tag_sets);
++   if(logical_tag_sets==32||logical_tag_sets==64)assert(mc->m_L2_config.set_index(a)==(logical_tag_sets==32?a32:a64));
+    if(a32!=(a64&31)){differs=true;example=a;break;}
+   }
+   assert(differs && "P/IPOLY32 must not be a64-set report mask");
+@@ -129,7 +130,7 @@
+  f.finish_named("PHYSICAL_TAIL_SAME_BANK");
+ }
+ int main(int argc,char**argv){
+- assert(argc==13);unsigned sets=std::stoul(argv[10]),ways=std::stoul(argv[11]);bool T=std::stoul(argv[12]);assert((sets==32||sets==64)&&(ways==8||ways==16));auto g=geometry(sets,ways);
++ assert(argc==13);unsigned sets=std::stoul(argv[10]),ways=std::stoul(argv[11]);bool T=std::stoul(argv[12]);assert(sets==16 && ways==8);auto g=geometry(sets,ways);
+  const std::string test=argv[9];
+  if(test=="PRESSURE_IDENTITY")pressure_identity(argv,g,T);
+  else if(test=="SECTOR_MERGE_REORDER"){assert(T);sector_reorder(argv,g);}

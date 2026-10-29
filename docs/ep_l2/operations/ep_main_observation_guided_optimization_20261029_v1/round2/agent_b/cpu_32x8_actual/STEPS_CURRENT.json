@@ -1,0 +1,92 @@
+[
+  {
+    "label": "requests32x8_compile",
+    "phase": "COMPILE",
+    "argv": [
+      "/usr/bin/c++",
+      "-std=gnu++17",
+      "-O0",
+      "-g0",
+      "-fPIC",
+      "-UNDEBUG",
+      "-DCUDART_VERSION=12040",
+      "-DDEBUG=0",
+      "-DTRACING_ON=1",
+      "-I/root/data/dtc_main_20261023_v1/ae_fair_v1/toolchain/include",
+      "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/libcuda",
+      "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/libcuda",
+      "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim",
+      "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/intersim2",
+      "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src",
+      "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/round2/agent_b/test_w_only_32x8_requests.cc",
+      "-Wl,--version-script=/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/linux-so-version.txt",
+      "-Wl,--start-group",
+      "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/libentrypoint.a",
+      "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/libcuda/libcuda.a",
+      "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/cuda-sim/libptxsim.a",
+      "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+      "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/intersim2/libintersim.a",
+      "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/accelwattch/libaccelwattch.a",
+      "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/trace-driven/libtrace-driven.a",
+      "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/trace-parser/libtrace-parser.a",
+      "-Wl,--end-group",
+      "-lm",
+      "-lz",
+      "-lGL",
+      "-ldl",
+      "-pthread",
+      "-o",
+      "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/round2/agent_b/cpu_32x8_actual/requests32x8.cpu",
+      "-UNDEBUG"
+    ],
+    "returncode": 0,
+    "process_group_closed": true,
+    "wall_seconds": 13.666208116337657,
+    "peak_child_tree_RSS_bytes": 444596224,
+    "stdout_ref": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/round2/agent_b/cpu_32x8_actual/requests32x8_compile.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "stderr_ref": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/round2/agent_b/cpu_32x8_actual/requests32x8_compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  },
+  {
+    "label": "requests32x8_run",
+    "phase": "CPU_FIXTURE",
+    "argv": [
+      "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/round2/agent_b/cpu_32x8_actual/requests32x8.cpu",
+      "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+      "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/round2/agent_b/W_ONLY_PRIVATE_CPU_V2.config",
+      "2",
+      "16",
+      "0",
+      "0",
+      "1"
+    ],
+    "returncode": -6,
+    "process_group_closed": true,
+    "wall_seconds": 0.15790420211851597,
+    "peak_child_tree_RSS_bytes": 8388608,
+    "stdout_ref": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/round2/agent_b/cpu_32x8_actual/requests32x8_run.stdout",
+      "sha256": "b591b1ffaf560bf570c0c17ba648e0f9b209ee993fa30b0431ad13227a6cb856",
+      "bytes": 1814
+    },
+    "stderr_ref": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/round2/agent_b/cpu_32x8_actual/requests32x8_run.stderr",
+      "sha256": "c26f2021b7bf00b5c4fab8db5ec6882f585aee364583e3880633bc4a921f28fc",
+      "bytes": 266
+    },
+    "expected_marker": "W_ONLY_SOURCE78_32X8_REAL_REQUESTS|requests=9|pending_peak=7|dirtyWB=1|reverse_returns=7|bankP1=1|drain=1|PASS",
+    "expected_marker_present": false,
+    "binary_ref": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/round2/agent_b/cpu_32x8_actual/requests32x8.cpu",
+      "sha256": "ba259ffc274c4bdc0281b813fcaf1a6232dc4b8c7db7222c060814f77d2517c8",
+      "bytes": 27275896
+    }
+  }
+]

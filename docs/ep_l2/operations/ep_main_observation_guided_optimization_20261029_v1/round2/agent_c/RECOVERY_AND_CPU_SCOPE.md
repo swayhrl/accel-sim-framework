@@ -1,0 +1,9 @@
+# Recovery and execution scope
+
+Use BUILD_EXECUTION.json and GEOMETRY16_BUILD_V2_EXECUTION.json exact compiler/link commands, with Source78 prerequisite archive/header restore. Rebuild only the two private CPU fixtures; run `python3 -B run_cpu_controls.py --family module` and, if independently desired, `--family geometry16`. No command invokes accel-sim.out, consumes a scientific budget or changes a runtime controller. Module fixture uses reference payload port; geometry16 fixture uses real cache/subpartition plus manual lower responses, not DRAM timing.
+
+SOURCE_HEADER_READBACK.json checks six source/test files byte-identical to exact Core78f4b59. Native archive SHA is reused from Main's already-verified source identity rather than rehashing a large archive. CPU binary/object hashes in manifest identify engineering artifacts only, not a new simulator Source identity. The collector is header-only/test-adapter, no production hook; source integration and full rebuild/NI remain future work.
+
+All logs and receipts are small enough for Git evidence. Do not commit the two engineering binaries/objects. They are bounded hot artifacts on174; durable package/archive placement is true164 under Main coordination. Rebuild receipts, source diffs, executable SHA and exact frozen source references provide recovery without copying Trace. No Trace/raw body has been read or copied.
+
+Known unsuccessful controls: four initial16set executions rejected the historical fixture's scope guard before requests ran. Scope was extended only in private fixtures; every protocol and data assertion retained. Known superseded controls: four initial module executions had a renamed-main missing-return warning; final explicit-return private harness rebuilt warning-free and reran successfully. Keep both initial and final receipts/logs.

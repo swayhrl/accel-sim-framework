@@ -1,0 +1,61 @@
+{
+  "rows": [
+    {
+      "name": "compile",
+      "argv": [
+        "/usr/bin/c++",
+        "-DCUDART_VERSION=12040",
+        "-DDEBUG=0",
+        "-DTRACING_ON=1",
+        "-O0",
+        "-g0",
+        "-fPIC",
+        "-UNDEBUG",
+        "-std=gnu++17",
+        "-I/root/data/dtc_main_20261023_v1/ae_fair_v1/toolchain/include",
+        "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/libcuda",
+        "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/libcuda",
+        "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim",
+        "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/intersim2",
+        "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/intersim2/allocators",
+        "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/intersim2/arbiters",
+        "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/intersim2/networks",
+        "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/intersim2/power",
+        "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/intersim2/routers",
+        "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src",
+        "-c",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/round2/agent_c/test_mt_sector_counter.cc",
+        "-o",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/round2/agent_c/test_mt_sector_counter.o"
+      ],
+      "rc": 0,
+      "seconds": 2.471365559846163
+    },
+    {
+      "name": "link",
+      "argv": [
+        "/usr/bin/c++",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/round2/agent_c/test_mt_sector_counter.o",
+        "-o",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/round2/agent_c/test_mt_sector_counter",
+        "-Wl,--start-group",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/libentrypoint.a",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/libcuda/libcuda.a",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/cuda-sim/libptxsim.a",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/intersim2/libintersim.a",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/accelwattch/libaccelwattch.a",
+        "-Wl,--end-group",
+        "-lz",
+        "-ldl",
+        "-lpthread",
+        "-lGLX",
+        "-lOpenGL",
+        "-lm"
+      ],
+      "rc": 0,
+      "seconds": 0.3154903557151556
+    }
+  ],
+  "scope": "unchanged Source78 production class/header/native archive, explicit-return private reference fixture; no production hook"
+}

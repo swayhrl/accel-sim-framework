@@ -1,0 +1,18 @@
+--- Source78/test_ro_transactions.cc
++++ C_private/ro_module_fixture_source78.cc
+@@ -3,7 +3,7 @@
+ #include <map>
+ #include <set>
+ #include <sstream>
+-#include "../../src/gpgpu-sim/ep-l2-ro-transactions.h"
++#include "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-ro-transactions.h"
+ 
+ using namespace ep_l2_ro;
+ 
+@@ -366,4 +366,5 @@
+   pending_lower_distinguishes_duplicates_from_addresses();
+   denied_bank_keeps_same_waiter_after_earlier_sector_arrives();
+   puts("EP-L2 Lane 3 RO production-module/reference tests: PASS (7 scenario groups)");
+-}
++  return 0; // Explicit return: private test renames main to an ordinary helper.
++}

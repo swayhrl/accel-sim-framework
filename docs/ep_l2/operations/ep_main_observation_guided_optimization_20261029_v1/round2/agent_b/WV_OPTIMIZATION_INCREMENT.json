@@ -1,0 +1,58 @@
+{
+  "schema": "EP_ROUND2_WV_CANDIDATE_INCREMENT_V1",
+  "source_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/MODELED_PAYLOAD_UNITS_AND_FAIRNESS_OVERLAY_V1.json",
+    "sha256": "cca46c6cdcee746a042192af87a88fbe9d1a90d5cf1089a8bda058fcea9e6de8",
+    "bytes": 8924
+  },
+  "D_independent_findings_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/agent_d/FINDINGS.json",
+    "sha256": "e8c40aa1ea09f642fa3122002f2c0ee70d803bdcc3eacbfbc0aa5ca706d38a84",
+    "bytes": 19702
+  },
+  "C1": {
+    "status": "HYPOTHESIS_DESIGN_ONLY_NO_PRODUCTION_IMPLEMENTATION",
+    "policy": "Among legally reclaimable optional rows, prefer never-successfully-served rows, then oldest age, before served rows; preserve mandatory/readers/pins/bank eligibility. Define directory-full and bank-compatible selector separately and consistently.",
+    "baseline_differences": [
+      "Directory dirty install currently prefers CLEAN; clean install selects oldest across reclaimable kinds",
+      "Bank-compatible payload reclaim currently CLEAN then WB_COMPLETE, oldest per-kind; do not falsely flatten these policies"
+    ],
+    "service_seen_set": "Only response_commit after real successful bank service and accepted response enqueue; not query/begin_read/preview/failed enqueue/cancel",
+    "reset": "Every incarnation/rebind including commit_dirty_promotion, reclaim/reinstall; no stale service_seen across generations",
+    "guards": [
+      "WB_STAGED/WB_INFLIGHT never optional reclaim",
+      "readers/pins0 mandatory",
+      "generation/owner/bank identity unchanged",
+      "preview no mutation and revision consistency",
+      "WAD ownership and dirty-forward no shortcut"
+    ],
+    "logical_unpadded_cost_bytes": 1024,
+    "physical_slot_delta": 0,
+    "directory_row_delta": 0,
+    "implementation_port_comparator_latency_PPA": "UNKNOWN_NOT_MODELED",
+    "critical_path_benefit": "UNKNOWN_NOT_MEASURED",
+    "missing_value_metric": "Same object evicted after useful service or before first future useful hit; aggregate V counts do not prove which row should be retained",
+    "minimal_correctness_plan": [
+      "Repeated preview purity with service bit unchanged",
+      "Success vs bank/response deny/cancel updates",
+      "Mandatory/pinned/other-bank entries never selected",
+      "incarnation/dirtypromotion reset",
+      "both selectors select committed candidate with revision guard"
+    ],
+    "minimal_performance_plan": "New independently pinned Core/ELF; unchanged policy S and WV references in same new binary, candidate WV comparison; do not splice Source78 cycles. Exact resource and paid-lookup hardware costs must be declared."
+  },
+  "C2": {
+    "status": "DEFERRED_NOT_PROPOSED_FOR_CURRENT_SIX",
+    "candidate": "Optional retention cap64vs128 with physical1168 fixed",
+    "reason": "No accepted evidence proves optional retention capacity saturation or value; no 2D sweep"
+  },
+  "priority": "Complete mode decomposition before structural tuning. Stencil highV positive/Scan lowV negative are informative; low-cost FWT/GEMM W-only can qualify application path if separately authorized.",
+  "do_not_bundle": [
+    "D P1 preview candidate",
+    "Source92",
+    "host-writeV3",
+    "MSHR64",
+    "new observer"
+  ],
+  "model_starts": 0
+}

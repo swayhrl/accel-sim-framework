@@ -1,0 +1,30 @@
+--- Source78/potential_fixture.h
++++ C_fixture16/potential_fixture.h
+@@ -6,12 +6,12 @@
+ #include <cstdio>
+ #include <map>
+ #include <set>
+-#include "../../libcuda/gpgpu_context.h"
+-#include "../../src/gpgpu-sim/gpu-sim.h"
+-#include "../../src/gpgpu-sim/icnt_wrapper.h"
+-#include "../../src/gpgpu-sim/l2cache.h"
+-#include "../../src/gpgpu-sim/mem_latency_stat.h"
+-#include "../../src/option_parser.h"
++#include "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/libcuda/gpgpu_context.h"
++#include "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/gpu-sim.h"
++#include "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/icnt_wrapper.h"
++#include "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/l2cache.h"
++#include "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/mem_latency_stat.h"
++#include "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/option_parser.h"
+ 
+ using versions = std::array<unsigned long long,4>;
+ struct fixture {
+@@ -48,7 +48,7 @@
+     auto mc=gpu->getMemoryConfig();
+     unsigned requested_sets=0,requested_line=0,requested_ways=0;
+     assert(std::sscanf(geometry,"S:%u:%u:%u",&requested_sets,&requested_line,&requested_ways)==3);
+-    assert((requested_sets==32 || requested_sets==64) && requested_line==128 &&
++    assert((requested_sets==16 || requested_sets==32 || requested_sets==64) && requested_line==128 &&
+            (requested_ways==8 || requested_ways==16));
+     logical_tag_sets=requested_sets;logical_tag_ways=requested_ways;
+     logical_tag_count=requested_sets*requested_ways;

@@ -1,0 +1,35 @@
+{
+  "engine_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/tools/ep_perf_native.py",
+    "sha256": "8950fa2adea00659b390326eed7aadeabab5b744a8200432e49667ed7e2fe3cb",
+    "bytes": 24793
+  },
+  "tests": [
+    {
+      "mode": "S",
+      "current_native_mode_predicate": true
+    },
+    {
+      "mode": "F",
+      "current_native_mode_predicate": true
+    },
+    {
+      "mode": "WV_ZERO_RO",
+      "current_native_mode_predicate": true
+    },
+    {
+      "mode": "F_MINUS_T",
+      "current_native_mode_predicate": false
+    }
+  ],
+  "method": "isolated AST expression only; no controller import, authority, registry writes, spec_for or native call",
+  "unclosed": [
+    "mode allowlist",
+    "M1T0 expected flags",
+    "non-F cannot inherit RO permission must distinguish F_MINUS_T",
+    "RO certificate copy path currently F-only",
+    "eligibility includes F_MINUS_T",
+    "native mode qualification and fresh scoped budget"
+  ],
+  "not_host_qualification": true
+}
