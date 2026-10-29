@@ -1,0 +1,9 @@
+CPU准入与共享可行性（只读）
+
+2026-10-28T18:22:50Z实际CPU2样本：{'status': 'HOLD', 'reason': 'RESOURCE_HOLD_CPU_SPARE: fewer than4 unoccupied idle physical cores'}。允许512逻辑/256物理核，平均busy92.51%；忽略所有affinity后仅0个双sibling均≤10%busy的物理核，真正spare为0。可见quota/usage：[{'path': '/sys/fs/cgroup', 'quota_cores': 384.0, 'used_cores': 3.7060599219290524, 'prospective_threads': 1, 'quota_fraction': 0.75, 'used_plus_one_pass': True, 'throttled_period_delta': 0, 'throttled_usec_delta': 0}]。当前runtime+memoryallow的未消费19个身份均需这道CPU2门；未扩memory/view的IR11另计，不能说它们已经合法可派发。
+
+“至少4个空闲物理核、双sibling≤10%”来自CPU1→CPU2继承的operational POLICY，并非模拟器物理要求。旧cpu_candidates只是避开已claim CPU并按同核冲突/忙碌率排序，无此硬阈值。宿主确实忙；低cgroup使用说明本scope尚有配额，并不代表有空闲硬件核。但Linux可共享忙核，故当前HOLD同时是“不使用忙核”这一保守策略的结果，不等于绝无合法CPU时间。只把4改1或忽略sleepingmask仍无法解决零idlecore。
+
+若Main决定CPU共享，最小路线应为独立future-only单点/单并发工程代际：保旧Core/FW/binary/科学配置，选择合法未claim且较少竞争的CPU，保fresh quota/throttle/所有其它资源门；E frame→chooser→native最终fresh→新strict全部显式接入，旧CPU2历史证明不改。不能只放松chooser后仍由native旧门拒绝。先CPU资格再一项已登记短工程自然strict/周期计数/归档与host/cadence验证，才讨论扩大。
+
+风险是宿主与不可见任务竞争、墙钟变慢和波动、监控deadline停机；配额不是CPU预留。没有改策略/affinity/登记/源码，也没有启动任何任务。详见SAMPLE.json、ASSESSMENT.json。

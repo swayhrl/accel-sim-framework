@@ -1,0 +1,7 @@
+V2 minimal lock-reentry fix. Candidate only; no production apply/grant/model.
+
+V1 46b6 is preserved byte-for-byte. Its CPU authority fixture did not model a separate-FD shared flock and missed the production self-deadlock. V2 changes only the nested mutate call to locked_evidence plus that pure checker. The locked checker uses current already-EX-locked q and current canonical+alias files, SHA/NoneCPU, frozen scope scientific projection/role/current authorization, budget/remaining/admitted, claims and INTENT/DONE files. It NEVER calls engine.canonical/registered/authority/owner_assert. Actual source/lease checks remain outside EX. All forward-state/CAS/record-provenance behavior is otherwise unchanged.
+
+Five focused real-flock CPU cases PASS: private outer EX + old independent SH|NB produces EWOULDBLOCK; new checker performs zero engine authority calls; exact V2 nested mutate AST body under EX changes only CPU2row and preserves other receipts; alias drift and newly-spent locked-q refuse before mutation. No old25 repeat or real production lock/PID action.
+
+Main must publish/readback and use a new V2 PREPARED after independently proving all-old row/ACTIVE/context and preserving the blocked V1 PREPARED+operation preimages. Do not relabel or apply old source-bound PREPARED as V2. No new registration/grants needed. Actual Main continuation/ACK remains unqualified by this private lock delta alone.
