@@ -55,3 +55,7 @@
 ## 重复次数缩减方法
 
 [逐workload重复缩减方法](WORKLOAD_REPETITION_REDUCTION_METHOD_V1.md)与[可填写审查模板](WORKLOAD_REPETITION_REDUCTION_REVIEW_TEMPLATE_V1.json)。优先保原工作集和算法覆盖，2轮需评估保留与丢弃信息；已做的小scan仅为工程冒烟，不能继承原版研究等价。
+
+## V13 R2完整采集与执行检查
+
+[四个原空间R2输入的120次完整采集及尚待执行的后处理](CURRENT_PROGRESS_V13.md)。[构建实证与边界](R2_BUILD_CAPTURE_LESSONS_V13.md)、[机器时点](CURRENT_DELTA_V13.json)和[小验收与代码快照索引](R2_WORKFLOW_EVIDENCE_REFS_V13.json)。完整采集不代表F9、consumer或新科学资格。
