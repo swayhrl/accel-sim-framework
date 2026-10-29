@@ -1,0 +1,69 @@
+{
+  "cases": [
+    {
+      "admission_held": null,
+      "events": [
+        "PREPARE_UNDER_HOLD",
+        "APPLY_UNDER_HOLD",
+        "ACK_PUBLISHED_UNDER_HOLD"
+      ],
+      "exact_previous_restored": true,
+      "foreign_reference_not_overwritten": false,
+      "name": "success",
+      "original_UUIDs_budget_and_R_tokens_preserved": true,
+      "status": "PASS"
+    },
+    {
+      "admission_held": true,
+      "events": [
+        "PREPARE_UNDER_HOLD",
+        "APPLY_UNDER_HOLD",
+        "ACK_PUBLISHED_UNDER_HOLD"
+      ],
+      "exact_previous_restored": false,
+      "foreign_reference_not_overwritten": false,
+      "name": "ACK_put_failure",
+      "original_UUIDs_budget_and_R_tokens_preserved": true,
+      "status": "PASS"
+    },
+    {
+      "admission_held": true,
+      "events": [
+        "PREPARE_UNDER_HOLD",
+        "APPLY_UNDER_HOLD"
+      ],
+      "exact_previous_restored": false,
+      "foreign_reference_not_overwritten": false,
+      "name": "apply_BaseException",
+      "original_UUIDs_budget_and_R_tokens_preserved": true,
+      "status": "PASS"
+    },
+    {
+      "admission_held": false,
+      "events": [
+        "PREPARE_UNDER_HOLD",
+        "APPLY_UNDER_HOLD"
+      ],
+      "exact_previous_restored": false,
+      "foreign_reference_not_overwritten": true,
+      "name": "unknown_chooser_protection",
+      "original_UUIDs_budget_and_R_tokens_preserved": true,
+      "status": "PASS"
+    }
+  ],
+  "count": 4,
+  "driver_sha256": "e90815c5b06a62ceea887fff9999049712ecf894052f779e31f7e65c41a4802b",
+  "fixture_root": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/E/pending_resource_refresh_review_v2/CPU_MAIN_RESOURCE_V2_0_z9tdro",
+  "limitations": [
+    "Actual frozen apply function executes in an isolated module with private Main/frame/owner identity and helper/authority stand-ins.",
+    "Tests only operator hold/ACK/exception/reference ordering; actual helper transaction and partial forward recovery are covered by separate B8 qualification.",
+    "No actual owner entry, resource file/registry writes or model action."
+  ],
+  "models_started": 0,
+  "new_grants": 0,
+  "production_changes": 0,
+  "schema": "E_RESOURCE_MAIN_V2_ACTUAL_APPLY_PRIVATE_FAULT_QUALIFICATION_V1",
+  "source_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/control/operational_amendments/pending_resource_forecast_refresh_v1/main_apply_v2.py",
+  "source_sha256": "f48fb251f0ec30593611d70c11a08c4292bd8b39e1b2e9677be785b5fee98351",
+  "status": "PASS"
+}
