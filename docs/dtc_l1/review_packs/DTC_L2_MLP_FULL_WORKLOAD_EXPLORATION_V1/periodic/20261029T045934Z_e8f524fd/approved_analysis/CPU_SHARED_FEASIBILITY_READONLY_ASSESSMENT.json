@@ -1,0 +1,46 @@
+{
+  "findings": [
+    "Current frozenCPU2 requires >=4 distinct unoccupied physical cores with every sibling <=10%busy, plus .5s evidence, selected CPU membership, <=.75visiblequota after+1 thread and zero visible throttling. This is an operational spare-CPU safety condition, not a GPUmodel/cache/clock/trace or Core/FW requirement.",
+    "The constant originates in CPU1 POLICY and was copied unchanged into CPU2; CPU1_TO_CPU2_EXACT_SOURCE_DIFF proves same sampler/POLICY. Old l2_resources.cpu_candidates ranks busy CPUs and samephysical-sibling occupancy, but has no 10%busy or min4core hard cutoff.",
+    "Busy /proc/stat describes whole-host execution on hardware, whereas visible cgroup usage/quota and namespace tasks describe only observable workload/limits. A low current cgroup usage is not unused or reserved physical capacity; a high hostbusy fraction is not proof the current cgroup has no legal scheduler timeslice.",
+    "The necessary CPU2 fresh eligibility gate is failing for every currently routed and memoryallowed unspent identity in SAMPLE. It can explain complete DTC admission stall without proving every other gate would pass. RegisteredIR11 not yet memoryallowed/view-routed is not counted as currently legal runtime work.",
+    "At current zero idlephysical count, reducing min4 to min1 alone cannot help. Relaxing affinity bookkeeping alone also cannot help. Current host is actually busy; the policy additionally elects never to share already-busy physicalcores.",
+    "Unused local quota/RAM coexist with occupied hostCPU. Therefore it is inaccurate both to say the machine has many idlecores and to say no legal CPUsharing execution could exist. Whether to share is an explicit operational-policy decision."
+  ],
+  "minimum_future_options": [
+    {
+      "effect": "No source/config/contract change; will resume only when real idle-core gate becomes true; no guarantee when external hostload drops.",
+      "option": "Keep currentCPU2 and wait"
+    },
+    {
+      "effect": "Use already legal CPU allocator to select one allowed unclaimed logicalCPU with least observed busy/sibling contention, without changing other jobs affinity. Permit timeslicing despite idlecore floor while retaining fresh visible quota/throttle/topology/claims, full RAM/CPU-cap/disk/pressure/lease/source and finalselectedCPU identity. Do not silently label it CPU2 spare PASS; old proof generations remain unchanged.",
+      "option": "A new finite future-only explicit shared-CPU generation",
+      "verification": "First one already-registered short engineering identity, concurrency1. New versioned source/config/proof mode must cover E RuntimeFrames/chooser, native prepare/final INTENT and strict offline replay ANDIO, so no isolated chooser-only bypass. Source/CPU-only negative checks + actual natural strict/count/cycle+archive closure, current host impact and observer cadence measured before any broader release. No new grant implied."
+    }
+  ],
+  "production_changes": 0,
+  "production_eligible": false,
+  "prohibited_actions_this_assessment": [
+    "No policy/source/config/affinity changes",
+    "No registration/model/producer activation",
+    "No modification of frozenCPU2 or previous readonlyhold reports"
+  ],
+  "risks": [
+    "Shared host CPUs can sharply slow walltime and contend with invisible namespace jobs; visible quota headroom is a maximum allowance, not reservation.",
+    "A pinned selected CPU can remain runnable behind other jobs; hostbusy/PSI and walltime variance may increase, so simulator walltime is not valid performance evidence.",
+    "Current telemetry/resource finite deadlines remain active: heavy scheduler delay may cause a genuine engineering STOP and consume an identity; relaxing deadlines or pressure rules would require separately qualified explicit changes, not an implicit side effect.",
+    "Changing idle admission does not require changing Core/FW/binary/270scientificoptions, but bitwise cycle/count preservation still needs an actual engineering canary; CPU fixtures alone cannot prove it."
+  ],
+  "sample_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/cpu_share_feasibility_readonly_20261029_v1/SAMPLE.json",
+  "sample_sha256": "aa4377b2139e956c4318624bd1035594c352f1522a503ddde86b6b8eaf794218",
+  "schema": "CPU_SHARED_FUTURE_OPERATIONAL_FEASIBILITY_READONLY_V1",
+  "source_pins": {
+    "/root/data/dtc_l2_mlp_exploration_20261027_v1/control/RESOURCE_POLICY.json": "6327541fff1ef0e4858e0494e9f7a43da271669500ac2e2bd57983b56d7c46c4",
+    "/root/data/dtc_l2_mlp_exploration_20261027_v1/control/operational_amendments/cpu_spare_memory_v2/cpu_memory.py": "d98f2365c3f98ce6ec9464df1d6dc16b56a034b942388abb43944cdb71d0858a",
+    "/root/data/dtc_l2_mlp_exploration_20261027_v1/control/operational_amendments/cpu_spare_memory_v2/cpu_owner.py": "4945156fe11db69f75a6f1dc39e08a0f5c7b28ef43244525f570bebbf33cf080",
+    "/root/data/dtc_l2_mlp_exploration_20261027_v1/tools/l2_resources.py": "6ad97e35de88ff5876bc0af674324f979f35c211f31d182976d2f66abb9c4854",
+    "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/cpu_spare_memory_v1/cpu_memory.py": "5b081e91077d84856f077d3f2fcbbf9f2aee97af6a6ed3297942cae44a304b54",
+    "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/cpu_spare_memory_v2/CPU1_TO_CPU2_EXACT_SOURCE_DIFF.json": "f6dc12f9f6930862243f9873ae2c5504ff3bef9436560ad412e219e3ece529cd"
+  },
+  "status": "ASSESSMENT_ONLY_NOT_POLICY_OR_ACTIVATION"
+}
