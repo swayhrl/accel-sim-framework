@@ -1,6 +1,6 @@
 # Installed finite longtail automatic closeout
 
-Main verified UTC 2026-10-29T01:43:03.334283+00:00. The only background application attempts are:
+Main verified UTC 2026-10-29T01:55:22.721018+00:00. The only background application attempts are:
 
 - EP_PERF_LAVAMD_51FAFFD2_F_REF_V1
 - EP_PERF_SYRK_90B0CC9D_S_REF_V1
@@ -28,3 +28,5 @@ Recovery/status on174:
 Git reports: `LONGTAIL_RESULTS_CURRENT.md/.csv/.json`; `FINAL_BACKGROUND_COMPLETION.md` appears when the three scoped attempts are terminal. Automatic reporting is through these remote files/receipts; no unsupported proactive chat-notification claim is made.
 
 Source KEEP and real164 inputs/archive remain unchanged. No GPU collection, Trace copies or body rehash are performed. Foreground closure does not establish full35/96 coverage or T-independent performance gain.
+
+Git human-readable text is normalized to LF. Original Source, compressed raw and archive byte hashes remain unchanged and are recovered through their immutable evidence/archive references.

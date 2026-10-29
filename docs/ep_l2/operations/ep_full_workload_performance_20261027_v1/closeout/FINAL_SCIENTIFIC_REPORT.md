@@ -39,3 +39,13 @@
 本轮最终建议是保留现有已接受实现及全部正负结果，不晋升三个资源候选为EP总体性能胜者，不自动放大Tag压力、不继续延迟扫描、不扩大应用预算。三个长尾只补完既有实验表和配对；其结果不能悄悄改写固定8验证人口。
 
 如果独立批准下一轮研究，优先两项：(1)对已有真实detach且可准确闭合RO身份的配置，做严格F−T/F因果配对；(2)先把主机覆盖写入修复完成生产路径CPU与应用资格，再扩展受影响输入。W/V分解或带现实访问成本的native/merge候选均须新Source和完整正确性资格。当前证据不支持“全工作负载EP获益”“T已证实加速”或全局最优/PPA结论。
+
+
+## Main精确覆盖补充
+
+以本轮222接受点为时点，精确代表/普通输入覆盖见`FOREGROUND_COVERAGE_ADDENDUM.md`及对应CSV/JSON。它们是前台收尾快照，不冒充后续长尾的实时表。长尾的当前状态、接受点和新增配对见自动更新的`LONGTAIL_RESULTS_CURRENT.*`及上级`RUN_STATUS.csv`、`MATCHED_PERFORMANCE.csv`。主35为22个S/F、2个仅S/WV、2个LIVE输入、1个S_ONLY、1个技术失败输入、1个明确HOLD、6个未启动；主42另有7个UNRESOLVED slot。
+
+
+## Main最终工程回执
+
+最新状态以`HOST_WRITE_REPAIR_MAIN_STATUS.json`及`repair/`内闭合证据为准：V3??????142???TU/?????800???????10???CPU??????WSL????????ELF??????????kernel???????default-OFF????native?????????accepted Core???????????

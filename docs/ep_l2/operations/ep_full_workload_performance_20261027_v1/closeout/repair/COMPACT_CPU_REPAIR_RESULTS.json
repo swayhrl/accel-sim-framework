@@ -1,0 +1,361 @@
+{
+  "status": "BOUNDED_PRODUCTION_CPU_REPAIR_COMPONENT_PASS_NATIVE_APPLICATION_UNQUALIFIED",
+  "production_TUs": 142,
+  "library_member_total": 140,
+  "libraries": [
+    {
+      "archive": {
+        "bytes": 1664960,
+        "path": "/root/ep_host_write_v3_20261029/cpu_build2/build/gpgpu-sim/libcuda/libcuda.a",
+        "sha256": "3c4b6c7c8a93927508c09be61823a67d438123ce56b26701c9e92dc56639632c"
+      },
+      "expected_TUs": 3,
+      "actual_members": 3,
+      "duplicate_members": {},
+      "member_SHA_PASS": true
+    },
+    {
+      "archive": {
+        "bytes": 5693110,
+        "path": "/root/ep_host_write_v3_20261029/cpu_build2/build/gpgpu-sim/src/cuda-sim/libptxsim.a",
+        "sha256": "9361e673fd87b060ef145f6946dbc8e6935e48193d01124358ddad03f7a50c58"
+      },
+      "expected_TUs": 15,
+      "actual_members": 15,
+      "duplicate_members": {},
+      "member_SHA_PASS": true
+    },
+    {
+      "archive": {
+        "bytes": 36858120,
+        "path": "/root/ep_host_write_v3_20261029/cpu_build2/build/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+        "sha256": "85a950992ec41e1f5ba84bfc41b644aee7468bc9b234fe18540cfa96fce2e27f"
+      },
+      "expected_TUs": 22,
+      "actual_members": 22,
+      "duplicate_members": {},
+      "member_SHA_PASS": true
+    },
+    {
+      "archive": {
+        "bytes": 12619866,
+        "path": "/root/ep_host_write_v3_20261029/cpu_build2/build/gpgpu-sim/src/intersim2/libintersim.a",
+        "sha256": "33994ee684299cf541a0b0c56f7dd7e1defbcf9710b3673cb6c65155fa6933dc"
+      },
+      "expected_TUs": 58,
+      "actual_members": 58,
+      "duplicate_members": {},
+      "member_SHA_PASS": true
+    },
+    {
+      "archive": {
+        "bytes": 2855940,
+        "path": "/root/ep_host_write_v3_20261029/cpu_build2/build/gpgpu-sim/src/accelwattch/libaccelwattch.a",
+        "sha256": "eea0adc47ebc0d9a7f263718656b63b1df958bb3810aff84c60b7ec9dac21af1"
+      },
+      "expected_TUs": 33,
+      "actual_members": 33,
+      "duplicate_members": {},
+      "member_SHA_PASS": true
+    },
+    {
+      "archive": {
+        "bytes": 2494524,
+        "path": "/root/ep_host_write_v3_20261029/cpu_build2/build/gpgpu-sim/libentrypoint.a",
+        "sha256": "e52be562f35ecb7766058696d7862e8b9789306ec9b4be5bb2fd55f898bd4f01"
+      },
+      "expected_TUs": 7,
+      "actual_members": 7,
+      "duplicate_members": {},
+      "member_SHA_PASS": true
+    },
+    {
+      "archive": {
+        "bytes": 1259186,
+        "path": "/root/ep_host_write_v3_20261029/cpu_build2/build/trace-driven/libtrace-driven.a",
+        "sha256": "53465443d52f652d2416d81593c9c8e658b7289859e7bb894b84b2a53549d8e5"
+      },
+      "expected_TUs": 1,
+      "actual_members": 1,
+      "duplicate_members": {},
+      "member_SHA_PASS": true
+    },
+    {
+      "archive": {
+        "bytes": 208718,
+        "path": "/root/ep_host_write_v3_20261029/cpu_build2/build/trace-parser/libtrace-parser.a",
+        "sha256": "a1605ee9e2cf0a9c8ca1741db1fa4199d05cbdf1b686c2c3b4ce0f71477a4fab"
+      },
+      "expected_TUs": 1,
+      "actual_members": 1,
+      "duplicate_members": {},
+      "member_SHA_PASS": true
+    }
+  ],
+  "pure_checks": 800,
+  "production_cases": [
+    {
+      "case": "1_default_off",
+      "log": {
+        "bytes": 1842,
+        "path": "/root/ep_host_write_v3_20261029/cpu_build2/fixture_runs2/logs/2_1_default_off.log",
+        "sha256": "c326402313c237a8ef5cc3888674980239bca499f94b158087a578513085109e"
+      },
+      "markers": [
+        "SYNC_HOST_V2_DEFAULT_OFF_OLD_REFUSAL PASS real_kernel_launches=0"
+      ],
+      "peak_child_group_RSS_bytes": 8224768,
+      "returncode": 0
+    },
+    {
+      "case": "1_l1_unflushed",
+      "log": {
+        "bytes": 1828,
+        "path": "/root/ep_host_write_v3_20261029/cpu_build2/fixture_runs2/logs/3_1_l1_unflushed.log",
+        "sha256": "9c55476f1472e5e975ee41bc75c7c7d8eb2897bf6080db942c8ad0f8d3461a0e"
+      },
+      "markers": [
+        "SYNC_HOST_V3_L1_FLUSH_DOMAIN_HOLD PASS committed=0"
+      ],
+      "peak_child_group_RSS_bytes": 4861952,
+      "returncode": 0
+    },
+    {
+      "case": "1_positive",
+      "log": {
+        "bytes": 2152,
+        "path": "/root/ep_host_write_v3_20261029/cpu_build2/fixture_runs2/logs/4_1_positive.log",
+        "sha256": "1a520253a4fd6fa6e3c02478867ba220e750414ec72f1402b666966cad5db0d7"
+      },
+      "markers": [
+        "EPL2HOSTWRITEV2|BEGIN|id=7|address=7ff9f3504000|bytes=8000|sectors=250|slices=64",
+        "EPL2HOSTWRITEV2|COMPLETE|id=7|address=7ff9f3504000|bytes=8000|committed=8000|slices=64",
+        "SYNC_HOST_V2_ACTUAL_CACHE_COMPONENT_PASS mode=1 slices=64 committed=8000 sectors=250 rounds=8 ticks=1901 requests=23 exec_gpgpu_sim_objects=1 real_kernel_launches=0 DRAMmodel=manual_simple_not_latency_proof"
+      ],
+      "peak_child_group_RSS_bytes": 48861184,
+      "returncode": 0
+    },
+    {
+      "case": "1_pending",
+      "log": {
+        "bytes": 2152,
+        "path": "/root/ep_host_write_v3_20261029/cpu_build2/fixture_runs2/logs/5_1_pending.log",
+        "sha256": "1efe08fe882b2d01bbbf39d33c8a7e9ffda75f6a7e8e5116d53207627a97bcce"
+      },
+      "markers": [
+        "EPL2HOSTWRITEV2|BEGIN|id=7|address=7ff9f3504000|bytes=8000|sectors=250|slices=64",
+        "EPL2HOSTWRITEV2|COMPLETE|id=7|address=7ff9f3504000|bytes=8000|committed=8000|slices=64",
+        "SYNC_HOST_V2_ACTUAL_CACHE_COMPONENT_PASS mode=1 slices=64 committed=8000 sectors=250 rounds=8 ticks=2006 requests=23 exec_gpgpu_sim_objects=1 real_kernel_launches=0 DRAMmodel=manual_simple_not_latency_proof"
+      ],
+      "peak_child_group_RSS_bytes": 48422912,
+      "returncode": 0
+    },
+    {
+      "case": "2_default_off",
+      "log": {
+        "bytes": 1842,
+        "path": "/root/ep_host_write_v3_20261029/cpu_build2/fixture_runs2/logs/6_2_default_off.log",
+        "sha256": "c326402313c237a8ef5cc3888674980239bca499f94b158087a578513085109e"
+      },
+      "markers": [
+        "SYNC_HOST_V2_DEFAULT_OFF_OLD_REFUSAL PASS real_kernel_launches=0"
+      ],
+      "peak_child_group_RSS_bytes": 1925120,
+      "returncode": 0
+    },
+    {
+      "case": "2_l1_unflushed",
+      "log": {
+        "bytes": 1828,
+        "path": "/root/ep_host_write_v3_20261029/cpu_build2/fixture_runs2/logs/7_2_l1_unflushed.log",
+        "sha256": "9c55476f1472e5e975ee41bc75c7c7d8eb2897bf6080db942c8ad0f8d3461a0e"
+      },
+      "markers": [
+        "SYNC_HOST_V3_L1_FLUSH_DOMAIN_HOLD PASS committed=0"
+      ],
+      "peak_child_group_RSS_bytes": 44597248,
+      "returncode": 0
+    },
+    {
+      "case": "2_positive",
+      "log": {
+        "bytes": 2273,
+        "path": "/root/ep_host_write_v3_20261029/cpu_build2/fixture_runs2/logs/8_2_positive.log",
+        "sha256": "0029e48cef9aad58835dc2244f9977e88ead5a8f3c8890c55674802803e2b749"
+      },
+      "markers": [
+        "EPL2HOSTWRITEV2|BEGIN|id=7|address=7ff9f3504000|bytes=8000|sectors=250|slices=64",
+        "EPL2HOSTWRITEV2|COMPLETE|id=7|address=7ff9f3504000|bytes=8000|committed=8000|slices=64",
+        "SYNC_HOST_V2_EXPECTED_UNSAFE_TVD_HOLD committed=0 PASS",
+        "SYNC_HOST_V2_ACTUAL_CACHE_COMPONENT_PASS mode=2 slices=64 committed=8000 sectors=250 rounds=8 ticks=856 requests=12 exec_gpgpu_sim_objects=1 real_kernel_launches=0 DRAMmodel=manual_simple_not_latency_proof"
+      ],
+      "peak_child_group_RSS_bytes": 49586176,
+      "returncode": 0
+    },
+    {
+      "case": "2_pending",
+      "log": {
+        "bytes": 2273,
+        "path": "/root/ep_host_write_v3_20261029/cpu_build2/fixture_runs2/logs/9_2_pending.log",
+        "sha256": "7cb82d6c8292ce1472ff7a9d060ffce0ea2c04ed59bb5f8ddf7f4ee45b673d84"
+      },
+      "markers": [
+        "EPL2HOSTWRITEV2|BEGIN|id=7|address=7ff9f3504000|bytes=8000|sectors=250|slices=64",
+        "EPL2HOSTWRITEV2|COMPLETE|id=7|address=7ff9f3504000|bytes=8000|committed=8000|slices=64",
+        "SYNC_HOST_V2_EXPECTED_UNSAFE_TVD_HOLD committed=0 PASS",
+        "SYNC_HOST_V2_ACTUAL_CACHE_COMPONENT_PASS mode=2 slices=64 committed=8000 sectors=250 rounds=8 ticks=962 requests=12 exec_gpgpu_sim_objects=1 real_kernel_launches=0 DRAMmodel=manual_simple_not_latency_proof"
+      ],
+      "peak_child_group_RSS_bytes": 49451008,
+      "returncode": 0
+    },
+    {
+      "case": "old_prefill_1",
+      "log": {
+        "bytes": 7467,
+        "path": "/root/ep_host_write_v3_20261029/cpu_build2/fixture_runs5/logs/0_old_prefill_1.log",
+        "sha256": "9582a1aa231ced6980424609efb6ad0b54268d6a11b8827188beccc8fb891486"
+      },
+      "markers": [
+        "PREFILL_FULL_ADDRESS_SECTOR_REPEAT_EPOCH_NATIVE_HIT PASS",
+        "PREFILL_CLEAN_VICTIM_REAL_MISS_FILL_QUIESCENT_OWNER_REUSE PASS",
+        "PREFILL_DIRTY_VICTIM_REFUSAL_UNMODIFIED_REAL_WB_SET_DONE_RETRY PASS",
+        "PREFILL_FRONTEND_PENDING_AND_RESPONSE_BACKPRESSURE_GUARD PASS",
+        "FT_HOST_PREFILL_PRODUCTION_SUITE PASS"
+      ],
+      "peak_child_group_RSS_bytes": 46923776,
+      "returncode": 0
+    },
+    {
+      "case": "old_prefill_2",
+      "log": {
+        "bytes": 7467,
+        "path": "/root/ep_host_write_v3_20261029/cpu_build2/fixture_runs5/logs/1_old_prefill_2.log",
+        "sha256": "9582a1aa231ced6980424609efb6ad0b54268d6a11b8827188beccc8fb891486"
+      },
+      "markers": [
+        "PREFILL_FULL_ADDRESS_SECTOR_REPEAT_EPOCH_NATIVE_HIT PASS",
+        "PREFILL_CLEAN_VICTIM_REAL_MISS_FILL_QUIESCENT_OWNER_REUSE PASS",
+        "PREFILL_DIRTY_VICTIM_REFUSAL_UNMODIFIED_REAL_WB_SET_DONE_RETRY PASS",
+        "PREFILL_FRONTEND_PENDING_AND_RESPONSE_BACKPRESSURE_GUARD PASS",
+        "FT_HOST_PREFILL_PRODUCTION_SUITE PASS"
+      ],
+      "peak_child_group_RSS_bytes": 46927872,
+      "returncode": 0
+    }
+  ],
+  "source_changes": [
+    {
+      "new_SHA256": "142b5cb6412a8d4f38ed59157b21466baadcfb2597b8b5127321453ab14baaeb",
+      "original_SHA256": "e27b7624732f3b1c30f0803caef9b3da8cb1a7b84ea82193cd3d24e667e603cc",
+      "path": "core/src/gpgpu-sim/ep-l2-ft-cache.inc"
+    },
+    {
+      "new_SHA256": "3275102ac56a10a56e18d2241619a5a972da81be8bb2f3f7b0319a29cb96cc96",
+      "original_SHA256": "9c516c0a81f591fedf1f043d0b10662ad9219fbd69aa8b43a70bdcf9d31b6b76",
+      "path": "core/src/gpgpu-sim/gpu-cache.cc"
+    },
+    {
+      "new_SHA256": "6833b2ba8815b933c935c56eee68d9280edbe51f54b363b76674997392327420",
+      "original_SHA256": "0a12d46d92abf95f5f908cb407835a7371b828cf9f184392f5a9b9c4e577bcfa",
+      "path": "core/src/gpgpu-sim/gpu-cache.h"
+    },
+    {
+      "new_SHA256": "2dfd3e9cb7555f279e99d0e5e92ca3b4e47f7efe579366cbade187b265ec9675",
+      "original_SHA256": "d9b1e85fdf5eb33fa84dfd2fdca37bb07fb40d251e6d3940621674998f6f8908",
+      "path": "core/src/gpgpu-sim/gpu-sim.cc"
+    },
+    {
+      "new_SHA256": "5e562b4cf86b617cc3e84026982244ed6eb4cba12084a46e5ed3d6a931472de3",
+      "original_SHA256": "bb6abd5fe26a0bf10648fedb5f6b1638e47f4b5dcbdb290a5f9b0a00393ce2c6",
+      "path": "core/src/gpgpu-sim/gpu-sim.h"
+    },
+    {
+      "new_SHA256": "7dd60c86cee9c18d20ef7f8c9f73de8b10fde355daaf64fa56b8ee7b32a35738",
+      "original_SHA256": "629ae76b38e339d71b47f6c93f55c0fb249e8afea77df04ef1c025a9b1fba903",
+      "path": "core/src/gpgpu-sim/l2cache.cc"
+    },
+    {
+      "new_SHA256": "9e746e73b3c071e381df53ed32d4711db8f4e091459df9b53fa1bd9f154b1974",
+      "original_SHA256": "3f14e3dd947aa8da51e21d4b2d824058a3df8e2b4bc5c6668fb3fb62e9c8dc0b",
+      "path": "core/src/gpgpu-sim/l2cache.h"
+    },
+    {
+      "new_SHA256": "52837e45565b5e2d083728d6777d091c81700656b04ed68c5ea8287e79d2ee94",
+      "original_SHA256": "9f20dcb6a0d2fb704197bd6b882b46cd1f2be43708e79b399dc7cf11ae2661a3",
+      "path": "framework/gpu-simulator/accel-sim.cc"
+    },
+    {
+      "new_SHA256": "d32dca96f491fb597df57b7325f600b58068de989b9c44d7d4e5008544c7361b",
+      "original_SHA256": null,
+      "path": "core/src/gpgpu-sim/ep-l2-sync-host-write-base.h"
+    },
+    {
+      "new_SHA256": "b18a3531803d1865aa73e1fbd4796275761f2b55b692062a37df41da2f82610f",
+      "original_SHA256": null,
+      "path": "core/src/gpgpu-sim/ep-l2-sync-host-write-v2.h"
+    }
+  ],
+  "ELFs": [
+    {
+      "bytes": 32927528,
+      "path": "/root/ep_host_write_v3_20261029/cpu_build2/build/accel-sim.out",
+      "sha256": "1f5e587df4b3d22a14f35f15656266e699baab0f7ec3c631a072b863d2c826dd"
+    },
+    {
+      "bytes": 32671720,
+      "path": "/root/ep_host_write_v3_20261029/cpu_build2/fixture_runs2/new_host",
+      "sha256": "637d5ee08663fd5ba11e095f555e037ac2e4d853a605d9b7904f3ecce8885703"
+    },
+    {
+      "bytes": 32672456,
+      "path": "/root/ep_host_write_v3_20261029/cpu_build2/fixture_runs2/old_prefill",
+      "sha256": "8a985c0fb9ba244ae96924f8a93d376c714f9432b32b52e2eda8f497dacd7fb4"
+    },
+    {
+      "bytes": 176976,
+      "path": "/root/ep_host_write_v3_20261029/cpu_build2/pure",
+      "sha256": "4c3a3b4e5d7df3226c8f8a7882cf52e6a03cf08730e944c6b02f268fccd47c31"
+    }
+  ],
+  "support_domain": [
+    "default OFF",
+    "64 slices / 32 sets x 8 ways / P1 / 1168 payload slots / D512 / WAD128",
+    "flushL1=1",
+    "T=0 and M=0; no RO",
+    "hardware/backend drained; ready same-owner aligned complete 32B sectors",
+    "all64-slice preflight and fence; 32-sector cursor chunks",
+    "no occupied TVD aliases; heavy observers disabled"
+  ],
+  "unsupported": [
+    "partial bytes/unaligned writes",
+    "ownerMISS or different-owner dirty replacement",
+    "RO/T/M modes",
+    "occupied TVD alias",
+    "actual 9-kernel particlefilter run",
+    "whole-application default-OFF noninterference",
+    "full native source/parser/host/scientific qualification",
+    "actual production corruption injection of old generation/UID/mask; pure typed negatives only"
+  ],
+  "platform": {
+    "machine": "x86_64",
+    "node": "hrl",
+    "processor": "x86_64",
+    "release": "6.18.54.1-microsoft-standard-WSL2",
+    "system": "Linux",
+    "version": "#1 SMP PREEMPT_DYNAMIC Tue Oct  6 19:13:07 UTC 2026"
+  },
+  "model_ever_executed": false,
+  "whole9kernel_application": "NOT_EXECUTED_UNKNOWN",
+  "native174_execution": false,
+  "archive": {
+    "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/ep_l2_full_workload_performance_20261027_v1/engineering/host_write_v3_cpu_20261029_v1/0c63e368-538d-4f1e-b1cd-1500b9aa1853/HOST_WRITE_V3_CPU_RECOVERY_COMPLETE.tar.gz",
+    "sha256": "2ffb0f083330ab3ae647283b3c60b54ef7fb910848a6fd1196673ba67239be2f",
+    "bytes": 25288176
+  },
+  "two_restores": "LOCAL_WSL_1786_MEMBERS_PLUS3_GENERATED_INPUTS_ALL_SHA_PASS",
+  "full_audit": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_c/host_write_protocol_repair_20261028_v1/v3/final_delivery/TU_AND_EIGHT_LIBRARY_CLOSURE_AUDIT.json",
+    "sha256": "44ad9e739a7c3593f07711c788b7d271dc3b18abab75333f127e35f37abcf537",
+    "bytes": 271006
+  }
+}

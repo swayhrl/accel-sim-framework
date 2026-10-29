@@ -19,3 +19,8 @@
 论文不能写：全35/96程序验证完成、原GPU默认参数下T已加速、较小Tag即减少实际硅面积、理想端口诊断即硬件可部署最优。128B×1168×64=9,568,256B物理Payload数据存储，不含RO/TVD等元数据；Tag可寻址覆盖不是Tag SRAM面积。Source92 P2仅Vector同Source92 P1可比，不拼接Source78性能。
 
 原始capture完整性和数值SASS输出正确性UNKNOWN；“完整”只指冻结Trace命令列表的完成与资源drain。后台长尾完成后应追加它们的精确状态/配对，不扩大授权、替换人口或补造缺失计数。
+
+
+## Main精确覆盖补充
+
+以本轮222接受点为时点，精确代表/普通输入覆盖见`FOREGROUND_COVERAGE_ADDENDUM.md`及对应CSV/JSON。它们是前台收尾快照，不冒充后续长尾的实时表。长尾的当前状态、接受点和新增配对见自动更新的`LONGTAIL_RESULTS_CURRENT.*`及上级`RUN_STATUS.csv`、`MATCHED_PERFORMANCE.csv`。主35为22个S/F、2个仅S/WV、2个LIVE输入、1个S_ONLY、1个技术失败输入、1个明确HOLD、6个未启动；主42另有7个UNRESOLVED slot。
