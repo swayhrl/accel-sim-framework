@@ -1,0 +1,9 @@
+stage,production_path,source_ref,audit
+Arrival,memory_sub_partition::push?ROP queue?ICNT L2 head,l2cache.cc:cache_cycle1328-1362,Actual arrival!=first_head; no FIFOscan-derived ingress
+Vfrontend,tvd_frontend tagprobe?one paidcachedticket?read lease?bank?responsecommit,ep-l2-tvd-cache.inc:60-157,TVDWAIT owns head; mandatory/inflight writes blocked; readforward onlyvalidsectors
+ROquery,ro_frontend_cycle?query UID now+1?new_request preview,"ep-l2-ro-runtime.inc:109-135,208-305","M bypass ordinaryline resource,notsharedD/addresscap"
+Nativepreview,preview_access?l2_admission_allowed?cache access,gpu-cache.cc:2796-2889;l2cache.cc:1432-1443,P1 ordinaryTagFAIL excludes ft_access genericrelief
+FTreserve,probe?WAD/issue checks?landing/pending?copy or in-place?native/RO access,ep-l2-ft-cache.inc:300-564,Serialized head; retry reserves once; no arbitraryrelaxation
+Lower,missQ?lower_ready bankWBread?FIFO?partitioncredit?fixedqueue?scheduler,ep-l2-ft-cache.inc:620-662;l2cache.cc:1308-1320,One lower enqueue path; cost remains aftercopy eliminated
+Return,actualReturnQ?identity/generation bankwrite?ready?responsebank?realICNT enqueue,ep-l2-ro-store-port.h:61-109;ep-l2-ro-transactions.h:256-313,Detached fill neverwritesreusedTag; backpressure retains originalpayload
+Retire,lastwaiter+noissuednotready?unpin?detachedrelease orattachedresident,ep-l2-ro-transactions.h:396-404,WADseparateactualWBcompletion lifetime

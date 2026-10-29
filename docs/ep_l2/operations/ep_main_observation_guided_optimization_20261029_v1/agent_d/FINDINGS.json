@@ -1,0 +1,252 @@
+{
+  "schema": "EP_L2_IMPLEMENTATION_PERFORMANCE_FIDELITY_AUDIT_V1",
+  "source": {
+    "Core": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+    "Framework": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "ELF_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+    "ELF_binding": "Main accepted point and SOURCE_AND_NI_READBACK reused; no redundant ELF content hash",
+    "production_files": {
+      "ep-l2-ft-cache.inc": "e27b7624732f3b1c30f0803caef9b3da8cb1a7b84ea82193cd3d24e667e603cc",
+      "ep-l2-tvd-cache.inc": "16456828b6bfc34496ca973a02ff308b03ab182ee8bec11359bdb20387893578",
+      "ep-l2-tvd-directory.h": "335e4968649ebdd1da15c12cf55b6da88cb76ae270d0916b7d031b56ea2bd738",
+      "ep-l2-ro-runtime.inc": "3d9e8f9947c057ad5a530683e19d2caaaa27fcfc26a4359f71800e19d9e773f9",
+      "ep-l2-ro-transactions.h": "29fd0db9bbc260dd872140c026a9729b95a9d6de15d8396137558e7861ed20ec",
+      "ep-l2-ro-store-port.h": "dc454e18636d686705e7871c2a8704a240ff9faabab49def2f3f8723144ea90b",
+      "ep-l2-ro-mshr.inc": "c1c49a27aec8da4742abedf6bbd1fcae444c8599a4849b697bbd271936c348ec",
+      "gpu-cache.cc": "9c516c0a81f591fedf1f043d0b10662ad9219fbd69aa8b43a70bdcf9d31b6b76",
+      "gpu-cache.h": "0a12d46d92abf95f5f908cb407835a7371b828cf9f184392f5a9b9c4e577bcfa",
+      "l2cache.cc": "629ae76b38e339d71b47f6c93f55c0fb249e8afea77df04ef1c025a9b1fba903",
+      "l2cache.h": "3f14e3dd947aa8da51e21d4b2d824058a3df8e2b4bc5c6668fb3fb62e9c8dc0b",
+      "l2_admission_rules.h": "1ce9b00833eb863c7d891abd3b0c34f212cadceb399bfb34e3831654209af76c",
+      "ep-l2-tvd-bank-identity.h": "278efb42c6428ccc690439e96ee68aa5847aa4e1866901e0692aafb355370e79"
+    },
+    "libgpgpusim_a": {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+      "sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697"
+    },
+    "git_diff_tracked": "",
+    "formal_architecture": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/receipts/lane_o_v1r2_20261029/review/docs/ep_l2/ELASTIC_PAYLOAD_L2_ARCHITECTURE_AND_ROADMAP.md",
+      "authority": "historical roadmap, current exact model overlay takes precedence for actual resource identity"
+    },
+    "model_overlay": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/MODELED_PAYLOAD_UNITS_AND_FAIRNESS_OVERLAY_V1.json",
+      "sha256": "cca46c6cdcee746a042192af87a88fbe9d1a90d5cf1089a8bda058fcea9e6de8"
+    },
+    "utc": "2026-10-29T04:08:56.722042+00:00"
+  },
+  "P0_confirmed": 0,
+  "P1_confirmed_CPU": 1,
+  "findings": [
+    {
+      "id": "D01",
+      "priority": "P1",
+      "claim": "PROVEN_CPU_APP_IMPACT_UNKNOWN",
+      "title": "Native non-RO TagFAIL cannot reach otherwise generic RO Tag relief",
+      "source_refs": [
+        "gpu-cache.cc:2796-2823",
+        "ep-l2-ro-runtime.inc:259-280",
+        "ep-l2-ft-cache.inc:327-339",
+        "l2cache.cc:1432-1443"
+      ],
+      "trigger": "T1 and raw set full; incoming non-certified ordinary request; same set attached never-merged pending RO eligible; other native resources available",
+      "expected_design": "ft_access generic relieve may release old certified RO Tag for an incoming request, preserving old transaction",
+      "actual_execution": "Only RO new_request preview rewrites TagFAIL to MISS; ordinary preview returns FAIL before generic ft_access relieve",
+      "real_path_evidence": "Source78 partition READ and WRITE stay head for64 fixture ticks with eligible8 and descriptor8/512; direct cache backend can accept; independent patched preview READ/WRITE detach1 and full late-return drain",
+      "impact": "Unnecessary native frontend blocking/throughput opportunity missing. Does not imply wrong returned data or all-workload slowdown. Commit-only production TagFAIL zero does not exclude this precommit exclusion.",
+      "workloads": "Potential mixed RO/native Conv/Scan, only conditional; accepted app joint incidence UNKNOWN",
+      "minimal_CPU": "Executed source78 READ/WRITE plus candidate and guards; see final execution receipts",
+      "minimal_performance_control": "New Source candidate own F baseline and F-minus-T control plus old-policy build-equivalent comparison; no crossbinary numerical speedup claim"
+    },
+    {
+      "id": "D02",
+      "priority": "P2",
+      "claim": "PROVEN_IMPLEMENTATION_EFFECT_APP_SHARE_UNKNOWN",
+      "title": "Paid serialized TVD and RO metadata lookup on miss/merge",
+      "source_refs": [
+        "ep-l2-tvd-cache.inc:68-95",
+        "ep-l2-ro-runtime.inc:109-135",
+        "gpu-cache.h:2961-2962",
+        "l2cache.cc:1328-1362"
+      ],
+      "trigger": "TVD enabled Tag MISS/RESERVATION_FAIL, then certified RO candidate",
+      "expected_design": "One paid CAM query and explicit query latency, not a free victim oracle",
+      "actual_execution": "TVD starts at head and queries next physical cycle; cached ticket prevents repeated CAM charge. RO frontend adds separate1-GPU-cycle query before certified miss/merge can pass. Normal tag hit skips TVD. WV pays TVD; W-only does not construct TVD",
+      "real_path_evidence": "Source inspection; accepted V actual responses/RO query counters show paths active; no newly run metadata ablation",
+      "impact": "Real declared modeled latency/throughput cost; at least two serialized metadata stages for cold certified miss. Parallel lookup/new pipelining would be architecture change with ports/timing proof, not safe deletion",
+      "workloads": "Stencil/GEMM/FWT V benefit may amortize cost; Scan low V response may not; attribution not isolated",
+      "minimal_CPU": "Proposed request-level timestamps, same UID one paid issue under repeated preview; no new test beyond existing CPU path controls",
+      "minimal_performance_control": "Only if justified: fixed sameSource finite paid-latency alternatives; maintain S and no-free-CAM cost. No launches authorized"
+    },
+    {
+      "id": "D03",
+      "priority": "P2",
+      "claim": "PROVEN_IMPLEMENTATION_APP_CRITICALITY_UNKNOWN",
+      "title": "Bank-colored allocation and single frontend replacement constrain pooling",
+      "source_refs": [
+        "ep-l2-ft-cache.inc:350-458",
+        "ep-l2-ft-cache.inc:462-518",
+        "gpu-cache.h:2547-2555",
+        "gpu-cache.h:2658-2673",
+        "l2cache.cc:1224-1320"
+      ],
+      "trigger": "Selected Tag index fixes payload color; serialized head holds pending replacement; free entries elsewhere may exist",
+      "expected_design": "No cross-bank data movement/free extra ports; identity and physical service remain finite",
+      "actual_execution": "FT2 searches FREE same bank index%4; TVD reclaim same bank; pending head may hold prospective landing/WAD while copy/data bank retries. P1 one operation per bank per physical GPU cycle",
+      "real_path_evidence": "Read code; candidate capacity regressions preserve<=1 bank grant/cycle and total1168 ownership",
+      "impact": "Real organization/bank skew/HOL limits, not proven accidental extra port delay. Sticky bank grants/readiness policy potentially conservative; app-specific idle blocking not measured",
+      "workloads": "All inputs; Scan/Conv observed multiple resource pressure cannot isolate this component",
+      "minimal_CPU": "Existing same-bank tail and response-backpressure CPU pass; proposed ready-grant vs downstream readiness isolated fixture",
+      "minimal_performance_control": "Do not freely rotate bank colors or add ready ports; any new allocator/arbitration own correct model and S fairness"
+    },
+    {
+      "id": "D04",
+      "priority": "P2",
+      "claim": "PROVEN_IMPLEMENTATION",
+      "title": "W removes copy but not lower WB read, address hazard, or dirty lifetime",
+      "source_refs": [
+        "ep-l2-ft-cache.inc:466-490",
+        "ep-l2-ft-cache.inc:505-509",
+        "ep-l2-ft-cache.inc:620-662",
+        "gpu-cache.cc:2716-2756",
+        "ep-l2-tvd-directory.h:223-238"
+      ],
+      "trigger": "Dirty resident replacement, WB lower admission and completion",
+      "expected_design": "FT1 copies data to finite16 WB staging; FT2 reassigns original payload WB and reserves another landing",
+      "actual_execution": "FT2 eliminates source copy read/staging copy write; both still pay real WB readout bank grant. Lower accepted packet carries data; payload releases if no retained TVD, while WAD tracks until real completion. Dirty forward retains valid pinned data, writes/atomics wait on mandatory owner",
+      "real_path_evidence": "Source path and accepted W/copy/V statistics. Scan WB_DATA_SPACE distinct heads eliminated yet F cycles worse; same-WB and WAD events persist",
+      "impact": "Necessary modeled data/ordering costs. W is not zero-cost WB; cannot treat all Scan lost cycles as missing copy elimination",
+      "workloads": "Scan,Conv; Stencil WADpeak7 shows no expansion evidence",
+      "minimal_CPU": "Old FT/WAD production CPU references reused; no new W-only protocol claim",
+      "minimal_performance_control": "Qualify W-only mode separately, then sameSource S/W/WV decomposition. S?W includes pooling, not pure copy switch"
+    },
+    {
+      "id": "D05",
+      "priority": "P2",
+      "claim": "PROVEN_POLICY_MISSING_JOINT_APP_RATE",
+      "title": "reuse_seen persists after any live merge and intentionally disables detach",
+      "source_refs": [
+        "ep-l2-ro-transactions.h:184-226",
+        "ep-l2-ro-runtime.inc:240-257",
+        "ep-l2-ro-transactions.h:396-404"
+      ],
+      "trigger": "Any accepted extra waiter, even if its required sectors already ready or waiter later retires",
+      "expected_design": "Conservative history-aware detach safety/traffic policy",
+      "actual_execution": "merge sets reuse_seen=true without reset until transaction reincarnation; can_detach requires !reuse_seen and required-not-ready. RO descriptors and pins persist until actual response/sector retirement",
+      "real_path_evidence": "Source plus new candidate REUSE_GUARD:8 merged old RO, eligible0, remains blocked and17responses drain. Accepted Vector6M74.99%/SGEMM92.82% live merge are marginal populations only",
+      "impact": "May reduce T opportunity; correct implemented conservative policy, not established safety necessity in every excluded case. No policy relaxation authorized",
+      "workloads": "Vector6M/SGEMM and mixed Conv; actual Tag-full/reuse co-occurrence UNKNOWN",
+      "minimal_CPU": "Guard executed; any relaxation needs waiter/generation/new-sector/future-reuse counterexample proof",
+      "minimal_performance_control": "Separate structural policy proposal with correctness proof, independent T1/T0 causal pairs; not included in D01 patch"
+    },
+    {
+      "id": "D06",
+      "priority": "P3",
+      "claim": "HYPOTHESIS",
+      "title": "Optional victim reclaim may discard useful data; service-aware candidate unproven",
+      "source_refs": [
+        "ep-l2-tvd-directory.h:148-173",
+        "ep-l2-tvd-cache.inc:39-57",
+        "ep-l2-tvd-directory.h:252-263",
+        "ep-l2-tvd-directory.h:309-322"
+      ],
+      "trigger": "Directory full install or bank-compatible payload pressure",
+      "expected_design": "Mandatory WB never loses to optional data; reclaim only CLEAN/WB_COMPLETE with readers0",
+      "actual_execution": "Mandatory dirty install favors CLEAN before WB_COMPLETE then age; clean install oldest eligible across states; bank reclaim always CLEAN then WB_COMPLETE. Response updates age. No first-service-aware priority",
+      "real_path_evidence": "Independent source review agrees B on two distinct selectors; actual harmful eviction/re-reference not collected",
+      "impact": "No proven bug or speedup. C1 must modify both selectors consistently, reset bit on install AND dirty-promotion reincarnation, set only actual response commit, preserve revision/pins/bank/owner",
+      "workloads": "Stencil/GEMM/3MM/FWT have real V service; Scan limited V service. Counts do not prove optimal retention",
+      "minimal_CPU": "Not implemented; candidate CPU must cover stale plans, dirty promotion, reader pin, mandatory priority, bank-color selection, preview idempotence",
+      "minimal_performance_control": "If chosen, newSource S/WV original/WV candidate on few chosen inputs; own Source baselines; no optional queue expansion by default"
+    },
+    {
+      "id": "D07",
+      "priority": "P3",
+      "claim": "UNKNOWN_HARDWARE_FIDELITY",
+      "title": "Metadata/control selectors modeled without proven circuit timing or PPA",
+      "source_refs": [
+        "ep-l2-tvd-cache.inc:247-249",
+        "ep-l2-tvd-directory.h:153-158",
+        "ep-l2-ft-cache.inc:350-361",
+        "ep-l2-ro-transactions.h:175-180",
+        "ep-l2-ro-runtime.inc:223-238"
+      ],
+      "trigger": "Directory install/reclaim, RO ready response selection, global invalid-tag cleanup",
+      "expected_design": "Software can implement abstract finite selection, but additional physical metadata ports/delay must be declared",
+      "actual_execution": "Explicit paid frontend/completion query counts exist; indexed control views3/update lanes3 declared. Some bounded scans/checks resolve within C++ call without additional GPU cycles. Assertions/find for uniqueness are software invariant checks, not paid extra CAM. Physical arbiter/descriptor/free-list/response selector timing unclosed",
+      "real_path_evidence": "Source and metadata_PPA=UNKNOWN/metadata_clock_closure=UNKNOWN declarations; no synthesis, RTL or targeted timing proof",
+      "impact": "Cannot claim implemented hardware clock/area realism from host loops; also cannot label loops simulator-cycle overhead. Hardware cost may be under-modeled, not necessarily F pessimism",
+      "workloads": "All; especially high RO concurrency and heavy retention",
+      "minimal_CPU": "Only design audit proposed; counters must measure selection population without new probes",
+      "minimal_performance_control": "If timing model revised, full sameSource S/F calibration; do not invent latency constant or claim bug without target contract"
+    },
+    {
+      "id": "D08",
+      "priority": "P3",
+      "claim": "PROVEN_COUNTER_LIMIT",
+      "title": "Coarse payload_block and M-mode resource demands do not support direct bottleneck ranking",
+      "source_refs": [
+        "l2cache.cc:1617-1624",
+        "l2cache.cc:1398-1424",
+        "ep-l2-ro-runtime.inc:296-304",
+        "ep-l2-ft-cache.inc:197-250"
+      ],
+      "trigger": "Any access RESERVATION_FAIL in payload mode; M1 RO bypass requests",
+      "expected_design": "Each count needs same population and causal meaning",
+      "actual_execution": "payload_block increments for all access RF regardless denial source. bank/port subcounts use last result; payload_block not pool-full. RO M1 preview flags conventional MSHR need false, so C7e counters guarded by those flags are not all RO descriptor demands. Existing MS/RO counters distinguish more but not universal ingress",
+      "real_path_evidence": "Exact source; no raw rescan/new instrumentation",
+      "impact": "Interpretation hazard, not cycles/data bug. FT tracked requester excludes L1WB unlike generic MS head counts; absent complete joint typing no derived rate. Commit-only RF is not all preview Tag pressure",
+      "workloads": "Scan/Conv blocker claims and Vector6M lineMSHR0 especially",
+      "minimal_CPU": "Passive refinement design only; no collector implementation or mode NI",
+      "minimal_performance_control": "Use current exact MS/RO population fields; new counters require sameELF per-mode OFF/ON, no inherited S?F NI"
+    },
+    {
+      "id": "D09",
+      "priority": "P2",
+      "claim": "PROVEN_MODEL_DIFFERENCE",
+      "title": "Same physical payload does not mean same usable static resource",
+      "source_refs": [
+        "ep-l2-ft-cache.inc:428-432",
+        "ep-l2-ft-cache.inc:511-518",
+        "gpu-cache.h:2547-2555",
+        "gpu-cache.h:2839-2842"
+      ],
+      "trigger": "D geometry32set8way with fixed1024resident/128bypass/16WB physical layout",
+      "expected_design": "Declared sensitivity keeps physical1168 and logical Tag256; static partition intentionally cannot borrow stranded capacity",
+      "actual_execution": "S resident landing=index only0..255;768 nominal resident IDs unreachable;128bypass no production allocation call site in src. Source reachable resident+WB upper bound272, not joint-achievable proof. F may borrow all1168 physical IDs subject color/roles/guards",
+      "real_path_evidence": "Existing explicit modeled overlay SHA verified; independent source read. Not a newly discovered hidden unfair baseline change",
+      "impact": "S/F includes static stranding vs pooling and V/M/T; no equal usable capacity/no actual SRAM area savings. Historical9MiB/1152/D256 roadmap is not current exact1168/D512 model",
+      "workloads": "All D-geometry results",
+      "minimal_CPU": "No need new fixture to assert code reachability; measured simultaneous occupancy still distinct",
+      "minimal_performance_control": "Future paper comparison must state static stranding and physical/logical capacities; stronger alternative baseline own approved model, do not weaken current S"
+    },
+    {
+      "id": "D10",
+      "priority": "P3",
+      "claim": "QUALIFICATION_BOUNDARY",
+      "title": "Mode parsing, CPU checks and historical repair identity do not grant scientific mode acceptance",
+      "source_refs": [
+        "gpu-cache.h:3337-3380",
+        "ep-l2-ro-runtime.inc:30-71",
+        "gpu-cache.h:2961-2963"
+      ],
+      "trigger": "W-only/F-minus-T new input or Source92/host-writeV3/MSHR64 combination",
+      "expected_design": "Exact input/certificate/mode/Source/hardware qualified before science",
+      "actual_execution": "S, legal WV, certified F accepted endpoints exist; W-only semantics implemented FT2V0M0T0 but prior exact3 stopped at RAM resource HOLD before compile/test, not protocol failure. F-minus-T=M1T0 differs WV=M0T0. Source92 P2, host-writeV3 restricted noRO CPU candidate and MSHR64 remain separate",
+      "real_path_evidence": "Main readback and existing host-write final status reused; no old repair reruns",
+      "impact": "No new P0 assigned by merging unrelated versions. Host-write unsupported technical failures remain excluded/unaccepted and are not evidence all accepted results corrupt",
+      "workloads": "FWT remains WV; Vector4M!=Vector6M; particlefilter hostwrites unsupported native app qualification",
+      "minimal_CPU": "Current D CPU library mixed rebuild is engineering candidate only; assertions enabled; no frozen formal newCore or modelELF",
+      "minimal_performance_control": "Main one owner fresh exactSource qualification and budget; no full app launch authorized here"
+    }
+  ],
+  "accepted_scientific_results_reclassified": false,
+  "new_model_starts": 0,
+  "candidate_auto_merged": false,
+  "candidate_remaining_gates": [
+    "Synchronize diagnostic preview consulted/intermediate after virtual ordinary relief, preserving immutable raw; add tested routes for frontend-rejected vs production commit TagFAIL. The7-line CPU candidate has not implemented this telemetry update.",
+    "No full142-TU newSource rebuild, frozenCore commit, modelELF, Host/native qualification, applicationNI or sameSource performance qualification; none is implied by private one-object library rebuild.",
+    "Descriptor-full,MissQ-full and ready-only/reuse-history permutations need targeted guard expansion before scientific acceptance.",
+    "Existing accepted results remain valid descriptions of the actual Source78 implementation; intended generic T opportunity claim must be narrowed. Application occurrence and cycles impact UNKNOWN."
+  ]
+}

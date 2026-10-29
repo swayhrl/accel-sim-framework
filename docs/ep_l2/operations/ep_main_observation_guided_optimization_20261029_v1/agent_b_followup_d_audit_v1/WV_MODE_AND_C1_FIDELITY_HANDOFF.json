@@ -1,0 +1,275 @@
+{
+  "C1_exact_source_anchors": [
+    {
+      "fact": "FT mode and WB budget registered; FT1 finiteWBUF, FT2 unifiedWB",
+      "file": "gpu-sim.cc",
+      "lines": "283-288"
+    },
+    {
+      "fact": "RO runtime requested iff tag_detach || line_mshr_bypass",
+      "file": "gpu-cache.h",
+      "lines": "903"
+    },
+    {
+      "fact": "TVD payload identity enabled for tvd_dirty || ro_requested; directory exists iff clean || dirty",
+      "file": "gpu-cache.h",
+      "lines": "2949-2962"
+    },
+    {
+      "fact": "TVD/RO finite-resource guards; WB local cap and several modes rejected in TVD/RO combinations",
+      "file": "gpu-cache.h",
+      "lines": "3337-3381"
+    },
+    {
+      "fact": "Mandatory=WB_STAGED/WB_INFLIGHT; reclaimable=(CLEAN || WB_COMPLETE) && readers==0",
+      "file": "ep-l2-tvd-directory.h",
+      "lines": "42-45"
+    },
+    {
+      "fact": "preview_install: directory-full selection. Dirty insertion prefers CLEAN; clean insertion selects oldest reclaimable across kinds. Empty first; no mutation.",
+      "file": "ep-l2-tvd-directory.h",
+      "lines": "148-173"
+    },
+    {
+      "fact": "commit_install: p.revision==m_revision, typed input/owner/uniqueness guards, reclaimable assert, incarnation bump and new row initialization",
+      "file": "ep-l2-tvd-directory.h",
+      "lines": "177-210"
+    },
+    {
+      "fact": "response_commit called only after actual bank service and successful enqueue; consumes read lease, ages entry, counts real successful service",
+      "file": "ep-l2-tvd-directory.h",
+      "lines": "252-263"
+    },
+    {
+      "fact": "commit_dirty_promotion also reuses an entry and bumps incarnation: service_seen must reset here too",
+      "file": "ep-l2-tvd-directory.h",
+      "lines": "309-322"
+    },
+    {
+      "fact": "reclaim/readers and lower_accept/set_done transitions; pending/inflight non-reclaimable, completion may coexist with readers",
+      "file": "ep-l2-tvd-directory.h",
+      "lines": "326-363"
+    },
+    {
+      "fact": "tvd_reclaim_one: CLEAN then WB_COMPLETE, oldest eligible per-kind, requested bank modulo4, existing pins0 assertion and physical release",
+      "file": "ep-l2-tvd-cache.inc",
+      "lines": "39-57"
+    },
+    {
+      "fact": "Actual cache response commit wrapper; unpin and in-flight/complete role transfer then FT acceptance",
+      "file": "ep-l2-tvd-cache.inc",
+      "lines": "138-160"
+    }
+  ],
+  "C1_extra_cost": {
+    "directory_rows_delta": 0,
+    "extra_port_comparator_critical_path_PPA": "UNKNOWN_NOT_IMPLEMENTED",
+    "logical_new_service_seen_bits": 8192,
+    "logical_new_service_seen_bytes_unpadded": 1024,
+    "old_wad_guards_may_not_be_removed": true,
+    "physical_payload_slots_delta": 0,
+    "policy_performance": "UNKNOWN_NOT_MEASURED"
+  },
+  "D_message_delivered": true,
+  "Host_draft_fact": {
+    "NI": "New Lane O observer S/F/WV all not prepared/qualified; old S or Vector NI does not cover candidate WV/F hook behavior",
+    "controls_actual": 0,
+    "initial_scope": "Source78 exactSource5 only,64slice32set8way/P1/1168/D512/WAD128/line128,REFclocks/queues/stats111/fourheavyOFF/all282; no G4/P2/L64/clean-only/quota/diagnostic adoption",
+    "missing_control_list": [
+      "All5 exactmode flags/history profiles: W→W_ONLY, F−T→WV_M, WV→F_MINUS_R; no W-asF",
+      "WrelativeactualS changesFTmode only, whole282 untouched except explicit RO bindings whenenabled",
+      "F−T vsF onlyT flag differs withsameM1/cert; WV vsF−T differsM, notsameprofile",
+      "Unknownmode/Source64/92/G4/P2/L64/cleanOnly/quota/stats0/heavyON/unexpected282 key/value reject",
+      "CurrentWCPUHOLD/0/refmissing or incompleteexact3 groups reject, nevermetadataPASS",
+      "F−T orF withoutcert/wronginput/source/epoch/address/line/artifactSHA reject",
+      "ROdisabled withcertificateauthority reject; actual RO/TVD rowpresence contradictingmode reject",
+      "OldHostQ or oldNativeQ lackingnewparser/mode bindings reject",
+      "Sanchor noncurrentaccepted/SpecRef/source/input/observer/geometry/background mismatch reject",
+      "Syntheticstubfullwrappertests labelledengineeringonly; neverrelabel oldF raw asnewW evidence",
+      "Frozen7cc body andbf91 suffix identicalbytes; physical/countercorruption stillfails originalmath",
+      "Native frozen lowlevelstaticproof:6functionsunchanged and run_native onlycapsuleROpredicate changed; boundedmockconsume-beforefork/PID/source/map/strace/peerpreservation/no retry checks afterMainpermission",
+      "FirstrealWpilot positive fullparser/terminal/outerjoin needed afteractualCPU+newHostQ/nativequalification, no duplicateS launch",
+      "AllfutureactualmodeCPU/host/native/fullmodelstarts Mainonly; no executableCLIfromthisprivateDRAFThasbeeninvoked"
+    ],
+    "new_HostQ_required": "EP_MAIN_SOURCE78_WV_MODES_HOST_QUALIFICATION_V1",
+    "new_nativeQ_fields": [
+      "formal_mode",
+      "mode_contract_ref",
+      "validation_module_ref",
+      "mode_cpu_qualification_ref"
+    ],
+    "private_path_frontend_whitelist": "NOT_QUALIFIED; draft folder outside approved tools whitelist",
+    "required_static_qualifications": [
+      "mode_contract_ref",
+      "mode_cpu_qualification_ref forW_ONLY/F_MINUS_T",
+      "matched_S_anchor_qualification_ref",
+      "newhost_qualification_ref in existing host_qualification_ref field"
+    ],
+    "static_preservation": "6 low-level functions unchanged and numeric-body/suffix hashes preserved; static source proof is not executed wrapper/Host/native qualification",
+    "status": "DRAFT_NOT_HOST_OR_NATIVE_OR_APPLICATION_QUALIFIED"
+  },
+  "current_CPU_receipt_fact": {
+    "RAM_after_floors_bytes": 65005334528,
+    "RAM_margin_bytes": -10895305938,
+    "RAM_required_increment_bytes": 75900640466,
+    "constructed_exec_gpgpu_sim": false,
+    "constructor_success_marker_observed": false,
+    "disk_pass": true,
+    "generic_status": "SOURCE78_COMPONENT_FAILURE_OR_RESOURCE_HOLD_PRESERVED",
+    "model_starts": 0,
+    "precise_cause": "RESOURCE_HOLD_BEFORE_INTENT_COMPILER_OR_FIXTURE; NOT observed protocol failure",
+    "result_ref": {
+      "bytes": 2300,
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_c/wv_ro_t_mode_parameter_audit_v1/exact3_cpu_runs/f79b10ea-4950-4e4c-895b-16ca2b2a65e9/RESULT.json",
+      "sha256": "f6a838f985199b8fc9730c8ce5985af2f8a2d07c8d241fc5ea9b7ac50ac41ebf"
+    },
+    "scope_limit": "This exact reviewed receipt and the inspected five-mode draft only; absence of another artifact was not exhaustively searched or inferred.",
+    "steps_count": 1
+  },
+  "executed_actions": {
+    "Source_controller_registry_Git_writes": 0,
+    "Trace_or_raw_body_reads": 0,
+    "compile": 0,
+    "model_starts": 0,
+    "production_CPU_fixtures": 0
+  },
+  "mode_flags": {
+    "F": {
+      "FT": 2,
+      "M": 1,
+      "T": 1,
+      "V_clean": 1,
+      "V_dirty": 1
+    },
+    "F_MINUS_T": {
+      "FT": 2,
+      "M": 1,
+      "T": 0,
+      "V_clean": 1,
+      "V_dirty": 1
+    },
+    "S": {
+      "FT": 1,
+      "M": 0,
+      "T": 0,
+      "V_clean": 0,
+      "V_dirty": 0
+    },
+    "WV_ZERO_RO": {
+      "FT": 2,
+      "M": 0,
+      "T": 0,
+      "V_clean": 1,
+      "V_dirty": 1
+    },
+    "W_ONLY": {
+      "FT": 2,
+      "M": 0,
+      "T": 0,
+      "V_clean": 0,
+      "V_dirty": 0
+    }
+  },
+  "questions_for_independent_D": [
+    {
+      "question": "Do service_seen read/write and reclaim comparator fit existing directory access/latency and modeled port budget? O(128) host loop is not free hardware CAM evidence.",
+      "status": "UNVERIFIED_HARDWARE_COST"
+    },
+    {
+      "question": "Are useful retained objects actually displaced by unserved optional entries? V responses/queries/install populations differ; current metrics do not answer capacity value or critical-path benefit.",
+      "status": "UNPROVEN_POLICY_BENEFIT"
+    },
+    {
+      "question": "Two selectors currently have slightly different priority semantics (clean insertion vs dirty insertion vs bank reclaim). Define candidate precisely; do not accidentally claim all current selectors always prefer CLEAN.",
+      "status": "REQUIRED_PROTOCOL_REVIEW"
+    },
+    {
+      "question": "Reset service_seen on every incarnation/rebind, including commit_dirty_promotion, cancellation/reclaim/reinstall; never set on lookup, begin_read, denied bank/response, cancelled read.",
+      "status": "REQUIRED_PROTOCOL_REVIEW"
+    },
+    {
+      "question": "State update on response_commit changes mutable row state. Existing revision protections and repeated preview idempotence must hold; avoid invalidating a prepared plan without safe retry.",
+      "status": "REQUIRED_PROTOCOL_REVIEW"
+    },
+    {
+      "question": "Keep mandatory WAD, WB_STAGED/INFLIGHT, readers/pins, handle generation/owner, bank color, dirty-forward and RO contradiction guards; no skipped lookup or hidden capacity.",
+      "status": "REQUIRED_GUARDS"
+    },
+    {
+      "question": "Any C1 implementation creates independent Core/ELF; fresh same-ELF unchanged-policy S/WV references required. Source92, host-write V3, MSHR64 are not implicitly bundled.",
+      "status": "REQUIRED_NEW_SOURCE_BOUNDARY"
+    }
+  ],
+  "schema": "EP_WV_QUALIFICATION_AND_D_FIDELITY_HANDOFF_V1",
+  "scope": "Bounded source and existing small control receipts only; old B deliverable unchanged",
+  "source_identity": {
+    "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+    "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+    "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "source_refs": [
+    {
+      "bytes": 1091,
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/control/SOURCE_QUALIFICATION.json",
+      "sha256": "6f60060cd93042f9f26579bca27f073acb9df84f2e413150b11f4fe57e3a6193"
+    },
+    {
+      "bytes": 803,
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/control/W_ONLY_EXACT3_MAIN_EXECUTION_V1.json",
+      "sha256": "8a415011bac3a8bab3eaa3ceb021d928827f8cc7d81e5a6b8789e892cb4275e8"
+    },
+    {
+      "bytes": 2300,
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_c/wv_ro_t_mode_parameter_audit_v1/exact3_cpu_runs/f79b10ea-4950-4e4c-895b-16ca2b2a65e9/RESULT.json",
+      "sha256": "f6a838f985199b8fc9730c8ce5985af2f8a2d07c8d241fc5ea9b7ac50ac41ebf"
+    },
+    {
+      "bytes": 2537,
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_c/wv_mode_host_candidate_v1/CANDIDATE_MANIFEST.json",
+      "sha256": "1f89e7a2e1d0702e97fc54f97488a492e8423a853d5127edd14413e8eb9d440f"
+    },
+    {
+      "bytes": 3039,
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_c/wv_mode_host_candidate_v1/INTERFACE_CONTRACT.json",
+      "sha256": "0430494502874e8c08579a795cb7aaf1666440fb5ddebcf6ba9d77bb72565d6a"
+    },
+    {
+      "bytes": 1713,
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_c/wv_mode_host_candidate_v1/MINIMAL_CONTROL_PLAN.json",
+      "sha256": "75433353106578a29100ca20f11d6822a72fdbe7ec467abd4f677239582a50b3"
+    },
+    {
+      "bytes": 1296,
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_c/wv_mode_host_candidate_v1/STATIC_PRESERVATION_PROOF.json",
+      "sha256": "c970f18cf7a6b3ef3817af6e54c2162466016075b22ea2c11621ee6a0bcbba6d"
+    },
+    {
+      "bytes": 10833,
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_c/wv_mode_host_candidate_v1/mode_contract.py",
+      "sha256": "fab3ba0db5e392e3ec932e93bc4d4dcb32a5ecf3e858a46e92935cbb0c4b945d"
+    },
+    {
+      "bytes": 116288,
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "d9b1e85fdf5eb33fa84dfd2fdca37bb07fb40d251e6d3940621674998f6f8908"
+    },
+    {
+      "bytes": 162855,
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/gpu-cache.h",
+      "sha256": "0a12d46d92abf95f5f908cb407835a7371b828cf9f184392f5a9b9c4e577bcfa"
+    },
+    {
+      "bytes": 14188,
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tvd-cache.inc",
+      "sha256": "16456828b6bfc34496ca973a02ff308b03ab182ee8bec11359bdb20387893578"
+    },
+    {
+      "bytes": 18845,
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tvd-directory.h",
+      "sha256": "335e4968649ebdd1da15c12cf55b6da88cb76ae270d0916b7d031b56ea2bd738"
+    }
+  ],
+  "utc": "2026-10-29T03:46:40.227916+00:00"
+}

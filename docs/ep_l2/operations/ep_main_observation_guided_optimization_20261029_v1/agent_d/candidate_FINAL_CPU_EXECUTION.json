@@ -1,0 +1,173 @@
+{
+  "link": [
+    "/usr/bin/c++",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/agent_d/nonro_tag_relief_repro.o",
+    "-o",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/agent_d/nonro_tag_relief_repro_candidate",
+    "-Wl,--start-group",
+    "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/libentrypoint.a",
+    "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/libcuda/libcuda.a",
+    "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/cuda-sim/libptxsim.a",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/agent_d/libgpgpusim_candidate.a",
+    "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/intersim2/libintersim.a",
+    "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/accelwattch/libaccelwattch.a",
+    "-Wl,--end-group",
+    "-lz",
+    "-ldl",
+    "-lpthread",
+    "-lGLX",
+    "-lOpenGL",
+    "-lm"
+  ],
+  "fixture_sha256": "bccc8364b58dbd83674a62a2d6dfec20d2ae782e6564e9d2c068d636921894cb",
+  "binary_sha256": "db25f4a5b95ec7eabd79a78e001a57443bf67bf7f928c2b6bf53bd7cb38bfef7",
+  "executions": [
+    {
+      "case": "PATCH_READ",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/agent_d/nonro_tag_relief_repro_candidate",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/T1M1.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/commandlist.g",
+        "PRESSURE_IDENTITY",
+        "32",
+        "8",
+        "1",
+        "PATCH_READ"
+      ],
+      "env": {
+        "EPL2_DETACH_DIAG": "1",
+        "EP_L2_EVENT_TIMELINE": "0",
+        "EPL2_TAGPRESSURE_DIAG": "0",
+        "EPL2_TAG_LIFETIME": "0"
+      },
+      "rc": 0,
+      "seconds": 0.03299189731478691,
+      "log": "final_candidate_PATCH_READ.log",
+      "log_sha256": "d2c95498f449e8d7020c68fa47bb61ada80d50f0c0cd15e618bc0904df0f3727"
+    },
+    {
+      "case": "PATCH_WRITE",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/agent_d/nonro_tag_relief_repro_candidate",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/T1M1.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/commandlist.g",
+        "PRESSURE_IDENTITY",
+        "32",
+        "8",
+        "1",
+        "PATCH_WRITE"
+      ],
+      "env": {
+        "EPL2_DETACH_DIAG": "1",
+        "EP_L2_EVENT_TIMELINE": "0",
+        "EPL2_TAGPRESSURE_DIAG": "0",
+        "EPL2_TAG_LIFETIME": "0"
+      },
+      "rc": 0,
+      "seconds": 0.03312982991337776,
+      "log": "final_candidate_PATCH_WRITE.log",
+      "log_sha256": "928884e2c260469effd92842982ea476dba0c429cd9055beb7747416aff7367b"
+    },
+    {
+      "case": "REUSE_GUARD",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/agent_d/nonro_tag_relief_repro_candidate",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/T1M1.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/commandlist.g",
+        "PRESSURE_IDENTITY",
+        "32",
+        "8",
+        "1",
+        "REUSE_GUARD"
+      ],
+      "env": {
+        "EPL2_DETACH_DIAG": "1",
+        "EP_L2_EVENT_TIMELINE": "0",
+        "EPL2_TAGPRESSURE_DIAG": "0",
+        "EPL2_TAG_LIFETIME": "0"
+      },
+      "rc": 0,
+      "seconds": 0.0434848926961422,
+      "log": "final_candidate_REUSE_GUARD.log",
+      "log_sha256": "38b63d861d4d05881100fc7e06687d9427c292b496f19fbe24addde8fa86ffb9"
+    },
+    {
+      "case": "T_OFF",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/agent_d/nonro_tag_relief_repro_candidate",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/T0M1.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/commandlist.g",
+        "PRESSURE_IDENTITY",
+        "32",
+        "8",
+        "0",
+        "T_OFF"
+      ],
+      "env": {
+        "EPL2_DETACH_DIAG": "1",
+        "EP_L2_EVENT_TIMELINE": "0",
+        "EPL2_TAGPRESSURE_DIAG": "0",
+        "EPL2_TAG_LIFETIME": "0"
+      },
+      "rc": 0,
+      "seconds": 0.035471586510539055,
+      "log": "final_candidate_T_OFF.log",
+      "log_sha256": "b6871af32caeb812ad6d2fb5e1a97075d5f50cf7e41fd42feb80ec5f64ab97f3"
+    },
+    {
+      "case": "MSHR_FULL",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/agent_d/nonro_tag_relief_repro_candidate",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/T1M1.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/commandlist.g",
+        "PRESSURE_IDENTITY",
+        "32",
+        "8",
+        "1",
+        "MSHR_FULL"
+      ],
+      "env": {
+        "EPL2_DETACH_DIAG": "1",
+        "EP_L2_EVENT_TIMELINE": "0",
+        "EPL2_TAGPRESSURE_DIAG": "0",
+        "EPL2_TAG_LIFETIME": "0"
+      },
+      "rc": 0,
+      "seconds": 0.18727834150195122,
+      "log": "final_candidate_MSHR_FULL.log",
+      "log_sha256": "11cebdcaa05514a9858793f2422cd7dd2211957c451efe53c1ceb5b852c5032b"
+    }
+  ],
+  "scope": "CPU production classes; Source78 lib base except candidate one patched object; no application or DRAM timing",
+  "new_models": 0
+}

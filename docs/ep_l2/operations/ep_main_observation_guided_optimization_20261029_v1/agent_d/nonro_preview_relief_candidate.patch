@@ -1,0 +1,16 @@
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -2818,6 +2818,13 @@
+       m_tag_array->probe(block_addr, cache_index, mf, mf->is_write(), true);
+   plan.cache_index = cache_index;
+   if(o){o->production_reached=true;o->production_raw=plan.probe_status;o->intermediate=plan.probe_status;}
++  // Engineering candidate: mirror the production ft_access Tag-relief
++  // opportunity without mutation; normal MSHR/MissQ gates still run below.
++  if (plan.probe_status == RESERVATION_FAIL && m_ro &&
++      m_ro->detachable(addr, cache_index)) {
++    plan.probe_status = MISS;
++    plan.cache_index = cache_index;
++  }
+   if (plan.probe_status == RESERVATION_FAIL) {
+     plan.ep_l2_tag_set_all_reserved = true;
+     return;
