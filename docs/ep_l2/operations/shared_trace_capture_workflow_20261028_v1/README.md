@@ -43,3 +43,7 @@
 ## V10 当前64输入轻量兼容证据
 
 [64启动路线、63退休证据和61精确配置完整接受](CURRENT_PROGRESS_V10.md)。[64行瘦投影](CURRENT_64_EXACT_CONSUMER_LAYERS_V10.json)。[三份Root原始证据及NAS完整审计入口](EVIDENCE_INDEX_V10.json)。这是精确路线的分层证据，不是全部consumer配置或新科学资格。
+
+## V11 当前采集与共享归档状态
+
+[统一发现71常规71裁剪与RAW3、scan范围修订和末项SDK42采集](CURRENT_PROGRESS_V11.md)。[五份薄增量证据](EVIDENCE_INDEX_V11.json)。scan旧窗口不完整现场继续保留，完整采集后才按用户批准的RAW范围归档；四项后处理与当前SDK任务保持运行。
