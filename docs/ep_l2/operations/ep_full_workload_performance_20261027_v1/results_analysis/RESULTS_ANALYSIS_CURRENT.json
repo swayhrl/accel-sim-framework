@@ -3,14 +3,14 @@
     "matched_details_ref": {
       "bytes": 187271,
       "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/analysis/live/MATCHED_RESULT_DETAILS.json",
-      "sha256": "86f7e9fd7136190a1a36afe3f8976de0f5649aaff92ad04479899a195f969455"
+      "sha256": "4b7d5bfbffc9287adc332072d92583cb30f1c15058f88f7f24664343a9820454"
     },
     "status_ref": {
-      "bytes": 2142,
+      "bytes": 2182,
       "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/analysis/live/CURRENT_STATUS.json",
-      "sha256": "4e1367aeb2a9b2ff139388608ee5d24cf92c53ef867f0a209a6746353605ceb4"
+      "sha256": "8a1916c556cb9a45f5c9457f789154cacb5a5db9aed90776ee294d8ea4bbb9ef"
     },
-    "utc": "2026-10-29T01:32:51.468559+00:00"
+    "utc": "2026-10-29T03:35:18.215226+00:00"
   },
   "actual_smallG_final_RO_detaches": [
     {
@@ -150,7 +150,8 @@
     "states": {
       "CLOSED_ACCEPTED": 222,
       "CLOSED_UNACCEPTED": 2,
-      "CONSUMED_BEFORE_FORK": 3
+      "CONSUMED_BEFORE_FORK": 2,
+      "NATURAL_COMPLETE_PENDING_VALIDATION": 1
     }
   },
   "coverage_ledger": {
@@ -15581,7 +15582,11 @@
         "physical_payload_line_slots_per_slice": 1168,
         "static_s64": false
       },
-      "done_ref": null,
+      "done_ref": {
+        "bytes": 4580,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_LAVAMD_51FAFFD2_F_REF_V1.DONE.json",
+        "sha256": "421ff852ef04a67bbcc001166cfdade4d3b0ecab5a44a91b1a275d425b330948"
+      },
       "failure_ref": null,
       "geometry": {
         "line_bytes": 128,
@@ -15621,7 +15626,7 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_LAVAMD_51FAFFD2_F_REF_V1/control/FROZEN_SPEC.json",
         "sha256": "3d755328bb0eca3c8e0ff263994b2ef1a366062839855d36bef03e5754617f69"
       },
-      "state": "CONSUMED_BEFORE_FORK"
+      "state": "NATURAL_COMPLETE_PENDING_VALIDATION"
     },
     {
       "CTA": 1000,
@@ -26947,7 +26952,7 @@
       }
     ],
     "current_analysis_accepted_count": 222,
-    "current_analysis_population_asof_utc": "2026-10-29T01:33:10.553607+00:00",
+    "current_analysis_population_asof_utc": "2026-10-29T03:35:18.345530+00:00",
     "evidence_ref": {
       "bytes": 24308,
       "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/control/TECHNICAL_FAILURE_ROOTCAUSE_20261028_V1/EVIDENCE.json",
@@ -26977,12 +26982,12 @@
     "new_or_changed_rejoined": [],
     "new_pairs": [],
     "prior_analysis_ref": {
-      "bytes": 1857534,
-      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/results_analysis_20261028_v1/versions/20261029T001004Z_ef632d38/RESULTS_ANALYSIS_CURRENT.json",
+      "bytes": 1837834,
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/results_analysis_20261028_v1/versions/20261029T013310Z_2f341af0/RESULTS_ANALYSIS_CURRENT.json",
       "publish_name": "RESULTS_ANALYSIS_CURRENT.json",
-      "sha256": "e81a90d58fecde006150d3e3fead6f9f4234d61c538d7422c45a3886fdbae163"
+      "sha256": "2c2a36fc7cfbc1ae0d67b2fa5e00241c7c7de6a77a46dd8e20cb28e8cdc2105a"
     },
-    "prior_utc": "2026-10-29T00:08:15.273571+00:00",
+    "prior_utc": "2026-10-29T01:33:10.553607+00:00",
     "reused_unchanged": [
       "EP_PERF_2DCONV_0AE13552_F_REF_V1",
       "EP_PERF_2DCONV_0AE13552_S_REF_V1",
@@ -44603,9 +44608,8 @@
     "T_independent_gain": "UNKNOWN_NEEDS_EXACT_F_BACKGROUND_T_OFF_M1",
     "new_accepted_endpoints": 0,
     "new_fully_matched_pairs": 0,
-    "prior_analysis_utc": "2026-10-29T00:08:15.273571+00:00",
+    "prior_analysis_utc": "2026-10-29T01:33:10.553607+00:00",
     "remaining_live": [
-      "EP_PERF_LAVAMD_51FAFFD2_F_REF_V1",
       "EP_PERF_SYRK_90B0CC9D_F_REF_V1",
       "EP_PERF_SYRK_90B0CC9D_S_REF_V1"
     ],
@@ -44616,16 +44620,16 @@
   "resource": {
     "AS_limit_bytes": 134217728,
     "CPU": 511,
-    "maxRSS_bytes": 46137344,
-    "nice": 10,
-    "seconds": 0.2664967719465494
+    "maxRSS_bytes": 95006720,
+    "nice": 15,
+    "seconds": 0.1939726360142231
   },
   "schema": "EP_AGENT_B_ACCEPTED_RESULTS_ANALYSIS_V1",
   "source_snapshot": {
     "epoch": 2,
-    "epoch_sha256": "42e660515e0110cbfc2024a8d6c89000093f8aca7a96bb5a58705d4a85737a01",
-    "registry_sha256": "ebd152d2e74e0fa16feaf7ace2971b5c7c2bc54871300a7f6dc6a1e329909a93"
+    "epoch_sha256": "db12e18b90d216445fa80f3c45ca2fa052156f9824afef575305a5bc1ca1aeae",
+    "registry_sha256": "1d4c2180590e33282a5bb7bef9e2db7a2ae4a02e243f5af2195e899dd2719cc3"
   },
   "trace_or_raw_rereads": 0,
-  "utc": "2026-10-29T01:33:10.553607+00:00"
+  "utc": "2026-10-29T03:35:18.345530+00:00"
 }

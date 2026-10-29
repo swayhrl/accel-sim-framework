@@ -1,6 +1,6 @@
 # Accepted experiment results: bounded current analysis
 
-Analysis UTC: 2026-10-29T01:33:10.553607+00:00. Registry: 227 registered; 227 consumed; states {'CLOSED_ACCEPTED': 222, 'CONSUMED_BEFORE_FORK': 3, 'CLOSED_UNACCEPTED': 2}. Independently joined CLOSED_ACCEPTED endpoints: 222. Joins cover frozen spec, natural DONE, point, canonical Source5, validation SHA and genuine164/two-native-restore receipts. No raw or Trace rereads; Main remains the acceptance authority.
+Analysis UTC: 2026-10-29T03:35:18.345530+00:00. Registry: 227 registered; 227 consumed; states {'CLOSED_ACCEPTED': 222, 'NATURAL_COMPLETE_PENDING_VALIDATION': 1, 'CLOSED_UNACCEPTED': 2, 'CONSUMED_BEFORE_FORK': 2}. Independently joined CLOSED_ACCEPTED endpoints: 222. Joins cover frozen spec, natural DONE, point, canonical Source5, validation SHA and genuine164/two-native-restore receipts. No raw or Trace rereads; Main remains the acceptance authority.
 
 Each row is an endpoint, not a distinct workload. This is a bounded snapshot; live counts may advance. There is no full35/full96 geometric mean or global-optimum claim.
 
