@@ -1,0 +1,67 @@
+{
+  "status": "PASS_HEADER_COMPONENT_ONLY_NOT_CAPTURE_HOOK_OR_APP_NI",
+  "steps": [
+    {
+      "label": "original_build",
+      "command": [
+        "g++",
+        "-std=c++14",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wno-error=misleading-indentation",
+        "-DORIGINAL_SCOPE",
+        "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim",
+        "test_tagpressure_small_geometry.cc",
+        "-o",
+        "test_tp_original"
+      ],
+      "returncode": 0,
+      "wall_seconds": 0.40972137451171875,
+      "output": "In file included from test_tagpressure_small_geometry.cc:1:\n/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tagpressure-diag.h: In member function \u2018ep_l2_tagpressure::phase_counts* ep_l2_tagpressure::registry::phase(ep_l2_tagpressure::slice_state&, unsigned int)\u2019:\n/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tagpressure-diag.h:203:3: warning: this \u2018if\u2019 clause does not guard... [-Wmisleading-indentation]\n  203 |   if(!d.phases[p])d.phases[p].reset(new phase_counts);return d.phases[p].get();}\n      |   ^~\n/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tagpressure-diag.h:203:55: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the \u2018if\u2019\n  203 |   if(!d.phases[p])d.phases[p].reset(new phase_counts);return d.phases[p].get();}\n      |                                                       ^~~~~~\n/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tagpressure-diag.h: In member function \u2018bool ep_l2_tagpressure::registry::requester_matches(const ep_l2_tagpressure::phase_counts&, const ep_l2_tagpressure::legacy_counts&, unsigned int, int) const\u2019:\n/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tagpressure-diag.h:241:3: warning: this \u2018if\u2019 clause does not guard... [-Wmisleading-indentation]\n  241 |   if(!joint)return false;uint64_t requester[3]={},sum=0;bool bad=joint->invalid;\n      |   ^~\n/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tagpressure-diag.h:241:26: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the \u2018if\u2019\n  241 |   if(!joint)return false;uint64_t requester[3]={},sum=0;bool bad=joint->invalid;\n      |                          ^~~~~~~~\n"
+    },
+    {
+      "label": "original_run",
+      "command": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_c/test_tp_original"
+      ],
+      "returncode": 0,
+      "wall_seconds": 0.005395174026489258,
+      "output": "TP_GEOMETRY_PASS|sets=32|ways=8|T0_structural=1|T1_same_joint=1|once_headcycle=1|predicate_negative=1|snapshot_context_reject=1\nTP_GEOMETRY_PASS|sets=64|ways=16|T0_structural=1|T1_same_joint=1|once_headcycle=1|predicate_negative=1|snapshot_context_reject=1\nORIGINAL_UNSUPPORTED16X8_32X4_CONFIRMED\nTP_COUNTS_SIZE|phase=86032|joint=2097160|registry=186392|production_capture_hook_tested=0|application_NI=0\n"
+    },
+    {
+      "label": "candidate_build",
+      "command": [
+        "g++",
+        "-std=c++14",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wno-error=misleading-indentation",
+        "-I/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_c/tagpressure_geometry_candidate",
+        "test_tagpressure_small_geometry.cc",
+        "-o",
+        "test_tp_candidate"
+      ],
+      "returncode": 0,
+      "wall_seconds": 0.39914894104003906,
+      "output": "In file included from test_tagpressure_small_geometry.cc:1:\n/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_c/tagpressure_geometry_candidate/ep-l2-tagpressure-diag.h: In member function \u2018ep_l2_tagpressure::phase_counts* ep_l2_tagpressure::registry::phase(ep_l2_tagpressure::slice_state&, unsigned int)\u2019:\n/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_c/tagpressure_geometry_candidate/ep-l2-tagpressure-diag.h:207:3: warning: this \u2018if\u2019 clause does not guard... [-Wmisleading-indentation]\n  207 |   if(!d.phases[p])d.phases[p].reset(new phase_counts);return d.phases[p].get();}\n      |   ^~\n/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_c/tagpressure_geometry_candidate/ep-l2-tagpressure-diag.h:207:55: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the \u2018if\u2019\n  207 |   if(!d.phases[p])d.phases[p].reset(new phase_counts);return d.phases[p].get();}\n      |                                                       ^~~~~~\n/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_c/tagpressure_geometry_candidate/ep-l2-tagpressure-diag.h: In member function \u2018bool ep_l2_tagpressure::registry::requester_matches(const ep_l2_tagpressure::phase_counts&, const ep_l2_tagpressure::legacy_counts&, unsigned int, int) const\u2019:\n/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_c/tagpressure_geometry_candidate/ep-l2-tagpressure-diag.h:245:3: warning: this \u2018if\u2019 clause does not guard... [-Wmisleading-indentation]\n  245 |   if(!joint)return false;uint64_t requester[3]={},sum=0;bool bad=joint->invalid;\n      |   ^~\n/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_c/tagpressure_geometry_candidate/ep-l2-tagpressure-diag.h:245:26: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the \u2018if\u2019\n  245 |   if(!joint)return false;uint64_t requester[3]={},sum=0;bool bad=joint->invalid;\n      |                          ^~~~~~~~\n"
+    },
+    {
+      "label": "candidate_run",
+      "command": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_c/test_tp_candidate"
+      ],
+      "returncode": 0,
+      "wall_seconds": 0.00844883918762207,
+      "output": "TP_GEOMETRY_PASS|sets=16|ways=8|T0_structural=1|T1_same_joint=1|once_headcycle=1|predicate_negative=1|snapshot_context_reject=1\nTP_GEOMETRY_PASS|sets=32|ways=4|T0_structural=1|T1_same_joint=1|once_headcycle=1|predicate_negative=1|snapshot_context_reject=1\nTP_GEOMETRY_PASS|sets=32|ways=8|T0_structural=1|T1_same_joint=1|once_headcycle=1|predicate_negative=1|snapshot_context_reject=1\nTP_GEOMETRY_PASS|sets=64|ways=16|T0_structural=1|T1_same_joint=1|once_headcycle=1|predicate_negative=1|snapshot_context_reject=1\nTP_COUNTS_SIZE|phase=86032|joint=2097160|registry=186392|production_capture_hook_tested=0|application_NI=0\n"
+    }
+  ],
+  "model_starts": 0,
+  "production_hook_compiled": false,
+  "full_TU_build": false,
+  "application_NI": false,
+  "attempt1": "Preserved -Werror build failure from pre-existing header misleading-indentation; no protocol checks removed. Attempt2 demotes only this existing style warning."
+}

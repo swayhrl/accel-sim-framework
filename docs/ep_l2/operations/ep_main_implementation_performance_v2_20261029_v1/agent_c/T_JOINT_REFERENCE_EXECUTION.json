@@ -1,0 +1,39 @@
+{
+  "status": "PASS_REFERENCE_ONLY_NO_PRODUCTION_HOOK",
+  "steps": [
+    {
+      "label": "build",
+      "command": [
+        "g++",
+        "-std=c++11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "test_t_joint_counter_reference.cc",
+        "-o",
+        "test_t_joint_counter_reference"
+      ],
+      "returncode": 0,
+      "wall_seconds": 0.1349031925201416,
+      "output": ""
+    },
+    {
+      "label": "run",
+      "command": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_c/test_t_joint_counter_reference"
+      ],
+      "returncode": 0,
+      "wall_seconds": 0.0015978813171386719,
+      "output": "T_JOINT_REFERENCE_PASS|sizeof=3168|defaultOFF=1|repeat_idempotent=1|same_uid_generation_tick_set=1|overflow_explicit=1|production_hook=0|application_NI=0\n"
+    }
+  ],
+  "model_starts": 0,
+  "production_NI": false,
+  "notes": [
+    "No simulator source included or linked",
+    "Bounded64 exact-attempt samples, NOT unique NEW population",
+    "No code searches model, no observer used in official binary",
+    "Overflow or unmatched invalidates complete population claims"
+  ]
+}

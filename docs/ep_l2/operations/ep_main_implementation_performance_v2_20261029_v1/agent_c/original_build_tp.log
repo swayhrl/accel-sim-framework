@@ -1,0 +1,16 @@
+In file included from test_tagpressure_small_geometry.cc:1:
+/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tagpressure-diag.h: In member function ‘ep_l2_tagpressure::phase_counts* ep_l2_tagpressure::registry::phase(ep_l2_tagpressure::slice_state&, unsigned int)’:
+/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tagpressure-diag.h:203:3: error: this ‘if’ clause does not guard... [-Werror=misleading-indentation]
+  203 |   if(!d.phases[p])d.phases[p].reset(new phase_counts);return d.phases[p].get();}
+      |   ^~
+/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tagpressure-diag.h:203:55: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  203 |   if(!d.phases[p])d.phases[p].reset(new phase_counts);return d.phases[p].get();}
+      |                                                       ^~~~~~
+/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tagpressure-diag.h: In member function ‘bool ep_l2_tagpressure::registry::requester_matches(const ep_l2_tagpressure::phase_counts&, const ep_l2_tagpressure::legacy_counts&, unsigned int, int) const’:
+/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tagpressure-diag.h:241:3: error: this ‘if’ clause does not guard... [-Werror=misleading-indentation]
+  241 |   if(!joint)return false;uint64_t requester[3]={},sum=0;bool bad=joint->invalid;
+      |   ^~
+/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tagpressure-diag.h:241:26: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  241 |   if(!joint)return false;uint64_t requester[3]={},sum=0;bool bad=joint->invalid;
+      |                          ^~~~~~~~
+cc1plus: all warnings being treated as errors

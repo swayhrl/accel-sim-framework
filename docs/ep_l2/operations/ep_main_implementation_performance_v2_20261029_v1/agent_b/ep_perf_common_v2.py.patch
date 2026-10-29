@@ -1,0 +1,17 @@
+--- accepted_host/ep_perf_common.py
++++ v2_private/ep_perf_common_v2.py
+@@ -2,11 +2,12 @@
+ import contextlib, copy, datetime, fcntl, hashlib, importlib.util, json, os, pathlib, uuid
+ 
+ P = pathlib.Path
+-ROOT = P('/root/data/ep_l2_full_workload_performance_20261027_v1')
++ROOT = P(__file__).resolve().parent / 'NOT_INSTALLED_RUNTIME'
+ NATIVE = P('/root/data/ep_l2_dtc_l1_native_v2')
+ REG = NATIVE / 'control/science_authority/NATIVE_SCIENCE_REGISTRY.json'
+ EPOCH = NATIVE / 'control/CURRENT_SCIENCE_EPOCH.json'
+-GOAL = 'EP_L2_FULL_WORKLOAD_PERFORMANCE_POTENTIAL_EXPLORATION_V1'
++FRONTEND_GOAL = 'EP_L2_FULL_WORKLOAD_PERFORMANCE_POTENTIAL_EXPLORATION_V1'
++GOAL = 'EP_L2_WV_DECOMPOSITION_V2'
+ G = 1024**3
+ M = 1024**2
+ 

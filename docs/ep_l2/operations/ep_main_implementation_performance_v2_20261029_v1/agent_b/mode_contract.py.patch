@@ -1,0 +1,21 @@
+--- round2/mode_contract.py
++++ v2_candidate/mode_contract.py
+@@ -35,7 +35,7 @@
+ 
+ def validate_anchor(s):
+  q=exact(s['matched_S_anchor_qualification_ref']);need(q.get('schema')=='EP_MAIN_EXACT_EXISTING_S_REFERENCE_QUALIFICATION_V1'and q.get('status')=='EXACT_EXISTING_S_HARDWARE_INPUT_OBSERVERS_QUALIFIED_FOR_MATCHED_REFERENCE'and q.get('approved_by')=='EP-MAIN','new Main exactS reuse qualification absent')
+- a=exact(q['spec_ref']);p=exact(q['point_ref']);need(q.get('current_closed_state')=='CLOSED'and q.get('currently_accepted_population')is True,'old point file alone is not current acceptance');need(a['mode']=='S'and p['status']=='EP_FULL_PERF_APPLICATION_ACCEPTED'and p['mode']=='S'and p['hardware_drained']is True,'not a full existingS accepted anchor')
++ a=exact(q['spec_ref']);p=exact(q['point_ref']);need(q.get('current_closed_state')=='CLOSED_ACCEPTED'and q.get('currently_accepted_population')is True,'old point file alone is not current acceptance');need(a['mode']=='S'and p['status']=='EP_FULL_PERF_APPLICATION_ACCEPTED'and p['mode']=='S'and p['hardware_drained']is True,'not a full existingS accepted anchor')
+  need(p['spec_ref']==q['spec_ref']and a['source_identity']==p['source_identity']==s['source_identity']==q['source_identity'],'anchor Source/spec mismatch');need(a['input_identity_sha256']==p['input_identity_sha256']==s['input_identity_sha256']==q['input_identity_sha256'],'anchor input mismatch');need(a['geometry']==s['geometry']and a['observer_env']==s['observer_env'],'anchorhardware/observer mismatch');need(q['expected_effective_options_sha256']==digest_value(a['expected_effective_options']),'anchor282 digest')
+  expected=dict(a['expected_effective_options']);expected.update(flags(s['mode']));expected['-trace']=s['trace_entry']
+  if ro_enabled(s['mode']):
+@@ -77,7 +77,7 @@
+ 
+ def qualify_existing_reference(review_ref,target,formal_mode):
+  """New Main closed-population review required. No acceptance/launch writes."""
+- need(formal_mode in ['S','F'],'only existing S/F reference interface');q=exact(review_ref);need(q.get('schema')=='EP_MAIN_EXACT_EXISTING_MODE_REFERENCE_QUALIFICATION_V1'and q.get('status')=='EXACT_EXISTING_HARDWARE_INPUT_OBSERVERS_REFERENCE_REUSE_QUALIFIED'and q.get('approved_by')=='EP-MAIN','new exactreference review required')
+- a=exact(q['spec_ref']);p=exact(q['point_ref']);need(q.get('current_closed_state')=='CLOSED'and q.get('currently_accepted_population')is True,'reference no longeraccepted');need(p['spec_ref']==q['spec_ref'],'reference original spec drift');need(a['mode']==p['mode']==formal_mode and p['status']=='EP_FULL_PERF_APPLICATION_ACCEPTED'and p['hardware_drained']is True,'reference type/status')
++ need(formal_mode in ['S','WV_ZERO_RO','F'],'only existing S/WV/F reference interface');q=exact(review_ref);need(q.get('schema')=='EP_MAIN_EXACT_EXISTING_MODE_REFERENCE_QUALIFICATION_V1'and q.get('status')=='EXACT_EXISTING_HARDWARE_INPUT_OBSERVERS_REFERENCE_REUSE_QUALIFIED'and q.get('approved_by')=='EP-MAIN','new exactreference review required')
++ a=exact(q['spec_ref']);p=exact(q['point_ref']);need(q.get('current_closed_state')=='CLOSED_ACCEPTED'and q.get('currently_accepted_population')is True,'reference no longeraccepted');need(p['spec_ref']==q['spec_ref'],'reference original spec drift');need(a['mode']==p['mode']==formal_mode and p['status']=='EP_FULL_PERF_APPLICATION_ACCEPTED'and p['hardware_drained']is True,'reference type/status')
+  need(a['source_identity']==p['source_identity']==target['source_identity']and a['input_identity_sha256']==p['input_identity_sha256']==target['input_identity_sha256'],'referenceSource/input');need(a['geometry']==target['geometry']and a['observer_env']==target['observer_env']and a['expected_effective_options']==target['expected_effective_options'],'reference actualhardware/input/observers/options differ')
+  return dict(status='EXACT_REFERENCE_REUSE_REVIEW_ONLY_NO_NEW_ACCEPTANCE',review_ref=review_ref,point_ref=q['point_ref'],launch_permission=False,scientific_acceptance_granted=False)

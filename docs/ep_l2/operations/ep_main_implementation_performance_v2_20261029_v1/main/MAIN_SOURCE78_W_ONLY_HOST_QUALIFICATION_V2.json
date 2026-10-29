@@ -1,0 +1,99 @@
+{
+  "schema": "EP_MAIN_SOURCE78_WV_MODES_HOST_QUALIFICATION_V1",
+  "status": "HOST_CPU_ENGINEERING_QUALIFIED_NOT_APPLICATION_ACCEPTED",
+  "approved_by": "EP-MAIN",
+  "utc": "2026-10-29T07:02:03.483251+00:00",
+  "source_identity": {
+    "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+    "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+    "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "modes_qualified": [
+    "S",
+    "W_ONLY",
+    "WV_ZERO_RO"
+  ],
+  "target_geometry": {
+    "slices": 64,
+    "sets": 32,
+    "ways": 8,
+    "line_bytes": 128
+  },
+  "modules": [
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_b/host_candidate/mode_contract.py",
+      "sha256": "043fd6ea2cfbcb55cd8bb90e052525e3fdd09b5241a9f3c05556e6fa13b3b3d0",
+      "bytes": 10961
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_b/host_candidate/mode_aware_terminal.py",
+      "sha256": "3c60563984fa9765aedac30f70f59a8dc14a4755c67548fe0d23a6a2b7c3a684",
+      "bytes": 4913
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_b/host_candidate/ep_perf_native_wv_modes_draft.py",
+      "sha256": "40a5a2340a203388048193023ec03864b578328dea1d8406c60cf8c1ab63199a",
+      "bytes": 25593
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_b/host_candidate/ep_perf_common_v2.py",
+      "sha256": "75384211cdeeeee4f5642dccb482666bafb7f542d55cf8369810e88439ee65c2",
+      "bytes": 6457
+    }
+  ],
+  "evidence_refs": {
+    "host_native": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_b/HOST_NATIVE_V2_ACTUAL_CONTROLS.json",
+      "sha256": "75d864e5fcffd38037384cb8d36b43e4006d031137801d3686d9683adcc66a2b",
+      "bytes": 8777
+    },
+    "full_parser_synthetic": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_b/FULL_PARSER_SYNTHETIC_V2_ACTUAL_CONTROLS.json",
+      "sha256": "279964a5b84ddbfd01d80caaa8a52faf869076239881a596cb68d2129b9b8952",
+      "bytes": 9857
+    },
+    "old_component_controls": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/round2/agent_b/HOST_CONTRACT_ACTUAL_CONTROLS.json",
+      "sha256": "aecd93e37f516b89cfe7ea67f443e527c53a4851ab7999dd87bd8a587c2c13e3",
+      "bytes": 6355
+    },
+    "old_numeric_preservation": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/round2/agent_b/HOST_NUMERIC_PRESERVATION_ACTUAL.json",
+      "sha256": "54571f6eb08d31029f49b00f1264f7dd9680b5fa64830040c3b48776ac59157d",
+      "bytes": 4342
+    }
+  },
+  "formal_mode_CPU_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/MAIN_SOURCE78_W_ONLY_MODE_CPU_QUALIFICATION_V2.json",
+    "sha256": "c1f97f153ca260da8e825c2fea04e31907f7e8a0db21e0db0bdb62f561966d77",
+    "bytes": 3558
+  },
+  "Main_review_packet_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_b/MAIN_SIGNOFF_PACKET.json",
+    "sha256": "ee4822299193aa972869ce5f44ba194034622459eeaf5e84d2024e2c5dedb41f",
+    "bytes": 4956
+  },
+  "review_method": "Main verified module/evidence hashes, reviewed57actual controls and separate real ModeCPU signoff; no rerun of already-passed tests. TEST_ONLY approval-shaped fixtures are never adopted as authorization.",
+  "application_permission": false,
+  "launch_permission": false,
+  "science_authorized": 0,
+  "native_activation": "HOLD_UNTIL_FRESH_EXACT_AUTHORIZATION_AND_ADDITIVE_ROUTE_QUALIFICATION",
+  "scope": "PASS engineering Source78 S/W/WV32x8 parser/Host component+private native path; no actual application PID/maps/raw acceptance or NI",
+  "synthetic_parser_boundary": "Full pure-wrapper/real numeric factory controls used TEST_ONLY100cycle synthetic terminal, not a scientific application",
+  "not_inherited": [
+    "16x8",
+    "newCore283optionSource",
+    "F_MINUS_T",
+    "Legacy_F",
+    "Corrected_F",
+    "newobserverNI",
+    "applicationacceptance"
+  ],
+  "remaining": [
+    "real route installation/identity with current sole-entry",
+    "exact fresh request authorization+nonzero budget only after user review",
+    "actual process/PID/maps/output and complete-application acceptance on authorized run"
+  ]
+}

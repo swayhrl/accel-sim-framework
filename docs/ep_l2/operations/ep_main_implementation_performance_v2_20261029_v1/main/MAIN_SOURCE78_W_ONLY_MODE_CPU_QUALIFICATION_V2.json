@@ -1,0 +1,71 @@
+{
+  "schema": "EP_MAIN_SOURCE78_FORMAL_MODE_CPU_QUALIFICATION_V1",
+  "status": "EXACT_SOURCE78_FORMAL_MODE_CPU_PASS_NOT_APPLICATION_ACCEPTANCE",
+  "approved_by": "EP-MAIN",
+  "utc": "2026-10-29T06:29:28.643580+00:00",
+  "mode": "W_ONLY",
+  "source_identity": {
+    "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+    "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697"
+  },
+  "geometry": {
+    "slices": 64,
+    "sets": 32,
+    "ways": 8,
+    "line_bytes": 128
+  },
+  "formal_flags": {
+    "-gpgpu_ep_l2_ft_mode": "2",
+    "-gpgpu_ep_l2_tvd_clean": "0",
+    "-gpgpu_ep_l2_tvd_dirty": "0",
+    "-gpgpu_ep_l2_ro_tag_detach": "0",
+    "-gpgpu_ep_l2_ro_line_mshr_bypass": "0"
+  },
+  "application_permission": false,
+  "launch_permission": false,
+  "completed_controls": [
+    "constructor32x8",
+    "partition_WAD128",
+    "a1_versions_reorder",
+    "requests32x8_IPOLY_versions_reverse_return"
+  ],
+  "actual_exact3_result_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/round2/agent_b/CPU_ACTUAL_EXECUTION_FINAL.json",
+    "sha256": "fce9cf092fb11483ab940dd43a5955c21517d68d8fe151280f0fa538d4f36a3b",
+    "bytes": 21094
+  },
+  "evidence_refs": {
+    "CPU_ACTUAL_EXECUTION_FINAL.json": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/round2/agent_b/CPU_ACTUAL_EXECUTION_FINAL.json",
+      "sha256": "fce9cf092fb11483ab940dd43a5955c21517d68d8fe151280f0fa538d4f36a3b",
+      "bytes": 21094
+    },
+    "CPU_32X8_REQUESTS_EXECUTION_FINAL.json": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/round2/agent_b/CPU_32X8_REQUESTS_EXECUTION_FINAL.json",
+      "sha256": "5400553e7b0ef1faf00263f5e43191f6888d3b3e90392774bf64f617df4efdea",
+      "bytes": 11439
+    },
+    "CPU_SOURCE_AND_PRIVATE_BUILD_CAPSULE.json": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/round2/agent_b/CPU_SOURCE_AND_PRIVATE_BUILD_CAPSULE.json",
+      "sha256": "6f638012618c852b505c1f2612e6793322d2d45118ce3e25df29d39a6c130af5",
+      "bytes": 8994
+    }
+  },
+  "actual_CPU_scope": [
+    "32x8 constructor and9-request IPOLY production-cache/subpartition fixture",
+    "WAD128/lower-full/drain stress uses its documented small geometry",
+    "A1 version/identity/reorder/drain uses64set16way legacy fixture"
+  ],
+  "qualification_boundary": "Main formally accepts the listed Source78 W_ONLY CPU mode evidence for engineering qualification of the stated target family. Geometry is the intended application family, not a claim all64slices ran in these CPU fixtures. No application NI, numeric output, Host/native/input or scientific budget granted.",
+  "review_method": "Main independently verified immutable source/evidence/log SHA, successful run/group closure, mode identities and stated coverage; reused prior execution without repeating tests.",
+  "remaining": [
+    "full Host/parser qualification",
+    "native route/source/mode activation and exact fresh request authorization",
+    "per-input exact accepted-reference reuse review",
+    "required application NI and actual performance acceptance"
+  ],
+  "new_GPU_starts_authorized": 0
+}

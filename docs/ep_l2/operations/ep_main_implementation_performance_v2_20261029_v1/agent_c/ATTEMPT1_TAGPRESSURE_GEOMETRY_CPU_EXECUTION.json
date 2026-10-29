@@ -1,0 +1,28 @@
+{
+  "status": "FAIL",
+  "steps": [
+    {
+      "label": "original_build",
+      "command": [
+        "g++",
+        "-std=c++14",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-DORIGINAL_SCOPE",
+        "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim",
+        "test_tagpressure_small_geometry.cc",
+        "-o",
+        "test_tp_original"
+      ],
+      "returncode": 1,
+      "wall_seconds": 0.33408236503601074,
+      "output": "In file included from test_tagpressure_small_geometry.cc:1:\n/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tagpressure-diag.h: In member function \u2018ep_l2_tagpressure::phase_counts* ep_l2_tagpressure::registry::phase(ep_l2_tagpressure::slice_state&, unsigned int)\u2019:\n/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tagpressure-diag.h:203:3: error: this \u2018if\u2019 clause does not guard... [-Werror=misleading-indentation]\n  203 |   if(!d.phases[p])d.phases[p].reset(new phase_counts);return d.phases[p].get();}\n      |   ^~\n/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tagpressure-diag.h:203:55: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the \u2018if\u2019\n  203 |   if(!d.phases[p])d.phases[p].reset(new phase_counts);return d.phases[p].get();}\n      |                                                       ^~~~~~\n/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tagpressure-diag.h: In member function \u2018bool ep_l2_tagpressure::registry::requester_matches(const ep_l2_tagpressure::phase_counts&, const ep_l2_tagpressure::legacy_counts&, unsigned int, int) const\u2019:\n/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tagpressure-diag.h:241:3: error: this \u2018if\u2019 clause does not guard... [-Werror=misleading-indentation]\n  241 |   if(!joint)return false;uint64_t requester[3]={},sum=0;bool bad=joint->invalid;\n      |   ^~\n/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tagpressure-diag.h:241:26: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the \u2018if\u2019\n  241 |   if(!joint)return false;uint64_t requester[3]={},sum=0;bool bad=joint->invalid;\n      |                          ^~~~~~~~\ncc1plus: all warnings being treated as errors\n"
+    }
+  ],
+  "model_starts": 0,
+  "production_hook_compiled": false,
+  "full_TU_build": false,
+  "application_NI": false
+}

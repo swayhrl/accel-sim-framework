@@ -1,0 +1,47 @@
+--- round2/ep_perf_native_wv_modes_draft.py
++++ v2_candidate/ep_perf_native_wv_modes_draft.py
+@@ -1,11 +1,11 @@
+ """New EP-only native entry. No import-time actors; all starts consume first."""
+ import gzip, hashlib, json, os, pathlib, resource, selectors, shutil, signal
+ import subprocess, sys, time, uuid
+-from ep_perf_common import *
++from ep_perf_common_v2 import *
+ 
+ LEDGER = NATIVE / 'control/qualification_ledger'
+-MODE_CONTRACT_SHA='d832ad1a898c58eb381d4034d7f7c022a7133af55c8436ce1bf562b1b77097dc'
+-NEW_VALIDATOR_SHA='bdcbfce3d1e011215dee20e197d300bc26c508f83c5307c685245d48eefa0512'
++MODE_CONTRACT_SHA='043fd6ea2cfbcb55cd8bb90e052525e3fdd09b5241a9f3c05556e6fa13b3b3d0'
++NEW_VALIDATOR_SHA='3c60563984fa9765aedac30f70f59a8dc14a4755c67548fe0d23a6a2b7c3a684'
+ def formal_mode_contract(s):
+     need(s['mode_contract_ref']['sha256']==MODE_CONTRACT_SHA and s['validation_module_ref']['sha256']==NEW_VALIDATOR_SHA,'unreviewed formal mapper/parser version')
+     return module(s['mode_contract_ref'],'private_formal_mode_contract').validate_static(s)
+@@ -23,7 +23,7 @@
+     q = registry['registered_future_requests'][GOAL]
+     need(q['budget'] == len(q['admitted_specs']) and q['remaining'] == q['budget'] - len(q['consumed']), 'fresh scoped budget arithmetic')
+     need(q['admitted_specs'][case] == sha(path), 'unregistered or changed exact spec')
+-    need(s['schema'] == 'EP_FULL_PERF_EXACT_SPEC_V1' and s['goal'] == GOAL and s['cohort'] == case, 'spec identity')
++    need(s['schema'] == 'EP_FULL_PERF_EXACT_SPEC_V1' and s['goal'] == FRONTEND_GOAL and s.get('science_request_id') == GOAL and s['cohort'] == case, 'spec identity')
+     need(s['application_budget'] == 1 and not s['automatic_retry'] and s['source_keep'], 'fresh one-start contract')
+     authorization = exact(q['authorization_ref'])
+     need(authorization['goal'] == GOAL and authorization['user_request_ref'] == ref(ROOT/'control/USER_REQUEST.txt'), 'user authorization binding')
+@@ -51,8 +51,9 @@
+     need(len(s['expected_effective_options']) == 282, 'complete effective option contract required')
+     need(s['expected_effective_options']['-trace'] == s['trace_entry'], 'input/config identity')
+     formal_mode_contract(s)
+-    anchor_review=exact(s['matched_S_anchor_qualification_ref']);anchor_point=exact(anchor_review['point_ref']);anchor_row=q['consumed'].get(anchor_point['cohort'],{})
+-    need(anchor_row.get('state')=='CLOSED'and anchor_row.get('accepted_point_ref')==anchor_review['point_ref'],'S anchor current official population/point mismatch')
++    anchor_review=exact(s['matched_S_anchor_qualification_ref']);anchor_point=exact(anchor_review['point_ref'])
++    need(anchor_review.get('registry_population_request_id')==FRONTEND_GOAL,'anchor population namespace');anchor_row=registry['registered_future_requests'][FRONTEND_GOAL]['consumed'].get(anchor_point['cohort'],{})
++    need(anchor_row.get('state')=='CLOSED_ACCEPTED'and anchor_row.get('accepted_point_ref')==anchor_review['point_ref'],'S anchor current official population/point mismatch')
+     if not (s['T'] or s['M']):
+         need(s['ro_qualification_ref'] is None, 'RO-disabled mode may not inherit certificate authority')
+     if s['T'] or s['M']:
+@@ -68,7 +69,7 @@
+                  s['expected_effective_options']['-gpgpu_ep_l2_ro_'+kind+'_sha256'] == item['sha256'], 'RO certificate/actual option mismatch')
+     need(s['limits']['RSS_bytes'] > 0 and s['limits']['AS_bytes'] >= s['limits']['RSS_bytes'], 'RSS/AS contract')
+     need(s['limits']['result_bytes'] > 0 and s['limits']['wall_seconds'] > 0, 'output/wall contract')
+-    need(s['host_engine_ref'] == ref(__file__) and s['host_common_ref'] == ref(ROOT/'tools/ep_perf_common.py'), 'entry engine drift')
++    need(s['host_engine_ref'] == ref(__file__) and s['host_common_ref'] == ref(P(__file__).with_name('ep_perf_common_v2.py')), 'entry engine drift')
+     need(s['host_engine_ref']['sha256'] in q['runtime_versions'], 'unregistered runtime version')
+     need(q['runtime_versions'][s['host_engine_ref']['sha256']] ==
+          dict(engine_ref=s['host_engine_ref'], common_ref=s['host_common_ref']), 'runtime version binding')

@@ -1,0 +1,225 @@
+{
+  "schema": "EP_MAIN_WV_REAL_SIGNOFF_STATIC_CLOSURE_V2",
+  "utc": "2026-10-29T07:15:25.684172+00:00",
+  "status": "PASS_ENGINEERING_STATIC_6_DRAFTS_REAL_MAIN_SIGNOFFS",
+  "engine_module_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_b/host_candidate/mode_contract.py",
+    "sha256": "043fd6ea2cfbcb55cd8bb90e052525e3fdd09b5241a9f3c05556e6fa13b3b3d0",
+    "bytes": 10961
+  },
+  "results": [
+    {
+      "program": "GEMM",
+      "mode": "W_ONLY",
+      "full_static": "PASS_REAL_MAIN_CPU_HOST_S_ANCHOR_REFS",
+      "spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/wv_engineering_bound_specs/GEMM_W_ONLY.json",
+        "sha256": "b5f79b614436767c5c04c1dda4ab7367ed0951ba82b196d1d9b227741d10491d",
+        "bytes": 32824
+      },
+      "result": {
+        "schema": "EP_C_SOURCE78_FORMAL_MODE_BINDING_V1",
+        "mode": "W_ONLY",
+        "numeric_profile": "W_ONLY",
+        "T": false,
+        "M": false,
+        "RO": {
+          "applicability": "NOT_APPLICABLE_RO_RUNTIME_DISABLED_NOT_ZERO_INPUT_ORACLE"
+        },
+        "modeCPU": {
+          "status": "EXACT_SOURCE78_FORMAL_MODE_CPU_PASS_NOT_APPLICATION_ACCEPTANCE",
+          "qualification_ref": {
+            "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/MAIN_SOURCE78_W_ONLY_MODE_CPU_QUALIFICATION_V2.json",
+            "sha256": "c1f97f153ca260da8e825c2fea04e31907f7e8a0db21e0db0bdb62f561966d77",
+            "bytes": 3558
+          }
+        },
+        "anchor_qualification_ref": {
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/dedicated_S_anchor_reviews/GEMM_S.json",
+          "sha256": "9142e9177869aed744af7b04ac763242299cd84c68cef7e9ee1d6b9f6d55d4d4",
+          "bytes": 2842
+        },
+        "physical_family": "64slice32set8way/P1/1168/D512/WAD128/line128/REFqueues_clocks/stats111/heavy0000",
+        "scientific_acceptance_granted": false,
+        "launch_permission": false
+      }
+    },
+    {
+      "program": "fastWalshTransform",
+      "mode": "W_ONLY",
+      "full_static": "PASS_REAL_MAIN_CPU_HOST_S_ANCHOR_REFS",
+      "spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/wv_engineering_bound_specs/fastWalshTransform_W_ONLY.json",
+        "sha256": "f096cff9301ee971c3198bfda8ae612d78fc8ebb083b35f552fabf98224a17d3",
+        "bytes": 42499
+      },
+      "result": {
+        "schema": "EP_C_SOURCE78_FORMAL_MODE_BINDING_V1",
+        "mode": "W_ONLY",
+        "numeric_profile": "W_ONLY",
+        "T": false,
+        "M": false,
+        "RO": {
+          "applicability": "NOT_APPLICABLE_RO_RUNTIME_DISABLED_NOT_ZERO_INPUT_ORACLE"
+        },
+        "modeCPU": {
+          "status": "EXACT_SOURCE78_FORMAL_MODE_CPU_PASS_NOT_APPLICATION_ACCEPTANCE",
+          "qualification_ref": {
+            "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/MAIN_SOURCE78_W_ONLY_MODE_CPU_QUALIFICATION_V2.json",
+            "sha256": "c1f97f153ca260da8e825c2fea04e31907f7e8a0db21e0db0bdb62f561966d77",
+            "bytes": 3558
+          }
+        },
+        "anchor_qualification_ref": {
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/dedicated_S_anchor_reviews/fastWalshTransform_S.json",
+          "sha256": "e81227ecde74ad5dcb059b435936f3f86d93e435aca8ee406e8c2f8d3183b14a",
+          "bytes": 2898
+        },
+        "physical_family": "64slice32set8way/P1/1168/D512/WAD128/line128/REFqueues_clocks/stats111/heavy0000",
+        "scientific_acceptance_granted": false,
+        "launch_permission": false
+      }
+    },
+    {
+      "program": "scan",
+      "mode": "WV_ZERO_RO",
+      "full_static": "PASS_REAL_MAIN_CPU_HOST_S_ANCHOR_REFS",
+      "spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/wv_engineering_bound_specs/scan_WV_ZERO_RO.json",
+        "sha256": "9aeb6c81fd55ef6d14d63af275d0c132179f78fbbdacae788c18ccdcfa9c2a46",
+        "bytes": 53727
+      },
+      "result": {
+        "schema": "EP_C_SOURCE78_FORMAL_MODE_BINDING_V1",
+        "mode": "WV_ZERO_RO",
+        "numeric_profile": "F_MINUS_R",
+        "T": false,
+        "M": false,
+        "RO": {
+          "applicability": "NOT_APPLICABLE_RO_RUNTIME_DISABLED_NOT_ZERO_INPUT_ORACLE"
+        },
+        "modeCPU": {
+          "status": "EXISTING_FORMAL_MODE_NEW_HOSTQ_STILL_REQUIRED"
+        },
+        "anchor_qualification_ref": {
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/dedicated_S_anchor_reviews/scan_S.json",
+          "sha256": "b392092c93d6dc0f9e8f1e001ef96c00f012de19e73f96f5457c08705163175b",
+          "bytes": 2842
+        },
+        "physical_family": "64slice32set8way/P1/1168/D512/WAD128/line128/REFqueues_clocks/stats111/heavy0000",
+        "scientific_acceptance_granted": false,
+        "launch_permission": false
+      }
+    },
+    {
+      "program": "scan",
+      "mode": "W_ONLY",
+      "full_static": "PASS_REAL_MAIN_CPU_HOST_S_ANCHOR_REFS",
+      "spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/wv_engineering_bound_specs/scan_W_ONLY.json",
+        "sha256": "2ed34c10ecae8715b7c6bf65ddec7c314865179b48aa76fb36fcd26e1714ff09",
+        "bytes": 54119
+      },
+      "result": {
+        "schema": "EP_C_SOURCE78_FORMAL_MODE_BINDING_V1",
+        "mode": "W_ONLY",
+        "numeric_profile": "W_ONLY",
+        "T": false,
+        "M": false,
+        "RO": {
+          "applicability": "NOT_APPLICABLE_RO_RUNTIME_DISABLED_NOT_ZERO_INPUT_ORACLE"
+        },
+        "modeCPU": {
+          "status": "EXACT_SOURCE78_FORMAL_MODE_CPU_PASS_NOT_APPLICATION_ACCEPTANCE",
+          "qualification_ref": {
+            "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/MAIN_SOURCE78_W_ONLY_MODE_CPU_QUALIFICATION_V2.json",
+            "sha256": "c1f97f153ca260da8e825c2fea04e31907f7e8a0db21e0db0bdb62f561966d77",
+            "bytes": 3558
+          }
+        },
+        "anchor_qualification_ref": {
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/dedicated_S_anchor_reviews/scan_S.json",
+          "sha256": "b392092c93d6dc0f9e8f1e001ef96c00f012de19e73f96f5457c08705163175b",
+          "bytes": 2842
+        },
+        "physical_family": "64slice32set8way/P1/1168/D512/WAD128/line128/REFqueues_clocks/stats111/heavy0000",
+        "scientific_acceptance_granted": false,
+        "launch_permission": false
+      }
+    },
+    {
+      "program": "stencil",
+      "mode": "WV_ZERO_RO",
+      "full_static": "PASS_REAL_MAIN_CPU_HOST_S_ANCHOR_REFS",
+      "spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/wv_engineering_bound_specs/stencil_WV_ZERO_RO.json",
+        "sha256": "9132eef3967a55ef68f310dd8708c4a82acbc4e2572911f7655283a46f8a1ca3",
+        "bytes": 98437
+      },
+      "result": {
+        "schema": "EP_C_SOURCE78_FORMAL_MODE_BINDING_V1",
+        "mode": "WV_ZERO_RO",
+        "numeric_profile": "F_MINUS_R",
+        "T": false,
+        "M": false,
+        "RO": {
+          "applicability": "NOT_APPLICABLE_RO_RUNTIME_DISABLED_NOT_ZERO_INPUT_ORACLE"
+        },
+        "modeCPU": {
+          "status": "EXISTING_FORMAL_MODE_NEW_HOSTQ_STILL_REQUIRED"
+        },
+        "anchor_qualification_ref": {
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/dedicated_S_anchor_reviews/stencil_S.json",
+          "sha256": "c897153a1ce5e723a0dca36d268700a06accb38368939be2eca35f93da6426e0",
+          "bytes": 2854
+        },
+        "physical_family": "64slice32set8way/P1/1168/D512/WAD128/line128/REFqueues_clocks/stats111/heavy0000",
+        "scientific_acceptance_granted": false,
+        "launch_permission": false
+      }
+    },
+    {
+      "program": "stencil",
+      "mode": "W_ONLY",
+      "full_static": "PASS_REAL_MAIN_CPU_HOST_S_ANCHOR_REFS",
+      "spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/wv_engineering_bound_specs/stencil_W_ONLY.json",
+        "sha256": "6a212adb7ebbad1dc04d3064dda01c206abf8496f2073a082007b91de91a7d09",
+        "bytes": 98829
+      },
+      "result": {
+        "schema": "EP_C_SOURCE78_FORMAL_MODE_BINDING_V1",
+        "mode": "W_ONLY",
+        "numeric_profile": "W_ONLY",
+        "T": false,
+        "M": false,
+        "RO": {
+          "applicability": "NOT_APPLICABLE_RO_RUNTIME_DISABLED_NOT_ZERO_INPUT_ORACLE"
+        },
+        "modeCPU": {
+          "status": "EXACT_SOURCE78_FORMAL_MODE_CPU_PASS_NOT_APPLICATION_ACCEPTANCE",
+          "qualification_ref": {
+            "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/MAIN_SOURCE78_W_ONLY_MODE_CPU_QUALIFICATION_V2.json",
+            "sha256": "c1f97f153ca260da8e825c2fea04e31907f7e8a0db21e0db0bdb62f561966d77",
+            "bytes": 3558
+          }
+        },
+        "anchor_qualification_ref": {
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/dedicated_S_anchor_reviews/stencil_S.json",
+          "sha256": "c897153a1ce5e723a0dca36d268700a06accb38368939be2eca35f93da6426e0",
+          "bytes": 2854
+        },
+        "physical_family": "64slice32set8way/P1/1168/D512/WAD128/line128/REFqueues_clocks/stats111/heavy0000",
+        "scientific_acceptance_granted": false,
+        "launch_permission": false
+      }
+    }
+  ],
+  "actual_Main_modeCPU_HostQ_and_Sanchors": true,
+  "test_only_approval_records_used": false,
+  "old_B_closure_PARTIAL": "Historical earlier interface mismatch resolved additively by Main dedicated S-anchor receipts; frozen prior files unchanged",
+  "authority_or_native_prepare_or_launcher_invoked": false,
+  "registry_writes": 0,
+  "new_models": 0,
+  "still_required": "Fresh exact user authorization/budget, real sole-entryroute install/qualification, current admission, application process/output/drain acceptance"
+}
