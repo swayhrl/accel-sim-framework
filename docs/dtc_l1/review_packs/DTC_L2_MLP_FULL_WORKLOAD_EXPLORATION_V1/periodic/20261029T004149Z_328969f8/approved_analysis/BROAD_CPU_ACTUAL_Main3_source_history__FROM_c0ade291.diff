@@ -1,0 +1,13 @@
+--- 2c7aef73
++++ final_preload_guard
+@@ -45,6 +45,10 @@
+   if row['role']=='INCIDENT_RECOVERY_PERFORMANCE_TRIAL':
+    assert s['scientific_role']==row['role']
+    assert next(x for x in q['authorized_incident_recovery_trials']if x['cohort']==c)==row['incident_authorization_record']
++   lineage=s['incident_recovery_trial_lineage'];auth=row['incident_authorization_record']
++   for key in ['incident_id','original_cohort','original_uuid','original_negative_RESULT_sha256','original_DONE_sha256','science_projection_sha256','primary_statistics_excluded','validated_union_authorized']:
++    assert lineage[key]==auth[key],'INCIDENT_LINEAGE_DRIFT '+key
++   assert lineage['reuse_old_UUID']is False and lineage['automatic_retry']is False and lineage['refunds']==0 and lineage['new_grants']==1
+   else:assert row['role']=='PRIMARY'and s.get('scientific_role')is None
+   out[c]=q['admitted_specs'][c]
+  return out

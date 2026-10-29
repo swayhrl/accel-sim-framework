@@ -1,0 +1,9 @@
+只读CPU2 HOLD核查
+
+首次真实双snapshot 2026-10-28T16:51:00Z：允许512逻辑/256物理核，任务mask/R状态合计只占42逻辑/42物理核。最大窄mask为owner PID1498278的5个sleeping线程，32-63；另owner运行线程510。PID1501891/1501892睡眠mask0-1；PID2053685约CPU2 0.995核、2194211约CPU1 0.981核、2224914约CPU3 0.829核。未发现一个数百核宽mask掩盖全机的情形。
+
+第一次全逻辑CPU平均busy76.75%，即使完全忽略任务mask也0个物理核满足双sibling均≤10%busy。可见quota384核，当前cgroup使用约5.396核、throttle增量0；这不能替代全宿主CPU tick证据。
+
+第二次2026-10-28T16:52:17Z确认：平均busy 99.9227%，忽略mask后的可用物理核仍0；全宿主tick类别为{'user': 0.9689488177760897, 'nice': 0.00737505143544456, 'system': 0.022568290444085714, 'idle': 0.0007596619504320577, 'iowait': 0.0, 'irq': 0.0, 'softirq': 0.0003481783939480265, 'steal': 0.0}。最闲10物理核摘要见HOST_BUSY_CONFIRMATION.json。可见进程namespace的负载和全宿主/proc/stat不同口径，不能据namespace低usage断言宿主空闲，也不能凭此确定不可见负载具体PID。
+
+结论：本时刻真实CPU tick忙碌门已独立足够HOLD，保守narrow-affinity占用虽存在但不是全核阻挡根因。没有改任何affinity/资源policy/源/登记/模型，没有输出512tick全量。
