@@ -1,6 +1,6 @@
 # Finite longtail result update
 
-UTC: 2026-10-29T02:28:29.250604+00:00. Status: SCOPED_LONGTAIL_RUNNING.
+UTC: 2026-10-29T02:58:58.377448+00:00. Status: SCOPED_LONGTAIL_RUNNING.
 
 Accepted experiment points: 222; matched comparisons: 110.
 
