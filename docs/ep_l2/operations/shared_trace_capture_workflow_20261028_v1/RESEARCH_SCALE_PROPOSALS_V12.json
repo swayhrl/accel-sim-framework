@@ -1,0 +1,153 @@
+{
+  "all_loop_mapping_and_retention_claims_need_source_version_bound_refs": true,
+  "current_user_scope_ref": {
+    "bytes": 1285,
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/shared_library_unified_goal_20261026_v2/ROOT_USER_REPEAT_ONLY_FIRST_REPRESENTATIVITY_EVALUATION_SCOPE_V1.json",
+    "sha256": "90d0aeeb1882799529f39b4f2901ef31d265f2ba13282695cd5dd6925c183753"
+  },
+  "nativeQA_trace_and_consumer_acceptance_required_per_new_profile": true,
+  "no_new_GPU_model_or_science_grant": true,
+  "policy": "Keep original spatial working set/path/type/warmup; first reduce code-proven timing redundancy.2 is a candidate, not guaranteed steady state.",
+  "repeat_only_candidates": [
+    {
+      "change": {
+        "benchmark_rounds_candidate": 2,
+        "benchmark_rounds_original": 100
+      },
+      "cost": "May remain order1e8 records; runtime and cache/steady-state representation unproved.",
+      "dependency_finding": "Each outer round reads fixed d_Input and fully overwrites d_Output; no algorithmic feedback across rounds. Each large-length round retains all3 stages.",
+      "expected_complete_launches": 66,
+      "keep": {
+        "N": 6815744,
+        "device_and_gold": "unchanged",
+        "length_coverage": "all17 original lengths",
+        "warmup": "original policy"
+      },
+      "program": "scan",
+      "research_axis": "repeat_only_candidate"
+    },
+    {
+      "change": {
+        "host_copy_benchmark_repetitions_candidate": 2,
+        "host_copy_benchmark_repetitions_original": 32
+      },
+      "dependency_finding": "Verify per-type source/destination reset/overwrite and address order at each source version before accepting the repeat-only variant.",
+      "keep": {
+        "MEM_SIZE_bytes": 50000000,
+        "datatype_and_alignment_matrix": "all original types",
+        "tail_and_warmup": "original"
+      },
+      "program": "alignedTypes"
+    },
+    {
+      "change": {
+        "host_timing_repetitions_candidate": 2,
+        "kernel_internal_repetitions": "keep original until separately justified"
+      },
+      "dependency_finding": "official429 NUM_REPS reaches host timing and device internal work; CUDA11.8 meaning differs. Trace actual constant propagation; do not globally replace NUM_REPS.",
+      "keep": {
+        "kernel_layout_variants": "all original",
+        "shape": "original dimensions",
+        "warmup": "original"
+      },
+      "program": "transpose"
+    },
+    {
+      "change": {
+        "host_benchmark_iterations_candidate": 2,
+        "host_benchmark_iterations_original": 16
+      },
+      "dependency_finding": "Confirm original row input is fixed versus feedback from previous column output; preserve full row/column pair per round.",
+      "keep": {
+        "image_shape": "original3072x3072",
+        "radius": "original",
+        "row_then_column": true,
+        "warmup": "original"
+      },
+      "program": "convolutionSeparable"
+    },
+    {
+      "change": {
+        "host_nreps_candidate": 2
+      },
+      "dependency_finding": "Kernel +=factor accumulation and correct_data(c*nreps*niterations) depend on repetitions. Reduced profile is a new numerical endpoint, not bitwise-equivalent original output. Preserve copies/events/stream ordering.",
+      "keep": {
+        "N_ints": 16777216,
+        "kernel_niterations": "original per source/device branch",
+        "nstreams": 4,
+        "warmup_and_reset": "original"
+      },
+      "program": "simpleStreams"
+    },
+    {
+      "change": {
+        "safe_redundant_host_repeat": "not established"
+      },
+      "dependency_finding": "Time-step loop consumes previous step. Do not replace algorithmic time_steps by2; any time-horizon change is a separately scoped scientific axis.",
+      "keep": {
+        "halo_and_pingpong": true,
+        "spatial_dimensions": "original",
+        "time_steps": "original"
+      },
+      "program": "stencil"
+    },
+    {
+      "change": {
+        "safe_redundant_host_repeat": "not established"
+      },
+      "dependency_finding": "Search/convergence/chunk passes are algorithmic, not timing redundancy. Input shrink remains separate-purpose only.",
+      "keep": {
+        "points_dimensions_and_chunks": "original",
+        "search_and_convergence": "all original"
+      },
+      "program": "streamcluster"
+    },
+    {
+      "change": {
+        "host_timing_repetitions_candidate": "only if independently confirmed; consider2"
+      },
+      "dependency_finding": "Do not delete comparator/merge stages or grid-stride traversal; keep keys/values permutation QA.",
+      "keep": {
+        "network_stage_chain": "all original",
+        "total_and_batch": "original"
+      },
+      "program": "sortingNetworks"
+    }
+  ],
+  "schema": "V12_REPEAT_ONLY_FIRST_PROPOSALS_NOT_EXECUTION_OR_EQUIVALENCE_GRANT",
+  "simpleStreams_nested_source_NAS_ref": {
+    "bytes": 12087,
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/workload_research_scale_cost_review_20261029_v1/SIMPLESTREAMS_NESTED_REPETITIONS_AND_QA_SOURCE_EXCERPTS_V1.json",
+    "sha256": "3f42fb736011a2a37ad889408157f2e321d1d6cfddd3de4974f4f8ba15d00795"
+  },
+  "source_parameter_excerpts_NAS_ref": {
+    "bytes": 138697,
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/workload_research_scale_cost_review_20261029_v1/FOCUSED_SOURCE_PARAMETER_EXCERPTS_METADATA_ONLY_V1.json",
+    "sha256": "9deccf4322e047c7460e5706f6f0f577002c0f942c87b5e2eaaea76e108ca3f4"
+  },
+  "spatial_scaled_axis": {
+    "old_smallscan": {
+      "N": 262144,
+      "N_ratio": "1/26",
+      "hier_intermediate_grid_original": 26,
+      "hier_intermediate_grid_smoke": 1,
+      "label": "engineering_smoke",
+      "not_original_research_equivalent": true,
+      "original_N": 6815744,
+      "original_length_count": 17,
+      "repeats": 1,
+      "selected_lengths": [
+        1024,
+        16384
+      ],
+      "two_main_arrays_original_bytes": 54525952,
+      "two_main_arrays_smoke_bytes": 2097152
+    },
+    "prior_proposals_NAS_ref": {
+      "bytes": 12027,
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/rtx4080_specialist_adaptation_20261026_v1/workload_research_scale_cost_review_20261029_v1/FOCUSED_RESEARCH_SMALL_MID_PROFILES_AND_PRECAPTURE_BUDGET_RECOMMENDATIONS_V2.json",
+      "sha256": "9ce8aeba7327cc9c4aed2ec41aabfbc861b0222a1d551847e4f17036373c278b"
+    },
+    "status": "SEPARATE_PURPOSE_NOT_DEFAULT_RESEARCH_EQUIVALENCE"
+  }
+}

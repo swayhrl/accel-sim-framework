@@ -47,3 +47,11 @@
 ## V11 当前采集与共享归档状态
 
 [统一发现71常规71裁剪与RAW3、scan范围修订和末项SDK42采集](CURRENT_PROGRESS_V11.md)。[五份薄增量证据](EVIDENCE_INDEX_V11.json)。scan旧窗口不完整现场继续保留，完整采集后才按用户批准的RAW范围归档；四项后处理与当前SDK任务保持运行。
+
+## V12 研究规模优先与成本审计
+
+[大默认后处理范围调整、243来源单位成本视图与小中规模计划](CURRENT_PROGRESS_V12.md)。[243行瘦投影](REGISTERED_COST_THIN_V12.json)。[待QA的规模建议](RESEARCH_SCALE_PROPOSALS_V12.json)。[原始小证据及NAS全表引用](EVIDENCE_INDEX_V12.json)。V11保留历史时点，新小版不替代旧大版完成状态。
+
+## 重复次数缩减方法
+
+[逐workload重复缩减方法](WORKLOAD_REPETITION_REDUCTION_METHOD_V1.md)与[可填写审查模板](WORKLOAD_REPETITION_REDUCTION_REVIEW_TEMPLATE_V1.json)。优先保原工作集和算法覆盖，2轮需评估保留与丢弃信息；已做的小scan仅为工程冒烟，不能继承原版研究等价。
