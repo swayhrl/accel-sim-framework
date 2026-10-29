@@ -1,0 +1,119 @@
+--- v2/background_analysis.py
++++ v3/background_analysis.py
+@@ -1,5 +1,6 @@
+ """Standalone read-only analysis worker; no Git, model launch or model signals."""
+ import argparse,contextlib,datetime,fcntl,hashlib,importlib.util,json,os,pathlib,sys,time,uuid,csv,io,html,gzip,urllib.request
++import readable_report
+ import ready_emitter
+ import analysis_extensions as ext
+ sys.dont_write_bytecode=True
+@@ -40,11 +41,11 @@
+ def original_summary(mod,value,consumer):
+  rows=[dict(key=r['key'],selected=r['original'] if r['original']['valid'] else None) for r in value['rows']]
+  return mod.summarize(consumer.scope['points'],rows,consumer.contract['profiles'],value['summary']['formal_GM_generated'])
+-def render_table(v,original,closed=None):
+- closed=closed or {}
+- buf=io.StringIO();w=csv.writer(buf);w.writerow(['input_digest','program','suite','cell','profile','original_cohort','original_state','original_valid','original_cycles','named_selected_cohort','named_source_role','named_cycles','selection_reason','missing_reason','closed_not_accepted_status','closed_DONE_sha256'])
++def render_table(v,original,closed=None,certificates=None):
++ closed=closed or {};certificates=certificates or {}
++ buf=io.StringIO();w=csv.writer(buf);w.writerow(['input_digest','program','suite','cell','profile','original_cohort','original_state','original_valid','original_cycles','named_selected_cohort','named_source_role','named_cycles','selection_reason','missing_reason','closed_not_accepted_status','closed_DONE_sha256','original_typed_negative_certificate_sha256'])
+  for r in v['rows']:
+-  s=r['selected'];k=r['key'];o=r['original'];w.writerow([k['input_digest'],k['program'],k['suite'],k['cell'],k['profile'],r['original_cohort'],o['raw_state'],o['valid'],o['cycles'] if o['valid'] else '',s['cohort'] if s else '',s['scientific_role'] if s else '',s['cycles'] if s else '',r['reason'],'; '.join(o['reasons']),closed.get(r['original_cohort'],{}).get('status',''),closed.get(r['original_cohort'],{}).get('DONE_sha256','')])
++  s=r['selected'];k=r['key'];o=r['original'];w.writerow([k['input_digest'],k['program'],k['suite'],k['cell'],k['profile'],r['original_cohort'],o['raw_state'],o['valid'],o['cycles'] if o['valid'] else '',s['cohort'] if s else '',s['scientific_role'] if s else '',s['cycles'] if s else '',r['reason'],'; '.join(o['reasons']),closed.get(r['original_cohort'],{}).get('status',''),closed.get(r['original_cohort'],{}).get('DONE_sha256',''),certificates.get(r['original_cohort'],{}).get('sha256','')])
+  return buf.getvalue().encode()
+ def compact_summary(summary):
+  fields=['analysis_namespace','formal_GM_generated','no_ledger_union','no_runtime_parent_or_adoption','no_role_mutation','no_missing_imputation','expected_inputs','expected_original_slots','selected_measurement_references','missing_slots']
+@@ -161,14 +162,14 @@
+   token=datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')+'_'+uuid.uuid4().hex[:8];d=self.out/'runs'/token;d.mkdir(parents=True)
+   changed=terminal_delta(self.state['known_results'],identities)
+   event={'schema':'DTC_ANALYSIS_IMMUTABLE_EVENT_V1','UTC':utc(),'new_RESULT_cohorts':changed,'RESULT_sha256':identities,'closed_not_accepted':closed,'negative_terminal_states':negative_states,'historical_signature':historical['signature'],'previous_signature':self.state.get('last_signature'),'signature':signature,'registry_remaining':q['remaining'],'fixed_registered_scope_sha256':self.c['registered_scope_sha256'],'candidate_CH35_not_registered_not_complete_claimed':True}
+-  report={'schema':'DTC_BACKGROUND_ANALYSIS_REPORT_V1','event':event,'derived35':value,'original350_summary':original,'coverage':{'original_valid':original['selected_measurement_references'],'original_slots':350,'derived35_selected':value['summary']['selected_measurement_references'],'registered_raw_budget':360,'runtime_display_population':len(self.scope['all_watch_cohorts']),'unresolved_registered':blocked,'registered_tail_complete':dtc_complete,'historical_fixed3_configured':historical['configured'],'historical_fixed3_complete':historical_complete,'all_authorized_populations_complete':complete,'closed_not_accepted':closed,'negative_terminal_states':negative_states},'historical_fixed3':historical,'hardware_counters':{'availability':'NOT_COLLECTED_BY_THIS_ANALYSIS','missing_value':None,'missing_means_zero':False},'performance_selection':False,'scientific_role_changes':False,'new_models':0}
+-  atomic(d/'REPORT.json',report);atomic(d/'EVENT.json',event);atomic(d/'results.csv',render_table(value,original,closed));atomic(d/'dashboard.html',report_html(value,original));atomic(d/'SOURCE_PINS.json',{'daemon_sha256':sha(__file__),'config_sha256':self.config_sha,'consumer_source_pins':value['source_pins'],'source_transaction':'PER_FILE_PINNED_RECHECK_NO_GLOBAL_ATOMIC_TRANSACTION'})
++  report={'schema':'DTC_BACKGROUND_ANALYSIS_REPORT_V1','event':event,'derived35':value,'original350_summary':original,'coverage':{'original_valid':original['selected_measurement_references'],'original_slots':350,'derived35_selected':value['summary']['selected_measurement_references'],'registered_raw_budget':360,'runtime_display_population':len(self.scope['all_watch_cohorts']),'unresolved_registered':blocked,'registered_tail_complete':dtc_complete,'historical_fixed3_configured':historical['configured'],'historical_fixed3_complete':historical_complete,'all_authorized_populations_complete':complete,'closed_not_accepted':closed,'negative_terminal_states':negative_states,'original_terminal_certificates':certificates},'historical_fixed3':historical,'hardware_counters':{'availability':'NOT_COLLECTED_BY_THIS_ANALYSIS','missing_value':None,'missing_means_zero':False},'performance_selection':False,'scientific_role_changes':False,'new_models':0}
++  atomic(d/'RESULTS.md',readable_report.render(report));atomic(d/'REPORT.json',report);atomic(d/'EVENT.json',event);atomic(d/'results.csv',render_table(value,original,closed,certificates));atomic(d/'dashboard.html',report_html(value,original));atomic(d/'SOURCE_PINS.json',{'daemon_sha256':sha(__file__),'config_sha256':self.config_sha,'consumer_source_pins':value['source_pins'],'source_transaction':'PER_FILE_PINNED_RECHECK_NO_GLOBAL_ATOMIC_TRANSACTION'})
+   manifest={'schema':'DTC_ANALYSIS_RUN_MEMBER_MANIFEST_V1','run':token,'formal_metrics':formal,'registered_tail_complete':dtc_complete,'all_authorized_populations_complete':complete,'historical_fixed3_complete':historical_complete,'files':{p.name:{'path':str(p),'sha256':sha(p),'bytes':p.stat().st_size} for p in sorted(d.iterdir()) if p.is_file()}}
+   atomic(d/'REPORT.json.gz',gzip.compress((d/'REPORT.json').read_bytes(),mtime=0));atomic(d/'results.csv.gz',gzip.compress((d/'results.csv').read_bytes(),mtime=0))
+   summary={'UTC':value['UTC'],'coverage':report['coverage'],'formal_metrics':formal,'original350_summary':compact_summary(original),'named35_summary':compact_summary(value['summary']),'historical_fixed3':historical,'CH35_status':'NOT_REGISTERED_HOLD_NO_GRANT','namespace_roles_unchanged':True}
+   # Per-input complete metrics remain losslessly in REPORT.json.gz.
+   atomic(d/'SUMMARY.json.gz',gzip.compress(rawjson(summary),mtime=0))
+-  manifest['publication_files']=[{'name':ready_emitter.PREFIX+n,'path':str(d/n),'sha256':sha(d/n)} for n in ['REPORT.json.gz','results.csv.gz','SUMMARY.json.gz']]
++  manifest['publication_files']=[{'name':ready_emitter.PREFIX+n,'path':str(d/n),'sha256':sha(d/n)} for n in ['REPORT.json.gz','results.csv.gz','SUMMARY.json.gz','RESULTS.md']]
+   assert sum(P(x['path']).stat().st_size for x in manifest['publication_files'])<=1048576,'PUBLICATION_NAMESPACE_PAYLOAD_TOO_LARGE'
+   atomic(d/'MANIFEST.json',manifest)
+   pointer={'schema':'DTC_ANALYSIS_PROVIDER_LATEST_V1','run':token,'manifest_path':str(d/'MANIFEST.json'),'manifest_sha256':sha(d/'MANIFEST.json'),'registered_tail_complete':dtc_complete,'all_authorized_populations_complete':complete,'historical_fixed3_configured':historical['configured'],'historical_fixed3_complete':historical_complete,'formal_metrics':formal,'UTC':utc()}
+--- v2/analysis_extensions.py
++++ v3/analysis_extensions.py
+@@ -12,20 +12,34 @@
+ def read(p):return json.loads(P(p).read_bytes())
+ def pinned(ref):
+  p=P(ref['path']);raw=p.read_bytes();require(hashlib.sha256(raw).hexdigest()==ref['sha256'],'pinned artifact drift '+str(p));return json.loads(raw)
+-def policy(config):
++def policy(config,qualification_only=False):
+  ref=config.get('negative_terminal_policy')
+  if ref is None:return None
+- p=pinned(ref);require(p['schema']=='DTC_NEGATIVE_TERMINAL_POLICY_V1' and p['approved'] is True,'Root policy approval')
++ p=pinned(ref);require(p['schema']=='DTC_NEGATIVE_TERMINAL_POLICY_V2' and p['approved'] is True,'Root policy approval')
++ require(not p.get('qualification_only',False) or qualification_only,'CPU policy cannot authorize production')
+  require(p['helper']['sha256']==H_SHA and sha(p['helper']['path'])==H_SHA,'H helper source')
+- collector_sha=p['collector']['sha256'];require(collector_sha==F_SHA and sha(p['collector']['path'])==collector_sha,'Root-pinned F collector source')
+- ack=pinned(p['main_installation_receipt']);require(ack['schema']=='DTC_NEGATIVE_TERMINAL_MAIN_INSTALLATION_RECEIPT_V1' and ack['approved'] is True,'Root installed receipt')
+- require(ack['helper_sha256']==H_SHA and ack['collector_sha256']==collector_sha,'installed source identity')
+- require(ack['archive_only'] is True and ack['all_original_references_preserved'] is True and ack['full_archive_callback_verified'] is True,'actual Main callback/reference preservation')
+- for ref in ack['source_pins']:pinned(ref) if ref.get('json',True) else require(sha(ref['path'])==ref['sha256'],'installed source pin')
+- run=pinned(p['collector_run']);require(run['schema']==p['collector_schema'] and run['helper_sha256']==H_SHA and run['source_sha256']==collector_sha,'actual F run identity')
+- require(ack['collector_run_sha256']==p['collector_run']['sha256'] and ack['collector_run_path']==p['collector_run']['path'],'actual Main/run receipt join')
+- require(run['models_started']==0 and run['new_grants']==0,'archive-only F run')
+- require(p['events_directory']==str(P(p['collector_run']['path']).parent/'events'),'fixed installed event directory')
++ require(P(p['root'])==P(config['root']) and p['request']==config['request'],'fixed Root request')
++ seen=set();require(p['installations'],'explicit installed collector records required')
++ for inst in p['installations']:
++  require(set(inst['allowed_cohorts'])<=set(p['scope']) and set(inst['exact_certificate_sha256'])<=set(inst['allowed_cohorts']),'fixed installation role scope')
++  require(type(inst['future_certificates_allowed']) is bool,'explicit future certificate mode')
++  if not inst['future_certificates_allowed']:require(set(inst['allowed_cohorts'])==set(inst['exact_certificate_sha256']),'historical installation exact certificate allowlist')
++  source=inst['collector'];require(sha(source['path'])==source['sha256'],'Root exact collector source')
++  cfg=pinned(inst['configuration']);approval=pinned(inst['approval']);run=pinned(inst['collector_run']);ack=pinned(inst['main_ack']);sid=inst['collector_schema']
++  identity=(source['sha256'],inst['configuration']['sha256'],inst['approval']['sha256'],inst['collector_run']['sha256']);require(identity not in seen,'duplicate installation identity');seen.add(identity)
++  require(cfg['schema']==run['schema']==ack['schema']==sid and cfg['source_sha256']==run['source_sha256']==ack['source_sha256']==approval['source_sha256']==source['sha256'],'collector generation source/schema')
++  require(cfg['qualification_only'] is False and approval['qualification_only'] is False and approval['approved'] is True and approval['archive_only'] is True,'actual Root installation approval')
++  require(cfg['root']==p['root'] and cfg['request']==p['request'] and cfg['helper_sha256']==run['helper_sha256']==H_SHA,'installed request/helper')
++  require(run['configuration_sha256']==ack['configuration_sha256']==approval['configuration_sha256']==inst['configuration']['sha256'],'installed config SHA')
++  require(run['approval_path']==inst['approval']['path'] and run['approval_sha256']==ack['approval_sha256']==inst['approval']['sha256'],'installed approval SHA')
++  require(ack['status']=='ARCHIVE_ONLY_DAEMON_STARTED' and ack['all_original_references_preserved'] is True and ack['models_started']==ack['new_grants']==ack['model_retries']==0,'actual archive-only Main ACK')
++  require(run['models_started']==run['new_grants']==0 and run['owner']==cfg['owner']==approval['owner'],'same actual Main process birth')
++  require(str(P(inst['collector_run']['path']).parent)==cfg['run_directory']==ack['run_directory'],'actual collector run directory')
++  for path,h in cfg['source_pins'].items():require(sha(path)==h,'installed config source pin '+path)
++  chain=inst['put_callback_chain'];wrapper=chain['wrapper'];target=chain['original_target']
++  require(wrapper['sha256']=='59d7ea79e05fd26bb23bc46c73e35aff50ce0ea7831ffa9c162cec94c3ed8973' and wrapper['qualname']=='install_private_module.<locals>.put' and wrapper['freevars']==['original_put'],'exact qualified IO wrapper')
++  require(target['sha256']=='6cc6cc30a71740df951327414d094953effb73a406e7036358ad0b702ebb0403' and target['qualname']=='put' and target['freevars']==[],'exact original put target')
++  require(sha(wrapper['file'])==wrapper['sha256'] and sha(target['file'])==target['sha256'],'actual callback source files')
+  return p
+ 
+ def negative_terminal(c,result,root,q,p):
+@@ -46,15 +60,23 @@
+  rp=root/'analysis'/(c+'.RESULT.json');result_sha=sha(rp)
+  cert_path=root/'analysis'/(c+'.NEGATIVE_ARCHIVE_CLOSURE_CERTIFICATE.json');closure=read(cert_path)
+  require(closure['schema']=='DTC_MAIN_NEGATIVE_ARCHIVE_CLOSURE_CERTIFICATE_V2' and closure['cohort']==c and closure['uuid']==d['uuid'] and closure['result_sha256']==result_sha,'installed F same-UUID closure certificate required')
+- require(closure['helper_sha256']==H_SHA and closure['collector_source_sha256']==p['collector']['sha256'] and closure['source_disposition']=='SOURCE_KEEP' and closure['performance_accepted'] is False and closure['cycles'] is None,'F sourcebound closure negative identity')
++ matches=[inst for inst in p['installations'] if closure['collector_source_sha256']==inst['collector']['sha256'] and closure['configuration_sha256']==inst['configuration']['sha256'] and closure['approval_sha256']==inst['approval']['sha256'] and closure['collector_run_path']==inst['collector_run']['path'] and closure['collector_run_sha256']==inst['collector_run']['sha256']]
++ require(len(matches)==1,'no exact Root-authorized collector installation');inst=matches[0]
++ require(c in inst['allowed_cohorts'],'cohort outside exact installation scope')
++ if c in inst['exact_certificate_sha256']:require(sha(cert_path)==inst['exact_certificate_sha256'][c],'historical certificate bytes immutable')
++ else:require(inst['future_certificates_allowed'] is True,'new certificate not authorized for historical installation')
++ require(closure['helper_sha256']==H_SHA and closure['source_disposition']=='SOURCE_KEEP' and closure['performance_accepted'] is False and closure['cycles'] is None,'F sourcebound closure negative identity')
+  require(closure['request']==p['request'] and closure['scientific_role']==rule['scientific_role'] and closure['primary_statistics_excluded'] is rule['primary_statistics_excluded'] and closure['validated_union_authorized'] is False,'closure request and immutable source role')
+- require(closure['original_archive_source_sha256']==closure['original_put_source_sha256']=='6cc6cc30a71740df951327414d094953effb73a406e7036358ad0b702ebb0403' and closure['outbox_source_sha256']=='d4b58b362a39c9d198a40e5c252f6eb07ba780e4707ffd79f6724569e349c4a5','original full archive callback/outbox source pins')
++ require(closure['original_archive_source_sha256']=='6cc6cc30a71740df951327414d094953effb73a406e7036358ad0b702ebb0403' and closure['outbox_source_sha256']=='d4b58b362a39c9d198a40e5c252f6eb07ba780e4707ffd79f6724569e349c4a5','original full archive callback/outbox source pins')
++ require(closure['put_callback_chain']==inst['put_callback_chain'],'exact actual put callback chain')
++ wrapper=inst['put_callback_chain']['wrapper'];target=inst['put_callback_chain']['original_target']
++ require(closure['original_put_source_path']==wrapper['file'] and closure['original_put_source_sha256']==wrapper['sha256'] and closure['original_put_target_source_path']==target['file'] and closure['original_put_target_source_sha256']==target['sha256'],'honest IO wrapper and original put target identity')
+  require(closure['automatic_retry'] is False and closure['model_retries']==0,'no retry in closure')
+  require(type(closure['main_thread_ident']) is int and closure['main_thread_ident']>0 and type(closure['archive_thread_ident']) is int and closure['archive_thread_ident']>0,'explicit Main/archive thread provenance')
+  require(closure['qualification_only'] is False,'CPU fixture cannot authorize production terminal completion')
+- require(closure['collector_run_path']==p['collector_run']['path'] and closure['collector_run_sha256']==p['collector_run']['sha256'],'actual collector run certificate source')
++ require(closure['collector_run_path']==inst['collector_run']['path'] and closure['collector_run_sha256']==inst['collector_run']['sha256'],'actual collector run certificate source')
+  require(closure['intent_sha256']==sha(ip) and closure['done_sha256']==sha(ip.with_name(c+'.DONE.json')) and closure['exit_sha256']==sha(out/'NATIVE_EXIT.json') and closure['execution_receipt_sha256']==hashlib.sha256(encode(d)).hexdigest(),'certificate exact execution small source hashes')
+- run=pinned(p['collector_run']);require(closure['configuration_sha256']==run['configuration_sha256'] and closure['approval_sha256']==run['approval_sha256'],'Root installed config/approval certificate join')
++ run=pinned(inst['collector_run']);require(closure['configuration_sha256']==run['configuration_sha256'] and closure['approval_sha256']==run['approval_sha256'],'Root installed config/approval certificate join')
+  require(sha(closure['configuration_path'])==closure['configuration_sha256'] and sha(closure['approval_path'])==closure['approval_sha256'],'actual installed config/Root approval source pins')
+  require(closure['main_pid']==run['owner']['pid'] and closure['main_start_ticks']==run['owner']['start_ticks'],'same actual Main process birth')
+  archive=result['archive'];receipt=archive['receipt'];bundle=P(receipt['target_mount_path']);restore=P(receipt['native_restore'])

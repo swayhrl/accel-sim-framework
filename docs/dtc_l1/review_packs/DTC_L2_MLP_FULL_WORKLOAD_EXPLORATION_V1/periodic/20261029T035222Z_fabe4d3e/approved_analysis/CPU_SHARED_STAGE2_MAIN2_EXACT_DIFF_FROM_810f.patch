@@ -1,0 +1,27 @@
+--- DRAFT_PREIMAGE_810fdbcb.py
++++ main_handoff.py
+@@ -99,9 +99,14 @@
+  state=dict(directory=str(directory),frame=frame,engine=engine,res=res,memory=memory,aging=aging,old_Main1=old,phase='PREFLIGHT',ever_exposed=False,config_path=str(config_path),config_sha256=sha(config_path),new_grants=0,model_starts_by_callback=0)
+  setattr(main,MARKER,state)
+  try:
++  rcfg=read(cfg['resource_configuration_path']);ocfg=read(cfg['observation_configuration_path'])
++  assert set(cfg['modules'])=={'library','producer','consumer'}
++  assert cfg['modules']==dict(library=rcfg['source_paths']['library'],producer=ocfg['source_paths']['producer'],consumer=ocfg['source_paths']['consumer'])
++  for contract in [rcfg,ocfg]:
++   for role,path in contract['source_paths'].items():assert cfg['source_pins'][path]==contract['qualified_sources'][role]==sha(path),'INSTALL_CONFIG_SOURCE_SET_JOIN'
++  assert cfg['source_pins'][cfg['Main1_source_path']]==MAIN1_SHA and cfg['source_pins'][str(P(__file__))]==cfg['installer_sha256']
+   modules={k:load('main_stage2_'+k,p)for k,p in cfg['modules'].items()};state['modules']=modules
+   lib=modules['library'];producer=modules['producer'];bridge=modules['consumer']
+-  rcfg=read(cfg['resource_configuration_path']);ocfg=read(cfg['observation_configuration_path'])
+   assert set(rcfg['allowed_cohorts'])==set(FOUR)and len(rcfg['allowed_cohorts'])==4 and rcfg['max_shared_running']==1 and rcfg['qualification_stage']=='AFTER_NATURAL_SHARED_CANARY'
+   assert ocfg['modes']=={c:'BPF_REQUIRED'if'-OBSBPF-'in c else'DEFAULT_CONTROL'for c in FOUR}and ocfg['future_primary_policy']=='NONE'
+   assert rcfg['qualification_only']is ocfg['qualification_only']is False
+@@ -118,6 +123,8 @@
+    assert before['matrix_sha256']==cfg['matrix_sha256']and before['scope_sha256']==cfg['scope_sha256']and before['memory_active_sha256']==cfg['old_memory_active_sha256']
+    state.update(before=before,scope=scope)
+    old_observation=read(old['config_path'])['observation_configuration_path'];old_resource=read(old['config_path'])['resource_configuration_path']
++   for old_config in [read(old_observation),read(old_resource)]:
++    for role,path in old_config['source_paths'].items():assert sha(path)==old_config['qualified_sources'][role],'OLD_GENERATION_SOURCE_PATH_CHANGED'
+    old_config_files={}
+    for name,path in [('old_observation',old_observation),('old_resource',old_resource),('old_Main1_config',old['config_path'])]:
+     body=P(path).read_bytes();target=directory/(name+'.'+hashlib.sha256(body).hexdigest()+'.json');put_bytes(target,body);old_config_files[name]=dict(original_path=path,preimage_path=str(target),sha256=sha(target))

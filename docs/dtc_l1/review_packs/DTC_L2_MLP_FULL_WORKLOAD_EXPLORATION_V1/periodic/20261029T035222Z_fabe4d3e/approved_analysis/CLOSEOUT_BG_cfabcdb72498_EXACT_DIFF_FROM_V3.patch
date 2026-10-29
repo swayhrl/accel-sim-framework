@@ -1,0 +1,140 @@
+--- frozen_v3
++++ candidate_v4
+@@ -3,9 +3,9 @@
+ No worker/consumer/aging reference is replaced. No authority update API exists
+ here. A separate Root source-bound approval receipt is mandatory for apply().
+ """
+-import datetime, fcntl, hashlib, importlib.util, json, os, pathlib, sys, threading, time
++import datetime, fcntl, hashlib, importlib.util, json, os, pathlib, sys, threading, time, types
+ P=pathlib.Path
+-ID='DTC_MAIN_NEGATIVE_ARCHIVE_AUTOCLOSE_OWNER_V3'
++ID='DTC_MAIN_NEGATIVE_ARCHIVE_AUTOCLOSE_OWNER_V4'
+ CERT='DTC_MAIN_NEGATIVE_ARCHIVE_CLOSURE_CERTIFICATE_V2'
+ MARKER='DTC_STRACE_BROAD_SHARED_PRIVATE_CONSUMER_V1'
+ REQ='DTC_L2_MLP_FULL_WORKLOAD_EXPLORATION_20261027_V1'
+@@ -19,6 +19,8 @@
+ REQUIRED_PINS={str(ROOT/'tools/l2_results.py'):RESULTS_SHA,str(ROOT/'tools/l2_outbox.py'):'d4b58b362a39c9d198a40e5c252f6eb07ba780e4707ffd79f6724569e349c4a5',str(ROOT/'control/operational_amendments/broad_shared_cpu_v1/consumer_bridge.py'):BRIDGE_SHA,'/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_native_cap1m.py':'fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d','/root/data/dtc_main_v100_sweep_20261025_v1/tools/runtime_policy_wall90_v1.py':'d1a3f21ce1c9eac89b8428f0732000d81936577d080b7bcf1c48ebe38980f187'}
+ REQUIRED_PINS[str(IO_PUT_PATH)]=IO_PUT_SHA
+ INITIAL={'E2-DTCL2MLP-ddb6806316876a85-CH-P0-V1':'98d83595-84a4-43de-8e4b-472df204e8b5','E2-DTCL2MLP-09f94fcc7494a03b-DH-E768-IR1-V1':'eda14f50-7a15-4f54-b038-e5a6a3ddd593'}
++F3_SOURCE='e20bf2db4c62cc9fd9dda38614e7c39be8a0aaf9051e1c0caa78ff8e8394b283'
++F3_CERTIFICATES={'E2-DTCL2MLP-ddb6806316876a85-CH-P0-V1':'9c25a75cef3f7a13e471e7b2025f41d1b20d5a1f22bcbab3e38a6c6cba6a5cc3','E2-DTCL2MLP-09f94fcc7494a03b-DH-E768-IR1-V1':'73eac32fb6692f96ed7c8e965e0655ef2bb7f422fe1275f87c14e5399c141b66'}
+ def require(v,m):
+     if not v:raise RuntimeError(ID+':'+m)
+ def sha(p):return hashlib.sha256(P(p).read_bytes()).hexdigest()
+@@ -56,12 +58,61 @@
+         finally:os.close(fd)
+     finally:
+         if tmp.exists():tmp.unlink()
+-def refs(main,m):
++def reference_identity(value):
++    # Each bound-method attribute lookup creates a fresh method object.
++    if isinstance(value,types.MethodType):return ('bound_method',id(value.__self__),id(value.__func__))
++    return ('object',id(value))
++def _refs_locked(main,m):
+     f=m['frame'];l=f.f_locals;consumer=m['consumer'];res=l['res'];aging=m['aging'];b=m['bridge']
+     values=[m,f,l['engine'],l['consumer'],l['claims'],l['pool'],l['running'],l['post'],res,aging,aging.lock,aging.original,aging.frame_provider,aging.state,aging.state.advance,res.choose_dispatch,res.resources,f.f_globals['worker'],m['wrapper'],b,b['selected'],*b['original_refs'],consumer.safe_finish,consumer.finish_evidence,consumer.put,consumer.archive_closed,consumer.load]
+     for k in ['adaptive','registry']: 
+         if k in l:values.append(l[k]);values.append(getattr(l[k],'recommend'if k=='adaptive'else'extend'))
+-    return tuple(id(v)for v in values)
++    return tuple(reference_identity(v)for v in values)
++def refs(main,m):
++    with m['aging'].lock:return _refs_locked(main,m)
++def validate_invariant(main,m,saved,guard):
++    # FrameGuard temporarily swaps frame_provider under this same RLock.
++    # No caller may retain the lock during archive/native copying.
++    with m['aging'].lock:
++        guard();require(getattr(main,MARKER)is m,'CONSUMER_MARKER_DRIFT')
++        require(_refs_locked(main,m)==saved,'ORIGINAL_REFERENCE_DRIFT')
++        require(m['consumer'].safe_finish is m['wrapper'],'EXISTING_WRAPPER_DRIFT')
++def verify_preexisting(root,q,c,cfg):
++    """Exact two F3 certificates only; metadata replay, never recopy/rewrite."""
++    pins=cfg.get('preexisting_verified_certificates',{})
++    if c not in pins:return False
++    require(q['request']==REQ,'PREEXISTING_REQUEST')
++    require(pins==F3_CERTIFICATES,'PREEXISTING_CERT_ALLOWLIST_DRIFT')
++    origin=cfg['preexisting_installation'];values={}
++    for key in ['source','configuration','approval','run','installation_receipt']:
++        require(sha(origin[key+'_path'])==origin[key+'_sha256'],'PREEXISTING_SOURCE_BINDING '+key)
++        if key!='source':values[key]=read(origin[key+'_path'])
++    require(origin['source_sha256']==F3_SOURCE,'PREEXISTING_COLLECTOR_SOURCE')
++    oldcfg=values['configuration'];approval=values['approval'];run=values['run'];ack=values['installation_receipt']
++    require(oldcfg['source_path']==origin['source_path']and oldcfg['source_sha256']==F3_SOURCE and oldcfg['request']==REQ and oldcfg['qualification_only']is False,'PREEXISTING_CONFIG')
++    require(approval['approved']is True and approval['qualification_only']is False and approval['source_sha256']==F3_SOURCE and approval['configuration_sha256']==origin['configuration_sha256'],'PREEXISTING_ROOT_APPROVAL')
++    require(run['source_sha256']==ack['source_sha256']==F3_SOURCE and run['configuration_sha256']==ack['configuration_sha256']==origin['configuration_sha256']and run['approval_sha256']==ack['approval_sha256']==origin['approval_sha256'],'PREEXISTING_MAIN_RUN_BINDING')
++    require(ack['status']=='ARCHIVE_ONLY_DAEMON_STARTED'and ack['models_started']==ack['new_grants']==0 and run['owner']==cfg['owner']==oldcfg['owner'],'PREEXISTING_MAIN_INSTALLATION')
++    cp,rp=closure_paths(root,c);require(sha(cp)==pins[c],'PREEXISTING_CERT_SHA')
++    cert=read(cp);result_path=P(root)/'analysis'/(c+'.RESULT.json');value=read(result_path)
++    require(cert['schema']==CERT and cert['qualification_only']is False and cert['helper_sha256']==H_SHA and cert['collector_source_sha256']==F3_SOURCE,'PREEXISTING_CERT_GENERATION')
++    require(cert['configuration_path']==origin['configuration_path']and cert['configuration_sha256']==origin['configuration_sha256']and cert['approval_path']==origin['approval_path']and cert['approval_sha256']==origin['approval_sha256']and cert['collector_run_path']==origin['run_path']and cert['collector_run_sha256']==origin['run_sha256'],'PREEXISTING_CERT_INSTALLATION')
++    require(cert['archive_thread_ident']==ack['thread_ident']and cert['main_pid']==cfg['owner']['pid']and cert['main_start_ticks']==cfg['owner']['start_ticks'],'PREEXISTING_OWNER_THREAD')
++    row=q['consumed'][c];require(cert['cohort']==c and cert['uuid']==row['uuid']==INITIAL[c]and cert['result_sha256']==sha(result_path),'PREEXISTING_RESULT_IDENTITY')
++    negative_result(value,c,row['uuid']);require(cert['cycles']is None and cert['performance_accepted']is False and cert['source_disposition']=='SOURCE_KEEP','PREEXISTING_NEGATIVE_ONLY')
++    ip=P(root)/'control/qualification_ledger'/(c+'.INTENT.json');done=ip.with_name(c+'.DONE.json');intent=read(ip);exit_path=P(intent['output'])/'NATIVE_EXIT.json'
++    require(sha(ip)==cert['intent_sha256']==row['intent_sha256']and sha(done)==cert['done_sha256']and sha(exit_path)==cert['exit_sha256'],'PREEXISTING_SMALL_METADATA_SHA')
++    require(read(done)==read(exit_path)==row['execution_receipt']and object_sha(row['execution_receipt'])==cert['execution_receipt_sha256'],'PREEXISTING_DONE_EXIT_Q_JOIN')
++    archive=value['archive'];receipt=archive['receipt'];verified=archive['additional_strace_bpf_negative_archive_verification']
++    require(object_sha(archive)==cert['result_archive_sha256']and receipt['archive_sha256']==cert['archive_sha256']and receipt['manifest_sha256']==cert['manifest_sha256']==verified['manifest_sha256'],'PREEXISTING_ARCHIVE_BINDING')
++    require(verified['required_files']==cert['H_required_files']and verified['performance_accepted']is False and archive['independently_verified_entries']==cert['independently_verified_entries'],'PREEXISTING_FULL_VERIFICATION')
++    require(receipt['native_restore']==cert['native_restore']and P(cert['native_restore']).stat().st_dev==cert['native_device']==2128,'PREEXISTING_NATIVE_DEVICE')
++    resolution=read(rp);require(resolution['uuid']==cert['uuid']and resolution['result_sha256']==cert['result_sha256']and resolution['performance_accepted']is False,'PREEXISTING_RESOLUTION')
++    return True
++def validate_predecessor(main):
++    prior=getattr(main,'DTC_MAIN_NEGATIVE_ARCHIVE_AUTOCLOSE_OWNER_V3',None)
++    require(isinstance(prior,dict)and prior.get('phase')in ['FAILED_SOURCE_KEEP','STOPPED'],'F3_TERMINAL_MARKER_REQUIRED')
++    thread=prior.get('thread');require(thread is not None and not thread.is_alive(),'F3_THREAD_STILL_ALIVE')
+ def load(path):
+     sp=importlib.util.spec_from_file_location('_negative_archive_pinned_H',path);m=importlib.util.module_from_spec(sp);sp.loader.exec_module(m);return m
+ def validate_approval(cfg,cfg_sha,approval):
+@@ -100,8 +151,7 @@
+         return value
+     state['event']=event
+     def invariant():
+-        guard();require(getattr(main,MARKER)is m,'CONSUMER_MARKER_DRIFT');require(refs(main,m)==saved,'ORIGINAL_REFERENCE_DRIFT')
+-        require(m['consumer'].safe_finish is m['wrapper'],'EXISTING_WRAPPER_DRIFT')
++        validate_invariant(main,m,saved,guard)
+     state['invariant']=invariant
+     def certificate(c,value,q):
+         """Metadata-only binding after full H/original verification; no raw reread."""
+@@ -125,6 +175,7 @@
+             except BlockingIOError:return 'LOCK_BUSY'
+             invariant();q=engine.registered()[2]
+             if not eligible(root,q,c,selected):return 'SKIP'
++            if verify_preexisting(root,q,c,cfg):return 'PREEXISTING_F3_VERIFIED_SKIP'
+             uuid=q['consumed'][c]['uuid'];pending=root/'analysis'/(c+'.POSTPROCESS_PENDING.json');pending_sha=sha(pending)if pending.exists()else None
+             cp,rp=closure_paths(root,c);result_path=root/'analysis'/(c+'.RESULT.json')
+             existing=value=read(result_path)if result_path.exists()else None
+@@ -196,15 +247,17 @@
+     require(1<=cfg['poll_seconds']<=300,'POLL_INTERVAL')
+     for key in ['qualification','source_readback']:require(sha(cfg[key+'_path'])==cfg[key+'_sha256'],'QA_READBACK_PIN')
+     qa=read(cfg['qualification_path']);back=read(cfg['source_readback_path'])
+-    require(qa['status']=='PASS_NEGATIVE_ARCHIVE_OWNER_V3_CALLBACK_COMPAT_CPU'and qa['source_sha256']==cfg['source_sha256']and qa['helper_sha256']==H_SHA,'QA_MISMATCH')
++    require(qa['status']=='PASS_NEGATIVE_ARCHIVE_OWNER_V4_REFERENCE_STABILITY_CPU'and qa['source_sha256']==cfg['source_sha256']and qa['helper_sha256']==H_SHA,'QA_MISMATCH')
+     require(back['verified']is True and back['source_pins']==cfg['source_pins']and back['qualification_sha256']==cfg['qualification_sha256'],'SOURCE_READBACK_MISMATCH')
+     require(back.get('qualification_only')is False,'PRIVATE_READBACK_CANNOT_INSTALL')
+     validate_approval(cfg,sha(cfg_path),approval)
+     main=sys.modules['__main__'];require(not hasattr(main,ID),'OBSERVE_EXISTING_INSTALL_DO_NOT_DUPLICATE')
+     require(not hasattr(main,'DTC_MAIN_NEGATIVE_ARCHIVE_AUTOCLOSE_OWNER_V1'),'V1_DAEMON_ALREADY_PRESENT')
+     require(not hasattr(main,'DTC_MAIN_NEGATIVE_ARCHIVE_AUTOCLOSE_OWNER_V2'),'V2_DAEMON_ALREADY_PRESENT')
++    validate_predecessor(main)
++    require(cfg.get('preexisting_verified_certificates')==F3_CERTIFICATES,'EXACT_F3_CERTIFICATES_REQUIRED')
+     m=getattr(main,MARKER);frame=m['frame'];engine=m['engine'];cfg_sha=sha(cfg_path);approval_sha=sha(approval_path)
+-    def guard():
++    def guard_locked():
+         require(os.getpid()==1498278,'OWNER_PID')
+         require(int(P('/proc/self/stat').read_text().rsplit(')',1)[1].split()[19])==977758783,'OWNER_BIRTH')
+         require(sha(cfg_path)==cfg_sha and sha(approval_path)==approval_sha,'CONFIG_APPROVAL_DRIFT')
+@@ -218,11 +271,13 @@
+         require(m['source_sha256']==BRIDGE_SHA and sha(m['bridge']['selected'].__code__.co_filename)==BRIDGE_SHA,'BRIDGE_SOURCE')
+         require(m['cfg']==read(m['cfg_path'])and sha(m['cfg_path'])==m['cfg_sha256'],'EXISTING_CONSUMER_CONFIG')
+         lease=engine.assert_parent_lease();require(lease['pid']==1498278 and lease['start_ticks']==977758783,'OWNER_LEASE')
++    def guard():
++        with m['aging'].lock:guard_locked()
+     guard();helper=load(cfg['helper_path']);directory=P(cfg['run_directory'])
+     require(directory.is_absolute()and directory.resolve().is_relative_to(ROOT/'control/operational_amendments'),'RUN_NAMESPACE')
+     require(not directory.exists(),'RUN_DIRECTORY_ALREADY_EXISTS')
+     with m['aging'].lock:
+-        guard();require(not hasattr(main,ID),'CONCURRENT_INSTALL')
++        guard();validate_predecessor(main);require(not hasattr(main,ID),'CONCURRENT_INSTALL')
+         directory.mkdir(parents=True)
+         installation=dict(configuration_path=str(cfg_path),configuration_sha256=cfg_sha,approval_path=str(approval_path),approval_sha256=approval_sha,run_receipt_path=str(directory/'RUN.json'),main_thread_ident=threading.get_ident())
+         state=build_state(main,m,helper,cfg,directory,guard,installation=installation)

@@ -1,0 +1,18 @@
+CPU_SHARED复用现有工程点：最小接口结论（仅只读）
+
+结论：现4点尚未消耗，可以保持科学spec/身份、Core/FW/binary及V2五源字节不变，给其中一个点接“新且显式”的CPU_SHARED资源/验收代际；新增身份下界为0。但不能只换library或假称CPU2 PASS，当前冻结V2验收和V3四点gate不会接受诚实的新共享证明。
+
+实际调用证据：
+1. fa3 memory_frontend.py:5–9 的adapt_io按cfg.library_path加载install_future_native，确为generic。CPU2 cpu_owner.py:19–30 的historical_extra按INTENT→snapshot.config.extra_strict_path/SHA加载，未硬锁CPU2 ID；CPU-family字段/固定snapshot文件名可保兼容。但owner.target:15–18和闭包仍固定当前CPU2，不能只替换全局ACTIVE而保原15正常。
+2. CPU2 cpu_extra_strict.py:18–35硬限旧canary验收status及模式CPU_SPARE_PER_COHORT/MEMORY_ONLY_OLD_CPU_RULES；共享模式不能混入。V2 bpf_extra_strict.py:137–140、consumer_bridge.py:17–22又硬要PASS_CPU_SPARE_MEMORY_IO_AND_ORIGINAL_PERFORMANCE，诚实新status会拒绝。
+3. V2 bpf_frontend.py:15–18 的memory_cfg_override只供qualification-only，不能作为生产捷径。新单点adapter需自行显式组合已冻结fa3/IO/原producer，并把新资源来源和单点cfg绑定入真实收据；其余点继续原入口，不改global CPU2配置。
+4. V3 bpf_extra_strict.py:228–253 的replay_v2_canary硬pin旧V2 extra/bridge并要求proof完全相等；所以新共享点不能充作当前冻结gate的V2成功。
+
+最小完整链建议只做一个CPU_SHARED_SINGLETON_V1工程代际，覆盖四个接口面：
+①新资源library/native installer与独立共享proof/status；保完整成本/配额/无throttle/pressure/disk等门。②同owner的exact-one frame/chooser/worker-entry adapter，只该点使用新资源cfg，原15和另3点仍精确CPU2/V2。③新的联合strict/consumer/archive分支，重放原physics+IO、保全部V2观测/activation/参考cycles-counts检查，额外验证CPU_SHARED；不得调用旧V2 terminal后伪造其CPU2前置PASS。④一个新四点gate读取器，明确接受“3个原V2+1个新资源代际”的完整真实自然闭合证据，仍需4点全部真实readonly replay/164归档恢复，不接受fixture quorum。旧gate字节保留，新gate另版本资格。
+
+四面可合并成少量versioned模块，不需新controller或修改旧五源，亦不需改科学配置/新模型身份。单点成功只取得资源工程证据，不自动广放；后续允许范围扩展可复用同代际，不必再套一层代际。
+
+若坚持旧V2验收/gate逻辑也一字不变，则复用这4点做诚实CPU_SHARED不可行；最少需另加1个独立资源工程canary身份（新grant），而原4仍需按旧链完成，不能替代四点gate。这是省验收改动、但不能直接解除当前四点瓶颈的备选。
+
+本轮无代码实现/测试/登记/安装/模型启动。仅接口可行性，不宣称CPU共享已安全或4点已合格。
