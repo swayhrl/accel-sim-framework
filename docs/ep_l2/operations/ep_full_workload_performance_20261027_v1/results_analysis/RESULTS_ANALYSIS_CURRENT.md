@@ -21,11 +21,30 @@ This refresh reuses 220 closed endpoint references and freshly joins 2 new/chang
 |sgemm (ab4ac5dd)|353921|357466|0.990083|+1.0016%|
 
 Per-candidate fixed8 closure:
+
 - COMBO_G64W16_UD2: 8/8; full-population GM=0.996987; missing=NONE.
 - N_ICNT_BUFFERS1024: 8/8; full-population GM=0.999064; missing=NONE.
 - U_L2MQ256: 8/8; full-population GM=0.999977; missing=NONE.
 
 Only complete fixed populations receive a full GM. Actual detach occurrence remains separate from an independently attributable T speedup; same-Core/ELF/geometry/input/F WVM background T-OFF(M1) is still required.
+
+## Fixed8 closure and engineering deliverables
+
+All three preselected validation8 candidates are now complete; no missing endpoint is imputed. This permits the following fixed8 GMs, not a full35/96 claim.
+
+|candidate|S/F GM|positive/negative/equal|absolute REF/F GM|absolute REF/S GM|
+|---|---:|---:|---:|---:|
+|COMBO_G64W16_UD2|0.9969868679|1/5/2|1.0155515862|1.0175132187|
+|N_ICNT_BUFFERS1024|0.9990639069|1/5/2|0.9999500632|0.9997986630|
+|U_L2MQ256|0.9999769608|2/4/2|1.0005217928|0.9994568930|
+
+None of the three has a same-hardware fixed8 S/F GM above1. COMBO improves absolute cycles in both modes, with S benefiting more; the tested resource increase does not establish an independent EP advantage. L2MQ256 is nearly neutral in aggregate; ICNT1024 does not provide an absolute F gain on this population. All per-input positive, negative and equal outcomes remain visible. T contribution remains UNKNOWN without the matched F-background T-OFF(M1) counterfactual.
+
+**Host-write repair V2:** private production-hook candidate source and CPU test sources are delivered for review, but actual V2 C++ executions and production builds are both0. Its recorded local Windows RAM HOLD occurred before a compiler/test stage, not as a protocol-test failure. The earlier447 standalone pure-protocol checks belong to V1 only; they do not qualify V2 or its production integration. The old temporary-artifact evidence gap remains disclosed. Successful full nine-kernel repair remains UNKNOWN/HOLD; no Source/application qualification or retry is granted.
+
+**SRAD evidence closure:** the final handoff now includes whole-epoch RO facts, the existing same-ELF local-WSL loader component, genuine164 derived-evidence archive (4,198,400 B,7 members) and two independent actual native restorations with matching archive SHA; source data is kept. This is a derived-evidence storage closure, not an application result. Native174 loader execution remains unperformed; Main F eligibility/spec/launch authority is separate, and no new SRAD F model was started. The62 certified lines and137,949,600 read lane-line references have different units; the latter counts repeated aligned128B active-lane touches over502 launches, not instructions/cycles or unique addresses.
+
+Pinned manifests: `/root/data/ep_l2_full_workload_performance_20261027_v1/agent_c/host_write_protocol_repair_20261028_v1/v2/DELIVERY_MANIFEST_V2.json` SHA `6b4f50e3e445c1c5e91b7be4ad0411886a12f95226ad8d4de529f8b6946e3fd9`; `/root/data/ep_l2_full_workload_performance_20261027_v1/agent_a/ro_remaining_main5_20261028_v1/SRAD_FINAL_DERIVED_COPY_V6_20261029_V1/FINAL_SRAD_EVIDENCE_HANDOFF.json` SHA `057349e0b468bc7ade219efa3e17437790549646522c55066b0cb026482474f2`. This updater only read small manifests/local receipts, not Trace or archive payloads. The historical technical failures and their evidence boundaries remain unchanged.
 
 ## What the completed comparisons show
 
