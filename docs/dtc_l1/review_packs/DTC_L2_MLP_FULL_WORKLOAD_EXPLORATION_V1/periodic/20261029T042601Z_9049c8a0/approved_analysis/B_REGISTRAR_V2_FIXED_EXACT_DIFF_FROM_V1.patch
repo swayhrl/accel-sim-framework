@@ -1,0 +1,84 @@
+--- frozen_V1_7993
++++ candidate_V2_d58af291827b
+@@ -4,11 +4,11 @@
+ Normalized candidate schema is explicit; an unqualified schema adapter cannot
+ release production. All authority callbacks use passed q and file CAS only.
+ """
+-import pathlib,json,hashlib,copy,os,sys,threading,types,subprocess,math
++import pathlib,json,hashlib,copy,os,sys,threading,types,subprocess,math,importlib.util
+ P=pathlib.Path;R=P('/root/data/dtc_l2_mlp_exploration_20261027_v1')
+ REQ='DTC_L2_MLP_FULL_WORKLOAD_EXPLORATION_20261027_V1'
+ ROLE='ADAPTIVE_PARAMETER_PERFORMANCE_TRIAL'
+-ID='DTC_ADAPTIVE_BATCH_REGISTRY_V1'
++ID='DTC_ADAPTIVE_BATCH_REGISTRY_V2'
+ FROZEN_SCOPE_SHA='5f079aed36eca8dd62906bdfaa68006d3b3f27964c506a03361f2fab0908d1d2'
+ NATIVE_SHA='e8276aadbb243b29166d89e5e937de260e6017061b475b62ac9c6c6f3dc3825a'
+ OPS_SHA='a53f4933d2f0a7479a15d0e6dd8aa0501c4762d6b2161363b9467472a43fc1dc'
+@@ -19,6 +19,26 @@
+ def sha(p):return hashlib.sha256(P(p).read_bytes()).hexdigest()
+ def objsha(v):return hashlib.sha256(raw(v)).hexdigest()
+ def compactsha(v):return hashlib.sha256(json.dumps(v,sort_keys=True,separators=(',',':')).encode()).hexdigest()
++def terminal_adapter(cfg):
++ path=cfg['terminal_adapter_path'];assert sha(path)==cfg['terminal_adapter_sha256']and cfg['dependency_pins'][path]==cfg['terminal_adapter_sha256']
++ s=importlib.util.spec_from_file_location('source_pinned_terminal_membership_adapter_v2',path);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
++def natural_receipt_evolution(initial,current,root):
++ """Allow only existing consumed generations to acquire joined natural DONE.
++ No changed grant/spec/UUID/new birth/negative closure can pass this recovery.
++ """
++ a=copy.deepcopy(initial);b=copy.deepcopy(current);assert set(a['consumed'])==set(b['consumed']),'OLD_COHORT_SET_CHANGED_DURING_RECOVERY'
++ changed=[]
++ for c,old in a['consumed'].items():
++  new=b['consumed'][c]
++  if new==old:continue
++  assert 'execution_receipt'not in old and set(new)==set(old)|{'execution_receipt'}and {k:v for k,v in new.items()if k!='execution_receipt'}==old,'ONLY_NEW_NATURAL_RECEIPT_ALLOWED'
++  receipt=new['execution_receipt'];assert receipt['cohort']==c and receipt['uuid']==old['uuid']and receipt['stop_reason']is None and receipt['launcher_wait_returncode']==0
++  assert read(P(root)/'control/qualification_ledger'/(c+'.DONE.json'))==receipt,'NATURAL_RECEIPT_MISSING_JOINED_DONE'
++  b['consumed'][c]=copy.deepcopy(old);changed.append(c)
++ if b.get('state')!=a.get('state'):
++  assert changed and b.get('state')=='RUNNING';b['state']=a['state']
++ assert b==a,'NON_RECEIPT_Q_EVOLUTION_DURING_PARTIAL_RECOVERY'
++ return changed
+ def immutable(p,b):
+  p=P(p);p.parent.mkdir(parents=True,exist_ok=True)
+  if p.exists():assert p.read_bytes()==b,'IMMUTABLE_FILE_CONFLICT';return
+@@ -93,6 +113,7 @@
+   cfg=self.cfg;q=self.owner();assert cfg['schema']=='ADAPTIVE_BATCH_REGISTRY_CONFIGURATION_V1'and cfg['source_sha256']==sha(__file__)
+   for k in ['catalog','approval','source_manifest','QA','readback']:assert sha(cfg[k+'_path'])==cfg[k+'_sha256'],'PIN_DRIFT '+k
+   for p,h in cfg['dependency_pins'].items():assert sha(p)==h
++  terminal=terminal_adapter(cfg)
+   for worktree in cfg['source_worktree_checks']:
+    result=subprocess.run(['git','-C',worktree['path'],'rev-parse','HEAD'],capture_output=True,text=True,timeout=10,check=True);assert result.stdout.strip()==worktree['commit'],'BUILD_HEAD_DRIFT'
+    result=subprocess.run(['git','-C',worktree['path'],'status','--porcelain'],capture_output=True,text=True,timeout=10,check=True);assert not result.stdout.strip(),'DIRTY_SOURCE_WORKTREE'
+@@ -130,14 +151,7 @@
+    assert completion['schema']=='INITIAL35_SINGLE_FACTOR_TERMINAL_STATUS_EVIDENCE_V1'and completion['request']==REQ and completion['frozen_scope_sha256']==FROZEN_SCOPE_SHA
+    assert completion['all_initial350_statuses_terminal']is True and completion['pending_count']==completion['running_count']==completion['unknown_count']==0 and len(completion['cell_evidence'])==350
+    assert {r['cohort']for r in completion['cell_evidence']}=={r['cohort']for r in scope['points']}
+-   for r in completion['cell_evidence']:
+-    assert r['state']in ['ACCEPTED','ORIGINAL_TERMINAL_NEGATIVE']and r['IR_R2_engineering_substitution']is False
+-    assert r['cycles']is None if r['state']=='ORIGINAL_TERMINAL_NEGATIVE'else type(r['cycles'])is int and r['cycles']>0
+-    assert sha(r['terminal_evidence_path'])==r['terminal_evidence_sha256']
+-    terminal=read(r['terminal_evidence_path']);assert terminal['cohort']==r['cohort']and terminal['cycles']==r['cycles']
+-    assert terminal['proof']['performance_accepted']is(r['state']=='ACCEPTED')
+-    if r['state']=='ORIGINAL_TERMINAL_NEGATIVE':assert terminal['state']=='FAIL_L2MLP_ARCHIVED_NO_RETRY'
+-    if r['cohort']in q['consumed']:assert terminal['uuid']==q['consumed'][r['cohort']]['uuid']
++   for r in completion['cell_evidence']:terminal.validate_row(r,q,self.root)
+   if kind=='MATCHED_CH_FOLLOWUP':
+    proof=app['matched_DH_evidence'];assert sha(proof['path'])==proof['sha256'];evidence=read(proof['path'])
+    assert app['formal_winner_selected']is False and app['formal_adoption_authorized']is False and app['IR_R2_engineering_union_authorized']is False
+@@ -208,10 +222,14 @@
+   with self.lock:
+    q=self.validate_proposal(p);prior=self.reconcile(p)
+    if prior['state']=='COMMITTED_RECONCILED':return prior
+-   folder=self.folder(p);immutable(folder/'PREPARED.json',raw(p));immutable(folder/'preimages/MATRIX_INITIAL350.json',p['initial350_matrix_utf8'].encode());immutable(folder/'preimages/SCOPE_FROZEN.json',p['frozen_scope_utf8'].encode());immutable(folder/'preimages/Q_BEFORE.json',raw(q));self.checkpoint('AFTER_PREPARED')
++   folder=self.folder(p);immutable(folder/'PREPARED.json',raw(p));immutable(folder/'preimages/MATRIX_INITIAL350.json',p['initial350_matrix_utf8'].encode());immutable(folder/'preimages/SCOPE_FROZEN.json',p['frozen_scope_utf8'].encode())
++   original=folder/'preimages/Q_BEFORE.json'
++   if not original.exists():immutable(original,raw(q))
++   natural_receipt_evolution(read(original),q,self.root)
++   immutable(folder/'attempts'/(objsha(q)+'.Q_CAS.json'),raw(q));self.checkpoint('AFTER_PREPARED')
+    for i in p['rows']:
+     c=i['spec']['cohort'];immutable(self.root/'control/specs'/(c+'.json'),raw(i['spec']));self.checkpoint('AFTER_FIRST_SPEC');immutable(self.root/'control'/(c+'_SPEC.json'),raw(i['spec']))
+-   self.checkpoint('AFTER_SPEC_PUBLICATION');before=self.validate_proposal(p);batch=self.batch_record(p)
++   self.checkpoint('AFTER_SPEC_PUBLICATION');before=self.validate_proposal(p);natural_receipt_evolution(read(original),before,self.root);immutable(folder/'attempts'/(objsha(before)+'.Q_CAS.json'),raw(before));batch=self.batch_record(p)
+    def grant(reg):
+     # No engine/registered/canonical/authority/forecast calls under EX.
+     current=reg['registered_future_requests'][REQ];assert current==before,'AUTHORITY_Q_CAS_CHANGED'

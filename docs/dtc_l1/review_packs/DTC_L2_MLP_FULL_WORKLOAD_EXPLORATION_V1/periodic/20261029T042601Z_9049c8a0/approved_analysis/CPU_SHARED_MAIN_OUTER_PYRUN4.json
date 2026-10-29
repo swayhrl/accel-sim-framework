@@ -1,0 +1,114 @@
+{
+  "schema": "CPU_SHARED_OUTERMOST_PYRUN_SIMPLESTRING_CPU_QUALIFICATION_V1",
+  "status": "PASS",
+  "source_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/coordinator/CPU_SHARED_MAIN_INSTALL_CANDIDATE_V1/pending_payload_builder.py",
+  "source_sha256": "ea5a1c26be337e2bda200f2ecc9747893754c95c93cff89c6d01912b4c07c1d5",
+  "driver_sha256": "3d31498a59861e30adc51a99aee157da38a300a62de2a6a13035a39c873f67d6",
+  "cases": [
+    {
+      "case": "normal_body_executes_and_returns0",
+      "status": "PASS",
+      "runs": [
+        {
+          "name": "NORMAL",
+          "PyRun_SimpleString_return": 0,
+          "Python_exception_escaped": null,
+          "error_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/cpu_shared_main_install_qualification_v1/outer_payload4/REAL_PYRUN_HELPER_dskymny_/NORMAL.ERROR.json",
+          "error_exists": false,
+          "error_value": null,
+          "body_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/cpu_shared_main_install_qualification_v1/outer_payload4/REAL_PYRUN_HELPER_dskymny_/NORMAL.BODY.py",
+          "payload_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/cpu_shared_main_install_qualification_v1/outer_payload4/REAL_PYRUN_HELPER_dskymny_/NORMAL.PAYLOAD.py",
+          "payload_sha256": "9782c959bc26f3b7bc99079596041bec141a2315b961c9d25516da8aeb6df834"
+        }
+      ]
+    },
+    {
+      "case": "body_missing_or_SHA_drift_contained_before_exec",
+      "status": "PASS",
+      "runs": [
+        {
+          "name": "MISSING_BODY",
+          "PyRun_SimpleString_return": 0,
+          "Python_exception_escaped": null,
+          "error_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/cpu_shared_main_install_qualification_v1/outer_payload4/REAL_PYRUN_HELPER_dskymny_/MISSING_BODY.ERROR.json",
+          "error_exists": true,
+          "error_value": {
+            "UTC": "2026-10-28T19:20:00.801986+00:00",
+            "automatic_requeue": false,
+            "error": "FileNotFoundError(2, 'No such file or directory')",
+            "status": "SHARED_OUTERMOST_PAYLOAD_EXCEPTION_CONTAINED"
+          },
+          "body_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/cpu_shared_main_install_qualification_v1/outer_payload4/REAL_PYRUN_HELPER_dskymny_/MISSING_BODY.BODY.py",
+          "payload_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/cpu_shared_main_install_qualification_v1/outer_payload4/REAL_PYRUN_HELPER_dskymny_/MISSING_BODY.PAYLOAD.py",
+          "payload_sha256": "7458b436c48aded061c84b8d6bf8f5b49d3eb162ecb631deedc072d015fc19b8"
+        },
+        {
+          "name": "BODY_HASH_DRIFT",
+          "PyRun_SimpleString_return": 0,
+          "Python_exception_escaped": null,
+          "error_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/cpu_shared_main_install_qualification_v1/outer_payload4/REAL_PYRUN_HELPER_dskymny_/BODY_HASH_DRIFT.ERROR.json",
+          "error_exists": true,
+          "error_value": {
+            "UTC": "2026-10-28T19:20:00.818935+00:00",
+            "automatic_requeue": false,
+            "error": "AssertionError('SHARED_PENDING_BODY_SHA_DRIFT')",
+            "status": "SHARED_OUTERMOST_PAYLOAD_EXCEPTION_CONTAINED"
+          },
+          "body_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/cpu_shared_main_install_qualification_v1/outer_payload4/REAL_PYRUN_HELPER_dskymny_/BODY_HASH_DRIFT.BODY.py",
+          "payload_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/cpu_shared_main_install_qualification_v1/outer_payload4/REAL_PYRUN_HELPER_dskymny_/BODY_HASH_DRIFT.PAYLOAD.py",
+          "payload_sha256": "af8b530163d0cfcb9ef36ed81d65eaef319de2e19eb03bb1b1354e1a6b472afd"
+        }
+      ]
+    },
+    {
+      "case": "body_SystemExit_BaseException_contained_real_C_API_return0",
+      "status": "PASS",
+      "runs": [
+        {
+          "name": "BODY_SYSTEMEXIT",
+          "PyRun_SimpleString_return": 0,
+          "Python_exception_escaped": null,
+          "error_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/cpu_shared_main_install_qualification_v1/outer_payload4/REAL_PYRUN_HELPER_dskymny_/BODY_SYSTEMEXIT.ERROR.json",
+          "error_exists": true,
+          "error_value": {
+            "UTC": "2026-10-28T19:20:00.835145+00:00",
+            "automatic_requeue": false,
+            "error": "SystemExit(17)",
+            "status": "SHARED_OUTERMOST_PAYLOAD_EXCEPTION_CONTAINED"
+          },
+          "body_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/cpu_shared_main_install_qualification_v1/outer_payload4/REAL_PYRUN_HELPER_dskymny_/BODY_SYSTEMEXIT.BODY.py",
+          "payload_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/cpu_shared_main_install_qualification_v1/outer_payload4/REAL_PYRUN_HELPER_dskymny_/BODY_SYSTEMEXIT.PAYLOAD.py",
+          "payload_sha256": "ece6289ff836dc1af4e42f9a699b7754edee763403b3ff5075da9e0c6262db1a"
+        }
+      ]
+    },
+    {
+      "case": "error_evidence_write_failure_also_contained_return0",
+      "status": "PASS",
+      "runs": [
+        {
+          "name": "EVIDENCE_DIRECTORY_MISSING",
+          "PyRun_SimpleString_return": 0,
+          "Python_exception_escaped": null,
+          "error_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/cpu_shared_main_install_qualification_v1/outer_payload4/REAL_PYRUN_HELPER_dskymny_/PARENT_DOES_NOT_EXIST/EVIDENCE_DIRECTORY_MISSING.ERROR.json",
+          "error_exists": false,
+          "error_value": null,
+          "body_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/cpu_shared_main_install_qualification_v1/outer_payload4/REAL_PYRUN_HELPER_dskymny_/EVIDENCE_DIRECTORY_MISSING.BODY.py",
+          "payload_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/cpu_shared_main_install_qualification_v1/outer_payload4/REAL_PYRUN_HELPER_dskymny_/EVIDENCE_DIRECTORY_MISSING.PAYLOAD.py",
+          "payload_sha256": "27d069dcebb5425b9c794dd7a71c9d5a6e9c23dc8907a788096551d43249d737"
+        }
+      ]
+    }
+  ],
+  "count": 4,
+  "actual_PyRun_SimpleString_calls": 5,
+  "helper_pid": 2253545,
+  "helper_process_is_actual1498278": false,
+  "queue_or_pendingcall_used": false,
+  "actual_Main_apply_called": false,
+  "actual_model_starts": 0,
+  "new_grants": 0,
+  "production_mutations": 0,
+  "coverage": "Outermost BODY read/hash/compile/exec BaseException containment, including SystemExit and nested error-evidence failure; old a28 inner body builder not rerun.",
+  "adapter_checked": false
+}

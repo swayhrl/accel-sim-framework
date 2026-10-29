@@ -1,0 +1,189 @@
+# Registered-tail results
+
+Snapshot: 2026-10-29T03:35:54.613806+00:00. Original350 valid 323/350; independent named references 324/350. Registered raw budget 360; runtime display 366. These populations are distinct.
+
+This readable view preserves every slot and original negative. Complete values, exact populations, SHA/UUID evidence and reasons: `REPORT.json.gz`; all350 rows: `results.csv.gz`. Missing is never zero. Formal metrics: True. CH/combination trials are next-stage HOLD and add no scope.
+
+O PASS = strictly validated original; O-ref PASS = ratified P0 no-new-start reference; IR PASS / R2 PASS = only the fixed named-view alternate. `O:NEG` retains an original failure even when an alternate supplies named-view cycles. WAIT/HOLD/NEG have no accepted cycles. All input rows appear below.
+
+## All35 fixed inputs
+
+<!-- FIXED35_TABLE_START -->
+| Program | Suite | Input digest | CH P0 | DH P0 | DH M8 | DH M16 | DH E384 | DH E768 | DH F128 | DH F256 | DH Q64 | DH Q128 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| BlackScholes | CUDA Samples | b31a85e4eb8d32ef | 8993 O PASS | 8971 O PASS | 8971 O PASS | 8971 O PASS | 8971 O PASS | 8971 O PASS | 8971 O PASS | 8971 O PASS | 8971 O PASS | 8971 O PASS |
+| convolutionSeparable | CUDA Samples | 4114a3dc0d06b55b | 825151 O PASS | 800572 O PASS | 800572 O PASS | 800572 O PASS | 805436 O PASS | 805436 O PASS | 674364 O PASS | 562886 O PASS | 798296 O PASS | 789240 O PASS |
+| fastWalshTransform | CUDA Samples | f7f22a2ccc836a8a | 191732 O PASS | 185317 O PASS | 185317 O PASS | 185317 O PASS | 185345 O PASS | 185345 O PASS | 185382 O PASS | 185740 O PASS | 185420 O PASS | 185534 O PASS |
+| histogram | CUDA Samples | 3722a5c85d91a948 | 101432 O PASS | 98202 O PASS | 98202 O PASS | 98202 O PASS | 98202 O PASS | 98202 O PASS | 98202 O PASS | 98202 O PASS | 98202 O PASS | 98202 O PASS |
+| mergeSort | CUDA Samples | dd9f695c4f53b083 | 114742 O PASS | 111917 O PASS | 111917 O PASS | 111917 O PASS | 111917 O PASS | 111917 O PASS | 111917 O PASS | 111917 O PASS | 111917 O PASS | 111917 O PASS |
+| scalarProd | CUDA Samples | 2b93f70cd0666c51 | 420477 O PASS | 411009 O PASS | 411009 O PASS | 411009 O PASS | 411009 O PASS | 411009 O PASS | 411440 O PASS | 409181 O PASS | 411009 O PASS | 411009 O PASS |
+| scan | CUDA Samples | 6df3a84b612086e8 | 6710840 O PASS | 6648993 O PASS | 6687187 O PASS | 6702538 R2 PASS;O:NEG_TYPED | 6606877 O PASS | 6606877 O PASS | 5748280 O PASS | 5179817 O PASS | 6676810 O PASS | 6688280 O PASS |
+| transpose | CUDA Samples | 65151d2c661f88f3 | 241346 O PASS | 237820 O PASS | 237820 O PASS | 237820 O PASS | 237820 O PASS | 237820 O PASS | 237820 O PASS | 237820 O PASS | 237820 O PASS | 237820 O PASS |
+| vectorAdd | CUDA Samples | e7bb67e63e3c3847 | 220803 O PASS | 217305 O PASS | 217305 O PASS | 217305 O PASS | 215407 O PASS | 215407 O PASS | 213053 O PASS | 236217 O PASS | 216368 O PASS | 219002 O PASS |
+| bfs | Parboil | 1df9d5479504d9c7 | 4330430 O PASS | 4170294 O PASS | 4170305 O PASS | 4170305 O PASS | 4170294 O PASS | 4170294 O PASS | 4170294 O PASS | 4170294 O PASS | 4170294 O PASS | 4170294 O PASS |
+| cutcp | Parboil | af7320f9d9dc6629 | 4502965 O PASS | 4490473 O PASS | 4490473 O PASS | 4490473 O PASS | 4490473 O PASS | 4490473 O PASS | 4490473 O PASS | 4490473 O PASS | 4490473 O PASS | 4490473 O PASS |
+| histo | Parboil | 2c506bf13c81ff5d | 5636037 O PASS | 5865589 O PASS | 5875753 O PASS | 5872783 O PASS | 5872359 O PASS | 5872359 O PASS | 5789155 O PASS | 5731388 O PASS | 5879400 O PASS | 5859602 O PASS |
+| mri-q | Parboil | dc7a91531846c113 | 362244 O PASS | 360174 O PASS | 360174 O PASS | 360174 O PASS | 360174 O PASS | 360174 O PASS | 359855 O PASS | 359855 O PASS | 359731 O PASS | 359731 O PASS |
+| sad | Parboil | db89be14146b9163 | 114310 O PASS | 114870 O PASS | 114870 O PASS | 114870 O PASS | 114870 O PASS | 114870 O PASS | 114870 O PASS | 114870 O PASS | 114870 O PASS | 114870 O PASS |
+| sgemm | Parboil | ffc8a89493c8a211 | 448633 O PASS | 409417 O PASS | 409430 O PASS | 409430 O PASS | 409417 O PASS | 409417 O PASS | 409417 O PASS | 409417 O PASS | 409417 O PASS | 409417 O PASS |
+| stencil | Parboil | c885293ad99e21ee | 4965921 O PASS | 4662889 O PASS | 4662550 O PASS | 4662691 O PASS | 4662889 O PASS | 4662889 O PASS | 4662889 O PASS | 4662889 O PASS | 4662889 O PASS | 4662889 O PASS |
+| 2DCONV | PolyBench/GPU | d984ea5475a581ad | 1548909 O PASS | 462740 O PASS | 446511 O PASS | 446511 O PASS | 461703 O PASS | 461703 O PASS | 437573 O PASS | 429253 O PASS | 461980 O PASS | 461647 O PASS |
+| 3DCONV | PolyBench/GPU | 79f8ab6241faeed6 | 2958083 O PASS | 2200332 O PASS | 2186097 O PASS | 2186097 O PASS | 2203091 O PASS | 2203091 O PASS | 2205628 O PASS | 2211632 O PASS | 2204420 O PASS | 2205117 O PASS |
+| 3MM | PolyBench/GPU | 977a2f7007cb1f96 | 4191465 O PASS | 2402871 O PASS | 2402871 O PASS | 2402871 O PASS | 2402871 O PASS | 2402871 O PASS | 2402871 O PASS | 2402871 O PASS | 2402871 O PASS | 2402871 O PASS |
+| ATAX | PolyBench/GPU | eededb785179fc04 | 28428842 O-ref PASS | 31880220 O-ref PASS | 31438336 O PASS | 32527908 O PASS | 30987395 O PASS | 30987395 O PASS | 31894637 O PASS | 31321955 O PASS | 32321602 O PASS | 33774401 O PASS |
+| BICG | PolyBench/GPU | ae34174fbbdf83b2 | 26298698 O-ref PASS | 28685812 O-ref PASS | 29657807 O PASS | 28338906 O PASS | 28830072 O PASS | 28830072 O PASS | 29210480 O PASS | 28883488 O PASS | 29825144 O PASS | 29194658 O PASS |
+| GEMM | PolyBench/GPU | fc0705ae3721e999 | 1395216 O PASS | 826089 O PASS | 826089 O PASS | 826089 O PASS | 826089 O PASS | 826089 O PASS | 826089 O PASS | 826089 O PASS | 826089 O PASS | 826089 O PASS |
+| GESUMMV | PolyBench/GPU | 769e6d9fd5f9cd53 | 114860845 O PASS | 89502220 O PASS | 89502220 O PASS | 89502220 O PASS | 89424572 O PASS | 89424572 O PASS | 86464623 O PASS | 90151547 O PASS | 91097040 O PASS | 89958750 O PASS |
+| MVT | PolyBench/GPU | f437190767aaed49 | 26581175 O-ref PASS | 34687540 O-ref PASS | 34685750 O PASS | 34686183 O PASS | 34862954 O PASS | 34862954 O PASS | 35332620 O PASS | 35093446 O PASS | 35375514 O PASS | 35470077 O PASS |
+| SYRK | PolyBench/GPU | b51811aca9dc70cf | MISSING O:NEG;IR:WAIT | MISSING O:NEG;IR:WAIT | MISSING O:WAIT | MISSING O:NEG;IR:WAIT | MISSING O:NEG;IR:WAIT | MISSING O:NEG;IR:WAIT | MISSING O:WAIT | MISSING O:NEG;IR:WAIT | MISSING O:WAIT | MISSING O:WAIT |
+| dwt2d | Rodinia | e5638b94095098ac | 73691 O PASS | 73071 O PASS | 73071 O PASS | 73071 O PASS | 73071 O PASS | 73071 O PASS | 73071 O PASS | 73071 O PASS | 73071 O PASS | 73071 O PASS |
+| gaussian | Rodinia | 16f4c42373e4961e | 763932 O PASS | 740717 O PASS | 740717 O PASS | 740717 O PASS | 740717 O PASS | 740717 O PASS | 740717 O PASS | 740717 O PASS | 740717 O PASS | 740717 O PASS |
+| heartwall | Rodinia | 731af5428c4b8155 | 8782 O PASS | 8551 O PASS | 8587 O PASS | 8551 O PASS | 8551 O PASS | 8551 O PASS | 8551 O PASS | 8551 O PASS | 8551 O PASS | 8551 O PASS |
+| hybridsort | Rodinia | 09f94fcc7494a03b | 18575969 O PASS | 18563916 O PASS | MISSING O:NEG;IR:WAIT | MISSING O:NEG;IR:WAIT | MISSING O:NEG;IR:WAIT | MISSING O:NEG;IR:NEG | MISSING O:NEG;IR:WAIT | 16370955 O PASS | MISSING O:WAIT | MISSING O:WAIT |
+| lavamd | Rodinia | ddb6806316876a85 | MISSING O:NEG | 5629432 O PASS | MISSING O:WAIT | MISSING O:WAIT | MISSING O:WAIT | MISSING O:WAIT | MISSING O:WAIT | MISSING O:WAIT | MISSING O:WAIT | MISSING O:WAIT |
+| lud | Rodinia | b33381cf25d44359 | 485866 O PASS | 478654 O PASS | 478654 O PASS | 478654 O PASS | 478654 O PASS | 478654 O PASS | 478654 O PASS | 478654 O PASS | 478654 O PASS | 478654 O PASS |
+| myocyte | Rodinia | 977e34578994c3d2 | 145909578 O PASS | 145147976 O PASS | 145147976 O PASS | 145147976 O PASS | 145147976 O PASS | 145147976 O PASS | 145147976 O PASS | 145147976 O PASS | 145147976 O PASS | 145147976 O PASS |
+| particlefilter_float | Rodinia | b41cc74c66ca6ed4 | 1861126 O PASS | 2100874 O PASS | 2100874 O PASS | 2100874 O PASS | 2100874 O PASS | 2100874 O PASS | 2100874 O PASS | 2100874 O PASS | 2100874 O PASS | 2100874 O PASS |
+| particlefilter_naive | Rodinia | 3f85d1878aba9f04 | 511136 O PASS | 384601 O PASS | 384601 O PASS | 384601 O PASS | 384601 O PASS | 384601 O PASS | 384601 O PASS | 384601 O PASS | 384601 O PASS | 384601 O PASS |
+| srad_v1 | Rodinia | 0e62c67daa020853 | 8043823 O PASS | 7324411 O PASS | 7341157 O PASS | 7341157 O PASS | 7324411 O PASS | 7324411 O PASS | 7324411 O PASS | 7324411 O PASS | 7324411 O PASS | 7324411 O PASS |
+<!-- FIXED35_TABLE_END -->
+
+## Source-role and negative record
+
+Original failed slots retain their state; this list includes all twelve fixed alternate links, accepted or unavailable. No alternate enters the original ledger.
+
+| Original cohort | Original state | Alternate cohort / role | Alternate state | Named selection |
+|---|---|---|---|---|
+| E2-DTCL2MLP-09f94fcc7494a03b-DH-E384-V1 | NEG | E2-DTCL2MLP-09f94fcc7494a03b-DH-E384-IR1-V1 / INCIDENT_RECOVERY_PERFORMANCE_TRIAL | WAIT | MISSING |
+| E2-DTCL2MLP-09f94fcc7494a03b-DH-E768-V1 | NEG | E2-DTCL2MLP-09f94fcc7494a03b-DH-E768-IR1-V1 / INCIDENT_RECOVERY_PERFORMANCE_TRIAL | NEG | MISSING |
+| E2-DTCL2MLP-09f94fcc7494a03b-DH-M8-V1 | NEG | E2-DTCL2MLP-09f94fcc7494a03b-DH-M8-IR1-V1 / INCIDENT_RECOVERY_PERFORMANCE_TRIAL | WAIT | MISSING |
+| E2-DTCL2MLP-09f94fcc7494a03b-DH-M16-V1 | NEG | E2-DTCL2MLP-09f94fcc7494a03b-DH-M16-IR1-V1 / INCIDENT_RECOVERY_PERFORMANCE_TRIAL | WAIT | MISSING |
+| E2-DTCL2MLP-09f94fcc7494a03b-DH-F128-V1 | NEG | E2-DTCL2MLP-09f94fcc7494a03b-DH-F128-IR1-V1 / INCIDENT_RECOVERY_PERFORMANCE_TRIAL | WAIT | MISSING |
+| E2-DTCL2MLP-6df3a84b612086e8-DH-M16-V1 | NEG_TYPED | E2-DTCL2MLP-6df3a84b612086e8-DH-M16-V2 / SUPPLEMENTAL_NEW_PERFORMANCE_TRIAL | PASS | E2-DTCL2MLP-6df3a84b612086e8-DH-M16-V2 |
+| E2-DTCL2MLP-b51811aca9dc70cf-CH-P0-V1 | NEG | E2-DTCL2MLP-b51811aca9dc70cf-CH-P0-IR1-V1 / INCIDENT_RECOVERY_PERFORMANCE_TRIAL | WAIT | MISSING |
+| E2-DTCL2MLP-b51811aca9dc70cf-DH-P0-V1 | NEG | E2-DTCL2MLP-b51811aca9dc70cf-DH-P0-IR1-V1 / INCIDENT_RECOVERY_PERFORMANCE_TRIAL | WAIT | MISSING |
+| E2-DTCL2MLP-b51811aca9dc70cf-DH-E384-V1 | NEG | E2-DTCL2MLP-b51811aca9dc70cf-DH-E384-IR1-V1 / INCIDENT_RECOVERY_PERFORMANCE_TRIAL | WAIT | MISSING |
+| E2-DTCL2MLP-b51811aca9dc70cf-DH-E768-V1 | NEG | E2-DTCL2MLP-b51811aca9dc70cf-DH-E768-IR1-V1 / INCIDENT_RECOVERY_PERFORMANCE_TRIAL | WAIT | MISSING |
+| E2-DTCL2MLP-b51811aca9dc70cf-DH-M16-V1 | NEG | E2-DTCL2MLP-b51811aca9dc70cf-DH-M16-IR1-V1 / INCIDENT_RECOVERY_PERFORMANCE_TRIAL | WAIT | MISSING |
+| E2-DTCL2MLP-b51811aca9dc70cf-DH-F256-V1 | NEG | E2-DTCL2MLP-b51811aca9dc70cf-DH-F256-IR1-V1 / INCIDENT_RECOVERY_PERFORMANCE_TRIAL | WAIT | MISSING |
+
+Typed negative without fabricated DONE: E2-DTCL2MLP-6df3a84b612086e8-DH-M16-V1 certificate 37842f4191c6a0f293a01d22834c28794c3e23a477b1d657976d01bdb055c9e7. The original scan M16 remains negative; R2 is a separate named reference.
+
+
+## Available and common population metrics
+
+DH speedup = own DH P0 / profile cycles. Each common row uses the same inputs across all nine profiles within its labelled view. These are partial populations, not full-suite winners. CH speedup and relative-DTC improvement remain missing where a non-P0 CH measurement is unavailable.
+
+| View | Profile | DH available n/35; GM | DH all-profile common n/35; GM | CH speedup available n/35; GM | Relative DTC available n/35; GM |
+|---|---|---|---|---|---|
+| Original350 | P0 | 34/35; 1 | 31/35; 1 | 33/35; 1 | 33/35; 1 |
+| Original350 | M8 | 32/35; 1.00028043 | 31/35; 1.00047432 | 0/35; MISSING | 0/35; MISSING |
+| Original350 | M16 | 31/35; 1.00099352 | 31/35; 1.00099352 | 0/35; MISSING | 0/35; MISSING |
+| Original350 | E384 | 32/35; 1.00087438 | 31/35; 1.00069746 | 0/35; MISSING | 0/35; MISSING |
+| Original350 | E768 | 32/35; 1.00087438 | 31/35; 1.00069746 | 0/35; MISSING | 0/35; MISSING |
+| Original350 | F128 | 32/35; 1.01259518 | 31/35; 1.00825856 | 0/35; MISSING | 0/35; MISSING |
+| Original350 | F256 | 33/35; 1.02244047 | 31/35; 1.0115808 | 0/35; MISSING | 0/35; MISSING |
+| Original350 | Q64 | 32/35; 0.997225847 | 31/35; 0.997270784 | 0/35; MISSING | 0/35; MISSING |
+| Original350 | Q128 | 32/35; 0.996853794 | 31/35; 0.996941912 | 0/35; MISSING | 0/35; MISSING |
+| Named35 | P0 | 34/35; 1 | 32/35; 1 | 33/35; 1 | 33/35; 1 |
+| Named35 | M8 | 32/35; 1.00028043 | 32/35; 1.00028043 | 0/35; MISSING | 0/35; MISSING |
+| Named35 | M16 | 32/35; 1.0007116 | 32/35; 1.0007116 | 0/35; MISSING | 0/35; MISSING |
+| Named35 | E384 | 32/35; 1.00087438 | 32/35; 1.00087438 | 0/35; MISSING | 0/35; MISSING |
+| Named35 | E768 | 32/35; 1.00087438 | 32/35; 1.00087438 | 0/35; MISSING | 0/35; MISSING |
+| Named35 | F128 | 32/35; 1.01259518 | 32/35; 1.01259518 | 0/35; MISSING | 0/35; MISSING |
+| Named35 | F256 | 33/35; 1.02244047 | 32/35; 1.01913826 | 0/35; MISSING | 0/35; MISSING |
+| Named35 | Q64 | 32/35; 0.997225847 | 32/35; 0.997225847 | 0/35; MISSING | 0/35; MISSING |
+| Named35 | Q128 | 32/35; 0.996853794 | 32/35; 0.996853794 | 0/35; MISSING | 0/35; MISSING |
+
+
+## Matched inputs across both views and every profile
+
+For each suite, both columns use exactly the intersection with a lawful DH-speedup pair in all nine profiles in both views. Suite totals retain all frozen inputs; missing rows are excluded, never imputed. Full digest populations remain in REPORT.json.gz.
+
+| Suite | Profile | Matched n / suite total | Original DH GM | Named DH GM |
+|---|---|---|---|---|
+| ALL | P0 | 31/35 | 1 | 1 |
+| ALL | M8 | 31/35 | 1.00047432 | 1.00047432 |
+| ALL | M16 | 31/35 | 1.00099352 | 1.00099352 |
+| ALL | E384 | 31/35 | 1.00069746 | 1.00069746 |
+| ALL | E768 | 31/35 | 1.00069746 | 1.00069746 |
+| ALL | F128 | 31/35 | 1.00825856 | 1.00825856 |
+| ALL | F256 | 31/35 | 1.0115808 | 1.0115808 |
+| ALL | Q64 | 31/35 | 0.997270784 | 0.997270784 |
+| ALL | Q128 | 31/35 | 0.996941912 | 0.996941912 |
+| CUDA Samples | P0 | 8/9 | 1 | 1 |
+| CUDA Samples | M8 | 8/9 | 1 | 1 |
+| CUDA Samples | M16 | 8/9 | 1 | 1 |
+| CUDA Samples | E384 | 8/9 | 1.00032059 | 1.00032059 |
+| CUDA Samples | E768 | 8/9 | 1.00032059 | 1.00032059 |
+| CUDA Samples | F128 | 8/9 | 1.02402386 | 1.02402386 |
+| CUDA Samples | F256 | 8/9 | 1.03445244 | 1.03445244 |
+| CUDA Samples | Q64 | 8/9 | 1.00082692 | 1.00082692 |
+| CUDA Samples | Q128 | 8/9 | 1.00066357 | 1.00066357 |
+| Parboil | P0 | 7/7 | 1 | 1 |
+| Parboil | M8 | 7/7 | 0.999758172 | 0.999758172 |
+| Parboil | M16 | 7/7 | 0.999826065 | 0.999826065 |
+| Parboil | E384 | 7/7 | 0.999835224 | 0.999835224 |
+| Parboil | E768 | 7/7 | 0.999835224 | 0.999835224 |
+| Parboil | F128 | 7/7 | 1.00200238 | 1.00200238 |
+| Parboil | F256 | 7/7 | 1.00343893 | 1.00343893 |
+| Parboil | Q64 | 7/7 | 0.999839856 | 0.999839856 |
+| Parboil | Q128 | 7/7 | 1.00032176 | 1.00032176 |
+| PolyBench/GPU | P0 | 8/9 | 1 | 1 |
+| PolyBench/GPU | M8 | 8/9 | 1.00286389 | 1.00286389 |
+| PolyBench/GPU | M16 | 8/9 | 1.00429485 | 1.00429485 |
+| PolyBench/GPU | E384 | 8/9 | 1.00252856 | 1.00252856 |
+| PolyBench/GPU | E768 | 8/9 | 1.00252856 | 1.00252856 |
+| PolyBench/GPU | F128 | 8/9 | 1.00640074 | 1.00640074 |
+| PolyBench/GPU | F256 | 8/9 | 1.00777166 | 1.00777166 |
+| PolyBench/GPU | Q64 | 8/9 | 0.988786736 | 0.988786736 |
+| PolyBench/GPU | Q128 | 8/9 | 0.987268652 | 0.987268652 |
+| Rodinia | P0 | 8/10 | 1 | 1 |
+| Rodinia | M8 | 8/10 | 0.999189714 | 0.999189714 |
+| Rodinia | M16 | 8/10 | 0.999714576 | 0.999714576 |
+| Rodinia | E384 | 8/10 | 1 | 1 |
+| Rodinia | E768 | 8/10 | 1 | 1 |
+| Rodinia | F128 | 8/10 | 1 | 1 |
+| Rodinia | F256 | 8/10 | 1 | 1 |
+| Rodinia | Q64 | 8/10 | 1 | 1 |
+| Rodinia | Q128 | 8/10 | 1 | 1 |
+
+
+## Historical fixed3: separate scope
+
+No historical EP measurement enters DTC populations or GMs. Overall authorized completion requires DTC plus these fixed3 only when configured. Historical configured: True.
+
+| Program / mode | UUID | Strict/status | Accepted cycles | Own baseline UUID | cycles / own baseline | own baseline / cycles |
+|---|---|---|---|---|---|---|
+| SYRK / S | f406dae1-f20b-4356-aba2-13dee73f6401 | LIVE_CPU_PROGRESS | MISSING | f406dae1-f20b-4356-aba2-13dee73f6401 | MISSING | MISSING |
+| SYRK / F | 1e3ed644-f904-4b09-856e-62d398dafdf6 | LIVE_CPU_PROGRESS | MISSING | f406dae1-f20b-4356-aba2-13dee73f6401 | MISSING | MISSING |
+| lavamd / F | 56e7a936-1179-4466-8c2a-073df0e7a69c | STRICT_ACCEPTED | 5738976 | f293d9bc-a02c-4bb0-a213-1793294fb13d | 1.02821779 | 0.972556602 |
+
+
+## Historical downstream18: own P0 = 1
+
+Immutable baseline only, separate from DTC350 and the three live EP objects. Values use each input/design own strictly accepted P0.
+
+| Program | Design | Profile | Cycles | Strict accepted | cycles / own P0 | own P0 / cycles |
+|---|---|---|---|---|---|---|
+| BICG | CH | P0 | 26298698 | True | 1 | 1 |
+| BICG | CH | PQ | 24356422 | True | 0.926145545 | 1.0797439 |
+| BICG | CH | PS | 22474128 | True | 0.854571888 | 1.17017657 |
+| BICG | DH | P0 | 28685812 | True | 1 | 1 |
+| BICG | DH | PQ | 29194658 | True | 1.01773859 | 0.982570578 |
+| BICG | DH | PS | 18363200 | True | 0.640149214 | 1.56213579 |
+| ATAX | CH | P0 | 28428842 | True | 1 | 1 |
+| ATAX | CH | PQ | 30737948 | True | 1.08122406 | 0.924877679 |
+| ATAX | CH | PS | 20724681 | True | 0.729001941 | 1.37173846 |
+| ATAX | DH | P0 | 31880220 | True | 1 | 1 |
+| ATAX | DH | PQ | 33774401 | True | 1.05941556 | 0.943916666 |
+| ATAX | DH | PS | 19369013 | True | 0.607555814 | 1.64593932 |
+| MVT | CH | P0 | 26581175 | True | 1 | 1 |
+| MVT | CH | PQ | 23576996 | True | 0.886980956 | 1.12741992 |
+| MVT | CH | PS | 18407388 | True | 0.692497153 | 1.44404926 |
+| MVT | DH | P0 | 34687540 | True | 1 | 1 |
+| MVT | DH | PQ | 35470077 | True | 1.0225596 | 0.977938108 |
+| MVT | DH | PS | 21811979 | True | 0.628813084 | 1.5902977 |
+
+
+DTC registered completion: False; historical fixed3 completion: False; all authorized populations complete: False. This does not claim completion of unregistered CH/combination research.
