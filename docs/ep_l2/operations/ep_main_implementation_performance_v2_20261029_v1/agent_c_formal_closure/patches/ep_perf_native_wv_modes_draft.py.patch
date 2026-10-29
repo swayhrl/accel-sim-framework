@@ -1,0 +1,45 @@
+--- B_SOURCE78_BASE/ep_perf_native_wv_modes_draft.py
++++ C_NEW_SOURCE_T3/ep_perf_native_wv_modes_draft.py
+@@ -4,8 +4,8 @@
+ from ep_perf_common_v2 import *
+ 
+ LEDGER = NATIVE / 'control/qualification_ledger'
+-MODE_CONTRACT_SHA='043fd6ea2cfbcb55cd8bb90e052525e3fdd09b5241a9f3c05556e6fa13b3b3d0'
+-NEW_VALIDATOR_SHA='3c60563984fa9765aedac30f70f59a8dc14a4755c67548fe0d23a6a2b7c3a684'
++MODE_CONTRACT_SHA='f4da0de319c9158368193bcec55ebdb4d3c0d93c1a7bbf572c96f5cdd6641af5'
++NEW_VALIDATOR_SHA='c7de1c44b78d89059d8cbda3a5130ae31e90eb11a19778af0f0b2c62d5316889'
+ def formal_mode_contract(s):
+     need(s['mode_contract_ref']['sha256']==MODE_CONTRACT_SHA and s['validation_module_ref']['sha256']==NEW_VALIDATOR_SHA,'unreviewed formal mapper/parser version')
+     return module(s['mode_contract_ref'],'private_formal_mode_contract').validate_static(s)
+@@ -35,25 +35,20 @@
+     need(eligibility['ordered_kernel_identity'] == exact(s['input_binding_ref'])['ordered_kernel_identity'], 'eligibility kernel/command closure')
+     source = exact(s['source_qualification_ref'])
+     need(source['source_identity'] == s['source_identity'], 'source qualification identity')
+-    need(source['status'] == 'EXACT_ACCEPTED_SOURCE_CPU_EVIDENCE_REUSED_NOT_NEW_APP_ACCEPTED', 'source qualification status')
+-    old_sourceq = exact(source['prior_sourceq_ref'])
+-    need(old_sourceq['source_identity'] == s['source_identity'], 'original CPU source identity')
+-    for item in old_sourceq['evidence_refs'].values():
+-        need(sha(item['path']) == item['sha256'], 'original CPU source evidence changed')
+-    need(s['mode'] in ['S','W_ONLY','WV_ZERO_RO','F_MINUS_T','F'], 'unreviewed mode')
+-    need(s['source_identity']['core_source_commit'] == '78f4b59e865b136eede74df74c44c210f5b4ca04', 'unqualified new Core')
++    need(source['status']=='MAIN_REVIEWED_NEW_SOURCE_CPU_AND_WHOLE_TU_QUALIFIED_NOT_APP_ACCEPTED' and source.get('approved_by')=='EP-MAIN','newSource Main CPU/TU qualification required')
++    for item in source['evidence_refs'].values():
++        need(sha(item['path'])==item['sha256'],'newSource CPU/TU evidence drift')
++    need(s['mode'] in ['F_MINUS_T','LEGACY_F','CORRECTED_F'], 'unreviewed mode')
++    need(s['source_identity']['core_source_commit'] == '1e07b263ca0879798387d2a712914a914f298775', 'unqualified new Core')
+     for path, digest in s['pinned_files'].items():
+         need(sha(path) == digest, 'host/runtime pin drift ' + path)
+     need(sha(s['binary_path']) == s['source_identity']['binary_sha256'], 'ELF drift')
+     need(sha(s['static_library_path']) == s['source_identity']['archive_sha256'], 'archive drift')
+     for config in s['ordered_configs']:
+         need(sha(config['path']) == config['sha256'], 'config drift')
+-    need(len(s['expected_effective_options']) == 282, 'complete effective option contract required')
++    need(len(s['expected_effective_options']) == 283, 'complete effective option contract required')
+     need(s['expected_effective_options']['-trace'] == s['trace_entry'], 'input/config identity')
+     formal_mode_contract(s)
+-    anchor_review=exact(s['matched_S_anchor_qualification_ref']);anchor_point=exact(anchor_review['point_ref'])
+-    need(anchor_review.get('registry_population_request_id')==FRONTEND_GOAL,'anchor population namespace');anchor_row=registry['registered_future_requests'][FRONTEND_GOAL]['consumed'].get(anchor_point['cohort'],{})
+-    need(anchor_row.get('state')=='CLOSED_ACCEPTED'and anchor_row.get('accepted_point_ref')==anchor_review['point_ref'],'S anchor current official population/point mismatch')
+     if not (s['T'] or s['M']):
+         need(s['ro_qualification_ref'] is None, 'RO-disabled mode may not inherit certificate authority')
+     if s['T'] or s['M']:

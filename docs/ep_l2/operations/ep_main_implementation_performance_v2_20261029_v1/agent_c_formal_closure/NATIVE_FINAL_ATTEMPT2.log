@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_c_formal_closure/test_host_native_t3.py", line 22, in check
+    val=fn();ok=not reject;err=None
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_c_formal_closure/test_host_native_t3.py", line 103, in <lambda>
+    check('actual_resource_gate_current_snapshot_synthetic_claim',lambda:original_gate(s,dict(host_cpu=si['host_cpu'])))
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_c_formal_closure/host_candidate/ep_perf_native_wv_modes_draft.py", line 161, in resource_gate
+    need(decision['pass_admission'], 'RESOURCE_ADMISSION_HOLD:' + json.dumps(decision, separators=(',', ':')))
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_c_formal_closure/host_candidate/ep_perf_common_v2.py", line 17, in need
+    raise RuntimeError(message)
+RuntimeError: RESOURCE_ADMISSION_HOLD:{"schema":"EP_FULL_PERF_ADMISSION_DECISION_V1","pass_admission":false,"hold_reasons":["confirmed peer growth + own pending forecast exceeds usable RAM"],"own_pending_additional_RAM_bytes":0,"own_remaining_write_bytes":136314880,"foreign_pending_additional_RAM_bytes":95735800639,"foreign_remaining_write_bytes":3989237253,"admission_RAM_budget_bytes":86725955092,"required_additional_RAM_bytes":95735800639,"required_free_bytes":9494261253,"host_floor_bytes":8589934592,"cgroup_floor_bytes":8589934592,"memory_utilization_fraction":0.88,"snapshot_age_seconds":0.003628501668572426,"forecast_is_not_runtime_hard_limit":true,"terminate_existing_models":false}
+
+Traceback (most recent call last):
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_c_formal_closure/test_host_native_t3.py", line 103, in <module>
+    check('actual_resource_gate_current_snapshot_synthetic_claim',lambda:original_gate(s,dict(host_cpu=si['host_cpu'])))
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_c_formal_closure/test_host_native_t3.py", line 27, in check
+    print(tb);raise AssertionError(results[-1])
+AssertionError: {'label': 'actual_resource_gate_current_snapshot_synthetic_claim', 'PASS': False, 'expected': 'PASS', 'error': 'RuntimeError:RESOURCE_ADMISSION_HOLD:{"schema":"EP_FULL_PERF_ADMISSION_DECISION_V1","pass_admission":false,"hold_reasons":["confirmed peer growth + own pending forecast exceeds usable RAM"],"own_pending_additional_RAM_bytes":0,"own_remaining_write_bytes":136314880,"foreign_pending_additional_RAM_bytes":95735800639,"foreign_remaining_write_bytes":3989237253,"admission_RAM_budget_bytes":86725955092,"required_additional_RAM_bytes":95735800639,"required_free_bytes":9494261253,"host_floor_bytes":8589934592,"cgroup_floor_bytes":8589934592,"memory_utilization_fraction":0.88,"snapshot_age_seconds":0.003628501668572426,"forecast_is_not_runtime_hard_limit":true,"terminate_existing_models":false}'}

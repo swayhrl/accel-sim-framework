@@ -1,0 +1,151 @@
+{
+  "compile": [
+    "/usr/bin/c++",
+    "-DCUDART_VERSION=12040",
+    "-DDEBUG=0",
+    "-DTRACING_ON=1",
+    "-O0",
+    "-g0",
+    "-fPIC",
+    "-UNDEBUG",
+    "-std=gnu++17",
+    "-I/root/data/dtc_main_20261023_v1/ae_fair_v1/toolchain/include",
+    "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/libcuda",
+    "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/libcuda",
+    "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim",
+    "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/intersim2",
+    "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/intersim2/allocators",
+    "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/intersim2/arbiters",
+    "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/intersim2/networks",
+    "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/intersim2/power",
+    "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/intersim2/routers",
+    "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src",
+    "-c",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_d/legacy_reference_fixture.cc",
+    "-o",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_d/legacy_reference_fixture.o"
+  ],
+  "link": [
+    "/usr/bin/c++",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_d/legacy_reference_fixture.o",
+    "-o",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_d/legacy_reference_fixture",
+    "-Wl,--start-group",
+    "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/libentrypoint.a",
+    "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/libcuda/libcuda.a",
+    "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/cuda-sim/libptxsim.a",
+    "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+    "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/intersim2/libintersim.a",
+    "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/accelwattch/libaccelwattch.a",
+    "-Wl,--end-group",
+    "-lz",
+    "-ldl",
+    "-lpthread",
+    "-lGLX",
+    "-lOpenGL",
+    "-lm"
+  ],
+  "runs": [
+    {
+      "case": "LEGACY",
+      "diag": 0,
+      "rc": 0,
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_d/legacy_reference_fixture",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/T1M1.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/commandlist.g",
+        "PRESSURE_IDENTITY",
+        "32",
+        "8",
+        "1",
+        "LEGACY"
+      ],
+      "semantic": [
+        "A_COMMON_FIXTURE|SEMANTIC|cycles=118|replies=9|lower_reads=9|lower_bytes=288|drained=1",
+        "TAG_CAPACITY_SEMANTIC|case=LEGACY|sets=32|ways=8|cycles=118|digest=3910515084853850396|replies=9|lower_packets=9|lower_bytes=288|bank_grants=18|bank_conflicts=0|bank_attempts=18|physical=1168|resident=1024|bypass=128|WB=16|MSHR=128|descriptors=512|drained=1"
+      ]
+    },
+    {
+      "case": "LEGACY",
+      "diag": 1,
+      "rc": 0,
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_d/legacy_reference_fixture",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/T1M1.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/commandlist.g",
+        "PRESSURE_IDENTITY",
+        "32",
+        "8",
+        "1",
+        "LEGACY"
+      ],
+      "semantic": [
+        "A_COMMON_FIXTURE|SEMANTIC|cycles=118|replies=9|lower_reads=9|lower_bytes=288|drained=1",
+        "TAG_CAPACITY_SEMANTIC|case=LEGACY|sets=32|ways=8|cycles=118|digest=3910515084853850396|replies=9|lower_packets=9|lower_bytes=288|bank_grants=18|bank_conflicts=0|bank_attempts=18|physical=1168|resident=1024|bypass=128|WB=16|MSHR=128|descriptors=512|drained=1"
+      ]
+    },
+    {
+      "case": "T0",
+      "diag": 0,
+      "rc": 0,
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_d/legacy_reference_fixture",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/T0M1.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/commandlist.g",
+        "PRESSURE_IDENTITY",
+        "32",
+        "8",
+        "0",
+        "T0"
+      ],
+      "semantic": [
+        "A_COMMON_FIXTURE|SEMANTIC|cycles=118|replies=9|lower_reads=9|lower_bytes=288|drained=1",
+        "TAG_CAPACITY_SEMANTIC|case=T0|sets=32|ways=8|cycles=118|digest=3910515084853850396|replies=9|lower_packets=9|lower_bytes=288|bank_grants=18|bank_conflicts=0|bank_attempts=18|physical=1168|resident=1024|bypass=128|WB=16|MSHR=128|descriptors=512|drained=1"
+      ]
+    },
+    {
+      "case": "T0",
+      "diag": 1,
+      "rc": 0,
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_d/legacy_reference_fixture",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/T0M1.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/commandlist.g",
+        "PRESSURE_IDENTITY",
+        "32",
+        "8",
+        "0",
+        "T0"
+      ],
+      "semantic": [
+        "A_COMMON_FIXTURE|SEMANTIC|cycles=118|replies=9|lower_reads=9|lower_bytes=288|drained=1",
+        "TAG_CAPACITY_SEMANTIC|case=T0|sets=32|ways=8|cycles=118|digest=3910515084853850396|replies=9|lower_packets=9|lower_bytes=288|bank_grants=18|bank_conflicts=0|bank_attempts=18|physical=1168|resident=1024|bypass=128|WB=16|MSHR=128|descriptors=512|drained=1"
+      ]
+    }
+  ],
+  "reference_Source78_only": true
+}

@@ -1,0 +1,50 @@
+{
+  "status": "PASS_ACTUAL_CONV_RANGES_NEW_CORE_LOADER_CPU_NOT_APPLICATION",
+  "utc": "2026-10-29T08:05:53.408286+00:00",
+  "Core": "1e07b263ca0879798387d2a712914a914f298775",
+  "parent_spec_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_CONV_F_G16_W8_V1/control/FROZEN_SPEC.json",
+    "sha256": "d8fc99035bdb6864d4e7086c4b6075bfea1f2d5f999c7d5ab3eb9cae12dbb8f8"
+  },
+  "prior_RO_qualification_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_CONV_F_REF_V1/control/RO_QUALIFICATION.json",
+    "sha256": "8ba67785f40a0d9b1fa0f36930997c86381fbd1cdadc2e19bab000f5ff0a708a"
+  },
+  "manifest_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_a/ro_qualification/CONV3072_ORIGINAL_MANIFEST.json",
+    "sha256": "1cb3bc004fa7824e2e9eb3b1da991b8114fb588eae8e87cf92e124996b7bd425"
+  },
+  "ranges_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_a/ro_qualification/CONV3072_CERTIFIED_RANGES.csv",
+    "sha256": "a8dfd6d20ef62f959bd7908abf76b58434039ae63e611059c490a8c5c177e80e"
+  },
+  "unchanged_loader_and_identity_paths_vs_Source78": {
+    "src/gpgpu-sim/ep-l2-ro-oracle.h": "31d574c8475dc29f11637a725c6a6e712769fd7d71911c6bd5762909ea2ae64e",
+    "src/gpgpu-sim/ep-l2-ro-transactions.h": "29fd0db9bbc260dd872140c026a9729b95a9d6de15d8396137558e7861ed20ec",
+    "src/gpgpu-sim/addrdec.cc": "4cdb1c9b92ccba865c3de19e6ba97ea47f1abcca69b54dad874e34495a110b50",
+    "src/gpgpu-sim/mem_fetch.cc": "e6ab83ca4e14f6433ba4836bda9388b7a2f18724bee9ac266bcfdff8bb37f851"
+  },
+  "source_sha256": "4a95767bb83e6ca037dae618df039dda478f4b81b1eba0644bb9b3bca0572887",
+  "binary_sha256": "bcaa98518b4fddef1485f9debe6e1b867bfcd6bd7dd80e8ac0fc52ed435770c3",
+  "compile": [
+    "c++",
+    "-std=c++17",
+    "-O2",
+    "-UNDEBUG",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/ro_loader_cpu/actual_conv_oracle_loader.cc",
+    "-o",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/ro_loader_cpu/actual_conv_oracle_loader.cpu"
+  ],
+  "compile_rc": 0,
+  "run": [
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/ro_loader_cpu/actual_conv_oracle_loader.cpu",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_a/ro_qualification/CONV3072_CERTIFIED_RANGES.csv",
+    "1cb3bc004fa7824e2e9eb3b1da991b8114fb588eae8e87cf92e124996b7bd425"
+  ],
+  "run_rc": 0,
+  "output": "ACTUAL_CONV_NEW_SOURCE_RO_LOADER|ranges=1|boundary_alignment_and_scope=PASS|application_run=0",
+  "elapsed_seconds": 0.5330721829086542,
+  "resource_limit": "single bounded CPU compile/run;AS1GiB,CPU30sec,nice10;no model/GPU/Trace open",
+  "new_scientific_starts": 0,
+  "scope": "Actual certificate byte and parser/line-scope binding to current newCore; original capture/numeric/scientific budget boundaries not elevated"
+}

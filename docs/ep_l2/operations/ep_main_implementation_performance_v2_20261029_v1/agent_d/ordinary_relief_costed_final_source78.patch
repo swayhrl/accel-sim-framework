@@ -1,0 +1,346 @@
+diff --git a/src/gpgpu-sim/ep-l2-ft-cache.inc b/src/gpgpu-sim/ep-l2-ft-cache.inc
+index 9b8c8c9..f938072 100644
+--- a/src/gpgpu-sim/ep-l2-ft-cache.inc
++++ b/src/gpgpu-sim/ep-l2-ft-cache.inc
+@@ -335,6 +335,10 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+          o?o->set[failed_set].occupancy:ep_et::U16,mf->get_request_uid(),addr,true);
+     }
+   }
++  // Direct callers cannot bypass the corrected frontend's paid metadata query.
++  if(probe==RESERVATION_FAIL && m_ro && m_config.m_ordinary_ro_tag_relief &&
++     m_config.m_ro_tag_detach && !ro_new && !m_ro->ordinary_query_ready(mf))
++    return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_tag));
+   if(probe==RESERVATION_FAIL && m_ro){m_ro->relieve(addr);probe=m_tag_array->probe(owner,index,mf,mf->is_write(),true);if(diagnostic.d)diagnostic.d->add(probe>=0&&probe<=WRITE_ALLOCATED?field(post_relief_hit+probe):post_relief_unknown);}
+   if (probe == RESERVATION_FAIL) return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_tag));
+   if (m_tvd && probe == MISS &&
+diff --git a/src/gpgpu-sim/ep-l2-ro-runtime.inc b/src/gpgpu-sim/ep-l2-ro-runtime.inc
+index 844de49..95bbc3a 100644
+--- a/src/gpgpu-sim/ep-l2-ro-runtime.inc
++++ b/src/gpgpu-sim/ep-l2-ro-runtime.inc
+@@ -26,6 +26,10 @@ class ep_l2_ro_runtime : public ep_l2_ro::tag_port {
+   mutable uint64_t query_uid=~uint64_t(0),query_ready_at=0,query_count=0;
+   mutable uint64_t query_issue_cycle=~uint64_t(0),query_port_waits=0;
+   mutable uint64_t query_last_wait=~uint64_t(0),query_wait_cycles=0;
++  // Extension opcode on the existing one-query frontend metadata port.
++  // Tag-set read is already supplied by the ordinary raw-fail preview.
++  mutable uint64_t ordinary_query_count=0,ordinary_query_wait_cycles=0;
++  mutable uint64_t ordinary_query_port_waits=0,ordinary_query_last_wait=~uint64_t(0);
+   mutable uint64_t observed_uid=~uint64_t(0),blocked_mask=0;
+   mutable std::array<uint64_t,6> first_wait{},unique_blocks{},wait_cycles{};
+   mutable std::array<std::array<uint64_t,16>,6> wait_hist{};
+@@ -101,6 +105,22 @@ class ep_l2_ro_runtime : public ep_l2_ro::tag_port {
+     return m->get_access_type()==GLOBAL_ACC_R && !m->get_is_write() && !m->isatomic() && !m->ro_lower_packet();
+   }
+   bool candidate(const mem_fetch *m) const { return demand(m)&&cert->contains(c.m_config.block_addr(m->get_addr())); }
++  bool ordinary_query_ready(const mem_fetch *m) const {
++    return query_uid==m->get_request_uid() && physical_cycle()>=query_ready_at;
++  }
++  void ordinary_frontend_cycle(mem_fetch *m,const l2_access_plan &p) {
++    if(!c.m_config.m_ordinary_ro_tag_relief || !c.m_config.m_ro_tag_detach ||
++       !p.exact || !p.ep_l2_tag_set_all_reserved || !p.ep_l2_ro_lookup_wait) return;
++    const auto now=physical_cycle();
++    if(query_uid!=m->get_request_uid()) {
++      if(query_issue_cycle==now){++query_port_waits;++ordinary_query_port_waits;return;}
++      query_issue_cycle=now;query_uid=m->get_request_uid();query_ready_at=now+1;
++      ++query_count;++ordinary_query_count;ordinary_query_last_wait=~uint64_t(0);
++    }
++    if(now<query_ready_at && ordinary_query_last_wait!=now) {
++      ++query_wait_cycles;++ordinary_query_wait_cycles;ordinary_query_last_wait=now;
++    }
++  }
+   bool query_admissible(mem_fetch *m) const {
+     return !new_request(m) || (query_uid==m->get_request_uid() && physical_cycle()>=query_ready_at);
+   }
+@@ -447,6 +467,10 @@ void l2_cache::ro_print(FILE *f,unsigned slice) const {
+     slice,m_ft_stats.descriptor_responses,(unsigned long long)s.responses,
+     m_mshrs.descriptor_count_used(),m_mshrs.num_entries_used(),m_ro->tx->live_transactions(),
+     unsigned(m_ro->ever_open&&!m_ro->open));
++  fprintf(f,"EPL2P1V2|SET_ELIGIBILITY_QUERY|slice=%u|enabled=%u|T=%u|issued=%llu|paid_wait_gpu_cycles=%llu|port_wait_attempts=%llu|query_ports_per_slice=1|query_latency_gpu_cycles=1|population=ordinary_raw_full_frontend_head|shared_with=RO_frontend_query|physical_timing_and_PPA=UNKNOWN\n",
++    slice,m_config.m_ordinary_ro_tag_relief,m_config.m_ro_tag_detach,
++    (unsigned long long)m_ro->ordinary_query_count,(unsigned long long)m_ro->ordinary_query_wait_cycles,
++    (unsigned long long)m_ro->ordinary_query_port_waits);
+   fprintf(f,"EPL2ROC1|RESOURCE|slice=%u|normal_line_allocations=%llu|avoided_line_allocations=%llu|peak_transactions=%u|peak_shared_descriptors=%u|peak_shared_lines=%u|lower_read_bytes=%llu|concurrent_duplicate_read_bytes=%llu|query_count=%llu|query_latency_gpu_cycles=1|query_ports_per_slice=1|query_wait_cycles=%llu|query_port_wait_attempts=%llu|shared_descriptor_capacity=512|payload_capacity=1168|line_capacity=128|oracle=%s\n",
+     slice,(unsigned long long)s.normal_line_allocations,(unsigned long long)s.avoided_line_allocations,
+     s.peak_transactions,s.peak_shared_descriptors,s.peak_shared_lines,
+@@ -478,3 +502,7 @@ void l2_cache::ro_frontend_cycle(mem_fetch *mf) {if(m_ro){
+   // behind an RO owner before access() gets a chance to reject the violation.
+   m_ro->check_access(mf);m_ro->frontend_cycle(mf);
+ }}
++
++void l2_cache::ordinary_ro_relief_frontend_cycle(mem_fetch *mf,const l2_access_plan &p) {
++  if(m_ro)m_ro->ordinary_frontend_cycle(mf,p);
++}
+diff --git a/src/gpgpu-sim/ep-l2-tagpressure-diag.h b/src/gpgpu-sim/ep-l2-tagpressure-diag.h
+index c55470a..bb7c863 100644
+--- a/src/gpgpu-sim/ep-l2-tagpressure-diag.h
++++ b/src/gpgpu-sim/ep-l2-tagpressure-diag.h
+@@ -16,6 +16,10 @@
+ #include <utility>
+ namespace ep_l2_tagpressure {
+ constexpr unsigned RAW=8, W=17, MASK=32, PRED=8;
++inline bool supported_geometry(unsigned sets,unsigned ways){
++ return ((sets==32||sets==64)&&(ways==8||ways==16)) ||
++        (sets==16&&ways==8) || (sets==32&&ways==4);
++}
+ enum requester_kind { CERTIFIED_RO_CANDIDATE, NONRO_NATIVE_PATH, RUNTIME_OFF };
+ enum way_kind { RESERVED_WAY, INVALID_WAY, REPLACEABLE_CLEAN, REPLACEABLE_DIRTY };
+ // Original raw enum 0..WRITE_ALLOCATED maps identically; all other -> UNKNOWN.
+@@ -57,7 +61,7 @@ struct phase_counts {
+  }
+  void add(uint64_t&v,uint64_t n=1){checked(v,n,invalid);}
+  void observe(const snapshot&s,const void*cache,unsigned slice,uint64_t cycle,uint64_t uid){
+-  if(!context_matches(s,cache,slice,cycle,uid)||(s.assoc!=8&&s.assoc!=16)||(s.sets!=32&&s.sets!=64)||s.raw>=RAW||s.raw!=s.raw_r4||s.requester>RUNTIME_OFF||(!s.ro_runtime)!=(s.requester==RUNTIME_OFF)){invalid=true;return;}
++  if(!context_matches(s,cache,slice,cycle,uid)||!supported_geometry(s.sets,s.assoc)||s.raw>=RAW||s.raw!=s.raw_r4||s.requester>RUNTIME_OFF||(!s.ro_runtime)!=(s.requester==RUNTIME_OFF)){invalid=true;return;}
+   if(!assoc){sets=s.sets;assoc=s.assoc;}
+   else if(sets!=s.sets||assoc!=s.assoc){invalid=true;return;}
+   unsigned r=0,ni=0,eligible=0,reasons=0;
+@@ -93,7 +97,7 @@ struct phase_counts {
+   for(auto n:ways_raw_reserved_class)checked(cl,n,bad);
+   for(auto n:heads_raw_reserved_invalid)checked(iv,n,bad);
+   checked(ro,ro_observed,bad);checked(ro,ro_na,bad);
+-  if((covered&&(!assoc||(assoc!=8&&assoc!=16)||(sets!=32&&sets!=64))) || (assoc&&covered>std::numeric_limits<uint64_t>::max()/assoc))bad=true;
++  if((covered&&(!assoc||!supported_geometry(sets,assoc))) || (assoc&&covered>std::numeric_limits<uint64_t>::max()/assoc))bad=true;
+   return !bad&&h==covered&&covered==ro&&e==ro_observed&&m==ro_observed&&cl==covered*assoc&&iv==covered;
+  }
+ };
+@@ -115,7 +119,7 @@ struct route_joint_table {
+  std::array<slot,SLOTS> slots{};unsigned rows=0;bool invalid=false;
+  void record(unsigned slice,unsigned phase,const void*cache,uint64_t cycle,
+              uint64_t uid,const snapshot&s,unsigned production_route,bool admitted,unsigned early){
+-  if(!context_matches(s,cache,slice,cycle,uid)||slice>=64||phase>=18||(s.assoc!=8&&s.assoc!=16)||(s.sets!=32&&s.sets!=64)||s.raw>=RAW||s.raw!=s.raw_r4||
++  if(!context_matches(s,cache,slice,cycle,uid)||slice>=64||phase>=18||!supported_geometry(s.sets,s.assoc)||s.raw>=RAW||s.raw!=s.raw_r4||
+      s.requester>RUNTIME_OFF||(!s.ro_runtime)!=(s.requester==RUNTIME_OFF)||
+      production_route>=6||early>=6){invalid=true;return;}
+   unsigned r=0;bool eligible=false;
+@@ -143,7 +147,7 @@ struct route_joint_table {
+ 
+ constexpr unsigned SLICES=64, PHASES=18;
+ constexpr uint64_t OUTPUT_CAP=64ULL*1024*1024, MARKER_RESERVE=256;
+-static const char*const GEOMETRY_SCHEMA_SHA="b74215b2b08302ff251f99ebbbf786d3e2075d3d29a10f8b083ea83ba736d42e";
++static const char*const GEOMETRY_SCHEMA_SHA="e9869eddb1c5d7c497f45f4cd19e08ba3b687fbd843704d8debf09bc042147b6";
+ static const char*const SCHEMA_SHA="cb973b3bc462ce33895a0f8cc31b428f6bf14b63f8497e8895eb314ea0894db7";
+ struct legacy_counts {
+  uint64_t observed=0,skips[4]={},absent=0,raw[RAW]={},requester[3]={};
+@@ -262,7 +266,7 @@ struct registry {
+  void serialize(writer&w,const char*record,unsigned slice,int p,const phase_counts&c,
+                 const legacy_view&v,uint64_t cycle,uint64_t seq,bool closure,bool closed){
+   const bool legacy_geometry=v.sets==64&&v.assoc==16;
+-  const char*schema_id=legacy_geometry?"EPL2_TAGPRESSURE_V1_R5":"EPL2_TAGPRESSURE_GEOMETRY_V1";
++  const char*schema_id=legacy_geometry?"EPL2_TAGPRESSURE_V1_R5":"EPL2_TAGPRESSURE_GEOMETRY_V2_CANDIDATE";
+   const char*schema_sha=legacy_geometry?SCHEMA_SHA:GEOMETRY_SCHEMA_SHA;
+   const char*scope=p<0?(!std::strcmp(record,"GLOBAL")?"GLOBAL_CUMULATIVE":"SLICE_CUMULATIVE"):p==0?"UNASSIGNED":p==1?"OVERLAP_UNKNOWN":"SINGLE_ACTIVE_INTERVAL";
+   w.emit("EPL2TAGPRESSUREV1|{\"record\":\"%s\",\"schema_id\":\"%s\",\"schema_sha256\":\"%s\",\"source_base_core\":\"9243f769620653f2a9d4df5599e9581e9dae6067\",\"scope\":\"FRONTEND_HEAD_CYCLE_SAME_TARGET_SET\",\"slice\":%u,\"cycle\":%llu,\"snapshot_seq\":%llu,\"phase\":%d,\"kernel_scope\":\"%s\",\"kernel_uid\":",record,schema_id,schema_sha,slice,(unsigned long long)cycle,(unsigned long long)seq,p,scope);
+@@ -304,7 +308,7 @@ struct registry {
+  }
+  void print(FILE*f,const void*owner,const legacy_view&v,uint64_t cycle){
+   auto*d=find(owner);if(!d)return;
+-  if(v.kernel_count>16||v.slice>=SLICES||d->slice!=v.slice||(v.sets!=32&&v.sets!=64)||(v.assoc!=8&&v.assoc!=16)){invalid=true;invalid_marker(f,"r5_scope_mismatch");return;}
++  if(v.kernel_count>16||v.slice>=SLICES||d->slice!=v.slice||!supported_geometry(v.sets,v.assoc)){invalid=true;invalid_marker(f,"r5_scope_mismatch");return;}
+   d->last=v;d->last_cycle=cycle;phase_counts cumulative;
+   for(unsigned p=0;p<PHASES;++p)if(d->phases[p])reduce(cumulative,*d->phases[p]);
+   bool ok=valid_counts(cumulative)&&old_matches(cumulative,v.total)&&requester_matches(cumulative,v.total,d->slice,-1);
+diff --git a/src/gpgpu-sim/ep-l2-tagpressure-geometry-contract.json b/src/gpgpu-sim/ep-l2-tagpressure-geometry-contract.json
+index f2daed9..eb37788 100644
+--- a/src/gpgpu-sim/ep-l2-tagpressure-geometry-contract.json
++++ b/src/gpgpu-sim/ep-l2-tagpressure-geometry-contract.json
+@@ -1,5 +1,32 @@
+ {
++  "allowed_set_way_pairs": [
++    [
++      16,
++      8
++    ],
++    [
++      32,
++      4
++    ],
++    [
++      32,
++      8
++    ],
++    [
++      32,
++      16
++    ],
++    [
++      64,
++      8
++    ],
++    [
++      64,
++      16
++    ]
++  ],
+   "assoc": [
++    4,
+     8,
+     16
+   ],
+@@ -8,11 +35,13 @@
+   "histogram_reserved_extent": 17,
+   "inactive_reserved_eligible_invalid_bins": "indices above assoc must be zero",
+   "line_bytes": 128,
++  "new_source_only": "ENGINEERING_CANDIDATE_NEW_SOURCE_ONLY; APPLICATION_NI_REQUIRED",
+   "same_raw_and_route_axes_as_base": true,
+-  "sampling": "existing r4 snapshot only; no additional modeled probe/CAM",
+-  "schema_id": "EPL2_TAGPRESSURE_GEOMETRY_V1",
++  "sampling": "existing r4 snapshot only; reuse exact snapshot, no new probe/CAM; captured target set before aggregation",
++  "schema_id": "EPL2_TAGPRESSURE_GEOMETRY_V2_CANDIDATE",
+   "scope": "FRONTEND_HEAD_CYCLE_SAME_TARGET_SET",
+   "sets": [
++    16,
+     32,
+     64
+   ],
+diff --git a/src/gpgpu-sim/gpu-cache.cc b/src/gpgpu-sim/gpu-cache.cc
+index 5c14308..1bff04e 100644
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -2818,6 +2818,22 @@ void l2_cache::preview_access(new_addr_type addr,mem_fetch *mf,l2_access_plan &p
+       m_tag_array->probe(block_addr, cache_index, mf, mf->is_write(), true);
+   plan.cache_index = cache_index;
+   if(o){o->production_reached=true;o->production_raw=plan.probe_status;o->intermediate=plan.probe_status;}
++  // Pure consumer of a timed set-eligibility lookup. The initial raw Tag
++  // probe above supplies the set; this does not add a second Tag lookup.
++  if (plan.probe_status == RESERVATION_FAIL && m_ro &&
++      m_config.m_ordinary_ro_tag_relief && m_config.m_ro_tag_detach) {
++    if (!m_ro->ordinary_query_ready(mf)) {
++      plan.ep_l2_ro_lookup_wait = true;
++      if (o) o->early = 3;  // Paid query wait, same diagnostic class as RO.
++    } else {
++      if (o) o->consulted = true;
++      if (m_ro->detachable(addr, cache_index)) {
++        plan.probe_status = MISS;
++        plan.cache_index = cache_index;
++      }
++      if (o) o->intermediate = plan.probe_status;
++    }
++  }
+   if (plan.probe_status == RESERVATION_FAIL) {
+     plan.ep_l2_tag_set_all_reserved = true;
+     return;
+@@ -3063,7 +3079,7 @@ void l2_cache::detach_diag_snapshot(mem_fetch*m,ep_l2_detach_diag::preview&o) co
+     s.ro_runtime=o.runtime;s.T=o.T;
+     s.requester=!o.runtime?ep_l2_tagpressure::RUNTIME_OFF:o.candidate?
+       ep_l2_tagpressure::CERTIFIED_RO_CANDIDATE:ep_l2_tagpressure::NONRO_NATIVE_PATH;
+-    if(ep_l2_life::supported_geometry(s.sets,s.assoc))for(unsigned way=0;way<s.assoc;++way) {
++    if(ep_l2_tagpressure::supported_geometry(s.sets,s.assoc))for(unsigned way=0;way<s.assoc;++way) {
+       const unsigned index=o.set*s.assoc+way;auto &w=s.ways[way];
+       w.kind=static_cast<ep_l2_tagpressure::way_kind>(m_tag_array->diagnostic_way_class(index));
+       w.live=false;w.attached=false;w.reuse=false;w.required=0;w.ready=0;
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index 49f9298..4c1819e 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -624,6 +624,7 @@ class cache_config {
+     m_ep_l2_payload_policy = 0;
+     m_ep_l2_feature_unified_payload = false;
+     m_ro_tag_detach=m_ro_line_mshr_bypass=false;
++    m_ordinary_ro_tag_relief=false;
+     m_ro_ranges=m_ro_ranges_sha256=m_ro_manifest_sha256=m_ro_scope=m_ro_manifest=nullptr;
+     m_ep_l2_feature_ro_pending_state = false;
+     m_ep_l2_feature_tvd = false;
+@@ -1013,6 +1014,7 @@ class cache_config {
+   unsigned m_ep_l2_payload_policy;
+   bool m_ep_l2_feature_unified_payload;
+   bool m_ro_tag_detach,m_ro_line_mshr_bypass;
++  bool m_ordinary_ro_tag_relief;
+   char *m_ro_ranges,*m_ro_ranges_sha256,*m_ro_manifest_sha256,*m_ro_scope,*m_ro_manifest;
+   bool m_ep_l2_feature_ro_pending_state;
+   bool m_ep_l2_feature_tvd;
+@@ -3099,6 +3101,7 @@ class l2_cache : public data_cache {
+   bool ro_tag_detach_enabled_for_test() const {return m_config.m_ro_tag_detach;}
+   bool access_ready() const;
+   void ro_frontend_cycle(mem_fetch *);
++  void ordinary_ro_relief_frontend_cycle(mem_fetch *,const l2_access_plan &);
+   void ro_bind_commandlist(const char *);
+   void ro_begin_epoch();
+   void ro_end_epoch();
+diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
+index 683b7c8..42c6853 100644
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -298,6 +298,9 @@ void memory_config::reg_options(class OptionParser *opp) {
+   option_parser_register(opp, "-gpgpu_ep_l2_rg1", OPT_BOOL,
+                          &m_L2_config.m_ep_l2_rg1,
+                          "Explicit-ready bank selection (not yet qualified)", "0");
++  option_parser_register(opp, "-gpgpu_ep_l2_ordinary_ro_tag_relief", OPT_BOOL,
++                         &m_L2_config.m_ordinary_ro_tag_relief,
++                         "Costed ordinary full-Tag RO relief; default legacy, inert if T OFF", "0");
+   option_parser_register(opp, "-gpgpu_ep_l2_ro_tag_detach", OPT_BOOL,
+                          &m_L2_config.m_ro_tag_detach,
+                          "Certified whole-commandlist RO pending Tag detach", "0");
+diff --git a/src/gpgpu-sim/l2cache.cc b/src/gpgpu-sim/l2cache.cc
+index fc7f70d..a5ccebd 100644
+--- a/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/l2cache.cc
+@@ -1360,6 +1360,8 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+       ep_l2_detach_diag::preview diagnostic_preview;
+       m_L2cache->detach_diag_snapshot(mf,diagnostic_preview);
+       m_L2cache->preview_access(mf->get_addr(), mf, plan,&diagnostic_preview);
++      // Timed side effect belongs to the real frontend, never preview.
++      m_L2cache->ordinary_ro_relief_frontend_cycle(mf,plan);
+       unsigned long long ms_known = 0;
+       const unsigned long long ms_blockers = m_L2cache->ms_frontend_blockers(
+           mf, plan, m_L2_icnt_queue->full(), ms_known);
+diff --git a/tests/ep_l2/test_ordinary_ro_relief_v2.cc b/tests/ep_l2/test_ordinary_ro_relief_v2.cc
+new file mode 100644
+index 0000000..9913d7a
+--- /dev/null
++++ b/tests/ep_l2/test_ordinary_ro_relief_v2.cc
+@@ -0,0 +1,55 @@
++#define main original_capacity_control_main
++#include "test_tag_capacity_geometry.cc"
++#undef main
++int main(int argc,char**argv){
++ assert(argc==14);const std::string mode=argv[13];const bool write=mode=="WRITE",guard=mode=="REUSE"||mode=="T0"||mode=="MSHR_FULL"||mode=="MISSQ_FULL"||mode=="LEGACY";
++ capacity_fixture f(argv,geometry(32,8));auto a=f.addresses(9);f.fill_pending(a);
++ if(mode=="REUSE"){for(unsigned n=0;n<8;++n){f.send(f.make(a[n],false));f.await_frontend();}}
++ if(mode=="MSHR_FULL"){
++  unsigned made=0;for(unsigned set=1;set<32 && made<128;++set){auto others=f.addresses(5,false,set);for(auto x:others){if(made==128)break;f.send(f.make(x,false));f.await_lower(9+made);++made;}}
++  assert(f.cache->mshr_entries_used()==128);
++ }
++ if(mode=="MISSQ_FULL") {
++  f.block_lower=true;unsigned issued=0;
++  for(unsigned set=1;set<32 && f.cache->miss_queue_has_slots(1);++set) {
++   auto xs=f.addresses(12,true,set);
++   for(auto x:xs) {if(!f.cache->miss_queue_has_slots(1))break;f.send(f.make(x,false));f.await_frontend();++issued;}
++  }
++  assert(!f.cache->miss_queue_has_slots(1));
++ }
++ const auto addr=f.addresses(1,false)[0];auto request=f.make(addr,write);if(write)f.memory[addr][0]=f.expected.at(request->get_request_uid())[0];
++ auto*d=ep_l2_detach_diag::get(f.cache);const auto prior_detach=d?d->total[ep_l2_detach_diag::detach_success]:0,prior_relieve=d?d->total[ep_l2_detach_diag::relieve_calls]:0;auto old=f.tag_for(a[0]);const auto grants=f.cache->ep_l2_payload_bank_grants(),attempts=f.cache->ep_l2_payload_bank_attempts();const auto descriptors=f.cache->ep_l2_descriptor_count_used();
++ std::vector<unsigned char> ledger;if(d){ledger.resize(sizeof(*d));std::memcpy(ledger.data(),d,sizeof(*d));}
++ for(unsigned n=0;n<32;++n){ep_l2_detach_diag::preview o;f.cache->detach_diag_snapshot(request,o);l2_access_plan p;f.cache->preview_access(addr,request,p,&o);
++  assert(o.production_reached && o.production_raw==RESERVATION_FAIL && !o.consulted);
++  assert(o.intermediate==RESERVATION_FAIL && p.probe_status==RESERVATION_FAIL);
++  if(d)assert(o.raw==RESERVATION_FAIL);
++  assert(f.tag_for(a[0])==old && f.cache->ep_l2_payload_bank_grants()==grants && f.cache->ep_l2_payload_bank_attempts()==attempts && f.cache->ep_l2_descriptor_count_used()==descriptors);
++ }
++ if(d)assert(!std::memcmp(ledger.data(),d,sizeof(*d)));
++ f.send(request);f.ticks(64);
++ if(guard){assert(f.sp->ep_l2_icntl2_occupancy()==1);if(mode!="MISSQ_FULL")assert(f.pending_reads.size()==(mode=="MSHR_FULL"?136:8));}
++ else{assert(f.sp->ep_l2_icntl2_occupancy()==0 && f.tag_for(addr).valid() && f.pending_reads.size()==(write?8:9));}
++ if(d){
++  using namespace ep_l2_detach_diag;assert(d->partitions() && !d->total[closure_errors] && !d->total[selected_identity_mismatch]);
++  assert(d->total[raw_reservation_fail]>0);
++  if(guard){assert(d->total[detach_success]==prior_detach && d->total[relieve_calls]==prior_relieve);
++   if(mode=="MSHR_FULL"||mode=="MISSQ_FULL")assert(d->total[pressure_rewrite_miss]>0 && d->total[rewritten_final_denied]>0);
++   else if(mode=="REUSE")assert(d->total[pressure_kept_fail]>0 && d->total[pressure_rewrite_miss]==0);
++   else assert(d->total[pressure_relief_not_consulted]>0 && d->total[pressure_rewrite_miss]==0);
++  }else{assert(d->total[pressure_rewrite_miss]>=1 && d->total[eligible_rewrite_miss]>=1);
++   assert(d->total[raw_tag_fail_commit]==1 && d->total[relieve_calls]==1 && d->total[relieve_eligible_selected]==1 && d->total[detach_success]==1 && d->total[trigger_accepted_after_detach]==1);
++  }
++  printf("DIAG_CONTRACT_V2|case=%s|raw_RF=%llu|virtual_miss=%llu|kept_fail=%llu|not_consulted=%llu|commit_RF=%llu|relieve=%llu|detach=%llu|after_detach_accept=%llu|closure_errors=%llu\n",mode.c_str(),(unsigned long long)d->total[raw_reservation_fail],(unsigned long long)d->total[pressure_rewrite_miss],(unsigned long long)d->total[pressure_kept_fail],(unsigned long long)d->total[pressure_relief_not_consulted],(unsigned long long)d->total[raw_tag_fail_commit],(unsigned long long)d->total[relieve_calls],(unsigned long long)d->total[detach_success],(unsigned long long)d->total[trigger_accepted_after_detach],(unsigned long long)d->total[closure_errors]);
++ }
++ if(mode=="SEQUENTIAL") {
++  auto native=f.addresses(3,false);
++  for(unsigned n=1;n<3;++n){f.send(f.make(native[n],false));f.await_lower(9+n);}
++  assert(d?d->total[ep_l2_detach_diag::detach_success]==3:true);
++  // All detached returns retain old payload identity and cannot mutate new tags.
++  auto fresh=f.tag_for(addr);f.return_one(f.pending(old));f.ticks(16);
++  assert(f.tag_for(addr)==fresh);
++ }
++ f.block_lower=false;
++ f.finish_named(mode.c_str());
++}

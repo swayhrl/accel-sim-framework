@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_c_formal_closure/test_host_native_t3.py", line 22, in check
+    val=fn();ok=not reject;err=None
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_c_formal_closure/test_host_native_t3.py", line 84, in <lambda>
+    a=copy.deepcopy(s);a.update(mode=arm_mode,T=arm_mode!='F_MINUS_T',ordinary_ro_tag_relief=arm_mode=='CORRECTED_F',cohort=arms[arm_mode]['cohort']);a['expected_effective_options'].update(mc.flags(arm_mode));cfg=SBOX/('TEST_ONLY_'+arm_mode+'.config');cfg.write_text(''.join(k+' '+v+'\n'for k,v in a['expected_effective_options'].items()));a['ordered_configs']=[ref(cfg)];ap=SBOX/'cases'/a['cohort']/'control/FROZEN_SPEC.json';ap.parent.mkdir(parents=True,exist_ok=True);ap.write_text(json.dumps(a,sort_keys=True,indent=2)+'\n');rr=registry();rr['registered_future_requests'][common.GOAL]['admitted_specs']={a['cohort']:sha(ap)};install(rr);check('native_allarm_spec_'+arm_mode,lambda a=a:eng.spec_for(a['cohort']));check('native_allarm_prepare_'+arm_mode,lambda a=a:eng.prepare(a['cohort']))
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_c_formal_closure/host_candidate/ep_perf_native_wv_modes_draft.py", line 127, in prepare
+    need(read(path) == receipt, 'prelaunch qualification changed')
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_c_formal_closure/host_candidate/ep_perf_common_v2.py", line 17, in need
+    raise RuntimeError(message)
+RuntimeError: prelaunch qualification changed
+
+Traceback (most recent call last):
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_c_formal_closure/test_host_native_t3.py", line 84, in <module>
+    a=copy.deepcopy(s);a.update(mode=arm_mode,T=arm_mode!='F_MINUS_T',ordinary_ro_tag_relief=arm_mode=='CORRECTED_F',cohort=arms[arm_mode]['cohort']);a['expected_effective_options'].update(mc.flags(arm_mode));cfg=SBOX/('TEST_ONLY_'+arm_mode+'.config');cfg.write_text(''.join(k+' '+v+'\n'for k,v in a['expected_effective_options'].items()));a['ordered_configs']=[ref(cfg)];ap=SBOX/'cases'/a['cohort']/'control/FROZEN_SPEC.json';ap.parent.mkdir(parents=True,exist_ok=True);ap.write_text(json.dumps(a,sort_keys=True,indent=2)+'\n');rr=registry();rr['registered_future_requests'][common.GOAL]['admitted_specs']={a['cohort']:sha(ap)};install(rr);check('native_allarm_spec_'+arm_mode,lambda a=a:eng.spec_for(a['cohort']));check('native_allarm_prepare_'+arm_mode,lambda a=a:eng.prepare(a['cohort']))
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_c_formal_closure/test_host_native_t3.py", line 27, in check
+    print(tb);raise AssertionError(results[-1])
+AssertionError: {'label': 'native_allarm_prepare_CORRECTED_F', 'PASS': False, 'expected': 'PASS', 'error': 'RuntimeError:prelaunch qualification changed'}
