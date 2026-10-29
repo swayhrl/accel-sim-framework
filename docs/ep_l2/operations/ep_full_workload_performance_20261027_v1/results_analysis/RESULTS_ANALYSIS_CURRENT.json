@@ -1,16 +1,16 @@
 {
   "Main_live_snapshot": {
     "matched_details_ref": {
-      "bytes": 187271,
+      "bytes": 188322,
       "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/analysis/live/MATCHED_RESULT_DETAILS.json",
-      "sha256": "4b7d5bfbffc9287adc332072d92583cb30f1c15058f88f7f24664343a9820454"
+      "sha256": "01ce8d6b6530762a698397ce78cd9a91447e45aec45c0935694519e6599df60c"
     },
     "status_ref": {
-      "bytes": 2182,
+      "bytes": 2142,
       "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/analysis/live/CURRENT_STATUS.json",
-      "sha256": "8a1916c556cb9a45f5c9457f789154cacb5a5db9aed90776ee294d8ea4bbb9ef"
+      "sha256": "60f084f7a411ad0ab58246ecfabe9b4b2abffc72af4643c3a4e56668c8611ee8"
     },
-    "utc": "2026-10-29T03:35:18.215226+00:00"
+    "utc": "2026-10-29T03:35:51.695740+00:00"
   },
   "actual_smallG_final_RO_detaches": [
     {
@@ -142,16 +142,15 @@
   },
   "counts": {
     "consumed": 227,
-    "independently_metadata_joined_closed_accepted": 222,
+    "independently_metadata_joined_closed_accepted": 223,
     "join_holds": 0,
     "live_pair_exclusions": 0,
-    "matched_same_hardware_pairs": 110,
+    "matched_same_hardware_pairs": 111,
     "registered": 227,
     "states": {
-      "CLOSED_ACCEPTED": 222,
+      "CLOSED_ACCEPTED": 223,
       "CLOSED_UNACCEPTED": 2,
-      "CONSUMED_BEFORE_FORK": 2,
-      "NATURAL_COMPLETE_PENDING_VALIDATION": 1
+      "CONSUMED_BEFORE_FORK": 2
     }
   },
   "coverage_ledger": {
@@ -202,8 +201,8 @@
     }
   },
   "current_reference_coverage": {
-    "S_F_input_pairs": 23,
-    "S_F_programs": 22,
+    "S_F_input_pairs": 24,
+    "S_F_programs": 23,
     "S_WV_pairs": 7,
     "not_disjoint_workload_totals": true,
     "scope": "CLOSED_ACCEPTED_EXACT_CURRENT_PAIRS_NOT_FULL35_OR96"
@@ -15549,11 +15548,22 @@
       }
     },
     {
+      "CTA": 1000,
+      "IPC": 1811.6081140607662,
       "M": true,
-      "RO_applicability": "EXACT_RO_QUALIFICATION_REQUIRED",
+      "RO_applicability": "EXACT_WHOLECMD_SOURCE_LOADER_QUALIFIED",
+      "RO_qualification_ref": {
+        "bytes": 2070,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_LAVAMD_51FAFFD2_F_REF_V1/control/RO_QUALIFICATION.json",
+        "sha256": "89f21b8af22558c2f390662797308c226bbe5b77503c19de982738c1a019ce9f"
+      },
       "T": true,
-      "accepted": false,
-      "archive_ref": null,
+      "accepted": true,
+      "archive_ref": {
+        "bytes": 1850,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_LAVAMD_51FAFFD2_F_REF_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "c0a3c202dc7c57f1b9f79284393439e7219b2dcc0f1f350a06e7214acf04e85c"
+      },
       "cohort": "EP_PERF_LAVAMD_51FAFFD2_F_REF_V1",
       "cost_proxy": {
         "DRAM_MHz": 850.0,
@@ -15582,21 +15592,26 @@
         "physical_payload_line_slots_per_slice": 1168,
         "static_s64": false
       },
+      "cycles": 5738976,
       "done_ref": {
         "bytes": 4580,
         "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_LAVAMD_51FAFFD2_F_REF_V1.DONE.json",
         "sha256": "421ff852ef04a67bbcc001166cfdade4d3b0ecab5a44a91b1a275d425b330948"
       },
-      "failure_ref": null,
+      "exact_delta_from_same_mode_REF": {},
       "geometry": {
         "line_bytes": 128,
         "sets": 32,
         "slices": 64,
         "ways": 8
       },
+      "hardware_drained": true,
       "input_identity_sha256": "51faffd2b338dced7996eb80a193db964574e7dd6aba62b940daba59c50afb9b",
+      "instructions": 10396775488,
+      "kernels": 1,
+      "matched_same_mode_REF_cohort": "EP_PERF_LAVAMD_51FAFFD2_F_REF_V1",
+      "matched_same_mode_REF_cycles": 5738976,
       "mode": "F",
-      "negative_scope": "PENDING_NO_RATIO",
       "numeric_output": "UNKNOWN",
       "observer": {
         "B0": "1",
@@ -15611,9 +15626,21 @@
         }
       },
       "option282_digest": "36e8ce4369e8dabdf923a5d5f2eceaa93f43c4d705c0bd23ec9bde9a26563599",
+      "point_ref": {
+        "bytes": 2397,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_LAVAMD_51FAFFD2_F_REF_V1/run/56e7a936-1179-4466-8c2a-073df0e7a69c/ACCEPTED_POINT.json",
+        "sha256": "55f4f651eac31feb56f51658dffa78c21317e168ea977959ecb23d74e232b1e9"
+      },
+      "postrun_qualification_ref": null,
       "profile": "REF32x8_L100",
       "program": "lavamd",
-      "scientific_status": "UNSPECIFIED",
+      "raw_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_LAVAMD_51FAFFD2_F_REF_V1/run/56e7a936-1179-4466-8c2a-073df0e7a69c/raw.log.gz",
+        "sha256": "f275159e844de364793caad03ba8f0daae9c3c4edabc034e30ce922d179b7b5a"
+      },
+      "same_mode_REF_over_cycles": 1.0,
+      "same_mode_cycle_reduction_fraction": 0.0,
+      "semantic_population_digest": "e8b733871eed1df1feedf0770e710713de160500aa8ca8871f5cb12699947a01",
       "source_identity": {
         "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
         "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
@@ -15626,7 +15653,11 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_LAVAMD_51FAFFD2_F_REF_V1/control/FROZEN_SPEC.json",
         "sha256": "3d755328bb0eca3c8e0ff263994b2ef1a366062839855d36bef03e5754617f69"
       },
-      "state": "NATURAL_COMPLETE_PENDING_VALIDATION"
+      "state": "CLOSED_ACCEPTED",
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_LAVAMD_51FAFFD2_F_REF_V1/run/56e7a936-1179-4466-8c2a-073df0e7a69c/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "55f502b0529afa7844009f11b0710ae7c8cfffa4d158a52f2ab266a6c15018b2"
+      }
     },
     {
       "CTA": 1000,
@@ -26951,8 +26982,8 @@
         "last_line": 178
       }
     ],
-    "current_analysis_accepted_count": 222,
-    "current_analysis_population_asof_utc": "2026-10-29T03:35:18.345530+00:00",
+    "current_analysis_accepted_count": 223,
+    "current_analysis_population_asof_utc": "2026-10-29T03:35:51.830021+00:00",
     "evidence_ref": {
       "bytes": 24308,
       "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/control/TECHNICAL_FAILURE_ROOTCAUSE_20261028_V1/EVIDENCE.json",
@@ -26978,16 +27009,127 @@
   "goal": "EP_L2_FULL_WORKLOAD_PERFORMANCE_POTENTIAL_EXPLORATION_V1",
   "incremental_refresh": {
     "current_spec_SHA_and_registry_pointer_join_checked": true,
-    "new_matched_pairs": 0,
-    "new_or_changed_rejoined": [],
-    "new_pairs": [],
+    "new_matched_pairs": 1,
+    "new_or_changed_rejoined": [
+      "EP_PERF_LAVAMD_51FAFFD2_F_REF_V1"
+    ],
+    "new_pairs": [
+      {
+        "F_absolute_REF_over_F": 1.0,
+        "F_archive_ref": {
+          "bytes": 1850,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_LAVAMD_51FAFFD2_F_REF_V1/control/ARCHIVE_RECEIPT.json",
+          "sha256": "c0a3c202dc7c57f1b9f79284393439e7219b2dcc0f1f350a06e7214acf04e85c"
+        },
+        "F_cohort": "EP_PERF_LAVAMD_51FAFFD2_F_REF_V1",
+        "F_cycles": 5738976,
+        "F_point_ref": {
+          "bytes": 2397,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_LAVAMD_51FAFFD2_F_REF_V1/run/56e7a936-1179-4466-8c2a-073df0e7a69c/ACCEPTED_POINT.json",
+          "sha256": "55f4f651eac31feb56f51658dffa78c21317e168ea977959ecb23d74e232b1e9"
+        },
+        "F_spec_ref": {
+          "bytes": 28547,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_LAVAMD_51FAFFD2_F_REF_V1/control/FROZEN_SPEC.json",
+          "sha256": "3d755328bb0eca3c8e0ff263994b2ef1a366062839855d36bef03e5754617f69"
+        },
+        "RO_applicability": "EXACT_WHOLECMD_SOURCE_LOADER_QUALIFIED",
+        "S_absolute_REF_over_S": 1.0,
+        "S_archive_ref": {
+          "bytes": 1850,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_LAVAMD_51FAFFD2_S_REF_V1/control/ARCHIVE_RECEIPT.json",
+          "sha256": "339443313b3c87ca51df0153125833bdd8bba6aa80e13345f440f3b95030d2a1"
+        },
+        "S_cohort": "EP_PERF_LAVAMD_51FAFFD2_S_REF_V1",
+        "S_cycles": 5581479,
+        "S_point_ref": {
+          "bytes": 2396,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_LAVAMD_51FAFFD2_S_REF_V1/run/f293d9bc-a02c-4bb0-a213-1793294fb13d/ACCEPTED_POINT.json",
+          "sha256": "85ca8f005fd0c575e262b549b03ae91ece011d9759e8cbfb881bff103f308684"
+        },
+        "S_spec_ref": {
+          "bytes": 26052,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_LAVAMD_51FAFFD2_S_REF_V1/control/FROZEN_SPEC.json",
+          "sha256": "6816398e1e7a8dda2432715eb9f0119ff32aa08c2f6f281dc8ae2d88183633ac"
+        },
+        "cost_proxy": {
+          "DRAM_MHz": 850.0,
+          "DRAM_return": 192,
+          "FRFCFS": 128,
+          "F_pool": "UNIFIED1168",
+          "ICNT_in": 512,
+          "ICNT_out": 512,
+          "L1_MissQ": 16,
+          "L2_MissQ": 128,
+          "S_static_role_partition": [
+            1024,
+            128,
+            16
+          ],
+          "Tag_address_coverage_GPU_bytes": 2097152,
+          "Tag_storage_area_bytes": "UNKNOWN; coveragebytes not TagRAM bytes",
+          "WAD128": 128,
+          "bank_ops_per_CORE": 1,
+          "descriptor512": 512,
+          "line_MSHR": 128,
+          "logical_Tag_slots_per_slice": 256,
+          "lower_FIFO": 128,
+          "metadata_PPA": "UNKNOWN",
+          "physical_payload_data_GPU_bytes": 9568256,
+          "physical_payload_line_slots_per_slice": 1168,
+          "static_s64": false
+        },
+        "geometry": {
+          "line_bytes": 128,
+          "sets": 32,
+          "slices": 64,
+          "ways": 8
+        },
+        "hardware_background_digest": "7f45ea6c40053e0bd4855274c7f74e96f013c19808f6828e4b9e6ea316914610",
+        "input_identity_sha256": "51faffd2b338dced7996eb80a193db964574e7dd6aba62b940daba59c50afb9b",
+        "observer": {
+          "B0": "1",
+          "M0a": "1",
+          "MS": "1",
+          "env": {
+            "EPL2_DETACH_DIAG": "0",
+            "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
+            "EPL2_TAGPRESSURE_DIAG": "0",
+            "EPL2_TAG_LIFETIME": "0",
+            "EP_L2_EVENT_TIMELINE": "0"
+          }
+        },
+        "observer_env": {
+          "EPL2_DETACH_DIAG": "0",
+          "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
+          "EPL2_TAGPRESSURE_DIAG": "0",
+          "EPL2_TAG_LIFETIME": "0",
+          "EP_L2_EVENT_TIMELINE": "0"
+        },
+        "pair_key": "c2cb6119f8ef9f992c78b774edf49764c83a502d57fe95bd952a57bf7b4a0bd5",
+        "profile": "REF32x8_L100",
+        "program": "lavamd",
+        "relative_EP_ratio_change_vs_reference": 1.0,
+        "slowdown": true,
+        "source_identity": {
+          "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+          "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+          "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+          "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+          "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+        },
+        "speedup_S_over_treatment": 0.9725566024322109,
+        "treatment": "F",
+        "treatment_cycle_reduction_fraction": -0.028217789585878617
+      }
+    ],
     "prior_analysis_ref": {
-      "bytes": 1837834,
-      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/results_analysis_20261028_v1/versions/20261029T013310Z_2f341af0/RESULTS_ANALYSIS_CURRENT.json",
+      "bytes": 1838093,
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/results_analysis_20261028_v1/versions/20261029T033518Z_a2d797a7/RESULTS_ANALYSIS_CURRENT.json",
       "publish_name": "RESULTS_ANALYSIS_CURRENT.json",
-      "sha256": "2c2a36fc7cfbc1ae0d67b2fa5e00241c7c7de6a77a46dd8e20cb28e8cdc2105a"
+      "sha256": "6499239179f4a6b6522b35f2b0bcf2a756129355f29c74996c7146d0911a3b65"
     },
-    "prior_utc": "2026-10-29T01:33:10.553607+00:00",
+    "prior_utc": "2026-10-29T03:35:18.345530+00:00",
     "reused_unchanged": [
       "EP_PERF_2DCONV_0AE13552_F_REF_V1",
       "EP_PERF_2DCONV_0AE13552_S_REF_V1",
@@ -30227,6 +30369,54 @@
       "locally_nondominated_in_observed_same_source_mode_population": false,
       "not_area_or_global_optimum": true,
       "profile": "U_L2MQ256"
+    },
+    {
+      "cohort": "EP_PERF_LAVAMD_51FAFFD2_F_REF_V1",
+      "costs": {
+        "DRAM_MHz": 850.0,
+        "DRAM_return": 192,
+        "FRFCFS": 128,
+        "F_pool": "UNIFIED1168",
+        "ICNT_in": 512,
+        "ICNT_out": 512,
+        "L1_MissQ": 16,
+        "L2_MissQ": 128,
+        "S_static_role_partition": [
+          1024,
+          128,
+          16
+        ],
+        "Tag_address_coverage_GPU_bytes": 2097152,
+        "Tag_storage_area_bytes": "UNKNOWN; coveragebytes not TagRAM bytes",
+        "WAD128": 128,
+        "bank_ops_per_CORE": 1,
+        "descriptor512": 512,
+        "line_MSHR": 128,
+        "logical_Tag_slots_per_slice": 256,
+        "lower_FIFO": 128,
+        "metadata_PPA": "UNKNOWN",
+        "physical_payload_data_GPU_bytes": 9568256,
+        "physical_payload_line_slots_per_slice": 1168,
+        "static_s64": false
+      },
+      "cycles": 5738976,
+      "dimensions": [
+        "logical_Tag_slots_per_slice",
+        "bank_ops_per_CORE",
+        "L1_MissQ",
+        "L2_MissQ",
+        "lower_FIFO",
+        "FRFCFS",
+        "DRAM_return",
+        "ICNT_in",
+        "ICNT_out",
+        "DRAM_MHz"
+      ],
+      "dominated_by": [],
+      "input_identity_sha256": "51faffd2b338dced7996eb80a193db964574e7dd6aba62b940daba59c50afb9b",
+      "locally_nondominated_in_observed_same_source_mode_population": true,
+      "not_area_or_global_optimum": true,
+      "profile": "REF32x8_L100"
     },
     {
       "cohort": "EP_PERF_LUD_28B97CD0_F_COMBO_G64W16_UD2_V1",
@@ -41824,6 +42014,114 @@
     {
       "F_absolute_REF_over_F": 1.0,
       "F_archive_ref": {
+        "bytes": 1850,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_LAVAMD_51FAFFD2_F_REF_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "c0a3c202dc7c57f1b9f79284393439e7219b2dcc0f1f350a06e7214acf04e85c"
+      },
+      "F_cohort": "EP_PERF_LAVAMD_51FAFFD2_F_REF_V1",
+      "F_cycles": 5738976,
+      "F_point_ref": {
+        "bytes": 2397,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_LAVAMD_51FAFFD2_F_REF_V1/run/56e7a936-1179-4466-8c2a-073df0e7a69c/ACCEPTED_POINT.json",
+        "sha256": "55f4f651eac31feb56f51658dffa78c21317e168ea977959ecb23d74e232b1e9"
+      },
+      "F_spec_ref": {
+        "bytes": 28547,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_LAVAMD_51FAFFD2_F_REF_V1/control/FROZEN_SPEC.json",
+        "sha256": "3d755328bb0eca3c8e0ff263994b2ef1a366062839855d36bef03e5754617f69"
+      },
+      "RO_applicability": "EXACT_WHOLECMD_SOURCE_LOADER_QUALIFIED",
+      "S_absolute_REF_over_S": 1.0,
+      "S_archive_ref": {
+        "bytes": 1850,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_LAVAMD_51FAFFD2_S_REF_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "339443313b3c87ca51df0153125833bdd8bba6aa80e13345f440f3b95030d2a1"
+      },
+      "S_cohort": "EP_PERF_LAVAMD_51FAFFD2_S_REF_V1",
+      "S_cycles": 5581479,
+      "S_point_ref": {
+        "bytes": 2396,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_LAVAMD_51FAFFD2_S_REF_V1/run/f293d9bc-a02c-4bb0-a213-1793294fb13d/ACCEPTED_POINT.json",
+        "sha256": "85ca8f005fd0c575e262b549b03ae91ece011d9759e8cbfb881bff103f308684"
+      },
+      "S_spec_ref": {
+        "bytes": 26052,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_LAVAMD_51FAFFD2_S_REF_V1/control/FROZEN_SPEC.json",
+        "sha256": "6816398e1e7a8dda2432715eb9f0119ff32aa08c2f6f281dc8ae2d88183633ac"
+      },
+      "cost_proxy": {
+        "DRAM_MHz": 850.0,
+        "DRAM_return": 192,
+        "FRFCFS": 128,
+        "F_pool": "UNIFIED1168",
+        "ICNT_in": 512,
+        "ICNT_out": 512,
+        "L1_MissQ": 16,
+        "L2_MissQ": 128,
+        "S_static_role_partition": [
+          1024,
+          128,
+          16
+        ],
+        "Tag_address_coverage_GPU_bytes": 2097152,
+        "Tag_storage_area_bytes": "UNKNOWN; coveragebytes not TagRAM bytes",
+        "WAD128": 128,
+        "bank_ops_per_CORE": 1,
+        "descriptor512": 512,
+        "line_MSHR": 128,
+        "logical_Tag_slots_per_slice": 256,
+        "lower_FIFO": 128,
+        "metadata_PPA": "UNKNOWN",
+        "physical_payload_data_GPU_bytes": 9568256,
+        "physical_payload_line_slots_per_slice": 1168,
+        "static_s64": false
+      },
+      "geometry": {
+        "line_bytes": 128,
+        "sets": 32,
+        "slices": 64,
+        "ways": 8
+      },
+      "hardware_background_digest": "7f45ea6c40053e0bd4855274c7f74e96f013c19808f6828e4b9e6ea316914610",
+      "input_identity_sha256": "51faffd2b338dced7996eb80a193db964574e7dd6aba62b940daba59c50afb9b",
+      "observer": {
+        "B0": "1",
+        "M0a": "1",
+        "MS": "1",
+        "env": {
+          "EPL2_DETACH_DIAG": "0",
+          "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
+          "EPL2_TAGPRESSURE_DIAG": "0",
+          "EPL2_TAG_LIFETIME": "0",
+          "EP_L2_EVENT_TIMELINE": "0"
+        }
+      },
+      "observer_env": {
+        "EPL2_DETACH_DIAG": "0",
+        "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
+        "EPL2_TAGPRESSURE_DIAG": "0",
+        "EPL2_TAG_LIFETIME": "0",
+        "EP_L2_EVENT_TIMELINE": "0"
+      },
+      "pair_key": "c2cb6119f8ef9f992c78b774edf49764c83a502d57fe95bd952a57bf7b4a0bd5",
+      "profile": "REF32x8_L100",
+      "program": "lavamd",
+      "relative_EP_ratio_change_vs_reference": 1.0,
+      "slowdown": true,
+      "source_identity": {
+        "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+        "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+        "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "speedup_S_over_treatment": 0.9725566024322109,
+      "treatment": "F",
+      "treatment_cycle_reduction_fraction": -0.028217789585878617
+    },
+    {
+      "F_absolute_REF_over_F": 1.0,
+      "F_archive_ref": {
         "bytes": 1900,
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_BLACKSCHOLES_09EFF62B_F_G64_W16_V1/control/ARCHIVE_RECEIPT.json",
         "sha256": "914f0b7f2d6a9e127236198a624d44032ddce67a2b2d8c66e2fc72ce443d45d3"
@@ -44606,9 +44904,9 @@
   },
   "refresh_delta_summary": {
     "T_independent_gain": "UNKNOWN_NEEDS_EXACT_F_BACKGROUND_T_OFF_M1",
-    "new_accepted_endpoints": 0,
-    "new_fully_matched_pairs": 0,
-    "prior_analysis_utc": "2026-10-29T01:33:10.553607+00:00",
+    "new_accepted_endpoints": 1,
+    "new_fully_matched_pairs": 1,
+    "prior_analysis_utc": "2026-10-29T03:35:18.345530+00:00",
     "remaining_live": [
       "EP_PERF_SYRK_90B0CC9D_F_REF_V1",
       "EP_PERF_SYRK_90B0CC9D_S_REF_V1"
@@ -44622,14 +44920,14 @@
     "CPU": 511,
     "maxRSS_bytes": 95006720,
     "nice": 15,
-    "seconds": 0.1939726360142231
+    "seconds": 0.19464469328522682
   },
   "schema": "EP_AGENT_B_ACCEPTED_RESULTS_ANALYSIS_V1",
   "source_snapshot": {
     "epoch": 2,
-    "epoch_sha256": "db12e18b90d216445fa80f3c45ca2fa052156f9824afef575305a5bc1ca1aeae",
-    "registry_sha256": "1d4c2180590e33282a5bb7bef9e2db7a2ae4a02e243f5af2195e899dd2719cc3"
+    "epoch_sha256": "b582370aaa3734fa7bd045b0ea2bdc140e94dffb6aa48c45c3bbf009650c80bd",
+    "registry_sha256": "96270e21b3e0660bd9057642a90e62f935d0a4d47e002bacd44dc6979733994f"
   },
   "trace_or_raw_rereads": 0,
-  "utc": "2026-10-29T03:35:18.345530+00:00"
+  "utc": "2026-10-29T03:35:51.830021+00:00"
 }

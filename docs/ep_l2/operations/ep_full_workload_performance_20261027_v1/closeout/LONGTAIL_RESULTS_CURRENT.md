@@ -1,12 +1,12 @@
 # Finite longtail result update
 
-UTC: 2026-10-29T03:35:18.798557+00:00. Status: SCOPED_LONGTAIL_RUNNING.
+UTC: 2026-10-29T03:35:52.291194+00:00. Status: SCOPED_LONGTAIL_RUNNING.
 
-Accepted experiment points: 222; matched comparisons: 110.
+Accepted experiment points: 223; matched comparisons: 111.
 
 |program|mode|state|whole-application cycles|
 |---|---|---|---:|
-|lavamd|F|NATURAL_COMPLETE_PENDING_VALIDATION|PENDING_OR_UNACCEPTED|
+|lavamd|F|CLOSED_ACCEPTED|5738976|
 |SYRK|S|CONSUMED_BEFORE_FORK|PENDING_OR_UNACCEPTED|
 |SYRK|F|CONSUMED_BEFORE_FORK|PENDING_OR_UNACCEPTED|
 
@@ -18,5 +18,6 @@ A PARSE_HOLD/technical negative is reported as such; it is never filled with zer
 
 |program|S cycles|F cycles|S/F|
 |---|---:|---:|---:|
+|lavamd|5581479|5738976|0.9725566024322109|
 
 Full35/96 GM and T-independent speedup remain unproved by these updates. No new workload expansion is automatic.
