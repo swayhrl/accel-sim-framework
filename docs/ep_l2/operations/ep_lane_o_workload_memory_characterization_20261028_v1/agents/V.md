@@ -1,5 +1,7 @@
 # Lane O / V：替换与复用只读审计
 
+V1R2口径修订（2026-10-29）：未来采集以根MEASUREMENT_CONTRACT.md为准。真实ingress_child、queue_enter、first_head和admission分别命名；未采集入口hook时，只报head间隔，不能把队列进入/队头访问称作完整入口到达或严格入口fill前重访。本附录原始已验收服务计数不变。
+
 日期：2026-10-28；主研究线 Main 未接管。仿真/构建/Trace正文扫描/生产代码修改均为 0。
 
 ## 证据与身份

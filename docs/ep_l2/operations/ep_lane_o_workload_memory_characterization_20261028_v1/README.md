@@ -14,6 +14,10 @@
 | [初步Observation草案](OBSERVATIONS.md) | 已证实、历史证据边界、待验证、不成立的推断 |
 | [42程序指标覆盖CSV](METRIC_COVERAGE.csv) | 按完整输入SHA连接的当前metric可用性；[解释](METRIC_COVERAGE_NOTES.txt) |
 | [全负载身份与验收CSV](agents/coverage.csv) | 35冻结代表与7身份未解，覆盖不以成功子集替代 |
+| [V1R2计量合同](MEASUREMENT_CONTRACT.md) | ingress/queue/head/admission、同人口分母、ready/retire与统计状态 |
+| [V1R2路径NI矩阵](NI_MATRIX.md) | 新统计各路径的资格要求；未准备新Core/ELF，不继承旧NI |
+| [四候选输入缺口表](PILOT_GAPS.json) | Scan、Conv、FWT、Vector6M现有数据与缺口，非启动清单 |
+| [给Main的交接文字](MAIN_HANDOFF.md) | 可直接转发的范围、接口与最小回包要求 |
 
 ## 核心事实
 
@@ -24,14 +28,23 @@
 - Conv已测同Set满路preview压力；当前接受点中Conv 16×8和32×4分别实际detach **237/1,141** 次，Vector4M 32×4为**27**次。缩容点完整F均慢于相应S；没有同背景F−T/F，不能声称T的独立正负收益。
 - 历史Motivation已有reuse distance及post-eviction统计；Streaming prefinal已揭示空间sector触达与真正时间复用的区别。应先补历史小CSV/manifest索引，不重复扫描大Trace。
 
-后续建议先由Main增量导出现有小汇总，再审查轻量统计候选；如批准工程，使用独立工程分支。计划中的pilot与全代表覆盖均未启动，也不在本轮注册预算。
+后续先由Main核对已有小汇总和PILOT_GAPS，确定基点与确实缺失项；如需工程，再使用独立候选分支。pilot与全代表补采均未启动，不在本轮注册预算。
+
+## V1R2 审查问题已落实
+
+- **边界固定**：真实入口、入队、first-head与准入分开；旧head数据不回填入口重访。
+- **百分比收窄**：Conv/Scan 22份小JSON没有找到absorbed类别投影；撤下尚未证明同人口的精确受阻发生率，原始计数不变。
+- **NI按路径核对**：撤销固定4 ON+1 OFF足够的假定；新Source/ELF、S/F/WV路径资格均未由Lane O准备或通过。
+- **可交接**：新增计量合同、路径矩阵、四输入缺口表及Main交接文字。旧214点冻结分析和25/23/30等各统计人口不刷新，Main新接受点不自动混入。
+
+落实记录和本次QA在[revisions/20261029_v1r2](revisions/20261029_v1r2/RESOLUTION.md)。本轮无仿真、构建或Core改动，也没有替用户向Main发消息。
 
 ## V1R1 只读复审修订（不新增科学运行）
 
 本次仅在独立Lane O文档分支补齐审查意见，**原始冻结统计投影和Main实验接受状态不回写**；报告时点仍固定于2026-10-28 18:30:57（北京时间）。
 
 - **T证据补全**：补录同一冻结接受人口中的Conv 237/1,141次实际detach及匹配S/F cycles，保留Vector27和没有T独立因果对照的边界。
-- **首批观察加入Scan**：与Conv、FWT、Vector6M组成四类互补输入；先复用已接受小统计，pilot最多4个缺口ON和必要时1个新Source OFF作为计划上限，**不等于启动许可**。
+- **首批观察加入Scan**：与Conv、FWT、Vector6M组成互补输入。此版曾暂定4 ON+1 OFF；该固定足够假定已由V1R2路径NI矩阵取代，不再作为当前点数依据。
 - **分开S/F观察**：S用于地址复用、WBUF/WAD、普通MSHR及Tag需求；F/WV用于实际Victim、RO、Detach与联合机会；禁止跨模式拼接事件或把F机制行为叫作程序固有特征。
 - **四条论文主观察**：按W、V、M、T四项资源需求组织，原O1–O8保留为证据条目而非八个并列贡献。
 
@@ -42,5 +55,7 @@
 本地：`D:/repo/ep-l2-lane-o-20261028`。
 
 远端：`hrl-174-new:/root/workspace/ep-l2-lane-o-20261028`。
+
+以上保留第一阶段冻结副本；V1R2独立工作副本为本地`D:/repo/ep-l2-lane-o-v1r2-20261029`及远端`/root/workspace/ep-l2-lane-o-v1r2-20261029`。Git分支当前文档以V1R2为准。
 
 Agent附录：[W](agents/W.md)、[V](agents/V.md)、[M](agents/M.md)、[T](agents/T.md)、[覆盖](agents/COVERAGE.md)。小型原投影固定在`agents/coverage_snapshot`，逐端点派生JSON保留原bundle/验收路径与SHA。此目录不含Trace、巨大raw、Core补丁或启动脚本。SHA256SUMS记录本交付目录自身的小文件校验，不替代Main正式验收。

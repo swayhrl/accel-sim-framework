@@ -13,7 +13,7 @@
 | WAD生命周期 | dirty reservation→对应WB set_done；sum/count，max，按完成WB的p95。计时为gpu_sim_cycle+gpu_tot_sim_cycle（CORE全局tick），非DRAM周期 | B0应用行已有每slice整数avg、p95、max。不能平均slice p95求全GPU p95；未保留sum/count时不可精确合并均值。源码保留完整整数duration map，未来可压成有界直方图 |
 | WAD占用 | tick采样occupancy分布；sum/sample_count、p95、max；full fraction应为occupancy==128的tick数/sample_count | B0已有每sliceavg/p95/max，48端点覆盖。full precheck observations不等于时间占满tick，不等于不同受阻请求 |
 | WBUF占用及阻塞 | FT wb_occupancy_sum/observed_cycles；staged_max是m_ft_wb包数峰，与包含reserved WB role占用不完全相同。wbuf_full是实际进入FT路径时staging资源预检失败的重试次数 | FT已有counter，但compact bundle不保留这些FT SUMMARY字段；重试可能先在Frontend被挡，不能视作全入口受阻率。本次48个REF端点MS observer均ON，已有wb_sum/sample_cycles、wb_peak及WB_DATA_SPACE/COPY_PIPELINE/DATA_SERVICE逐reason独立请求/重复观察/first-wait分布；MS0另组为NOT_OBSERVED。不能把四个heavy optional observer OFF误读成MS observer OFF |
-| 同址WB再访问 | 新独立入口请求第一次观测到其128B地址在mandatory WAD内的数 / 所有独立入口请求；另按读/写/atomic分类。重复head观测、已接受forward响应另列 | B0已有hazard_events与hazard_wait_cycles，但两个字段在同一if各加1，都是特定native precheck域重复head-tick观察。MS已有更广入口SAME_ADDRESS_WB独立首次受阻请求与first-wait直方图，可除model.unique_requesters作已观测受阻请求率；仍缺实际read/write类别与WB age。B0零不能否定MS正事件 |
+| 同址WB再访问 | 分ingress_child与first-head定义；比率需同边界同类的独立分子/分母，R/W/A另列。重复head检查与forward完成另列 | B0是窄precheck重复观察；MS已有更广head域SAME_ADDRESS_WB独立first-block/等待。不可无条件除FT unique_requesters称demand发生率，FT排除L1_WRBK而MS未天然排除；当前缺类型投影、R/W/A与WB年龄。B0零不否定MS正事件 |
 | copy数据搬移 | logical_copy_reads/writes 是独立payload RAM op，分别计一次，copy_lines×128为逻辑copy字节；bank服务占比=(copy_read+copy_write)/bank_logical_ops | 48端点可得，所有25个S满足copy_read=copy_write=wb_created。F的0是组织取消copy的机制结果，不能反推程序没有脏替换 |
 | Bank等待 | true_conflict_ops/logical_ops为独立bank op发生至少一次冲突的比例；true_conflict_events为所有拒绝尝试；wait_cycles为每个最终获服务op首次冲突→grant的累计tick，按bank/服务类分别统计才可归WB | B0已有全类型和每banklogical/true/wait，operation_class粗分类。WB_READOUT同时包含S copy-read和lower-WB read，RESIDENT_WRITE同时包含copy-write与其他写；缺按client的WB/copy专用wait分布。全类型bank_block不能当WB等待 |
 
@@ -31,7 +31,7 @@
 | stencil bd0309df |1504136|11.13%|7|0|0|205–210|
 
 - **已证实 O-W1**：存在有意义的dirty-victim copy工作量，且负载差异显著。Conv/scan/srad/stencil的S组织copy占全部独立payload RAM ops约11–14%；这证明W有可移除操作，尚不证明GPU cycles收益或主瓶颈。全机制F与S的WB创建数不同，故不能逐行相减当作同一批eviction的消除。
-- **已证实 O-W2**：MS入口已有独立请求去重，写回地址依赖在Conv/srad/FWT/scan/3MM均存在。Conv的16791个独立head首次受阻请求对应3736508次观察；srad65753个对应21602967次。应保留独立率与等待长尾，不能按重复观察推断广泛性。
+- **已证实 O-W2**：MS head域已有独立去重，Conv/srad/FWT/scan/3MM均有阻塞head同址WB条件。Conv16791个独立head对应3736508次观察；srad65753个对应21602967次。保留独立数与等待长尾，不能按重复观察推断全入口覆盖或独占因果损失。
 - **已证实 O-W3**：WB数量高不必然意味着WAD满。stencil有1504136次WB，但WAD峰7/128、同址及full观察均0；Conv/scan则真实达到128且有full预检观察。此处没有使用性能排序来挑样。
 - **已证实负例**：25个S参考端点中10个WB=0：BlackScholes、dwt2d、gaussian、GESUMMV、heartwall、histogram、lud、mergeSort、particlefilter_float、transpose（各自本次SHA输入）。不能把零WB推广为程序只读、无store、其他尺寸也无W机会；memcpy预热/工作集/不flush及Tag背景均属于实验条件。
 - **已证实但收益待验证**：WBUF16真实限制独立请求，scan的WB_DATA_SPACE为1737618个独立首次受阻请求、49938625次重复观察，max637ticks；Conv为49161个/max316。它们不是独占GPU stall。仍待测WB age/read-write类型及client专属bank等待，无法证明移除这些限制的GPU净收益。
@@ -52,7 +52,7 @@
 | 3MM |11 /2031|0 /0|0|0.000553 /6|
 | stencil |0 /0|0 /0|0|0.00760 /2|
 
-例如Conv同址受阻率=16791/5239872=0.32045%；scan为390/42763048=0.000912%。这说明较大的等待观察可以集中于很小请求子集。MS COPY_PIPELINE各例distinct等于WB/copy lines、max1tick；它反映显式copy-latch协议等待。DATA_SERVICE不专属WB，不能全部归于copy。scan DATA_SERVICE的unknown_while_unresolved=40必须保留，不能将它解释为完整因果等待。完整reason.hist_log2及sum/max已写入W_reference_metrics.json，无需新仿真获取。
+V1R2更正：Conv的16,791/3,736,508及scan的390/215,979是MS独立head数/重复观察数。FT tracked requester分别为5,239,872、42,763,048，但FT显式排除L1_WRBK，MS没有相同类别过滤；本次22份小JSON未找到absorbed类别投影。因此撤下此前称为精确demand受阻率的百分比，原始计数保持不变，待同人口证明后才恢复比率。MS COPY_PIPELINE各例distinct等于WB/copy lines、max1tick，反映copy-latch协议等待；DATA_SERVICE不专属WB。scan DATA_SERVICE的unknown_while_unresolved=40须保留。完整hist/sum/max已在W_reference_metrics.json，无需重跑获取。
 
 ## 最小新增采集方案（交EP-MAIN审查，不执行）
 

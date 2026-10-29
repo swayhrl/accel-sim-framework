@@ -2,6 +2,8 @@
 
 以下均从访存/资源数据出发。当前数字取自已验收 reference 端点；不是按加速排名挑选。精确输入 SHA、模式、bundle、代码和验收身份见 [证据报告](EVIDENCE_REPORT.md) 及其链接。一个机制可处理某种现象，不等于已证明性能收益。
 
+V1R2：已落实独立审查。入口到达与first-head分开；O2保留独立数/重复数，撤下尚未获得同人口证明的精确百分比。历史冻结计数没有改变。
+
 ## 论文正文建议收敛为四个主观察（V1R1）
 
 O1–O8继续保留为可核查的**具体证据条目**，不作为八个并列的论文贡献。以下四条是论文叙事候选；它们是否能支撑某个机制的**性能收益**，需另有同背景对照证明。
@@ -20,7 +22,7 @@ O1–O8继续保留为可核查的**具体证据条目**，不作为八个并列
 | 草案 | 数据与适用域 | 对结构设计的含义 |
 |---|---|---|
 | O1 脏替换引入可观的额外数据搬移，但程度依负载而变 | Source78参考S，Conv/scan/srad/stencil的copy read+write约占独立payload RAM操作的11–14%；Conv有720,834次WB及同数copy read、copy write。25个S端点中10个WB=0 | W的就地角色转换针对已发生的copy；优先研究高copy样本，并保留零WB控制。不能将操作占比当GPU停顿占比 |
-| O2 写回依赖的重复等待可以集中在很少的独立请求上 | Conv SAME_ADDRESS_WB为16,791个独立首次受阻请求、3,736,508次检查；占5,239,872个requester的0.32045%。scan为390个、215,979次，占42,763,048个的0.000912%。scan另有1,737,618个WB_DATA_SPACE受阻请求，WBUF峰16、时间均值10.661 | 写回地址依赖与WB数据空间是不同问题。W/V可能缩短或服务这些等待，必须先区分R/W/A和WB阶段。大retry不能证明广泛影响 |
+| O2 写回条件的重复检查显著多于受影响的独立head数 | Conv SAME_ADDRESS_WB有16,791个独立首次受阻head、3,736,508次检查；scan为390个、215,979次。scan另有1,737,618个WB_DATA_SPACE受阻请求，WBUF峰16、时间均值10.661 | 原始事件证明重复观察与独立请求不同。MS head与FT unique_requesters尚无同类过滤/零例外证明，暂不报告精确demand发生率；同址条件也不代表该原因独占造成阻塞。W/V收益另证 |
 | O3 部分被替换数据确实继续服务读取，保留收益具有选择性 | 当前23个F reference端点中10个V读响应>0、13个为0。stencil4,930,616、3MM1,147,507、GEMM586,844；Vector4M/6M、2DCONV/3DCONV、sgemm为0，尽管都有安装 | V有真实服务见证；安装量不能预测服务价值。还不能由响应数确定所需容量、复用距离、避免的lower请求数或独立性能收益 |
 | O4 读取与mandatory写回生命周期在部分真实负载中交叠 | 当前accepted FWT WV有3,312次dirty-forward，scan F有296次，3MM F75次、stencil F20次；均为实际response commit | W/V可以复用仍在WB状态的权威数据。非dirty-forward响应也可能来自WB_COMPLETE，不能全部当clean victim |
 | O5 RO资格与低短期重复性是两个独立维度 | 当前Vector4M的1,000,000个RO requester中749,913个merge；SGEMM的1,135,915个中1,054,333个merge。它们合并到尚存活RO事务，可能包括ready/draining | M可绕开普通line-MSHR，但descriptor和合并价值仍存在；T的reuse_seen保护有实际适用背景。严格fill前重复比例仍未证实，不能称这些RO“无复用” |

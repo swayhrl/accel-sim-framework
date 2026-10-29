@@ -2,6 +2,8 @@
 
 结论：现有已验收小汇总足以支持W/V/M/T的多项正负Observation，当前缺口集中在**地址及时间的联合分布**，不是再跑一轮完整性能矩阵。优先复用mandatory MS/B0/FT/RO/TVD统计和历史复用分析；本阶段新增仿真、构建和生产Core修改均为0。
 
+V1R2已落实[独立审查](reviews/20261029_v1/REVIEW.md)：定义入口与head两个流；O2暂不把跨人口MS/FT计数比叫作精确demand发生率；撤销单个S配对覆盖全部F路径的隐含假定。[计量合同](MEASUREMENT_CONTRACT.md)、[NI矩阵](NI_MATRIX.md)和[四输入缺口表](PILOT_GAPS.json)已可交Main核对。本次只新增合同与小型证据审计，不改变以下214点冻结分析人口。
+
 ## 固定快照与覆盖
 
 全负载状态使用北京时间**2026-10-28 18:30:57**的小型投影，18:31:56复制固定。Main仍在推进，其后的结果不自动进入本报告。
@@ -88,6 +90,8 @@ RO候选/accepted global reads是已有可靠比例，未必是all-L2 demand比�
 ## 统计解释与可靠性约定
 
 每原因MS等待是首次blocked→首次已知clear；若仍阻塞到准入，才在准入关闭。仅ANY_FIRST_BLOCK_TO_ADMISSION必然截至admission。unknown检查、head change、unfinished/censor必须保留；不是累计每次间歇阻塞或独占GPU停顿。
+
+MS的观察入口是head，FT unique_requesters在实际admission处增加且排除L1_WRBK。针对Conv S与Scan S，V1R2定向检查22份现存小JSON，共1,086,440B，未找到absorbed/L1写回类别投影；这不证明该类为零或原除法算术错误，只说明目前没有精确发生率的同人口证明。保留已核实distinct/observations；将类型分母投影列为已有终端字段的可选补投影，不触发raw或Trace扫描。[审计记录](revisions/20261029_v1r2/DENOMINATOR_AUDIT.json)
 
 输入按完整ordered commandlist内容、memcpy、kernel及精确SHA对齐。接受点/validation旧字段可能仍为PENDING，需和冻结CLOSED_ACCEPTED及独立archive receipt外连接；不改写原状态。原始capture完整性与GPU数值输出仍UNKNOWN，观察限于trace-defined完整声明命令序列与模型协议。
 
