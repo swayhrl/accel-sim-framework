@@ -1,0 +1,118 @@
+{
+  "status": "STATIC_ACTUAL_F18E_ELF_CLI_CHAIN_CONFIRMED_NEVER_EXECUTED",
+  "binary_sha256": "f18e220db87582629744827488a81495717555cc31458e1062ee61982add2dac",
+  "Root_attestation": {
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/root/ROOT_CURRENT153_BINARY_PATHS_REAL_SHA_ATTESTATION_V1.json",
+    "bytes": 78244,
+    "sha256": "7b36f0564ced6b07fca6e7d1a2c612a49c533d90ee35977bfb6e40f3e851f321"
+  },
+  "static_read_metadata": {
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/CLI_semantics_audit_v1/F18E_HOST_ELF_STATIC_READ_METADATA_V1.json",
+    "bytes": 993,
+    "sha256": "648c1c078441514d7094004062d01acb971ac7f6c0795773656cd8ef4204bed9"
+  },
+  "actual_file_identity_matches_Root_attested_fd_path": true,
+  "rodata_strings": {
+    "0x152881": "kernel",
+    "0x1526aa": "type",
+    "0x152877": "n",
+    "0x152879": "threads"
+  },
+  "facts": [
+    {
+      "stage": "actual ELF main -> typed runTest",
+      "addresses": [
+        "0x1ee47",
+        "0x1ee4c",
+        "0x1efea"
+      ],
+      "fact": "main calls getCmdLineArgumentString(type), initializes datatype0/int, and selects real runTest<int> when type absent; argv forwarded unchanged."
+    },
+    {
+      "stage": "actual ELF kernel default and override",
+      "addresses": [
+        "0x20799",
+        "0x2084b",
+        "0x20857",
+        "0x20879",
+        "0x2087e"
+      ],
+      "fact": "actual runTest<int> initializes stackslot[rbp-0x7c]=7; loads rodata0x152881 string kernel into same checkCmdLineFlag and getCmdLineArgumentInt calls, stores returned eax to that slot."
+    },
+    {
+      "stage": "actual ELF same-token helper",
+      "addresses": [
+        "0x1f563",
+        "0x1f59e",
+        "0x1f5fa",
+        "0x1f618",
+        "0x1f622",
+        "0x1f62c",
+        "0x1f638"
+      ],
+      "fact": "helper obtains argv[i] and delimiter-adjusted pointer, checks suffix length; if bare kernel token has no suffix sets value0. Otherwise optional ASCII=0x3d advances pointer within same token before atoi. No argv[i+1] value dereference exists on conversion path; next argv is only loop iteration."
+    },
+    {
+      "stage": "actual ELF forwards selected kernel",
+      "addresses": [
+        "0x20be6",
+        "0x20bf7",
+        "0x20c3d",
+        "0x20c65",
+        "0x20c6d"
+      ],
+      "fact": "same rbp-0x7c slot becomes ecx (4th reduce<int> arg) for warmup and r9d (6th benchmarkReduce<int> arg) for timed calls. No inferred dynamic launch or CUDA success."
+    }
+  ],
+  "static_artifact_refs": [
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/CLI_semantics_audit_v1/f18e_HOST_ELF_STATIC_ONLY/0_main.raw.disasm",
+      "bytes": 9518,
+      "sha256": "6515553b61ba224babab538834b98d637a69b03ba0fb95fccd08c51081cd2f8b"
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/CLI_semantics_audit_v1/f18e_HOST_ELF_STATIC_ONLY/1__Z16checkCmdLineFlagiPPKcS0_.raw.disasm",
+      "bytes": 4329,
+      "sha256": "37a4a58365df9e29558a7ffe6cea732a74489e009588df26a65581ee00b8976f"
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/CLI_semantics_audit_v1/f18e_HOST_ELF_STATIC_ONLY/2__Z21getCmdLineArgumentIntiPPKcS0_.raw.disasm",
+      "bytes": 5245,
+      "sha256": "2db9ba789fc0355d93e20df1f4c476ae63aae0696e96d8ee194071726d644159"
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/CLI_semantics_audit_v1/f18e_HOST_ELF_STATIC_ONLY/3__Z24getCmdLineArgumentStringiPPKcS0_PPc.raw.disasm",
+      "bytes": 4136,
+      "sha256": "c23d5e36f228b3a1a1e03e13e62cb473d3e51553e0038ed4200fc13be673f2b9"
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/CLI_semantics_audit_v1/f18e_HOST_ELF_STATIC_ONLY/4__Z7runTestIiEbiPPc10ReduceType.raw.disasm",
+      "bytes": 28241,
+      "sha256": "0e8486ddd1337762ce0cbe6d56fd3fe98c5e6df66f8e73bf6381882b5b15e0c5"
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/CLI_semantics_audit_v1/f18e_HOST_ELF_STATIC_ONLY/rodata.txt",
+      "bytes": 366676,
+      "sha256": "5cd9bfca4798380d4219a5399e52355adebd2d816d678bd889e6f411618901b6"
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/CLI_semantics_audit_v1/f18e_HOST_ELF_STATIC_ONLY/nm.raw",
+      "bytes": 526682,
+      "sha256": "f8ee627df692a640e2636c5a89ed1330206906eccb84e524d411b8b2cf9a0116"
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/CLI_semantics_audit_v1/f18e_HOST_ELF_STATIC_ONLY/nm.demangled",
+      "bytes": 776999,
+      "sha256": "2323eb44017e463f0bfa885a4d5db14a03bf66d8005e98354d366d490aab5159"
+    }
+  ],
+  "interpretation": "For seven frozen argv -kernel N, actual ELF host path selects integer kernel0 parameter regardless of trailing N, matching exact original helper CPU fixture. -kernel=N follows actual ELF same-token =/atoi branch and sets N. This establishes host CLI callchain semantics, not runtime GPU execution, complete input bytes or scientific qualification.",
+  "limits": [
+    "Full source-to-ELF reproducible build provenance remains unproved; static machine-code chain is independently inspected instead.",
+    "No ELF/loader was executed, no CUDA initialization or GPU query, no NativeQA.",
+    "Runtime input/hash, actual CUfunction name/geometry, success API and complete-record closure remain Root observer work."
+  ],
+  "old_metadata_unchanged": true,
+  "SourceKEEP": true,
+  "release_bytes": 0
+}
