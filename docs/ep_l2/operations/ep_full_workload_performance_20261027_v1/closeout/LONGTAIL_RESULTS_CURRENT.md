@@ -1,13 +1,13 @@
 # Finite longtail result update
 
-UTC: 2026-10-30T14:17:24.702566+00:00. Status: SCOPED_LONGTAIL_RUNNING.
+UTC: 2026-10-30T14:17:57.800046+00:00. Status: SCOPED_LONGTAIL_RUNNING.
 
-Accepted experiment points: 223; matched comparisons: 111.
+Accepted experiment points: 224; matched comparisons: 111.
 
 |program|mode|state|whole-application cycles|
 |---|---|---|---:|
 |lavamd|F|CLOSED_ACCEPTED|5738976|
-|SYRK|S|NATURAL_COMPLETE_PENDING_VALIDATION|PENDING_OR_UNACCEPTED|
+|SYRK|S|CLOSED_ACCEPTED|22589807|
 |SYRK|F|CONSUMED_BEFORE_FORK|PENDING_OR_UNACCEPTED|
 
 All scientific inputs/source remain unchanged. No new simulator start, retry, refund or budget was used.

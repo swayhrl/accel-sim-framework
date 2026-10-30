@@ -3,14 +3,14 @@
     "matched_details_ref": {
       "bytes": 188322,
       "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/analysis/live/MATCHED_RESULT_DETAILS.json",
-      "sha256": "83d61afea5a9b5bda1d2cbd5a8bb38419ffa3d3b62cc99853c23558cd238da81"
+      "sha256": "953ad99bf6f9dea5f00ec2f8dc7f4e7d8539ba3d6e277cba01be3acdcef0a4bc"
     },
     "status_ref": {
-      "bytes": 2182,
+      "bytes": 2142,
       "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/analysis/live/CURRENT_STATUS.json",
-      "sha256": "86a0803edbc7fdb8ec8593e51d5a456ffffad55fdbff7b5e86540bf46241ffe6"
+      "sha256": "93e3048b4ad2b912221a1b4ad13eae3b3aa5bbfa6916e58e4c77fbd58da5d120"
     },
-    "utc": "2026-10-30T14:17:24.171848+00:00"
+    "utc": "2026-10-30T14:17:57.276299+00:00"
   },
   "actual_smallG_final_RO_detaches": [
     {
@@ -142,16 +142,15 @@
   },
   "counts": {
     "consumed": 227,
-    "independently_metadata_joined_closed_accepted": 223,
+    "independently_metadata_joined_closed_accepted": 224,
     "join_holds": 0,
     "live_pair_exclusions": 0,
     "matched_same_hardware_pairs": 111,
     "registered": 227,
     "states": {
-      "CLOSED_ACCEPTED": 223,
+      "CLOSED_ACCEPTED": 224,
       "CLOSED_UNACCEPTED": 2,
-      "CONSUMED_BEFORE_FORK": 1,
-      "NATURAL_COMPLETE_PENDING_VALIDATION": 1
+      "CONSUMED_BEFORE_FORK": 1
     }
   },
   "coverage_ledger": {
@@ -20231,11 +20230,17 @@
       "state": "CONSUMED_BEFORE_FORK"
     },
     {
+      "CTA": 4096,
+      "IPC": 249.0795435304073,
       "M": false,
       "RO_applicability": "S_NOT_APPLICABLE",
       "T": false,
-      "accepted": false,
-      "archive_ref": null,
+      "accepted": true,
+      "archive_ref": {
+        "bytes": 1842,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_S_REF_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "2bf4a14b778292e89574e83fac7320ed7c2fa534839c83bd4974b39acc9411ba"
+      },
       "cohort": "EP_PERF_SYRK_90B0CC9D_S_REF_V1",
       "cost_proxy": {
         "DRAM_MHz": 850.0,
@@ -20264,21 +20269,26 @@
         "physical_payload_line_slots_per_slice": 1168,
         "static_s64": false
       },
+      "cycles": 22589807,
       "done_ref": {
         "bytes": 4560,
         "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_SYRK_90B0CC9D_S_REF_V1.DONE.json",
         "sha256": "2fef02ff8ea1c08f570363d5bd614073ad8a3413e5693fd64110cbc19e4c37b8"
       },
-      "failure_ref": null,
+      "exact_delta_from_same_mode_REF": {},
       "geometry": {
         "line_bytes": 128,
         "sets": 32,
         "slices": 64,
         "ways": 8
       },
+      "hardware_drained": true,
       "input_identity_sha256": "90b0cc9d2f88fd005d709b755d13345c2db2038085d8d1c2d59ccf9a6f60ad11",
+      "instructions": 5626658816,
+      "kernels": 1,
+      "matched_same_mode_REF_cohort": "EP_PERF_SYRK_90B0CC9D_S_REF_V1",
+      "matched_same_mode_REF_cycles": 22589807,
       "mode": "S",
-      "negative_scope": "PENDING_NO_RATIO",
       "numeric_output": "UNKNOWN",
       "observer": {
         "B0": "1",
@@ -20293,9 +20303,21 @@
         }
       },
       "option282_digest": "5d1189cfd88a32ac31712a7cdc8e9ac07fc494ac4e800acaff9b2f6beba1d45d",
+      "point_ref": {
+        "bytes": 2388,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_S_REF_V1/run/f406dae1-f20b-4356-aba2-13dee73f6401/ACCEPTED_POINT.json",
+        "sha256": "fec3bb4c077b14c69f01c718acfecfa5b5f673d188d3f24b51c4e934480c6e96"
+      },
+      "postrun_qualification_ref": null,
       "profile": "REF32x8_L100",
       "program": "SYRK",
-      "scientific_status": "UNSPECIFIED",
+      "raw_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_S_REF_V1/run/f406dae1-f20b-4356-aba2-13dee73f6401/raw.log.gz",
+        "sha256": "055ab60f7134a5c0ca232c62a5b9855a18bc55deb18112f7b498170108eaefdd"
+      },
+      "same_mode_REF_over_cycles": 1.0,
+      "same_mode_cycle_reduction_fraction": 0.0,
+      "semantic_population_digest": "f2874baed5308f6024947bb34a8517ea4dff58ddf67269008a379779d600e085",
       "source_identity": {
         "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
         "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
@@ -20308,7 +20330,11 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_S_REF_V1/control/FROZEN_SPEC.json",
         "sha256": "6e7fbd3d90e6862a36771cd49db87b24e97239eb6ab138232c5093571f76886d"
       },
-      "state": "NATURAL_COMPLETE_PENDING_VALIDATION"
+      "state": "CLOSED_ACCEPTED",
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_S_REF_V1/run/f406dae1-f20b-4356-aba2-13dee73f6401/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "4b153fbcf5966867e2a7dd2fe6feb21511d1b3da4a054fd1b3cee3aaf0b9116b"
+      }
     },
     {
       "CTA": 24576,
@@ -26988,8 +27014,8 @@
         "last_line": 178
       }
     ],
-    "current_analysis_accepted_count": 223,
-    "current_analysis_population_asof_utc": "2026-10-30T14:17:24.314397+00:00",
+    "current_analysis_accepted_count": 224,
+    "current_analysis_population_asof_utc": "2026-10-30T14:17:57.395547+00:00",
     "evidence_ref": {
       "bytes": 24308,
       "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/control/TECHNICAL_FAILURE_ROOTCAUSE_20261028_V1/EVIDENCE.json",
@@ -27016,15 +27042,17 @@
   "incremental_refresh": {
     "current_spec_SHA_and_registry_pointer_join_checked": true,
     "new_matched_pairs": 0,
-    "new_or_changed_rejoined": [],
+    "new_or_changed_rejoined": [
+      "EP_PERF_SYRK_90B0CC9D_S_REF_V1"
+    ],
     "new_pairs": [],
     "prior_analysis_ref": {
-      "bytes": 1850709,
-      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/results_analysis_20261028_v1/versions/20261029T033551Z_fc00ac47/RESULTS_ANALYSIS_CURRENT.json",
+      "bytes": 1846309,
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/results_analysis_20261028_v1/versions/20261030T141724Z_11225576/RESULTS_ANALYSIS_CURRENT.json",
       "publish_name": "RESULTS_ANALYSIS_CURRENT.json",
-      "sha256": "d11a02c57d2802a8d529990c85663348ae06bf2d76ebc3705ac9c753ca41ab37"
+      "sha256": "81d9692663fb7995db615a79db10c92fc0128178f9372a4e35852e5d5d4cee02"
     },
-    "prior_utc": "2026-10-29T03:35:51.830021+00:00",
+    "prior_utc": "2026-10-30T14:17:24.314397+00:00",
     "reused_unchanged": [
       "EP_PERF_2DCONV_0AE13552_F_REF_V1",
       "EP_PERF_2DCONV_0AE13552_S_REF_V1",
@@ -44800,9 +44828,9 @@
   },
   "refresh_delta_summary": {
     "T_independent_gain": "UNKNOWN_NEEDS_EXACT_F_BACKGROUND_T_OFF_M1",
-    "new_accepted_endpoints": 0,
+    "new_accepted_endpoints": 1,
     "new_fully_matched_pairs": 0,
-    "prior_analysis_utc": "2026-10-29T03:35:51.830021+00:00",
+    "prior_analysis_utc": "2026-10-30T14:17:24.314397+00:00",
     "remaining_live": [
       "EP_PERF_SYRK_90B0CC9D_F_REF_V1"
     ],
@@ -44815,14 +44843,14 @@
     "CPU": 511,
     "maxRSS_bytes": 95006720,
     "nice": 15,
-    "seconds": 0.17928947694599628
+    "seconds": 0.17506831884384155
   },
   "schema": "EP_AGENT_B_ACCEPTED_RESULTS_ANALYSIS_V1",
   "source_snapshot": {
     "epoch": 2,
-    "epoch_sha256": "9e0490491df61b27f248db00c99844acfca8c1495f99e9cf80cbeaf05feadbcf",
-    "registry_sha256": "0c3027784ed1f05490894b273f92376c868384820f6beec5758c14543054846e"
+    "epoch_sha256": "457a51a315fa4cc80e8895074c0771a10367aaf47cbbd2fa75e7ebbbcfeb0243",
+    "registry_sha256": "93e6e940863af5f431da7b496159c72b3f6d2ab6472add1baecbdad7d5939fb4"
   },
   "trace_or_raw_rereads": 0,
-  "utc": "2026-10-30T14:17:24.314397+00:00"
+  "utc": "2026-10-30T14:17:57.395547+00:00"
 }
