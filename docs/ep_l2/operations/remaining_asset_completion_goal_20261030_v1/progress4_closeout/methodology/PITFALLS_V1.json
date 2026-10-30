@@ -1,0 +1,301 @@
+{
+  "SourceKEEP": true,
+  "asof_handoff": {
+    "bytes": 36920,
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/root/ROOT_ACTIVE_GOAL_PROGRESS_HANDOFF_V11.json",
+    "sha256": "00382c8c593c48c1731b3d9d3caea0ecce48948b7ce5b8b641cedac0b9315400"
+  },
+  "authority_levels_explained": {
+    "ACTUAL_FAILURE_AND_CPU_REVIEW_CANDIDATE_NOT_CONSUMER_QUALIFICATION": "Actual failure or observation + CPU candidate, no consumer acceptance inferred",
+    "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE": "Read exact referenced source/receipt; Root acceptance applies only to stated profile and phase",
+    "SOURCE_RECOVERY_CANDIDATE_NOT_ORDINARY7_OR_CONSUMER_PASS": "Static/source recovery candidate remains unexecuted conversion"
+  },
+  "release_bytes": 0,
+  "rows": [
+    {
+      "authority_level": "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE",
+      "evidence_ids": [
+        "cli"
+      ],
+      "id": "P01",
+      "next_run_rule": "精确冻结argv并验证实际解析路径；不同SDK自有split parser分别处理。",
+      "observed_fact": "f18e实际ELF及原helper证明分离的-kernel N选择0；=N为同token转换；无flag默认7。",
+      "qualification_limit": "这是特定ELF的host路径证明，不是GPU已执行7种算法。",
+      "title": "CLI同名不等同实际参数"
+    },
+    {
+      "authority_level": "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE",
+      "evidence_ids": [
+        "env_source",
+        "C8_actual"
+      ],
+      "id": "P02",
+      "next_run_rule": "目标是完整trace时删除该键；记录实际环境投影并要求完整producer正终态。",
+      "observed_fact": "C8按getenv存在性判断snapshot-only；值0仍使其生效。",
+      "qualification_limit": "仅适用于已检查实现，不能推广所有env参数。",
+      "title": "环境变量存在性不是布尔字符串"
+    },
+    {
+      "authority_level": "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE",
+      "evidence_ids": [
+        "dump",
+        "dump_source",
+        "control_actual"
+      ],
+      "id": "P03",
+      "next_run_rule": "返回值作诊断；用新regular/no-follow、有界CUDA ELF、稳定完整读取及允许SHA判定。",
+      "observed_fact": "实际NVBit实现写出正确62432B cubin后返回0，bool门误abort。",
+      "qualification_limit": "不能简单反转bool；此已安装版本行为不代表所有版本。",
+      "title": "dump成功返回false"
+    },
+    {
+      "authority_level": "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE",
+      "evidence_ids": [
+        "flush",
+        "flush_source",
+        "control_actual"
+      ],
+      "id": "P04",
+      "next_run_rule": "GPU结束标记push后显式flush，join receiver；保留owned关闭回执。",
+      "observed_fact": "push只排入缓存，未满时receiver收不到sentinel；实际首launch死等。",
+      "qualification_limit": "CPU镜像不是GPU证明；本例修复后有真实46launch观察证据。",
+      "title": "小缓冲sentinel必须flush"
+    },
+    {
+      "authority_level": "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE",
+      "evidence_ids": [
+        "attachment_source",
+        "input_actual"
+      ],
+      "id": "P05",
+      "next_run_rule": "仅首次、epoch1、同ctx/TID、dev0、成功且*pctx=ctx、前无数据的窄条件附着；明确入口未观测。",
+      "observed_fact": "真实386 PrimaryCtxRetain exit可能在context-init后出现而无可观察entry。",
+      "qualification_limit": "其他orphan、迟到、重复、失败和错ctx不能豁免。",
+      "title": "首context附着缺入口"
+    },
+    {
+      "authority_level": "ACTUAL_FAILURE_AND_CPU_REVIEW_CANDIDATE_NOT_CONSUMER_QUALIFICATION",
+      "evidence_ids": [
+        "nullable",
+        "TEX_actual_candidate"
+      ],
+      "id": "P06",
+      "next_run_rule": "先落callback身份，再逐field记录地址/长度/errno；NULL_NOT_REQUESTED与mandatory错误分开。",
+      "observed_fact": "A3在GetGlobal附近POD读取失败，旧日志不足以倒推具体NULL地址；A4按已安装头区别合法可选输出。",
+      "qualification_limit": "合法NULL不是观测0；未知字段不可包装有效地址/大小。",
+      "title": "可选API输出与不可读POD"
+    },
+    {
+      "authority_level": "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE",
+      "evidence_ids": [
+        "QA_source",
+        "smoke_actual"
+      ],
+      "id": "P07",
+      "next_run_rule": "原QA函数/参数/输出文件/原marker/返回组合检查；保原弱点。",
+      "observed_fact": "particles原检查打印OK；seg检查原两PPM布尔/exit；泛PASSED会误拒。",
+      "qualification_limit": "exit0未必充分；但不能凭新通用marker重新定义原QA。",
+      "title": "原QA输出合同逐程序检查"
+    },
+    {
+      "authority_level": "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE",
+      "evidence_ids": [
+        "QA_source",
+        "smoke_actual"
+      ],
+      "id": "P08",
+      "next_run_rule": "必要两处caller单位修正形成新ELF；按原阈值并核两输出/参考各1MiB。",
+      "observed_fact": "smoke把float4字节数传成float元素数；旧helper又不强验短读。",
+      "qualification_limit": "不修改原历史或把新ELF冒充旧255寄存器配置。",
+      "title": "比较单位错误与短读"
+    },
+    {
+      "authority_level": "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE",
+      "evidence_ids": [
+        "loop"
+      ],
+      "id": "P09",
+      "next_run_rule": "逐循环标初始化/算法/benchmark/warmup/同步/QA，冻结新source、ELF、argv、用途。",
+      "observed_fact": "modern6 benchmark100到2不积累算法状态，可保16M int/原warmup/完整partial reduction。",
+      "qualification_limit": "失去98轮稳态/缓存/热/噪声及平均计时历史，不能声称完整性能等价。",
+      "title": "只缩重复也会丢历史"
+    },
+    {
+      "authority_level": "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE",
+      "evidence_ids": [
+        "full11_static",
+        "full11"
+      ],
+      "id": "P10",
+      "next_run_rule": "记录完整actual static view/命名/相关函数；按原image/PC/SASS精确绑定padding。",
+      "observed_fact": "full11错误把API列表长度当nonNOP数；真实V3保存152视图并仅识别15个精确尾NOP。",
+      "qualification_limit": "不泛过滤未知NOP或未支持指令；54实际路径不是137潜在路径全覆盖。",
+      "title": "static152不等nonNOP137"
+    },
+    {
+      "authority_level": "SOURCE_RECOVERY_CANDIDATE_NOT_ORDINARY7_OR_CONSUMER_PASS",
+      "evidence_ids": [
+        "imm_source",
+        "imm"
+      ],
+      "id": "P11",
+      "next_run_rule": "从确切producer契约和typed静态语义恢复，逐PC核对；保存完整SASS与表。",
+      "observed_fact": "frozen55定义为operand顺序最后typed IMM_UINT64，无此类型才0；负数uint64与多imm均有证据。",
+      "qualification_limit": "旧RAW1.7.5/47ef的CTA不是新4c9d的直接硬件证明；137槽仍待Root转换契约接受。",
+      "title": "legacy imm可恢复但不能猜"
+    },
+    {
+      "authority_level": "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE",
+      "evidence_ids": [
+        "imm"
+      ],
+      "id": "P12",
+      "next_run_rule": "完整源永远保留；投影保54或明列丢弃字段、记录数及用途。",
+      "observed_fact": "每warp七条零有效mask事件若删除，每512线程CTA丢112事件。",
+      "qualification_limit": "零退休lane不等不存在issue/控制信息；不可暗改为lossless。",
+      "title": "54到47不是无损投影"
+    },
+    {
+      "authority_level": "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE",
+      "evidence_ids": [
+        "copy",
+        "full11"
+      ],
+      "id": "P13",
+      "next_run_rule": "源/运行根/实际别名单列，所有边界实际import并核bytes/SHA；日志在真164。",
+      "observed_fact": "Native NB与109现有ST为同NAS域，代码与输出名不能靠看似相同字符串猜。",
+      "qualification_limit": "不新挂载，不把code容器没run目录当任务死亡。",
+      "title": "同内容跨host路径不同"
+    },
+    {
+      "authority_level": "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE",
+      "evidence_ids": [
+        "copy",
+        "common_pin"
+      ],
+      "id": "P14",
+      "next_run_rule": "冻结源码前逐reachable caller核common pin；实际服务CPU/Quota/Memory/AS与声明一致。",
+      "observed_fact": "早期CPU4,5/quota200与承诺CPU2/quota100不一致；COMMON调用处有旧pin。",
+      "qualification_limit": "纯metadata构造不能替代真实入口依赖和实际服务约束。",
+      "title": "CPU亲和性与硬pin也要真实检查"
+    },
+    {
+      "authority_level": "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE",
+      "evidence_ids": [
+        "scope_literal"
+      ],
+      "id": "P15",
+      "next_run_rule": "从真实caller常量取schema/status，未批准模板晚绑定实际时间/host/boot/资源/输入。",
+      "observed_fact": "Root曾少写PAIRS，被真正Native入口在锁/远程启动前拒绝。",
+      "qualification_limit": "不靠同一个传入status的辅助函数自证；失败原件保留。",
+      "title": "Root scope字面量不是自测参数"
+    },
+    {
+      "authority_level": "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE",
+      "evidence_ids": [
+        "copy"
+      ],
+      "id": "P16",
+      "next_run_rule": "按真实PID+ticks及闭合回执判定；超时重查同handle，失败先诊断；only owned按已有保护通道结束。",
+      "observed_fact": "COPY母协议将remote PID/cgroup/reader闭合放在Native释放之前，诊断EIO也必须保锁。",
+      "qualification_limit": "不能signal foreign或因输出未增长重启；不把保留源当可清缓存。",
+      "title": "未知远端状态不能盲目解锁重跑"
+    },
+    {
+      "authority_level": "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE",
+      "evidence_ids": [
+        "public81",
+        "restore"
+      ],
+      "id": "P17",
+      "next_run_rule": "先父COPY及receiver全SHA、Root闭合接受，再派生实际父绑定。",
+      "observed_fact": "新ordinary实际Root接受后，derived才绑定commit/MF/objectID；source recipe/输入只保父份。",
+      "qualification_limit": "候选parent MF不等实际COMMIT，不能预测commit SHA。",
+      "title": "parent必须实际COMMIT后绑定"
+    },
+    {
+      "authority_level": "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE",
+      "evidence_ids": [
+        "discovery_erratum",
+        "public81"
+      ],
+      "id": "P18",
+      "next_run_rule": "CAS保旧行，追加不可变snapshot；逐请求id确实返回、counts及source CAS一致。",
+      "observed_fact": "第一次CLI rc0但selected空，因为unified仍为75快照。",
+      "qualification_limit": "不能仅查进程退出码或对象版本数量。",
+      "title": "目录发布不自动更新发现快照"
+    },
+    {
+      "authority_level": "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE",
+      "evidence_ids": [
+        "restore"
+      ],
+      "id": "P19",
+      "next_run_rule": "仅精确观察到的schema/ID/用途/实际父链兼容，原执行/预算/SHA AST保持；实际installed inspect。",
+      "observed_fact": "原restore只旧COMMIT/parentREF schema，新12对象曾不能计划。",
+      "qualification_limit": "只metadata计划不等正文物化；全库Native正文回读已取消。",
+      "title": "新归档schema需共享读取兼容"
+    },
+    {
+      "authority_level": "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE",
+      "evidence_ids": [
+        "input_actual",
+        "control_actual"
+      ],
+      "id": "P20",
+      "next_run_rule": "数据层写清实测bytes、可复现配方、纯身份文档三种身份及生命周期。",
+      "observed_fact": "现代输入流式构造字节与实际64MiB+prefix SHA匹配；LUD契约inputSHA却明确只是source/libm recipe文档。",
+      "qualification_limit": "配方匹配不能声称目标显式srand1；文档hash不能当已采GPU数组。",
+      "title": "输入身份文档SHA非数组SHA"
+    },
+    {
+      "authority_level": "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE",
+      "evidence_ids": [
+        "full11"
+      ],
+      "id": "P21",
+      "next_run_rule": "分开登记NativeQA、collection、全记录POST、archive、consumer、science。",
+      "observed_fact": "full11完整141557760源记录/CRC/SHA/HB已Root接受，但custom容器不是ordinary7。",
+      "qualification_limit": "实际API HB不等原物理overlap；格式转换/整多流consumer仍要各自证明。",
+      "title": "完整采集与消费者不是同一阶段"
+    },
+    {
+      "authority_level": "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE",
+      "evidence_ids": [
+        "model"
+      ],
+      "id": "P22",
+      "next_run_rule": "风险驱动选择控制/同步/访存CTA，保持每warp完整序列与原配置软件pin，核source+aux退休及owned关闭。",
+      "observed_fact": "Poly三项实际完整CTA退休11936000/4724224/4515840并正常结束。",
+      "qualification_limit": "非全程序/全feature/全配置证明；预算不足记UNKNOWN_BUDGET，不记不兼容。",
+      "title": "轻量模型选择完整CTA而非任意前缀"
+    },
+    {
+      "authority_level": "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE",
+      "evidence_ids": [
+        "full11",
+        "restore",
+        "method"
+      ],
+      "id": "P23",
+      "next_run_rule": "每步骤说明所闭合缺口，优先单次C++流读，额外回归须有新改变/风险触发。",
+      "observed_fact": "已接受F9/GROUP/CRC/wholeSHA可复用；新restore仅新12实际inspect+旧150静态分支和8实际格式回归。",
+      "qualification_limit": "不默认新oracle/allhostarrays/allbranch/allconfig；COPY receiver闭合SHA仍必需。",
+      "title": "避免重复全量工作"
+    },
+    {
+      "authority_level": "ROOT_ACCEPTED_SCOPED_ACTUAL_OR_REVIEWED_SOURCE",
+      "evidence_ids": [
+        "ledger",
+        "public81"
+      ],
+      "id": "P24",
+      "next_run_rule": "分别数profile、版本、binary、原行、相关新variant和consumer证据。",
+      "observed_fact": "public81/81包括新profile与修复variants，冻结153的qid/binary/argv/fp保持；effective仅1原行闭合。",
+      "qualification_limit": "不得用同ELF别的argv或修复新binary完成原未验证输入，也无外审已收到声明。",
+      "title": "资产数不等原输入完成数"
+    }
+  ],
+  "schema": "CAPTURE_EXPERIENCE_PITFALLS_V1",
+  "status": "SOURCE_AND_RECEIPT_SYNTHESIS_ROOT_REVIEW_REQUIRED_NOT_OPERATIONAL_APPROVAL"
+}

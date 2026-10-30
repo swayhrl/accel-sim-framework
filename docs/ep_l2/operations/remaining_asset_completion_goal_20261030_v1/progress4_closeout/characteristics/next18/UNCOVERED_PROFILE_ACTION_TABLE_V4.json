@@ -1,0 +1,1234 @@
+{
+  "Root_sourceCPU_stage_not_asset_qualified": true,
+  "SourceKEEP": true,
+  "all_original153_todo_preserved": true,
+  "baseline_ledger_ref": {
+    "bytes": 970691,
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/effective_stage_ledger_20261030_v1/UNIFIED_FROZEN153_EFFECTIVE_STAGE_LEDGER_V3.json",
+    "sha256": "da72d1d28d8b6929d73d4b56cbff2dc074b873eb9e8132107c465fe963c0bfe7"
+  },
+  "count": 18,
+  "noGPU_model_scope_service_or_large_trace_bodyhash": true,
+  "previous_immutable_ref": {
+    "bytes": 62027,
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/workload_characteristics_analysis_20261030_v3/UNCOVERED_PROFILE_ACTION_TABLE_V3.json",
+    "sha256": "b6b4dd7c8352c060fc96cc59163ff425718cd61d3ad667728b2e24af43eeded9"
+  },
+  "profiles": [
+    {
+      "Root_execution_or_science_permission": false,
+      "actual_dynamic_records_estimated": false,
+      "characteristics": "4096² float A64MiB+B64MiB，9项邻域，单kernel，j方向warp相邻；无shared tile",
+      "cost_and_count_basis": "1kernel仅源码预计；sync HtoD A64MiB，已有CPU构造hash候选，须actualsource/lifetime",
+      "existing_input_contracts": [
+        {
+          "actual_input_qualified": false,
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/2DCONV_checked_v3"
+          ],
+          "binary_sha256": "fa8949aca44d08aac5335a13ac47fbec7925b22b615710ba08af29a974f9e5f6",
+          "contract_ref": {
+            "bytes": 3965,
+            "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/actual_input/contracts19/ORD_PolyBench_GPU_2DCONV_c8635a8723d9_A001.json",
+            "sha256": "b631bdcc96c4e63f02264128e05eac8c3be7251d7e5a11ec2238ea49728bb2a9"
+          },
+          "domains": [
+            "SYNC_HTOD"
+          ],
+          "queue_id": "ORD_PolyBench_GPU_2DCONV_c8635a8723d9_A001",
+          "remaining_runtime_binding": "Root exact profile then actual same-process source hashes/lifetimes; no seed-only equality",
+          "route": "ROOT_BOUNDED_SYNC_HTOD_PROFILE_INSTANTIATION"
+        }
+      ],
+      "existing_wave16_results": [],
+      "family_frozen_rows_not_trace_equivalence": [
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/2DCONV_checked_v3"
+          ],
+          "binary_sha256": "fa8949aca44d08aac5335a13ac47fbec7925b22b615710ba08af29a974f9e5f6",
+          "currentPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozenPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozen_input_fingerprint": "8884ee9ee7af124681ec32df83458f687a568caadcd5112df0d2f1148516ed29",
+          "queue_id": "ORD_PolyBench_GPU_2DCONV_c8635a8723d9_A001"
+        }
+      ],
+      "loop_decision": "无benchmark重复可缩，保9邻域/边界/原N；空间缩减必须另身份",
+      "minimal_next_action": "最快候选：精确C8 sync域+原NativeQA→loadedcode→boundedcapture；不能凭primarygate说新ISA已全清",
+      "no_additional_ISA_required_by_current_loaded_images": "UNKNOWN_MUST_JOIN_EXISTING_STATIC_AND_ACTUAL_LOADED_PROOFS",
+      "original_QA_contract_and_weakness": "原interior percentDiff阈值0.05且ep_correctness_fail累积；不比较未写B边界，非全数组强QA",
+      "priority": 1,
+      "profile_id": "2DCONV",
+      "program": "2DCONV",
+      "source_compiler_binding_to_every_old_ELF_reproved": false,
+      "source_ref": {
+        "bytes": 4517,
+        "line_ranges": [
+          [
+            27,
+            32
+          ],
+          [
+            62,
+            95
+          ],
+          [
+            109,
+            148
+          ]
+        ],
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_v3/polybench-gpu-1.0/CUDA/2DCONV/2DConvolution.cu",
+        "sha256": "9f5c892b1518dbea1bc1206f10bb34ae4fc79f29cf1f9b3153d2515413cad9a8"
+      }
+    },
+    {
+      "Root_execution_or_science_permission": false,
+      "actual_dynamic_records_estimated": false,
+      "characteristics": "N16M int，64MiB pinned a零值，GPU memsetFF后同stream0 HtoD0→increment26→DtoH→event",
+      "cost_and_count_basis": "1kernel源码；HtoDAsync hosta直到stop完成无改写；255setup被同流HtoD覆盖",
+      "existing_input_contracts": [],
+      "existing_wave16_results": [
+        {
+          "CPU_stage_outcome": "ORIGINAL_SOURCE_STREAM0_HtoD_DOMINANCE_AND_ORIGINAL_N16M_CPU_QA_CLOSED",
+          "evidence": [
+            {
+              "bytes": 2044,
+              "path": "/root/share/mnt164/huangrulin/traces/rtx4080_sm89/bulk_20261024_v1/private_candidates/remaining_asset_source_runtime_mapping_20261030_v1/asyncAPI_source_contract_cpu_v1/SOURCE_STREAM_LIFETIME_CPU_QA_RESULT_V1.json",
+              "sha256": "2cab08c1df68b95cec8540eea7b8d9a3e9e6a7516c288cfac577354854c7b83d"
+            }
+          ],
+          "new_stage": "ROOT_NATIVE_QA_THEN_ACTUAL_ASYNC_API_LIFETIME_CAPTURE",
+          "queue_id": "ORD_STAGE3_asyncAPI_24e6885409db_A001"
+        }
+      ],
+      "family_frozen_rows_not_trace_equivalence": [
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_full73_build_v1/sdk429_asyncAPI"
+          ],
+          "binary_sha256": "125c5e62d33697d2323c6a7d3f0abede61df325b97fb7ccd214907176c6d3b1f",
+          "currentPrimaryGate": "ROOT_NATIVE_QA_THEN_ACTUAL_ASYNC_API_LIFETIME_CAPTURE",
+          "frozenPrimaryGate": "WAIT_SOURCE_RUNTIME_ADAPTER",
+          "frozen_input_fingerprint": "2f591a5b375ad9d154ebfc1ce5d3a7cbf00db0746fc0d3530a0cda0db4b6fab6",
+          "queue_id": "ORD_STAGE3_asyncAPI_24e6885409db_A001"
+        }
+      ],
+      "loop_decision": "无GPU benchmarkloop；CPU eventQuery等待非多余GPU循环，不改sync替代其异步语义",
+      "minimal_next_action": "最快async代表：原ELF已CPU合同，需async实际success/order/allocation/completion源域，不能伪SYNC C8",
+      "no_additional_ISA_required_by_current_loaded_images": "UNKNOWN_MUST_JOIN_EXISTING_STATIC_AND_ACTUAL_LOADED_PROOFS",
+      "original_QA_contract_and_weakness": "correct_output逐N检查26；原shrQAFinishExit；需实际非waive/错误而非exit0泛判",
+      "priority": 1,
+      "profile_id": "ASYNC429",
+      "program": "asyncAPI",
+      "source_compiler_binding_to_every_old_ELF_reproved": false,
+      "source_ref": {
+        "bytes": 9193,
+        "line_ranges": [
+          [
+            193,
+            209
+          ],
+          [
+            223,
+            256
+          ]
+        ],
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/asyncAPI/asyncAPI.cu",
+        "sha256": "9028f696a66e6d27bdd16a48b6ba584cfc9ba95d7c165ea721c84947adc4b735"
+      }
+    },
+    {
+      "Root_execution_or_science_permission": false,
+      "actual_dynamic_records_estimated": false,
+      "characteristics": "真实warandpeace corpus3223503B；kernel1 gridstride+atomic计数，kernel2 Thrust device计数覆盖count",
+      "cost_and_count_basis": "源码2个top-level，device-Thrust是否额外child需实际census；已有新ELF待原corpus NativeQA",
+      "existing_input_contracts": [],
+      "existing_wave16_results": [],
+      "family_frozen_rows_not_trace_equivalence": [],
+      "loop_decision": "两次top-level launch不是重复，应保；内部scan全corpus是算法输入遍历，不能随意截前4KB冒原分布",
+      "minimal_next_action": "快路径是已有修复变体而非重写oracle；需精确文件staging、memset count、device执行域及currentmap",
+      "no_additional_ISA_required_by_current_loaded_images": "UNKNOWN_MUST_JOIN_EXISTING_STATIC_AND_ACTUAL_LOADED_PROOFS",
+      "original_QA_contract_and_weakness": "原程序只打印count且exit0，无CPU断言；已有新scalarQA变体860b检最终107310，不授中间/全branch",
+      "priority": 2,
+      "profile_id": "CPP11",
+      "program": "c++11_cuda",
+      "source_compiler_binding_to_every_old_ELF_reproved": false,
+      "source_ref": {
+        "bytes": 5115,
+        "line_ranges": [
+          [
+            54,
+            79
+          ],
+          [
+            96,
+            139
+          ]
+        ],
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_complete_build_v1/cuda-samples-11.8/Samples/0_Introduction/c++11_cuda/c++11_cuda.cu",
+        "sha256": "c8f0cf6d9508f776f1a2439cab84cbfee178a1877d3b96921c4198a853149ffa"
+      }
+    },
+    {
+      "Root_execution_or_science_permission": false,
+      "actual_dynamic_records_estimated": false,
+      "characteristics": "N1M/3维方向表，QRNG整数bit31循环与inverseCND，symbol table初始化",
+      "cost_and_count_basis": "源码42=(20+1)×2→6=(2+1)×2；新计数未实测；actualsymbolwrite/lifetime必须取证",
+      "existing_input_contracts": [],
+      "existing_wave16_results": [
+        {
+          "CPU_stage_outcome": "ORIGINAL_DEFAULT_ROUTE_TABLE_AND_N1M_CPU_REFERENCE_CLOSED",
+          "evidence": [
+            {
+              "bytes": 3910,
+              "path": "/root/share/mnt164/huangrulin/traces/rtx4080_sm89/bulk_20261024_v1/private_candidates/remaining_asset_source_runtime_mapping_20261030_v1/qrng_source_cpu_reference_contract_v1/ORIGINAL_REFERENCE_CPU_AND_INPUT_CONTRACT_RESULT_V1.json",
+              "sha256": "9e98a87359fa619df2851a2d9f0f623fb7e033968100403827bfc6e0bce9031c"
+            }
+          ],
+          "new_stage": "ROOT_NATIVE_QA_BOTH_REPORTED_L1_REVIEW_THEN_SYMBOL_WRITE_PROFILE",
+          "queue_id": "ORD_STAGE3_quasirandomGenerator_e78c25eea90b_A001"
+        }
+      ],
+      "family_frozen_rows_not_trace_equivalence": [
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_quasirandomGenerator"
+          ],
+          "binary_sha256": "3fe974ef79896d93c94e223d3483f1d861df4f79f0f8db8992cf071a77a51bd3",
+          "currentPrimaryGate": "WAIT_ISA_ADAPTER",
+          "frozenPrimaryGate": "WAIT_ISA_ADAPTER",
+          "frozen_input_fingerprint": "ae9cdf3cf4447158556aaefbd2f33a2e43e08a64c54f1d185768ca3e8837d5d2",
+          "queue_id": "ORD_EXT_quasirandomGenerator_303a7e0abe39_A001"
+        },
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/quasirandomGenerator/quasirandomGenerator"
+          ],
+          "binary_sha256": "db1f44cb5aac30540d99daf0feef2d5b3bb97ee6e5dfa79f66ae522e037725c2",
+          "currentPrimaryGate": "WAIT_ISA_ADAPTER",
+          "frozenPrimaryGate": "WAIT_ISA_ADAPTER",
+          "frozen_input_fingerprint": "f484e0ad737c339c887be70b60a3b150170e6ba1f5cfe430c34fcc2f209d871d",
+          "queue_id": "ORD_EXT_quasirandomGenerator_5499f6677861_A001"
+        },
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/official429_failed28_build_v3/sdk429_quasirandomGenerator"
+          ],
+          "binary_sha256": "524f5b217cc7169caad1a058647b657b3f417fdf9fe800ddf635ac0d21f53d75",
+          "currentPrimaryGate": "ROOT_NATIVE_QA_BOTH_REPORTED_L1_REVIEW_THEN_SYMBOL_WRITE_PROFILE",
+          "frozenPrimaryGate": "WAIT_SOURCE_RUNTIME_ADAPTER",
+          "frozen_input_fingerprint": "87e2397855ab1761b0fcff79052e348bf82bd21abb668fd37f49ca7337b088f4",
+          "queue_id": "ORD_STAGE3_quasirandomGenerator_e78c25eea90b_A001"
+        }
+      ],
+      "loop_decision": "numIterations20两测量段各含warmup-1，可新20→2；位循环/方向表/整个N不删",
+      "minimal_next_action": "高收益重复缩减候选；先复用已CPU表/原reference，不新oracle；Root审批后新ELF身份",
+      "no_additional_ISA_required_by_current_loaded_images": "UNKNOWN_MUST_JOIN_EXISTING_STATIC_AND_ACTUAL_LOADED_PROOFS",
+      "original_QA_contract_and_weakness": "原第一QRNG L1只打印；最后inverseL1<1e-6控制退出，不能说双强QA",
+      "priority": 2,
+      "profile_id": "QUASI429",
+      "program": "quasirandomGenerator",
+      "source_compiler_binding_to_every_old_ELF_reproved": false,
+      "source_ref": {
+        "bytes": 7457,
+        "line_ranges": [
+          [
+            121,
+            142
+          ],
+          [
+            153,
+            208
+          ]
+        ],
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/quasirandomGenerator/quasirandomGenerator.cpp",
+        "sha256": "47dbc9336a606e986f230c45b27dfd32d321d6b6bf077ec8af6953ec2de88d64"
+      }
+    },
+    {
+      "Root_execution_or_science_permission": false,
+      "actual_dynamic_records_estimated": false,
+      "characteristics": "2048×2048 DP矩阵，BLOCK_SIZE波前tile，上半diag增长/下半收缩，int penalty10/srand7",
+      "cost_and_count_basis": "若actualBLOCK16，255launch/16384tile仅源码条件推导；需真实blockdim核而非header猜",
+      "existing_input_contracts": [],
+      "existing_wave16_results": [
+        {
+          "CPU_stage_outcome": "ORIGINAL_SOURCE_READSET_WAVEFRONT_DOMAIN_CLOSED",
+          "evidence": [
+            {
+              "bytes": 2005,
+              "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/source_runtime_mapping/NW_SOURCE_READSET_DOMAIN_CPU_CLOSED_V1.json",
+              "sha256": "f5dfe06716e42ae9b5bb17770b9bfbd5cbb5ea7d48bc3310b7d5a87715a854bc"
+            }
+          ],
+          "new_stage": "ROOT_NATIVE_PROGRAM_CHECKS_AND_ACTUAL_SEED_LIBC_INPUT_LIFETIME_CAPTURE",
+          "queue_id": "ORD_Rodinia_nw_575788f9de6d_A001"
+        }
+      ],
+      "family_frozen_rows_not_trace_equivalence": [
+        {
+          "argv": [
+            "/data/c16/rtx4080_suite_fill_20261024_v1/assets/gpu-app-collection/src/cuda/rodinia/3.1/cuda/nw/needle",
+            "2048",
+            "10"
+          ],
+          "binary_sha256": "10e1369bc2007f203a3e91b3a1643bbb2993db1e78fb16ac20d2c97527488997",
+          "currentPrimaryGate": "ROOT_NATIVE_PROGRAM_CHECKS_AND_ACTUAL_SEED_LIBC_INPUT_LIFETIME_CAPTURE",
+          "frozenPrimaryGate": "WAIT_SOURCE_RUNTIME_ADAPTER",
+          "frozen_input_fingerprint": "96d01ca8b1e652e8975560b5d0bf62e62ef8c444551dc1a8329c90a517c20030",
+          "queue_id": "ORD_Rodinia_nw_575788f9de6d_A001"
+        }
+      ],
+      "loop_decision": "两个diag循环是真依赖，不是benchmark；不能少做i；保tile内部DP",
+      "minimal_next_action": "sync输入/固定seed7候选；先Native执行+actualcompiledblock/image，原16.8MiB²两个数组，内存可行",
+      "no_additional_ISA_required_by_current_loaded_images": "UNKNOWN_MUST_JOIN_EXISTING_STATIC_AND_ACTUAL_LOADED_PROOFS",
+      "original_QA_contract_and_weakness": "无独立CPU数值比对；TRACEBACK需按actual编译宏判断；源执行/traceback不等新oracle",
+      "priority": 2,
+      "profile_id": "NW2048",
+      "program": "nw",
+      "source_compiler_binding_to_every_old_ELF_reproved": false,
+      "source_ref": {
+        "bytes": 7968,
+        "line_ranges": [
+          [
+            109,
+            138
+          ],
+          [
+            146,
+            172
+          ]
+        ],
+        "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/gpu-app-collection/src/cuda/rodinia/3.1/cuda/nw/needle.cu",
+        "sha256": "6152a04e5cd37a0c3f78efdc5cb4d8269bd10694840c23cb9b8345ac525962ee"
+      }
+    },
+    {
+      "Root_execution_or_science_permission": false,
+      "actual_dynamic_records_estimated": false,
+      "characteristics": "文件test1024_H2.206587...固定熵分布→host codewords/lengths；shared LUT256与变量码长/atomics，scan/pack阶段",
+      "cost_and_count_basis": "预计少8次encode；scan递归/pack计数取决实际block与宏，不乱报总数；已有5images/8380map",
+      "existing_input_contracts": [],
+      "existing_wave16_results": [
+        {
+          "CPU_stage_outcome": "FULL_STATIC_OWNER_IMAGE_PC_OPCODE_RF_CLOSED_EXACT_OLD_BINARY_ROOT_REVIEW",
+          "evidence": [
+            {
+              "bytes": 7512,
+              "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/source_runtime_mapping/HUFFMAN45_CONTROL_VERIFY_ACTUAL_CPU_RESULT_V1.json",
+              "sha256": "66922caa329afa9a95ae46fb4bb62eb742de0a844df0969b0edd18de2a7f8b3d"
+            },
+            {
+              "bytes": 2326,
+              "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/source_runtime_mapping/verify_huffman45_control_sites_v1.py",
+              "sha256": "fa550dc97fde15bcd52416740fb4238ffb0b9d9ed82f88185d6e1c02ba765132"
+            }
+          ],
+          "new_stage": "NATIVE_QA_THEN_LOADED_IMAGE_INPUT_LIFETIME_AND_CAPTURE_PROFILE",
+          "queue_id": "ORD_Rodinia_huffman_d554767402ba_A001"
+        }
+      ],
+      "family_frozen_rows_not_trace_equivalence": [
+        {
+          "argv": [
+            "/data/c16/rtx4080_suite_fill_20261024_v1/assets/gpu-app-collection/src/cuda/rodinia/3.1/cuda/huffman/pavle",
+            "./data/test1024_H2.206587175259.in"
+          ],
+          "binary_sha256": "2298a4a48cedf7ac36534da4ada33f880ebe5e99f381b28d5c4de38224c86e02",
+          "currentPrimaryGate": "ROOT_EXACT_INPUT_LIFETIME_LOADED_IMAGE_AND_COMPLETE_CAPTURE_ADMISSION",
+          "frozenPrimaryGate": "WAIT_MAPPING_ADAPTER",
+          "frozen_input_fingerprint": "667db13e2a2ba52dae4c47191d3ad423844b5e1d297960cf46e2cd17d7dbb1d8",
+          "queue_id": "ORD_Rodinia_huffman_d554767402ba_A001"
+        }
+      ],
+      "loop_decision": "NT10是同输入encodebenchmark，可提案10→2；scan/pack前缀依赖和数据熵不能删",
+      "minimal_next_action": "原ELF可优先，但符号/输入域和actualCALL/control须取证，不把static45sites当dynamic资格",
+      "no_additional_ISA_required_by_current_loaded_images": "UNKNOWN_MUST_JOIN_EXISTING_STATIC_AND_ACTUAL_LOADED_PROOFS",
+      "original_QA_contract_and_weakness": "源TESTING分支compare_vectors返回被忽略，仅打印PASS/FAIL；actual旧ELF编译flags未本Lane重证；原已执行QA应按真实弱范围",
+      "priority": 2,
+      "profile_id": "HUFFMAN",
+      "program": "huffman",
+      "source_compiler_binding_to_every_old_ELF_reproved": false,
+      "source_ref": {
+        "bytes": 8030,
+        "line_ranges": [
+          [
+            41,
+            60
+          ],
+          [
+            117,
+            171
+          ]
+        ],
+        "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/gpu-app-collection/src/cuda/rodinia/3.1/cuda/huffman/main_test_cu.cu",
+        "sha256": "09789aa2cf33de35836d5824934870d1d81b090140645edd5af9f63a2658e9bd"
+      }
+    },
+    {
+      "Root_execution_or_science_permission": false,
+      "actual_dynamic_records_estimated": false,
+      "characteristics": "512²×8点，z register滚动、x/y邻居global，thermal100时步pingpong，GPU约24MiB三数组",
+      "cost_and_count_basis": "原100次launch仅源码；grid8×128/block64×4由opt1，actualgeometry仍需核",
+      "existing_input_contracts": [],
+      "existing_wave16_results": [
+        {
+          "CPU_stage_outcome": "FULL_STATIC_OWNER_IMAGE_PC_OPCODE_RF_CLOSED_EXACT_OLD_BINARY_ROOT_REVIEW",
+          "evidence": [
+            {
+              "bytes": 3288,
+              "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/source_runtime_mapping/FIRST_MAPPING_CLOSED_HOTSPOT3D_EXACT_BINARY_CAPTURE_CANDIDATE_V1.json",
+              "sha256": "a5521da731195e21da28c781a8cec46c62eb464fc45b336a329783533701ac75"
+            }
+          ],
+          "new_stage": "NATIVE_QA_THEN_LOADED_IMAGE_INPUT_LIFETIME_AND_CAPTURE_PROFILE",
+          "queue_id": "ORD_Rodinia_hotspot3d_0fc993440490_A001"
+        }
+      ],
+      "family_frozen_rows_not_trace_equivalence": [
+        {
+          "argv": [
+            "/data/c16/rtx4080_suite_fill_20261024_v1/assets/gpu-app-collection/src/cuda/rodinia/3.1/cuda/hotspot3D/3D",
+            "512",
+            "8",
+            "100",
+            "./data/power_512x8",
+            "./data/temp_512x8",
+            "output.out"
+          ],
+          "binary_sha256": "9fa68a2cf9efa2563bbbb890966761455535aedd47a1b27256c734b0281f5522",
+          "currentPrimaryGate": "ROOT_EXACT_INPUT_LIFETIME_LOADED_IMAGE_AND_COMPLETE_CAPTURE_ADMISSION",
+          "frozenPrimaryGate": "WAIT_MAPPING_ADAPTER",
+          "frozen_input_fingerprint": "0f87750ca5466f8c558358cd242586f0b97d1279a05dacfec0af4979fd49d6ec",
+          "queue_id": "ORD_Rodinia_hotspot3d_0fc993440490_A001"
+        }
+      ],
+      "loop_decision": "100是物理演化不可当benchmark；另2步short-horizon需明确丢演化/新profile",
+      "minimal_next_action": "原map2images658已CPU闭合且原NativeQA有弱回执，可做精确input/lifetime及boundedcapture；不默认新oracle",
+      "no_additional_ISA_required_by_current_loaded_images": "UNKNOWN_MUST_JOIN_EXISTING_STATIC_AND_ACTUAL_LOADED_PROOFS",
+      "original_QA_contract_and_weakness": "3D.cu198–203只打印RMS无阈值return0；swap后导出tOut/CPUanswer存在奇偶前态域，不授100步最终oracle",
+      "priority": 2,
+      "profile_id": "HOT3D",
+      "program": "hotspot3d",
+      "source_compiler_binding_to_every_old_ELF_reproved": false,
+      "source_ref": {
+        "bytes": 2900,
+        "line_ranges": [
+          [
+            7,
+            54
+          ],
+          [
+            71,
+            96
+          ]
+        ],
+        "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/gpu-app-collection/src/cuda/rodinia/3.1/cuda/hotspot3D/opt1.cu",
+        "sha256": "f8987fd50ab42b57303bc98c3bc4d91c81346573275be8967b20c89c66fe1257"
+      }
+    },
+    {
+      "Root_execution_or_science_permission": false,
+      "actual_dynamic_records_estimated": false,
+      "characteristics": "128²视频10帧/1000particles，CPU likelihood/CDF/normalization→GPU resampling，RNG/state逐frame延续",
+      "cost_and_count_basis": "源码Nfr10有9frame迭代；实际launch数未测，findIndexSeq早停依CDF/分布，不能估固定records",
+      "existing_input_contracts": [],
+      "existing_wave16_results": [
+        {
+          "CPU_stage_outcome": "NEW_SOURCE_FIXED_SEED7_DEFINED_WRAP32_ELF_UBSAN_CLOSED",
+          "evidence": [
+            {
+              "bytes": 2706,
+              "path": "/root/share/mnt164/huangrulin/traces/rtx4080_sm89/bulk_20261024_v1/private_candidates/remaining_asset_source_runtime_mapping_20261030_v1/particlefilter_seed7_defined_wrap32_v1/CPU_UBSAN_AND_OFFLINE_BUILD_RESULT_V1.json",
+              "sha256": "30f6819ae0f049bbf8ea2d28b14aa3d5381aacf6513ae77e85d6acf3fa41d6b3"
+            }
+          ],
+          "new_stage": "ROOT_NATIVE_EXECUTION_QA_NEW_INPUT_THEN_EACH_FRAME_HtoD_LIFETIMES",
+          "queue_id": "ORD_Rodinia_particlefilter_naive_9bb4a4c6735e_A001"
+        }
+      ],
+      "family_frozen_rows_not_trace_equivalence": [
+        {
+          "argv": [
+            "/data/c16/rtx4080_suite_fill_20261024_v1/assets/gpu-app-collection/src/cuda/rodinia/3.1/cuda/particlefilter/particlefilter_naive",
+            "-x",
+            "128",
+            "-y",
+            "128",
+            "-z",
+            "10",
+            "-np",
+            "1000"
+          ],
+          "binary_sha256": "4a23f7803af768ec10c54b07e9b864cf5d2c842a3bf3a2b26d025ade36eb473b",
+          "currentPrimaryGate": "WAIT_SOURCE_RUNTIME_ADAPTER",
+          "frozenPrimaryGate": "WAIT_SOURCE_RUNTIME_ADAPTER",
+          "frozen_input_fingerprint": "dfac63b4be7d7b431e7f6dac4408b0b4ae840008aac3e443e121a70ca9cad18c",
+          "queue_id": "ORD_Rodinia_particlefilter_naive_9bb4a4c6735e_A001"
+        }
+      ],
+      "loop_decision": "frame循环非benchmark；-z10→2是新短序列，不是同工作负荷；NP/Nx变访问分布",
+      "minimal_next_action": "先新变体Native execution，随后each-frame actualHtoD epochs；新seed不完成旧time-seed输入",
+      "no_additional_ISA_required_by_current_loaded_images": "UNKNOWN_MUST_JOIN_EXISTING_STATIC_AND_ACTUAL_LOADED_PROOFS",
+      "original_QA_contract_and_weakness": "原execution/坐标输出不是CPU重采样强oracle；旧time-seed+signedoverflow已CPU证据，优先新seed7/wrap32变体8afdc",
+      "priority": 3,
+      "profile_id": "PARTICLEFILTER",
+      "program": "particlefilter_naive",
+      "source_compiler_binding_to_every_old_ELF_reproved": false,
+      "source_ref": {
+        "bytes": 22733,
+        "line_ranges": [
+          [
+            58,
+            89
+          ],
+          [
+            174,
+            193
+          ],
+          [
+            473,
+            560
+          ]
+        ],
+        "path": "/data/c16/rtx4080_suite_fill_20261024_v1/assets/gpu-app-collection/src/cuda/rodinia/3.1/cuda/particlefilter/ex_particle_CUDA_naive_seq.cu",
+        "sha256": "927a58af8122dced9e336d1850f5a749874b76b0c4bba1f5e0cf3ef596049680"
+      }
+    },
+    {
+      "Root_execution_or_science_permission": false,
+      "actual_dynamic_records_estimated": false,
+      "characteristics": "qatest比较一步update，不是benchmark10；4096默认条件需actualbind；allpairs/sharedbodytiling",
+      "cost_and_count_basis": "float+设备支持double时两个Create/reset都发生；one-reset131072B不是全进程输入闭合",
+      "existing_input_contracts": [
+        {
+          "actual_input_qualified": false,
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/nbody/nbody",
+            "-qatest"
+          ],
+          "binary_sha256": "225e5cf9a0f3f1890daf183d7a890ca3d66b7fd70ef8d6d44042add28d46501d",
+          "contract_ref": {
+            "bytes": 8228,
+            "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/actual_input/contracts19/ORD_EXT_nbody_08b2e95ddf31_A001.json",
+            "sha256": "19dab6fcb362ec44bdea2ede49f1973f8a85b0120cadf51d0978b4ca1df22c04"
+          },
+          "domains": [
+            "SYNC_HTOD"
+          ],
+          "queue_id": "ORD_EXT_nbody_08b2e95ddf31_A001",
+          "remaining_runtime_binding": "Root must bind actual reset count/input epochs; source one-reset sizes are not whole-process closure",
+          "route": "ROOT_BOUNDED_SYNC_HTOD_PROFILE_INSTANTIATION"
+        }
+      ],
+      "existing_wave16_results": [],
+      "family_frozen_rows_not_trace_equivalence": [
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/nbody/nbody",
+            "-qatest"
+          ],
+          "binary_sha256": "225e5cf9a0f3f1890daf183d7a890ca3d66b7fd70ef8d6d44042add28d46501d",
+          "currentPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozenPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozen_input_fingerprint": "6924830225295bc58a7a844c84a3cc77d56da47fb603ee79eebcc356f02ffada",
+          "queue_id": "ORD_EXT_nbody_08b2e95ddf31_A001"
+        }
+      ],
+      "loop_decision": "qatest不进runBenchmark，改numIterations不能缩此argv；保body/velocity state",
+      "minimal_next_action": "可行sync-HtoD族但更复杂：rejection采样/RNG epochs/softening symbols/FP precision domains，不能只seed猜",
+      "no_additional_ISA_required_by_current_loaded_images": "UNKNOWN_MUST_JOIN_EXISTING_STATIC_AND_ACTUAL_LOADED_PROOFS",
+      "original_QA_contract_and_weakness": "原tol0.0005，仅for i<numBodies（position有4N标量），未授全4N/全finite强oracle",
+      "priority": 3,
+      "profile_id": "NBODY_QA",
+      "program": "nbody",
+      "source_compiler_binding_to_every_old_ELF_reproved": false,
+      "source_ref": {
+        "bytes": 36844,
+        "line_ranges": [
+          [
+            368,
+            398
+          ],
+          [
+            1231,
+            1283
+          ]
+        ],
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/5_Domain_Specific/nbody/nbody.cpp",
+        "sha256": "cfc39ae1a95e2ba9b61e3cb95d71149232d579955778d626127cfa70c725aadd"
+      }
+    },
+    {
+      "Root_execution_or_science_permission": false,
+      "actual_dynamic_records_estimated": false,
+      "characteristics": "1M uint32 keys+sequence values，clock-seeded Thrust RNG；每轮从host未排序原数据重置，再sort_by_key",
+      "cost_and_count_basis": "节省98套重置/sort，actualThrust host-device lowering/CUBkernel census未测",
+      "existing_input_contracts": [
+        {
+          "actual_input_qualified": false,
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/radixSortThrust/radixSortThrust"
+          ],
+          "binary_sha256": "245cd3fb7acbbba217a9b4f960afedf4c5906c084bc7e29f8b3b8a77e77dcc9e",
+          "contract_ref": {
+            "bytes": 4048,
+            "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/actual_input/contracts19/ORD_EXT_radixSortThrust_4a3b16a2157d_A001.json",
+            "sha256": "5afa16e1a26b7815c11f152cca10d2e47c58f505469fed6fc971aecf6286c57e"
+          },
+          "domains": [
+            "THRUST_COPY_LOWERING_UNRESOLVED",
+            "PROCESS_CLOCK_RNG"
+          ],
+          "queue_id": "ORD_EXT_radixSortThrust_4a3b16a2157d_A001",
+          "remaining_runtime_binding": "Clock-seeded keys require actual bytes or observed seed/exactengine; bind actual transferlowering; dedup same bodies while retaining original repetitions",
+          "route": "NEW_ROOT_PROFILE_OR_ACQUISITION_DOMAIN_REQUIRED"
+        }
+      ],
+      "existing_wave16_results": [],
+      "family_frozen_rows_not_trace_equivalence": [
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/radixSortThrust/radixSortThrust"
+          ],
+          "binary_sha256": "245cd3fb7acbbba217a9b4f960afedf4c5906c084bc7e29f8b3b8a77e77dcc9e",
+          "currentPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozenPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozen_input_fingerprint": "14f7258084453f062851e5837da137ee7dd975ae24d36dd3877c726a56594bf9",
+          "queue_id": "ORD_EXT_radixSortThrust_4a3b16a2157d_A001"
+        },
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_radixSortThrust"
+          ],
+          "binary_sha256": "975ff7672d7bc59da2469aaeeb343754d2d48dfcf4da4e8b20499ef5dbdd9e3b",
+          "currentPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozenPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozen_input_fingerprint": "aaf5ed401f364fcc30f2382cd9f566a81694582f747ec897e4d0e1fc89f0a10b",
+          "queue_id": "ORD_EXT_radixSortThrust_e564c0b96002_A001"
+        }
+      ],
+      "loop_decision": "默认100可新argv --iterations=2；保1M/keybit/type/key-value形态；不能把sort算法passes当计时repeat删",
+      "minimal_next_action": "Root接受新argv/同sourceprofile，实际bytes或精确seed/engine取证；不能把SDK42资格转来",
+      "no_additional_ISA_required_by_current_loaded_images": "UNKNOWN_MUST_JOIN_EXISTING_STATIC_AND_ACTUAL_LOADED_PROOFS",
+      "original_QA_contract_and_weakness": "原仅is_sorted(keys)，不验证values permutation；help/invalid参数可能exit0，需实际非waived路径与Testpassed",
+      "priority": 3,
+      "profile_id": "RADIX_CUDA118",
+      "program": "radixSortThrust",
+      "source_compiler_binding_to_every_old_ELF_reproved": false,
+      "source_ref": {
+        "bytes": 7221,
+        "line_ranges": [
+          [
+            48,
+            76
+          ],
+          [
+            118,
+            168
+          ],
+          [
+            179,
+            214
+          ]
+        ],
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/radixSortThrust/radixSortThrust.cu",
+        "sha256": "46a46254b8403b63cfe4f6581a713e9132f0707d321ab9438fb9ee6e1bcfd971"
+      }
+    },
+    {
+      "Root_execution_or_science_permission": false,
+      "actual_dynamic_records_estimated": false,
+      "characteristics": "独立SDK42 v4 ELF，1M keys+values，clock-seeded RNG；Thrust runtime实现可不同",
+      "cost_and_count_basis": "没有100→2收益；现逻辑input8MiB一次，不同CUDA118逻辑800MiB",
+      "existing_input_contracts": [
+        {
+          "actual_input_qualified": false,
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_radixSortThrust"
+          ],
+          "binary_sha256": "975ff7672d7bc59da2469aaeeb343754d2d48dfcf4da4e8b20499ef5dbdd9e3b",
+          "contract_ref": {
+            "bytes": 3938,
+            "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/actual_input/contracts19/ORD_EXT_radixSortThrust_e564c0b96002_A001.json",
+            "sha256": "c744051eeec242d2d06cbea4f8de3a0abc27d3c98469e2120c090818325e27c7"
+          },
+          "domains": [
+            "THRUST_COPY_LOWERING_UNRESOLVED",
+            "PROCESS_CLOCK_RNG"
+          ],
+          "queue_id": "ORD_EXT_radixSortThrust_e564c0b96002_A001",
+          "remaining_runtime_binding": "Clock-seeded keys require actual bytes or observed seed/exactengine; bind actual transferlowering; dedup same bodies while retaining original repetitions",
+          "route": "NEW_ROOT_PROFILE_OR_ACQUISITION_DOMAIN_REQUIRED"
+        }
+      ],
+      "existing_wave16_results": [],
+      "family_frozen_rows_not_trace_equivalence": [
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/radixSortThrust/radixSortThrust"
+          ],
+          "binary_sha256": "245cd3fb7acbbba217a9b4f960afedf4c5906c084bc7e29f8b3b8a77e77dcc9e",
+          "currentPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozenPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozen_input_fingerprint": "14f7258084453f062851e5837da137ee7dd975ae24d36dd3877c726a56594bf9",
+          "queue_id": "ORD_EXT_radixSortThrust_4a3b16a2157d_A001"
+        },
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v4_radixSortThrust"
+          ],
+          "binary_sha256": "975ff7672d7bc59da2469aaeeb343754d2d48dfcf4da4e8b20499ef5dbdd9e3b",
+          "currentPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozenPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozen_input_fingerprint": "aaf5ed401f364fcc30f2382cd9f566a81694582f747ec897e4d0e1fc89f0a10b",
+          "queue_id": "ORD_EXT_radixSortThrust_e564c0b96002_A001"
+        }
+      ],
+      "loop_decision": "默认numIterations1已小，不再建议repeat缩减",
+      "minimal_next_action": "先actualinput/transfer-lowering证据，不把相同N/算法名称做SHA去重",
+      "no_additional_ISA_required_by_current_loaded_images": "UNKNOWN_MUST_JOIN_EXISTING_STATIC_AND_ACTUAL_LOADED_PROOFS",
+      "original_QA_contract_and_weakness": "仅keys有序+原shrQAFinish；values不授强QA，invalid/help也有exit0",
+      "priority": 3,
+      "profile_id": "RADIX_SDK42",
+      "program": "radixSortThrust",
+      "source_compiler_binding_to_every_old_ELF_reproved": false,
+      "source_ref": {
+        "bytes": 5810,
+        "line_ranges": [
+          [
+            24,
+            49
+          ],
+          [
+            86,
+            131
+          ],
+          [
+            143,
+            179
+          ]
+        ],
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/radixSortThrust/radixSortThrust.cu",
+        "sha256": "0fd3ae01f749320095e65d6adba50ce837fc8e2dffed7d4339ac1ab462c5fafe"
+      }
+    },
+    {
+      "Root_execution_or_science_permission": false,
+      "actual_dynamic_records_estimated": false,
+      "characteristics": "每rank2.56M float→sqrt GPU→host sum→MPI_Reduce；world topology和device choice决定输入",
+      "cost_and_count_basis": "源码每rank1kernel/grid10000/block256，10.24MB输入；World1不是multi-rank性能",
+      "existing_input_contracts": [
+        {
+          "actual_input_qualified": false,
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_repair_mpi_v1/simpleMPI"
+          ],
+          "binary_sha256": "53762091a6271d11b8750fbd3ed50b92e0b8d8af66ca0c748be496a6431145aa",
+          "contract_ref": {
+            "bytes": 4572,
+            "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/actual_input/contracts19/ORD_EXT_simpleMPI_5b55b63ece12_A001.json",
+            "sha256": "2a4ee3e0ba09c84ad6d32a5aafe43efb3583cf2804887828c9579846e51af305"
+          },
+          "domains": [
+            "SYNC_HTOD",
+            "MPI_RANK_DEVICE_TOPOLOGY"
+          ],
+          "queue_id": "ORD_EXT_simpleMPI_5b55b63ece12_A001",
+          "remaining_runtime_binding": "Root exact profile then actual same-process source hashes/lifetimes; no seed-only equality",
+          "route": "NEW_ROOT_PROFILE_OR_ACQUISITION_DOMAIN_REQUIRED"
+        }
+      ],
+      "existing_wave16_results": [],
+      "family_frozen_rows_not_trace_equivalence": [
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_repair_mpi_v1/simpleMPI"
+          ],
+          "binary_sha256": "53762091a6271d11b8750fbd3ed50b92e0b8d8af66ca0c748be496a6431145aa",
+          "currentPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozenPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozen_input_fingerprint": "62333809443b0716867eee595dfbbf415b63f2afcb8f887e335164c05a34d413",
+          "queue_id": "ORD_EXT_simpleMPI_5b55b63ece12_A001"
+        }
+      ],
+      "loop_decision": "无benchmark；保sqrt与MPI依赖；不默认切数据量",
+      "minimal_next_action": "可先显式World1/单UUID functional profile、sync-HtoD/hash；MPI环境/Rank必须冻结",
+      "no_additional_ISA_required_by_current_loaded_images": "UNKNOWN_MUST_JOIN_EXISTING_STATIC_AND_ACTUAL_LOADED_PROOFS",
+      "original_QA_contract_and_weakness": "rank0无条件PASSED在Finalize后；没有CPU sqrt参考，仅执行检查；Average需只当展示",
+      "priority": 3,
+      "profile_id": "SIMPLEMPI",
+      "program": "simpleMPI",
+      "source_compiler_binding_to_every_old_ELF_reproved": false,
+      "source_ref": {
+        "bytes": 4230,
+        "line_ranges": [
+          [
+            61,
+            106
+          ],
+          [
+            108,
+            121
+          ]
+        ],
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/modern_repair_mpi_v1/simpleMPI.cpp",
+        "sha256": "223e3f66ea08e8583aea99ddfaa700ae627fba379e02b7b0ec0790a3173fe8e7"
+      },
+      "topology_limit": "Singlevisible4080/world1scope can befunctional; not multiGPU/multirank communication/physicaloverlap qualification."
+    },
+    {
+      "Root_execution_or_science_permission": false,
+      "actual_dynamic_records_estimated": false,
+      "characteristics": "DATA_N32Mfloat按可见GPU_N分区，异步copy/reduce与CPU partial汇总，无重复",
+      "cost_and_count_basis": "128MiB input；actualGPU_N决定每设备N/launch/epochs，未测",
+      "existing_input_contracts": [
+        {
+          "actual_input_qualified": false,
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleMultiGPU/simpleMultiGPU"
+          ],
+          "binary_sha256": "7521f87f7a3b4713d3ea499401e9f9cb3893e2ac289f10c94cc2a088545ee2d6",
+          "contract_ref": {
+            "bytes": 4382,
+            "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/actual_input/contracts19/ORD_EXT_simpleMultiGPU_b0e14a4cca9d_A001.json",
+            "sha256": "ea253e901dee926417b1636e0c33e63259c67bd332353eaae9041070b1688896"
+          },
+          "domains": [
+            "ASYNC_HTOD",
+            "DEVICE_COUNT_PARTITION_TOPOLOGY"
+          ],
+          "queue_id": "ORD_EXT_simpleMultiGPU_b0e14a4cca9d_A001",
+          "remaining_runtime_binding": "Root exact profile then actual same-process source hashes/lifetimes; no seed-only equality",
+          "route": "NEW_ROOT_PROFILE_OR_ACQUISITION_DOMAIN_REQUIRED"
+        }
+      ],
+      "existing_wave16_results": [],
+      "family_frozen_rows_not_trace_equivalence": [
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleMultiGPU"
+          ],
+          "binary_sha256": "3140e504d51efea90f0a6d1eee658ae33e40c1d20bcabe6215af99696d482906",
+          "currentPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozenPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozen_input_fingerprint": "228024e0664317d102755b92321c1e77e98f360b0d13fe9a06f40fbe0dee8597",
+          "queue_id": "ORD_EXT_simpleMultiGPU_0f40dbbc958e_A001"
+        },
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleMultiGPU/simpleMultiGPU"
+          ],
+          "binary_sha256": "7521f87f7a3b4713d3ea499401e9f9cb3893e2ac289f10c94cc2a088545ee2d6",
+          "currentPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozenPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozen_input_fingerprint": "93ed44cea83fd07fb2009676746c5d3fad2bee0c719a3b25cae9a9f4afd296e1",
+          "queue_id": "ORD_EXT_simpleMultiGPU_b0e14a4cca9d_A001"
+        }
+      ],
+      "loop_decision": "grid-stride pos是真总和输入遍历；不减作timingloop",
+      "minimal_next_action": "冻结visible4080可做GPU_N1 profile；需ASYNCHtoD+lifetime/device-partition记录",
+      "no_additional_ISA_required_by_current_loaded_images": "UNKNOWN_MUST_JOIN_EXISTING_STATIC_AND_ACTUAL_LOADED_PROOFS",
+      "original_QA_contract_and_weakness": "原relative diff<1e-5；不能用一GPU成功主张多GPU拓扑/重叠",
+      "priority": 3,
+      "profile_id": "MULTIGPU_CUDA118",
+      "program": "simpleMultiGPU",
+      "source_compiler_binding_to_every_old_ELF_reproved": false,
+      "source_ref": {
+        "bytes": 7693,
+        "line_ranges": [
+          [
+            60,
+            74
+          ],
+          [
+            109,
+            190
+          ],
+          [
+            212,
+            235
+          ]
+        ],
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleMultiGPU/simpleMultiGPU.cu",
+        "sha256": "8312a8644304cc5a3616821c7a3ea25e6b80493d80b4a8dbe20b93e68c82fbc7"
+      },
+      "topology_limit": "Singlevisible4080/world1scope can befunctional; not multiGPU/multirank communication/physicaloverlap qualification."
+    },
+    {
+      "Root_execution_or_science_permission": false,
+      "actual_dynamic_records_estimated": false,
+      "characteristics": "SDK42独立ELF/source，32M数据device partition+stream同步",
+      "cost_and_count_basis": "128MiB static input不是两个版本trace等价",
+      "existing_input_contracts": [
+        {
+          "actual_input_qualified": false,
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleMultiGPU"
+          ],
+          "binary_sha256": "3140e504d51efea90f0a6d1eee658ae33e40c1d20bcabe6215af99696d482906",
+          "contract_ref": {
+            "bytes": 4734,
+            "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/actual_input/contracts19/ORD_EXT_simpleMultiGPU_0f40dbbc958e_A001.json",
+            "sha256": "65639569c1dfeac60ef5c78c89ec3f018890ba5d3c33803847ccc8f1489e1023"
+          },
+          "domains": [
+            "ASYNC_HTOD",
+            "DEVICE_COUNT_PARTITION_TOPOLOGY"
+          ],
+          "queue_id": "ORD_EXT_simpleMultiGPU_0f40dbbc958e_A001",
+          "remaining_runtime_binding": "Root exact profile then actual same-process source hashes/lifetimes; no seed-only equality",
+          "route": "NEW_ROOT_PROFILE_OR_ACQUISITION_DOMAIN_REQUIRED"
+        }
+      ],
+      "existing_wave16_results": [],
+      "family_frozen_rows_not_trace_equivalence": [
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleMultiGPU"
+          ],
+          "binary_sha256": "3140e504d51efea90f0a6d1eee658ae33e40c1d20bcabe6215af99696d482906",
+          "currentPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozenPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozen_input_fingerprint": "228024e0664317d102755b92321c1e77e98f360b0d13fe9a06f40fbe0dee8597",
+          "queue_id": "ORD_EXT_simpleMultiGPU_0f40dbbc958e_A001"
+        },
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleMultiGPU/simpleMultiGPU"
+          ],
+          "binary_sha256": "7521f87f7a3b4713d3ea499401e9f9cb3893e2ac289f10c94cc2a088545ee2d6",
+          "currentPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozenPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozen_input_fingerprint": "93ed44cea83fd07fb2009676746c5d3fad2bee0c719a3b25cae9a9f4afd296e1",
+          "queue_id": "ORD_EXT_simpleMultiGPU_b0e14a4cca9d_A001"
+        }
+      ],
+      "loop_decision": "无benchmark；保持实际device partition",
+      "minimal_next_action": "独立实例化async域，不能转移CUDA118资格",
+      "no_additional_ISA_required_by_current_loaded_images": "UNKNOWN_MUST_JOIN_EXISTING_STATIC_AND_ACTUAL_LOADED_PROOFS",
+      "original_QA_contract_and_weakness": "原diff<1e-5/shrQAFinish；profile域限actual可见devices",
+      "priority": 3,
+      "profile_id": "MULTIGPU_SDK42",
+      "program": "simpleMultiGPU",
+      "source_compiler_binding_to_every_old_ELF_reproved": false,
+      "source_ref": {
+        "bytes": 10948,
+        "line_ranges": [
+          [
+            212,
+            276
+          ],
+          [
+            288,
+            321
+          ]
+        ],
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleMultiGPU/simpleMultiGPU.cpp",
+        "sha256": "cd8e3fc10e81e5bd818a11552892b744e5c9f495ef6317ac0c997fd94221ebc2"
+      },
+      "topology_limit": "Singlevisible4080/world1scope can befunctional; not multiGPU/multirank communication/physicaloverlap qualification."
+    },
+    {
+      "Root_execution_or_science_permission": false,
+      "actual_dynamic_records_estimated": false,
+      "characteristics": "1M float a/b/c host-pinned mapped，vectorAdd一kernel；a/b交错rand生成",
+      "cost_and_count_basis": "输入a+b8MiB；HtoD-only C8看不到实际kernel输入；输出c全写不需预像",
+      "existing_input_contracts": [
+        {
+          "actual_input_qualified": false,
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleZeroCopy/simpleZeroCopy"
+          ],
+          "binary_sha256": "54204663723f7ea59a22b0fecfbfdd3404c86c4f22df11982eaddd715f0f28a1",
+          "contract_ref": {
+            "bytes": 4682,
+            "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/actual_input/contracts19/ORD_EXT_simpleZeroCopy_e8e7d9191ec4_A001.json",
+            "sha256": "4b2ba3c3463fe48f0fef78dd4592d0350ca085417c3ff65d4f9f18d94ce3623c"
+          },
+          "domains": [
+            "MAPPED_ZERO_COPY"
+          ],
+          "queue_id": "ORD_EXT_simpleZeroCopy_e8e7d9191ec4_A001",
+          "remaining_runtime_binding": "HtoD-only C8 cannot observe mapped inputs; bind host/device alias, prelaunch hash and original completion, verified interleaved recipe or actual source bytes",
+          "route": "NEW_ROOT_PROFILE_OR_ACQUISITION_DOMAIN_REQUIRED"
+        }
+      ],
+      "existing_wave16_results": [],
+      "family_frozen_rows_not_trace_equivalence": [
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleZeroCopy"
+          ],
+          "binary_sha256": "8542d5375c5821e17891112153865398842c848bfb40b1de303887a5205d2f01",
+          "currentPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozenPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozen_input_fingerprint": "94a20641110cc25ec7a01ef87a61f2bc8094eec1c3370ffcf38be75022011c74",
+          "queue_id": "ORD_EXT_simpleZeroCopy_e597a67bb7d0_A001"
+        },
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleZeroCopy/simpleZeroCopy"
+          ],
+          "binary_sha256": "54204663723f7ea59a22b0fecfbfdd3404c86c4f22df11982eaddd715f0f28a1",
+          "currentPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozenPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozen_input_fingerprint": "e59c464a82b894d7bd29e2e387005abab786dcae9135a30785c6e354d9bffd91",
+          "queue_id": "ORD_EXT_simpleZeroCopy_e8e7d9191ec4_A001"
+        }
+      ],
+      "loop_decision": "无benchmark；不能去掉mapped alias当普通HtoD",
+      "memory_model_limit": "HOST_MAPPED input/output is not ordinarydeviceDRAM timing. APIalias/hash closure andoneCTAretirement do not provePCIe/hostmemorylatency/cachecoherence model. Preserveallocation/mappingdomain metadata; exactconsumermemorydomain support remainsseparate.",
+      "minimal_next_action": "新mapped prelaunch actualsource hash+allocation/alias/epoch/host-no-mutation直至sync；interleaved RNG需同序",
+      "no_additional_ISA_required_by_current_loaded_images": "UNKNOWN_MUST_JOIN_EXISTING_STATIC_AND_ACTUAL_LOADED_PROOFS",
+      "original_QA_contract_and_weakness": "原relative L2<1e-6；canMapHostMemory不支持/帮助等可能exitSuccess waiver，需真实kernel/完整检查",
+      "priority": 4,
+      "profile_id": "ZEROCOPY_CUDA118",
+      "program": "simpleZeroCopy",
+      "source_compiler_binding_to_every_old_ELF_reproved": false,
+      "source_ref": {
+        "bytes": 7952,
+        "line_ranges": [
+          [
+            156,
+            207
+          ],
+          [
+            211,
+            246
+          ]
+        ],
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleZeroCopy/simpleZeroCopy.cu",
+        "sha256": "19ef19e62abd63636039fbda03a60273fabf20b245215ad8809b8bec5ad23e3f"
+      }
+    },
+    {
+      "Root_execution_or_science_permission": false,
+      "actual_dynamic_records_estimated": false,
+      "characteristics": "独立SDK42映射内存版本，数据形态同但实际源/ELF不同",
+      "cost_and_count_basis": "actualhost/device aliases和register/allocate分支未测",
+      "existing_input_contracts": [
+        {
+          "actual_input_qualified": false,
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleZeroCopy"
+          ],
+          "binary_sha256": "8542d5375c5821e17891112153865398842c848bfb40b1de303887a5205d2f01",
+          "contract_ref": {
+            "bytes": 4599,
+            "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/actual_input/contracts19/ORD_EXT_simpleZeroCopy_e597a67bb7d0_A001.json",
+            "sha256": "b85f00ca5c2cd43f0d991717f9181ebbcb40221908081f3df2eed2da431a68ff"
+          },
+          "domains": [
+            "MAPPED_ZERO_COPY"
+          ],
+          "queue_id": "ORD_EXT_simpleZeroCopy_e597a67bb7d0_A001",
+          "remaining_runtime_binding": "HtoD-only C8 cannot observe mapped inputs; bind host/device alias, prelaunch hash and original completion, verified interleaved recipe or actual source bytes",
+          "route": "NEW_ROOT_PROFILE_OR_ACQUISITION_DOMAIN_REQUIRED"
+        }
+      ],
+      "existing_wave16_results": [],
+      "family_frozen_rows_not_trace_equivalence": [
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_v3_simpleZeroCopy"
+          ],
+          "binary_sha256": "8542d5375c5821e17891112153865398842c848bfb40b1de303887a5205d2f01",
+          "currentPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozenPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozen_input_fingerprint": "94a20641110cc25ec7a01ef87a61f2bc8094eec1c3370ffcf38be75022011c74",
+          "queue_id": "ORD_EXT_simpleZeroCopy_e597a67bb7d0_A001"
+        },
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/0_Introduction/simpleZeroCopy/simpleZeroCopy"
+          ],
+          "binary_sha256": "54204663723f7ea59a22b0fecfbfdd3404c86c4f22df11982eaddd715f0f28a1",
+          "currentPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozenPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozen_input_fingerprint": "e59c464a82b894d7bd29e2e387005abab786dcae9135a30785c6e354d9bffd91",
+          "queue_id": "ORD_EXT_simpleZeroCopy_e8e7d9191ec4_A001"
+        }
+      ],
+      "loop_decision": "无benchmark；内存访问域是主要特征不能替普通buffer",
+      "memory_model_limit": "HOST_MAPPED input/output is not ordinarydeviceDRAM timing. APIalias/hash closure andoneCTAretirement do not provePCIe/hostmemorylatency/cachecoherence model. Preserveallocation/mappingdomain metadata; exactconsumermemorydomain support remainsseparate.",
+      "minimal_next_action": "复用mapped observer家族但每输入独立取证；未知不等不可用",
+      "no_additional_ISA_required_by_current_loaded_images": "UNKNOWN_MUST_JOIN_EXISTING_STATIC_AND_ACTUAL_LOADED_PROOFS",
+      "original_QA_contract_and_weakness": "原relative norm<1e-6，waive/unsupported早退出可打印PASSED，不能仅exit0/marker",
+      "priority": 4,
+      "profile_id": "ZEROCOPY_SDK42",
+      "program": "simpleZeroCopy",
+      "source_compiler_binding_to_every_old_ELF_reproved": false,
+      "source_ref": {
+        "bytes": 12115,
+        "line_ranges": [
+          [
+            288,
+            347
+          ],
+          [
+            381,
+            381
+          ]
+        ],
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/sdk/4.2/simpleZeroCopy/simpleZeroCopy.cu",
+        "sha256": "a902393bc93a25a16c9b898253163447a5c1101168bb1e3c30b772192ce0e0fa"
+      }
+    },
+    {
+      "Root_execution_or_science_permission": false,
+      "actual_dynamic_records_estimated": false,
+      "characteristics": "single-pass lastblock atomic retirementCounter+threadfence vs可选multipass；输入浮点rand小量",
+      "cost_and_count_basis": "warmup与benchmark可能不同kernel路径；不把sourcefor100等实际100kernels",
+      "existing_input_contracts": [
+        {
+          "actual_input_qualified": false,
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/threadFenceReduction/threadFenceReduction"
+          ],
+          "binary_sha256": "020c7b3d4a9a22a9ec7758bc770801e57ce748c9cb3eab8d698e15c4cf9532ff",
+          "contract_ref": {
+            "bytes": 5598,
+            "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/actual_input/contracts19/ORD_EXT_threadFenceReduction_d13fdacaa548_A001.json",
+            "sha256": "aa980a3e31d3e8ee85fac129e58b2d277a66711a9323087b9594541c3cc94745"
+          },
+          "domains": [
+            "SYNC_HTOD",
+            "SYMBOL_INITIALIZATION"
+          ],
+          "queue_id": "ORD_EXT_threadFenceReduction_d13fdacaa548_A001",
+          "remaining_runtime_binding": "Root exact profile then actual same-process source hashes/lifetimes; no seed-only equality",
+          "route": "NEW_ROOT_PROFILE_OR_ACQUISITION_DOMAIN_REQUIRED"
+        }
+      ],
+      "existing_wave16_results": [],
+      "family_frozen_rows_not_trace_equivalence": [
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_threadFenceReduction_typed_symbol_v1"
+          ],
+          "binary_sha256": "124b12fa20fd6f4dd3a545b9121a993a7ef5eac68c7d25901e0e64187b733ebc",
+          "currentPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozenPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozen_input_fingerprint": "94569ac18c7d27fa84cfa542600edcd060d9a267ebaa8d9e509b258fb784f0ba",
+          "queue_id": "ORD_EXT_threadFenceReduction_1ef36475a244_A001"
+        },
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/threadFenceReduction/threadFenceReduction"
+          ],
+          "binary_sha256": "020c7b3d4a9a22a9ec7758bc770801e57ce748c9cb3eab8d698e15c4cf9532ff",
+          "currentPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozenPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozen_input_fingerprint": "71ec685b0ac10ff51f39ddf587555a4694752226b78f690932f0a8ff85f53627",
+          "queue_id": "ORD_EXT_threadFenceReduction_d13fdacaa548_A001"
+        }
+      ],
+      "loop_decision": "默认benchmark100可新2但保原warmup与每次retirementCount reset；kernel内读全N/lastblock协议不能删",
+      "minimal_next_action": "需typed-symbol4B初始化/epochs和sync输入闭合；actualfence/atomic consumer不得仅凭staticmap赋权",
+      "no_additional_ISA_required_by_current_loaded_images": "UNKNOWN_MUST_JOIN_EXISTING_STATIC_AND_ACTUAL_LOADED_PROOFS",
+      "original_QA_contract_and_weakness": "原float CPU sum diff<1e-8*size，不可借int reduction exact-equality oracle",
+      "priority": 4,
+      "profile_id": "TFENCE_CUDA118",
+      "program": "threadFenceReduction",
+      "source_compiler_binding_to_every_old_ELF_reproved": false,
+      "source_ref": {
+        "bytes": 15693,
+        "line_ranges": [
+          [
+            199,
+            249
+          ],
+          [
+            395,
+            453
+          ]
+        ],
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/threadFenceReduction/threadFenceReduction.cu",
+        "sha256": "460190689bda1bb83689c2fa297fc7b521fd9125105b4d76423fcedd45b004dd"
+      }
+    },
+    {
+      "Root_execution_or_science_permission": false,
+      "actual_dynamic_records_estimated": false,
+      "characteristics": "SDK42 typed-symbol变体独立binary；counter reset cudaMemcpyToSymbol前置",
+      "cost_and_count_basis": "输入262400B静态合同；实际symbol-address-generation/ABI与路线仍未测",
+      "existing_input_contracts": [
+        {
+          "actual_input_qualified": false,
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_threadFenceReduction_typed_symbol_v1"
+          ],
+          "binary_sha256": "124b12fa20fd6f4dd3a545b9121a993a7ef5eac68c7d25901e0e64187b733ebc",
+          "contract_ref": {
+            "bytes": 5447,
+            "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/actual_input/contracts19/ORD_EXT_threadFenceReduction_1ef36475a244_A001.json",
+            "sha256": "5d9db612090847d563cfc6ca1c5a2b8cecf8dd73c5c8f6b2cf8ec088c52f4386"
+          },
+          "domains": [
+            "SYNC_HTOD",
+            "SYMBOL_INITIALIZATION"
+          ],
+          "queue_id": "ORD_EXT_threadFenceReduction_1ef36475a244_A001",
+          "remaining_runtime_binding": "Root exact profile then actual same-process source hashes/lifetimes; no seed-only equality",
+          "route": "NEW_ROOT_PROFILE_OR_ACQUISITION_DOMAIN_REQUIRED"
+        }
+      ],
+      "existing_wave16_results": [],
+      "family_frozen_rows_not_trace_equivalence": [
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/bin/sdk42_threadFenceReduction_typed_symbol_v1"
+          ],
+          "binary_sha256": "124b12fa20fd6f4dd3a545b9121a993a7ef5eac68c7d25901e0e64187b733ebc",
+          "currentPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozenPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozen_input_fingerprint": "94569ac18c7d27fa84cfa542600edcd060d9a267ebaa8d9e509b258fb784f0ba",
+          "queue_id": "ORD_EXT_threadFenceReduction_1ef36475a244_A001"
+        },
+        {
+          "argv": [
+            "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/threadFenceReduction/threadFenceReduction"
+          ],
+          "binary_sha256": "020c7b3d4a9a22a9ec7758bc770801e57ce748c9cb3eab8d698e15c4cf9532ff",
+          "currentPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozenPrimaryGate": "WAIT_ACTUAL_INPUT_ADAPTER",
+          "frozen_input_fingerprint": "71ec685b0ac10ff51f39ddf587555a4694752226b78f690932f0a8ff85f53627",
+          "queue_id": "ORD_EXT_threadFenceReduction_d13fdacaa548_A001"
+        }
+      ],
+      "loop_decision": "此src defaulttestIterations1，不建议把CUDA118100缩法套来",
+      "minimal_next_action": "优先源码已有typed-symbol路线；新producer域需Root接受，非普通C8足够",
+      "no_additional_ISA_required_by_current_loaded_images": "UNKNOWN_MUST_JOIN_EXISTING_STATIC_AND_ACTUAL_LOADED_PROOFS",
+      "original_QA_contract_and_weakness": "同float CPU tolerance原QA，source强弱不混int算法",
+      "priority": 4,
+      "profile_id": "TFENCE_SDK42",
+      "program": "threadFenceReduction",
+      "source_compiler_binding_to_every_old_ELF_reproved": false,
+      "source_ref": {
+        "bytes": 16131,
+        "line_ranges": [
+          [
+            214,
+            264
+          ],
+          [
+            410,
+            462
+          ]
+        ],
+        "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/adapted_sdk42/threadFenceReduction_typed_symbol_v1/threadFenceReduction.cu",
+        "sha256": "97a0d13d9f9be1f8f5bcaa10efdcc2f5c92ed4b98087980db544d56d633d29bd"
+      }
+    }
+  ],
+  "readset": {
+    "bytes": 498095,
+    "path": "/root/share/mnt164/huangrulin/traces/receipts/remaining_asset_completion_goal_20261030_v1/workload_characteristics_analysis_20261030_v3/SOURCE_READSET_V1.json",
+    "sha256": "8a963cdc53dd047a665a3a42f72383e55e67c04c507bece7ce0ca9299f39448b"
+  },
+  "release_bytes": 0,
+  "schema": "UNCOVERED_INPUT_RUNTIME_PROFILE_SOURCE_CHARACTERISTICS_BATCH_V4",
+  "status": "SOURCE_AND_PRIOR_STAGE_EVIDENCE_ANALYSIS_ROOT_REVIEW_REQUIRED_NOT_EXECUTED",
+  "unix": 1793321469.8988423
+}
