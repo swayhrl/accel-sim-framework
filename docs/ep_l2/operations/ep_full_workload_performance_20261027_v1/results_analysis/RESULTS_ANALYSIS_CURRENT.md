@@ -1,22 +1,20 @@
 # Accepted experiment results: bounded current analysis
 
-Analysis UTC: 2026-10-29T03:35:51.830021+00:00. Registry: 227 registered; 227 consumed; states {'CLOSED_ACCEPTED': 223, 'CLOSED_UNACCEPTED': 2, 'CONSUMED_BEFORE_FORK': 2}. Independently joined CLOSED_ACCEPTED endpoints: 223. Joins cover frozen spec, natural DONE, point, canonical Source5, validation SHA and genuine164/two-native-restore receipts. No raw or Trace rereads; Main remains the acceptance authority.
+Analysis UTC: 2026-10-30T14:17:24.314397+00:00. Registry: 227 registered; 227 consumed; states {'CLOSED_ACCEPTED': 223, 'CLOSED_UNACCEPTED': 2, 'CONSUMED_BEFORE_FORK': 1, 'NATURAL_COMPLETE_PENDING_VALIDATION': 1}. Independently joined CLOSED_ACCEPTED endpoints: 223. Joins cover frozen spec, natural DONE, point, canonical Source5, validation SHA and genuine164/two-native-restore receipts. No raw or Trace rereads; Main remains the acceptance authority.
 
 Each row is an endpoint, not a distinct workload. This is a bounded snapshot; live counts may advance. There is no full35/full96 geometric mean or global-optimum claim.
 
-Incremental refresh reuses 222 prior closed endpoints with unchanged frozen-spec SHA and exact current registry point/DONE/archive references. 1 new or changed endpoints were freshly joined. Old artifact SHA references remain the sealed prior evidence; they were not all rehashed.
+Incremental refresh reuses 223 prior closed endpoints with unchanged frozen-spec SHA and exact current registry point/DONE/archive references. 0 new or changed endpoints were freshly joined. Old artifact SHA references remain the sealed prior evidence; they were not all rehashed.
 
 ## Newly closed endpoints and newly matched comparisons
 
-This refresh reuses 222 closed endpoint references and freshly joins 1 new/changed endpoints. New fully matched pairs: 1. REF S/F coverage is 24 inputs / 23 programs. This is not completed35/96 coverage.
+This refresh reuses 223 closed endpoint references and freshly joins 0 new/changed endpoints. New fully matched pairs: 0. REF S/F coverage is 24 inputs / 23 programs. This is not completed35/96 coverage.
 
 |new endpoint|mode|cycles|instructions|CTA|kernels|
 |---|---|---:|---:|---:|---:|
-|lavamd (51faffd2)|F|5738976|10396775488|1000|1|
 
 |new matched input|S cycles|F cycles|S/F|F cycle change vs S|
 |---|---:|---:|---:|---:|
-|lavamd (51faffd2)|5581479|5738976|0.972557|+2.8218%|
 
 Per-candidate fixed8 closure:
 - COMBO_G64W16_UD2: 8/8; full-population GM=0.996987; missing=NONE.
