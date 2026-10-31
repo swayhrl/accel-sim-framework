@@ -1,6 +1,6 @@
 # Finite longtail result update
 
-UTC: 2026-10-31T00:28:13.402569+00:00. Status: SCOPED_LONGTAIL_RUNNING.
+UTC: 2026-10-31T00:48:37.978832+00:00. Status: SCOPED_LONGTAIL_RUNNING.
 
 Accepted experiment points: 224; matched comparisons: 111.
 
@@ -8,7 +8,7 @@ Accepted experiment points: 224; matched comparisons: 111.
 |---|---|---|---:|
 |lavamd|F|CLOSED_ACCEPTED|5738976|
 |SYRK|S|CLOSED_ACCEPTED|22589807|
-|SYRK|F|CONSUMED_BEFORE_FORK|PENDING_OR_UNACCEPTED|
+|SYRK|F|NATURAL_COMPLETE_PENDING_VALIDATION|PENDING_OR_UNACCEPTED|
 
 All scientific inputs/source remain unchanged. No new simulator start, retry, refund or budget was used.
 Acceptance requires the original complete-population/native qualification, genuine164 archive and two independent restore receipts.

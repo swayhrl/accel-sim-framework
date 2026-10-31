@@ -3,14 +3,14 @@
     "matched_details_ref": {
       "bytes": 188322,
       "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/analysis/live/MATCHED_RESULT_DETAILS.json",
-      "sha256": "953ad99bf6f9dea5f00ec2f8dc7f4e7d8539ba3d6e277cba01be3acdcef0a4bc"
+      "sha256": "b6efc4d9e5be2c69996af4f3c9f44b155520c43640f5f8bdc112ad75bcb3a60e"
     },
     "status_ref": {
-      "bytes": 2142,
+      "bytes": 2157,
       "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/analysis/live/CURRENT_STATUS.json",
-      "sha256": "93e3048b4ad2b912221a1b4ad13eae3b3aa5bbfa6916e58e4c77fbd58da5d120"
+      "sha256": "30c9035a3df2e25c7ca9d367ccf4e53a57db1673a9fa974e95ec6d68d127742d"
     },
-    "utc": "2026-10-30T14:17:57.276299+00:00"
+    "utc": "2026-10-31T00:48:37.404058+00:00"
   },
   "actual_smallG_final_RO_detaches": [
     {
@@ -150,7 +150,7 @@
     "states": {
       "CLOSED_ACCEPTED": 224,
       "CLOSED_UNACCEPTED": 2,
-      "CONSUMED_BEFORE_FORK": 1
+      "NATURAL_COMPLETE_PENDING_VALIDATION": 1
     }
   },
   "coverage_ledger": {
@@ -20187,7 +20187,11 @@
         "physical_payload_line_slots_per_slice": 1168,
         "static_s64": false
       },
-      "done_ref": null,
+      "done_ref": {
+        "bytes": 4566,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_SYRK_90B0CC9D_F_REF_V1.DONE.json",
+        "sha256": "dc9241c937aa73a06ebd626989b36a49473c859f4f2a631488c3a32fb727bf13"
+      },
       "failure_ref": null,
       "geometry": {
         "line_bytes": 128,
@@ -20227,7 +20231,7 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_F_REF_V1/control/FROZEN_SPEC.json",
         "sha256": "85e25ebeeff3a3a7cb543774a5b7ba4cd883b7165cadb2fdaaffd722ae689ebf"
       },
-      "state": "CONSUMED_BEFORE_FORK"
+      "state": "NATURAL_COMPLETE_PENDING_VALIDATION"
     },
     {
       "CTA": 4096,
@@ -20288,6 +20292,7 @@
       "kernels": 1,
       "matched_same_mode_REF_cohort": "EP_PERF_SYRK_90B0CC9D_S_REF_V1",
       "matched_same_mode_REF_cycles": 22589807,
+      "metadata_join_method": "REUSED_PRIOR_SEALED_CLOSED_REFERENCES_CURRENT_REGISTRY_IDENTITY_UNCHANGED",
       "mode": "S",
       "numeric_output": "UNKNOWN",
       "observer": {
@@ -27015,7 +27020,7 @@
       }
     ],
     "current_analysis_accepted_count": 224,
-    "current_analysis_population_asof_utc": "2026-10-30T14:17:57.395547+00:00",
+    "current_analysis_population_asof_utc": "2026-10-31T00:48:37.563071+00:00",
     "evidence_ref": {
       "bytes": 24308,
       "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/control/TECHNICAL_FAILURE_ROOTCAUSE_20261028_V1/EVIDENCE.json",
@@ -27042,17 +27047,15 @@
   "incremental_refresh": {
     "current_spec_SHA_and_registry_pointer_join_checked": true,
     "new_matched_pairs": 0,
-    "new_or_changed_rejoined": [
-      "EP_PERF_SYRK_90B0CC9D_S_REF_V1"
-    ],
+    "new_or_changed_rejoined": [],
     "new_pairs": [],
     "prior_analysis_ref": {
-      "bytes": 1846309,
-      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/results_analysis_20261028_v1/versions/20261030T141724Z_11225576/RESULTS_ANALYSIS_CURRENT.json",
+      "bytes": 1847877,
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/results_analysis_20261028_v1/versions/20261030T141757Z_68c5d721/RESULTS_ANALYSIS_CURRENT.json",
       "publish_name": "RESULTS_ANALYSIS_CURRENT.json",
-      "sha256": "81d9692663fb7995db615a79db10c92fc0128178f9372a4e35852e5d5d4cee02"
+      "sha256": "db8bf102b63caeef36aeba0416b0876b6516de3681e37a234cf49cd5757b5706"
     },
-    "prior_utc": "2026-10-30T14:17:24.314397+00:00",
+    "prior_utc": "2026-10-30T14:17:57.395547+00:00",
     "reused_unchanged": [
       "EP_PERF_2DCONV_0AE13552_F_REF_V1",
       "EP_PERF_2DCONV_0AE13552_S_REF_V1",
@@ -27223,6 +27226,7 @@
       "EP_PERF_SRADV1_6CE41710_S_REF_V1",
       "EP_PERF_STENCIL_BD0309DF_F_REF_V1",
       "EP_PERF_STENCIL_BD0309DF_S_REF_V1",
+      "EP_PERF_SYRK_90B0CC9D_S_REF_V1",
       "EP_PERF_TRANSPOSE_DA6CAAE1_F_REF_V1",
       "EP_PERF_TRANSPOSE_DA6CAAE1_S_REF_V1",
       "EP_PERF_TRANSPOSE_DA6CAAE1_WV_ZERO_RO_REF_V1",
@@ -44828,13 +44832,11 @@
   },
   "refresh_delta_summary": {
     "T_independent_gain": "UNKNOWN_NEEDS_EXACT_F_BACKGROUND_T_OFF_M1",
-    "new_accepted_endpoints": 1,
+    "new_accepted_endpoints": 0,
     "new_fully_matched_pairs": 0,
-    "prior_analysis_utc": "2026-10-30T14:17:24.314397+00:00",
-    "remaining_live": [
-      "EP_PERF_SYRK_90B0CC9D_F_REF_V1"
-    ],
-    "unchanged_endpoints_reused": 223,
+    "prior_analysis_utc": "2026-10-30T14:17:57.395547+00:00",
+    "remaining_live": [],
+    "unchanged_endpoints_reused": 224,
     "unconsumed": []
   },
   "registry_mutations": 0,
@@ -44843,14 +44845,14 @@
     "CPU": 511,
     "maxRSS_bytes": 95006720,
     "nice": 15,
-    "seconds": 0.17506831884384155
+    "seconds": 0.180017851293087
   },
   "schema": "EP_AGENT_B_ACCEPTED_RESULTS_ANALYSIS_V1",
   "source_snapshot": {
     "epoch": 2,
-    "epoch_sha256": "457a51a315fa4cc80e8895074c0771a10367aaf47cbbd2fa75e7ebbbcfeb0243",
-    "registry_sha256": "93e6e940863af5f431da7b496159c72b3f6d2ab6472add1baecbdad7d5939fb4"
+    "epoch_sha256": "16d7b34e53d8ef6d28a20a343ef5f610fa65535eb363f973ee9a643140a4bb4d",
+    "registry_sha256": "d4528c7855f190a9a2ed0188f474220e65b5138be1f57587e89085077723748b"
   },
   "trace_or_raw_rereads": 0,
-  "utc": "2026-10-30T14:17:57.395547+00:00"
+  "utc": "2026-10-31T00:48:37.563071+00:00"
 }
