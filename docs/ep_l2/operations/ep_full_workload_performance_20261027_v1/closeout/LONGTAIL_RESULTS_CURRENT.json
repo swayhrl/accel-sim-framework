@@ -1,18 +1,17 @@
 {
   "Source_KEEP": true,
-  "all3_terminal": false,
+  "all3_terminal": true,
   "background_config_ref": {
     "bytes": 5944,
     "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/control/finite_longtail_closeout_20261029_v1/CONFIG.json",
     "sha256": "3466fb26f1d8389f1c19cd33b1da9063878419db1871172287ccc1bffd86afc6"
   },
   "batch_terminal_counts": {
-    "CLOSED_ACCEPTED": 224,
-    "CLOSED_UNACCEPTED": 2,
-    "NATURAL_COMPLETE_PENDING_VALIDATION": 1
+    "CLOSED_ACCEPTED": 225,
+    "CLOSED_UNACCEPTED": 2
   },
   "claim_boundary": "Only complete accepted applications form performance pairs; failures/holds retained. Foreground closure is not proof of full35/96 coverage.",
-  "closed_accepted": 224,
+  "closed_accepted": 225,
   "global35_or96_GM": null,
   "goal": "EP_L2_FULL_WORKLOAD_PERFORMANCE_POTENTIAL_EXPLORATION_V1",
   "large_assets": "GENUINE164",
@@ -80,18 +79,27 @@
       "state": "CLOSED_ACCEPTED"
     },
     {
-      "CTA": null,
-      "accepted_point_ref": null,
-      "archive_receipt_ref": null,
+      "CTA": 4096,
+      "accepted_point_ref": {
+        "bytes": 2388,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_F_REF_V1/run/1e3ed644-f904-4b09-856e-62d398dafdf6/ACCEPTED_POINT.json",
+        "sha256": "1ac574c103ea2e4170e84beb984e8bc70dbd951c2e47d8f5775d83e15747b5d1"
+      },
+      "archive_receipt_ref": {
+        "bytes": 1842,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_F_REF_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "d71714dc32dcf2bd40a4fbe1a28cc61c495020a847dead92ac68dd468dcda95f"
+      },
       "cohort": "EP_PERF_SYRK_90B0CC9D_F_REF_V1",
-      "cycles": null,
+      "cycles": 20263252,
       "done_ref": {
         "bytes": 4566,
         "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_SYRK_90B0CC9D_F_REF_V1.DONE.json",
         "sha256": "dc9241c937aa73a06ebd626989b36a49473c859f4f2a631488c3a32fb727bf13"
       },
-      "instructions": null,
-      "kernel_count": null,
+      "hardware_drained": true,
+      "instructions": 5626658816,
+      "kernel_count": 1,
       "mode": "F",
       "program": "SYRK",
       "spec_ref": {
@@ -99,12 +107,26 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_F_REF_V1/control/FROZEN_SPEC.json",
         "sha256": "85e25ebeeff3a3a7cb543774a5b7ba4cd883b7165cadb2fdaaffd722ae689ebf"
       },
-      "state": "NATURAL_COMPLETE_PENDING_VALIDATION"
+      "state": "CLOSED_ACCEPTED"
     }
   ],
-  "matched_pair_count": 111,
+  "matched_pair_count": 112,
   "new_scientific_starts": 0,
   "newly_available_matched_pairs": [
+    {
+      "F_cohort": "EP_PERF_SYRK_90B0CC9D_F_REF_V1",
+      "F_cycles": "20263252",
+      "S_cohort": "EP_PERF_SYRK_90B0CC9D_S_REF_V1",
+      "S_cycles": "22589807",
+      "input_identity_sha256": "90b0cc9d2f88fd005d709b755d13345c2db2038085d8d1c2d59ccf9a6f60ad11",
+      "pair_key": "4c74ffef5adeaf43df249ef7d6697f72eeac77d5e72205d760ae11dc9a525619",
+      "profile": "REF32x8_L100",
+      "program": "SYRK",
+      "slowdown": "False",
+      "speedup_S_over_treatment": "1.114816466774435",
+      "treatment": "F",
+      "treatment_cycle_reduction_fraction": "0.10299136243173745"
+    },
     {
       "F_cohort": "EP_PERF_LAVAMD_51FAFFD2_F_REF_V1",
       "F_cycles": "5738976",
@@ -127,6 +149,6 @@
   },
   "retry_or_refund": false,
   "schema": "EP_FINITE_LONGTAIL_RESULT_UPDATE_V1",
-  "status": "SCOPED_LONGTAIL_RUNNING",
-  "utc": "2026-10-31T00:48:37.978832+00:00"
+  "status": "ALL_SCOPED_LONGTAIL_TERMINAL",
+  "utc": "2026-10-31T00:49:11.098394+00:00"
 }

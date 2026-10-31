@@ -1,16 +1,16 @@
 {
   "Main_live_snapshot": {
     "matched_details_ref": {
-      "bytes": 188322,
+      "bytes": 189367,
       "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/analysis/live/MATCHED_RESULT_DETAILS.json",
-      "sha256": "b6efc4d9e5be2c69996af4f3c9f44b155520c43640f5f8bdc112ad75bcb3a60e"
+      "sha256": "fd163b1aa87c45ee888748e46ac2900d57ac387110fb9ade7c2970910c377ade"
     },
     "status_ref": {
-      "bytes": 2157,
+      "bytes": 2117,
       "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/analysis/live/CURRENT_STATUS.json",
-      "sha256": "30c9035a3df2e25c7ca9d367ccf4e53a57db1673a9fa974e95ec6d68d127742d"
+      "sha256": "8f0b621829d00d4f114d47e0afd60e91d4ff6a199d6b7a193340493bf17deae8"
     },
-    "utc": "2026-10-31T00:48:37.404058+00:00"
+    "utc": "2026-10-31T00:49:10.569474+00:00"
   },
   "actual_smallG_final_RO_detaches": [
     {
@@ -142,15 +142,14 @@
   },
   "counts": {
     "consumed": 227,
-    "independently_metadata_joined_closed_accepted": 224,
+    "independently_metadata_joined_closed_accepted": 225,
     "join_holds": 0,
     "live_pair_exclusions": 0,
-    "matched_same_hardware_pairs": 111,
+    "matched_same_hardware_pairs": 112,
     "registered": 227,
     "states": {
-      "CLOSED_ACCEPTED": 224,
-      "CLOSED_UNACCEPTED": 2,
-      "NATURAL_COMPLETE_PENDING_VALIDATION": 1
+      "CLOSED_ACCEPTED": 225,
+      "CLOSED_UNACCEPTED": 2
     }
   },
   "coverage_ledger": {
@@ -201,8 +200,8 @@
     }
   },
   "current_reference_coverage": {
-    "S_F_input_pairs": 24,
-    "S_F_programs": 23,
+    "S_F_input_pairs": 25,
+    "S_F_programs": 24,
     "S_WV_pairs": 7,
     "not_disjoint_workload_totals": true,
     "scope": "CLOSED_ACCEPTED_EXACT_CURRENT_PAIRS_NOT_FULL35_OR96"
@@ -20154,11 +20153,22 @@
       }
     },
     {
+      "CTA": 4096,
+      "IPC": 277.67797666435774,
       "M": true,
-      "RO_applicability": "EXACT_RO_QUALIFICATION_REQUIRED",
+      "RO_applicability": "EXACT_WHOLECMD_SOURCE_LOADER_QUALIFIED",
+      "RO_qualification_ref": {
+        "bytes": 2060,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_F_REF_V1/control/RO_QUALIFICATION.json",
+        "sha256": "7a8fc774e55f15a1023030329478e24a16828b3d5e3ce629b84da5244f0cd58e"
+      },
       "T": true,
-      "accepted": false,
-      "archive_ref": null,
+      "accepted": true,
+      "archive_ref": {
+        "bytes": 1842,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_F_REF_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "d71714dc32dcf2bd40a4fbe1a28cc61c495020a847dead92ac68dd468dcda95f"
+      },
       "cohort": "EP_PERF_SYRK_90B0CC9D_F_REF_V1",
       "cost_proxy": {
         "DRAM_MHz": 850.0,
@@ -20187,21 +20197,26 @@
         "physical_payload_line_slots_per_slice": 1168,
         "static_s64": false
       },
+      "cycles": 20263252,
       "done_ref": {
         "bytes": 4566,
         "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_SYRK_90B0CC9D_F_REF_V1.DONE.json",
         "sha256": "dc9241c937aa73a06ebd626989b36a49473c859f4f2a631488c3a32fb727bf13"
       },
-      "failure_ref": null,
+      "exact_delta_from_same_mode_REF": {},
       "geometry": {
         "line_bytes": 128,
         "sets": 32,
         "slices": 64,
         "ways": 8
       },
+      "hardware_drained": true,
       "input_identity_sha256": "90b0cc9d2f88fd005d709b755d13345c2db2038085d8d1c2d59ccf9a6f60ad11",
+      "instructions": 5626658816,
+      "kernels": 1,
+      "matched_same_mode_REF_cohort": "EP_PERF_SYRK_90B0CC9D_F_REF_V1",
+      "matched_same_mode_REF_cycles": 20263252,
       "mode": "F",
-      "negative_scope": "PENDING_NO_RATIO",
       "numeric_output": "UNKNOWN",
       "observer": {
         "B0": "1",
@@ -20216,9 +20231,21 @@
         }
       },
       "option282_digest": "7e4c634c9c10eee4f0e6ed7d20150ca599d4ac9f79007cba53e1338747b919da",
+      "point_ref": {
+        "bytes": 2388,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_F_REF_V1/run/1e3ed644-f904-4b09-856e-62d398dafdf6/ACCEPTED_POINT.json",
+        "sha256": "1ac574c103ea2e4170e84beb984e8bc70dbd951c2e47d8f5775d83e15747b5d1"
+      },
+      "postrun_qualification_ref": null,
       "profile": "REF32x8_L100",
       "program": "SYRK",
-      "scientific_status": "UNSPECIFIED",
+      "raw_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_F_REF_V1/run/1e3ed644-f904-4b09-856e-62d398dafdf6/raw.log.gz",
+        "sha256": "5efc582afa001b29b6d6d5832820fdea628be3eba2859b9130437be8e3dd6bbf"
+      },
+      "same_mode_REF_over_cycles": 1.0,
+      "same_mode_cycle_reduction_fraction": 0.0,
+      "semantic_population_digest": "f2874baed5308f6024947bb34a8517ea4dff58ddf67269008a379779d600e085",
       "source_identity": {
         "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
         "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
@@ -20231,7 +20258,11 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_F_REF_V1/control/FROZEN_SPEC.json",
         "sha256": "85e25ebeeff3a3a7cb543774a5b7ba4cd883b7165cadb2fdaaffd722ae689ebf"
       },
-      "state": "NATURAL_COMPLETE_PENDING_VALIDATION"
+      "state": "CLOSED_ACCEPTED",
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_F_REF_V1/run/1e3ed644-f904-4b09-856e-62d398dafdf6/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "2d45d02bc7727ad6dd5a7284901cc7b56ab679c34466e8586e5e60f98d6c047d"
+      }
     },
     {
       "CTA": 4096,
@@ -27019,8 +27050,8 @@
         "last_line": 178
       }
     ],
-    "current_analysis_accepted_count": 224,
-    "current_analysis_population_asof_utc": "2026-10-31T00:48:37.563071+00:00",
+    "current_analysis_accepted_count": 225,
+    "current_analysis_population_asof_utc": "2026-10-31T00:49:10.692709+00:00",
     "evidence_ref": {
       "bytes": 24308,
       "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/control/TECHNICAL_FAILURE_ROOTCAUSE_20261028_V1/EVIDENCE.json",
@@ -27046,16 +27077,127 @@
   "goal": "EP_L2_FULL_WORKLOAD_PERFORMANCE_POTENTIAL_EXPLORATION_V1",
   "incremental_refresh": {
     "current_spec_SHA_and_registry_pointer_join_checked": true,
-    "new_matched_pairs": 0,
-    "new_or_changed_rejoined": [],
-    "new_pairs": [],
+    "new_matched_pairs": 1,
+    "new_or_changed_rejoined": [
+      "EP_PERF_SYRK_90B0CC9D_F_REF_V1"
+    ],
+    "new_pairs": [
+      {
+        "F_absolute_REF_over_F": 1.0,
+        "F_archive_ref": {
+          "bytes": 1842,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_F_REF_V1/control/ARCHIVE_RECEIPT.json",
+          "sha256": "d71714dc32dcf2bd40a4fbe1a28cc61c495020a847dead92ac68dd468dcda95f"
+        },
+        "F_cohort": "EP_PERF_SYRK_90B0CC9D_F_REF_V1",
+        "F_cycles": 20263252,
+        "F_point_ref": {
+          "bytes": 2388,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_F_REF_V1/run/1e3ed644-f904-4b09-856e-62d398dafdf6/ACCEPTED_POINT.json",
+          "sha256": "1ac574c103ea2e4170e84beb984e8bc70dbd951c2e47d8f5775d83e15747b5d1"
+        },
+        "F_spec_ref": {
+          "bytes": 28418,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_F_REF_V1/control/FROZEN_SPEC.json",
+          "sha256": "85e25ebeeff3a3a7cb543774a5b7ba4cd883b7165cadb2fdaaffd722ae689ebf"
+        },
+        "RO_applicability": "EXACT_WHOLECMD_SOURCE_LOADER_QUALIFIED",
+        "S_absolute_REF_over_S": 1.0,
+        "S_archive_ref": {
+          "bytes": 1842,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_S_REF_V1/control/ARCHIVE_RECEIPT.json",
+          "sha256": "2bf4a14b778292e89574e83fac7320ed7c2fa534839c83bd4974b39acc9411ba"
+        },
+        "S_cohort": "EP_PERF_SYRK_90B0CC9D_S_REF_V1",
+        "S_cycles": 22589807,
+        "S_point_ref": {
+          "bytes": 2388,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_S_REF_V1/run/f406dae1-f20b-4356-aba2-13dee73f6401/ACCEPTED_POINT.json",
+          "sha256": "fec3bb4c077b14c69f01c718acfecfa5b5f673d188d3f24b51c4e934480c6e96"
+        },
+        "S_spec_ref": {
+          "bytes": 25949,
+          "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_S_REF_V1/control/FROZEN_SPEC.json",
+          "sha256": "6e7fbd3d90e6862a36771cd49db87b24e97239eb6ab138232c5093571f76886d"
+        },
+        "cost_proxy": {
+          "DRAM_MHz": 850.0,
+          "DRAM_return": 192,
+          "FRFCFS": 128,
+          "F_pool": "UNIFIED1168",
+          "ICNT_in": 512,
+          "ICNT_out": 512,
+          "L1_MissQ": 16,
+          "L2_MissQ": 128,
+          "S_static_role_partition": [
+            1024,
+            128,
+            16
+          ],
+          "Tag_address_coverage_GPU_bytes": 2097152,
+          "Tag_storage_area_bytes": "UNKNOWN; coveragebytes not TagRAM bytes",
+          "WAD128": 128,
+          "bank_ops_per_CORE": 1,
+          "descriptor512": 512,
+          "line_MSHR": 128,
+          "logical_Tag_slots_per_slice": 256,
+          "lower_FIFO": 128,
+          "metadata_PPA": "UNKNOWN",
+          "physical_payload_data_GPU_bytes": 9568256,
+          "physical_payload_line_slots_per_slice": 1168,
+          "static_s64": false
+        },
+        "geometry": {
+          "line_bytes": 128,
+          "sets": 32,
+          "slices": 64,
+          "ways": 8
+        },
+        "hardware_background_digest": "7f45ea6c40053e0bd4855274c7f74e96f013c19808f6828e4b9e6ea316914610",
+        "input_identity_sha256": "90b0cc9d2f88fd005d709b755d13345c2db2038085d8d1c2d59ccf9a6f60ad11",
+        "observer": {
+          "B0": "1",
+          "M0a": "1",
+          "MS": "1",
+          "env": {
+            "EPL2_DETACH_DIAG": "0",
+            "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
+            "EPL2_TAGPRESSURE_DIAG": "0",
+            "EPL2_TAG_LIFETIME": "0",
+            "EP_L2_EVENT_TIMELINE": "0"
+          }
+        },
+        "observer_env": {
+          "EPL2_DETACH_DIAG": "0",
+          "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
+          "EPL2_TAGPRESSURE_DIAG": "0",
+          "EPL2_TAG_LIFETIME": "0",
+          "EP_L2_EVENT_TIMELINE": "0"
+        },
+        "pair_key": "4c74ffef5adeaf43df249ef7d6697f72eeac77d5e72205d760ae11dc9a525619",
+        "profile": "REF32x8_L100",
+        "program": "SYRK",
+        "relative_EP_ratio_change_vs_reference": 1.0,
+        "slowdown": false,
+        "source_identity": {
+          "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+          "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+          "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+          "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+          "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+        },
+        "speedup_S_over_treatment": 1.114816466774435,
+        "treatment": "F",
+        "treatment_cycle_reduction_fraction": 0.10299136243173745
+      }
+    ],
     "prior_analysis_ref": {
-      "bytes": 1847877,
-      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/results_analysis_20261028_v1/versions/20261030T141757Z_68c5d721/RESULTS_ANALYSIS_CURRENT.json",
+      "bytes": 1848200,
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/results_analysis_20261028_v1/versions/20261031T004837Z_1305e7d6/RESULTS_ANALYSIS_CURRENT.json",
       "publish_name": "RESULTS_ANALYSIS_CURRENT.json",
-      "sha256": "db8bf102b63caeef36aeba0416b0876b6516de3681e37a234cf49cd5757b5706"
+      "sha256": "a0913417924eadf900b99fa6b0b33605031f3996ccbfd020e73831845ee3a62e"
     },
-    "prior_utc": "2026-10-30T14:17:57.395547+00:00",
+    "prior_utc": "2026-10-31T00:48:37.563071+00:00",
     "reused_unchanged": [
       "EP_PERF_2DCONV_0AE13552_F_REF_V1",
       "EP_PERF_2DCONV_0AE13552_S_REF_V1",
@@ -31125,6 +31267,54 @@
       ],
       "dominated_by": [],
       "input_identity_sha256": "bd0309dfeec5745ba97400978c2c5f1413fa9c604376b3dd97e1dd3d5c8cc146",
+      "locally_nondominated_in_observed_same_source_mode_population": true,
+      "not_area_or_global_optimum": true,
+      "profile": "REF32x8_L100"
+    },
+    {
+      "cohort": "EP_PERF_SYRK_90B0CC9D_F_REF_V1",
+      "costs": {
+        "DRAM_MHz": 850.0,
+        "DRAM_return": 192,
+        "FRFCFS": 128,
+        "F_pool": "UNIFIED1168",
+        "ICNT_in": 512,
+        "ICNT_out": 512,
+        "L1_MissQ": 16,
+        "L2_MissQ": 128,
+        "S_static_role_partition": [
+          1024,
+          128,
+          16
+        ],
+        "Tag_address_coverage_GPU_bytes": 2097152,
+        "Tag_storage_area_bytes": "UNKNOWN; coveragebytes not TagRAM bytes",
+        "WAD128": 128,
+        "bank_ops_per_CORE": 1,
+        "descriptor512": 512,
+        "line_MSHR": 128,
+        "logical_Tag_slots_per_slice": 256,
+        "lower_FIFO": 128,
+        "metadata_PPA": "UNKNOWN",
+        "physical_payload_data_GPU_bytes": 9568256,
+        "physical_payload_line_slots_per_slice": 1168,
+        "static_s64": false
+      },
+      "cycles": 20263252,
+      "dimensions": [
+        "logical_Tag_slots_per_slice",
+        "bank_ops_per_CORE",
+        "L1_MissQ",
+        "L2_MissQ",
+        "lower_FIFO",
+        "FRFCFS",
+        "DRAM_return",
+        "ICNT_in",
+        "ICNT_out",
+        "DRAM_MHz"
+      ],
+      "dominated_by": [],
+      "input_identity_sha256": "90b0cc9d2f88fd005d709b755d13345c2db2038085d8d1c2d59ccf9a6f60ad11",
       "locally_nondominated_in_observed_same_source_mode_population": true,
       "not_area_or_global_optimum": true,
       "profile": "REF32x8_L100"
@@ -36430,6 +36620,114 @@
       "speedup_S_over_treatment": 0.9900829729260965,
       "treatment": "F",
       "treatment_cycle_reduction_fraction": -0.0100163595830709
+    },
+    {
+      "F_absolute_REF_over_F": 1.0,
+      "F_archive_ref": {
+        "bytes": 1842,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_F_REF_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "d71714dc32dcf2bd40a4fbe1a28cc61c495020a847dead92ac68dd468dcda95f"
+      },
+      "F_cohort": "EP_PERF_SYRK_90B0CC9D_F_REF_V1",
+      "F_cycles": 20263252,
+      "F_point_ref": {
+        "bytes": 2388,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_F_REF_V1/run/1e3ed644-f904-4b09-856e-62d398dafdf6/ACCEPTED_POINT.json",
+        "sha256": "1ac574c103ea2e4170e84beb984e8bc70dbd951c2e47d8f5775d83e15747b5d1"
+      },
+      "F_spec_ref": {
+        "bytes": 28418,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_F_REF_V1/control/FROZEN_SPEC.json",
+        "sha256": "85e25ebeeff3a3a7cb543774a5b7ba4cd883b7165cadb2fdaaffd722ae689ebf"
+      },
+      "RO_applicability": "EXACT_WHOLECMD_SOURCE_LOADER_QUALIFIED",
+      "S_absolute_REF_over_S": 1.0,
+      "S_archive_ref": {
+        "bytes": 1842,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_S_REF_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "2bf4a14b778292e89574e83fac7320ed7c2fa534839c83bd4974b39acc9411ba"
+      },
+      "S_cohort": "EP_PERF_SYRK_90B0CC9D_S_REF_V1",
+      "S_cycles": 22589807,
+      "S_point_ref": {
+        "bytes": 2388,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_S_REF_V1/run/f406dae1-f20b-4356-aba2-13dee73f6401/ACCEPTED_POINT.json",
+        "sha256": "fec3bb4c077b14c69f01c718acfecfa5b5f673d188d3f24b51c4e934480c6e96"
+      },
+      "S_spec_ref": {
+        "bytes": 25949,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SYRK_90B0CC9D_S_REF_V1/control/FROZEN_SPEC.json",
+        "sha256": "6e7fbd3d90e6862a36771cd49db87b24e97239eb6ab138232c5093571f76886d"
+      },
+      "cost_proxy": {
+        "DRAM_MHz": 850.0,
+        "DRAM_return": 192,
+        "FRFCFS": 128,
+        "F_pool": "UNIFIED1168",
+        "ICNT_in": 512,
+        "ICNT_out": 512,
+        "L1_MissQ": 16,
+        "L2_MissQ": 128,
+        "S_static_role_partition": [
+          1024,
+          128,
+          16
+        ],
+        "Tag_address_coverage_GPU_bytes": 2097152,
+        "Tag_storage_area_bytes": "UNKNOWN; coveragebytes not TagRAM bytes",
+        "WAD128": 128,
+        "bank_ops_per_CORE": 1,
+        "descriptor512": 512,
+        "line_MSHR": 128,
+        "logical_Tag_slots_per_slice": 256,
+        "lower_FIFO": 128,
+        "metadata_PPA": "UNKNOWN",
+        "physical_payload_data_GPU_bytes": 9568256,
+        "physical_payload_line_slots_per_slice": 1168,
+        "static_s64": false
+      },
+      "geometry": {
+        "line_bytes": 128,
+        "sets": 32,
+        "slices": 64,
+        "ways": 8
+      },
+      "hardware_background_digest": "7f45ea6c40053e0bd4855274c7f74e96f013c19808f6828e4b9e6ea316914610",
+      "input_identity_sha256": "90b0cc9d2f88fd005d709b755d13345c2db2038085d8d1c2d59ccf9a6f60ad11",
+      "observer": {
+        "B0": "1",
+        "M0a": "1",
+        "MS": "1",
+        "env": {
+          "EPL2_DETACH_DIAG": "0",
+          "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
+          "EPL2_TAGPRESSURE_DIAG": "0",
+          "EPL2_TAG_LIFETIME": "0",
+          "EP_L2_EVENT_TIMELINE": "0"
+        }
+      },
+      "observer_env": {
+        "EPL2_DETACH_DIAG": "0",
+        "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
+        "EPL2_TAGPRESSURE_DIAG": "0",
+        "EPL2_TAG_LIFETIME": "0",
+        "EP_L2_EVENT_TIMELINE": "0"
+      },
+      "pair_key": "4c74ffef5adeaf43df249ef7d6697f72eeac77d5e72205d760ae11dc9a525619",
+      "profile": "REF32x8_L100",
+      "program": "SYRK",
+      "relative_EP_ratio_change_vs_reference": 1.0,
+      "slowdown": false,
+      "source_identity": {
+        "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+        "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+        "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "speedup_S_over_treatment": 1.114816466774435,
+      "treatment": "F",
+      "treatment_cycle_reduction_fraction": 0.10299136243173745
     },
     {
       "F_absolute_REF_over_F": 1.0684658945972145,
@@ -44832,9 +45130,9 @@
   },
   "refresh_delta_summary": {
     "T_independent_gain": "UNKNOWN_NEEDS_EXACT_F_BACKGROUND_T_OFF_M1",
-    "new_accepted_endpoints": 0,
-    "new_fully_matched_pairs": 0,
-    "prior_analysis_utc": "2026-10-30T14:17:57.395547+00:00",
+    "new_accepted_endpoints": 1,
+    "new_fully_matched_pairs": 1,
+    "prior_analysis_utc": "2026-10-31T00:48:37.563071+00:00",
     "remaining_live": [],
     "unchanged_endpoints_reused": 224,
     "unconsumed": []
@@ -44845,14 +45143,14 @@
     "CPU": 511,
     "maxRSS_bytes": 95006720,
     "nice": 15,
-    "seconds": 0.180017851293087
+    "seconds": 0.17679796367883682
   },
   "schema": "EP_AGENT_B_ACCEPTED_RESULTS_ANALYSIS_V1",
   "source_snapshot": {
     "epoch": 2,
-    "epoch_sha256": "16d7b34e53d8ef6d28a20a343ef5f610fa65535eb363f973ee9a643140a4bb4d",
-    "registry_sha256": "d4528c7855f190a9a2ed0188f474220e65b5138be1f57587e89085077723748b"
+    "epoch_sha256": "77b7ff4cf57cbff434cf2e668375ddb8b628284b0d5a3c21cb73e1f23f7a065b",
+    "registry_sha256": "fad850028b05d91bd4b62c59bcc0fa0b75a89ff393f620cf33820aadd2872275"
   },
   "trace_or_raw_rereads": 0,
-  "utc": "2026-10-31T00:48:37.563071+00:00"
+  "utc": "2026-10-31T00:49:10.692709+00:00"
 }

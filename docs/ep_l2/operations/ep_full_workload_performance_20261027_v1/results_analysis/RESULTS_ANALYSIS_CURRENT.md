@@ -1,20 +1,22 @@
 # Accepted experiment results: bounded current analysis
 
-Analysis UTC: 2026-10-31T00:48:37.563071+00:00. Registry: 227 registered; 227 consumed; states {'CLOSED_ACCEPTED': 224, 'CLOSED_UNACCEPTED': 2, 'NATURAL_COMPLETE_PENDING_VALIDATION': 1}. Independently joined CLOSED_ACCEPTED endpoints: 224. Joins cover frozen spec, natural DONE, point, canonical Source5, validation SHA and genuine164/two-native-restore receipts. No raw or Trace rereads; Main remains the acceptance authority.
+Analysis UTC: 2026-10-31T00:49:10.692709+00:00. Registry: 227 registered; 227 consumed; states {'CLOSED_ACCEPTED': 225, 'CLOSED_UNACCEPTED': 2}. Independently joined CLOSED_ACCEPTED endpoints: 225. Joins cover frozen spec, natural DONE, point, canonical Source5, validation SHA and genuine164/two-native-restore receipts. No raw or Trace rereads; Main remains the acceptance authority.
 
 Each row is an endpoint, not a distinct workload. This is a bounded snapshot; live counts may advance. There is no full35/full96 geometric mean or global-optimum claim.
 
-Incremental refresh reuses 224 prior closed endpoints with unchanged frozen-spec SHA and exact current registry point/DONE/archive references. 0 new or changed endpoints were freshly joined. Old artifact SHA references remain the sealed prior evidence; they were not all rehashed.
+Incremental refresh reuses 224 prior closed endpoints with unchanged frozen-spec SHA and exact current registry point/DONE/archive references. 1 new or changed endpoints were freshly joined. Old artifact SHA references remain the sealed prior evidence; they were not all rehashed.
 
 ## Newly closed endpoints and newly matched comparisons
 
-This refresh reuses 224 closed endpoint references and freshly joins 0 new/changed endpoints. New fully matched pairs: 0. REF S/F coverage is 24 inputs / 23 programs. This is not completed35/96 coverage.
+This refresh reuses 224 closed endpoint references and freshly joins 1 new/changed endpoints. New fully matched pairs: 1. REF S/F coverage is 25 inputs / 24 programs. This is not completed35/96 coverage.
 
 |new endpoint|mode|cycles|instructions|CTA|kernels|
 |---|---|---:|---:|---:|---:|
+|SYRK (90b0cc9d)|F|20263252|5626658816|4096|1|
 
 |new matched input|S cycles|F cycles|S/F|F cycle change vs S|
 |---|---:|---:|---:|---:|
+|SYRK (90b0cc9d)|22589807|20263252|1.114816|-10.2991%|
 
 Per-candidate fixed8 closure:
 - COMBO_G64W16_UD2: 8/8; full-population GM=0.996987; missing=NONE.
@@ -196,6 +198,6 @@ Original detailed Main report (read-only source): `/root/data/ep_l2_full_workloa
 
 Physical payload data RAM is 1168 x 128 B x 64 = 9,568,256 B (9.125 MiB). Tag address coverage is not Tag RAM storage or area. Pareto results use only explicit modeled capacity proxies within the same input/mode/Source/observer profile; they omit technology area, energy and metadata PPA. F also has RO/TVD metadata and is not claimed to have identical total area.
 
-Unclosed endpoints: 1. Technical negatives retained: 2. Metadata join HOLDs: 0; live pair exclusions: 0. Exact refs, 282-option deltas, pending cases and population membership are in JSON/CSV.
+Unclosed endpoints: 0. Technical negatives retained: 2. Metadata join HOLDs: 0; live pair exclusions: 0. Exact refs, 282-option deltas, pending cases and population membership are in JSON/CSV.
 
 Disabled R4/R5/LIFE/ET observations are NOT_OBSERVED, not measured zero. TagFAIL/reuse/timing populations cannot be reconstructed from unrelated marginal counters. Original-capture completeness and numeric SASS correctness remain UNKNOWN.
