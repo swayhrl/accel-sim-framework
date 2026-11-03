@@ -1,0 +1,695 @@
+{
+  "schema": "ACTUAL_CPU2_SPARE_HOLD_READONLY_DIAGNOSIS_V1",
+  "utc": "2026-10-28T16:51:00Z",
+  "sampler_source": "/root/data/dtc_l2_mlp_exploration_20261027_v1/control/operational_amendments/cpu_spare_memory_v2/cpu_memory.py",
+  "sampler_source_sha256": "d98f2365c3f98ce6ec9464df1d6dc16b56a034b942388abb43944cdb71d0858a",
+  "driver_sha256": "3cf6043bd9a6a9b1feddc6409fb4cb7bf5376b649775a08a77f283d4267411c7",
+  "assessment": {
+    "status": "HOLD",
+    "reason": "RESOURCE_HOLD_CPU_SPARE: fewer than4 unoccupied idle physical cores"
+  },
+  "eligible": false,
+  "two_real_snapshots": true,
+  "sample_interval_seconds": 0.6055254824459553,
+  "process_cpu_measure_interval_seconds": 0.7233911715447903,
+  "allowed_logical_cpus": 512,
+  "allowed_cpu_mask": "0-511",
+  "allowed_physical_cores": 256,
+  "claimed_occupied_logical_cpus": 42,
+  "claimed_occupied_cpu_mask": "0-4,9,32-63,494,501,510-511",
+  "claimed_occupied_physical_cores": 42,
+  "idle_physical_cores_if_ignore_affinity_claims": 0,
+  "idle_and_unoccupied_physical_cores": 0,
+  "mean_logical_CPU_busy_fraction": 0.7675023495625612,
+  "logical_cpu_busy_over10pct": 512,
+  "max_logical_CPU_busy_fraction": 1.0,
+  "quota": [
+    {
+      "path": "/sys/fs/cgroup",
+      "quota": [
+        "38400000",
+        "100000"
+      ],
+      "used_cores": 5.396420691733123,
+      "nr_throttled_delta": 0,
+      "throttled_usec_delta": 0
+    }
+  ],
+  "unreadable_tasks": [
+    0,
+    0
+  ],
+  "scanned_tasks": [
+    529,
+    529
+  ],
+  "occupied_mask_groups": [
+    {
+      "kind": "RUNNING_BROAD_TASK",
+      "affinity_width": 512,
+      "occupied_mask": "510",
+      "pids": [
+        {
+          "pid": 1498278,
+          "comm": "python3",
+          "cpu_used_cores_interval": 0.9676645603859958
+        }
+      ],
+      "states": {
+        "R": 2
+      },
+      "snapshots": [
+        "first",
+        "second"
+      ],
+      "tids_count": 1
+    },
+    {
+      "kind": "PINNED_AFFINITY_JOB",
+      "affinity_width": 32,
+      "occupied_mask": "32-63",
+      "pids": [
+        {
+          "pid": 1498278,
+          "comm": "python3",
+          "cpu_used_cores_interval": 0.9676645603859958
+        }
+      ],
+      "states": {
+        "S": 10
+      },
+      "snapshots": [
+        "first",
+        "second"
+      ],
+      "tids_count": 5
+    },
+    {
+      "kind": "PINNED_AFFINITY_JOB",
+      "affinity_width": 2,
+      "occupied_mask": "0-1",
+      "pids": [
+        {
+          "pid": 1501891,
+          "comm": "python3",
+          "cpu_used_cores_interval": 0.013823779434085656
+        },
+        {
+          "pid": 1501892,
+          "comm": "python3",
+          "cpu_used_cores_interval": 0.0
+        }
+      ],
+      "states": {
+        "S": 4
+      },
+      "snapshots": [
+        "first",
+        "second"
+      ],
+      "tids_count": 2
+    },
+    {
+      "kind": "PINNED_AFFINITY_JOB",
+      "affinity_width": 1,
+      "occupied_mask": "2",
+      "pids": [
+        {
+          "pid": 2053682,
+          "comm": "ld-linux-x86-64",
+          "cpu_used_cores_interval": 0.0
+        },
+        {
+          "pid": 2053685,
+          "comm": "ld-linux-x86-64",
+          "cpu_used_cores_interval": 0.9953121192541672
+        },
+        {
+          "pid": 2053714,
+          "comm": "sh",
+          "cpu_used_cores_interval": 0.0
+        },
+        {
+          "pid": 2053715,
+          "comm": "cat",
+          "cpu_used_cores_interval": 0.0
+        }
+      ],
+      "states": {
+        "S": 6,
+        "R": 2
+      },
+      "snapshots": [
+        "first",
+        "second"
+      ],
+      "tids_count": 4
+    },
+    {
+      "kind": "PINNED_AFFINITY_JOB",
+      "affinity_width": 1,
+      "occupied_mask": "501",
+      "pids": [
+        {
+          "pid": 2157684,
+          "comm": "python3",
+          "cpu_used_cores_interval": 0.0
+        },
+        {
+          "pid": 2218673,
+          "comm": "ssh",
+          "cpu_used_cores_interval": 0.0
+        }
+      ],
+      "states": {
+        "S": 8
+      },
+      "snapshots": [
+        "first",
+        "second"
+      ],
+      "tids_count": 4
+    },
+    {
+      "kind": "PINNED_AFFINITY_JOB",
+      "affinity_width": 1,
+      "occupied_mask": "1",
+      "pids": [
+        {
+          "pid": 2194208,
+          "comm": "ld-linux-x86-64",
+          "cpu_used_cores_interval": 0.0
+        },
+        {
+          "pid": 2194211,
+          "comm": "ld-linux-x86-64",
+          "cpu_used_cores_interval": 0.9814883398200814
+        },
+        {
+          "pid": 2194228,
+          "comm": "sh",
+          "cpu_used_cores_interval": 0.0
+        },
+        {
+          "pid": 2194229,
+          "comm": "cat",
+          "cpu_used_cores_interval": 0.0
+        }
+      ],
+      "states": {
+        "S": 6,
+        "R": 2
+      },
+      "snapshots": [
+        "first",
+        "second"
+      ],
+      "tids_count": 4
+    },
+    {
+      "kind": "PINNED_AFFINITY_JOB",
+      "affinity_width": 1,
+      "occupied_mask": "3",
+      "pids": [
+        {
+          "pid": 2224911,
+          "comm": "ld-linux-x86-64",
+          "cpu_used_cores_interval": 0.0967664560385996
+        },
+        {
+          "pid": 2224914,
+          "comm": "ld-linux-x86-64",
+          "cpu_used_cores_interval": 0.8294267660451393
+        },
+        {
+          "pid": 2224956,
+          "comm": "sh",
+          "cpu_used_cores_interval": 0.0
+        },
+        {
+          "pid": 2224957,
+          "comm": "cat",
+          "cpu_used_cores_interval": 0.041471338302256966
+        }
+      ],
+      "states": {
+        "S": 5,
+        "R": 2,
+        "t": 1
+      },
+      "snapshots": [
+        "first",
+        "second"
+      ],
+      "tids_count": 4
+    },
+    {
+      "kind": "PINNED_AFFINITY_JOB",
+      "affinity_width": 1,
+      "occupied_mask": "494",
+      "pids": [
+        {
+          "pid": 2225854,
+          "comm": "python3",
+          "cpu_used_cores_interval": 0.0
+        },
+        {
+          "pid": 2225855,
+          "comm": "ssh",
+          "cpu_used_cores_interval": 0.0
+        }
+      ],
+      "states": {
+        "S": 8
+      },
+      "snapshots": [
+        "first",
+        "second"
+      ],
+      "tids_count": 4
+    },
+    {
+      "kind": "PINNED_AFFINITY_JOB",
+      "affinity_width": 1,
+      "occupied_mask": "4",
+      "pids": [
+        {
+          "pid": 2224907,
+          "comm": "ld-linux-x86-64",
+          "cpu_used_cores_interval": 0.0
+        },
+        {
+          "pid": 2224910,
+          "comm": "ld-linux-x86-64",
+          "cpu_used_cores_interval": 0.9953121192541672
+        }
+      ],
+      "states": {
+        "S": 2,
+        "R": 2
+      },
+      "snapshots": [
+        "first",
+        "second"
+      ],
+      "tids_count": 2
+    },
+    {
+      "kind": "PINNED_AFFINITY_JOB",
+      "affinity_width": 1,
+      "occupied_mask": "9",
+      "pids": [
+        {
+          "pid": 1262421,
+          "comm": "python3",
+          "cpu_used_cores_interval": 0.0
+        }
+      ],
+      "states": {
+        "S": 2
+      },
+      "snapshots": [
+        "first",
+        "second"
+      ],
+      "tids_count": 1
+    },
+    {
+      "kind": "PINNED_AFFINITY_JOB",
+      "affinity_width": 1,
+      "occupied_mask": "511",
+      "pids": [
+        {
+          "pid": 2122935,
+          "comm": "python3",
+          "cpu_used_cores_interval": 0.0
+        }
+      ],
+      "states": {
+        "S": 2
+      },
+      "snapshots": [
+        "first",
+        "second"
+      ],
+      "tids_count": 1
+    }
+  ],
+  "process_contributors": [
+    {
+      "pid": 1498278,
+      "comm": "python3",
+      "states": {
+        "S": 10,
+        "R": 2
+      },
+      "max_affinity_width": 512,
+      "kind": [
+        "PINNED_AFFINITY_JOB",
+        "RUNNING_BROAD_TASK"
+      ],
+      "cpu_used_cores_interval": 0.9676645603859958,
+      "occupied_physical_cores": 33,
+      "occupied_cpu_mask": "32-63,510",
+      "tids_count": 6
+    },
+    {
+      "pid": 1501891,
+      "comm": "python3",
+      "states": {
+        "S": 2
+      },
+      "max_affinity_width": 2,
+      "kind": [
+        "PINNED_AFFINITY_JOB"
+      ],
+      "cpu_used_cores_interval": 0.013823779434085656,
+      "occupied_physical_cores": 2,
+      "occupied_cpu_mask": "0-1",
+      "tids_count": 1
+    },
+    {
+      "pid": 1501892,
+      "comm": "python3",
+      "states": {
+        "S": 2
+      },
+      "max_affinity_width": 2,
+      "kind": [
+        "PINNED_AFFINITY_JOB"
+      ],
+      "cpu_used_cores_interval": 0.0,
+      "occupied_physical_cores": 2,
+      "occupied_cpu_mask": "0-1",
+      "tids_count": 1
+    },
+    {
+      "pid": 1262421,
+      "comm": "python3",
+      "states": {
+        "S": 2
+      },
+      "max_affinity_width": 1,
+      "kind": [
+        "PINNED_AFFINITY_JOB"
+      ],
+      "cpu_used_cores_interval": 0.0,
+      "occupied_physical_cores": 1,
+      "occupied_cpu_mask": "9",
+      "tids_count": 1
+    },
+    {
+      "pid": 2053682,
+      "comm": "ld-linux-x86-64",
+      "states": {
+        "S": 2
+      },
+      "max_affinity_width": 1,
+      "kind": [
+        "PINNED_AFFINITY_JOB"
+      ],
+      "cpu_used_cores_interval": 0.0,
+      "occupied_physical_cores": 1,
+      "occupied_cpu_mask": "2",
+      "tids_count": 1
+    },
+    {
+      "pid": 2053685,
+      "comm": "ld-linux-x86-64",
+      "states": {
+        "R": 2
+      },
+      "max_affinity_width": 1,
+      "kind": [
+        "PINNED_AFFINITY_JOB"
+      ],
+      "cpu_used_cores_interval": 0.9953121192541672,
+      "occupied_physical_cores": 1,
+      "occupied_cpu_mask": "2",
+      "tids_count": 1
+    },
+    {
+      "pid": 2053714,
+      "comm": "sh",
+      "states": {
+        "S": 2
+      },
+      "max_affinity_width": 1,
+      "kind": [
+        "PINNED_AFFINITY_JOB"
+      ],
+      "cpu_used_cores_interval": 0.0,
+      "occupied_physical_cores": 1,
+      "occupied_cpu_mask": "2",
+      "tids_count": 1
+    },
+    {
+      "pid": 2053715,
+      "comm": "cat",
+      "states": {
+        "S": 2
+      },
+      "max_affinity_width": 1,
+      "kind": [
+        "PINNED_AFFINITY_JOB"
+      ],
+      "cpu_used_cores_interval": 0.0,
+      "occupied_physical_cores": 1,
+      "occupied_cpu_mask": "2",
+      "tids_count": 1
+    },
+    {
+      "pid": 2122935,
+      "comm": "python3",
+      "states": {
+        "S": 2
+      },
+      "max_affinity_width": 1,
+      "kind": [
+        "PINNED_AFFINITY_JOB"
+      ],
+      "cpu_used_cores_interval": 0.0,
+      "occupied_physical_cores": 1,
+      "occupied_cpu_mask": "511",
+      "tids_count": 1
+    },
+    {
+      "pid": 2157684,
+      "comm": "python3",
+      "states": {
+        "S": 6
+      },
+      "max_affinity_width": 1,
+      "kind": [
+        "PINNED_AFFINITY_JOB"
+      ],
+      "cpu_used_cores_interval": 0.0,
+      "occupied_physical_cores": 1,
+      "occupied_cpu_mask": "501",
+      "tids_count": 3
+    },
+    {
+      "pid": 2194208,
+      "comm": "ld-linux-x86-64",
+      "states": {
+        "S": 2
+      },
+      "max_affinity_width": 1,
+      "kind": [
+        "PINNED_AFFINITY_JOB"
+      ],
+      "cpu_used_cores_interval": 0.0,
+      "occupied_physical_cores": 1,
+      "occupied_cpu_mask": "1",
+      "tids_count": 1
+    },
+    {
+      "pid": 2194211,
+      "comm": "ld-linux-x86-64",
+      "states": {
+        "R": 2
+      },
+      "max_affinity_width": 1,
+      "kind": [
+        "PINNED_AFFINITY_JOB"
+      ],
+      "cpu_used_cores_interval": 0.9814883398200814,
+      "occupied_physical_cores": 1,
+      "occupied_cpu_mask": "1",
+      "tids_count": 1
+    },
+    {
+      "pid": 2194228,
+      "comm": "sh",
+      "states": {
+        "S": 2
+      },
+      "max_affinity_width": 1,
+      "kind": [
+        "PINNED_AFFINITY_JOB"
+      ],
+      "cpu_used_cores_interval": 0.0,
+      "occupied_physical_cores": 1,
+      "occupied_cpu_mask": "1",
+      "tids_count": 1
+    },
+    {
+      "pid": 2194229,
+      "comm": "cat",
+      "states": {
+        "S": 2
+      },
+      "max_affinity_width": 1,
+      "kind": [
+        "PINNED_AFFINITY_JOB"
+      ],
+      "cpu_used_cores_interval": 0.0,
+      "occupied_physical_cores": 1,
+      "occupied_cpu_mask": "1",
+      "tids_count": 1
+    },
+    {
+      "pid": 2218673,
+      "comm": "ssh",
+      "states": {
+        "S": 2
+      },
+      "max_affinity_width": 1,
+      "kind": [
+        "PINNED_AFFINITY_JOB"
+      ],
+      "cpu_used_cores_interval": 0.0,
+      "occupied_physical_cores": 1,
+      "occupied_cpu_mask": "501",
+      "tids_count": 1
+    },
+    {
+      "pid": 2224907,
+      "comm": "ld-linux-x86-64",
+      "states": {
+        "S": 2
+      },
+      "max_affinity_width": 1,
+      "kind": [
+        "PINNED_AFFINITY_JOB"
+      ],
+      "cpu_used_cores_interval": 0.0,
+      "occupied_physical_cores": 1,
+      "occupied_cpu_mask": "4",
+      "tids_count": 1
+    },
+    {
+      "pid": 2224910,
+      "comm": "ld-linux-x86-64",
+      "states": {
+        "R": 2
+      },
+      "max_affinity_width": 1,
+      "kind": [
+        "PINNED_AFFINITY_JOB"
+      ],
+      "cpu_used_cores_interval": 0.9953121192541672,
+      "occupied_physical_cores": 1,
+      "occupied_cpu_mask": "4",
+      "tids_count": 1
+    },
+    {
+      "pid": 2224911,
+      "comm": "ld-linux-x86-64",
+      "states": {
+        "S": 2
+      },
+      "max_affinity_width": 1,
+      "kind": [
+        "PINNED_AFFINITY_JOB"
+      ],
+      "cpu_used_cores_interval": 0.0967664560385996,
+      "occupied_physical_cores": 1,
+      "occupied_cpu_mask": "3",
+      "tids_count": 1
+    },
+    {
+      "pid": 2224914,
+      "comm": "ld-linux-x86-64",
+      "states": {
+        "R": 1,
+        "t": 1
+      },
+      "max_affinity_width": 1,
+      "kind": [
+        "PINNED_AFFINITY_JOB"
+      ],
+      "cpu_used_cores_interval": 0.8294267660451393,
+      "occupied_physical_cores": 1,
+      "occupied_cpu_mask": "3",
+      "tids_count": 1
+    },
+    {
+      "pid": 2224956,
+      "comm": "sh",
+      "states": {
+        "S": 2
+      },
+      "max_affinity_width": 1,
+      "kind": [
+        "PINNED_AFFINITY_JOB"
+      ],
+      "cpu_used_cores_interval": 0.0,
+      "occupied_physical_cores": 1,
+      "occupied_cpu_mask": "3",
+      "tids_count": 1
+    },
+    {
+      "pid": 2224957,
+      "comm": "cat",
+      "states": {
+        "S": 1,
+        "R": 1
+      },
+      "max_affinity_width": 1,
+      "kind": [
+        "PINNED_AFFINITY_JOB"
+      ],
+      "cpu_used_cores_interval": 0.041471338302256966,
+      "occupied_physical_cores": 1,
+      "occupied_cpu_mask": "3",
+      "tids_count": 1
+    },
+    {
+      "pid": 2225854,
+      "comm": "python3",
+      "states": {
+        "S": 6
+      },
+      "max_affinity_width": 1,
+      "kind": [
+        "PINNED_AFFINITY_JOB"
+      ],
+      "cpu_used_cores_interval": 0.0,
+      "occupied_physical_cores": 1,
+      "occupied_cpu_mask": "494",
+      "tids_count": 3
+    },
+    {
+      "pid": 2225855,
+      "comm": "ssh",
+      "states": {
+        "S": 2
+      },
+      "max_affinity_width": 1,
+      "kind": [
+        "PINNED_AFFINITY_JOB"
+      ],
+      "cpu_used_cores_interval": 0.0,
+      "occupied_physical_cores": 1,
+      "occupied_cpu_mask": "494",
+      "tids_count": 1
+    }
+  ],
+  "mechanism": "For every non-Z/X task with affinity width smaller than sampler allowed width, frozenCPU2 marks its ENTIRE affinity mask occupied regardless of S/D/R state or measured CPU duty. Occupancy propagated to full physical core siblings. Broad R tasks only claim observed processor. No exclusion/affinity/policy changes were performed.",
+  "caveat": "Sleeping narrow affinity can still represent a legitimate owner; idle measurements alone do not authorize ignoring it. Hidden ancestors remain UNKNOWN, not proven absent.",
+  "production_changes": 0,
+  "model_starts": 0,
+  "signals": 0,
+  "affinity_changes": 0
+}
