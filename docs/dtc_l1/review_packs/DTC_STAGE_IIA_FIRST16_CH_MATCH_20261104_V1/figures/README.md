@@ -1,6 +1,6 @@
 # First8 scientific comparison figures
 
-The current render is an interim checkpoint with4/16 accepted CH identities and2/8 common programs. Pending values are explicitly labelled and never imputed as zero. The two plots show own-design P0-normalized performance and I=S_DH/S_CH. Their GM points use exactly the same common F128/F256 set from the independent B summary. I below1 includes the case where both designs regress but CH regresses less. No per-program configuration winner is selected.
+The current render is an interim checkpoint with8/16 accepted CH identities and2/8 common programs. Pending values are explicitly labelled and never imputed as zero. The two plots show own-design P0-normalized performance and I=S_DH/S_CH. Their GM points use exactly the same common F128/F256 set from the independent B summary. I below1 includes the case where both designs regress but CH regresses less. No per-program configuration winner is selected.
 
 `current/MANIFEST.json` verifies the current PNG/SVG, data, source copy and environment metadata. `CURRENT_PROVIDER.json` links the exact immutable native164 render. `tooling` contains SHA-verified source, dependency lock and the original3-result checkpoint's CPU/reproducibility qualifications; these are as-of qualifications, not current coverage claims. The original static package's volatile latest-provider binding is not reused as a current-render manifest.
 
