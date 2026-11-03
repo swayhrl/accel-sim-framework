@@ -1,0 +1,105 @@
+{
+  "schema": "EP_T3_MAIN_RUNTIME_ACTIVATION_INTERFACE_V1",
+  "runtime_dir": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/runtime_t",
+  "science_root": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/t3",
+  "frontend_goal": "EP_L2_FULL_WORKLOAD_PERFORMANCE_POTENTIAL_EXPLORATION_V1",
+  "science_request_id": "EP_L2_T_THREE_ARM_CAUSAL_CONV16X8_V1",
+  "exact_cohorts": [
+    "EP_PERF_T3_CONV16X8_A_F_MINUS_T_OFF_V1",
+    "EP_PERF_T3_CONV16X8_A_F_MINUS_T_ON_V1",
+    "EP_PERF_T3_CONV16X8_B_LEGACY_F_OFF_V1",
+    "EP_PERF_T3_CONV16X8_B_LEGACY_F_ON_V1",
+    "EP_PERF_T3_CONV16X8_C_CORRECTED_F_OFF_V1",
+    "EP_PERF_T3_CONV16X8_C_CORRECTED_F_ON_V1"
+  ],
+  "primary_OFF_must_all_close_before_ANY_ON": [
+    "EP_PERF_T3_CONV16X8_A_F_MINUS_T_OFF_V1",
+    "EP_PERF_T3_CONV16X8_B_LEGACY_F_OFF_V1",
+    "EP_PERF_T3_CONV16X8_C_CORRECTED_F_OFF_V1"
+  ],
+  "engine_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/runtime_t/ep_perf_native_wv_modes_draft.py",
+    "sha256": "7564b38724b2eb6cb19a4d293e3571bd6651986ad564ac110b3b55100c1f97b6"
+  },
+  "common_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/runtime_t/ep_perf_common_v2.py",
+    "sha256": "02d0ef28f5118260213cf6695e544d864aa09771cea28c9ff4379bd285f3be4f"
+  },
+  "postprocess_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/runtime_t/ep_perf_postprocess.py",
+    "sha256": "0641c1467d005b0f18a53f7657002c624bb31dffa00d08ae3c2585f3a19c9db8"
+  },
+  "archive_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/runtime_t/ep_perf_archive.py",
+    "sha256": "fba12327619e8ec87bc403fc017ef166e4625dcd6b86ea7c8af931d095a2c74e"
+  },
+  "ni_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/runtime_t/t3_application_ni.py",
+    "sha256": "a9688c3af86afc18e43fa140d843fc69163245b3768288c2cb2080339dee2f07"
+  },
+  "preserved_parser_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/runtime_t/mode_aware_terminal.py",
+    "sha256": "c7de1c44b78d89059d8cbda3a5130ae31e90eb11a19778af0f0b2c62d5316889"
+  },
+  "preserved_mode_contract_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/runtime_t/mode_contract.py",
+    "sha256": "f4da0de319c9158368193bcec55ebdb4d3c0d93c1a7bbf572c96f5cdd6641af5"
+  },
+  "preserved_P1_TP_audit_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/runtime_t/t3_counter_audit.py",
+    "sha256": "441ad3024d24d964901cac67a7e4799c2fee49a380c7704e6f2596facdd25c6d"
+  },
+  "binder_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/helpers/t3_runtime/rebind_specs_for_main.py",
+    "sha256": "515bc4d397ff429f3e090c47347486c858e2534189f34d73e32927711e0c714f"
+  },
+  "binder_inputs": [
+    "host_qualification_ref",
+    "resource_module_ref",
+    "resource_policy_ref"
+  ],
+  "binder_output": "helpers/t3_runtime/staged_specs (not registry/cases)",
+  "ni_candidate_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/helpers/t3_runtime/NI_CRITERIA_CANDIDATE.json",
+    "sha256": "27e39f7f82ee65c3e020c76eb605029e57017ecd122a4efe2e3e44cdbe7b6e23"
+  },
+  "real_Main_rebind_requirements": [
+    "real HostQ with new engine/common/parser/mode refs + runtime scope tests + prior native47/parser39 provenance",
+    "group scoped USER_REQUEST.txt and USER_AUTHORIZATION.json fresh6 budget no historical balance",
+    "spec_source/input/RO/newloader and Source5 remain same exact Main signed refs",
+    "all sixspec registered exactSHA; q.runtime_versions engineSHA maps exact engine/common",
+    "Main unified exact8cohort front-end imports runtime_t with its own isolated common",
+    "NATIVE_ENTRY_ROUTE.json group ref must have current prior entry exactsuffix and own_prelude; preserve foreign DTC latest bytes",
+    "E/t3/control/DISPATCH_CLAIMS.json and dispatch_bindings/cohort.json Main writes beforeprepare/run",
+    "PIN fresh current resource adapter/policy and no static phantom oldpool"
+  ],
+  "phase_review": {
+    "ref_file": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/t3/control/T3_DIAGNOSTIC_PHASE_MAIN_REVIEW_REF.json",
+    "ref_file_shape": "standard {path,sha256} to real Main phase review JSON",
+    "required": {
+      "schema": "EP_MAIN_T3_DIAGNOSTIC_PHASE_REVIEW_V1",
+      "status": "MAIN_REVIEWED_PRIMARY_ACCEPTED_AND_NI_CRITERIA_APPROVED",
+      "approved_by": "EP-MAIN",
+      "science_request_id": "EP_L2_T_THREE_ARM_CAUSAL_CONV16X8_V1",
+      "source_identity": "exact Source5 dict",
+      "application_NI_already_proven": false,
+      "primary_accepted_points": "map exact3OFFcohort to exactaccepted_point_ref from registry",
+      "NI_criteria_ref": "exactref to Main-reviewed criteria"
+    }
+  },
+  "postprocess_interface": "module(ep_perf_postprocess).postprocess(exactcohort), Main sole scheduler invokes; validates natural exit+Source5+283+kernel/drain+P1+TP then true164archive two native restores; no model start",
+  "NI_interface": "python3 -B runtime_t/t3_application_ni.py exactOFF exactON; only both CLOSED_ACCEPTED; pure artifact compare output; Main stores result and interprets compact semantics scope",
+  "scope_guarantees": {
+    "model_starts": 0,
+    "registry_writes": 0,
+    "native_route_installed": false,
+    "new_hardware_cost_not_added_by_runtime": true,
+    "strict_demand_NEW": "NOT_INSTRUMENTED",
+    "later_UID_completion_chain": "NOT_MEASURED",
+    "ordered_request_trace_NI": "NOT_INSTRUMENTED"
+  },
+  "cpu_controls_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/helpers/t3_runtime/CPU_CONTROLS.json",
+    "sha256": "a08c71b649ddf66d875da437e74b8217c346c05cb8c9af0b8bb6d8e7512cce22"
+  }
+}

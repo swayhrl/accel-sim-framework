@@ -1,0 +1,70 @@
+{
+  "schema": "EP_MAIN_FINITE_EXECUTOR_DELIVERY_V1",
+  "status": "ENGINEERING_CANDIDATE_CPU_CONTROLS_PASS_NOT_ACTIVATED",
+  "executor_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/helpers/executor/finite_main_executor.py",
+    "sha256": "5db1fe2dfe2abdb17df10f187725e347600fa35793aa32a09c8b25f3801324ef",
+    "bytes": 28936
+  },
+  "cpu_controls_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/helpers/executor/CPU_CONTROLS.json",
+    "sha256": "97095077e051aeee3386a4d3399370a80df58888252db113c3789514f40ee74f",
+    "bytes": 1842
+  },
+  "cpu_test_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/helpers/executor/cpu_controls.py",
+    "sha256": "50a57187baa55be4343e5f7c123a57007758f6a78132949912d929c61fd60598",
+    "bytes": 6453
+  },
+  "actual_model_starts": 0,
+  "actual_registry_writes": 0,
+  "actual_native_calls": 0,
+  "git_operations": 0,
+  "Main_activation_marker": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/control/MAIN_EXECUTION_AUTHORIZATION.json",
+    "schema": "EP_MAIN_STAGEII_EXECUTOR_ACTIVATION_V1",
+    "status": "MAIN_REVIEWED_REGISTERED_EXACT_FINITE_EXECUTION_AUTHORIZED",
+    "approved_by": "EP-MAIN",
+    "manifest_ref": "exact frozen EXACT_EXECUTION_MANIFEST.json ref",
+    "executor_ref": "exact reviewed executor path and SHA; copy allowed but marker must target actual __file__",
+    "registration_receipt_ref": "exact FRESH_REGISTRATION_RECEIPT.json with foreign_rows_preserved true",
+    "automatic_retry": false
+  },
+  "manifest_requirements": [
+    "root E",
+    "new_model_start_ceiling 8",
+    "authorization_ref master",
+    "publication repo/branch/relative_directory",
+    "summary_archive_root genuine164/huangrulin"
+  ],
+  "launch_interface": "python3 -B <actual reviewed executor> --manifest E/control/EXACT_EXECUTION_MANIFEST.json",
+  "scope": [
+    "W2 + T3OFF then all3 archived acceptance gate T3ON",
+    "consume science only via exact scoped native entry",
+    "same-arm NI after both archived accepted",
+    "max2 concurrent own + other activeEP rows",
+    "one global acceptance and restore window",
+    "no consumed retry/refund or auto-resume",
+    "1800sec and final exactdirectory Git commit push remote HEAD readback",
+    "small derived results archived genuine164 SHA verified",
+    "accepted bounded metrics cached once; UNKNOWN optional analysis never kills active models"
+  ],
+  "known_limitations": [
+    "Controller CPU controls validate scheduler/artifact logic with mocked science; they do not prove application NI",
+    "Native operational/archive failure never launches consumed point again; real Main review required",
+    "Fixed final summary archive uses Source KEEP, no data cleanup",
+    "Raw metric extraction one bounded pass per accepted T raw and full parser contracts remain unchanged"
+  ],
+  "sparse_publication_cpu_control_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/helpers/executor/SPARSE_PUBLICATION_CPU_CONTROL.json",
+    "sha256": "5abc90f847c040fbe8fc6149da212cf03ef3d400a9d23e4dab7502024327b652",
+    "bytes": 687
+  },
+  "sparse_publication_cpu_test_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/helpers/executor/sparse_publication_cpu_control.py",
+    "sha256": "9921d62d75934d1e8522a08869017c7c7c388d01deaa73f39157f34e3a36d809",
+    "bytes": 3255
+  },
+  "version": "V3_SPARSE_PUBLICATION_AND_PRIMARY_CRITICAL_PATH_ORDER",
+  "execution_priority": "T3_OFF then W2(GEMM beforeFWT) then legalconditionalT3_ON; still max2"
+}

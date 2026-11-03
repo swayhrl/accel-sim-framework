@@ -1,0 +1,131 @@
+{
+  "schema": "EP_MAIN_INDEPENDENT_SCOPED_NATIVE_ACTUAL_GUARD_CPU_V1",
+  "status": "PASS_TEST_ONLY_ACTUAL_AST_GUARDS_NOT_AUTHORITY_OR_APPLICATION",
+  "checks": [
+    {
+      "label": "w_valid_registered_scoped_guard",
+      "PASS": true,
+      "error": null,
+      "TEST_ONLY": true
+    },
+    {
+      "label": "w_unregistered_request_rejected",
+      "PASS": true,
+      "error": "KeyError('TEST_ONLY_REQUEST')",
+      "TEST_ONLY": true
+    },
+    {
+      "label": "w_unregistered_entry_SHA_rejected",
+      "PASS": true,
+      "error": "RuntimeError('entry outside registered scoped sole-entry')",
+      "TEST_ONLY": true
+    },
+    {
+      "label": "w_actual_entry_SHA_drift_rejected",
+      "PASS": true,
+      "error": "RuntimeError('scoped native entry path/content drift')",
+      "TEST_ONLY": true
+    },
+    {
+      "label": "w_foreign_global_prior_change_rejected",
+      "PASS": true,
+      "error": "RuntimeError('foreign global native bytes changed; requalification required')",
+      "TEST_ONLY": true
+    },
+    {
+      "label": "w_prior_evidence_SHA_drift_rejected",
+      "PASS": true,
+      "error": "RuntimeError('prior native entry evidence changed')",
+      "TEST_ONLY": true
+    },
+    {
+      "label": "w_missing_own_prelude_rejected",
+      "PASS": true,
+      "error": "RuntimeError('native route or peer suffix changed')",
+      "TEST_ONLY": true
+    },
+    {
+      "label": "w_wrong_scoped_entry_path_rejected",
+      "PASS": true,
+      "error": "RuntimeError('scoped native entry path/content drift')",
+      "TEST_ONLY": true
+    },
+    {
+      "label": "w_missing_prior_suffix_rejected_even_with_registered_SHA",
+      "PASS": true,
+      "error": "RuntimeError('native route or peer suffix changed')",
+      "TEST_ONLY": true
+    },
+    {
+      "label": "t_valid_registered_scoped_guard",
+      "PASS": true,
+      "error": null,
+      "TEST_ONLY": true
+    },
+    {
+      "label": "t_unregistered_request_rejected",
+      "PASS": true,
+      "error": "KeyError('TEST_ONLY_REQUEST')",
+      "TEST_ONLY": true
+    },
+    {
+      "label": "t_unregistered_entry_SHA_rejected",
+      "PASS": true,
+      "error": "RuntimeError('entry outside registered scoped sole-entry')",
+      "TEST_ONLY": true
+    },
+    {
+      "label": "t_actual_entry_SHA_drift_rejected",
+      "PASS": true,
+      "error": "RuntimeError('scoped native entry path/content drift')",
+      "TEST_ONLY": true
+    },
+    {
+      "label": "t_foreign_global_prior_change_rejected",
+      "PASS": true,
+      "error": "RuntimeError('foreign global native bytes changed; requalification required')",
+      "TEST_ONLY": true
+    },
+    {
+      "label": "t_prior_evidence_SHA_drift_rejected",
+      "PASS": true,
+      "error": "RuntimeError('prior native entry evidence changed')",
+      "TEST_ONLY": true
+    },
+    {
+      "label": "t_missing_own_prelude_rejected",
+      "PASS": true,
+      "error": "RuntimeError('native route or peer suffix changed')",
+      "TEST_ONLY": true
+    },
+    {
+      "label": "t_wrong_scoped_entry_path_rejected",
+      "PASS": true,
+      "error": "RuntimeError('scoped native entry path/content drift')",
+      "TEST_ONLY": true
+    },
+    {
+      "label": "t_missing_prior_suffix_rejected_even_with_registered_SHA",
+      "PASS": true,
+      "error": "RuntimeError('native route or peer suffix changed')",
+      "TEST_ONLY": true
+    }
+  ],
+  "count": 18,
+  "model_starts": 0,
+  "real_registry_reads": "NONE_IN_TEST_MOCK_AUTHORITY",
+  "real_registry_writes": 0,
+  "shared_native_writes": 0,
+  "Source_changes": 0,
+  "guard_scope": "actual prepare AST prefix before spec_for; not complete prepare/parser or appNI",
+  "source_refs": [
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/runtime_w/ep_perf_native_wv_modes_draft.py",
+      "sha256": "185a38ca5ac49160c8ced87ba40d95368e62f8ad6707865e4852cc276cb7e2f9"
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/runtime_t/ep_perf_native_wv_modes_draft.py",
+      "sha256": "fab3259b165225cb668690623e8532413d7944337cb24bb455a284d0a6fc942f"
+    }
+  ]
+}

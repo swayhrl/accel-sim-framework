@@ -1,0 +1,49 @@
+{
+  "schema": "EP_MAIN_INDEPENDENT_SCOPED_NATIVE_EXTENSION_REVIEW_V1",
+  "utc": "2026-11-03T03:01:23.940915+00:00",
+  "status": "PASS_ENGINEERING_SAFE_SCOPED_EXTENSION_REQUIRES_MAIN_REGISTRATION_NO_SELF_AUTHORITY",
+  "findings": [],
+  "shared_native_ref": {
+    "path": "/root/data/ep_l2_dtc_l1_native_v2/bin/native",
+    "sha256": "46c69a74154e0690afd82324a348da236baf90189d9a7e474b4b14eb01ab4f0e"
+  },
+  "scoped_entry_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/bin/native",
+    "sha256": "1e4abeb62810f73ac2a67e2500fdc2f6baadc0eac383f26523c12c87ea17b4d2"
+  },
+  "prior_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/control/SHARED_NATIVE_UNMODIFIED_PREIMAGE.bin",
+    "sha256": "46c69a74154e0690afd82324a348da236baf90189d9a7e474b4b14eb01ab4f0e"
+  },
+  "actual_guard_control_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/helpers/t3_runtime/SCOPED_NATIVE_INDEPENDENT_GUARD_CPU.json",
+    "sha256": "7beca6b42965825169eb5b7945b3333986a108709a78a18ca37567833393a199"
+  },
+  "guard_delta_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/helpers/t3_runtime/SCOPED_ENGINE_GUARD_DELTA_RECONSTRUCTION.json",
+    "sha256": "9010da878bd4ee355f65de8b837380afb9f983164d0167a39766833b774049e7"
+  },
+  "foreign_hardpin_source_ref": {
+    "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/control/operational_amendments/strace_bpf_future_entry_v3/strace_entry.py",
+    "sha256": "06e52cd8e359791a912ba081b9e3cb16d7e23baae1d7a8511eefa8d74528c675"
+  },
+  "verdict": "No P0/P1 defect found in audited activationguard delta. Additive global prefix would break actual foreign hardpin. Scoped entry is defensible under existing explicit user native-qualification+fresh-scoped-start authorization, contingent on exact registry native_entry_ref and Main runtime/route signoff; it is not an automatically approved hook.",
+  "required_before_any_model": [
+    "fresh exact2 W/fresh exact6 T rows in unchanged shared REG/epoch, correct hash aggregate and foreignpreservation",
+    "each row native_entry_ref exact E/bin/native SHA plus signed Main route/HostQ; specs real refs pinned",
+    "source/input/RO/mode/283 closure and actual nativeprepare",
+    "same shared authority/budget locks and consume-beforefork; no directELF path",
+    "real resource admission and maximum2 globally",
+    "T all3OFF acceptance+archives then real Main NIcriteria phase signoff beforeON"
+  ],
+  "scope_limits": [
+    "18 controls are actual prepare AST prefix extracted into private TEST_ONLY files with mock authority, not fullprepare/applicationNI",
+    "No universal approved global extension hook found; DTC scoped-entry precedent does not grant EP permission",
+    "Historical REGISTRY_ACTIVATION_CONTRACT.md globalprepend recipe superseded by this review: DO NOT mutate globalnative",
+    "CPU/app/correctness semantics outside prior-entryguard retain earlier qualification; newSource application results remain NOT_EXECUTED"
+  ],
+  "model_starts": 0,
+  "registry_writes": 0,
+  "native_writes": 0,
+  "source_changes": 0
+}

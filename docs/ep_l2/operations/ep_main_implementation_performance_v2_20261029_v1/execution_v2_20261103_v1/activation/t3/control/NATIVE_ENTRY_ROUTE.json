@@ -1,0 +1,25 @@
+{
+  "all_prior_bytes_preserved": true,
+  "entry_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/bin/native",
+    "sha256": "1e4abeb62810f73ac2a67e2500fdc2f6baadc0eac383f26523c12c87ea17b4d2"
+  },
+  "frontend_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/tools/native_stage2_frontend.py",
+    "sha256": "1a60e51c65537aba54bb5655e257972dcd6809912bb0734799dd9c244f65b9fd"
+  },
+  "goal": "EP_L2_T_THREE_ARM_CAUSAL_CONV16X8_V1",
+  "own_prelude": "#!/bin/sh\nset -eu\n# EP-MAIN fresh exact8 scoped native entry; shared native remains byte-identical.\nif [ \"$#\" -ge 3 ]; then\n case \"$1:$3\" in\n  experiment:EP_PERF_V2_PROPOSED_GEMM_140F6ED3_W_ONLY|experiment:EP_PERF_V2_PROPOSED_FASTWALSHTRANSFORM_FC3A9062_W_ONLY|experiment:EP_PERF_T3_CONV16X8_A_F_MINUS_T_OFF_V1|experiment:EP_PERF_T3_CONV16X8_A_F_MINUS_T_ON_V1|experiment:EP_PERF_T3_CONV16X8_B_LEGACY_F_OFF_V1|experiment:EP_PERF_T3_CONV16X8_B_LEGACY_F_ON_V1|experiment:EP_PERF_T3_CONV16X8_C_CORRECTED_F_OFF_V1|experiment:EP_PERF_T3_CONV16X8_C_CORRECTED_F_ON_V1)\n   export EP_FULL_PERF_NATIVE_ENTRY=1\n   exec /usr/bin/python3 -B /root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/tools/native_stage2_frontend.py \"$@\"\n   ;;\n esac\nfi\nprintf '%s\\n' '{\"status\":\"HOLD\",\"reason\":\"OUTSIDE_EXACT_EP_STAGE2_NATIVE_SCOPE\",\"scientific_starts\":0}' >&2\nexit 2\n# Immutable shared-native preimage follows as preserved evidence; no foreign rerouting.\n",
+  "prior_entry_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/control/SHARED_NATIVE_UNMODIFIED_PREIMAGE.bin",
+    "sha256": "46c69a74154e0690afd82324a348da236baf90189d9a7e474b4b14eb01ab4f0e"
+  },
+  "scientific_starts": 0,
+  "scope": "fresh scoped EP request only, same authority/epoch and consumption-before-fork; no alternate scientific dispatcher",
+  "shared_native_modified": false,
+  "shared_native_ref": {
+    "path": "/root/data/ep_l2_dtc_l1_native_v2/bin/native",
+    "sha256": "46c69a74154e0690afd82324a348da236baf90189d9a7e474b4b14eb01ab4f0e"
+  },
+  "status": "MAIN_INSTALLED_ADDITIVE_NATIVE_EP_PERF_ROUTE"
+}
