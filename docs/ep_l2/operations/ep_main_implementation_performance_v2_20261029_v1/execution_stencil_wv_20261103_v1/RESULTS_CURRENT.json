@@ -1,6 +1,6 @@
 {
   "Source_keep": true,
-  "active_native_frontends": 1,
+  "active_native_frontends": 0,
   "automatic_retry": false,
   "budget": {
     "budget": 2,
@@ -9,6 +9,27 @@
   },
   "combined_GM": false,
   "contrasts": [
+    {
+      "baseline": "EP_PERF_V2_PROPOSED_STENCIL_BD0309DF_W_ONLY",
+      "contrast": "W_ONLY_to_WV",
+      "cycle_reduction_fraction": 0.09002469906599975,
+      "same_Source78": true,
+      "speedup": 1.0989309258983164,
+      "treatment": "EP_PERF_V2_PROPOSED_STENCIL_BD0309DF_WV_ZERO_RO"
+    },
+    {
+      "Main_exact_reference_ref": {
+        "bytes": 2405,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_STENCIL_BD0309DF_S_REF_V1/run/d2ba4deb-286b-4361-bc01-67a44f72de17/ACCEPTED_POINT.json",
+        "sha256": "3270d23d7d7e9407c69b3ce3e08188d4eb895485d6373f91398dce378f817934"
+      },
+      "attribution": "matched_mode_comparison",
+      "baseline": "EP_PERF_STENCIL_BD0309DF_S_REF_V1",
+      "contrast": "S_to_WV_ZERO_RO",
+      "cycle_reduction_fraction": 0.09041608151458558,
+      "speedup": 1.0994037819678488,
+      "treatment": "EP_PERF_V2_PROPOSED_STENCIL_BD0309DF_WV_ZERO_RO"
+    },
     {
       "Main_exact_reference_ref": {
         "bytes": 2405,
@@ -28,20 +49,43 @@
   "numeric_application_output": "UNKNOWN",
   "points": [
     {
-      "accepted_point_ref": null,
-      "archive_receipt_ref": null,
+      "CTA": 6400,
+      "accepted_point_ref": {
+        "bytes": 2595,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_stencil_wv_20261103_v1/stencil/cases/EP_PERF_V2_PROPOSED_STENCIL_BD0309DF_WV_ZERO_RO/run/74d0e655-deb7-40f9-8d62-f6aed61e1fb9/ACCEPTED_POINT.json",
+        "sha256": "782aa510cd59e11cca2a3f720312e46ac53a0605513761dadd30b983b1e6f390"
+      },
+      "archive_receipt_ref": {
+        "bytes": 1965,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_stencil_wv_20261103_v1/stencil/cases/EP_PERF_V2_PROPOSED_STENCIL_BD0309DF_WV_ZERO_RO/control/ARCHIVE_RECEIPT.json",
+        "sha256": "c47ae9fe418983ada13178b8e64659fe9ada2d8ae4d9d2769f2c00730c7b7d65"
+      },
       "cohort": "EP_PERF_V2_PROPOSED_STENCIL_BD0309DF_WV_ZERO_RO",
       "consumed": true,
       "controller_state": {
-        "cpu": 0,
-        "native_frontend_pid": 3398873,
-        "status": "NATIVE_IN_PROGRESS",
-        "utc": "2026-11-03T06:18:34.290895+00:00"
+        "accept_returncode": 0,
+        "status": "CLOSED_ACCEPTED",
+        "utc": "2026-11-03T10:01:53.872446+00:00"
       },
-      "done_ref": null,
+      "cycles": 4768893,
+      "done_ref": {
+        "bytes": 34285,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_V2_PROPOSED_STENCIL_BD0309DF_WV_ZERO_RO.DONE.json",
+        "sha256": "74a66838d12e3941add013d6c8099703be93160b3d04c51175ba5ac5d3061a70"
+      },
+      "elapsed_seconds": 13368.924200806767,
       "group": "stencil",
+      "hardware_drained": true,
       "input_identity_sha256": "bd0309dfeec5745ba97400978c2c5f1413fa9c604376b3dd97e1dd3d5c8cc146",
+      "instructions": 2193446000,
+      "kernel_count": 100,
+      "mechanism_metrics_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_stencil_wv_20261103_v1/control/MECHANISM_METRICS/EP_PERF_V2_PROPOSED_STENCIL_BD0309DF_WV_ZERO_RO.json",
+        "sha256": "e1a533a980089ea0a6cf534fe065759d6d93a5fdf4be52472c3412eed102b374"
+      },
       "mode": "WV_ZERO_RO",
+      "peak_hot_bytes": 26861568,
+      "peak_process_tree_RSS_bytes": 528482304,
       "source_identity": {
         "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
         "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
@@ -53,8 +97,12 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_stencil_wv_20261103_v1/stencil/cases/EP_PERF_V2_PROPOSED_STENCIL_BD0309DF_WV_ZERO_RO/control/FROZEN_SPEC.json",
         "sha256": "74d1d90805ee95e6ca336b42b3f8bf0750dcd7f356904738d10a573d5dbd2c73"
       },
-      "state": "CONSUMED_BEFORE_FORK",
-      "validation_ref": null
+      "state": "CLOSED_ACCEPTED",
+      "stop_reason": null,
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_stencil_wv_20261103_v1/stencil/cases/EP_PERF_V2_PROPOSED_STENCIL_BD0309DF_WV_ZERO_RO/run/74d0e655-deb7-40f9-8d62-f6aed61e1fb9/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "6c0e4c5ca65f49a71f220b73d3492390512f20dd3ff7dd5b2f0bf9f1ed63229b"
+      }
     },
     {
       "CTA": 6400,
@@ -115,5 +163,5 @@
   ],
   "schema": "EP_MAIN_STENCIL_FINITE_RESULTS_V1",
   "session": "28ef6a7b-d92d-43ea-abeb-c5b20eb195f7",
-  "utc": "2026-11-03T09:50:38.999322+00:00"
+  "utc": "2026-11-03T10:01:53.926279+00:00"
 }
