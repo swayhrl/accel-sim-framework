@@ -1,0 +1,74 @@
+{
+  "matrix_current_sha256": "0ca2df7320392eb55eae1eecd23d2f5df0316df1cfc6e757d8dee9e27f0dcdf8",
+  "plan": [
+    {
+      "commit": "5ba029e60c2e7523b193043b345990c7ae52531c",
+      "path": "docs/dtc_l1/plans/DTC_STAGE2_CH_MATCH_AND_PHASE_ATTRIBUTION_20261103_V1/README.md",
+      "sha256": "0a91cbbaddf25737c3e4f09a43d7019cf1455757e3a6e1714cd63721da546c94"
+    },
+    {
+      "commit": "5ba029e60c2e7523b193043b345990c7ae52531c",
+      "path": "docs/dtc_l1/plans/DTC_STAGE2_CH_MATCH_AND_PHASE_ATTRIBUTION_20261103_V1/GOAL_FOR_DTC_MAIN.md",
+      "sha256": "d575311421ab4fa43d5e694d8ebf1ae9d5ea861a28cda87a33d9d34c9c1c659f"
+    },
+    {
+      "commit": "5ba029e60c2e7523b193043b345990c7ae52531c",
+      "path": "docs/dtc_l1/plans/DTC_STAGE2_CH_MATCH_AND_PHASE_ATTRIBUTION_20261103_V1/ANALYSIS_AND_DECISION_RULES.md",
+      "sha256": "afc83e22af78495921e3f000f47092e8c279945adc29047edd56abfcffcf32e7"
+    },
+    {
+      "commit": "5ba029e60c2e7523b193043b345990c7ae52531c",
+      "path": "docs/dtc_l1/plans/DTC_STAGE2_CH_MATCH_AND_PHASE_ATTRIBUTION_20261103_V1/BASELINE_COVERAGE_GATE.tsv",
+      "sha256": "3e7c5bb6dc9fc0e61c1a05845ba2f246e21e3a103ea789e080a4fd8931845f94"
+    },
+    {
+      "commit": "5ba029e60c2e7523b193043b345990c7ae52531c",
+      "path": "docs/dtc_l1/plans/DTC_STAGE2_CH_MATCH_AND_PHASE_ATTRIBUTION_20261103_V1/WORKLOAD_PHASE_HYPOTHESES.tsv",
+      "sha256": "b762311c94c3a589fb236c29bb1b3b888b240e430c2534e2640bd17ca66fa256"
+    },
+    {
+      "commit": "5ba029e60c2e7523b193043b345990c7ae52531c",
+      "path": "docs/dtc_l1/plans/DTC_STAGE2_CH_MATCH_AND_PHASE_ATTRIBUTION_20261103_V1/VALIDATION.json",
+      "sha256": "f51c798ee9b60698886473444595f9059e17ca94cff5031b19dcdd969f6931a0"
+    }
+  ],
+  "scope_sha256": "5f079aed36eca8dd62906bdfaa68006d3b3f27964c506a03361f2fab0908d1d2",
+  "source": [
+    {
+      "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "line_first": 131,
+      "line_last": 147,
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/l2cache.cc",
+      "sha256": "1b2b0ebca49a2f5943c9350a637d849961da96159a147a70b887434bd7f37ff5",
+      "text": "131: memory_partition_unit::arbitration_metadata::arbitration_metadata(\n132:     const memory_config *config)\n133:     : m_last_borrower(config->m_n_sub_partition_per_memory_channel - 1),\n134:       m_private_credit(config->m_n_sub_partition_per_memory_channel, 0),\n135:       m_shared_credit(0) {\n136:   // each sub partition get at least 1 credit for forward progress\n137:   // the rest is shared among with other partitions\n138:   m_private_credit_limit = 1;\n139:   m_shared_credit_limit = config->gpgpu_frfcfs_dram_sched_queue_size +\n140:                           config->gpgpu_dram_return_queue_size -\n141:                           (config->m_n_sub_partition_per_memory_channel - 1);\n142:   if (config->seperate_write_queue_enabled)\n143:     m_shared_credit_limit += config->gpgpu_frfcfs_dram_write_queue_size;\n144:   if (config->gpgpu_frfcfs_dram_sched_queue_size == 0 or\n145:       config->gpgpu_dram_return_queue_size == 0) {\n146:     m_shared_credit_limit =\n147:         0;  // no limit if either of the queue has no limit in size"
+    },
+    {
+      "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "line_first": 260,
+      "line_last": 299,
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+      "text": "260:       opp, \"-gpgpu_cache:dl2\", OPT_CSTR, &m_L2_config.m_config_string,\n261:       \"unified banked L2 data cache config \"\n262:       \" {<sector?>:<nsets>:<bsize>:<assoc>,<rep>:<wr>:<alloc>:<wr_alloc>:<set_\"\n263:       \"index_fn>,<mshr>:<N>:<merge>,<mq>:<fifo_entry>,<data_port_width>\",\n264:       \"S:32:128:24,L:B:m:L:P,A:192:4,32:0,32\");\n265:   option_parser_register(opp, \"-gpgpu_cache:dl2_texture_only\", OPT_BOOL,\n266:                          &m_L2_texure_only, \"L2 cache used for texture only\",\n267:                          \"1\");\n268:   option_parser_register(\n269:       opp, \"-gpgpu_n_mem\", OPT_UINT32, &m_n_mem,\n270:       \"number of memory modules (e.g. memory controllers) in gpu\", \"8\");\n271:   option_parser_register(opp, \"-gpgpu_n_sub_partition_per_mchannel\", OPT_UINT32,\n272:                          &m_n_sub_partition_per_memory_channel,\n273:                          \"number of memory subpartition in each memory module\",\n274:                          \"1\");\n275:   option_parser_register(opp, \"-chiplet_partition_stride\", OPT_UINT32,\n276:                          &chiplet_partition_stride,\n277:                          \"stride for chiplet partition indexing\", \"8192\");\n278:   option_parser_register(\n279:       opp, \"-inter_chiplet_queue_size\", OPT_UINT32, &inter_chiplet_queue_size,\n280:       \"max entries in inter-chiplet request/reply queues\", \"128\");\n281:   option_parser_register(opp, \"-inter_chiplet_queue_latency\", OPT_UINT32,\n282:                          &inter_chiplet_queue_latency,\n283:                          \"latency (in cycles) for inter-chiplet queue\", \"100\");\n284:   option_parser_register(opp, \"-gpgpu_n_mem_per_ctrlr\", OPT_UINT32,\n285:                          &gpu_n_mem_per_ctrlr,\n286:                          \"number of memory chips per memory controller\", \"1\");\n287: \n288:   option_parser_register(opp, \"-gpgpu_memlatency_stat\", OPT_INT32,\n289:                          &gpgpu_memlatency_stat,\n290:                          \"track and display latency statistics 0x2 enables MC, \"\n291:                          \"0x4 enables queue logs\",\n292:                          \"0\");\n293:   option_parser_register(opp, \"-gpgpu_frfcfs_dram_sched_queue_size\", OPT_INT32,\n294:                          &gpgpu_frfcfs_dram_sched_queue_size,\n295:                          \"0 = unlimited (default); # entries per chip\", \"0\");\n296:   option_parser_register(opp, \"-gpgpu_dram_return_queue_size\", OPT_INT32,\n297:                          &gpgpu_dram_return_queue_size,\n298:                          \"0 = unlimited (default); # entries per chip\", \"0\");\n299:   option_parser_register(opp, \"-gpgpu_dram_buswidth\", OPT_UINT32, &busW,"
+    },
+    {
+      "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "line_first": 578,
+      "line_last": 586,
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-cache.h",
+      "sha256": "092946c8149946f37d381ad86eff8b4df31ece9e7dd52cb0fbe3836aa900c1c9",
+      "text": "578:     cache_status = status;\n579:     assert(config);\n580:     char ct, rp, wp, ap, mshr_type, wap, sif;\n581: \n582:     int ntok =\n583:         sscanf(config, \"%c:%u:%u:%u,%c:%c:%c:%c:%c,%c:%u:%u,%u:%u,%u\", &ct,\n584:                &m_nset, &m_line_sz, &m_assoc, &rp, &wp, &ap, &wap, &sif,\n585:                &mshr_type, &m_mshr_entries, &m_mshr_max_merge,\n586:                &m_miss_queue_size, &m_result_fifo_entries, &m_data_port_width);"
+    },
+    {
+      "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "line_first": 72,
+      "line_last": 88,
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/dram_sched.cc",
+      "sha256": "2a0280247c5558541dc3896f86bc596549dd83b71630717cc40756248fee3e73",
+      "text": "72: void frfcfs_scheduler::add_req(dram_req_t *req) {\n73:   if (m_config->seperate_write_queue_enabled && req->data->is_write()) {\n74:     assert(m_num_write_pending < m_config->gpgpu_frfcfs_dram_write_queue_size);\n75:     m_num_write_pending++;\n76:     m_write_queue[req->bk].push_front(req);\n77:     std::list<dram_req_t *>::iterator ptr = m_write_queue[req->bk].begin();\n78:     m_write_bins[req->bk][req->row].push_front(ptr);  // newest reqs to the\n79:                                                       // front\n80:   } else {\n81:     assert(m_num_pending < m_config->gpgpu_frfcfs_dram_sched_queue_size);\n82:     m_num_pending++;\n83:     m_queue[req->bk].push_front(req);\n84:     std::list<dram_req_t *>::iterator ptr = m_queue[req->bk].begin();\n85:     m_bins[req->bk][req->row].push_front(ptr);  // newest reqs to the front\n86:   }\n87: }\n88: "
+    }
+  ],
+  "source_worktree_heads": {
+    "core": "9eedb3131937748f0492fa83aad37d3691118d70",
+    "framework": "02775fd795cde5aae1480d81cee6eb481d0a08f4"
+  }
+}

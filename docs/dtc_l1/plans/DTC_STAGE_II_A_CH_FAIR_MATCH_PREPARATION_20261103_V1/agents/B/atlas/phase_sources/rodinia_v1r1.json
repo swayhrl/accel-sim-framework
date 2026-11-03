@@ -1,0 +1,230 @@
+{
+  "schema": "WORKLOAD_ATLAS_V1R1_CURATED_KERNEL_PHASES",
+  "suite": "Rodinia",
+  "source_authority": "V1 fixed candidate source and scoped trace metadata only, capture-time producer ELF unresolved",
+  "tuple_fields": [
+    "source_stage",
+    "global_access",
+    "static_reuse_opportunity",
+    "dependency_or_barrier",
+    "host_or_capture_scope"
+  ],
+  "programs": {
+    "dwt2d": [
+      [
+        "RGB-to-component split",
+        "Read interleaved RGB bytes through shared staging and store separate channel arrays",
+        "Coalesced staging and RGB channel reuse",
+        "CTA barrier between input staging and output",
+        "One split launch precedes three levels on each of three channels"
+      ],
+      [
+        "5/3 wavelet lifting",
+        "Load vertical rows with left/right halos, shared lifting, parity-remapped low/high subband writes",
+        "Reuse in shared vertical/lateral lifting steps",
+        "Multiple CTA barriers; later levels operate recursively on LL",
+        "Selected192x192 uses 64-thread specialization; EP1024 differs"
+      ]
+    ],
+    "gaussian": [
+      [
+        "Fan1 pivot multipliers",
+        "Read pivot and column values, store elimination multipliers",
+        "Pivot scalar reused across many row threads",
+        "Completed before Fan2 per elimination step",
+        "N-1 source iterations with shrinking valid rows"
+      ],
+      [
+        "Fan2 trailing update",
+        "Read current matrix/pivot row and multiplier, update matrix and RHS",
+        "Pivot row reused across updates",
+        "Depends on Fan1 and prior t elimination",
+        "Launched 2D grid, active masks shrink with t"
+      ]
+    ],
+    "heartwall": [
+      [
+        "first-frame template creation",
+        "Read selected column-major frame patches, store 51x51 point templates",
+        "Patch overlap possible across 51 landmark CTAs; point outputs independent",
+        "No tracking convolution/reduction or CTA barrier in selected branch",
+        "Selected one frame=frame0; later-frame branch not captured"
+      ]
+    ],
+    "hybridsort": [
+      [
+        "input 1024-bin histogram",
+        "Read keys, volatile shared histogram updates and global atomicAdd",
+        "Bin hot spots depend on key distribution",
+        "Shared histogram reduction and atomics",
+        "Input-dependent preprocessing stage"
+      ],
+      [
+        "bucket count and rank",
+        "Read keys, texture-pivot bucket selection, rank/counter output",
+        "Shared buckets and pivot reuse",
+        "Shared counter retry strategy",
+        "Prepares bucket prefix/scatter"
+      ],
+      [
+        "bucket prefix offsets",
+        "Read each bucket counter slab and write prefix offsets",
+        "Within-bucket counts scanned across CTA slabs",
+        "Prefix depends on complete bucket-count phase",
+        "Small per-bucket serial work"
+      ],
+      [
+        "scatter into buckets",
+        "Read original values and computed ranks/prefixes; write bucket destination",
+        "Data-dependent output offsets",
+        "Must follow bucket prefix",
+        "Different from later comparison-based merge"
+      ],
+      [
+        "initial float4 sort",
+        "Texture/load float4 values, register four-item sort, write partial",
+        "Register-resident local sorting",
+        "Local compare-exchange chain",
+        "Source candidate first merge stage"
+      ],
+      [
+        "merge pass",
+        "Read sorted runs and locate/merge neighbors",
+        "Search-based or indexed global data movement",
+        "Dependent rank/search and merge decisions",
+        "Repeated pass geometry/number from actual host needed"
+      ],
+      [
+        "merge pack",
+        "Pack merged partial sorted buckets to output",
+        "Coalesced output streams when offsets contiguous",
+        "Waits for merge passes",
+        "Final assembly; no all-program performance asserted"
+      ]
+    ],
+    "lavamd": [
+      [
+        "neighbor-box molecular interaction",
+        "Load home particles and neighbor particle/charge arrays into shared; compute all-pairs force updates",
+        "Per-neighbor shared particles reused by many home threads",
+        "CTA barriers before overwriting shared neighbor tile",
+        "Each CTA home box; no source global atomics"
+      ]
+    ],
+    "lud": [
+      [
+        "diagonal 16x16 factorization",
+        "Load diagonal tile to shared; LU updates and write-back",
+        "Shared pivot row/column reuse",
+        "Two CTA barriers per pivot iteration",
+        "One diagonal tile per stage"
+      ],
+      [
+        "perimeter tile update",
+        "Load diagonal and row/column tiles; triangular solves; write perimeter",
+        "Three shared 16x16 arrays",
+        "Separate row/column dependencies and CTA synchronization",
+        "Depends on diagonal completion"
+      ],
+      [
+        "internal trailing update",
+        "Shared-load solved perimeter rows/columns, update trailing global tile",
+        "16 multiply terms per output, reuse shared perimeter",
+        "Must follow perimeter phase",
+        "Shrinking trailing grid as LU proceeds"
+      ]
+    ],
+    "myocyte": [
+      [
+        "mode0 ECC/CAM RHS",
+        "Only lane0 of two CTAs reads scalar state/parameter fields; writes derivatives and communication candidate",
+        "Most CTA lanes inactive; fixed small scalar footprint",
+        "Host runs 13 RHS evaluations per Fehlberg attempt with H2D/D2H round trips",
+        "CAM writes d_finavalu[com_offset] overlapping ECC fields; candidate correctness risk, not proven captured ELF"
+      ]
+    ],
+    "particlefilter_float": [
+      [
+        "likelihood and motion",
+        "FP64 particle states; 276B lane-stride index slabs; data-dependent byte video gather; partial weight reduction",
+        "Uniform disk offsets; sparse video gathers, shared CTA reduction",
+        "Image index depends on motion; CTA barriers for partial sums",
+        "9 iterations, two CTAs each; actual seed/value unbound"
+      ],
+      [
+        "sum partial weights",
+        "Small partial_sums reads by one active thread, global sum write",
+        "Two input CTA partials",
+        "Serial reduction inside kernel",
+        "One of four phases repeated 9 times"
+      ],
+      [
+        "normalize and construct CDF",
+        "Read/normalize FP64 weights; serial global CDF; write u thresholds",
+        "CDF array repeatedly scanned",
+        "CTA barriers only; cross-CTA weight/u publication unprotected",
+        "Candidate race at 1000 particles=2CTAs; do not certify recorded numeric result"
+      ],
+      [
+        "resample index",
+        "Scan CDF per particle and gather coordinate by data-dependent index; output FP64 vectors",
+        "Common CDF prefix, divergent break, irregular coordinate gathers",
+        "Depends on normalized CDF and thresholds",
+        "Nine repeated kernel launches, not the naive CPU/GPU split"
+      ]
+    ],
+    "particlefilter_naive": [
+      [
+        "GPU systematic resampling",
+        "All-lane same-address FP64 CDF prefix per loop step, variable-length search and dependent X/Y gather; contiguous output",
+        "CDF prefix repeats across warp/CTA; gathers value-dependent",
+        "Search break controls gather; CPU computes motion/likelihood/CDF",
+        "9 GPU launches,8 CTAs each; GPU does NOT read the input video"
+      ]
+    ],
+    "srad_v1": [
+      [
+        "extract/preprocess image",
+        "Convert FP32 image with exp transform and store image",
+        "Coalesced image stream",
+        "One setup stage",
+        "CPU loads image and host iterates 100 times"
+      ],
+      [
+        "prepare statistics",
+        "Read image and create sum/squared-sum arrays",
+        "Coalesced first stage of reduction",
+        "Later reduction consumes prepared arrays",
+        "Repeated for 100 iterations"
+      ],
+      [
+        "hierarchical reduce",
+        "Read partial sums, share two 512-entry buffers and write combined sums",
+        "First pass coalesces; second uses d_mul512, lane stride2048B",
+        "CTA barriers; 450-to-1 CTA staging, CPU receives final statistics",
+        "Source tail uses unscaled d_sums[i] in later pass; candidate numerical risk"
+      ],
+      [
+        "srad coefficient stencil",
+        "Read center and four clamped neighbor image values; store directional differences/coefficient",
+        "Shifted contiguous neighbor rows and columns, overlap between warps",
+        "Index-array loads precede dependent image addresses",
+        "100 iterations; no shared stencil tiling"
+      ],
+      [
+        "srad image update",
+        "Read coefficients/directional differences and update image",
+        "Neighbor coefficient reuse across threads",
+        "srad phase must finish before in-place update",
+        "Updated image feeds next iteration"
+      ],
+      [
+        "compress output",
+        "Read image and write compressed log transform",
+        "Final coalesced image stream",
+        "After last iteration",
+        "Host downloads image after output"
+      ]
+    ]
+  }
+}

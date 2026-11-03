@@ -1,0 +1,99 @@
+{
+  "schema": "DTC_STAGE_IIA_INDEPENDENT_HARDWARE_FAIRNESS_V1",
+  "evidence": "VERIFIED_CODE_AND_EXISTING_CONFIG_OPTIONS",
+  "CH_DH_P0_all_effective_option_differences": {
+    "-gpgpu_cache:dl1": {
+      "CH": [
+        "N:32:128:24,L:T:m:L:B,A:512:8,16:0,32"
+      ],
+      "DH": [
+        "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32"
+      ]
+    },
+    "-gpgpu_dtc_l1_finite_service": {
+      "CH": [
+        "0"
+      ],
+      "DH": [
+        "1"
+      ]
+    },
+    "-gpgpu_dtc_l1_mode": {
+      "CH": [
+        "1"
+      ],
+      "DH": [
+        "3"
+      ]
+    },
+    "-gpgpu_dtc_l1_mshr_entries": {
+      "CH": [
+        "512"
+      ],
+      "DH": [
+        "32"
+      ]
+    },
+    "-gpgpu_dtc_l1_pib_entries": {
+      "CH": [
+        "256"
+      ],
+      "DH": [
+        "8"
+      ]
+    },
+    "-gpgpu_dtc_l1_tag_hash_bankrow": {
+      "CH": [
+        "0"
+      ],
+      "DH": [
+        "1"
+      ]
+    },
+    "-gpgpu_unified_l1d_size": {
+      "CH": [
+        "96"
+      ],
+      "DH": [
+        "128"
+      ]
+    }
+  },
+  "not_equal_area": true,
+  "CH_configured_data_bytes": 98304,
+  "DH_configured_physical_pool_bytes": 81920,
+  "DH_logical_tags_configured": 512,
+  "declared_unified_l1d_size_CH_DH": [
+    "96",
+    "128"
+  ],
+  "inactive_parameter_warning": "CH mode1 does not instantiate a DH mode3 PIB/MSHR datapath; do not cost CH by inert DTC option fields. Unified size declarations do not certify equal usable storage or SRAM area.",
+  "l2_capacity_bytes": 10485760,
+  "FRFCFS_shared_credit_coupling": {
+    "source_path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/l2cache.cc",
+    "sha256": "1b2b0ebca49a2f5943c9350a637d849961da96159a147a70b887434bd7f37ff5",
+    "lines": [
+      131,
+      149
+    ],
+    "formula": "FRFCFS + return_queue - (subparts_per_channel-1); separate write queue disabled",
+    "P0": 255,
+    "F128": 319,
+    "F256": 447,
+    "claim": "one user option changes scheduler window and shared admission-credit ceiling together; not isolated queue-capacity or L2-data-capacity ablation"
+  },
+  "fixed_claims_requirements": [
+    "same core/framework/binary and libcudart",
+    "1410:1410:1410:850 clock string",
+    "same complete input digest, binding, expected kernel/CTA/instruction ROI",
+    "same L2 capacity, address mapping, sets/ways/banks",
+    "same within-design CH/DH L1/Hash/PIB/service options across P0/F128/F256"
+  ],
+  "limitations": [
+    "No RTL area, timing or energy equivalence measured.",
+    "No CH-F128/F256 accepted results exist in Stage I; interaction and CH self benefit remain UNKNOWN.",
+    "Capacity probe cannot establish sole DRAM bandwidth, queue-delay or row-locality cause.",
+    "No best-profile-per-program GM.",
+    "Unavailable counters are UNKNOWN, not zero."
+  ]
+}

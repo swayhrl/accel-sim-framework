@@ -1,0 +1,230 @@
+[
+  {
+    "program": "dwt2d",
+    "report": "programs/rodinia/dwt2d.md",
+    "source_authority": "gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1:src/cuda/rodinia/3.1/cuda/dwt2d",
+    "source_verified": true,
+    "kernels": [
+      "c_CopySrcToComponents<int>",
+      "fdwt53Kernel<64,8>"
+    ],
+    "address_pattern": "coalesced column loads + parity-remapped subband stores + shared lifting + recursive LL",
+    "evidence_gaps": "original raw file/capture ELF binding remains uncertified",
+    "input_digest": "e5638b94095098acf5186be97210cb371bb3f88dcc8ceefb7609b454ef5ce008",
+    "bundle": "52b17d988c23c61c0ad4756fa4a26cc9b77748cf646f3a0125ce3f0f3c4d06c6",
+    "parameters": [
+      "__data_192_bmp__d_192x192__f__5__l_3"
+    ],
+    "trace_kernel_entries": 10,
+    "input_bound": "PARAMETERS_AND_REGISTERED_BUNDLE_ONLY",
+    "binary_bound": false,
+    "trace_scope_bound": "HEADER_STRUCTURAL_CHECK_WITH_LIMITS",
+    "runtime_measured": false
+  },
+  {
+    "program": "gaussian",
+    "report": "programs/rodinia/gaussian.md",
+    "source_authority": "gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1:src/cuda/rodinia/3.1/cuda/gaussian",
+    "source_verified": true,
+    "kernels": [
+      "Fan1",
+      "Fan2"
+    ],
+    "address_pattern": "column-strided multiplier + 16-row/two-column warp updates",
+    "evidence_gaps": "capture input bytes/ELF binding and numerical/full-body scope not newly certified",
+    "input_digest": "16f4c42373e4961eac6b16178237f1de2bbdf21d5e08bf669c4b6102bab2c6b3",
+    "bundle": "e777c8282c3720156144121bae4e8f794c189dcb837f247c03c1b98cb558ce35",
+    "parameters": [
+      "_s_64"
+    ],
+    "trace_kernel_entries": 126,
+    "input_bound": "PARAMETERS_AND_REGISTERED_BUNDLE_ONLY",
+    "binary_bound": false,
+    "trace_scope_bound": "HEADER_STRUCTURAL_CHECK_WITH_LIMITS",
+    "runtime_measured": false
+  },
+  {
+    "program": "heartwall",
+    "report": "programs/rodinia/heartwall.md",
+    "source_authority": "gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1:src/cuda/rodinia/2.0-ft/heartwall",
+    "source_verified": true,
+    "kernels": [
+      "kernel"
+    ],
+    "address_pattern": "selected first-frame template extraction; later tracking branch excluded",
+    "evidence_gaps": "selected one frame only initializes templates; original video/ELF gap",
+    "input_digest": "731af5428c4b81552d8750c8edf9eeb609b71bd4f3651ca378a4dd73b194d980",
+    "bundle": "04119459d74ef9a2afacaaa752a594cea7faec57a92b836cd8243c60cdaf7aed",
+    "parameters": [
+      "__data_test_avi_1___data_result_1_txt"
+    ],
+    "trace_kernel_entries": 1,
+    "input_bound": "PARAMETERS_AND_REGISTERED_BUNDLE_ONLY",
+    "binary_bound": false,
+    "trace_scope_bound": "HEADER_STRUCTURAL_CHECK_WITH_LIMITS",
+    "runtime_measured": false
+  },
+  {
+    "program": "hybridsort",
+    "report": "programs/rodinia/hybridsort.md",
+    "source_authority": "gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1:src/cuda/rodinia/3.1/cuda/hybridsort",
+    "source_verified": true,
+    "kernels": [
+      "histogram1024Kernel",
+      "bucketcount",
+      "bucketprefixoffset",
+      "bucketsort",
+      "mergeSortFirst",
+      "mergeSortPass",
+      "mergepack"
+    ],
+    "address_pattern": "global atomic histogram + texture pivot search + scatter + float4 merge streams",
+    "evidence_gaps": "capture input bytes/ELF binding and numerical/full-body scope not newly certified",
+    "input_digest": "09f94fcc7494a03b160b40b705cbc7ff5f41e88e8ee417d187e5c7fbcac82123",
+    "bundle": "e3d4313c10859073e80315af10ca87367f89d574e5f9177a3ae4f57bd6c6c821",
+    "parameters": [
+      "r"
+    ],
+    "trace_kernel_entries": 68,
+    "input_bound": "PARAMETERS_AND_REGISTERED_BUNDLE_ONLY",
+    "binary_bound": false,
+    "trace_scope_bound": "HEADER_STRUCTURAL_CHECK_WITH_LIMITS",
+    "runtime_measured": false
+  },
+  {
+    "program": "lavamd",
+    "report": "programs/rodinia/lavamd.md",
+    "source_authority": "gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1:src/cuda/rodinia/3.1/cuda/lavaMD",
+    "source_verified": true,
+    "kernels": [
+      "kernel_gpu_cuda"
+    ],
+    "address_pattern": "AoS32B FP64 vector fields + shared neighbor all-pairs reuse",
+    "evidence_gaps": "capture input bytes/ELF binding and numerical/full-body scope not newly certified",
+    "input_digest": "ddb6806316876a85cdea5766f2e1fc88bf9d4b699066a522eb5a5b9ff17a10d8",
+    "bundle": "52ba77f34965dda4a6e2e7b972949135001f1c9ebd4f32ad5c0e18749298ac56",
+    "parameters": [
+      "_boxes1d_10"
+    ],
+    "trace_kernel_entries": 1,
+    "input_bound": "PARAMETERS_AND_REGISTERED_BUNDLE_ONLY",
+    "binary_bound": false,
+    "trace_scope_bound": "HEADER_STRUCTURAL_CHECK_WITH_LIMITS",
+    "runtime_measured": false
+  },
+  {
+    "program": "lud",
+    "report": "programs/rodinia/lud.md",
+    "source_authority": "gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1:src/cuda/rodinia/3.1/cuda/lud",
+    "source_verified": true,
+    "kernels": [
+      "lud_diagonal",
+      "lud_perimeter",
+      "lud_internal"
+    ],
+    "address_pattern": "blocked LU shared tiles + shrinking trailing grid",
+    "evidence_gaps": "capture input bytes/ELF binding and numerical/full-body scope not newly certified",
+    "input_digest": "b33381cf25d443599aea5253936c13914acb0a2e7c22478496025c5234aef1f8",
+    "bundle": "07e439dd141d4465b96a46e9ca7031d557b99743eaba5e8c6584e0543f15a7df",
+    "parameters": [
+      "_s_256__v"
+    ],
+    "trace_kernel_entries": 46,
+    "input_bound": "PARAMETERS_AND_REGISTERED_BUNDLE_ONLY",
+    "binary_bound": false,
+    "trace_scope_bound": "HEADER_STRUCTURAL_CHECK_WITH_LIMITS",
+    "runtime_measured": false
+  },
+  {
+    "program": "myocyte",
+    "report": "programs/rodinia/myocyte.md",
+    "source_authority": "gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1:src/cuda/rodinia/3.1/cuda/myocyte",
+    "source_verified": true,
+    "kernels": [
+      "kernel"
+    ],
+    "address_pattern": "two single-active-lane CTAs + small fixed state + adaptive host round trips",
+    "evidence_gaps": "adaptive coverage plus apparent CAM pointer race/unwritten com",
+    "input_digest": "977e34578994c3d2d1cbd1a8ecf13e09efc43b03bcb8615a141cf2a24c9d5992",
+    "bundle": "f89e66d04510f7ce2989971e0f0a33efc69881ccd2418d181ab52b26cd5ddbcc",
+    "parameters": [
+      "100_1_0"
+    ],
+    "trace_kernel_entries": 5993,
+    "input_bound": "PARAMETERS_AND_REGISTERED_BUNDLE_ONLY",
+    "binary_bound": false,
+    "trace_scope_bound": "HEADER_STRUCTURAL_CHECK_WITH_LIMITS",
+    "runtime_measured": false
+  },
+  {
+    "program": "particlefilter_float",
+    "report": "programs/rodinia/particlefilter_float.md",
+    "source_authority": "gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1:src/cuda/rodinia/3.1/cuda/particlefilter",
+    "source_verified": true,
+    "kernels": [
+      "likelihood_kernel",
+      "sum_kernel",
+      "normalize_weights_kernel",
+      "find_index_kernel"
+    ],
+    "address_pattern": "276B index lane stride + video gather + shared reduction + serial CDF",
+    "evidence_gaps": "normalize cross-CTA ordering risk",
+    "input_digest": "b41cc74c66ca6ed4975948bdce35825381473e5cf44c53f9dc9740ac3e0115b4",
+    "bundle": "b648c06ef33fcf9e6f0c223c066910c21193da27cf04821dc344f4a65d145bde",
+    "parameters": [
+      "_x_128__y_128__z_10__np_1000"
+    ],
+    "trace_kernel_entries": 36,
+    "input_bound": "PARAMETERS_AND_REGISTERED_BUNDLE_ONLY",
+    "binary_bound": false,
+    "trace_scope_bound": "HEADER_STRUCTURAL_CHECK_WITH_LIMITS",
+    "runtime_measured": false
+  },
+  {
+    "program": "particlefilter_naive",
+    "report": "programs/rodinia/particlefilter_naive.md",
+    "source_authority": "gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1:src/cuda/rodinia/3.1/cuda/particlefilter",
+    "source_verified": true,
+    "kernels": [
+      "kernel"
+    ],
+    "address_pattern": "uniform CDF prefix + data-dependent FP64 gather + contiguous output",
+    "evidence_gaps": "capture input bytes/ELF binding and numerical/full-body scope not newly certified",
+    "input_digest": "3f85d1878aba9f04916ec52cc1162b37673f92a88be07c4db815240c9564755e",
+    "bundle": "edba399b6598403ce810930789172452c38219709a99d66f634dbe7df4284139",
+    "parameters": [
+      "_x_128__y_128__z_10__np_1000"
+    ],
+    "trace_kernel_entries": 9,
+    "input_bound": "PARAMETERS_AND_REGISTERED_BUNDLE_ONLY",
+    "binary_bound": false,
+    "trace_scope_bound": "HEADER_STRUCTURAL_CHECK_WITH_LIMITS",
+    "runtime_measured": false
+  },
+  {
+    "program": "srad_v1",
+    "report": "programs/rodinia/srad_v1.md",
+    "source_authority": "gpu-app-collection@dad09cb0487845edc7524ded814c6cde9f0ef6a1:src/cuda/rodinia/3.1/cuda/srad/srad_v1",
+    "source_verified": true,
+    "kernels": [
+      "extract",
+      "prepare",
+      "reduce",
+      "srad",
+      "srad2",
+      "compress"
+    ],
+    "address_pattern": "column-major stencil + in-place multilevel reduction + host ROI statistic",
+    "evidence_gaps": "unscaled second-pass reduction tail and original input/ELF gap",
+    "input_digest": "0e62c67daa020853cf8a90b9f20a42d7e960e4d6c6e1db09173de1a58af199c4",
+    "bundle": "a8c0d45c76edfd13b02c26ae28e75588b83ff36e22337146b45ce64b509be641",
+    "parameters": [
+      "100_0_5_502_458"
+    ],
+    "trace_kernel_entries": 502,
+    "input_bound": "PARAMETERS_AND_REGISTERED_BUNDLE_ONLY",
+    "binary_bound": false,
+    "trace_scope_bound": "HEADER_STRUCTURAL_CHECK_WITH_LIMITS",
+    "runtime_measured": false
+  }
+]

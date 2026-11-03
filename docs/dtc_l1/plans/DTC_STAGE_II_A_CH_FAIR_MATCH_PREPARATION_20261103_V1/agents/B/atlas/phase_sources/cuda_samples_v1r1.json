@@ -1,0 +1,221 @@
+{
+  "schema": "WORKLOAD_ATLAS_V1R1_CURATED_KERNEL_PHASES",
+  "suite": "CUDA Samples",
+  "source_authority": "SDK4.2 inspected candidate, while selected traces may originate from SDK9.1 or other uncaptured build; no source-to-ELF claim",
+  "tuple_fields": [
+    "source_stage",
+    "global_access",
+    "static_reuse_opportunity",
+    "dependency_or_barrier",
+    "host_or_capture_scope"
+  ],
+  "programs": {
+    "BlackScholes": [
+      [
+        "option pricing",
+        "Three contiguous FP32 read streams, two result write streams; scalar exp/polynomial",
+        "Independent options and mainly stream locality",
+        "Per-option scalar arithmetic dependence, no CTA shared reduction",
+        "One kernel and host CPU reference; SDK4.2 is candidate not captured SDK9.1 source"
+      ]
+    ],
+    "convolutionSeparable": [
+      [
+        "horizontal separable convolution",
+        "Global image plus horizontal halo staged into shared, read 17 constant coeff taps, write intermediate B",
+        "128-output column tiles with horizontal halo overlap",
+        "CTA barrier before shared convolution; column phase consumes B",
+        "One captured rows launch; candidate host predicts384x192 and warmup"
+      ],
+      [
+        "vertical separable convolution",
+        "Global B plus vertical halo staged in padded shared, write result O",
+        "Vertical shared tile/halo reuse across output rows",
+        "Waits for B production by row phase",
+        "One captured column launch; registered image3072-square"
+      ]
+    ],
+    "fastWalshTransform": [
+      [
+        "global radix-4 butterflies",
+        "Four global input values/thread, four in-place output stores",
+        "Each warp contiguous within one butterfly stream",
+        "Multi-stage transform ordering",
+        "Different selected DTC11/19 and EP7/21 launch counts"
+      ],
+      [
+        "shared terminal Walsh transform",
+        "Global tile into shared; radix-4 and optional radix-2 stages; stores transformed block",
+        "Shared-memory reuse across butterfly stages",
+        "CTA barriers between stages",
+        "Terminal transform stage repeated for D/K/D"
+      ],
+      [
+        "complex/vector modulation",
+        "Two transformed global operand reads and one output write",
+        "Coalesced input/output stream",
+        "Requires D/K transforms; third transform follows modulation",
+        "One modulation launch in registered recipe"
+      ]
+    ],
+    "histogram": [
+      [
+        "64-bin histogram",
+        "uint4 global input stream into thread-private shared counters",
+        "Source avoids shared collisions via per-thread byte counters",
+        "Shared reduction/barrier creates partial histograms",
+        "Separate 64-bin pathway; total eight program launches"
+      ],
+      [
+        "merge 64-bin partials",
+        "Read 64-bin partial arrays and global output store",
+        "Bin-wise CTA reduction",
+        "Shared combine follows histogram stage",
+        "Per-program histogram total count, not independent application"
+      ],
+      [
+        "256-bin histogram",
+        "Global uint input, shared 256-bin data-dependent counters",
+        "Warp-local shared histograms and high-collision bins possible",
+        "Shared atomics/retry and CTA reduction",
+        "Distinct 256-bin pathway"
+      ],
+      [
+        "merge 256-bin partials",
+        "Read/reduce partial 256-bin histograms",
+        "Across-CTA partial-array reuse",
+        "Shared reduction then write output",
+        "Final 256-bin reduction phase"
+      ]
+    ],
+    "mergeSort": [
+      [
+        "shared block merge",
+        "Read key/value pairs into shared arrays, merge 1024-item tile and write pairs",
+        "Shared binary-search/compare reuse",
+        "CTA barriers across merge strides",
+        "Selected multi-stage merge sort, not one kernel loop"
+      ],
+      [
+        "generate sample ranks",
+        "Read samples from two sorted runs, binary-search opposite run, emit rank arrays",
+        "Search access input-dependent, spatially scattered",
+        "Sampling follows shared initial sort",
+        "Separate inter-run rank generation"
+      ],
+      [
+        "combine ranks/interval limits",
+        "Merge sample ranks to compute interval boundaries",
+        "Repeated sampled rank arrays",
+        "Depends on rank generation",
+        "Invoked in A/B directions"
+      ],
+      [
+        "merge elementary intervals",
+        "Load bounded sorted slices into shared, binary-search merge, write contiguous outputs",
+        "Shared slice reuse and final coalesced stores",
+        "CTA shared barriers",
+        "Thirteen total launches across four source definitions"
+      ]
+    ],
+    "scalarProd": [
+      [
+        "per-vector dot product",
+        "Two contiguous FP32 read arrays reduced into one scalar/vector output",
+        "Per-thread four independent accumulators, shared reduction",
+        "Barrier at each shared reduction stride",
+        "One launch with CTA loop over many vectors"
+      ]
+    ],
+    "scan": [
+      [
+        "first-pass exclusive scan",
+        "Read/write uint4 chunk streams and local register/shared scan",
+        "Contiguous vector stream,1024 items per chunk",
+        "Shared warp and block scan dependencies",
+        "9 short-array and8 long first-pass calls occur in 33-launch recipe"
+      ],
+      [
+        "scan chunk totals",
+        "Read sparse chunk-last values with 4096B lane stride, write contiguous prefix buffer",
+        "One aligned warp may touch32 lines in sparse gather",
+        "Block-wide shared scan of partial totals",
+        "Middle phase grid26 at registered N6815744"
+      ],
+      [
+        "uniform offset update",
+        "Read one block offset by thread0, share via CTA, read-modify-write uint4 output",
+        "Broadcast one offset per chunk and contiguous vector output",
+        "CTA barrier after offset load",
+        "Registered N differs from fixed SDK4.2 candidate host N26624"
+      ]
+    ],
+    "transpose": [
+      [
+        "direct copy",
+        "Read contiguous global input and store same-layout output",
+        "Coalesced copy stream",
+        "Independent element copy",
+        "One of eight benchmark variants"
+      ],
+      [
+        "copy through shared",
+        "Read global tile, store/read shared and write identical destination",
+        "Shared staging but no mathematical transpose",
+        "CTA barrier between shared load/store",
+        "Reference comparison variant"
+      ],
+      [
+        "naive transpose",
+        "Read input row coalesced; output transposed with strided lane stores",
+        "Input locality good, output scatter",
+        "No shared data rotation",
+        "Designed to expose store-coalescing penalty"
+      ],
+      [
+        "shared coalesced transpose",
+        "Read tile into shared, write transposed global tile",
+        "Coalesced loads/stores from shared tile",
+        "CTA barrier before swapped shared-index read",
+        "Bank conflict may remain in unpadded shared tile"
+      ],
+      [
+        "padded no-bank-conflict transpose",
+        "Read global tile, rotate via shared pitch17, write transposed",
+        "Shared padding reduces modeled bank conflicts",
+        "CTA shared barrier",
+        "Same source geometry, different shared layout"
+      ],
+      [
+        "coarse-grained transpose",
+        "Read input tile and write swapped coarse tile coordinates",
+        "Broad tile-level reassignment",
+        "CTA tile mapping changes",
+        "Source variant; distinguish from fine-grained"
+      ],
+      [
+        "fine-grained transpose",
+        "Read tile and transpose shared index into same tile position",
+        "Within-tile lane redistribution",
+        "Shared-index data dependence",
+        "Source variant; not identical to coalesced"
+      ],
+      [
+        "diagonal CTA transpose",
+        "Remap block coordinates diagonally and use padded shared tile",
+        "May alter partition camping without changing logical output",
+        "CTA shared barrier",
+        "One of eight variants; requires actual scheduling for bank effects"
+      ]
+    ],
+    "vectorAdd": [
+      [
+        "two-input vector add",
+        "Two coalesced FP32 read streams, one coalesced FP32 store",
+        "No required cross-CTA reuse",
+        "Independent one-element-per-thread arithmetic",
+        "Control workload, DTC6M vs EP4M different registered traces"
+      ]
+    ]
+  }
+}

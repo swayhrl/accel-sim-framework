@@ -1,0 +1,126 @@
+{
+  "schema": "WORKLOAD_ATLAS_V1R1_CURATED_KERNEL_PHASES",
+  "suite": "CONDITIONAL_UNSELECTED",
+  "source_authority": "Seven unresolved candidate slots, retained independently of frozen 35; source variants and executable links unbound",
+  "tuple_fields": [
+    "source_stage",
+    "global_access",
+    "static_reuse_opportunity",
+    "dependency_or_barrier",
+    "host_or_capture_scope"
+  ],
+  "programs": {
+    "backprop": [
+      [
+        "layer-forward",
+        "Shared-load 16 inputs/16x16 weight tile, emit partial outputs",
+        "Input broadcasts and shared reduction reuse",
+        "CTA barriers; CPU finishes partial reduction and computes deltas",
+        "Conditional Rodinia 3.1 candidate, not selected ordinary input; 2.0-ft differs"
+      ],
+      [
+        "adjust weights",
+        "Read/update weight and momentum with deltas and prior layer outputs",
+        "Input/delta broadcasts across weight matrix",
+        "CPU delta computation and H2D intervenes between kernels",
+        "Conditional 3.1 candidate; original capture binary unresolved"
+      ]
+    ],
+    "cfd": [
+      [
+        "initialize variables",
+        "Initialize five SoA field planes for variables, old_variables, flux",
+        "Contiguous own-cell planes, repeated across three initializers",
+        "Before all iterative computations",
+        "Three initializer launches in each candidate five-kernel trace"
+      ],
+      [
+        "compute step factor",
+        "Read cell variables and mesh area; write one step factor",
+        "Coalesced state/area planes across lane",
+        "Needs initialized state; would repeat each of 2000 standard steps",
+        "One captured; standard source needs 2000"
+      ],
+      [
+        "compute flux",
+        "Read state, mesh neighbor indices, normals and dependent neighbor state; write flux",
+        "Own-cell SoA coalesced plus input-dependent neighbor gather",
+        "Neighbor index precedes address; branch on boundary type",
+        "One captured; standard source expects 6000"
+      ],
+      [
+        "time step",
+        "Read previous variables, flux, step factor and update five variable planes",
+        "Cross-iteration state/flux reuse opportunity",
+        "Three RK updates per solver iteration",
+        "ZERO captured; standard source expects 6000, do not treat as measured"
+      ]
+    ],
+    "kmeans": [
+      [
+        "invert mapping",
+        "Transform feature array AoS to feature-major SoA",
+        "Contiguous loads vs transposed feature stores",
+        "One-time preparation before repeated membership phases",
+        "Conditional candidate; source version and dataset not capture certified"
+      ],
+      [
+        "nearest-center assignment",
+        "Texture feature gather against constant center vector; update membership",
+        "Center broadcasts plus point-dependent feature streams",
+        "CPU convergence and centroid/reduction phase gates launches",
+        "3/17 launches have data-dependent convergence and capture/ELF ambiguity"
+      ]
+    ],
+    "nn": [
+      [
+        "2.0-ft euclid char-record version",
+        "Parse five-character coordinates from 49B records and store nearest-neighbor distances",
+        "Stride/parse differs from 3.1 float LatLong",
+        "Independent per-record distance computation",
+        "Alternative source variant, not a selected DTC input"
+      ],
+      [
+        "3.1 euclid LatLong version",
+        "Two FP32 coordinate fields per record and one distance store",
+        "8B records more regularly coalesced than 2.0-ft",
+        "Independent per-record distance; CPU sorts top-N",
+        "Alternative source version and input database unbound"
+      ]
+    ],
+    "nw": [
+      [
+        "forward NW wavefront",
+        "Read shared 16x16 score/DP tile, update dynamic-programming diagonal",
+        "Shared tile/row-neighbor reuse within CTA",
+        "One barrier per diagonal; launch order follows early wavefront",
+        "2.0-ft128 and 3.1 2048 candidate launch counts differ"
+      ],
+      [
+        "reverse NW wavefront",
+        "Read next shared tile set and write DP outputs",
+        "Overlapping north/west dependencies between tiles",
+        "Barriers per anti-diagonal; host launches later wavefront sequence",
+        "Conditional: capture/ELF and version unresolved"
+      ]
+    ],
+    "pathfinder": [
+      [
+        "temporal path dynamic program",
+        "Load wall rows and shared prev/result, update min of three neighbors",
+        "Overlap temporal halos between CTAs; shrinking active mask",
+        "Multiple CTA barriers per temporal step; no inter-CTA barrier",
+        "2.0-ft vs 3.1 different CLI/shape; conditional candidate only"
+      ]
+    ],
+    "streamcluster": [
+      [
+        "GPU candidate gain cost",
+        "SoA coordinate streams, uniform candidate broadcast, dependent center-table lookup, sparse per-point work row",
+        "Point coordinates revisited across gain launches; private work row stride4*(K+1)",
+        "CPU chooses candidate, resets work, synchronizes/reduces between launches",
+        "Only five gains captured; inspected completed pFL pass requires groups32 or179; scope unresolved"
+      ]
+    ]
+  }
+}
