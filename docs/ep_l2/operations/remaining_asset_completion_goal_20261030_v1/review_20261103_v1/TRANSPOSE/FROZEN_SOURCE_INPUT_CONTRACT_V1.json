@@ -1,0 +1,107 @@
+{
+  "qid": "SDK429_TRANSPOSE_ORIGINAL1024_OUTER2_INNER2_ALL8_V1",
+  "profile": {
+    "family": "transpose",
+    "parameters": {
+      "matrix_required": [
+        1024,
+        1024
+      ],
+      "tile": 16,
+      "block": [
+        16,
+        16,
+        1
+      ],
+      "grid": [
+        64,
+        64,
+        1
+      ],
+      "NUM_REPS_outer": 2,
+      "NUM_REPS_inner_experiment_argument": 2,
+      "warmup_per_variant": 1,
+      "variants": [
+        "copy",
+        "copySharedMem",
+        "transposeNaive",
+        "transposeCoalesced",
+        "transposeNoBankConflicts",
+        "transposeCoarseGrained",
+        "transposeFineGrained",
+        "transposeDiagonal"
+      ],
+      "expected_launches": 32,
+      "launches_per_variant": [
+        "warmup inner1",
+        "outer0 inner1",
+        "outer1 inner1",
+        "inner_timing inner2"
+      ],
+      "input_formula": "float(i)",
+      "QA": "ORIGINAL_COPY_GOLD_AND_TRANSPOSEGOLD_BOTH_PHASES; COARSE_FINE_SELFCOMPARISON_WEAKNESS_RETAINED; tolerance0.01/0"
+    },
+    "expected_kernels": 32,
+    "declared_launch_count_not_actual_observation": true,
+    "source_version": "SDK4.2.9_HOSTCOMPAT14_REPEAT2_NOT_CUDA118"
+  },
+  "source_files": [
+    {
+      "path": "/data/c16/rtx4080_suite_fill_20261024_v1/nas_fast_sc_copy_st_20261029_v2/private_candidates/remaining_asset_completion_goal_20261030_v1/multistream_CPU_build/sdk429_transpose_repeat2_v1/source/transpose_repeat2.cu",
+      "bytes": 25677,
+      "sha256": "37f1ce94bdcdd6082595aa83e13fbb26724d4dcb0bc352b21ed7e6b8ea316ff2"
+    },
+    {
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14/shrQATest.h",
+      "bytes": 761,
+      "sha256": "210ac9b781f3c82e0d969c63553d65bb154a7d80412dac94e29a416240e094d6"
+    },
+    {
+      "path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/compat_sdk42_v14/cutil_inline.h",
+      "bytes": 1733,
+      "sha256": "056877bf734137a0963beca4100a8b76dcf32bfafffa7d72e158f20dfc185535"
+    }
+  ],
+  "binary_sha256": "869eb6f02a58d7cd121edb8fb16fab6d61a997d9870141f12ac97dd11386d24d",
+  "argv": [
+    "/data/c16/rtx4080_suite_fill_20261024_v1/nas_fast_sc_copy_st_20261029_v2/private_candidates/remaining_asset_completion_goal_20261030_v1/multistream_CPU_build/sdk429_transpose_repeat2_v1/build/transpose_repeat2_sm89"
+  ],
+  "source_version": "SDK4.2.9_HOSTCOMPAT14_REPEAT2_NOT_CUDA118",
+  "source_provenance_erratum": "OriginalMotherdescriptivefields wrong; authoritative actualSDK429 ELF/SHA/argv/sourcepins/ordinalmap/profile retained.",
+  "new_package_identity": {
+    "suite": "NVIDIA GPU Computing SDK",
+    "source_version": "4.2.9_HOSTCOMPAT14_REPEAT2",
+    "sample_path": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/transpose",
+    "task_id": "sdk429_transpose_repeat2_original_spatial_profile",
+    "binary_cubin_listing": "ELF file    1: transpose_repeat2-libcutil_x86_64.sm_89.cubin\nELF file    2: transpose_repeat2.sm_89.cubin\n",
+    "historical_relation": "New SDK4.2.9 sourcebound repeat2 ELF/invocation; noCUDA11.8 equivalence, nooldRAW POST promotion."
+  },
+  "old_raw_descriptor_errata": {
+    "sample_path": {
+      "recorded_value": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/source/cuda-samples-11.8/Samples/2_Concepts_and_Techniques/particles",
+      "corrected_new_package_value": "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1/toolchains/sdk429_unpacked/sdk/C/src/transpose",
+      "source": "Actual frozenSDK429 source/binary/ordinalcensus/Rootcapture accepted identity"
+    },
+    "task_id": {
+      "recorded_value": "cuda118_particles_0",
+      "corrected_new_package_value": "sdk429_transpose_repeat2_original_spatial_profile",
+      "source": "Actual frozenSDK429 source/binary/ordinalcensus/Rootcapture accepted identity"
+    },
+    "binary_cubin_listing": {
+      "recorded_value": "ELF file    1: particles.1.sm_89.cubin\nELF file    2: particles.2.sm_89.cubin\n",
+      "corrected_new_package_value": "ELF file    1: transpose_repeat2-libcutil_x86_64.sm_89.cubin\nELF file    2: transpose_repeat2.sm_89.cubin\n",
+      "source": "Actual frozenSDK429 source/binary/ordinalcensus/Rootcapture accepted identity"
+    },
+    "historical_relation": {
+      "recorded_value": "Independently frozen official CUDA Samples v11.8 migration; not claimed original SDK4.2 or historic capture9.1 binary",
+      "corrected_new_package_value": "New SDK4.2.9 sourcebound repeat2 ELF/invocation; noCUDA11.8 equivalence, nooldRAW POST promotion.",
+      "source": "Actual frozenSDK429 source/binary/ordinalcensus/Rootcapture accepted identity"
+    }
+  },
+  "actual_ordinal_census_ref": {
+    "path": "/root/share/mnt164/huangrulin/traces/rtx4080_sm89/bulk_20261024_v1/private_candidates/remaining_sdk429_RAW_repeat2_fullcapture_prepare_20261030_v1/runtime/runs/sdk429_raw_parent_repeat2_fullcapture2_a001/SDK429_TRANSPOSE_ORIGINAL1024_OUTER2_INNER2_ALL8_V1/capture/STATIC_IMAGE_ENUMERATION_CENSUS.json",
+    "bytes": 686,
+    "sha256": "606cc534a4b19cc16f6a5fbf2e2c0682fb13b0d0d3312efea7d3f8aee4253e1b"
+  },
+  "corrected_metadata_not_old_receipt_rewrite": true
+}
