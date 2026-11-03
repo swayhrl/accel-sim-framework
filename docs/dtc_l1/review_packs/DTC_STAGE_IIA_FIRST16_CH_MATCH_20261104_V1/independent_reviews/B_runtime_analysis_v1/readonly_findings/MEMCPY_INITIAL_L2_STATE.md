@@ -1,0 +1,7 @@
+# Existing memcpy policy is part of the zero-response control
+
+A read-only audit at fixed Core9eed/FW02775 found that the already-frozen options include `-gpgpu_perf_sim_memcpy 1` and `-gpgpu_flush_l2_cache 0`. Trace HtoD commands in Framework accel-sim.cc call perf_memcpy_to_gpu; Core iterates32B sectors, then handle_memcpy_to_gpu -> force_l2_tag_update -> force_tag_access directly fills L2 tags. This inspected path does not enqueue ordinary DRAM requests. It is existing model behavior and is held identical for CH/DH and F128/F256.
+
+For the frozen GEMM input fc0705…, the registered kernelslist records three1MiB HtoD copies before its single kernel. Its original accepted DH-P0 proof records zero DRAM issued reads and nonzero accepted L2 reads. This source-backed initial-state behavior is relevant to interpreting GEMM's exact zero F response. It strengthens a specific model-state explanation, but does not independently prove every address remains resident, the exact perkernel cache-hit cause, compute limitation, or real GPU DRAM traffic. Capacity alone is insufficient; no contract or configuration is changed.
+
+MEMCPY_INITIAL_L2_STATE_SOURCE_EVIDENCE.json retains exact source commit/path/byteSHA/line excerpts, original RESULT SHA, complete recorded traffic counters, and bounded registered kernelslist bytes/SHA. No trace-body replay, experiment or mutation was performed. Root may include this new note in review; it does not alter the previously frozen StageII-A preparation package.

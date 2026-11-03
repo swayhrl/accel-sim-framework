@@ -1,0 +1,133 @@
+{
+  "schema": "DTC_STAGE_IIA_C_DISK_PRECLAIM_READONLY_REVIEW_V1",
+  "decision": "PASS_ROOT_SINGLE_SOURCE_BOUND_CALLBACK",
+  "source_path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/operational_amendments/disk_preclaim_v1/owner_disk_preclaim.py",
+  "source_sha256": "a4c5aaf17ad92adb2ae8141fb864b73377ce8db2ded64056e7b4b75fd9f99d38",
+  "all_checks_PASS": true,
+  "checks": [
+    {
+      "check": "Source exact reviewed patch",
+      "PASS": true
+    },
+    {
+      "check": "All62 frozen scientific sources remain unchanged",
+      "PASS": true
+    },
+    {
+      "check": "New scheduler Main/PID/start/RLock/source and finite budget guards",
+      "PASS": true
+    },
+    {
+      "check": "Only introduces resource check before future claims",
+      "PASS": true
+    }
+  ],
+  "CPU_cases": [
+    {
+      "case": "AcceptedChoiceReturnedExactObject",
+      "PASS": true,
+      "resource_calls": 1,
+      "fresh_true": true,
+      "claims_and_pending_unchanged": true,
+      "error": null
+    },
+    {
+      "case": "NoMemoryChoiceDoesNotCallResource",
+      "PASS": true,
+      "resource_calls": 0,
+      "fresh_true": true,
+      "claims_and_pending_unchanged": true,
+      "error": null
+    },
+    {
+      "case": "False_physical_RAM_passDoesNotCreateClaim",
+      "PASS": true,
+      "resource_calls": 1,
+      "fresh_true": true,
+      "claims_and_pending_unchanged": true,
+      "error": null
+    },
+    {
+      "case": "False_physical_disk_passDoesNotCreateClaim",
+      "PASS": true,
+      "resource_calls": 1,
+      "fresh_true": true,
+      "claims_and_pending_unchanged": true,
+      "error": null
+    },
+    {
+      "case": "False_admission_disk_passDoesNotCreateClaim",
+      "PASS": true,
+      "resource_calls": 1,
+      "fresh_true": true,
+      "claims_and_pending_unchanged": true,
+      "error": null
+    },
+    {
+      "case": "Missing_physical_RAM_passRejectsAdmission",
+      "PASS": true,
+      "resource_calls": 1,
+      "fresh_true": true,
+      "claims_and_pending_unchanged": true,
+      "error": null
+    },
+    {
+      "case": "Missing_physical_disk_passRejectsAdmission",
+      "PASS": true,
+      "resource_calls": 1,
+      "fresh_true": true,
+      "claims_and_pending_unchanged": true,
+      "error": null
+    },
+    {
+      "case": "Missing_admission_disk_passRejectsAdmission",
+      "PASS": true,
+      "resource_calls": 1,
+      "fresh_true": true,
+      "claims_and_pending_unchanged": true,
+      "error": null
+    },
+    {
+      "case": "IntegerOneIsNotTrue",
+      "PASS": true,
+      "resource_calls": 1,
+      "fresh_true": true,
+      "claims_and_pending_unchanged": true,
+      "error": null
+    },
+    {
+      "case": "UnknownChosenCandidateRejected",
+      "PASS": true,
+      "resource_calls": 0,
+      "fresh_true": true,
+      "claims_and_pending_unchanged": true,
+      "error": "AssertionError('PRECLAIM_CANDIDATE_NOT_EXACT')"
+    },
+    {
+      "case": "DuplicateCandidateRejected",
+      "PASS": true,
+      "resource_calls": 0,
+      "fresh_true": true,
+      "claims_and_pending_unchanged": true,
+      "error": "AssertionError('PRECLAIM_CANDIDATE_NOT_EXACT')"
+    },
+    {
+      "case": "ResourceReadErrorNoClaim",
+      "PASS": true,
+      "resource_calls": 1,
+      "fresh_true": true,
+      "claims_and_pending_unchanged": true,
+      "error": "RuntimeError('FIXTURE_READONLY_HOLD')"
+    }
+  ],
+  "execution_plan_sha256": "56efce4221b9b4a192552ad530ac94a1232024f23da2b7f0045c7bd72e8f5716",
+  "models_started_by_review": 0,
+  "authority_or_owner_changes_by_review": 0,
+  "scope": "Pure gated_choose cases use fake decisions/resource values. apply() not invoked. Existing models, source62, specs, engine, guard and16 grants unchanged.",
+  "operational_preconditions": [
+    "Root creates a fresh callback directory; APPLIED.json absent and writeable before single callback.",
+    "If receipt writing fails after marker/callable install, inspect installed marker and reconcile forward; never blindly repeat.",
+    "Keep APPLIED receipt/source SHA and original callable in owner marker.",
+    "This restricts future admission only; it does not convert runtime witnesses into accepted performance or add starts."
+  ]
+}
