@@ -1,0 +1,175 @@
+{
+  "spec_path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/specs/E2-DTC2A16-eededb785179fc04-CH-F256-V1.json",
+  "spec_sha256": "c40de5f68e6f8f522c214e19187a7747f95a4b5cab3774911172e42266664b36",
+  "input_binding_path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/input_bindings/eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950.json",
+  "input_binding_sha256": "fcf9289ccd69135920b0d90f6876377f52f2fb6c442fc04bc12e889ba8c2b040",
+  "input_digest": "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+  "roi_sha256": "5ba85e56ae33e604c38407d5d8641078cb0a1b06aaaa9928cc0de4c61d94f442",
+  "expected": {
+    "CTA": 32,
+    "instructions": 145666048,
+    "kernels": 2
+  },
+  "qualification": {
+    "bundle_id": "2d610fb9d5b893ee16a8af0e178214d8a19715efb7709949ff6c89a57ce60561",
+    "capture_complete_native_input": "NOT_NEWLY_CERTIFIED;whole_declared_trace_only",
+    "elapsed_seconds": 75.11512851715088,
+    "expected_CTA": 32,
+    "expected_commands": [
+      "MemcpyHtoD,0x00007fe6e2000000,67108864",
+      "MemcpyHtoD,0x00007fe6f5700000,16384",
+      "MemcpyHtoD,0x00007fe6f5704000,16384",
+      "MemcpyHtoD,0x00007fe6f5708000,16384",
+      "kernel-1.traceg",
+      "kernel-2.traceg"
+    ],
+    "expected_instructions": 145666048,
+    "expected_kernels": 2,
+    "input_digest": "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+    "issues": [],
+    "model_starts": 0,
+    "native_numerical_correctness": "UNPROVEN",
+    "opcode_map_source_sha256": "dc88c632ab09210faf8239bd9eb988056641e0643642d622dc43304c4b787da4",
+    "prior_scientific_statuses_preserved": [
+      "PASS_CHECKED_SCOPE;TERMINAL_SCOPE_ONLY_UNTIL_COMPARISON_COMPLETE"
+    ],
+    "program": "ATAX",
+    "rows": [
+      {
+        "FUSE_after_inode_informational": 85445607,
+        "FUSE_before_inode_informational": 85445607,
+        "active_thread_instructions": 71380992,
+        "binary_version": 70,
+        "cacheable_local_max_width": 0,
+        "complete_ctas": 16,
+        "complete_warps": 128,
+        "coverage": "ALL_DECLARED_WARPS_AND_FULL_GRID_WITH_TERMINAL_EXIT",
+        "full_SHA_current_size_mtime": [
+          118289012,
+          1792775690000000000
+        ],
+        "global_reference_histogram": {
+          "1": 524416,
+          "32": 524288
+        },
+        "kernel": "_Z12atax_kernel1PfS_S_",
+        "max_global_128b_line_references": 32,
+        "memory_instruction_paths": {
+          "CACHEABLE_GLOBAL_LOAD": 1048704,
+          "ORDINARY_STORE": 524288
+        },
+        "opcodes": {
+          "BRA": 13056,
+          "EXIT": 256,
+          "FFMA": 524288,
+          "IADD3": 39552,
+          "IADD3.X": 26496,
+          "IMAD": 256,
+          "IMAD.WIDE": 13440,
+          "ISETP.GT.AND": 128,
+          "ISETP.NE.AND": 13056,
+          "LDG.E.SYS": 1048704,
+          "MOV": 27008,
+          "S2R": 256,
+          "SHF.L.U32": 128,
+          "SHFL.IDX": 128,
+          "STG.E.SYS": 524288
+        },
+        "ordinal": 1,
+        "path": "/root/workspace/assets/traces/bundles/2d610fb9d5b893ee16a8af0e178214d8a19715efb7709949ff6c89a57ce60561/tree/kernel-1.traceg",
+        "sha256": "05d421c2a2833dda877e67b399ba14ebd1d54841ba68295c40953d704651820d",
+        "source_input_shape": "NOT_INFERRED_FROM_TRACE_OR_FILENAME",
+        "sparse_mask_base_stride_records": 0,
+        "steady_interval": "NOT_PROVEN_BY_TRACE_GEOMETRY",
+        "trace_version": 3,
+        "unaligned_lane_memory_addresses": 0,
+        "warp_instruction_records": 2231040,
+        "width_counts": [
+          {
+            "opcode": "LDG.E.SYS",
+            "parser_width": 4,
+            "records": 1048704,
+            "trace_width": 4
+          },
+          {
+            "opcode": "STG.E.SYS",
+            "parser_width": 4,
+            "records": 524288,
+            "trace_width": 4
+          }
+        ],
+        "workload": "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+        "zero_active_memory_records": 0
+      },
+      {
+        "FUSE_after_inode_informational": 85446545,
+        "FUSE_before_inode_informational": 85446545,
+        "active_thread_instructions": 74285056,
+        "binary_version": 70,
+        "cacheable_local_max_width": 0,
+        "complete_ctas": 16,
+        "complete_warps": 128,
+        "coverage": "ALL_DECLARED_WARPS_AND_FULL_GRID_WITH_TERMINAL_EXIT",
+        "full_SHA_current_size_mtime": [
+          119991924,
+          1792775702000000000
+        ],
+        "global_reference_histogram": {
+          "1": 1048704
+        },
+        "kernel": "_Z12atax_kernel2PfS_S_",
+        "max_global_128b_line_references": 1,
+        "memory_instruction_paths": {
+          "CACHEABLE_GLOBAL_LOAD": 1048704,
+          "ORDINARY_STORE": 524288
+        },
+        "opcodes": {
+          "BRA": 13056,
+          "EXIT": 256,
+          "FFMA": 524288,
+          "IADD3": 91776,
+          "IADD3.X": 13184,
+          "IMAD": 128,
+          "IMAD.WIDE": 65664,
+          "ISETP.GT.AND": 128,
+          "ISETP.NE.AND": 13056,
+          "LDG.E.SYS": 1048704,
+          "MOV": 26880,
+          "S2R": 256,
+          "SHFL.IDX": 128,
+          "STG.E.SYS": 524288
+        },
+        "ordinal": 2,
+        "path": "/root/workspace/assets/traces/bundles/2d610fb9d5b893ee16a8af0e178214d8a19715efb7709949ff6c89a57ce60561/tree/kernel-2.traceg",
+        "sha256": "ca18ed113fcf55069b5303b5a631e9345432204667ae46ddb5bbe57751970f13",
+        "source_input_shape": "NOT_INFERRED_FROM_TRACE_OR_FILENAME",
+        "sparse_mask_base_stride_records": 0,
+        "steady_interval": "NOT_PROVEN_BY_TRACE_GEOMETRY",
+        "trace_version": 3,
+        "unaligned_lane_memory_addresses": 0,
+        "warp_instruction_records": 2321792,
+        "width_counts": [
+          {
+            "opcode": "LDG.E.SYS",
+            "parser_width": 4,
+            "records": 1048704,
+            "trace_width": 4
+          },
+          {
+            "opcode": "STG.E.SYS",
+            "parser_width": 4,
+            "records": 524288,
+            "trace_width": 4
+          }
+        ],
+        "workload": "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+        "zero_active_memory_records": 0
+      }
+    ],
+    "schema": "DTC_SWEEP_FULL_CURRENT_BODY_SHA_QUALIFICATION_V1",
+    "status": "BODY_COMPLETE_SHA_AND_BASIC_FORMAT_PASS",
+    "suite": "PolyBench/GPU",
+    "trace_entry": "/root/workspace/assets/traces/bundles/2d610fb9d5b893ee16a8af0e178214d8a19715efb7709949ff6c89a57ce60561/tree/kernelslist.g"
+  },
+  "source_scope": "Complete declared trace,not certification of native full application/numerical values;old scientific statuses are preserved"
+}
