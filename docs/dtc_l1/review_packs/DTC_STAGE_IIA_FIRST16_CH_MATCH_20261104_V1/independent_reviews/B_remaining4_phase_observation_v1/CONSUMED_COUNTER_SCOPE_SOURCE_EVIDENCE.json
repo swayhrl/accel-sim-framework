@@ -1,0 +1,40 @@
+{
+  "schema": "DTC_ATAX_F256_OBSERVATION_COUNTER_SCOPE_SOURCE_V1",
+  "refs": [
+    {
+      "commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+      "path": "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/accel-sim.cc",
+      "sha256": "36e11eb6aa8975b208d3f5e65f2a389bc93809483c17a15d3743c8fe272a37d8",
+      "excerpts": [
+        {
+          "start": 94,
+          "end": 106,
+          "text": "94:     unsigned finished_kernel_uid = simulate();\n95:     // cleanup finished kernel\n96:     if (finished_kernel_uid || m_gpgpu_sim->cycle_insn_cta_max_hit() ||\n97:         !m_gpgpu_sim->active()) {\n98:       cleanup(finished_kernel_uid);\n99:       if (ag7_progress.enabled()) ag7_progress.observe(\"BOUNDARY\",\n100:           m_gpgpu_sim->gpu_tot_sim_insn + m_gpgpu_sim->gpu_sim_insn, true, true);\n101:     }\n102: \n103:     if (sim_cycles) {\n104:       m_gpgpu_sim->update_stats();\n105:       m_gpgpu_context->print_simulation_time();\n106:     }"
+        },
+        {
+          "start": 158,
+          "end": 183,
+          "text": "158: void accel_sim_framework::cleanup(unsigned finished_kernel) {\n159:   trace_kernel_info_t *k = NULL;\n160:   unsigned long long finished_kernel_cuda_stream_id = -1;\n161:   for (unsigned j = 0; j < kernels_info.size(); j++) {\n162:     k = kernels_info.at(j);\n163:     if (k->get_uid() == finished_kernel ||\n164:         m_gpgpu_sim->cycle_insn_cta_max_hit() || !m_gpgpu_sim->active()) {\n165:       for (unsigned int l = 0; l < busy_streams.size(); l++) {\n166:         if (busy_streams.at(l) == k->get_cuda_stream_id()) {\n167:           finished_kernel_cuda_stream_id = k->get_cuda_stream_id();\n168:           busy_streams.erase(busy_streams.begin() + l);\n169:           break;\n170:         }\n171:       }\n172:       tracer.kernel_finalizer(k->get_trace_info());\n173:       delete k->entry();\n174:       delete k;\n175:       kernels_info.erase(kernels_info.begin() + j);\n176:       if (!m_gpgpu_sim->cycle_insn_cta_max_hit() && m_gpgpu_sim->active())\n177:         break;\n178:     }\n179:   }\n180:   if (k) {\n181:     m_gpgpu_sim->print_stats(finished_kernel_cuda_stream_id);\n182:     m_gpgpu_sim->perf_counters.print_counters();\n183:   }"
+        },
+        {
+          "start": 186,
+          "end": 213,
+          "text": "186: unsigned accel_sim_framework::simulate() {\n187:   unsigned finished_kernel_uid = 0;\n188:   do {\n189:     if (!m_gpgpu_sim->active()) break;\n190: \n191:     // performance simulation\n192:     if (m_gpgpu_sim->active()) {\n193:       m_gpgpu_sim->cycle();\n194:       sim_cycles = true;\n195:       // Same-thread post-cycle observation; no queue pops, model writes or\n196:       // unsynchronized timer reads. Long blocking phases fail freshness upstream.\n197:       if (ag7_progress.enabled()) ag7_progress.observe(\"SIMULATE\",\n198:           m_gpgpu_sim->gpu_tot_sim_insn + m_gpgpu_sim->gpu_sim_insn, true, false,\n199:           \"NONE\", busy_streams.size() == 1 ?\n200:               static_cast<int64_t>(busy_streams.front()) : -1);\n201:       m_gpgpu_sim->deadlock_check();\n202:     } else {\n203:       if (m_gpgpu_sim->cycle_insn_cta_max_hit()) {\n204:         m_gpgpu_context->the_gpgpusim->g_stream_manager\n205:             ->stop_all_running_kernels();\n206:         break;\n207:       }\n208:     }\n209: \n210:     active = m_gpgpu_sim->active();\n211:     finished_kernel_uid = m_gpgpu_sim->finished_kernel();\n212:   } while (active && !finished_kernel_uid);\n213:   return finished_kernel_uid;"
+        }
+      ]
+    },
+    {
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpusim_entrypoint.cc",
+      "sha256": "7c9a4f040a38887d45a68b3c56ce5c775daa2c251e352d64d31c90e9585965fa",
+      "excerpts": [
+        {
+          "start": 391,
+          "end": 423,
+          "text": "391: void gpgpu_context::print_simulation_time() {\n392:   time_t current_time, difference, d, h, m, s;\n393:   current_time = time((time_t *)NULL);\n394:   difference = MAX(current_time - the_gpgpusim->g_simulation_starttime, 1);\n395: \n396:   d = difference / (3600 * 24);\n397:   h = difference / 3600 - 24 * d;\n398:   m = difference / 60 - 60 * (h + 24 * d);\n399:   s = difference - 60 * (m + 60 * (h + 24 * d));\n400: \n401:   fflush(stderr);\n402:   printf(\n403:       \"\\n\\ngpgpu_simulation_time = %u days, %u hrs, %u min, %u sec (%u sec)\\n\",\n404:       (unsigned)d, (unsigned)h, (unsigned)m, (unsigned)s, (unsigned)difference);\n405:   printf(\"gpgpu_simulation_rate = %u (inst/sec)\\n\",\n406:          (unsigned)(the_gpgpusim->g_the_gpu->gpu_tot_sim_insn / difference));\n407:   const unsigned cycles_per_sec =\n408:       (unsigned)(the_gpgpusim->g_the_gpu->gpu_tot_sim_cycle / difference);\n409:   printf(\"gpgpu_simulation_rate = %u (cycle/sec)\\n\", cycles_per_sec);\n410: \n411:   if (cycles_per_sec == 0) {\n412:     printf(\"gpgpu_silicon_slowdown = Nan\\n\");\n413:   } else {\n414:     printf(\"gpgpu_silicon_slowdown = %ux\\n\",\n415:            the_gpgpusim->g_the_gpu->shader_clock() * 1000 / cycles_per_sec);\n416:   }\n417:   fflush(stdout);\n418: }\n419: \n420: int gpgpu_context::gpgpu_opencl_ptx_sim_main_perf(kernel_info_t *grid) {\n421:   the_gpgpusim->g_the_gpu->launch(grid);\n422:   sem_post(&(the_gpgpusim->g_sim_signal_start));\n423:   sem_wait(&(the_gpgpusim->g_sim_signal_finish));"
+        }
+      ]
+    }
+  ],
+  "scope": "Retired counter is whole-input gpu_tot_sim_insn+gpu_sim_insn after model cycle; cleanup emits kernel stats/perf rows before update fold. Host time from simulation start is cumulative."
+}
