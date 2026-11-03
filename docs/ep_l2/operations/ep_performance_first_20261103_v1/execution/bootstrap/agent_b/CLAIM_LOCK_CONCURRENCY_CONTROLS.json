@@ -1,0 +1,82 @@
+{
+  "CPU_only": true,
+  "controls": [
+    {
+      "archive_read_overlapped_update_read": false,
+      "final_claims": {
+        "LIVE": {
+          "observed_RSS_bytes": 777,
+          "remaining_write_bytes": 5242880,
+          "state": "RUNNING"
+        }
+      },
+      "old_group_lock_negative": false,
+      "status": "PASS_SHARED_LOCK_SERIALIZED_BOTH_REAL_RUNTIME_BLOCKS",
+      "workers": [
+        {
+          "returncode": 0,
+          "worker": "update"
+        },
+        {
+          "returncode": 0,
+          "worker": "archive"
+        }
+      ]
+    },
+    {
+      "archive_read_overlapped_update_read": true,
+      "final_claims": {
+        "DONE": {
+          "remaining_write_bytes": 0,
+          "state": "TERMINAL_PENDING_VALIDATION"
+        },
+        "LIVE": {
+          "observed_RSS_bytes": 777,
+          "remaining_write_bytes": 5242880,
+          "state": "RUNNING"
+        }
+      },
+      "old_group_lock_negative": true,
+      "status": "EXPECTED_STALE_WRITE_REPRODUCED",
+      "workers": [
+        {
+          "returncode": 0,
+          "worker": "archive"
+        },
+        {
+          "returncode": 0,
+          "worker": "update"
+        }
+      ]
+    },
+    {
+      "archive_read_overlapped_update_read": false,
+      "final_claims": {
+        "LIVE": {
+          "observed_RSS_bytes": 777,
+          "remaining_write_bytes": 5242880,
+          "state": "RUNNING"
+        }
+      },
+      "old_group_lock_negative": false,
+      "status": "PASS_SHARED_LOCK_SERIALIZED_BOTH_REAL_RUNTIME_BLOCKS",
+      "workers": [
+        {
+          "returncode": 0,
+          "worker": "update"
+        },
+        {
+          "returncode": 0,
+          "worker": "archive"
+        }
+      ]
+    }
+  ],
+  "model_starts": 0,
+  "native_calls": 0,
+  "production_blocks": "Exact AST-extracted engine.run_native.update_claim and archive._archive_case final With block. Negative only substitutes old lock argument in private copied AST; runtime remains fixed.",
+  "registry_writes": 0,
+  "schema": "EP_PF_SERVICE_REAL_TWO_PROCESS_CLAIM_LOCK_CONTROLS_V1",
+  "shared_lock_paths_PASS": true,
+  "status": "PASS_FIXED_PARALLEL_CONTROL_AND_REPRODUCED_OLD_LOCK_NEGATIVE"
+}

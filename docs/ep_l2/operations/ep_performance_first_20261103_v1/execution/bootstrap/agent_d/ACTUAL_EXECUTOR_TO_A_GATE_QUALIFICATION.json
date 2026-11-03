@@ -1,0 +1,113 @@
+{
+  "schema": "EP_PF_EXECUTOR_TO_RETENTION_GATE_INTERFACE_CPU_V1",
+  "status": "PASS",
+  "passed": 17,
+  "total": 17,
+  "checks": [
+    {
+      "name": "actual_executor_emitted_release_passes_real_A_gate",
+      "passed": true,
+      "detail": "{'status': 'MAIN_RELEASED_GEMM_AFTER_TWO_FWT_MS_NI', 'release_ref': {'path': '/root/data/ep_l2_full_workload_performance_20261027_v1/execution_performance_first_20261103_v1/agent_d/STAGE_GATE_INTERFACE_FIXTURES/01_CYCLE_SIGNAL/control/STAGE_RELEASE_RETENTION_GEMM.json', 'sha256': '8f7be35e74fc59e0a9b3c726c67a8821192e0fc72dca08782befa6cf7102e1b9'}}"
+    },
+    {
+      "name": "actual_criterion_has_exact_A_status",
+      "passed": true,
+      "detail": "True"
+    },
+    {
+      "name": "cycle_predicate_records_exact_denominator_and_value",
+      "passed": true,
+      "detail": "True"
+    },
+    {
+      "name": "both_actual_partial_ON_refs_retained",
+      "passed": true,
+      "detail": "True"
+    },
+    {
+      "name": "A_gate_reject_missing_criterion_ref",
+      "passed": true,
+      "detail": "TypeError(\"'NoneType' object is not subscriptable\")"
+    },
+    {
+      "name": "A_gate_reject_wrong_NI011_authorization",
+      "passed": true,
+      "detail": "RuntimeError('GEMM stage NI amendment')"
+    },
+    {
+      "name": "A_gate_reject_one_NI_mode",
+      "passed": true,
+      "detail": "RuntimeError('two FWT mode NI comparisons required')"
+    },
+    {
+      "name": "A_gate_reject_wrong_criterion_status",
+      "passed": true,
+      "detail": "RuntimeError('GEMM Main performance criterion review missing')"
+    },
+    {
+      "name": "A_gate_reject_false_criterion_flag",
+      "passed": true,
+      "detail": "RuntimeError('GEMM Main performance criterion review missing')"
+    },
+    {
+      "name": "A_gate_reject_wrong_Source",
+      "passed": true,
+      "detail": "RuntimeError('GEMM criterion Source/FWT input')"
+    },
+    {
+      "name": "A_gate_reject_missing_old_WV",
+      "passed": true,
+      "detail": "KeyError('old_WV_point_ref')"
+    },
+    {
+      "name": "A_gate_reject_NI_point_not_official_closed",
+      "passed": true,
+      "detail": "RuntimeError('FWT NI point outside current closed official population')"
+    },
+    {
+      "name": "Victim_only_signal_actual_writer_passes_real_A_gate",
+      "passed": true,
+      "detail": "{'status': 'MAIN_RELEASED_GEMM_AFTER_TWO_FWT_MS_NI', 'release_ref': {'path': '/root/data/ep_l2_full_workload_performance_20261027_v1/execution_performance_first_20261103_v1/agent_d/STAGE_GATE_INTERFACE_FIXTURES/02_SERVICE_SIGNAL/control/STAGE_RELEASE_RETENTION_GEMM.json', 'sha256': '3dc023a9cf16979c7bad881df129096f9e0709fc609f01c4e92ebcd9e16fa421'}}"
+    },
+    {
+      "name": "Victim_predicate_records_population_denominator",
+      "passed": true,
+      "detail": "True"
+    },
+    {
+      "name": "actual_writer_does_not_release_when_both_predicates_false",
+      "passed": true,
+      "detail": "True"
+    },
+    {
+      "name": "no_signal_real_A_gate_HOLD",
+      "passed": true,
+      "detail": "RuntimeError('GEMM_CONDITIONAL_STAGE_HOLD_MISSING_MAIN_RELEASE')"
+    },
+    {
+      "name": "real_A_gate_recomputes_and_rejects_lying_true_flag",
+      "passed": true,
+      "detail": "RuntimeError('GEMM frozen criterion false: neither>=0.5pct fewer cycles nor>=10pct absolute relative Victim read-service change')"
+    }
+  ],
+  "executor_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_performance_first_20261103_v1/tools/finite_performance_first_executor.py",
+    "sha256": "6c15c27ce8aaef6a6d37feb545f7902692e61d702e73a712c18ba04ec6ddbba6"
+  },
+  "real_A_gate_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_performance_first_20261103_v1/runtime_retention/ep_perf_native_wv_modes_draft.py",
+    "sha256": "555fd714386a78ef2fc50f75d7abd06c0ebf8ad74b7d21ae3e60f9c99bec6163"
+  },
+  "old_WV_reference": {
+    "bytes": 2508,
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_FASTWALSHTRANSFORM_FC3A9062_WV_ZERO_RO_REF_V1/run/f7f6e8a3-18d4-4c30-be5e-2965f752eaa5/ACCEPTED_POINT.json",
+    "sha256": "e3c5d8512fbbf4cf992eb5526fdc1bae6c9a432bb2096878bdd29082395710e1"
+  },
+  "old_cycles": 178951,
+  "old_Victim_read_responses": 88069,
+  "new_models_started": 0,
+  "official_registry_writes": 0,
+  "real_release_file_written": false,
+  "runtime_source_writes": 0,
+  "all_new_points_and_archives": "TEST_ONLY_SYNTHETIC_METADATA_NO_SCIENCE_ACCEPTANCE"
+}
