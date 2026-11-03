@@ -1,0 +1,347 @@
+{
+  "REF": {
+    "DRAM_return": 192,
+    "FRFCFS": 128,
+    "ICNT_in_out": 512,
+    "bank_ops": 1,
+    "descriptor": 512,
+    "descriptor_per_line": 32,
+    "dram_latency": 100,
+    "dram_mhz": 850,
+    "geometry": "64slice32set8way",
+    "l2_missq": 128,
+    "line_mshr": 128,
+    "network_mode": 2,
+    "partition_queues": "64:128:64:64",
+    "physical_payload_slots_per_slice": 1168
+  },
+  "accepted_pair_metadata_reuse": {
+    "bytes": 209385,
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_b/EXISTING_SYSTEM_PAIRS_REUSE.json",
+    "sha256": "b2b90f72dce1c775775b12f8faac9e139ea255a0eed30479f2085e6382c0df38"
+  },
+  "families": [
+    {
+      "classification": "REALISTIC_ARCHITECTURAL_CANDIDATE_PPA_UNKNOWN",
+      "controlled_options": {
+        "-gpgpu_clock_domains": {
+          "REF": "1132.0:1132.0:1132.0:850.0",
+          "diagnostic": [
+            "1132.0:1132.0:1132.0:1275.0",
+            "1132.0:1132.0:1132.0:1700.0"
+          ],
+          "screen": [
+            "1132.0:1132.0:1132.0:1020.0"
+          ]
+        }
+      },
+      "engineering_status": "SOURCE78_CONFIG_SUPPORTED_HOST_NATIVE_REBIND_REQUIRED",
+      "id": "DRAM_CLOCK",
+      "new_performance_status": "NOT_RUN_NOT_AUTHORIZED",
+      "note": "DRAM cycle timing integers stay fixed: frequency changes ns service timings and bandwidth together. Not a bandwidth-only intervention. Legacy 1020 on Vector/Conv is reusable; do not repeat.",
+      "stages": [
+        "first: FWT S/WV @1020, GEMM S/WV @1020",
+        "Vector4M S/F @1275 diagnostic",
+        "conditional @1700 or combine with surviving queue family"
+      ]
+    },
+    {
+      "classification": "FINITE_HARDWARE_CAPACITY_CANDIDATE_PPA_UNKNOWN",
+      "controlled_options": {
+        "-gpgpu_cache:dl2": {
+          "REF": "S:32:128:8,L:B:m:L:P,A:128:1,128:0,32",
+          "diagnostic": [
+            "S:32:128:8,L:B:m:L:P,A:128:1,512:0,32"
+          ],
+          "screen": [
+            "S:32:128:8,L:B:m:L:P,A:128:1,256:0,32"
+          ]
+        }
+      },
+      "engineering_status": "SOURCE78_CONFIG_SUPPORTED_HOST_NATIVE_REBIND_REQUIRED",
+      "id": "L2_MISS_QUEUE",
+      "new_performance_status": "NOT_RUN_NOT_AUTHORIZED",
+      "note": "Changes MissQ token only. Does not change line-MSHR128 or nominal merge1. D512 changes effective merge cap to32.",
+      "stages": [
+        "reuse old 256 Conv/Vector/SGEMM first",
+        "conditional FWT/GEMM S/WV @256 only when reference exposes MissQ rejection",
+        "@512 only if accepted @256 remains full or gains >=2%"
+      ]
+    },
+    {
+      "classification": "FINITE_HARDWARE_CAPACITY_CANDIDATE_PPA_UNKNOWN",
+      "controlled_options": {
+        "-gpgpu_dram_partition_queues": {
+          "REF": "64:128:64:64",
+          "diagnostic": [
+            "64:512:64:64"
+          ],
+          "screen": [
+            "64:256:64:64"
+          ]
+        }
+      },
+      "engineering_status": "SOURCE78_CONFIG_SUPPORTED_HOST_NATIVE_REBIND_REQUIRED",
+      "id": "L2_LOWER_FIFO",
+      "new_performance_status": "NOT_RUN_NOT_AUTHORIZED",
+      "note": "Tuple=ICNT->L2:L2->DRAM:DRAM->L2:L2->ICNT. Increasing FIFO does not directly change fixed latency.",
+      "stages": [
+        "reuse old LOWERFIFO256",
+        "conditional FWT or GEMM exact S/WV @256 if lower-full observed"
+      ]
+    },
+    {
+      "classification": "FINITE_HARDWARE_CAPACITY_CANDIDATE_PPA_UNKNOWN",
+      "controlled_options": {
+        "-gpgpu_frfcfs_dram_sched_queue_size": {
+          "REF": "128",
+          "diagnostic": [
+            "512"
+          ],
+          "screen": [
+            "256"
+          ]
+        }
+      },
+      "engineering_status": "SOURCE78_CONFIG_SUPPORTED_HOST_NATIVE_REBIND_REQUIRED",
+      "id": "DRAM_SCHEDULER",
+      "new_performance_status": "NOT_RUN_NOT_AUTHORIZED",
+      "note": "Credit coupled by production formula: shared credit=FRFCFS+ReturnQ-(subpartitions-1), so 128/192 gives319,256/192 gives447. Not scheduler-only isolation.",
+      "stages": [
+        "Vector4M S/F @256 only if c7e scheduler causal block or occupancy supports it",
+        "expand @512 only if @256 remains saturated"
+      ]
+    },
+    {
+      "classification": "FINITE_HARDWARE_CAPACITY_CANDIDATE_PPA_UNKNOWN",
+      "controlled_options": {
+        "-gpgpu_dram_return_queue_size": {
+          "REF": "192",
+          "diagnostic": [
+            "768"
+          ],
+          "screen": [
+            "384"
+          ]
+        }
+      },
+      "engineering_status": "SOURCE78_CONFIG_SUPPORTED_HOST_NATIVE_REBIND_REQUIRED",
+      "id": "DRAM_RETURN_QUEUE",
+      "new_performance_status": "NOT_RUN_NOT_AUTHORIZED",
+      "note": "Also changes partition credit: 128/384 shared511. Credit, scheduler, and ReturnQ counters overlap; do not sum as exclusive stall cycles.",
+      "stages": [
+        "only if measured return blockage",
+        "same input S/F matched pair"
+      ]
+    },
+    {
+      "classification": "FINITE_HARDWARE_CAPACITY_CANDIDATE_PPA_UNKNOWN",
+      "controlled_options": {
+        "-icnt_in_buffer_limit": {
+          "REF": "512",
+          "diagnostic": [
+            "2048"
+          ],
+          "screen": [
+            "1024"
+          ]
+        },
+        "-icnt_out_buffer_limit": {
+          "REF": "512",
+          "diagnostic": [
+            "2048"
+          ],
+          "screen": [
+            "1024"
+          ]
+        }
+      },
+      "engineering_status": "SOURCE78_CONFIG_SUPPORTED_HOST_NATIVE_REBIND_REQUIRED",
+      "id": "ICNT_BUFFER",
+      "new_performance_status": "NOT_RUN_NOT_AUTHORIZED",
+      "note": "Active network_mode2 local crossbar, two subnets; limits represent local buffering, not BookSim mesh bandwidth.",
+      "stages": [
+        "reuse all old1024 pairs; near-zero cases prune",
+        "new FWT/GEMM only if accepted injection or return stall evidence"
+      ]
+    },
+    {
+      "classification": "DIAGNOSTIC_RELAXED_NOT_REAL_GPU",
+      "controlled_options": {
+        "-gpgpu_clock_domains": {
+          "REF": "1132.0:1132.0:1132.0:850.0",
+          "diagnostic": [
+            "1132.0:2264.0:1132.0:850.0"
+          ],
+          "screen": [
+            "1132.0:1698.0:1132.0:850.0"
+          ]
+        }
+      },
+      "engineering_status": "SOURCE78_CONFIG_SUPPORTED_HOST_NATIVE_REBIND_REQUIRED",
+      "id": "ICNT_CLOCK",
+      "new_performance_status": "NOT_RUN_NOT_AUTHORIZED",
+      "note": "Changes ICNT event cadence, not core, L2 or memory frequency. Physical crossbar implementation unqualified.",
+      "stages": [
+        "only when queue buffer family does not remove injection/return stall",
+        "same Source S/F pair; keep DRAM850 and L2/core1132"
+      ]
+    },
+    {
+      "classification": "DIAGNOSTIC_RELAXED_NOT_REAL_GPU",
+      "controlled_options": {
+        "-dram_latency": {
+          "REF": "100",
+          "diagnostic": [
+            "0"
+          ],
+          "screen": [
+            "50"
+          ]
+        }
+      },
+      "engineering_status": "SOURCE78_CONFIG_SUPPORTED_HOST_NATIVE_REBIND_REQUIRED",
+      "id": "FIXED_MEMORY_LATENCY",
+      "new_performance_status": "NOT_RUN_NOT_AUTHORIZED",
+      "note": "Delay deadline uses gpu_sim_cycle+gpu_tot_sim_cycle, not pure DRAM service latency. Reducing L100 is a sensitivity lineage. Preserve FIFO, credit, FRFCFS, bank timings and850MHz.",
+      "stages": [
+        "candidate only, not first default expansion",
+        "same input S/F or S/WV"
+      ]
+    },
+    {
+      "classification": "FINITE_HARDWARE_CAPACITY_CANDIDATE_PPA_UNKNOWN",
+      "controlled_options": {
+        "-gpgpu_cache:dl1": {
+          "REF": "S:4:128:128,L:T:m:L:L,A:512:8,16:0,32",
+          "diagnostic": [
+            "S:4:128:128,L:T:m:L:L,A:512:8,64:0,32"
+          ],
+          "screen": [
+            "S:4:128:128,L:T:m:L:L,A:512:8,32:0,32"
+          ]
+        }
+      },
+      "engineering_status": "SOURCE78_CONFIG_SUPPORTED_HOST_NATIVE_REBIND_REQUIRED",
+      "id": "L1_MISS_QUEUE",
+      "new_performance_status": "NOT_RUN_NOT_AUTHORIZED",
+      "note": "Preserves L1 ways/capacity/MSHR/merge and policy. Existing L1L2MQ2 combo is not single-factor proof.",
+      "stages": [
+        "reuse existing combo as context only, not isolated effect",
+        "conditional single-factor pair when L1 queue stalls measured"
+      ]
+    },
+    {
+      "classification": "FINITE_HARDWARE_CAPACITY_CANDIDATE_PPA_UNKNOWN",
+      "controlled_options": {
+        "-gpgpu_n_ldst_response_buffer_size": {
+          "REF": "2",
+          "diagnostic": [
+            "8"
+          ],
+          "screen": [
+            "4"
+          ]
+        }
+      },
+      "engineering_status": "SOURCE78_CONFIG_SUPPORTED_HOST_NATIVE_REBIND_REQUIRED",
+      "id": "UPSTREAM_RESPONSE",
+      "new_performance_status": "NOT_RUN_NOT_AUTHORIZED",
+      "note": "Do not alter core issue widths or unvalidated trace semantics.",
+      "stages": [
+        "only if shader response-buffer backpressure observed",
+        "pair same S/F"
+      ]
+    },
+    {
+      "classification": "FINITE_HARDWARE_CAPACITY_CANDIDATE_PPA_UNKNOWN",
+      "controlled_options": {
+        "-gpgpu_cache:dl2": {
+          "REF": "A:128:1",
+          "diagnostic": [
+            "A:512:1"
+          ],
+          "screen": [
+            "A:256:1"
+          ]
+        }
+      },
+      "engineering_status": "NEW_SOURCE_REQUIRED_WV_F_AND_MS_OBSERVER_GUARD",
+      "id": "LINE_MSHR",
+      "new_performance_status": "NOT_RUN_NOT_AUTHORIZED",
+      "note": "gpu-cache.h3340/3347/3355/3373 pin128. Do not delete guards; qualify exact capacities and resource costs.",
+      "stages": [
+        "new Source explicit supported range; shared mshr_table/RO CPU tests; full new-ELF S/F references"
+      ]
+    },
+    {
+      "classification": "FINITE_HARDWARE_CAPACITY_CANDIDATE_PPA_UNKNOWN",
+      "controlled_options": {
+        "-gpgpu_ep_l2_descriptor_per_line_cap": {
+          "REF": "32",
+          "diagnostic": [
+            "128"
+          ],
+          "screen": [
+            "64"
+          ]
+        },
+        "-gpgpu_ep_l2_descriptor_pool_size": {
+          "REF": "512",
+          "diagnostic": [
+            "2048"
+          ],
+          "screen": [
+            "1024"
+          ]
+        }
+      },
+      "engineering_status": "NEW_SOURCE_REQUIRED_RO_CONSTRUCTOR_AND_MODE_GUARDS",
+      "id": "DESCRIPTOR_AND_MERGE",
+      "new_performance_status": "NOT_RUN_NOT_AUTHORIZED",
+      "note": "ep-l2-ro-transactions.h86 exactD512; per-line source guard32. Nominal dl2 merge1 does not override shared descriptor cap32.",
+      "stages": [
+        "two separate single-factor subfamilies, no automatic simultaneous change",
+        "Agent C owns RO concurrency extension and CPU protection proof"
+      ]
+    },
+    {
+      "classification": "FINITE_HARDWARE_THROUGHPUT_CANDIDATE_PPA_UNKNOWN",
+      "controlled_options": {
+        "-gpgpu_ep_l2_bank_ops": {
+          "REF": "1",
+          "diagnostic": [],
+          "screen": [
+            "2"
+          ]
+        },
+        "-gpgpu_ep_l2_diag_l2_data_free": {
+          "REF": "0",
+          "diagnostic": [
+            "1"
+          ],
+          "screen": []
+        }
+      },
+      "engineering_status": "P2_NEW_SOURCE_REQUIRED_WV_F_OBSERVER;DATA_FREE_EXISTING_SOURCE_REQUIRES_MODE_CPU_HOST",
+      "id": "PAYLOAD_BANK",
+      "new_performance_status": "NOT_RUN_NOT_AUTHORIZED",
+      "note": "P2 option exists but WV/F and MS guardP1. Data-free removes payload bank contention while preserving capacity/pipelines/lower memory; not infinite L2 or real hardware.",
+      "stages": [
+        "Agent A owns P2 WV/F exact mode extension",
+        "data-free bounded diagnostic separate from P2"
+      ]
+    }
+  ],
+  "full_cartesian_product": false,
+  "ideal_zero_queue_excluded": "No unbounded queue0 in first range: production also makes partition credits unlimited. Require separate diagnostic design.",
+  "schema": "EP_L2_PERFORMANCE_FIRST_SYSTEM_PARAMETER_FAMILIES_V1",
+  "source_identity": {
+    "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+    "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+    "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "status": "CANDIDATES_NOT_SCIENCE_AUTHORIZED"
+}

@@ -1,0 +1,66 @@
+{
+  "schema": "EP_L2_USER_IDENTIFIED_PAPER_TRANSFER_STATUS_V1",
+  "status": "USER_IDENTIFIED_AWAITING_TRANSFER",
+  "action": "WAITING_FOR_ORIGINAL_TRANSFER_NO_POLLING",
+  "checked_at_utc": "2026-11-03T09:59:04.075457+00:00",
+  "user_identified_assets": [
+    {
+      "name": "EP_L2_EN_v22_FULL_SYSTEM_SOURCE.zip",
+      "expected_bytes": 67530200,
+      "role": "USER_IDENTIFIED_MOTHER_ORIGINAL_NOT_RECEIVED"
+    },
+    {
+      "name": "UNKNOWN_EXACT_PDF_FILENAME",
+      "expected_bytes": 133529,
+      "role": "USER_IDENTIFIED_PDF_EXACT_FILENAME_NOT_VERIFIED",
+      "version": "v22"
+    },
+    {
+      "name": "EP_L2_EN_v24_D_SCIENCE_SOURCE_AND_AUDIT.zip",
+      "expected_bytes": 484419,
+      "role": "CANDIDATE_NOT_RECEIVED"
+    },
+    {
+      "name": "UNKNOWN_EXACT_PDF_FILENAME",
+      "expected_bytes": 133055,
+      "role": "CANDIDATE_PDF_EXACT_FILENAME_NOT_VERIFIED",
+      "version": "v24"
+    },
+    {
+      "name": "EP_L2_EN_v22_FULL_SYSTEM.tex",
+      "role": "USER_IDENTIFIED_MAIN_TEX_NOT_RECEIVED"
+    }
+  ],
+  "checked_locations": [
+    {
+      "path": "/root/workspace",
+      "method": "bounded filename metadata search depth <= 2",
+      "matches": 0
+    },
+    {
+      "path": "/root",
+      "method": "bounded shallow common incoming directories, no data/share/workspace recursion",
+      "matches": 0
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/ep_l2_paper_archive_20261103_v1",
+      "exists": false
+    },
+    {
+      "path": "C:/Users/huang/.codex/attachments",
+      "method": "filename metadata search EP_L2_EN_v2|ISCAS|REVISION",
+      "matches": 0
+    }
+  ],
+  "not_performed": [
+    "No retrieval from ChatGPT Library; no connected file access/location supplied",
+    "No fabricated ZIP/TeX/PDF",
+    "No MASTER archive creation",
+    "No empty paper Git branch push",
+    "No original paper completion receipt",
+    "No repeated polling"
+  ],
+  "existing_supporting_archive_unchanged": true,
+  "proposed_received_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/ep_l2_paper_archive_20261103_v1/incoming/",
+  "next_step": "After actual original files arrive, verify complete expected bytes, full SHA, ZIP CRC, mainTeX and dependencies, then archive verbatim v22 mother/v23-v24 candidates with independent paper Git branch."
+}

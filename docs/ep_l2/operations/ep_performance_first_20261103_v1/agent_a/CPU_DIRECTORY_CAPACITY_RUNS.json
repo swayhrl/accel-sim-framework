@@ -1,0 +1,85 @@
+{
+  "runs": [
+    {
+      "label": "baseline",
+      "compile_command": [
+        "g++",
+        "-std=c++11",
+        "-O1",
+        "-g",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fsanitize=undefined",
+        "-fno-sanitize-recover=all",
+        "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/test_directory_capacity.cc",
+        "-o",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/test_baseline"
+      ],
+      "compile_exit": 0,
+      "compile_seconds": 0.8027975559234619,
+      "compile_stdout": "",
+      "compile_stderr": "",
+      "run_exit": 0,
+      "stdout": "BASELINE_SEQUENCE_PASS cap=2 clean=1 dirty=2 cancelled=1 complete=1 stale_protected=1 drain=1\n",
+      "stderr": "",
+      "executable_sha256": "ef44f612fa96486bcd06b2e4f27d5e5d439c776fec47cff07b032b54f5270780"
+    },
+    {
+      "label": "candidate_default",
+      "compile_command": [
+        "g++",
+        "-std=c++11",
+        "-O1",
+        "-g",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fsanitize=undefined",
+        "-fno-sanitize-recover=all",
+        "-I/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/capacity_candidate",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/test_directory_capacity.cc",
+        "-o",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/test_candidate_default"
+      ],
+      "compile_exit": 0,
+      "compile_seconds": 0.6518449783325195,
+      "compile_stdout": "",
+      "compile_stderr": "",
+      "run_exit": 0,
+      "stdout": "BASELINE_SEQUENCE_PASS cap=2 clean=1 dirty=2 cancelled=1 complete=1 stale_protected=1 drain=1\n",
+      "stderr": "",
+      "executable_sha256": "ea3207c60e7dded9da09102298278d050a8f66d941727cc56357cad7319ff977"
+    },
+    {
+      "label": "candidate_256",
+      "compile_command": [
+        "g++",
+        "-std=c++11",
+        "-O1",
+        "-g",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fsanitize=undefined",
+        "-fno-sanitize-recover=all",
+        "-I/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/capacity_candidate",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/test_directory_capacity.cc",
+        "-o",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/test_candidate_256",
+        "-DEXTENDED"
+      ],
+      "compile_exit": 0,
+      "compile_seconds": 1.0930662155151367,
+      "compile_stdout": "",
+      "compile_stderr": "",
+      "run_exit": 0,
+      "stdout": "BASELINE_SEQUENCE_PASS cap=2 clean=1 dirty=2 cancelled=1 complete=1 stale_protected=1 drain=1\nEXTENDED_SEQUENCE_PASS entries=256 mandatory_max=128 optional_extra=128 generation=1 preview_pure=1 promotion_cap=1 drain=1 sizeof_entry=80\n",
+      "stderr": "",
+      "executable_sha256": "87bf418eb3faf8593a6de65e05306a804387e3fa750587e751cb039ad06d9a72"
+    }
+  ],
+  "models_started": 0,
+  "production_sources_modified": false
+}

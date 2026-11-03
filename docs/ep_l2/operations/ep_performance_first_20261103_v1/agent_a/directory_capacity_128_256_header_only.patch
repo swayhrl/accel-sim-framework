@@ -1,0 +1,89 @@
+--- a/src/gpgpu-sim/ep-l2-tvd-directory.h
++++ b/src/gpgpu-sim/ep-l2-tvd-directory.h
+@@ -11,7 +11,7 @@
+ #include <utility>
+ #include "ep-l2-ft-interface.h"
+ 
+-template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
++template <class Handle = ep_l2::PayloadHandle, unsigned MaxEntries = 128> class ep_l2_tvd_directory {
+  public:
+   typedef std::uint64_t address_type;
+   typedef std::uint64_t cycle_type;
+@@ -25,7 +25,7 @@
+   struct ticket {
+     unsigned index;
+     std::uint64_t incarnation;
+-    ticket(unsigned i = 128, std::uint64_t g = 0) : index(i), incarnation(g) {}
++    ticket(unsigned i = MaxEntries, std::uint64_t g = 0) : index(i), incarnation(g) {}
+   };
+   struct entry {
+     state status;
+@@ -52,7 +52,7 @@
+     address_type line;
+     bool writeback;
+     bool native_owner_proven_unique;
+-    install_plan() : status(DIRECTORY_FULL), index(128), revision(0), line(0),
++    install_plan() : status(DIRECTORY_FULL), index(MaxEntries), revision(0), line(0),
+                      writeback(false), native_owner_proven_unique(false) {}
+   };
+   struct promotion_plan {
+@@ -113,10 +113,10 @@
+   };
+ 
+   explicit ep_l2_tvd_directory(unsigned capacity = 128, bool clean = false,
+-                               bool dirty = false)
+-      : m_capacity(capacity), m_clean(clean), m_dirty(dirty), m_revision(0),
++                               bool dirty = false, unsigned mandatory_limit = 0)
++      : m_capacity(capacity), m_mandatory_limit(mandatory_limit ? mandatory_limit : capacity), m_clean(clean), m_dirty(dirty), m_revision(0),
+         m_clock(0), m_age(0) {
+-    if (!capacity || capacity > 128) throw std::invalid_argument("WAD/TVD capacity");
++    if (!capacity || capacity > MaxEntries || mandatory_limit > capacity) throw std::invalid_argument("WAD/TVD capacity");
+   }
+   ep_l2_tvd_directory(const ep_l2_tvd_directory &) = delete;
+   ep_l2_tvd_directory &operator=(const ep_l2_tvd_directory &) = delete;
+@@ -157,19 +157,20 @@
+       assert(!live(find(line)));
+     } else if (live(find(line))) { p.status = INVALID_INPUT; return p; }
+     if (!dirty && !m_clean) { p.status = DISABLED; return p; }
++    if (dirty && mandatory() >= m_mandatory_limit) return p;
+     for (unsigned i = 0; i < m_capacity; ++i)
+       if (m_entries[i].status == EMPTY) {
+         p.status = OK; p.index = i; return p;
+       }
+     for (unsigned i = 0; i < m_capacity; ++i) {
+       if (!m_entries[i].reclaimable()) continue;
+-      if (p.index == 128 ||
++      if (p.index == MaxEntries ||
+           (dirty && m_entries[i].status == CLEAN && m_entries[p.index].status != CLEAN) ||
+           ((!dirty || m_entries[i].status == m_entries[p.index].status) &&
+            m_entries[i].age < m_entries[p.index].age))
+         p.index = i;
+     }
+-    if (p.index != 128) { p.status = OK; p.displaced = m_entries[p.index].payload; }
++    if (p.index != MaxEntries) { p.status = OK; p.displaced = m_entries[p.index].payload; }
+     return p;
+   }
+   // Caller pre-reserves landing/control/lower credit and releases displaced
+@@ -292,6 +293,7 @@
+     const entry &e = m_entries[source.index];
+     if (e.mandatory()) { p.status = WAIT_WRITEBACK; return p; }
+     if (e.readers) { p.status = PINNED; return p; }
++    if (mandatory() >= m_mandatory_limit) { p.status = DIRECTORY_FULL; return p; }
+     if ((victim_line & 127) || !victim.valid() || !dirty || (valid & ~15u) ||
+         (dirty & ~valid) || pending) return p;
+     if (native_owner_proven_unique) assert(!live(find(victim_line)));
+@@ -397,12 +399,12 @@
+     e.payload = Handle(); e.valid_sectors = e.dirty_sectors = 0; ++m_revision;
+     e.wb_uid_bound = false;
+   }
+-  unsigned m_capacity;
++  unsigned m_capacity, m_mandatory_limit;
+   bool m_clean, m_dirty;
+   std::uint64_t m_revision;
+   cycle_type m_clock;
+   std::uint64_t m_age;
+-  std::array<entry, 128> m_entries;
++  std::array<entry, MaxEntries> m_entries;
+   counters m_stats;
+ };
+ #endif

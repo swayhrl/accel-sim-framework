@@ -1,0 +1,66 @@
+{
+  "schema": "EP_PERFORMANCE_FIRST_AGENT_A_CPU_QUALIFICATION_STATUS_V1",
+  "overall": "PARTIAL_NOT_APPLICATION_QUALIFIED",
+  "metadata_retention_classes": {
+    "status": "PASS",
+    "ref": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/CPU_RETENTION_CLASSES_RUN.json",
+      "sha256": "5da1272a50ca5d056b50b25be08a67cb77a5075d5dadaf78e6a806bc8628ab4e",
+      "bytes": 1004
+    },
+    "cases": 4,
+    "coverage": "real Source78 directory header, clean/dirty combinations, mandatory WB lower transition, nonretained return erase, complete drain",
+    "not_covered": [
+      "whole l2_cache constructor/production pipeline",
+      "Host/parser/native/appNI"
+    ]
+  },
+  "directory_capacity_candidate": {
+    "status": "PASS_HEADER_ONLY_PARTIAL_INTEGRATION",
+    "ref": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/CPU_DIRECTORY_CAPACITY_RUNS.json",
+      "sha256": "f8002d0dbc5e594d1be332a285a329f25331ce77246d20b50660e43a25a1262f",
+      "bytes": 3397
+    },
+    "sequences": 3,
+    "checks": [
+      "original/default identical textual outcome",
+      "new256 address rows",
+      "mandatory128 cap",
+      "old generation stale protection",
+      "reader pin/mandatory rejection",
+      "duplicate pure preview",
+      "stale install plan",
+      "lower independent data proof",
+      "dirty-promotion mandatory cap",
+      "resource drain",
+      "invalid constructor"
+    ],
+    "not_covered": [
+      "real payload allocation and bank colors",
+      "actual l2_cache/front end pipeline",
+      "constant-time mandatory metadata implementation",
+      "wholeTU/newELF",
+      "Host/native",
+      "application/NI/PPA"
+    ]
+  },
+  "resource_check": {
+    "MemAvailable_KiB": 166411100,
+    "cgroup_memory_max_bytes": 274877906944,
+    "cgroup_memory_current_bytes": 115797516288,
+    "largest_observed_process_RSS_KiB": 70578820,
+    "compile_parallelism": 1,
+    "bounded_component_build_seconds": 3.0,
+    "GPU_or_full_models": 0
+  },
+  "accepted_Core_unchanged": {
+    "header_sha256": "335e4968649ebdd1da15c12cf55b6da88cb76ae270d0916b7d031b56ea2bd738",
+    "edits": "all writes isolated agent_a"
+  },
+  "notes": [
+    "UBSan -fno-sanitize-recover=all; -Wall -Wextra -Werror; asserts enabled",
+    "CPU fixture cycles never used as GPU speedup",
+    "No source branch/ELF acceptance, no automatic production integration"
+  ]
+}

@@ -1,0 +1,306 @@
+{
+  "schema": "EP_PERFORMANCE_FIRST_AGENT_A_WV_PARAMETER_FAMILIES_V1",
+  "status": "ENGINEERING_AND_AUTHORIZATION_DRAFT_NO_MODEL_AUTHORITY",
+  "created_utc": "2026-11-03T09:48:21.615798+00:00",
+  "inputs": {
+    "fastWalshTransform": {
+      "exact_input_identity_sha256": "fc3a90622744ba1f63bec264284983747a372e3a34543249c3977d4bd285fe2e",
+      "source_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/wv_engineering_bound_specs/fastWalshTransform_W_ONLY.json",
+        "sha256": "f096cff9301ee971c3198bfda8ae612d78fc8ebb083b35f552fabf98224a17d3",
+        "bytes": 42499
+      },
+      "observed_anchor_wall_seconds": [
+        826.5762270782143,
+        893.545417714864
+      ],
+      "planning_peak_RSS_bytes": 791884595,
+      "expected_instructions": 180944896,
+      "expected_CTA": 7040
+    },
+    "GEMM": {
+      "exact_input_identity_sha256": "140f6ed3a5cdb1d7183cd4d2acc37b086224a054893ef12d990fdb2d5ea3659b",
+      "source_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/wv_engineering_bound_specs/GEMM_W_ONLY.json",
+        "sha256": "b5f79b614436767c5c04c1dda4ab7367ed0951ba82b196d1d9b227741d10491d",
+        "bytes": 32824
+      },
+      "observed_anchor_wall_seconds": [
+        4435.579638659954,
+        5100.479723935947
+      ],
+      "planning_peak_RSS_bytes": 4459803443,
+      "expected_instructions": 739246080,
+      "expected_CTA": 1024
+    }
+  },
+  "source": {
+    "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+    "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+    "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "families": [
+    {
+      "priority": 1,
+      "id": "WV_RETENTION_CLASS_SOURCE78",
+      "kind": "existing_Core_parameter_family",
+      "options": {
+        "-gpgpu_ep_l2_tvd_clean": [
+          0,
+          1
+        ],
+        "-gpgpu_ep_l2_tvd_dirty": [
+          0,
+          1
+        ]
+      },
+      "new_points_per_input": [
+        {
+          "candidate": "WV_CLEAN_ONLY",
+          "clean": 1,
+          "dirty": 0
+        },
+        {
+          "candidate": "WV_DIRTY_ONLY",
+          "clean": 0,
+          "dirty": 1
+        }
+      ],
+      "existing_exact_anchors": [
+        "S",
+        "W_ONLY clean0 dirty0",
+        "WV clean1 dirty1"
+      ],
+      "source": {
+        "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+        "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+        "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "fixed": {
+        "geometry": {
+          "slices": 64,
+          "sets": 32,
+          "ways": 8,
+          "line_bytes": 128
+        },
+        "dram_latency": 100,
+        "DRAM_MHz": 850,
+        "physical_payload_slots_per_slice": 1168,
+        "banks_per_slice": 4,
+        "WAD": 128,
+        "descriptor": 512,
+        "descriptor_per_line": 32,
+        "line_MSHR": 128,
+        "WBUF": 16,
+        "lower_queues": "exact Source78 REF",
+        "RO_M_T": "OFF in W/V families; no RO-F substitution for FWT"
+      },
+      "observer": "retain accepted exact MS/B0/M0a ON and optional heavy observers OFF; no new observer",
+      "mode_CPU": "PASS metadata component four-class mandatory/drain; PARTIAL production path",
+      "Host_native_parser": "NOT_QUALIFIED for newly named class modes; Main exact profile/eligibility/config/parser extension required",
+      "hardware_change": "retention class admission only; no new ports, directory, Payload or queues",
+      "first_batch": {
+        "input": "fastWalshTransform",
+        "new_points": 2,
+        "estimated_wall_seconds_each": [
+          826.58,
+          893.55
+        ],
+        "then": "GEMM two points after class-path qualification and Main approved adaptive rule; all negative/zero retained"
+      },
+      "full_initial_envelope": {
+        "fastWalshTransform": 2,
+        "GEMM": 2,
+        "total": 4,
+        "application_NI_extra": "0 new collector; mode CPU does not confer application correctness; additional NI only if collector/code/env changes"
+      },
+      "fairness": "same Source5/input/geometry/282 options except documented mode switches; S physical1168/ports/queues unchanged; reuse only exact accepted anchors",
+      "hypothesis": "retain useful clean/dirty category without paying retention/query/allocation costs for low-value category; raw V package gains ~1.48% W->WV in GEMM/FWT do not promise larger gain"
+    },
+    {
+      "priority": 2,
+      "id": "BANK_P1_P2_S_W_ONLY_SOURCE78",
+      "kind": "existing_Core_diagnostic_real_resource_family",
+      "options": {
+        "-gpgpu_ep_l2_bank_ops": [
+          1,
+          2
+        ],
+        "-gpgpu_ep_l2_ms_observer": [
+          0
+        ]
+      },
+      "modes": [
+        "S FT1 B16",
+        "W_ONLY FT2 U16"
+      ],
+      "excluded_modes": [
+        "WV",
+        "F",
+        "RO/T"
+      ],
+      "source": {
+        "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+        "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+        "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "fixed_except_bank": {
+        "geometry": {
+          "slices": 64,
+          "sets": 32,
+          "ways": 8,
+          "line_bytes": 128
+        },
+        "dram_latency": 100,
+        "DRAM_MHz": 850,
+        "physical_payload_slots_per_slice": 1168,
+        "banks_per_slice": 4,
+        "WAD": 128,
+        "descriptor": 512,
+        "descriptor_per_line": 32,
+        "line_MSHR": 128,
+        "WBUF": 16,
+        "lower_queues": "exact Source78 REF",
+        "RO_M_T": "OFF in W/V families; no RO-F substitution for FWT"
+      },
+      "hardware_change": "four banks retain colors/queues; operation budget per bank/physical GPU cycle doubles1->2; actual area/ports timing UNKNOWN, not equal-area",
+      "first_batch": {
+        "input": "fastWalshTransform",
+        "new_points": 4,
+        "matrix": "S/W_ONLY x P1/P2, all MS observer OFF"
+      },
+      "conditional_extension": {
+        "input": "GEMM",
+        "new_points": 4
+      },
+      "budget_boundary": "do not count only P2 points: existing P1 has MS observer ON; four same-observer points/input unless explicit prior exact mode-specific application NI permits reuse",
+      "qualification": "PARTIAL existing options + source guard; productionCPU/Host/native needed. WV/F P2 currently forbidden, requires separate newSource engineering, not guard removal",
+      "fairness": "S and W_ONLY share same bank_ops per comparison; report absolute S/P1->S/P2 and W/P1->W/P2 plus S/W at each background",
+      "hypothesis": "tests whether finite bank service limits pooled-W advantage; cumulative bank_wait is not exclusive bottleneck proof"
+    },
+    {
+      "priority": 3,
+      "id": "TVD_METADATA128_256_MANDATORY128",
+      "kind": "new_Source_engineering_candidate",
+      "candidate_option": "-gpgpu_ep_l2_tvd_directory_entries (NOT REGISTERED)",
+      "values": [
+        128,
+        256
+      ],
+      "mandatory_WAD_limit": 128,
+      "physical_payload_slots_per_slice": 1168,
+      "roles": "more optional address visibility, no new payload capacity or WB concurrency",
+      "first_inputs": [
+        "fastWalshTransform",
+        "GEMM"
+      ],
+      "minimum_new_source_matrix_per_input": [
+        "S same new ELF",
+        "WV directory128",
+        "WV directory256"
+      ],
+      "budget": "3 performance points/input before optional instrument NI. Do not splice Source78 S or WV into newELF pair. Additional CPU/app NI requirements freeze before authority.",
+      "engineering": "PASS header-only original/default/256 UBSan fixture; full cache integration NOT_QUALIFIED",
+      "patch_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/directory_capacity_128_256_header_only.patch",
+        "sha256": "47cdcab5077477080c88efdb801eced14d99c12d3a46509e4060fe30ab83ff03",
+        "bytes": 3929
+      },
+      "required_integration": [
+        "register complete effective option; keep default128",
+        "TVD typedef/ticket must share MaxEntries256 across all consumers; ctor uses actual capacity",
+        "separate O(1) mandatory counter or explicitly cost metadata reduction; do not add hidden free associative lookup",
+        "preview_install and dirty-promotion must enforce mandatory128 before commit",
+        "ft_wb<128 assertions remain; upper directory count alone formerly bounded WB responsibility",
+        "test real payload/color/pin/lower/return backpressure and fullTU/newELF/Host/native/NI"
+      ],
+      "hardware_cost": "128 extra metadata entries per slice + address comparisons/selection depth; query port/latency must be costed, not assume256 CAM closes at1cycle; host sizeof_entry80 does NOT equal physical bytes/PPA",
+      "hypothesis": "larger optional retained set can improve V service if current metadata pressure evicts valuable data; actual speedup UNKNOWN"
+    },
+    {
+      "priority": 4,
+      "id": "DIRTY_INSTALL_CROSS_CLASS_EVENT_AGE",
+      "kind": "new_Source_candidate_existing_Main_scope",
+      "candidate_option": "new policy switch default legacy; NOT REGISTERED",
+      "values": [
+        "legacy clean-first",
+        "oldest eligible CLEAN/WB_COMPLETE for full-directory dirty-install only"
+      ],
+      "physical_change": "reuse current event-age updated on install, successful response and WB complete; no new served bit; finite same128 selection remains; timing/PPA must review",
+      "must_not_change": [
+        "mandatory/readers/pins/generation protections",
+        "bank-color reclaim path",
+        "promotion policy",
+        "clean-install policy",
+        "physical capacities/ports"
+      ],
+      "first_inputs": [
+        "fastWalshTransform positive",
+        "Scan negative conditional only after short qualification"
+      ],
+      "minimum_new_source_matrix_per_input": [
+        "S same newELF",
+        "WV legacy policy",
+        "WV candidate policy"
+      ],
+      "engineering": "SOURCE_REVIEW_ONLY; reuse existing candidate scope rather than duplicate implementation; no pass claim",
+      "hypothesis": "avoid preferring eviction of useful recently served clean over older completed-WB solely by class; could reduce dirty retention benefit or regress; retain negatives"
+    },
+    {
+      "priority": 5,
+      "id": "BANK_COLORED_OPTIONAL_ALLOCATION",
+      "kind": "design_only",
+      "values": [
+        "reserve per-bank minimum for mandatory progress",
+        "optional admission bounded by per-bank free credit"
+      ],
+      "physical_change": "existing four-color placement maintained; optional retention receives bounded bank-specific quota, not added banks",
+      "status": "HYPOTHESIS; no source/CPU/app qualification",
+      "gate": "require accepted same-color pressure/service evidence; do not infer from global free capacity",
+      "fairness": "same physical1168 and bank ports; any S resource reservation uses declared matching physical budget",
+      "risk": "withheld optional capacity may hurt reuse; extra free-credit/selection logic and starvation behavior must be costed"
+    }
+  ],
+  "current_accepted_evidence_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/analysis/primary_v1/MATCHED_WV_COMPARISONS.json",
+    "sha256": "971331eebd51e3cbbd4cc48ade0a675063d19f67c70e1b8aa16825963905b0db",
+    "bytes": 1450
+  },
+  "source_inspection_refs": [
+    {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/gpu-cache.h",
+      "sha256": "0a12d46d92abf95f5f908cb407835a7371b828cf9f184392f5a9b9c4e577bcfa",
+      "bytes": 162855
+    },
+    {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "d9b1e85fdf5eb33fa84dfd2fdca37bb07fb40d251e6d3940621674998f6f8908",
+      "bytes": 116288
+    },
+    {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tvd-directory.h",
+      "sha256": "335e4968649ebdd1da15c12cf55b6da88cb76ae270d0916b7d031b56ea2bd738",
+      "bytes": 18845
+    },
+    {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-tvd-cache.inc",
+      "sha256": "16456828b6bfc34496ca973a02ff308b03ab182ee8bec11359bdb20387893578",
+      "bytes": 14188
+    },
+    {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/ep-l2-ft-cache.inc",
+      "sha256": "e27b7624732f3b1c30f0803caef9b3da8cb1a7b84ea82193cd3d24e667e603cc",
+      "bytes": 41725
+    }
+  ],
+  "models_started": 0,
+  "production_sources_modified": false,
+  "native_or_ledger_writes": false,
+  "pending_stencil": "Main owned natural run; no new Stencil launch requested; newest WV result must be read from Main accepted status not assumed here"
+}

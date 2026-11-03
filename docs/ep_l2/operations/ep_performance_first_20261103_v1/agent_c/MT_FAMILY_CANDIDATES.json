@@ -1,0 +1,391 @@
+{
+  "schema": "EP_L2_PERFORMANCE_FIRST_MT_FAMILIES_V1",
+  "status": "HOLD_ALL_MT_FAMILIES_NOT_IN_MAIN_FIRST_LAUNCH_PACKAGE",
+  "date_client": "2026-11-03 Asia/Shanghai",
+  "new_scientific_starts": 0,
+  "native_or_ledger_mutated": false,
+  "production_source_changed": false,
+  "input_catalog": [
+    {
+      "program": "VECTOR6M",
+      "input_identity_sha256": "efced2c394f1e9799f8e2951eec4a377b4e95bb3c9ed462caff6b50af5b5f6d8",
+      "original_source78_F_spec": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_VECTOR6M_F_REF_V1/control/FROZEN_SPEC.json",
+        "sha256": "c53592cb5ae916053812152d07f98cc520689ef327da95415b1e0611a381f0d3",
+        "bytes": 20950
+      },
+      "binding_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/control/inputs/efced2c394f1e9799f8e2951eec4a377b4e95bb3c9ed462caff6b50af5b5f6d8/INPUT_BINDING.json",
+        "sha256": "6cefc8035d1eac9e3f7ec113f846123fe24c0110fea564cb1b0a3a60fe445d12"
+      },
+      "trace_entry_true164": "/root/share/mnt164/huangrulin/traces/bundles/d57ff01eded73f7a62a3d71b5c8e8a1b16e003d4217acaa337d591f401312326/tree/kernelslist.g",
+      "certificate_qualification_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_VECTOR6M_F_REF_V1/control/RO_QUALIFICATION.json",
+        "sha256": "cd754324619643dcb317db0a45188c1ed10c5154686d6b5d77708153fc8ebd87"
+      },
+      "certificate_qualification_status": "EXACT_WHOLE_COMMANDLIST_RO_SOURCE_LOADER_QUALIFIED",
+      "geometry": {
+        "line_bytes": 128,
+        "sets": 32,
+        "slices": 64,
+        "ways": 8
+      },
+      "baseline_dram_latency": "100",
+      "baseline_dram_MHz": "850",
+      "estimated_reference_wall_seconds": 900,
+      "estimated_peak_RAM_bytes": 805306368,
+      "hot_output_cap_bytes": 134217728,
+      "original_capture_completeness": "UNKNOWN",
+      "numeric_output": "UNKNOWN",
+      "original_observer_env": {
+        "EPL2_DETACH_DIAG": "0",
+        "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
+        "EPL2_TAGPRESSURE_DIAG": "0",
+        "EPL2_TAG_LIFETIME": "0",
+        "EP_L2_EVENT_TIMELINE": "0"
+      },
+      "expected_CTA": 23438,
+      "expected_instructions": 84000768,
+      "ordered_kernels": [
+        {
+          "command_ordinal": 2,
+          "name": "_Z6VecAddPKfS0_Pfi",
+          "trace_member": "kernel-1.traceg",
+          "uid": 1
+        }
+      ]
+    },
+    {
+      "program": "SGEMM",
+      "input_identity_sha256": "ab4ac5dd144400741deffc898870309644c8c187a18fd685464623cb63317a7b",
+      "original_source78_F_spec": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_REF_V1/control/FROZEN_SPEC.json",
+        "sha256": "00d5fe3a032694843730a0cefb574bcfb41fb569382e01fe801c0fc7fb12ec66",
+        "bytes": 21142
+      },
+      "binding_ref": {
+        "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/control/inputs/ab4ac5dd144400741deffc898870309644c8c187a18fd685464623cb63317a7b/INPUT_BINDING.json",
+        "sha256": "abf1a24a1cb32a55f2c44f372ee49b975aeb2800a1116e6e9185e113d9994dc2"
+      },
+      "trace_entry_true164": "/root/share/mnt164/huangrulin/traces/bundles/3745de69edb9414642035192656ae7890477988814781a0150cb82ed2516e90b/tree/kernelslist.g",
+      "certificate_qualification_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_SGEMM_F_REF_V1/control/RO_QUALIFICATION.json",
+        "sha256": "258192de72a86bc43855415de2c3c396bd7d6b40592ea96d0f261342b826038c"
+      },
+      "certificate_qualification_status": "EXACT_WHOLE_COMMANDLIST_RO_SOURCE_LOADER_QUALIFIED",
+      "geometry": {
+        "line_bytes": 128,
+        "sets": 32,
+        "slices": 64,
+        "ways": 8
+      },
+      "baseline_dram_latency": "100",
+      "baseline_dram_MHz": "850",
+      "estimated_reference_wall_seconds": 1675,
+      "estimated_peak_RAM_bytes": 9663676416,
+      "hot_output_cap_bytes": 134217728,
+      "original_capture_completeness": "UNKNOWN",
+      "numeric_output": "UNKNOWN",
+      "original_observer_env": {
+        "EPL2_DETACH_DIAG": "0",
+        "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
+        "EPL2_TAGPRESSURE_DIAG": "0",
+        "EPL2_TAG_LIFETIME": "0",
+        "EP_L2_EVENT_TIMELINE": "0"
+      },
+      "expected_CTA": 528,
+      "expected_instructions": 1658916864,
+      "ordered_kernels": [
+        {
+          "command_ordinal": 2,
+          "name": "_Z9mysgemmNTPKfiS0_iPfiiff",
+          "trace_member": "kernel-1.traceg",
+          "uid": 1
+        }
+      ]
+    },
+    {
+      "program": "CONV",
+      "input_identity_sha256": "438eefd67b073f1ca0e2c08be6aa99b3b9b9619d7832cc6cad9cc4467e63654e",
+      "original_source78_F_spec": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_CONV_F_REF_V1/control/FROZEN_SPEC.json",
+        "sha256": "08e618c27e1a1df7d216b329175792df29918978488f6ac2702c7dbdf7566d6e",
+        "bytes": 21667
+      },
+      "binding_ref": {
+        "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/control/inputs/438eefd67b073f1ca0e2c08be6aa99b3b9b9619d7832cc6cad9cc4467e63654e/INPUT_BINDING.json",
+        "sha256": "b26e302b6bd49ad61d0284f18b01bfdc35be12659ca717fc5b514d6b9e0346e4"
+      },
+      "trace_entry_true164": "/root/share/mnt164/huangrulin/traces/bundles/869cdb7901fded18d39e37189b70a1d1eac3dcc6f3551f5bde2b583dfb36c474/tree/kernelslist.g",
+      "certificate_qualification_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_CONV_F_REF_V1/control/RO_QUALIFICATION.json",
+        "sha256": "8ba67785f40a0d9b1fa0f36930997c86381fbd1cdadc2e19bab000f5ff0a708a"
+      },
+      "certificate_qualification_status": "EXACT_WHOLE_COMMANDLIST_RO_SOURCE_LOADER_QUALIFIED",
+      "geometry": {
+        "line_bytes": 128,
+        "sets": 32,
+        "slices": 64,
+        "ways": 8
+      },
+      "baseline_dram_latency": "100",
+      "baseline_dram_MHz": "850",
+      "estimated_reference_wall_seconds": 2421,
+      "estimated_peak_RAM_bytes": 1342177280,
+      "hot_output_cap_bytes": 134217728,
+      "original_capture_completeness": "UNKNOWN",
+      "numeric_output": "UNKNOWN",
+      "original_observer_env": {
+        "EPL2_DETACH_DIAG": "0",
+        "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
+        "EPL2_TAGPRESSURE_DIAG": "0",
+        "EPL2_TAG_LIFETIME": "0",
+        "EP_L2_EVENT_TIMELINE": "0"
+      },
+      "expected_CTA": 27648,
+      "expected_instructions": 714547200,
+      "ordered_kernels": [
+        {
+          "command_ordinal": 2,
+          "name": "_Z21convolutionRowsKernelPfS_iii",
+          "trace_member": "kernel-1.traceg",
+          "uid": 1
+        },
+        {
+          "command_ordinal": 3,
+          "name": "_Z24convolutionColumnsKernelPfS_iii",
+          "trace_member": "kernel-2.traceg",
+          "uid": 2
+        }
+      ]
+    }
+  ],
+  "source78": {
+    "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+    "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+    "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "source1e07_identity_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_d/NEW_SOURCE_IDENTITY.json",
+    "sha256": "3a69c0047188042ed282258e967795eab0babbdfbe0140f87fc51dd3f6fd46f8",
+    "bytes": 3708
+  },
+  "families": [
+    {
+      "id": "MT1_M_LINE_COUPLING",
+      "priority": 1,
+      "classification": "REAL_ARCHITECTURE_MECHANISM_DECOMPOSITION",
+      "question": "Does separate RO completion tracking improve application throughput or trade native LineMSHR pressure for additional lower reads?",
+      "existing_option_delta": {
+        "-gpgpu_ep_l2_ro_line_mshr_bypass": [
+          "0",
+          "1"
+        ]
+      },
+      "fixed": {
+        "-gpgpu_ep_l2_ro_tag_detach": "1",
+        "geometry": "64 slices x32 sets x8 ways",
+        "dram_latency": "100",
+        "DRAM_MHz": "850",
+        "LineMSHR": 128,
+        "D": 512,
+        "per_address_descriptors": 32,
+        "payload_slots": 1168,
+        "bank_ops": 1
+      },
+      "paths": [
+        {
+          "lineage": "Source78_LEGACY_T",
+          "core": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+          "ELF": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+          "correction": "not present/legacy",
+          "planned_modes": [
+            "S_exact_reuse",
+            "WV_exact_reuse",
+            "F_M1T1_exact_reuse",
+            "RO_M0T1_NEW"
+          ],
+          "point_plan": "Vector6M first; SGEMM and Conv are bounded extensions if their existing counters/performance justify the distinct reuse/mixed-traffic class. One new primary per input only if exact accepted Source5/input/options/background/observers and S/WV/F reuse close.",
+          "initial_new_primary_count": 1,
+          "whole_named_input_range_new_primary_count": 3,
+          "additional_NI": "up to one same-input same-mode OFF/ON pair per actually used new mode; exact native request must include these starts if needed, no hidden free NI",
+          "qualification": "actual Source78 production archive CPU PASS; Host/parser/native new mode and mode-specific application NI remain NOT_QUALIFIED",
+          "known_legacy_boundary": "Does not represent corrected ordinary Tag relief; known preview P1 remains. If raw-full/ordinary relief becomes relevant, hold corrected-T performance claims and use newSource route."
+        },
+        {
+          "lineage": "Source1e07_CORRECTED_T",
+          "core": "1e07b263ca0879798387d2a712914a914f298775",
+          "ELF": "54c3fbba9bb152d1a26539cccb617ac4a3368547a06509f427a202eeda6d8505",
+          "correction": "1 in both M arms; inert in S/WV",
+          "planned_modes": [
+            "S_NEW",
+            "WV_NEW",
+            "RO_M0T1_NEW",
+            "CORRECTED_F_M1T1_NEW"
+          ],
+          "point_plan": "Vector6M four same-ELF primary points first; add SGEMM/Conv on evidence, never splice Source78 F.",
+          "initial_new_primary_count": 4,
+          "named_input_range_new_primary_count": 12,
+          "additional_NI": "new mode-specific OFF/ON as needed and explicitly budgeted",
+          "qualification": "actual 1e07 production archive M0/M1 CPU PASS; newS/WV/newRO mode Host/parser/native and application qualification pending"
+        }
+      ],
+      "adaptation": "B system family may add M0T1 at the exact approved Vector DRAM resource background already running S/F; this requires an explicit named extra point in that family, not an automatic budget grant. No full Cartesian sweep.",
+      "main_performance_metrics": [
+        "cycles and completed instructions/CTA/drain",
+        "ordinary LineMSHR full and distinct RO concurrency",
+        "normal allocations avoided",
+        "actual lower read packets/bytes and duplicate sectors",
+        "paid RO query counts/waits",
+        "resource invariants"
+      ],
+      "stop_rule": "A neutral128-line result does not terminate M research; continue a valid finite Line64 family or resource-released background only if its capacity/MLP evidence supports it. Do not infer M speedup from bypass count alone.",
+      "scientific_start_status": "HOLD_NO_AUTHORIZED_START"
+    },
+    {
+      "id": "MT2_REAL_LINE_CAPACITY_ORGANIZATION",
+      "priority": 2,
+      "classification": "REAL_HARDWARE_RESOURCE_TRADEOFF_NEW_SOURCE_REQUIRED",
+      "values": {
+        "normal_LineMSHR_per_slice": [
+          64,
+          128,
+          256
+        ],
+        "shared_descriptor_capacity": 512,
+        "per_address_descriptor_cap": 32,
+        "payload_slots": 1168,
+        "bank_ops": 1
+      },
+      "preferred_inputs": [
+        "VECTOR6M",
+        "CONV"
+      ],
+      "secondary": [
+        "SGEMM negative/control class"
+      ],
+      "rationale": "Vector6M RO pending peak70 and live102 makes64 a meaningful finite physical tracking point; Conv has actual native128 peak and line-full head observations. No evidence that simply expanding native MSHRs helps Vector normal-line peak0. All S/EP arms use same physical capacity.",
+      "initial_grid": {
+        "LineMSHR": [
+          64,
+          128
+        ],
+        "input": "VECTOR6M",
+        "modes": [
+          "S",
+          "WV",
+          "M0T1_corrected",
+          "M1T1_corrected"
+        ],
+        "new_primary_points": 8
+      },
+      "adaptive_extensions": "Conv same64/128 family;256 only where line-full remains a real constraint. Expand to a promising system-resource background after single-family results. Do not auto-run all products.",
+      "Source_work": "Independent1e07-derived parameterized capacity contract; retain old legal default128 and all sector, descriptor, ownership, generation and drain guards. No patch applied.",
+      "blocked_current_ELF_evidence": [
+        "gpu-cache.h:3343,3350,3357,3376 binds128",
+        "ep-l2-ro-runtime.inc:43,256 hardcodes128",
+        "ep-l2-ro-runtime.inc:474 declares line_capacity128",
+        "Host/observer/parser configuration contracts fixed Source and geometry"
+      ],
+      "must_fix_coherently": [
+        "validate explicit finite capacity profile before constructors",
+        "runtime admission consult actual configured LineMSHR bound",
+        "normal and RO shared pool lifetime/storage assertions",
+        "all resource summaries and output validators derive actual capacity",
+        "sameSource default128 equivalence check +64/128/256 saturation/drain CPU tests",
+        "Host/native fair S/EP optiondiff and full application qualification"
+      ],
+      "not_claimed": "No Source64 engineering artifact or preexisting runner is promoted; old MSHR64 candidate remains separate and inactive.",
+      "scientific_start_status": "HOLD_NO_AUTHORIZED_START"
+    },
+    {
+      "id": "MT3_RO_METADATA_PIPELINE_AND_COST",
+      "priority": 3,
+      "classification": "FINITE_PIPELINE_CANDIDATE_PLUS_SEPARATE_IDEALIZED_BOUND",
+      "preferred_input": "VECTOR6M",
+      "options_now": "RO query latency1 GPU cycle and1 issue/slice/physicalGPUcycle are hardcoded, not runtime options",
+      "observed_fact": "All three accepted small bundles have query_port_wait_attempts0. Increasing to2 ports is not justified by these observations. A paid query occurs for RO target/merge misses as well as new transactions.",
+      "finite_candidate": "One bounded request/query pipeline stage with an explicit one-port one-cycle RO metadata service, preserving original packet order, Tag port accounting, ownership and retry semantics; overlap with independent frontend work only after a concrete pipeline design. Capacity and area added must be disclosed.",
+      "diagnostic_candidates": {
+        "RO_metadata_query_latency_gpu_cycles": [
+          0,
+          1,
+          2
+        ],
+        "ports": 1,
+        "label_for_0": "IDEALIZED_METADATA_LATENCY_BOUND_NOT_REAL_HARDWARE"
+      },
+      "point_plan": "After a newSource genuinely supports this timing profile, one matched S reference and F_Q1, F_Q0 diagnostic, F_Q2 sensitivity at Vector; if investigating independent T contribution, add F_MINUS_T at the selected exact samequery profile. No application launch authorized.",
+      "no_free_work_rule": "Q0 remains diagnostic even if source correctly executes it; no claim of real zero-cost CAM, Tag lookup or free new port. Q2 is implementation robustness, not a performance improvement.",
+      "engineering_gate": [
+        "query-ready ticket uses configurable exact clock domain and records actual latency",
+        "zero-latency does not silently bypass paid allocation checks",
+        "same-head repeated callback cannot reissue",
+        "credit/response backpressure retain query/request identity",
+        "pipeline capacity, replay, ordering, Tag port arbitration and wrap guards",
+        "defaultQ1 wholeTU/CPU equivalence and mode-specific NI"
+      ],
+      "scientific_start_status": "HOLD_NO_AUTHORIZED_START"
+    },
+    {
+      "id": "MT4_SHARED_DESCRIPTOR_AND_MERGE_CONDITIONAL",
+      "priority": 4,
+      "classification": "CONDITIONAL_NEW_SOURCE_RESOURCE_FAMILY",
+      "values": {
+        "descriptor_pool": [
+          512,
+          1024
+        ],
+        "per_address_cap": [
+          32,
+          64
+        ]
+      },
+      "condition": "Only if accepted exact-input per-address or descriptor-full evidence appears under the selected real background; current Vector D369, SGEMM169, Conv409 are below512 and cannot justify unconditional D expansion. Lifetime requester multiplicity is not simultaneous cap32 pressure.",
+      "fairness": "Both S and EP use same actual shared pool and per-address budget; report increased descriptor SRAM/compare/response bookkeeping; do not call equal-area.",
+      "current_ELF": "NOT_SUPPORTED_WITH_RO; fixed D512/address32 guards and runtime literals must be parameterized, tested, and output/runtime identity updated.",
+      "plan": "One factor first and matchedS/EP pair, then combination only if benefit survives; no currently proposed starts",
+      "scientific_start_status": "HOLD_NO_AUTHORIZED_START"
+    },
+    {
+      "id": "MT5_T_EXTENSION_CONDITIONAL",
+      "priority": 5,
+      "classification": "HYPOTHESIS_REQUIRES_NEW_PROTOCOL_PROOF",
+      "candidate": "Ready-data but response-pending RO Tag release with retained paid payload/descriptor ownership",
+      "condition": "Require same-request/set/time fullTag plus ready-only candidate evidence and a genuine blocking demand, not marginal counters. Existing can_detach requires unready required data and reuse_seen=false.",
+      "engineering_gate": "No policy change implemented. Prove late-return absence/generation, reply data/pins, same-address merges, normal/RO owner exclusion, Tag reuse, response retry, bank effects, complete drain and every existing ready/reuse guard negative test. Keep a switch preserving legacy.",
+      "performance_gate": "Same newELF F_MINUS_T / current correctedT / candidateT at selected existing real geometry, each same resource background. Do not shrink further or increase latency solely to make detach nonzero.",
+      "scientific_start_status": "HOLD_NO_AUTHORIZED_START"
+    }
+  ],
+  "evidence_refs": [
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/round2/agent_c/MT_RESOURCE_NEED_AND_LIMITS.json",
+      "sha256": "382e532e3398247762701f10706bac44796228ecb1d980d692961d53ab1e5504",
+      "bytes": 7616
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_c/REUSED_QUERY_AND_RO_EVIDENCE.json",
+      "sha256": "4b25538f6b1e9069d6316bec6698f94b9cf569518756fd48ed0ee744eafb91a4",
+      "bytes": 4586
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_c/CPU_CHECKS.json",
+      "sha256": "f46bd978174ce9653b5fcdc0eb8778390858ea0073ee6cc9c515b4a919c7c682",
+      "bytes": 31036
+    }
+  ],
+  "shared_guardrails": [
+    "No new GPU collection or large Trace/raw scan",
+    "true164 Trace and result assets,174 bounded build/hot only",
+    "Main only launch/ledger/Git owner",
+    "No retries/refunds; failed/HOLD/negative retained",
+    "Scope and budget must be approved before launch; no unlimited authorization",
+    "Mode M0T0 disables RO runtime because ro_requested=T||M; do not label it RO-enabled M/T-off",
+    "No newSource performance splice to accepted78",
+    "Application numerical result/capture boundaries preserved as UNKNOWN where original evidence is UNKNOWN"
+  ],
+  "Main_first_package": "W/V retention + existingSource78 DRAM family; M/T candidates are independent later options, no additional starts in this package"
+}

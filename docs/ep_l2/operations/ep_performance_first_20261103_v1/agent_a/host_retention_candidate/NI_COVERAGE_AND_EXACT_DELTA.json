@@ -1,0 +1,65 @@
+{
+  "schema": "EP_RETENTION_PARTIAL_MODE_OBSERVER_NI_BOUNDARY_V1",
+  "status": "PARTIAL_CPU_PASS_APPLICATION_NOT_QUALIFIED",
+  "supersedes_initial_family_budget": "0newcollector did not prove0NI; this additive Main-directed audit supersedes that inference",
+  "reviewed_existing_refs": [
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/control/SOURCE_QUALIFICATION.json",
+      "sha256": "6f60060cd93042f9f26579bca27f073acb9df84f2e413150b11f4fe57e3a6193",
+      "bytes": 1091
+    },
+    {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/control/SOURCE_QUALIFICATION.json",
+      "sha256": "57e2c0e62dc84d6d33cd8b96af3f6e6d45879213f5c93f3a4fa43b51a4031400",
+      "bytes": 15635
+    },
+    {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/control/CPU_PRODUCTION_PROTOCOL_NI.json",
+      "sha256": "79dd4b786fc494a9e3706a76d1ca5cdfe8020c4ad6204157fe5a7895bcceb75b",
+      "bytes": 20964
+    }
+  ],
+  "existing_proof_scope": "Source78 CPU ET0/ET1 T0/T1 and prior S/F/WV proofs; no explicit CLEAN_ONLY/DIRTY_ONLY MS+B0+M0a application NI coverage found",
+  "application_partial_modes": "NOT_QUALIFIED",
+  "per_input_NI_inheritance": "UNKNOWN_WITHOUT_EXACT_SOURCE_INPUT_MODE_OBSERVER_SCOPE; FWT cannot automatically cover GEMM",
+  "CPU_current_two_modes": "PASS_BOUNDED",
+  "CPU_evidence_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/host_retention_candidate/CPU_OBSERVER_NI_RESULT.json",
+    "sha256": "66c7a89d7c5a714d420f4de7da3f5226c8759a4bfc4ccf53787084a8991e35d5",
+    "bytes": 5838
+  },
+  "on_primary_options": {
+    "-gpgpu_ep_l2_ms_observer": "1",
+    "-gpgpu_ep_l2_b0_stats": "1",
+    "-gpgpu_ep_l2_m0a_stats": "1"
+  },
+  "off_NI_exact_delta": {
+    "-gpgpu_ep_l2_ms_observer": {
+      "before": "1",
+      "after": "0"
+    },
+    "-gpgpu_ep_l2_b0_stats": {
+      "before": "1",
+      "after": "0"
+    },
+    "-gpgpu_ep_l2_m0a_stats": {
+      "before": "1",
+      "after": "0"
+    }
+  },
+  "unchanged": "all other279 effective options and all observer_env values, Source5/input/mode/geometry/clocks/DRAM/queues unchanged",
+  "environment": "heavy four remain0; EPL2_LIFE_WIRE SUMMARY_STAGE unchanged (lifetime disabled); no wholeTrace use",
+  "first_batch": {
+    "FWT_primary_ON": 2,
+    "FWT_same_mode_OFF_NI": 2,
+    "total": 4
+  },
+  "conditional_GEMM": {
+    "primary_ON": 2,
+    "same_mode_OFF_NI_unless_exact_scope_proved": 2,
+    "total_upper": 4
+  },
+  "ranking": "ONLY accepted ON primary enters performance ranking, OFF controls separate; require per-kernel cycles/instructions/CTA/complete drain and identity/resource invariants agreement. Raw observer rows may differ by expected absence. Host time overhead measured independently.",
+  "parser_OFF_need": "NI profile must treat disabled MS/B0/M0a rows as N/A, retain numeric/per-kernel/drain/resource checks, never manufacture0; primary parser must require actual stats111 and correctTVD rows",
+  "models_started": 0
+}

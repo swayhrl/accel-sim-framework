@@ -1,0 +1,16 @@
+# Retention Host candidate qualification
+
+**PARTIAL / NOT_NATIVE_QUALIFIED.** Pure contract tests23PASS (four exact Source78/input/class candidates) plus real production32x8 constructor/request-drain and same-mode MS/B0/M0a CPU OFF/ON pairsPASS. CPU pairs each45ticks9replies1dirtyWB,7reversefills,drain. These are bounded synthetic production-class controls, not full application, NI, numeric output or performance acceptance.
+
+The pure checker defaults disabled. Explicit candidate_enabled=True only returns an engineering-check result with launch/native/scientific-acceptance flagsFalse. It binds the four pinned282optionpacks, original Source5/input, exact S reference/observer/hardware; unknown modes/aliases, RO authority, mode/geometry/resource/observer/input/source drift and numeric WV fallback fail. It imports no actor and writes no ledger/native.
+
+Remaining parser/Host work:
+
+- Existing mode_contract.py MODES has no two partial-retention modes. history_for currently requires clean==dirty and would reject both. New formal history semantics must encode clean and dirty separately and bind mode-specific evidence; no F_MINUS_R/WV numeric-profile relabelling.
+- Existing mode_aware_terminal.py decides TVD population from MODES[mode][1] (clean bit). That is wrong for DIRTY_ONLY: TVD rows are required whenever clean OR dirty, RO summary rows must be absent and RO metrics N/A. This is an unimplemented extension gap, not a defect in existing supported-mode results.
+- Frozen numeric checker/profile binding needs explicit semantics for RETENTION_CLEAN_ONLY / RETENTION_DIRTY_ONLY and actual positive/negative full-terminal controls; preserve Source/output/drain/ownership checks. Current pure Host module deliberately does not invoke or pretend to qualify numeric math.
+- New modes need Main modeCPU review, updated HostQ with exact modulepins, perinput eligibility and exact accepted reference review. Old S/WV HostQ or constructor success does not grant native authority.
+- Native mode allowlist/request budget/spec freeze/consume-before-fork and resource admission remain Main-only; no native route was changed.
+- New partial modes lack explicit application MS/B0/M0aNI. FWT requires2ON primary+2OFF same-mode NI points; GEMM conditional same4 unless a precise reusable NI applicability proof is produced. OFF changes exactly three stats options1->0; hardware/other279options/env unchanged. Full details in NI_COVERAGE_AND_EXACT_DELTA.json. This corrects the earlier family file's unsupported zero-extra-NI implication.
+
+Production CPU uses exact accepted Source78 headers and existing matching libraries, independently linked test executable (not accepted modelELF); no cache source edit. Fixture first failed compilation on access to protected config fields; that local adapter failure is preserved, then corrected using public TVD API and real post-WB retained-entry behavior. No guard/assertion was removed. Final fixture asserts TVD enabled,RO disabled,geometry32x8,Payload1168,D512,MSHR128,WAD128,P1,actual9response completion/reorder/WB/drain; CLEAN_ONLY0retainedWB versusDIRTY_ONLY1 verifies the two policies differ. Only synthetic1SM/1slice/ROP0 was exercised; full64slice input remains unqualified.

@@ -1,0 +1,352 @@
+{
+  "$defs": {
+    "point": {
+      "additionalProperties": false,
+      "properties": {
+        "cohort": {
+          "type": "string"
+        },
+        "effective_options": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "minProperties": 1,
+          "type": "object"
+        },
+        "frozen_spec_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "input_binding_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "input_identity_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "mode": {
+          "type": "string"
+        },
+        "observer_environment": {
+          "type": "object"
+        },
+        "paired_reference_policy": {
+          "enum": [
+            "EXACT_SAME_SOURCE_INPUT_HARDWARE_OBSERVER_REUSE_REVIEW",
+            "NEW_MATCHED_S_AND_EP_REQUIRED",
+            "SAME_SOURCE_MECHANISM_ARM_REFERENCE_REQUIRED"
+          ]
+        },
+        "predicted_cost": {
+          "properties": {
+            "evidence_refs": {
+              "items": {
+                "$ref": "#/$defs/ref"
+              },
+              "type": "array"
+            },
+            "peak_RAM_bytes": {
+              "minimum": 1,
+              "type": "integer"
+            },
+            "remaining_write_bytes": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "wall_seconds": {
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "peak_RAM_bytes",
+            "remaining_write_bytes",
+            "wall_seconds",
+            "evidence_refs"
+          ],
+          "type": "object"
+        },
+        "qualification_refs": {
+          "items": {
+            "$ref": "#/$defs/ref"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "scientific_class": {
+          "enum": [
+            "REALISTIC_PARAMETER_SENSITIVITY_PPA_UNKNOWN",
+            "DIAGNOSTIC_RELAXED_RESOURCE",
+            "IDEALIZED_UPPER_BOUND"
+          ]
+        },
+        "source5": {
+          "$ref": "#/$defs/source5"
+        }
+      },
+      "required": [
+        "cohort",
+        "input_identity_sha256",
+        "input_binding_ref",
+        "source5",
+        "mode",
+        "effective_options",
+        "observer_environment",
+        "scientific_class",
+        "frozen_spec_ref",
+        "qualification_refs",
+        "predicted_cost",
+        "paired_reference_policy"
+      ],
+      "type": "object"
+    },
+    "ref": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "type": "object"
+    },
+    "source5": {
+      "additionalProperties": false,
+      "properties": {
+        "archive_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "binary_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "core_source_commit": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "framework_source_commit": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "vendor_pybind11_commit": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "core_source_commit",
+        "framework_source_commit",
+        "vendor_pybind11_commit",
+        "binary_sha256",
+        "archive_sha256"
+      ],
+      "type": "object"
+    },
+    "stage": {
+      "properties": {
+        "automatic_release_requires_main_review": {
+          "const": true
+        },
+        "max_new_starts": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "point_allowlist": {
+          "items": {
+            "$ref": "#/$defs/point"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "release_condition": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "stage_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "stage_id",
+        "max_new_starts",
+        "release_condition",
+        "point_allowlist",
+        "automatic_release_requires_main_review"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "urn:ep-l2:performance-first:family-authorization:v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "REGISTERED_EXACT_NATIVE_SCOPE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "native_scope_manifest_ref": {
+            "$ref": "#/$defs/ref"
+          },
+          "user_authorization_ref": {
+            "$ref": "#/$defs/ref"
+          }
+        }
+      }
+    }
+  ],
+  "properties": {
+    "acceptance_contract": {
+      "type": "object"
+    },
+    "concurrency_limit": {
+      "maximum": 2,
+      "minimum": 1,
+      "type": "integer"
+    },
+    "family_id": {
+      "type": "string"
+    },
+    "input_allowlist": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "legal_combinations": {
+      "items": {
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "max_registered_new_starts": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "native_scope_manifest_ref": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "no_refund": {
+      "const": true
+    },
+    "no_retry": {
+      "const": true
+    },
+    "parameter_domains": {
+      "additionalProperties": {
+        "items": {
+          "type": "string"
+        },
+        "minItems": 1,
+        "type": "array",
+        "uniqueItems": true
+      },
+      "minProperties": 1,
+      "type": "object"
+    },
+    "resource_contract": {
+      "type": "object"
+    },
+    "reuse_contract": {
+      "type": "object"
+    },
+    "schema": {
+      "const": "EP_PERFORMANCE_FIRST_FAMILY_AUTHORIZATION_V1"
+    },
+    "scientific_request_id": {
+      "type": "string"
+    },
+    "single_main_owner": {
+      "const": true
+    },
+    "source5_allowlist": {
+      "items": {
+        "$ref": "#/$defs/source5"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "stages": {
+      "items": {
+        "$ref": "#/$defs/stage"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "status": {
+      "enum": [
+        "PROPOSED_NOT_AUTHORIZED",
+        "USER_AUTHORIZED_PENDING_QUALIFICATION",
+        "REGISTERED_EXACT_NATIVE_SCOPE",
+        "TERMINAL"
+      ]
+    },
+    "user_authorization_ref": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ref"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "family_id",
+    "status",
+    "user_authorization_ref",
+    "scientific_request_id",
+    "native_scope_manifest_ref",
+    "single_main_owner",
+    "source5_allowlist",
+    "input_allowlist",
+    "parameter_domains",
+    "legal_combinations",
+    "stages",
+    "max_registered_new_starts",
+    "concurrency_limit",
+    "no_retry",
+    "no_refund",
+    "resource_contract",
+    "acceptance_contract",
+    "reuse_contract"
+  ],
+  "title": "Finite parameter-family scope; not an unlimited science budget",
+  "type": "object",
+  "x-main-semantic-checks": [
+    "max_registered_new_starts equals sum released+conditional stage maxima; not a global research cap",
+    "every admitted point source/input/mode/full option/env identity belongs to finite scope",
+    "family-level parameter values include exact DRAM/L2 clock units; no implicit Cartesian expansion",
+    "no point can be consumed twice; native consumes before fork, failed science remains consumed",
+    "resource HOLD before consume; unresolved generation never refunded or silently deleted",
+    "conditional release follows explicit recorded Main review, no positive-result requirement for correctness/NI",
+    "NI points count in same explicit budget or separately approved budget; no inherited NI across actual modes",
+    "scope-aware resources include every other live owner; unmapped new scope fails closed",
+    "preserve negative/zero/failure/HOLD; ranking is bookkeeping, not accepted result selection",
+    "new Source5 cannot inherit old ELF application acceptance or matched S performance"
+  ]
+}

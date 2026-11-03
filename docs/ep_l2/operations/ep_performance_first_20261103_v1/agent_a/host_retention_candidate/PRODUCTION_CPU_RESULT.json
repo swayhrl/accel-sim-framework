@@ -1,0 +1,165 @@
+{
+  "status": "PASS_BOUNDED_REAL_PRODUCTION_CONSTRUCTOR_AND_REQUEST_DRAIN",
+  "source": {
+    "core": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+    "accepted_ELF": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+    "linked_gpgpusim_archive": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697"
+  },
+  "CPU_fixture_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/host_retention_candidate/test_retention_32x8_requests.cc",
+    "sha256": "0ea2f03fe02fb28a46ff9b7a3fe41f76c0215d0fbc2bf33b86cfa940dde3d0ef",
+    "bytes": 2886
+  },
+  "CPU_executable_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/host_retention_candidate/retention32x8.cpu",
+    "sha256": "22a42518baa8c999d37ad6a0a487b70c71e9b5fd5bcad03f026516438a376825",
+    "bytes": 27290352
+  },
+  "compile_command": [
+    "/usr/bin/c++",
+    "-std=gnu++17",
+    "-O0",
+    "-g0",
+    "-fPIC",
+    "-UNDEBUG",
+    "-DCUDART_VERSION=12040",
+    "-DDEBUG=0",
+    "-DTRACING_ON=1",
+    "-I/root/data/dtc_main_20261023_v1/ae_fair_v1/toolchain/include",
+    "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/libcuda",
+    "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/libcuda",
+    "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim",
+    "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/intersim2",
+    "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/host_retention_candidate/test_retention_32x8_requests.cc",
+    "-Wl,--version-script=/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/linux-so-version.txt",
+    "-Wl,--start-group",
+    "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/libentrypoint.a",
+    "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/libcuda/libcuda.a",
+    "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/cuda-sim/libptxsim.a",
+    "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+    "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/intersim2/libintersim.a",
+    "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/accelwattch/libaccelwattch.a",
+    "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/trace-driven/libtrace-driven.a",
+    "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/trace-parser/libtrace-parser.a",
+    "-Wl,--end-group",
+    "-lm",
+    "-lz",
+    "-lGL",
+    "-ldl",
+    "-pthread",
+    "-o",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/host_retention_candidate/retention32x8.cpu",
+    "-UNDEBUG"
+  ],
+  "compile_exit": 0,
+  "final_executions": [
+    {
+      "mode": "CLEAN_ONLY",
+      "observer": "ON",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/host_retention_candidate/retention32x8.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/host_retention_candidate/CLEAN_ONLY_OBS_ON.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1"
+      ],
+      "returncode": 0,
+      "semantic": [
+        "RETENTION_SEMANTIC|cycles=45|replies=9|dirtyWB=1|reverse_returns=7|drain=1"
+      ],
+      "stdout_sha256": "6797b4cd012a973ad135c1a35ab6bf8c4605969a11fa25c8bb20b8c22bfff2fb"
+    },
+    {
+      "mode": "CLEAN_ONLY",
+      "observer": "OFF",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/host_retention_candidate/retention32x8.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/host_retention_candidate/CLEAN_ONLY_OBS_OFF.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1"
+      ],
+      "returncode": 0,
+      "semantic": [
+        "RETENTION_SEMANTIC|cycles=45|replies=9|dirtyWB=1|reverse_returns=7|drain=1"
+      ],
+      "stdout_sha256": "6797b4cd012a973ad135c1a35ab6bf8c4605969a11fa25c8bb20b8c22bfff2fb"
+    },
+    {
+      "mode": "DIRTY_ONLY",
+      "observer": "ON",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/host_retention_candidate/retention32x8.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/host_retention_candidate/DIRTY_ONLY_OBS_ON.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1"
+      ],
+      "returncode": 0,
+      "semantic": [
+        "RETENTION_SEMANTIC|cycles=45|replies=9|dirtyWB=1|reverse_returns=7|drain=1"
+      ],
+      "stdout_sha256": "6797b4cd012a973ad135c1a35ab6bf8c4605969a11fa25c8bb20b8c22bfff2fb"
+    },
+    {
+      "mode": "DIRTY_ONLY",
+      "observer": "OFF",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/host_retention_candidate/retention32x8.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/host_retention_candidate/DIRTY_ONLY_OBS_OFF.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1"
+      ],
+      "returncode": 0,
+      "semantic": [
+        "RETENTION_SEMANTIC|cycles=45|replies=9|dirtyWB=1|reverse_returns=7|drain=1"
+      ],
+      "stdout_sha256": "6797b4cd012a973ad135c1a35ab6bf8c4605969a11fa25c8bb20b8c22bfff2fb"
+    }
+  ],
+  "all_log_refs": [
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/host_retention_candidate/CLEAN_ONLY_OBS_OFF.stdout",
+      "sha256": "6797b4cd012a973ad135c1a35ab6bf8c4605969a11fa25c8bb20b8c22bfff2fb",
+      "bytes": 2104
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/host_retention_candidate/CLEAN_ONLY_OBS_ON.stdout",
+      "sha256": "6797b4cd012a973ad135c1a35ab6bf8c4605969a11fa25c8bb20b8c22bfff2fb",
+      "bytes": 2104
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/host_retention_candidate/DIRTY_ONLY_OBS_OFF.stdout",
+      "sha256": "6797b4cd012a973ad135c1a35ab6bf8c4605969a11fa25c8bb20b8c22bfff2fb",
+      "bytes": 2104
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/host_retention_candidate/DIRTY_ONLY_OBS_ON.stdout",
+      "sha256": "6797b4cd012a973ad135c1a35ab6bf8c4605969a11fa25c8bb20b8c22bfff2fb",
+      "bytes": 2104
+    }
+  ],
+  "scope": "real Source78 production l2_cache/memory_subpartition, 32sets x8ways; synthetic1SM/1slice/ROP0;9requests7reversefill1dirtyWB;noTrace",
+  "model_starts": 0,
+  "application_qualified": false,
+  "CPU_NI_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/host_retention_candidate/CPU_OBSERVER_NI_RESULT.json",
+    "sha256": "66c7a89d7c5a714d420f4de7da3f5226c8759a4bfc4ccf53787084a8991e35d5",
+    "bytes": 5838
+  },
+  "first_compile_adapter_failure": "preserved ATTEMPT1: private fixture tried protected config members; fixed via public TVD API/actual response behavior; no Source guard/assert weakened"
+}
