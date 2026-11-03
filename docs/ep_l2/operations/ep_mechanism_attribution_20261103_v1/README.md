@@ -2,6 +2,10 @@
 
 Completed bounded mechanism research with four actual parallel subagents and one Main integrator. New simulation budget0; no new model, Source/ELF, policy, ledger or dispatcher. Existing Stencil execution/archive/automatic publisher remains independent and unchanged. This research uses a separate worktree, index and branch.
 
+## Natural result published during closeout
+
+[Stencil W-only acceptance addendum](incremental_stencil_w_v1/STENCIL_W_NATURAL_ACCEPTANCE_ADDENDUM.md): W_ONLY naturally CLOSED_ACCEPTED at5,240,684cycles versus S5,242,939 (-0.0430%), with100kernels/drain/archive/two-restores. WV is still pending at the addendum snapshot. Main separately verified this new endpoint; original four-agent12-point audit/snapshot remains historical. No new model or wait was added.
+
 ## Start here
 
 - [Main scientific report](main/FINAL_MECHANISM_ATTRIBUTION_REPORT.md)
