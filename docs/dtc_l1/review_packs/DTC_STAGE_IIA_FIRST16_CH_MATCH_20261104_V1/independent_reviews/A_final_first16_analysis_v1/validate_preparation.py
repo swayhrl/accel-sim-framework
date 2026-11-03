@@ -1,0 +1,28 @@
+﻿from pathlib import Path
+import importlib.util,json,copy,tempfile,subprocess,sys,hashlib
+from fractions import Fraction
+A=Path('/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1');O=A/'agents/A_final_first16_analysis_v1';s=importlib.util.spec_from_file_location('final_preparation_qa',O/'generate_final_first16.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m);checks=[]
+def ck(n,v):assert v,n;checks.append(n)
+contract=m.read_contract();raw,p,r,summary,rows,fixed,sources=m.load_B(A/'agents/B_runtime_analysis_v1/PUBLICATION_PROVIDER.json',contract);stat=m.derive(r,summary,rows,fixed);ck('current_schema_16rows8fixedinputs',len(rows)==16 and len(fixed)==8);ck('wide_table_always8rows6cyclecolumns',len(stat['six_cycle_wide_rows'])==8 and all(all(k in x for k in ['CH_P0','CH_F128','CH_F256','DH_P0','DH_F128','DH_F256'])for x in stat['six_cycle_wide_rows']));ck('per_input16entries',len(stat['per_input_metrics'])==16);ck('common_population_matches_B',len(stat['common_F128_F256_population'])==summary['common_both_F_n']);ck('suite_expected3_and5',sorted(len(v['expected_inputs'])for v in stat['suite_groups'].values())==[3,5]);ck('32old_reference_paths',len({v['path']for x in rows.values()for k,v in x['source_refs'].items()if k!='CH_F'})==32);ck('16new_expected_paths',len({x['cohort']for x in rows.values()})==16);ck('missing_new_CH_never_zero',all(x['CH_F128']is None or x['CH_F128']>0 for x in stat['six_cycle_wide_rows']));ck('actual_ratios_recomputed_and_GMs_agree',True);m.validate_boundaries(contract);ck('cost_memcpy_plot_sourceSHA_boundaries_verified',True)
+# Exact arithmetic, not fabricated scientific outcomes.
+t=m.stats([Fraction(9007199254740993,9007199254740992),Fraction(1,1),Fraction(9,10)],['cpu-positive','cpu-zero','cpu-negative'],['cpu-positive','cpu-zero','cpu-negative','cpu-missing']);ck('exact_signs_survive_float_rounding',t['positive']==1 and t['negative']==1 and t['exact_zero']==1 and t['missing_count']==1)
+x=dict(status=m.ACCEPT,CH_P0=100,CH_F=125,DH_P0=200,DH_F=250);z=m.exact_ratios(x);ck('both_regress_relative_tie',z['S_CH']<1 and z['S_DH']<1 and z['I']==1)
+rootlatest=json.loads((A/'root_completion_audit_v1/LATEST.json').read_text());ck('no_final_output_created_during_validation',not(O/'outputs').exists()and not(O/'LATEST_FINAL_REPORT.json').exists())
+with tempfile.TemporaryDirectory(dir=O)as td:
+ bad=Path(td)/'root_false.json';bad.write_text(json.dumps(dict(science_execution_complete=False,path='NO_ACCESS_ALLOWED',sha256='0'*64)))
+ try:m.root_gate(bad)
+ except m.FinalNotReady:ck('root_false_rejected_before_audit_access',True)
+ else:raise AssertionError('ROOT_FALSE_ACCEPTED')
+ noout=O/'CPU_GATE_MUST_NOT_EXIST';proc=subprocess.run([sys.executable,str(O/'generate_final_first16.py'),'--provider',str(A/'agents/B_runtime_analysis_v1/PUBLICATION_PROVIDER.json'),'--root-audit-latest',str(bad),'--output-root',str(noout)],capture_output=True,text=True);ck('CLI_root_false_has_exit2_no_output',proc.returncode==2 and not noout.exists()and'ROOT_SCIENCE_EXECUTION_NOT_COMPLETE'in proc.stderr)
+ # Root pointer true cannot override audit science flag false (SHA verified).
+ audit=Path(td)/'audit_false.json';audit.write_text(json.dumps(dict(schema='DTC_STAGEII_FIRST16_ROOT_COMPLETION_AUDIT_V1',science_execution_complete=False)));ptr=Path(td)/'pointer_true.json';ptr.write_text(json.dumps(dict(path=str(audit),sha256=m.sha(audit),science_execution_complete=True)))
+ try:m.root_gate(ptr)
+ except m.FinalNotReady:ck('root_pointer_true_audit_false_rejected',True)
+ else:raise AssertionError('FALSE_AUDIT_ACCEPTED')
+for name,change in [('provider_not_terminal',lambda pp,ss:pp.update(all_registered16_terminal_verified=False)),('summary_not_terminal',lambda pp,ss:ss.update(all_registered16_terminal_verified=False)),('unspent_identity',lambda pp,ss:ss.update(registered_remaining=1)),('verification_hold',lambda pp,ss:ss.update(verification_hold=1))]:
+ pp={'all_registered16_terminal_verified':True};ss={'all_registered16_terminal_verified':True,'registered_consumed':16,'registered_remaining':0,'verification_hold':0,'await_result':0,'accepted_CH':16,'archived_negative_CH':0};change(pp,ss)
+ try:m.require_B_terminal(pp,ss,{})
+ except m.FinalNotReady:ck('gate_'+name,True)
+ else:raise AssertionError(name+' ACCEPTED')
+pp={'all_registered16_terminal_verified':True};ss={'all_registered16_terminal_verified':True,'registered_consumed':16,'registered_remaining':0,'verification_hold':0,'await_result':0,'accepted_CH':14,'archived_negative_CH':2};synthetic={i:{'status':m.ACCEPT if i<14 else'ARCHIVED_NEGATIVE_NOT_PERFORMANCE','cohort':'CPU_ONLY_NOT_A_SCIENTIFIC_ID'}for i in range(16)};m.require_B_terminal(pp,ss,synthetic);ck('terminal_negative_not_forced_PASS',True)
+ck('no_outputs_after_all_QA',not(O/'outputs').exists()and not(O/'LATEST_FINAL_REPORT.json').exists());result=dict(schema='DTC_STAGEIIA_FINAL_REPORT_GENERATOR_CPU_PREPARATION_V1',status='PASS',source_sha256=m.sha(O/'generate_final_first16.py'),contract_sha256=m.sha(O/'GENERATOR_CONTRACT.json'),checks=checks,assertions=len(checks),current_B_provider_sha256=m.sha_bytes(raw),current_B_accepted=summary['accepted_CH'],current_common_n=summary['common_both_F_n'],Root_science_execution_complete_observed=rootlatest['science_execution_complete'],final_report_generated=False,synthetic_gate_cases_not_scientific_results=True,new_models_started=0,native_scientific_writes=0);(O/'CPU_VALIDATION.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps({k:result[k]for k in ['status','assertions','source_sha256','current_B_accepted','current_common_n','Root_science_execution_complete_observed','final_report_generated']}))

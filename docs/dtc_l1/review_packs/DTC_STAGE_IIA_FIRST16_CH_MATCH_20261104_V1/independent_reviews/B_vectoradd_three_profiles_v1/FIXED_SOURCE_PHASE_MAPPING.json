@@ -1,0 +1,50 @@
+{
+  "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_preparation_20261103_v1/agents/B/KERNEL_HYPOTHESIS_MATRIX.json",
+  "sha256": "6b5ab45fed4a32aacfaca5ebd12338e04f4cb6f23af01d6b6862af80548e1092",
+  "atlas_commit": "47a097aad4406893a07f8d230e1e0a850609bf39",
+  "rows": [
+    {
+      "program_id": "P42-42",
+      "program": "vectorAdd",
+      "suite": "CUDA Samples",
+      "selection_state": "IDENTITY_FROZEN",
+      "phase_id": "P42-42-K01",
+      "source_kernel_symbol_or_name": "_Z6VecAddPKfS0_Pfi",
+      "source_stage": "two-input vector add",
+      "source_global_access_facts": "Two coalesced FP32 read streams, one coalesced FP32 store",
+      "source_reuse_opportunity_not_measured": "No required cross-CTA reuse",
+      "source_dependency_or_barrier": "Independent one-element-per-thread arithmetic",
+      "host_cpu_gpu_and_capture_scope": "Control workload, DTC6M vs EP4M different registered traces",
+      "program_registered_launch_count": "1",
+      "phase_capture_scope": "REGISTERED_PROGRAM_SOURCE_KERNEL_CANDIDATE_NOT_CAPTURE_ELF_CERTIFIED",
+      "candidate_source_level": "INSPECTED_FIXED_CANDIDATE_SOURCE_ONLY_NOT_CAPTURE_SOURCE_OR_ELF",
+      "runtime_measurement_in_this_audit": "NONE",
+      "fixed_candidate_report": "programs/cuda_samples/vectorAdd.md \u00a7\u00a73-7",
+      "source_line_reference": "vectorAdd.cu:78-83;launch86-133",
+      "inspected_candidate_commit": "b059fdae25c2aabf737486aada743fca114469ce",
+      "atlas_report": {
+        "commit": "47a097aad4406893a07f8d230e1e0a850609bf39",
+        "path": "docs/workload_atlas/programs/cuda_samples/vectorAdd.md",
+        "sha256": "8b887758aec4849f5ab55aec95463d038b4601b67306fedfe242c1576ab36823",
+        "local_snapshot": "atlas/programs/cuda_samples/vectorAdd.md"
+      },
+      "trace_header_kernel_occurrence_ordinal_1_based": [
+        1
+      ],
+      "trace_evidence_level": "T_HEADER_SEQUENCE_FROM_EXISTING_ATLAS; instruction bodies not newly scanned",
+      "address_and_geometry_source_derived": "A/B/C4i, i=256b+t;lane4B;N6000000,grid23438/block256,4inactive final warps.",
+      "dependency_and_potential_concurrency_source_derived": "Two independent input reads then add/store; no intended cross-CTA reuse, shared/atomic/barrier.",
+      "testable_hypothesis_not_cause": "F256 negative with unchanged read traffic and fewer failures disproves a simple fewer-stalls=>faster narrative; altered service/order remains hypothesis.",
+      "needed_observation_design_only": "Per-request wait/service distribution, write/return pressure, SM issue and endpoint drain; latency unavailable in old projection.",
+      "runtime_program_record_reference": "PROGRAM_EVIDENCE.json#vectorAdd",
+      "per_kernel_cycles": null,
+      "per_kernel_L2_queue_wait": null,
+      "per_kernel_MSHR_merge": null,
+      "runtime_gap": "NOT_AVAILABLE_IN_CONSUMED_WHOLE_INPUT_PROJECTION; cannot assign program speedup or counters to this phase",
+      "capture_source_link": "UNRESOLVED",
+      "capture_elf_link": "UNRESOLVED",
+      "new_runtime_measurement": false
+    }
+  ],
+  "capture_source_ELF_still_unresolved": true
+}

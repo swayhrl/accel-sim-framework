@@ -1,0 +1,36 @@
+[
+  {
+    "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+    "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/shader.cc",
+    "sha256": "e67a486ef18abf2b8515bc5bb887812c058d29fe9fed8544320cc008e3b4ca11",
+    "excerpts": [
+      {
+        "start": 3378,
+        "end": 3394,
+        "text": "3378:         dtc_l1_sector_oo_active()\n3379:             ? m_dtc_l1_sector_frontend->prospective_new_requests(\n3380:                   reference.line_address, reference.sector_mask)\n3381:             : (m_dtc_l1_oo_frontend->will_new_miss(reference.line_address)\n3382:                    ? 1\n3383:                    : 0);\n3384:     if (m_dtc_l1_oo_lower_create_queue.size() +\n3385:             lower_candidate_reservation >\n3386:         m_config->dtc_l1_oo_pib_entries) {\n3387:       ++m_dtc_l1_oo_lower_create_queue_full_stalls;\n3388:       stall_reason = BK_CONF;\n3389:       access_type = G_MEM_LD;\n3390:       return false;\n3391:     }\n3392:     const bool prior_grant = dtc_l1_finite_service_active() &&\n3393:                             entry->service.tag_grant_cycle != UINT64_MAX;\n3394:     const bool tag_served = prior_grant || (dtc_l1_sector_oo_active()"
+      },
+      {
+        "start": 4448,
+        "end": 4475,
+        "text": "4448:   // stages enable IO/OO after their distinct retirement semantics exist.\n4449:   dtc_config.selected_mode =\n4450:       m_config->dtc_l1_mode == static_cast<unsigned>(dtc_l1::mode::PAPER_BASE)\n4451:           ? dtc_l1::mode::PAPER_BASE\n4452:           : dtc_l1::mode::LEGACY;\n4453:   dtc_config.pib_entries = m_config->dtc_l1_pib_entries;\n4454:   dtc_config.tag_banks = m_config->dtc_l1_tag_banks;\n4455:   dtc_config.tag_requests_per_bank_per_cycle =\n4456:       m_config->dtc_l1_tag_requests_per_bank_per_cycle;\n4457:   dtc_config.tag_requests_per_cycle =\n4458:       m_config->dtc_l1_tag_requests_per_cycle;\n4459:   dtc_config.logical_sets = m_config->dtc_l1_logical_sets;\n4460:   dtc_config.logical_ways = m_config->dtc_l1_logical_ways;\n4461:   dtc_config.physical_lines = m_config->dtc_l1_physical_lines;\n4462:   dtc_config.allocation_width = m_config->dtc_l1_allocation_width;\n4463:   dtc_config.io_pib_entries = m_config->dtc_l1_io_pib_entries;\n4464:   dtc_config.oo_pib_entries = m_config->dtc_l1_oo_pib_entries;\n4465:   dtc_config.ref_count_bits = m_config->dtc_l1_ref_count_bits;\n4466:   m_dtc_l1_frontend = std::make_unique<dtc_l1::paper_frontend>(dtc_config);\n4467:   if (m_config->dtc_l1_mode == static_cast<unsigned>(dtc_l1::mode::PAPER_IO))\n4468:     m_dtc_l1_io_frontend = std::make_unique<dtc_l1::io_frontend>(dtc_config);\n4469:   if (m_config->dtc_l1_mode == static_cast<unsigned>(dtc_l1::mode::PAPER_OO)) {\n4470:     dtc_config.selected_mode = dtc_l1::mode::PAPER_OO;\n4471:     dtc_config.tag_hash_bankrow = m_config->dtc_l1_tag_hash_bankrow;\n4472:     dtc_config.progressive_wakeup = m_config->dtc_l1_progressive_wakeup;\n4473:     m_dtc_l1_oo_frontend = std::make_unique<dtc_l1::oo_frontend>(dtc_config);\n4474:   }\n4475:   if (m_config->dtc_l1_mode =="
+      }
+    ]
+  },
+  {
+    "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+    "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/dtc-l1-common.h",
+    "sha256": "dab2df3ec8e1fd1c8953ac146eba3c93906c84af8cce66051e5728afe9963fa1",
+    "excerpts": [
+      {
+        "start": 518,
+        "end": 550,
+        "text": "518: // PIB entry may retire.  It has no dependency on conventional L1D MSHRs.\n519: class oo_frontend {\n520:  public:\n521:   explicit oo_frontend(config cfg)\n522:       : m_cfg(cfg),\n523:         m_tags(cfg.logical_sets * cfg.logical_ways),\n524:         m_phys(cfg.physical_lines),\n525:         m_slots(cfg.oo_pib_entries) {\n526:     check_tag_hash_bankrow(cfg.tag_hash_bankrow,\n527:                            cfg.selected_mode == mode::PAPER_OO,\n528:                            cfg.finite_service, cfg.logical_sets, cfg.tag_banks);\n529:     check_progressive_wakeup_mode(cfg.progressive_wakeup,\n530:         static_cast<unsigned>(cfg.selected_mode), cfg.finite_service);\n531:     assert(cfg.logical_sets && cfg.logical_ways && cfg.physical_lines);\n532:     assert(cfg.allocation_width && cfg.oo_pib_entries);\n533:     assert(cfg.ref_count_bits && cfg.ref_count_bits < 32);\n534:     assert(cfg.tag_banks && cfg.tag_requests_per_bank_per_cycle &&\n535:            cfg.tag_requests_per_cycle);\n536:   }\n537: \n538:   void begin_cycle(uint64_t cycle) {\n539:     if (cycle == m_cycle) return;\n540:     m_cycle = cycle;\n541:     m_allocations_this_cycle = 0;\n542:   }\n543: \n544:   bool admit(uint64_t uid) {\n545:     if (find_entry(uid)) return true;\n546:     if (m_entries.size() >= m_cfg.oo_pib_entries) return false;\n547:     unsigned slot = 0;\n548:     for (; slot < m_slots.size(); ++slot)\n549:       if (!m_slots[slot].active) break;\n550:     assert(slot < m_slots.size());"
+      },
+      {
+        "start": 1979,
+        "end": 2004,
+        "text": "1979:   explicit paper_frontend(config cfg) : m_cfg(cfg) {\n1980:     check_tag_hash_bankrow(cfg.tag_hash_bankrow, false, cfg.finite_service,\n1981:                            cfg.logical_sets, cfg.tag_banks);\n1982:     check_progressive_wakeup_mode(cfg.progressive_wakeup,\n1983:         static_cast<unsigned>(mode::PAPER_BASE), cfg.finite_service);\n1984:     assert(m_cfg.pib_entries > 0);\n1985:     assert(m_cfg.tag_banks > 0);\n1986:     assert(m_cfg.tag_requests_per_bank_per_cycle > 0);\n1987:     assert(m_cfg.tag_requests_per_cycle > 0);\n1988:   }\n1989: \n1990:   bool enabled() const { return m_cfg.selected_mode != mode::LEGACY; }\n1991: \n1992:   bool try_admit(uint64_t dynamic_instruction_id) {\n1993:     if (!enabled()) return true;\n1994:     if (m_live_instructions.count(dynamic_instruction_id)) return true;\n1995:     if (m_live_instructions.size() >= m_cfg.pib_entries) {\n1996:       ++m_pib_full_events;\n1997:       ++m_pib_full_stall_cycles;\n1998:       ++m_nonexclusive_pib_full_cycles;\n1999:       ++m_frontend_stall_cycles;\n2000:       return false;\n2001:     }\n2002:     m_live_instructions.insert(dynamic_instruction_id);\n2003:     ++m_admits;\n2004:     m_pib_peak = std::max(m_pib_peak, m_live_instructions.size());"
+      }
+    ]
+  }
+]
