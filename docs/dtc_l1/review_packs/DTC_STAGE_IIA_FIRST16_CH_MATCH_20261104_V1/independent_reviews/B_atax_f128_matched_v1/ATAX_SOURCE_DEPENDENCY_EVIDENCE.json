@@ -1,0 +1,21 @@
+{
+  "schema": "DTC_STAGEIIA_ATAX_FIXED_SOURCE_CANDIDATE_DEPENDENCY_V1",
+  "Atlas_commit": "47a097aad4406893a07f8d230e1e0a850609bf39",
+  "application_source_candidate_commit": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+  "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_preparation_20261103_v1/agents/B/atlas/contributions/polybench/source_snapshot/ATAX/atax.cu",
+  "sha256": "bca826a6e4fbdad67b11400ef2193210f43d8181441a0b9883e19445db049cfb",
+  "excerpts": [
+    {
+      "start": 84,
+      "end": 110,
+      "text": "84: __global__ void atax_kernel1(DATA_TYPE *A, DATA_TYPE *x, DATA_TYPE *tmp)\n85: {\n86: \tint i = blockIdx.x * blockDim.x + threadIdx.x;\n87: \n88: \tif (i < NX)\n89: \t{\n90: \t\tint j;\n91: \t\tfor(j=0; j < NY; j++)\n92: \t\t{\n93: \t\t\ttmp[i] += A[i * NY + j] * x[j];\n94: \t\t}\n95: \t}\n96: }\n97: \n98: __global__ void atax_kernel2(DATA_TYPE *A, DATA_TYPE *y, DATA_TYPE *tmp)\n99: {\n100: \tint j = blockIdx.x * blockDim.x + threadIdx.x;\n101: \t\n102: \tif (j < NY)\n103: \t{\n104: \t\tint i;\n105: \t\tfor(i=0; i < NX; i++)\n106: \t\t{\n107: \t\t\ty[j] += A[i * NY + j] * tmp[i];\n108: \t\t}\n109: \t}\n110: }"
+    },
+    {
+      "start": 139,
+      "end": 176,
+      "text": "139: void ataxGpu(DATA_TYPE* A, DATA_TYPE* x, DATA_TYPE* y, DATA_TYPE* tmp, DATA_TYPE* y_outputFromGpu)\n140: {\n141: \tdouble t_start, t_end;\n142: \n143: \tDATA_TYPE *A_gpu;\n144: \tDATA_TYPE *x_gpu;\n145: \tDATA_TYPE *y_gpu;\n146: \tDATA_TYPE *tmp_gpu;\n147: \n148: \tcudaMalloc((void **)&A_gpu, sizeof(DATA_TYPE) * NX * NY);\n149: \tcudaMalloc((void **)&x_gpu, sizeof(DATA_TYPE) * NY);\n150: \tcudaMalloc((void **)&y_gpu, sizeof(DATA_TYPE) * NY);\n151: \tcudaMalloc((void **)&tmp_gpu, sizeof(DATA_TYPE) * NX);\n152: \t\n153: \tcudaMemcpy(A_gpu, A, sizeof(DATA_TYPE) * NX * NY, cudaMemcpyHostToDevice);\n154: \tcudaMemcpy(x_gpu, x, sizeof(DATA_TYPE) * NY, cudaMemcpyHostToDevice);\n155: \tcudaMemcpy(y_gpu, y, sizeof(DATA_TYPE) * NY, cudaMemcpyHostToDevice);\n156: \tcudaMemcpy(tmp_gpu, tmp, sizeof(DATA_TYPE) * NX, cudaMemcpyHostToDevice);\n157: \t\n158: \tdim3 block(DIM_THREAD_BLOCK_X, DIM_THREAD_BLOCK_Y);\n159: \tdim3 grid1((size_t)(ceil( ((float)NX) / ((float)block.x) )), 1);\n160: \tdim3 grid2((size_t)(ceil( ((float)NY) / ((float)block.x) )), 1);\n161: \n162: \tt_start = rtclock();\n163: \tatax_kernel1<<< grid1, block >>>(A_gpu,x_gpu,tmp_gpu);\n164: \tcudaThreadSynchronize();\n165: \tatax_kernel2<<< grid2, block >>>(A_gpu,y_gpu,tmp_gpu);\n166: \tcudaThreadSynchronize();\n167: \tt_end = rtclock();\n168: \tfprintf(stdout, \"GPU Runtime: %0.6lfs\\n\", t_end - t_start);\n169: \t\n170: \tcudaMemcpy(y_outputFromGpu, y_gpu, sizeof(DATA_TYPE) * NX, cudaMemcpyDeviceToHost);\n171: \n172: \tcudaFree(A_gpu);\n173: \tcudaFree(x_gpu);\n174: \tcudaFree(y_gpu);\n175: \tcudaFree(tmp_gpu);\n176: }"
+    }
+  ],
+  "capture_source_and_ELF": "UNRESOLVED; candidate dependency/addressing plus frozen trace identity do not certify numeric producer/consumer values",
+  "no_new_source_or_input_promotion": true
+}
