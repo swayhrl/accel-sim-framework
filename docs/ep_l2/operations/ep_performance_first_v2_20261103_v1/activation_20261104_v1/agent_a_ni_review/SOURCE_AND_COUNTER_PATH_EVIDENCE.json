@@ -1,0 +1,113 @@
+{
+  "schema": "EP_PFV2_INDEPENDENT_NI_SOURCE_REVIEW_V1",
+  "production_delta": [
+    "src/gpgpu-sim/dram.cc",
+    "src/gpgpu-sim/gpu-cache.h",
+    "src/gpgpu-sim/l2cache.cc",
+    "src/gpgpu-sim/l2cache.h"
+  ],
+  "unchanged_observer_and_mechanism_units": {
+    "src/gpgpu-sim/ep-l2-mechanism-observer.h": {
+      "byte_identical": true,
+      "Source78_sha256": "f6b85f7b398cef2f79a575645b2baf0a442b6490100ab577c5c48c25ece462a9",
+      "Source862_sha256": "f6b85f7b398cef2f79a575645b2baf0a442b6490100ab577c5c48c25ece462a9"
+    },
+    "src/gpgpu-sim/ep-l2-ft-cache.inc": {
+      "byte_identical": true,
+      "Source78_sha256": "e27b7624732f3b1c30f0803caef9b3da8cb1a7b84ea82193cd3d24e667e603cc",
+      "Source862_sha256": "e27b7624732f3b1c30f0803caef9b3da8cb1a7b84ea82193cd3d24e667e603cc"
+    },
+    "src/gpgpu-sim/ep-l2-tvd-cache.inc": {
+      "byte_identical": true,
+      "Source78_sha256": "16456828b6bfc34496ca973a02ff308b03ab182ee8bec11359bdb20387893578",
+      "Source862_sha256": "16456828b6bfc34496ca973a02ff308b03ab182ee8bec11359bdb20387893578"
+    },
+    "src/gpgpu-sim/ep-l2-ro-runtime.inc": {
+      "byte_identical": true,
+      "Source78_sha256": "3d9e8f9947c057ad5a530683e19d2caaaa27fcfc26a4359f71800e19d9e773f9",
+      "Source862_sha256": "3d9e8f9947c057ad5a530683e19d2caaaa27fcfc26a4359f71800e19d9e773f9"
+    },
+    "src/gpgpu-sim/ep-l2-mechanism-interface.h": {
+      "byte_identical": true,
+      "Source78_sha256": "0adcec7c3daf12cccac750edc4af7a6a14edef0fc825945ce6103a7f3092a576",
+      "Source862_sha256": "0adcec7c3daf12cccac750edc4af7a6a14edef0fc825945ce6103a7f3092a576"
+    }
+  },
+  "repaired_function_review": [
+    {
+      "Source": "862",
+      "file": "src/gpgpu-sim/dram.cc",
+      "lines": "297-307",
+      "function": "dram_t::cycle",
+      "fact": "finalWBbeat ready/valid reads actual finite RWQ head, access kind, dqbytes/nbytes and can_complete_writeback; does not read observer switches/counters"
+    },
+    {
+      "Source": "862",
+      "file": "src/gpgpu-sim/l2cache.cc",
+      "lines": "862-870",
+      "function": "memory_partition_unit::can_complete_writeback",
+      "fact": "validates actual global/local subpartition identity and delegates can_set_done; no observer input"
+    },
+    {
+      "Source": "862",
+      "file": "src/gpgpu-sim/l2cache.cc",
+      "lines": "2774-2777",
+      "function": "memory_sub_partition::can_set_done",
+      "fact": "L2WB readiness uses actual GPU cumulative clock, not counter sampling clock or host time"
+    },
+    {
+      "Source": "862",
+      "file": "src/gpgpu-sim/gpu-cache.h",
+      "lines": "3207-3209",
+      "function": "l2_cache::ep_l2_wad_completion_ready",
+      "fact": "checks existing WAD/TVD mechanism and m_tvd_completion_cam_cycle; MS/B0/M0a not inputs; no address CAM query or mutation in ready preview"
+    }
+  ],
+  "existing_counter_path_review": [
+    {
+      "Source": "78",
+      "file": "src/gpgpu-sim/l2cache.cc",
+      "lines": "1322-1326",
+      "fact": "MS sample follows prior drains/fills before admission; sampling guarded by unchanged flag"
+    },
+    {
+      "Source": "78",
+      "file": "src/gpgpu-sim/ep-l2-ft-cache.inc",
+      "lines": "181-191",
+      "fact": "sample loops actual m_config.get_num_lines(), reads constTag/payload inspection and counteroccupancies, updates observer-owned state. G64W16 changes scan size; no newTag/payload port request or simulated tick in this routine"
+    },
+    {
+      "Source": "78",
+      "file": "src/gpgpu-sim/l2cache.cc",
+      "lines": "1587-1616",
+      "fact": "actualaccess() produces status; MS reads before/after attempt counters then records observation; M0a increments useful-admit after actualstatus. These counters are not admission permissions in this block"
+    },
+    {
+      "Source": "78",
+      "file": "src/gpgpu-sim/gpu-cache.h",
+      "lines": "3136-3138",
+      "fact": "ms_observe_frontend forwards UID/cycle/blockers/realadmitted into observer"
+    },
+    {
+      "Source": "78",
+      "file": "src/gpgpu-sim/l2cache.cc",
+      "lines": "2097-2110",
+      "fact": "M0a records an existing exactplan/admission decision as counters"
+    },
+    {
+      "Source": "78",
+      "file": "src/gpgpu-sim/l2cache.cc",
+      "lines": "1040-1047",
+      "fact": "B0/M0a enable maintained tag-state tracking sidecar. This is real extra host work, not a claim no state writes; no newsidecar enabled by current family beyond alreadyfixed111"
+    },
+    {
+      "Source": "78",
+      "file": "src/gpgpu-sim/l2cache.cc",
+      "lines": "2347-2363,2493-2530",
+      "fact": "B0 controls importantterminal output; turning B0OFF removes FT/TVD/invariant evidence. Thus000 is not an interchangeable validationprofile"
+    }
+  ],
+  "scope": "bounded source inspection, not formal proof every application or all counter callback interleavings are noninterfering",
+  "new_models": 0,
+  "rebuild_or_test_execution": 0
+}

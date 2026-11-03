@@ -1,0 +1,106 @@
+{
+  "cohorts": [
+    "EP_PERF_PFV2_SYSTEM850_FWT_S_FRFCFS256_V1",
+    "EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_FRFCFS256_V1",
+    "EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_V1",
+    "EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_FRFCFS256_V1",
+    "EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_FRFCFS256_V1",
+    "EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_V1",
+    "EP_PERF_PFV2_SYSTEM850_GEMM_S_FRFCFS256_V1",
+    "EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_FRFCFS256_V1",
+    "EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_V1",
+    "EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_FRFCFS256_V1",
+    "EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_FRFCFS256_V1",
+    "EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_V1"
+  ],
+  "entry_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/bin/native",
+    "sha256": "3cfebd1596003b067a12f38618f9b36cf5d4dd3c67a16873f27a30e9c3efb649"
+  },
+  "global_native_ref": {
+    "path": "/root/data/ep_l2_dtc_l1_native_v2/bin/native",
+    "sha256": "46c69a74154e0690afd82324a348da236baf90189d9a7e474b4b14eb01ab4f0e"
+  },
+  "global_prior_suffix": "EXACT_BYTES_UNREACHABLE",
+  "group": "system",
+  "negative_controls": [
+    {
+      "args": [
+        "experiment",
+        "run-native",
+        "EP_PERF_UNKNOWN",
+        "--project",
+        "EP_L2"
+      ],
+      "exit": 2,
+      "output": "{\"status\":\"HOLD\",\"reason\":\"OUTSIDE_EXACT_APPROVED_PFV2_SCOPE\",\"scientific_starts\":0}\n",
+      "scientific_starts": 0
+    },
+    {
+      "args": [
+        "experiment",
+        "prepare",
+        "EP_PERF_VECTOR4M_F_REF_V1",
+        "--project",
+        "EP_L2"
+      ],
+      "exit": 2,
+      "output": "{\"status\":\"HOLD\",\"reason\":\"OUTSIDE_EXACT_APPROVED_PFV2_SCOPE\",\"scientific_starts\":0}\n",
+      "scientific_starts": 0
+    },
+    {
+      "args": [
+        "experiment",
+        "run-native",
+        "E2-DTCL2MLP_UNKNOWN",
+        "--project",
+        "DTC_L1"
+      ],
+      "exit": 2,
+      "output": "{\"status\":\"HOLD\",\"reason\":\"OUTSIDE_EXACT_APPROVED_PFV2_SCOPE\",\"scientific_starts\":0}\n",
+      "scientific_starts": 0
+    },
+    {
+      "args": [
+        "experiment",
+        "bad-operation",
+        "EP_PERF_PFV2_SYSTEM850_FWT_S_FRFCFS256_V1",
+        "--project",
+        "EP_L2"
+      ],
+      "exit": 2,
+      "output": "{\"status\":\"HOLD\",\"reason\":\"UNSUPPORTED_OPERATION\",\"scientific_starts\":0}\n",
+      "scientific_starts": 0
+    },
+    {
+      "args": [
+        "experiment",
+        "prepare",
+        "EP_PERF_PFV2_SYSTEM850_FWT_S_FRFCFS256_V1",
+        "--project",
+        "DTC_L1"
+      ],
+      "exit": 2,
+      "output": "{\"status\":\"HOLD\",\"reason\":\"EXACT5_EP_PROJECT_REQUIRED\",\"scientific_starts\":0}\n",
+      "scientific_starts": 0
+    },
+    {
+      "args": [
+        "experiment",
+        "prepare",
+        "EP_PERF_PFV2_SYSTEM850_FWT_S_FRFCFS256_V1"
+      ],
+      "exit": 2,
+      "output": "{\"status\":\"HOLD\",\"reason\":\"EXACT5_EP_PROJECT_REQUIRED\",\"scientific_starts\":0}\n",
+      "scientific_starts": 0
+    }
+  ],
+  "new_scientific_starts": 0,
+  "route_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system/control/NATIVE_ENTRY_ROUTE.json",
+    "sha256": "dfc2589abb58d0aa9a112598e128c925ed5125e3af3625b1a5ed9f0d0a592790"
+  },
+  "schema": "EP_MAIN_PFV2_INSTALLED_SCOPED_NATIVE_PREPARATION_V1",
+  "shell_syntax": "PASS",
+  "status": "INSTALLED_EXACT_FAILCLOSED_ENTRY_NO_REGISTRATION_OR_START"
+}

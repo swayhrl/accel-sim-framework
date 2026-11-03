@@ -1,0 +1,65 @@
+{
+  "schema": "EP_MAIN_V2_AUTHORIZED18_EXECUTION_MANIFEST_V1",
+  "control_root": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/activation_20261104_v1/control",
+  "max_concurrent_models": 2,
+  "new_model_start_ceiling": 18,
+  "automatic_retry": false,
+  "refund": false,
+  "groups": {
+    "system": {
+      "request_id": "EP_L2_SYSTEM_850MHZ_PARAMETER_FAMILY_V2_20261104_V1",
+      "budget": 12,
+      "data_root": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system",
+      "runtime_root": "MAIN_TO_BIND_QUALIFIED_RUNTIME_PATH",
+      "native_entry_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/bin/native",
+        "sha256": "MAIN_TO_BIND"
+      },
+      "authorization_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system/control/USER_FAMILY_AUTHORIZATION.json",
+        "sha256": "MAIN_TO_BIND"
+      }
+    },
+    "highclock": {
+      "request_id": "EP_L2_CC_CAM_REPAIRED_VECTOR4M_850_1275_1700_V1",
+      "budget": 6,
+      "data_root": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/highclock",
+      "runtime_root": "MAIN_TO_BIND_QUALIFIED_RUNTIME_PATH",
+      "native_entry_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/bin/native",
+        "sha256": "MAIN_TO_BIND"
+      },
+      "authorization_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/highclock/control/USER_FAMILY_AUTHORIZATION.json",
+        "sha256": "MAIN_TO_BIND"
+      }
+    }
+  },
+  "points": [
+    {
+      "cohort": "EXACT_OFFICIAL_COHORT_FROM_BINDER",
+      "group": "system_OR_highclock",
+      "spec_ref": {
+        "path": "DATA_ROOT/cases/COHORT/control/FROZEN_SPEC.json",
+        "sha256": "MAIN_TO_BIND"
+      },
+      "priority": "OPTIONAL_INTEGER; otherwise deterministic short-first schedule"
+    }
+  ],
+  "shared_native_ref": {
+    "path": "/root/data/ep_l2_dtc_l1_native_v2/bin/native",
+    "sha256": "MAIN_CURRENT_UNMODIFIED_GLOBAL_NATIVE_SHA"
+  },
+  "global_admission_lock": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_performance_first_20261103_v1/control/ADMISSION.lock",
+  "runtime_global_restore_lock": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_performance_first_20261103_v1/control/ARCHIVE_SHARED_WINDOW.lock",
+  "accept_serial_lock": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/activation_20261104_v1/control/MAIN_ACCEPT_SERIAL.lock",
+  "publication": {
+    "repo": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/review",
+    "branch": "hrl/ep-l2-performance-first-v2-20261103-v1",
+    "relative_directory": "docs/ep_l2/operations/ep_performance_first_v2_20261103_v1/activation_20261104_v1/execution"
+  },
+  "summary_archive_root": "/root/share/mnt164/huangrulin/host174_storage_recovery/ep_l2_performance_first_v2_20261103_v1/activation_20261104_v1/derived",
+  "cpu1700_ref": "MAIN_EXACT_B_PROTOCOL_MATRIX_REF",
+  "runtime_pin_refs": "OPTIONAL_LIST_OF_EXACT_RUNTIME_COMMON_ENGINE_FRONTEND_ARCHIVE_REFs",
+  "admission_wait_and_execution_wall_seconds": 604800
+}

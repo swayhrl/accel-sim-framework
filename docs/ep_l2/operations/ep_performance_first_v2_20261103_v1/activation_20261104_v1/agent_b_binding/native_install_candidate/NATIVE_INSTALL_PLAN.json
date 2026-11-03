@@ -1,0 +1,38 @@
+{
+  "candidate_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/activation_20261104_v1/agent_b_binding/native_install_candidate/scoped_native_candidate",
+    "sha256": "d07c834b287555401b0f9107abfa50918972c1c3738e65c15a09f4a1c2ef56af"
+  },
+  "cohorts": [
+    "EP_PERF_CC_CAM_VECTOR4M_F_1275_V1",
+    "EP_PERF_CC_CAM_VECTOR4M_F_1700_V1",
+    "EP_PERF_CC_CAM_VECTOR4M_F_850_V1",
+    "EP_PERF_CC_CAM_VECTOR4M_S_1275_V1",
+    "EP_PERF_CC_CAM_VECTOR4M_S_1700_V1",
+    "EP_PERF_CC_CAM_VECTOR4M_S_850_V1"
+  ],
+  "data_ROOT": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/highclock",
+  "entry_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/bin/native",
+    "sha256": "d07c834b287555401b0f9107abfa50918972c1c3738e65c15a09f4a1c2ef56af"
+  },
+  "entry_target": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/bin/native",
+  "frontend_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/activation_20261104_v1/agent_b_binding/qualified_runtime/ep_perf_frontend.py",
+    "sha256": "df943e4f41261bc62520666ee2d88ecbe160036e840f3a9120ce55843d56cdeb"
+  },
+  "global_native_change_permitted": false,
+  "global_native_ref": {
+    "path": "/root/data/ep_l2_dtc_l1_native_v2/bin/native",
+    "sha256": "46c69a74154e0690afd82324a348da236baf90189d9a7e474b4b14eb01ab4f0e"
+  },
+  "goal": "EP_L2_CC_CAM_REPAIRED_VECTOR4M_850_1275_1700_V1",
+  "own_prelude": "#!/bin/sh\n# Main exact-six CC-CAM route; current global native is the full suffix.\nif [ \"$#\" -ge 3 ] && [ \"$1\" = experiment ]; then\n  case \"$3\" in\n    EP_PERF_CC_CAM_VECTOR4M_F_1275_V1|EP_PERF_CC_CAM_VECTOR4M_F_1700_V1|EP_PERF_CC_CAM_VECTOR4M_F_850_V1|EP_PERF_CC_CAM_VECTOR4M_S_1275_V1|EP_PERF_CC_CAM_VECTOR4M_S_1700_V1|EP_PERF_CC_CAM_VECTOR4M_S_850_V1)\n      if [ \"$#\" -ne 5 ] || [ \"$4\" != --project ] || [ \"$5\" != EP_L2 ]; then\n        printf '%s\\n' 'CC_CAM_NATIVE_HOLD exact5/project required' >&2; exit 2\n      fi\n      case \"$2\" in prepare|inspect|run-native|accept) ;;\n        *) printf '%s\\n' 'CC_CAM_NATIVE_HOLD unsupported operation' >&2; exit 2;;\n      esac\n      export EP_FULL_PERF_NATIVE_ENTRY=1\n      exec /usr/bin/python3 -B /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/activation_20261104_v1/agent_b_binding/qualified_runtime/ep_perf_frontend.py \"$@\"\n      ;;\n  esac\nfi\nprintf '%s\\n' 'CC_CAM_NATIVE_HOLD outside exact scoped request' >&2\nexit 2\n",
+  "prior_entry_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/activation_20261104_v1/agent_b_binding/native_install_candidate/GLOBAL_NATIVE_PRIOR_46c69a74154e0690afd82324a348da236baf90189d9a7e474b4b14eb01ab4f0e.bytes",
+    "sha256": "46c69a74154e0690afd82324a348da236baf90189d9a7e474b4b14eb01ab4f0e"
+  },
+  "schema": "EP_MAIN_CC_CAM_SCOPED_NATIVE_INSTALL_CANDIDATE_V1",
+  "scientific_starts": 0,
+  "status": "CANDIDATE_EMITTED_NOT_INSTALLED"
+}
