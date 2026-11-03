@@ -1,0 +1,11 @@
+# Independent interim review and live phase observation
+
+The independent C review passes the four-result checkpoint only. It validates the exact11282ee publication, its immutable03:36CST provider, four closed results, counter/source claims, figures and the same two-program common denominator. It does not replace the final all16 review or authorize any remaining48 execution batch.
+
+For convolutionSeparable and vectorAdd only (n=2/8): F128 gives S_CH GM1.099242, S_DH GM1.100383, R=CH/DH GM1.024436 and I GM1.001038. F256 gives S_CH GM1.164831, S_DH GM1.143850, R GM1.004941 and I GM0.981988. Both R values exceed1 even though F256 reduces the relative DTC advantage versus P0. Performance regressions remain accepted data and are not archived experiment failures. No whole-suite uniform configuration is selected from these two programs.
+
+The B phase observation is explicitly separate from accepted performance. Its snapshot is2026-11-04 03:51:28CST and validates8 live PID/start/input/ROI handles and fresh retirement progress. Historical CH-P0 shows ATAX/MVT's first kernel uses approximately49% of instructions but94% of model-host time; BICG's second kernel has a similar time dominance. Live phase mapping is consistent with these slow phases and gives no stall evidence. Candidate source mappings retain their stated ELF/capture-binding limitations; static address patterns do not prove cache hits or a queue cause.
+
+Conditional remaining-host-time ranges are as-of that snapshot, exclude archive waits and depend on host/phase similarity. 2DCONV/GEMM have broad0.4–1.1hour scenarios; scan and ATAX have much wider ranges. No reliable interval is released for MVT/BICG, and four unstarted points have no start time. Therefore no reliable batch deadline is asserted. The earlier8–12hour estimate is only a coarse historical estimate, not a completion guarantee. Full active progress captures remain private on164; public observations never supply unfinished cycles or speedups.
+
+The original model owner and finite16 authorization continue unchanged. No model restart, new science grant, parameter change, next48 batch, trace capture or manuscript change occurs in this update. The small tooling README example is explicitly marked as-of; current chart coverage remains defined by its current provider and render manifest.

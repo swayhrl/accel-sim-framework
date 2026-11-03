@@ -1,0 +1,22 @@
+{
+  "schema": "DTC_STAGEIIA_PHASE_PROGRESS_HOST_TIME_SOURCE_EVIDENCE_V1",
+  "refs": [
+    {
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpusim_entrypoint.cc",
+      "sha256": "7c9a4f040a38887d45a68b3c56ce5c775daa2c251e352d64d31c90e9585965fa",
+      "start": 391,
+      "end": 423,
+      "excerpt": "391: void gpgpu_context::print_simulation_time() {\n392:   time_t current_time, difference, d, h, m, s;\n393:   current_time = time((time_t *)NULL);\n394:   difference = MAX(current_time - the_gpgpusim->g_simulation_starttime, 1);\n395: \n396:   d = difference / (3600 * 24);\n397:   h = difference / 3600 - 24 * d;\n398:   m = difference / 60 - 60 * (h + 24 * d);\n399:   s = difference - 60 * (m + 60 * (h + 24 * d));\n400: \n401:   fflush(stderr);\n402:   printf(\n403:       \"\\n\\ngpgpu_simulation_time = %u days, %u hrs, %u min, %u sec (%u sec)\\n\",\n404:       (unsigned)d, (unsigned)h, (unsigned)m, (unsigned)s, (unsigned)difference);\n405:   printf(\"gpgpu_simulation_rate = %u (inst/sec)\\n\",\n406:          (unsigned)(the_gpgpusim->g_the_gpu->gpu_tot_sim_insn / difference));\n407:   const unsigned cycles_per_sec =\n408:       (unsigned)(the_gpgpusim->g_the_gpu->gpu_tot_sim_cycle / difference);\n409:   printf(\"gpgpu_simulation_rate = %u (cycle/sec)\\n\", cycles_per_sec);\n410: \n411:   if (cycles_per_sec == 0) {\n412:     printf(\"gpgpu_silicon_slowdown = Nan\\n\");\n413:   } else {\n414:     printf(\"gpgpu_silicon_slowdown = %ux\\n\",\n415:            the_gpgpusim->g_the_gpu->shader_clock() * 1000 / cycles_per_sec);\n416:   }\n417:   fflush(stdout);\n418: }\n419: \n420: int gpgpu_context::gpgpu_opencl_ptx_sim_main_perf(kernel_info_t *grid) {\n421:   the_gpgpusim->g_the_gpu->launch(grid);\n422:   sem_post(&(the_gpgpusim->g_sim_signal_start));\n423:   sem_wait(&(the_gpgpusim->g_sim_signal_finish));"
+    },
+    {
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+      "start": 1898,
+      "end": 1911,
+      "excerpt": "1898:          ((float)((partiton_replys_in_parallel +\n1899:                    partiton_replys_in_parallel_total) *\n1900:                   32) /\n1901:           ((gpu_tot_sim_cycle + gpu_sim_cycle) * m_config.core_period)) /\n1902:              1000000000);\n1903: \n1904:   time_t curr_time;\n1905:   time(&curr_time);\n1906:   unsigned long long elapsed_time =\n1907:       MAX(curr_time - gpgpu_ctx->the_gpgpusim->g_simulation_starttime, 1);\n1908:   printf(\"gpu_total_sim_rate=%u\\n\",\n1909:          (unsigned)((gpu_tot_sim_insn + gpu_sim_insn) / elapsed_time));\n1910: \n1911:   // shader_print_l1_miss_stat( stdout );"
+    }
+  ],
+  "interpretation": "Host elapsed printed since simulation start, cumulative instruction rate is whole-run inst/elapsed; derive per-phase seconds by differencing elapsed prints, not by treating cumulative rates as perphase."
+}

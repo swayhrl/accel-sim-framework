@@ -1,0 +1,733 @@
+{
+  "schema": "DTC_STAGEIIA_LIVE_PHASE_PROGRESS_OBSERVATION_V1",
+  "sample_utc": "2026-11-03T19:51:28.054989+00:00",
+  "nonterminal_not_scientific_performance": true,
+  "registered_consumed": 12,
+  "registered_remaining": 4,
+  "rows": [
+    {
+      "program": "convolutionSeparable",
+      "profile": "F128",
+      "cohort": "E2-DTC2A16-4114a3dc0d06b55b-CH-F128-V1",
+      "classification": "TERMINAL_RESULT_EXISTS_NOT_REANALYZED_HERE",
+      "native_result_state": "PASS_STAGEII_CH_STRICT_ARCHIVE_NATIVE_RESTORE"
+    },
+    {
+      "program": "convolutionSeparable",
+      "profile": "F256",
+      "cohort": "E2-DTC2A16-4114a3dc0d06b55b-CH-F256-V1",
+      "classification": "TERMINAL_RESULT_EXISTS_NOT_REANALYZED_HERE",
+      "native_result_state": "PASS_STAGEII_CH_STRICT_ARCHIVE_NATIVE_RESTORE"
+    },
+    {
+      "program": "scan",
+      "profile": "F128",
+      "cohort": "E2-DTC2A16-6df3a84b612086e8-CH-F128-V1",
+      "input_digest": "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+      "classification": "LIVE_NONTERMINAL_OBSERVATION_ONLY",
+      "pid": 3495633,
+      "start_ticks": 1048139893,
+      "uuid": "e0f3ab35-8fa7-4cbc-9f7b-92174b5e3f1a",
+      "generation_verified": true,
+      "process_state": "R",
+      "native_process_elapsed_seconds": 6060.890000000596,
+      "process_cpu_seconds": 5985.77,
+      "cpu_time_over_elapsed": 0.9876057806690786,
+      "intent_sha256": "428b6c9ed390e5a5eeaf33b96526b5cc78cdbff1af3df102c658285d3ed3307a",
+      "native_maps_sha256": "51db039ae251d2a6b22de1dd4de1cb3d6b7b77d33551f5b838383387ce79e5d4",
+      "progress_path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/run/results/e0f3ab35-8fa7-4cbc-9f7b-92174b5e3f1a/progress.jsonl.gz",
+      "point_in_time_progress_gzip_prefix_sha256": "7120488a0d2171dd3709b2bada80d095e6a980fe29dbe26258e80f63432e4cea",
+      "progress_gzip_complete": false,
+      "progress_records_observed": 639,
+      "progress_freshness_seconds": 2.689940429,
+      "last_progress_record": {
+        "v": 1,
+        "pid": 3495633,
+        "start_ticks": 1048139893,
+        "generation": "e0f3ab35-8fa7-4cbc-9f7b-92174b5e3f1a",
+        "input": "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+        "roi": "7e7eec839b7c81d7c87b537b954a14f2eef41ba686b0d00777580a05daea1861",
+        "seq": 639,
+        "mono_ns": 10487457139543321,
+        "epoch": 0,
+        "phase_epoch": 29,
+        "phase": "SIMULATE",
+        "stream_id": 0,
+        "stream_scope": "whole_input",
+        "completed": 568317628,
+        "end": "NONE"
+      },
+      "total_expected_instructions": 1963460720,
+      "retired_whole_input_fraction": 0.28944690474887624,
+      "current_kernel_from_frozen_instruction_boundaries": {
+        "ordinal": 7,
+        "kernel": "_Z19scanExclusiveSharedP5uint4S0_j",
+        "instructions": 103620608,
+        "CTA": 6656,
+        "completed_before_kernel": 538443776,
+        "completed_at_kernel_end": 642064384,
+        "observed_completed_in_kernel": 29873852,
+        "kernel_retired_fraction": 0.28830029640436,
+        "elapsed_since_observed_boundary_seconds": 250.052829869
+      },
+      "recent_same_kernel_rates": {
+        "120": {
+          "observed_seconds": 110.026319688,
+          "retired_instructions": 12165720,
+          "inst_per_second": 110570.9982347692
+        },
+        "600": {
+          "observed_seconds": 250.052829869,
+          "retired_instructions": 29873852,
+          "inst_per_second": 119470.16162804714
+        },
+        "1800": {
+          "observed_seconds": 250.052829869,
+          "retired_instructions": 29873852,
+          "inst_per_second": 119470.16162804714
+        }
+      },
+      "conditional_ETA": {
+        "remaining_host_hours_conditional_wide_low": 2.712452887524184,
+        "remaining_host_hours_conditional_wide_high": 7.477688659200982,
+        "primary_history": "Same-input original CH-P0 ordered kernel host seconds",
+        "current_kernel_recent_rate_range": [
+          119470.16162804714,
+          119470.16162804714
+        ],
+        "current_stage_hist_seconds": 1271,
+        "future_stage_hist_seconds": 21110,
+        "method": "Local same-kernel120/600/1800s retirement pace; future stages weighted by their own historical host cost; union with historical stage-weighted elapsed calibration; widened0.65x..1.6x. Planning interval only, not guaranteed/statistical CI.",
+        "excludes": "unstarted jobs, archive queue/copy time, future CPU/IO/frequency shifts, scientific result prediction"
+      },
+      "scientific_cycles_or_speedup": null
+    },
+    {
+      "program": "scan",
+      "profile": "F256",
+      "cohort": "E2-DTC2A16-6df3a84b612086e8-CH-F256-V1",
+      "input_digest": "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+      "classification": "LIVE_NONTERMINAL_OBSERVATION_ONLY",
+      "pid": 3501039,
+      "start_ticks": 1048216855,
+      "uuid": "efb01355-ff22-4ef0-a893-2509dc30cb58",
+      "generation_verified": true,
+      "process_state": "R",
+      "native_process_elapsed_seconds": 5291.269999999553,
+      "process_cpu_seconds": 5212.49,
+      "cpu_time_over_elapsed": 0.9851113248804995,
+      "intent_sha256": "f4c08457da6fb2b16d8f7d08cc4491ea1b7aa826183501af2818cc11fb396839",
+      "native_maps_sha256": "61f66317c8be08d579ab715c5d46709eb952d1e72bf3175968890a17bbca8be7",
+      "progress_path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/run/results/efb01355-ff22-4ef0-a893-2509dc30cb58/progress.jsonl.gz",
+      "point_in_time_progress_gzip_prefix_sha256": "18542f12aad96daadb604991fa819212c02f102e6c77949d7a2f752fbbe26cd2",
+      "progress_gzip_complete": false,
+      "progress_records_observed": 566,
+      "progress_freshness_seconds": 2.323716651,
+      "last_progress_record": {
+        "v": 1,
+        "pid": 3501039,
+        "start_ticks": 1048216855,
+        "generation": "efb01355-ff22-4ef0-a893-2509dc30cb58",
+        "input": "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+        "roi": "7e7eec839b7c81d7c87b537b954a14f2eef41ba686b0d00777580a05daea1861",
+        "seq": 566,
+        "mono_ns": 10487457505767099,
+        "epoch": 0,
+        "phase_epoch": 33,
+        "phase": "SIMULATE",
+        "stream_id": 0,
+        "stream_scope": "whole_input",
+        "completed": 695914367,
+        "end": "NONE"
+      },
+      "total_expected_instructions": 1963460720,
+      "retired_whole_input_fraction": 0.3544325383804979,
+      "current_kernel_from_frozen_instruction_boundaries": {
+        "ordinal": 8,
+        "kernel": "_Z19scanExclusiveSharedP5uint4S0_j",
+        "instructions": 104099840,
+        "CTA": 6656,
+        "completed_before_kernel": 642064384,
+        "completed_at_kernel_end": 746164224,
+        "observed_completed_in_kernel": 53849983,
+        "kernel_retired_fraction": 0.5172916980467982,
+        "elapsed_since_observed_boundary_seconds": 400.08123206
+      },
+      "recent_same_kernel_rates": {
+        "120": {
+          "observed_seconds": 110.021466041,
+          "retired_instructions": 13000114,
+          "inst_per_second": 118159.79615428364
+        },
+        "600": {
+          "observed_seconds": 400.08123206,
+          "retired_instructions": 53849983,
+          "inst_per_second": 134597.62339445142
+        },
+        "1800": {
+          "observed_seconds": 400.08123206,
+          "retired_instructions": 53849983,
+          "inst_per_second": 134597.62339445142
+        }
+      },
+      "conditional_ETA": {
+        "remaining_host_hours_conditional_wide_low": 2.054994262539347,
+        "remaining_host_hours_conditional_wide_high": 5.438558202323522,
+        "primary_history": "Same-input original CH-P0 ordered kernel host seconds",
+        "current_kernel_recent_rate_range": [
+          134597.62339445142,
+          134597.62339445142
+        ],
+        "current_stage_hist_seconds": 1292,
+        "future_stage_hist_seconds": 19818,
+        "method": "Local same-kernel120/600/1800s retirement pace; future stages weighted by their own historical host cost; union with historical stage-weighted elapsed calibration; widened0.65x..1.6x. Planning interval only, not guaranteed/statistical CI.",
+        "excludes": "unstarted jobs, archive queue/copy time, future CPU/IO/frequency shifts, scientific result prediction"
+      },
+      "scientific_cycles_or_speedup": null
+    },
+    {
+      "program": "BICG",
+      "profile": "F128",
+      "cohort": "E2-DTC2A16-ae34174fbbdf83b2-CH-F128-V1",
+      "input_digest": "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+      "classification": "LIVE_NONTERMINAL_OBSERVATION_ONLY",
+      "pid": 3495651,
+      "start_ticks": 1048139907,
+      "uuid": "e6617bdb-dda5-4142-8952-37da47ec7847",
+      "generation_verified": true,
+      "process_state": "R",
+      "native_process_elapsed_seconds": 6060.75,
+      "process_cpu_seconds": 5570.19,
+      "cpu_time_over_elapsed": 0.9190595223363445,
+      "intent_sha256": "da401e5f249c89bfbf15897ba00391e33b25bc999b65695500bd36fe2de5b206",
+      "native_maps_sha256": "7392017f9888d495808b667684aafffd864d86b6f075d59249e7e78ee1229659",
+      "progress_path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/run/results/e6617bdb-dda5-4142-8952-37da47ec7847/progress.jsonl.gz",
+      "point_in_time_progress_gzip_prefix_sha256": "aaa1a3adc561616172a6d54224c81e200e35d4f4f9e625dbadbbf72dae486d35",
+      "progress_gzip_complete": false,
+      "progress_records_observed": 616,
+      "progress_freshness_seconds": 1.980616026,
+      "last_progress_record": {
+        "v": 1,
+        "pid": 3495651,
+        "start_ticks": 1048139907,
+        "generation": "e6617bdb-dda5-4142-8952-37da47ec7847",
+        "input": "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+        "roi": "d7f586cc70467a13f7c79ef2baecc97b1eb97c3166d7fed13d0ed4f1999a27f0",
+        "seq": 616,
+        "mono_ns": 10487457848867724,
+        "epoch": 0,
+        "phase_epoch": 9,
+        "phase": "SIMULATE",
+        "stream_id": 0,
+        "stream_scope": "whole_input",
+        "completed": 110506688,
+        "end": "NONE"
+      },
+      "total_expected_instructions": 145666048,
+      "retired_whole_input_fraction": 0.7586303707504991,
+      "current_kernel_from_frozen_instruction_boundaries": {
+        "ordinal": 2,
+        "kernel": "_Z12bicg_kernel2PfS_S_",
+        "instructions": 71380992,
+        "CTA": 16,
+        "completed_before_kernel": 74285056,
+        "completed_at_kernel_end": 145666048,
+        "observed_completed_in_kernel": 36221632,
+        "kernel_retired_fraction": 0.5074408604464337,
+        "elapsed_since_observed_boundary_seconds": 5550.076892955
+      },
+      "recent_same_kernel_rates": {
+        "120": {
+          "observed_seconds": 110.001352592,
+          "retired_instructions": 2924640,
+          "inst_per_second": 26587.30943834502
+        },
+        "600": {
+          "observed_seconds": 590.009651986,
+          "retired_instructions": 14508928,
+          "inst_per_second": 24591.00109830792
+        },
+        "1800": {
+          "observed_seconds": 1790.026423207,
+          "retired_instructions": 28188384,
+          "inst_per_second": 15747.468101335548
+        }
+      },
+      "conditional_ETA": {
+        "remaining_host_hours_conditional_wide_low": 0.2581520675957593,
+        "remaining_host_hours_conditional_wide_high": 2.3006265349750876,
+        "primary_history": "Same-input original CH-P0 ordered kernel host seconds",
+        "current_kernel_recent_rate_range": [
+          15747.468101335548,
+          24591.00109830792
+        ],
+        "current_stage_hist_seconds": 7998,
+        "future_stage_hist_seconds": 0,
+        "method": "Local same-kernel120/600/1800s retirement pace; future stages weighted by their own historical host cost; union with historical stage-weighted elapsed calibration; widened0.65x..1.6x. Planning interval only, not guaranteed/statistical CI.",
+        "excludes": "unstarted jobs, archive queue/copy time, future CPU/IO/frequency shifts, scientific result prediction"
+      },
+      "scientific_cycles_or_speedup": null
+    },
+    {
+      "program": "BICG",
+      "profile": "F256",
+      "cohort": "E2-DTC2A16-ae34174fbbdf83b2-CH-F256-V1",
+      "input_digest": "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+      "classification": "LIVE_NONTERMINAL_OBSERVATION_ONLY",
+      "pid": 3513117,
+      "start_ticks": 1048651624,
+      "uuid": "a68e72e0-dc7b-47be-90b4-1689271c3dcf",
+      "generation_verified": true,
+      "process_state": "R",
+      "native_process_elapsed_seconds": 943.5800000000745,
+      "process_cpu_seconds": 860.59,
+      "cpu_time_over_elapsed": 0.9120477331015199,
+      "intent_sha256": "47795d8a3e248c1134723a1dd6727d68eb1df5a39d8340fa05a53de01ddd678d",
+      "native_maps_sha256": "44851659b380c2dadc1d43bca53f371143addf77c799ffd76fac2338ebdcda8d",
+      "progress_path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/run/results/a68e72e0-dc7b-47be-90b4-1689271c3dcf/progress.jsonl.gz",
+      "point_in_time_progress_gzip_prefix_sha256": "1be6f23c4f26cd36df7bca20f04c4be661642a54d95934ed52a8a393a5a8b426",
+      "progress_gzip_complete": false,
+      "progress_records_observed": 104,
+      "progress_freshness_seconds": 3.004521489,
+      "last_progress_record": {
+        "v": 1,
+        "pid": 3513117,
+        "start_ticks": 1048651624,
+        "generation": "a68e72e0-dc7b-47be-90b4-1689271c3dcf",
+        "input": "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+        "roi": "d7f586cc70467a13f7c79ef2baecc97b1eb97c3166d7fed13d0ed4f1999a27f0",
+        "seq": 104,
+        "mono_ns": 10487456824962261,
+        "epoch": 0,
+        "phase_epoch": 9,
+        "phase": "SIMULATE",
+        "stream_id": 0,
+        "stream_scope": "whole_input",
+        "completed": 75224672,
+        "end": "NONE"
+      },
+      "total_expected_instructions": 145666048,
+      "retired_whole_input_fraction": 0.5164187058881422,
+      "current_kernel_from_frozen_instruction_boundaries": {
+        "ordinal": 2,
+        "kernel": "_Z12bicg_kernel2PfS_S_",
+        "instructions": 71380992,
+        "CTA": 16,
+        "completed_before_kernel": 74285056,
+        "completed_at_kernel_end": 145666048,
+        "observed_completed_in_kernel": 939616,
+        "kernel_retired_fraction": 0.013163392293567453,
+        "elapsed_since_observed_boundary_seconds": 430.005826398
+      },
+      "recent_same_kernel_rates": {
+        "120": {
+          "observed_seconds": 110.001625228,
+          "retired_instructions": 215808,
+          "inst_per_second": 1961.8619229733697
+        },
+        "600": {
+          "observed_seconds": 430.005826398,
+          "retired_instructions": 939616,
+          "inst_per_second": 2185.1238804618442
+        },
+        "1800": {
+          "observed_seconds": 430.005826398,
+          "retired_instructions": 939616,
+          "inst_per_second": 2185.1238804618442
+        }
+      },
+      "conditional_ETA": {
+        "remaining_host_hours_conditional_wide_low": 2.03960373552224,
+        "remaining_host_hours_conditional_wide_high": 14.327461478113163,
+        "primary_history": "Same-input original CH-P0 ordered kernel host seconds",
+        "current_kernel_recent_rate_range": [
+          2185.1238804618442,
+          2185.1238804618442
+        ],
+        "current_stage_hist_seconds": 7998,
+        "future_stage_hist_seconds": 0,
+        "method": "Local same-kernel120/600/1800s retirement pace; future stages weighted by their own historical host cost; union with historical stage-weighted elapsed calibration; widened0.65x..1.6x. Planning interval only, not guaranteed/statistical CI.",
+        "excludes": "unstarted jobs, archive queue/copy time, future CPU/IO/frequency shifts, scientific result prediction"
+      },
+      "scientific_cycles_or_speedup": null
+    },
+    {
+      "program": "2DCONV",
+      "profile": "F128",
+      "cohort": "E2-DTC2A16-d984ea5475a581ad-CH-F128-V1",
+      "input_digest": "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+      "classification": "LIVE_NONTERMINAL_OBSERVATION_ONLY",
+      "pid": 3499896,
+      "start_ticks": 1048194105,
+      "uuid": "68f571a2-9672-42ea-9c91-9d301dd54924",
+      "generation_verified": true,
+      "process_state": "R",
+      "native_process_elapsed_seconds": 5518.769999999553,
+      "process_cpu_seconds": 5459.03,
+      "cpu_time_over_elapsed": 0.9891751241672405,
+      "intent_sha256": "17fbe9da6983e653d28a686eb3dfc68c885ea0c7198d36da80d2900f664d5c2b",
+      "native_maps_sha256": "c17dbdea7501abff8f1b16c218b306383b01ba8a3fa7f92ac54d7d6bde624699",
+      "progress_path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/run/results/68f571a2-9672-42ea-9c91-9d301dd54924/progress.jsonl.gz",
+      "point_in_time_progress_gzip_prefix_sha256": "7863b511a4176ce949075ad9c4a27b2d0e33c4fe5152dc1d27a3f76fde11067f",
+      "progress_gzip_complete": false,
+      "progress_records_observed": 557,
+      "progress_freshness_seconds": 6.587208869,
+      "last_progress_record": {
+        "v": 1,
+        "pid": 3499896,
+        "start_ticks": 1048194105,
+        "generation": "68f571a2-9672-42ea-9c91-9d301dd54924",
+        "input": "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+        "roi": "571625aaa49dadd02ce5871df2d2fcfa0db145c6299c4cfead177b86855e30f4",
+        "seq": 557,
+        "mono_ns": 10487453242274881,
+        "epoch": 0,
+        "phase_epoch": 5,
+        "phase": "SIMULATE",
+        "stream_id": 0,
+        "stream_scope": "whole_input",
+        "completed": 439081738,
+        "end": "NONE"
+      },
+      "total_expected_instructions": 620347492,
+      "retired_whole_input_fraction": 0.7077996504578438,
+      "current_kernel_from_frozen_instruction_boundaries": {
+        "ordinal": 1,
+        "kernel": "_Z20Convolution2D_kernelPfS_",
+        "instructions": 620347492,
+        "CTA": 65536,
+        "completed_before_kernel": 0,
+        "completed_at_kernel_end": 620347492,
+        "observed_completed_in_kernel": 439081738,
+        "kernel_retired_fraction": 0.7077996504578438,
+        "elapsed_since_observed_boundary_seconds": 5511.352985323
+      },
+      "recent_same_kernel_rates": {
+        "120": {
+          "observed_seconds": 110.03412741,
+          "retired_instructions": 9358941,
+          "inst_per_second": 85054.89360703061
+        },
+        "600": {
+          "observed_seconds": 590.14208508,
+          "retired_instructions": 50250452,
+          "inst_per_second": 85149.7516791876
+        },
+        "1800": {
+          "observed_seconds": 1790.441291948,
+          "retired_instructions": 150021719,
+          "inst_per_second": 83790.35921182111
+        }
+      },
+      "conditional_ETA": {
+        "remaining_host_hours_conditional_wide_low": 0.38436446696844817,
+        "remaining_host_hours_conditional_wide_high": 1.012581909144315,
+        "primary_history": "Same-input original CH-P0 ordered kernel host seconds",
+        "current_kernel_recent_rate_range": [
+          83790.35921182111,
+          85149.7516791876
+        ],
+        "current_stage_hist_seconds": 8142,
+        "future_stage_hist_seconds": 0,
+        "method": "Local same-kernel120/600/1800s retirement pace; future stages weighted by their own historical host cost; union with historical stage-weighted elapsed calibration; widened0.65x..1.6x. Planning interval only, not guaranteed/statistical CI.",
+        "excludes": "unstarted jobs, archive queue/copy time, future CPU/IO/frequency shifts, scientific result prediction"
+      },
+      "scientific_cycles_or_speedup": null
+    },
+    {
+      "program": "2DCONV",
+      "profile": "F256",
+      "cohort": "E2-DTC2A16-d984ea5475a581ad-CH-F256-V1",
+      "classification": "NOT_CONSUMED_NO_START_TIME_NO_ETA"
+    },
+    {
+      "program": "vectorAdd",
+      "profile": "F128",
+      "cohort": "E2-DTC2A16-e7bb67e63e3c3847-CH-F128-V1",
+      "classification": "TERMINAL_RESULT_EXISTS_NOT_REANALYZED_HERE",
+      "native_result_state": "PASS_STAGEII_CH_STRICT_ARCHIVE_NATIVE_RESTORE"
+    },
+    {
+      "program": "vectorAdd",
+      "profile": "F256",
+      "cohort": "E2-DTC2A16-e7bb67e63e3c3847-CH-F256-V1",
+      "classification": "TERMINAL_RESULT_EXISTS_NOT_REANALYZED_HERE",
+      "native_result_state": "PASS_STAGEII_CH_STRICT_ARCHIVE_NATIVE_RESTORE"
+    },
+    {
+      "program": "ATAX",
+      "profile": "F128",
+      "cohort": "E2-DTC2A16-eededb785179fc04-CH-F128-V1",
+      "input_digest": "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+      "classification": "LIVE_NONTERMINAL_OBSERVATION_ONLY",
+      "pid": 3500737,
+      "start_ticks": 1048201277,
+      "uuid": "33aad24a-ce6f-43ec-9e1a-50fdaa9e435f",
+      "generation_verified": true,
+      "process_state": "t",
+      "native_process_elapsed_seconds": 5447.050000000745,
+      "process_cpu_seconds": 4985.47,
+      "cpu_time_over_elapsed": 0.9152605538776619,
+      "intent_sha256": "9f5939d17299181d8eb38aa225d2ce867988d45669aade1183e096958ce5c6d1",
+      "native_maps_sha256": "25a0d87d2b7779e8c16f7f06ef0ad3fdfc84a7331a5856f01c05eef631b2c3b6",
+      "progress_path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/run/results/33aad24a-ce6f-43ec-9e1a-50fdaa9e435f/progress.jsonl.gz",
+      "point_in_time_progress_gzip_prefix_sha256": "0fa83056850d81ccca4810b5779d4de4718562ff11c3b82891bef7fb022659bc",
+      "progress_gzip_complete": false,
+      "progress_records_observed": 550,
+      "progress_freshness_seconds": 6.147475725,
+      "last_progress_record": {
+        "v": 1,
+        "pid": 3500737,
+        "start_ticks": 1048201277,
+        "generation": "33aad24a-ce6f-43ec-9e1a-50fdaa9e435f",
+        "input": "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+        "roi": "5ba85e56ae33e604c38407d5d8641078cb0a1b06aaaa9928cc0de4c61d94f442",
+        "seq": 550,
+        "mono_ns": 10487453682008025,
+        "epoch": 0,
+        "phase_epoch": 5,
+        "phase": "SIMULATE",
+        "stream_id": 0,
+        "stream_scope": "whole_input",
+        "completed": 20958848,
+        "end": "NONE"
+      },
+      "total_expected_instructions": 145666048,
+      "retired_whole_input_fraction": 0.1438828628068498,
+      "current_kernel_from_frozen_instruction_boundaries": {
+        "ordinal": 1,
+        "kernel": "_Z12atax_kernel1PfS_S_",
+        "instructions": 71380992,
+        "CTA": 16,
+        "completed_before_kernel": 0,
+        "completed_at_kernel_end": 71380992,
+        "observed_completed_in_kernel": 20958848,
+        "kernel_retired_fraction": 0.29361945544270385,
+        "elapsed_since_observed_boundary_seconds": 5440.069363505
+      },
+      "recent_same_kernel_rates": {
+        "120": {
+          "observed_seconds": 110.001482013,
+          "retired_instructions": 992224,
+          "inst_per_second": 9020.096655449957
+        },
+        "600": {
+          "observed_seconds": 590.007226125,
+          "retired_instructions": 4699104,
+          "inst_per_second": 7964.485504461329
+        },
+        "1800": {
+          "observed_seconds": 1790.02187507,
+          "retired_instructions": 13005600,
+          "inst_per_second": 7265.609533118922
+        }
+      },
+      "conditional_ETA": {
+        "remaining_host_hours_conditional_wide_low": 1.2476378431742063,
+        "remaining_host_hours_conditional_wide_high": 6.3569214521215,
+        "primary_history": "Same-input original CH-P0 ordered kernel host seconds",
+        "current_kernel_recent_rate_range": [
+          7265.609533118922,
+          7964.485504461329
+        ],
+        "current_stage_hist_seconds": 9301,
+        "future_stage_hist_seconds": 601,
+        "method": "Local same-kernel120/600/1800s retirement pace; future stages weighted by their own historical host cost; union with historical stage-weighted elapsed calibration; widened0.65x..1.6x. Planning interval only, not guaranteed/statistical CI.",
+        "excludes": "unstarted jobs, archive queue/copy time, future CPU/IO/frequency shifts, scientific result prediction"
+      },
+      "scientific_cycles_or_speedup": null
+    },
+    {
+      "program": "ATAX",
+      "profile": "F256",
+      "cohort": "E2-DTC2A16-eededb785179fc04-CH-F256-V1",
+      "classification": "NOT_CONSUMED_NO_START_TIME_NO_ETA"
+    },
+    {
+      "program": "MVT",
+      "profile": "F128",
+      "cohort": "E2-DTC2A16-f437190767aaed49-CH-F128-V1",
+      "input_digest": "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+      "classification": "LIVE_NONTERMINAL_OBSERVATION_ONLY",
+      "pid": 3500756,
+      "start_ticks": 1048201314,
+      "uuid": "ce67bc90-9dd4-4c70-a1a8-135d22dd136a",
+      "generation_verified": true,
+      "process_state": "R",
+      "native_process_elapsed_seconds": 5446.679999999702,
+      "process_cpu_seconds": 5000.06,
+      "cpu_time_over_elapsed": 0.9180014247211649,
+      "intent_sha256": "793c359fc8ee9f29fdfb9988afe4db3e6a855501b2706ce40bb2b9164ab03ae1",
+      "native_maps_sha256": "3289f6f18f26afa91677646c39ccaa40abb793b58a6c707d71d1efcd29a4b4e3",
+      "progress_path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/run/results/ce67bc90-9dd4-4c70-a1a8-135d22dd136a/progress.jsonl.gz",
+      "point_in_time_progress_gzip_prefix_sha256": "4747b80b0da0c012699934f392ac3df9e9499b1ef95112085041123d8df5caa4",
+      "progress_gzip_complete": false,
+      "progress_records_observed": 550,
+      "progress_freshness_seconds": 5.761546911,
+      "last_progress_record": {
+        "v": 1,
+        "pid": 3500756,
+        "start_ticks": 1048201314,
+        "generation": "ce67bc90-9dd4-4c70-a1a8-135d22dd136a",
+        "input": "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+        "roi": "25f8a5c087427ffa565bbcf171e72bbc76cb8c5dc7a884a34ac2691deeb0f9f5",
+        "seq": 550,
+        "mono_ns": 10487454067936839,
+        "epoch": 0,
+        "phase_epoch": 5,
+        "phase": "SIMULATE",
+        "stream_id": 0,
+        "stream_scope": "whole_input",
+        "completed": 26926272,
+        "end": "NONE"
+      },
+      "total_expected_instructions": 145666048,
+      "retired_whole_input_fraction": 0.18484933428001013,
+      "current_kernel_from_frozen_instruction_boundaries": {
+        "ordinal": 1,
+        "kernel": "_Z11mvt_kernel1PfS_S_",
+        "instructions": 71380992,
+        "CTA": 16,
+        "completed_before_kernel": 0,
+        "completed_at_kernel_end": 71380992,
+        "observed_completed_in_kernel": 26926272,
+        "kernel_retired_fraction": 0.3772190781545877,
+        "elapsed_since_observed_boundary_seconds": 5440.076104692
+      },
+      "recent_same_kernel_rates": {
+        "120": {
+          "observed_seconds": 110.00177922,
+          "retired_instructions": 2218752,
+          "inst_per_second": 20170.14648065435
+        },
+        "600": {
+          "observed_seconds": 590.008899901,
+          "retired_instructions": 8244960,
+          "inst_per_second": 13974.297678193425
+        },
+        "1800": {
+          "observed_seconds": 1790.024605181,
+          "retired_instructions": 18617440,
+          "inst_per_second": 10400.661502704585
+        }
+      },
+      "conditional_ETA": {
+        "remaining_host_hours_conditional_wide_low": 0.6341361190823968,
+        "remaining_host_hours_conditional_wide_high": 4.412398606438085,
+        "primary_history": "Same-input original CH-P0 ordered kernel host seconds",
+        "current_kernel_recent_rate_range": [
+          10400.661502704585,
+          13974.297678193425
+        ],
+        "current_stage_hist_seconds": 9106,
+        "future_stage_hist_seconds": 590,
+        "method": "Local same-kernel120/600/1800s retirement pace; future stages weighted by their own historical host cost; union with historical stage-weighted elapsed calibration; widened0.65x..1.6x. Planning interval only, not guaranteed/statistical CI.",
+        "excludes": "unstarted jobs, archive queue/copy time, future CPU/IO/frequency shifts, scientific result prediction"
+      },
+      "scientific_cycles_or_speedup": null
+    },
+    {
+      "program": "MVT",
+      "profile": "F256",
+      "cohort": "E2-DTC2A16-f437190767aaed49-CH-F256-V1",
+      "classification": "NOT_CONSUMED_NO_START_TIME_NO_ETA"
+    },
+    {
+      "program": "GEMM",
+      "profile": "F128",
+      "cohort": "E2-DTC2A16-fc0705ae3721e999-CH-F128-V1",
+      "input_digest": "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318",
+      "classification": "LIVE_NONTERMINAL_OBSERVATION_ONLY",
+      "pid": 3500763,
+      "start_ticks": 1048201344,
+      "uuid": "6dcd9d5d-b873-4f16-8246-36d59f8d3c77",
+      "generation_verified": true,
+      "process_state": "R",
+      "native_process_elapsed_seconds": 5446.38000000082,
+      "process_cpu_seconds": 5396.83,
+      "cpu_time_over_elapsed": 0.9909022139474638,
+      "intent_sha256": "96e7908fa5af47e9aa5b576b657989b2ec0ee5ec95147ff33b4395f0d24d400b",
+      "native_maps_sha256": "eafc1cf51417ae5e7b830c25d205615a15ec9546aaa355ffbe89d8dc0b7d1e77",
+      "progress_path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/run/results/6dcd9d5d-b873-4f16-8246-36d59f8d3c77/progress.jsonl.gz",
+      "point_in_time_progress_gzip_prefix_sha256": "091cff94b8cf6728b0056b57e2a925996f2acdf8ee4f7be57293ebd5aa9d9a2f",
+      "progress_gzip_complete": false,
+      "progress_records_observed": 550,
+      "progress_freshness_seconds": 4.296806172,
+      "last_progress_record": {
+        "v": 1,
+        "pid": 3500763,
+        "start_ticks": 1048201344,
+        "generation": "6dcd9d5d-b873-4f16-8246-36d59f8d3c77",
+        "input": "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318",
+        "roi": "f534a60406ebdb22c44784028164842668b72cf730cebb42bdc9933b88cb0384",
+        "seq": 550,
+        "mono_ns": 10487455532677578,
+        "epoch": 0,
+        "phase_epoch": 5,
+        "phase": "SIMULATE",
+        "stream_id": 0,
+        "stream_scope": "whole_input",
+        "completed": 513799296,
+        "end": "NONE"
+      },
+      "total_expected_instructions": 739246080,
+      "retired_whole_input_fraction": 0.6950314785571808,
+      "current_kernel_from_frozen_instruction_boundaries": {
+        "ordinal": 1,
+        "kernel": "_Z11gemm_kernelPfS_S_",
+        "instructions": 739246080,
+        "CTA": 1024,
+        "completed_before_kernel": 0,
+        "completed_at_kernel_end": 739246080,
+        "observed_completed_in_kernel": 513799296,
+        "kernel_retired_fraction": 0.6950314785571808,
+        "elapsed_since_observed_boundary_seconds": 5421.730486884
+      },
+      "recent_same_kernel_rates": {
+        "120": {
+          "observed_seconds": 110.042096576,
+          "retired_instructions": 10776096,
+          "inst_per_second": 97927.03279292343
+        },
+        "600": {
+          "observed_seconds": 590.203104192,
+          "retired_instructions": 57479616,
+          "inst_per_second": 97389.55215881279
+        },
+        "1800": {
+          "observed_seconds": 1790.561497834,
+          "retired_instructions": 168736320,
+          "inst_per_second": 94236.5398809906
+        }
+      },
+      "conditional_ETA": {
+        "remaining_host_hours_conditional_wide_low": 0.4179675173673121,
+        "remaining_host_hours_conditional_wide_high": 1.0632666563649875,
+        "primary_history": "Same-input original CH-P0 ordered kernel host seconds",
+        "current_kernel_recent_rate_range": [
+          94236.5398809906,
+          97389.55215881279
+        ],
+        "current_stage_hist_seconds": 7448,
+        "future_stage_hist_seconds": 0,
+        "method": "Local same-kernel120/600/1800s retirement pace; future stages weighted by their own historical host cost; union with historical stage-weighted elapsed calibration; widened0.65x..1.6x. Planning interval only, not guaranteed/statistical CI.",
+        "excludes": "unstarted jobs, archive queue/copy time, future CPU/IO/frequency shifts, scientific result prediction"
+      },
+      "scientific_cycles_or_speedup": null
+    },
+    {
+      "program": "GEMM",
+      "profile": "F256",
+      "cohort": "E2-DTC2A16-fc0705ae3721e999-CH-F256-V1",
+      "classification": "NOT_CONSUMED_NO_START_TIME_NO_ETA"
+    }
+  ],
+  "no_model_or_owner_actions": true,
+  "no_running_raw_log_read": true,
+  "internal_capture_receipt": {
+    "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/agents/B_phase_progress_v1/private/INTERNAL_CAPTURE_WITH_PROGRESS_RECORDS.json",
+    "sha256": "9360325701069b599c1d668e307e13131cf6a96d363db04a092090a596465dc3",
+    "not_for_Git": "Contains all observed live progress records; public snapshot retains generation/freshness/latest record and derived rates only"
+  },
+  "conditional_ETA_is_exploratory_unreleased_until_assessment": true
+}
