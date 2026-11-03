@@ -1,0 +1,9 @@
+独立增量结果 V2（只读，旧V1不变）
+
+截至2026-10-28T16:12:28Z，新增且仅新增hybridsort DH-F256自然验收：UUID a09f56bb-8bb2-41ed-aab3-75d1ca3239c1，16,370,955cycles，对应同输入DH P0为18,563,916cycles，自对照1.133954x（周期减少11.813%）。primary由322增至323/350；11同代live、15pending、原scan/M16负例1保留。R2和工程canary均未并入。
+
+F256可用人口32→33/35，GM由1.019138变为1.022440，符号数为8正/19平/6负，中位数仍1。Rodinia可用人口8→9/10，GM 1.014066。这加入了一个新测量输入，不能说旧32输入本身变快。
+
+八配置共同人口仍31（hybridsort其余7组变体尚缺，另外SYRK/lavamd及scan原M16也未齐）。因此F256共同31 GM仍1.011581，F128仍1.008259，所有共同人口结果不变。非P0 CH accepted仍0，不能据本DH自对照推断相对传统CH的DTC优势。
+
+本次仅检查新结果：严格RESULT与UUID/输入/270有效选项/4配置SHA，CPU2+IO三receipt绑定，DONE=NATIVE_EXIT=q执行回执，新增raw压缩/解压SHA及最终周期/指令/自然终结；164新archive的25,026,560bytes分块SHA、26项清单/恢复身份及21个regular source/native_restore字节SHA闭合（native dev2128）。FW02775/Core9eed/binary02a与旧P0相同。模拟应用数值正确性仍UNPROVEN；没有重跑QA/模拟或重新扫描旧322raw。
