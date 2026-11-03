@@ -1,0 +1,9 @@
+# User-authorized Stage II-A exact first16 only. Every previous route byte follows unchanged.
+if [ "$#" -ge 3 ]; then
+ case "$1:$3" in
+  experiment:E2-DTC2A16-4114a3dc0d06b55b-CH-F128-V1|result:E2-DTC2A16-4114a3dc0d06b55b-CH-F128-V1|experiment:E2-DTC2A16-4114a3dc0d06b55b-CH-F256-V1|result:E2-DTC2A16-4114a3dc0d06b55b-CH-F256-V1|experiment:E2-DTC2A16-6df3a84b612086e8-CH-F128-V1|result:E2-DTC2A16-6df3a84b612086e8-CH-F128-V1|experiment:E2-DTC2A16-6df3a84b612086e8-CH-F256-V1|result:E2-DTC2A16-6df3a84b612086e8-CH-F256-V1|experiment:E2-DTC2A16-d984ea5475a581ad-CH-F128-V1|result:E2-DTC2A16-d984ea5475a581ad-CH-F128-V1|experiment:E2-DTC2A16-d984ea5475a581ad-CH-F256-V1|result:E2-DTC2A16-d984ea5475a581ad-CH-F256-V1|experiment:E2-DTC2A16-eededb785179fc04-CH-F128-V1|result:E2-DTC2A16-eededb785179fc04-CH-F128-V1|experiment:E2-DTC2A16-eededb785179fc04-CH-F256-V1|result:E2-DTC2A16-eededb785179fc04-CH-F256-V1|experiment:E2-DTC2A16-f437190767aaed49-CH-F128-V1|result:E2-DTC2A16-f437190767aaed49-CH-F128-V1|experiment:E2-DTC2A16-f437190767aaed49-CH-F256-V1|result:E2-DTC2A16-f437190767aaed49-CH-F256-V1|experiment:E2-DTC2A16-ae34174fbbdf83b2-CH-F128-V1|result:E2-DTC2A16-ae34174fbbdf83b2-CH-F128-V1|experiment:E2-DTC2A16-ae34174fbbdf83b2-CH-F256-V1|result:E2-DTC2A16-ae34174fbbdf83b2-CH-F256-V1|experiment:E2-DTC2A16-e7bb67e63e3c3847-CH-F128-V1|result:E2-DTC2A16-e7bb67e63e3c3847-CH-F128-V1|experiment:E2-DTC2A16-e7bb67e63e3c3847-CH-F256-V1|result:E2-DTC2A16-e7bb67e63e3c3847-CH-F256-V1|experiment:E2-DTC2A16-fc0705ae3721e999-CH-F128-V1|result:E2-DTC2A16-fc0705ae3721e999-CH-F128-V1|experiment:E2-DTC2A16-fc0705ae3721e999-CH-F256-V1|result:E2-DTC2A16-fc0705ae3721e999-CH-F256-V1)
+   export DTC_STAGEII_FIRST16_NATIVE_ENTRY=1
+   exec /usr/bin/python3 -B /root/data/dtc_stage_iia_first16_20261104_v1/tools/stage2_frontend.py "$@"
+   ;;
+ esac
+fi

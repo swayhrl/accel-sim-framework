@@ -1,0 +1,31 @@
+﻿from pathlib import Path
+import json,hashlib,subprocess,os,datetime
+B=Path('/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_preparation_20261103_v1');O=Path('/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/agents/A');O.mkdir(parents=True,exist_ok=True);G=B/'planning-isolated.git';C='5001c3f35052f7f91f1ad41eeff83f2947a0878d';D='docs/dtc_l1/plans/DTC_STAGE_II_A_CH_FAIR_MATCH_PREPARATION_20261103_V1/agents/A/';H=lambda b:hashlib.sha256(b).hexdigest();pin=lambda p:{'path':str(p),'sha256':H(Path(p).read_bytes())}
+def obj(n):return subprocess.check_output(['git','--git-dir='+str(G),'show',C+':'+D+n])
+fb=json.loads(obj('FIRST_BATCH.json'));mat=json.loads(obj('CH_CANDIDATE_MATRIX.json'));inputs=json.loads(obj('INPUT_SHA_AND_COVERAGE.json'));res=json.loads(obj('RESOURCE_AND_ARCHIVE_QUALIFICATION.json'));lookup={r['candidate_id']:r for r in mat['candidates']};chosen=[lookup[c]for c in fb['candidate_ids']];ck=[]
+def check(n,v):assert v,n;ck.append(n)
+check('exact16',len(chosen)==16);check('exact8',len(set(x['input_digest']for x in chosen))==8);configpins={};inputpins=[]
+for r in chosen:
+ for cfg in r['configs']:
+  raw=obj(cfg['path']);check(r['candidate_id']+'_'+cfg['path']+'_fixedGitSHA',H(raw)==cfg['sha256']);p=B/'agents/A'/cfg['path'];check(r['candidate_id']+'_'+cfg['path']+'_currentBytesEqual',p.read_bytes()==raw);configpins[cfg['path']]={'fixed_sha256':H(raw),'current_path':str(p)}
+ bp=Path(r['input_binding']['path']);check(r['candidate_id']+'_bindingSHA',H(bp.read_bytes())==r['input_binding']['sha256']);binding=json.loads(bp.read_text());trace=Path(r['trace_entry']);check(r['candidate_id']+'_commandlistSHA',H(trace.read_bytes())==binding['asset']['commandlist_sha256']);q=binding['qualification'];check(r['candidate_id']+'_qualificationPass',q['status']=='BODY_COMPLETE_SHA_AND_BASIC_FORMAT_PASS'and not q['issues'])
+ for row in q['rows']:
+  p=Path(row['path']);t=p.stat();check(r['candidate_id']+'_'+p.name+'_statSinceFullSHA',[t.st_size,t.st_mtime_ns]==row['full_SHA_current_size_mtime'])
+ for key in ['parent_CH_P0','matched_DH_P0','matched_DH_variant']:
+  rp=Path(r[key]['result_evidence']['path']);check(r['candidate_id']+'_'+key+'_sourceRESULTSHA',H(rp.read_bytes())==r[key]['result_evidence']['sha256']);check(r['candidate_id']+'_'+key+'_acceptedOriginal',r[key]['accepted'])
+ if not any(x['input_digest']==r['input_digest']for x in inputpins):inputpins.append({'program':r['program'],'input_digest':r['input_digest'],'binding':pin(bp),'trace_entry':str(trace),'commandlist_sha256':binding['asset']['commandlist_sha256'],'kernel_count':len(q['rows']),'trace_member_body_rehash':False,'current_size_mtime_since_qualified_body':True})
+build=[]
+for p,sha in [('/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out','02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d'),('/root/data/dtc_failure_repair_20261025_v1/core-build/libcudart.so','694f05ce97fe3e1552d94803c2202d8d037769c61624cde5f6a832622ed60c56')]:
+ check('buildSHA_'+p,H(Path(p).read_bytes())==sha);build.append(pin(p))
+mem={}
+for l in Path('/proc/meminfo').read_text().splitlines():
+ k,v=l.split(':',1)
+ if k in ['MemTotal','MemAvailable','SwapTotal','SwapFree']:mem[k]=int(v.strip().split()[0])*1024
+cg={p:Path('/sys/fs/cgroup',p).read_text().strip()for p in ['memory.current','memory.max','memory.events','memory.swap.current','memory.swap.max','cpuset.cpus.effective','cpu.max']if Path('/sys/fs/cgroup',p).is_file()}
+owner=Path('/proc/1498278');lease=json.loads(Path('/root/data/dtc_main_v100_sweep_20261025_v1/control/BATCH_LEASE.json').read_text());ticks=int((owner/'stat').read_text().rsplit(')',1)[1].split()[19]);check('ownerGeneration',ticks==977758783==lease['start_ticks']);check('leaseFD',os.readlink(owner/'fd'/str(lease['fd']))=='/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/NATIVE_QUALIFICATION.lock');check('leaseFLOCK','FLOCK'in(owner/'fdinfo'/str(lease['fd'])).read_text())
+rs=[r for r in res['per_input_history']if r['program']in fb['programs']];histnew=[]
+for r in rs:
+ row={'program':r['program'],'input_digest':r['input_digest'],'proposed_reservation_bytes':r['proposed_reservation_bytes'],'max_observed_rss_bytes':r['max_observed_rss_bytes'],'CH_P0_history':r['CH_P0_history'],'min_completed_elapsed_seconds':r['min_completed_elapsed_seconds'],'max_completed_elapsed_seconds':r['max_completed_elapsed_seconds']}
+ histnew.append(row)
+st=Path('/root/data/dtc_l2_mlp_exploration_20261027_v1');sv=os.statvfs(st);sa=os.statvfs(O)
+x={'schema':'DTC_STAGE_IIA_FIRST16_READONLY_REVIEW_V1','UTC':datetime.datetime.now(datetime.timezone.utc).isoformat(),'authority_commit':C,'FIRST_BATCH_sha256':H(obj('FIRST_BATCH.json')),'status':'PASS_CONFIG_INPUT_BUILD_LEASE_READONLY','candidate_ids':fb['candidate_ids'],'checks':ck,'loop_assertion_count':len(ck),'models_started':0,'registrations':0,'owner_mutations':0,'config_pins':configpins,'inputs':inputpins,'binary_and_library_rehash':build,'resource_snapshot':{'host':mem,'root_cgroup_owner_and_inspector_both0':cg,'inspector_affinity':sorted(os.sched_getaffinity(0)),'owner_main_thread_affinity':sorted(os.sched_getaffinity(1498278)),'owner_cgroup':(owner/'cgroup').read_text(),'owner_lease':lease,'native_free_bytes':sv.f_frsize*sv.f_bavail,'archive_free_bytes':sa.f_frsize*sa.f_bavail},'resource_history':histnew,'historical_16_reservation_sum_bytes':sum(r['proposed_reservation_bytes']*2 for r in rs),'note':'Snapshot is evidence only, not an admission grant. Actual nativeRoot resource policy, foreign reservations, CPU assignments, RSS/AS and sole owner new request binding must be registered by coordinator. No prepare/run/native CLI called.'};(O/'CONFIG_INPUT_RESOURCE_READONLY_REVIEW.json').write_text(json.dumps(x,indent=2)+'\n');print(json.dumps({'checks':len(ck),'memory_available_GiB':mem['MemAvailable']/1024**3,'cg_headroom_GiB':(int(cg['memory.max'])-int(cg['memory.current']))/1024**3,'nativeFreeGiB':sv.f_frsize*sv.f_bavail/1024**3,'archiveFreeGiB':sa.f_frsize*sa.f_bavail/1024**3,'16reservationsGiB':x['historical_16_reservation_sum_bytes']/1024**3,'owner_affinity':sorted(os.sched_getaffinity(1498278)),'perinput':[(r['program'],round(r['max_observed_rss_bytes']/1024**3,3),round(r['proposed_reservation_bytes']/1024**3,3))for r in rs]}))

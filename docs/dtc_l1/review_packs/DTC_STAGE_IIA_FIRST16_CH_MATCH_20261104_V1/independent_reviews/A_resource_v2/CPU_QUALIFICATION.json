@@ -1,0 +1,145 @@
+{
+  "schema": "DTC_STAGE_IIA_RESOURCE_CPU_QUALIFICATION_V1",
+  "status": "PASS",
+  "source_path": "/root/data/dtc_stage_iia_first16_20261104_v1/tools/stage2_resources.py",
+  "source_sha256": "f14a39a4298e5b530c0acd8ac68c5f114849041d58e5fc6747c697e7e5ecad9c",
+  "model_starts": 0,
+  "new_request_registrations": 0,
+  "CPU_assertions": 45,
+  "checks": [
+    "replace_only_named_static_peers",
+    "unknown_peer_retained",
+    "predicted_disk_hold_runtime_safe",
+    "fresh_requires_full_disk_budget",
+    "hostfloor_admission_pause",
+    "hostfloor_runtime_healthy",
+    "cgfloor_admission_pause",
+    "cgfloor_runtime_healthy",
+    "memorysome_admission_pause",
+    "memorysome_runtime_healthy",
+    "memoryfull_admission_pause",
+    "memoryfull_runtime_healthy",
+    "cpufull_admission_pause",
+    "cpufull_runtime_healthy",
+    "iofull_admission_pause",
+    "iofull_runtime_healthy",
+    "hostmemorysome_admission_pause",
+    "hostmemorysome_runtime_healthy",
+    "hostmemoryfull_admission_pause",
+    "hostmemoryfull_runtime_healthy",
+    "hostcpufull_admission_pause",
+    "hostcpufull_runtime_healthy",
+    "hostiofull_admission_pause",
+    "hostiofull_runtime_healthy",
+    "swap_pause",
+    "hostoom_pause",
+    "cgswap_pause",
+    "cgmax_pause",
+    "cgoomkill_pause",
+    "historical_event_no_repeated_pause",
+    "diskfloor_unsafe_even_runtime",
+    "inode_unsafe_even_runtime",
+    "actualcap_unsafe_even_runtime",
+    "memory_additional_all_scopes",
+    "choose_cpu_avoids_claim",
+    "choose_exact_spec_prediction",
+    "choose_pressure_holds",
+    "candidate_write_full_result_restore",
+    "unresolved_retains_future_write",
+    "consumed_claim_not_double_counted",
+    "actual_old359_archived",
+    "actual_scan_retained",
+    "actual_old24GiB_not_zeroed",
+    "pinned_R20_ceiling_checks",
+    "host_PSI_fields_present"
+  ],
+  "actual_readonly_dynamic_peer": {
+    "projected_write_bytes": 1202168861,
+    "actual_unarchived_output_bytes": 1079532515,
+    "additional_RAM_bytes": 1494849946,
+    "ram": [
+      {
+        "cohort": "E2-DTCL2MLP-6df3a84b612086e8-DH-M16-V1",
+        "RSS_bytes": 0,
+        "additional_reserved_bytes": 1494849946,
+        "kind": "SPENT_UNRESOLVED_GENERATION_RETAINED"
+      }
+    ],
+    "writes": [
+      {
+        "cohort": "E2-DTCL2MLP-6df3a84b612086e8-DH-M16-V1",
+        "uuid": "19105d9d-7522-498e-bf1d-73fbf7aba766",
+        "observed_result_bytes": 5790691,
+        "additional_write_restore_bytes": 128427037,
+        "execution_receipt": false,
+        "observed_model_live": false,
+        "archive_join": false
+      }
+    ],
+    "exact_archived_nonlive_count": 359,
+    "registered_write_bytes": 25769803776,
+    "projection_within_registered_ceiling": true
+  },
+  "actual_readonly_R20": {
+    "required_free_bytes": 35503528804,
+    "known_remaining_writes_by_request": {
+      "DTC_AE_V100_FULL_SWEEP_20261025_V1": 1143790436,
+      "DTC_AE_FAILURE_REPAIR_VALIDATION_20261025_V1": 0,
+      "DTC_AE_LAVAMEM_REPAIR_20261026_V2": 1073741824,
+      "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1": 0,
+      "DTC_AE_REMAINING_FAILURE_REPAIR_20261026_V1": 1073741824,
+      "DTC_AE_STORAGE_RECOVERY12_20261026_V1": 1073741824
+    },
+    "peer_reservations": [
+      {
+        "request": "DTC_L2_MLP_FULL_WORKLOAD_EXPLORATION_20261027_V1",
+        "reserved_write_bytes": 25769803776
+      },
+      {
+        "request": "EP_L2_FULL_WORKLOAD_PERFORMANCE_POTENTIAL_EXPLORATION_V1",
+        "reserved_write_bytes": 0
+      },
+      {
+        "request": "EP_L2_PF_DRAM_SERVICE_FWT_GEMM_VECTOR4M_20261103_V1",
+        "reserved_write_bytes": 0
+      },
+      {
+        "request": "EP_L2_PF_RETENTION_CLASS_FWT_GEMM_20261103_V1",
+        "reserved_write_bytes": 0
+      },
+      {
+        "request": "EP_L2_T_THREE_ARM_CAUSAL_CONV16X8_V1",
+        "reserved_write_bytes": 0
+      },
+      {
+        "request": "EP_L2_WV_DECOMPOSITION_V2",
+        "reserved_write_bytes": 0
+      },
+      {
+        "request": "EP_L2_WV_STENCIL_DECOMPOSITION_20261103_V1",
+        "reserved_write_bytes": 0
+      },
+      {
+        "request": "EP_MULTI_FWT_S_ET1_20261027_V1",
+        "reserved_write_bytes": 0
+      }
+    ],
+    "per_scope_write_ceiling_pass": {
+      "DTC_AE_V100_FULL_SWEEP_20261025_V1": true,
+      "DTC_AE_FAILURE_REPAIR_VALIDATION_20261025_V1": true,
+      "DTC_AE_LAVAMEM_REPAIR_20261026_V2": true,
+      "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1": true,
+      "DTC_AE_REMAINING_FAILURE_REPAIR_20261026_V1": true,
+      "DTC_AE_STORAGE_RECOVERY12_20261026_V1": true
+    }
+  },
+  "qualification_only_unregistered_16_claim_projection": {
+    "native_free_bytes": 13090619392,
+    "required_free_bytes": 13351812993,
+    "admission_disk_pass": false,
+    "physical_RAM_pass": true,
+    "total_projected_additional_RAM_bytes": 76606445978,
+    "stage1_static_peer_replaced_bytes": 25769803776
+  },
+  "fixture_cannot_authorize_execution": true
+}

@@ -1,0 +1,88 @@
+{
+  "schema": "DTC_STAGE_IIA_C_PRIVATE_ACTUAL_PREPARE_CPU_FIXTURES_V1",
+  "engine_sha256": "07f691fd84c769f3f4b7c9e4e97cd6c0156a8751ef507905e6c6c1da6b29b14a",
+  "all_PASS": true,
+  "cases": [
+    {
+      "case": "CanonicalValidPrepareOnly",
+      "PASS": true,
+      "expected": "PREPARE_PASS_NO_START",
+      "error": null
+    },
+    {
+      "case": "SpentCohortReject",
+      "PASS": true,
+      "expected": "REJECT_NO_START",
+      "error": "AssertionError()"
+    },
+    {
+      "case": "ZeroRemainingReject",
+      "PASS": true,
+      "expected": "REJECT_NO_START",
+      "error": "AssertionError()"
+    },
+    {
+      "case": "ClosedStateReject",
+      "PASS": true,
+      "expected": "REJECT_NO_START",
+      "error": "AssertionError()"
+    },
+    {
+      "case": "WrongEpochReject",
+      "PASS": true,
+      "expected": "REJECT_NO_START",
+      "error": "AssertionError()"
+    },
+    {
+      "case": "WrongHostReject",
+      "PASS": true,
+      "expected": "REJECT_NO_START",
+      "error": "AssertionError()"
+    },
+    {
+      "case": "MissingNativeEntryReject",
+      "PASS": true,
+      "expected": "REJECT_NO_START",
+      "error": "AssertionError('NATIVE_EPOCH2_EXACT_ROUTE_REQUIRED')"
+    },
+    {
+      "case": "MissingClaimReject",
+      "PASS": true,
+      "expected": "REJECT_NO_START",
+      "error": "AssertionError()"
+    },
+    {
+      "case": "DuplicateCPUClaimReject",
+      "PASS": true,
+      "expected": "REJECT_NO_START",
+      "error": "AssertionError()"
+    },
+    {
+      "case": "DispatchBindingSHADriftReject",
+      "PASS": true,
+      "expected": "REJECT_NO_START",
+      "error": "AssertionError()"
+    },
+    {
+      "case": "ResolvedBindingSHADriftReject",
+      "PASS": true,
+      "expected": "REJECT_NO_START",
+      "error": "AssertionError()"
+    },
+    {
+      "case": "RAMHoldRejectBeforeAnyFork",
+      "PASS": true,
+      "expected": "REJECT_NO_START",
+      "error": "RuntimeError('RESOURCE_HOLD_NO_START')"
+    },
+    {
+      "case": "DiskHoldRejectBeforeAnyFork",
+      "PASS": true,
+      "expected": "REJECT_NO_START",
+      "error": "RuntimeError('RESOURCE_HOLD_NO_START')"
+    }
+  ],
+  "model_starts": 0,
+  "real_authority_reads_or_writes": 0,
+  "scope_limit": "Actual new prepare/canonical/spec_for control flow with in-memory registry/lease/resource/input/git stubs; only existing small immutable files hashed. No engine(), run_native(), subprocess, owner attachment or real prepare authority was called. Does not qualify actual sole-owner ancestry or model lifecycle."
+}

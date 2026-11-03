@@ -1,0 +1,25 @@
+﻿from pathlib import Path
+import subprocess,json,hashlib
+R=Path('/root/data/dtc_stage_iia_first16_20261104_v1');W=Path('/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_preparation_20261103_v1/plan-worktree');O=Path('/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/agents/C');COM='5001c3f35052f7f91f1ad41eeff83f2947a0878d';PRE='docs/dtc_l1/plans/DTC_STAGE_II_A_CH_FAIR_MATCH_PREPARATION_20261103_V1/';REQ='DTC_STAGE_IIA_FIRST16_CH_MATCH_20261104_V1';sha=lambda b:hashlib.sha256(b).hexdigest()
+def blob(n):return subprocess.check_output(['git','-c','safe.directory='+str(W),'show',COM+':'+PRE+n],cwd=W)
+fb=blob('agents/A/FIRST_BATCH.json');batch=json.loads(fb);cm=json.loads(blob('agents/A/CH_CANDIDATE_MATRIX.json'));cand={x['candidate_id']:x for x in cm['candidates']};matrix=json.loads((R/'control/MATRIX.json').read_text());request=json.loads((R/'control/SINGLE_SCIENTIFIC_APPROVAL_REQUEST.json').read_text());auth=json.loads((R/'control/SCIENCE_AUTHORIZATION.json').read_text());checks=[]
+def ck(n,b,detail=None):checks.append({'check':n,'PASS':bool(b),'detail':detail})
+ck('Approved plan exact commit and first batch SHA',matrix['contract_commit']==COM==request['approved_contract_commit']==auth['approved_contract_commit'] and request['fixed_first_batch_sha256']==sha(fb) and request['fixed_goal_sha256']==sha(blob('NEXT_EXECUTION_GOAL_PENDING_APPROVAL.md')))
+ck('Exact16 candidate order and membership unchanged',[x['candidate_id'] for x in matrix['points']]==batch['candidate_ids'] and len(matrix['points'])==16 and len({x['cohort'] for x in matrix['points']})==16)
+ck('Request authorization exact16 grants no others',request['request']==matrix['request']==REQ and request['exact_budget']==16 and auth['approval_request_sha256']==sha((R/'control/SINGLE_SCIENTIFIC_APPROVAL_REQUEST.json').read_bytes()) and set(auth['budgets'])=={x['cohort'] for x in matrix['points']} and set(auth['budgets'].values())=={1} and auth['automatic_model_retries']==auth['all_other_candidate_grants']==0 and auth['explicit_user_approval'])
+ck('Remaining48 supplements deferred not authorized',not matrix['next48_authorized'] and not matrix['supplement_and_deferred_authorized'])
+details=[]
+for p in matrix['points']:
+ sp=R/'control/specs'/(p['cohort']+'.json');b=sp.read_bytes();s=json.loads(b);a=cand[p['candidate_id']];x=[]
+ x.append(sha(b)==p['spec_sha256']==sha((R/'control'/(p['cohort']+'_SPEC.json')).read_bytes()))
+ x.append(s['cohort']==p['cohort'] and s['request']==REQ and s['planning_candidate_id']==p['candidate_id'] and p['cohort']=='E2-DTC2A16-'+p['input_digest'][:16]+'-CH-'+p['profile']+'-V1' and s['host_cpu'] is None)
+ x.append(s['approved_contract_commit']==COM and s['cell']=='CH' and s['profile'] in ['F128','F256'] and s['input_digest']==a['input_digest'] and s['program']==a['program'] and s['suite']==a['suite'] and s['expected']==a['expected'] and s['expected_options']==a['effective_options'])
+ x.append(s['native_simulator_argv'][2]==a['trace_entry'] and s['core_commit']=='9eedb3131937748f0492fa83aad37d3691118d70' and s['framework_commit']=='02775fd795cde5aae1480d81cee6eb481d0a08f4' and s['binary_sha256']=='02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d')
+ x.append(sha(Path(s['input_binding_path']).read_bytes())==s['input_binding_sha256']==a['input_binding']['sha256'])
+ x.append(all(sha(Path(v['path']).read_bytes())==v['sha256']==w['sha256'] for v,w in zip(s['configs'],a['configs'])) and len(s['configs'])==4)
+ x.append(all(Path(v['actual_realpath']).exists() and sha(Path(v['actual_realpath']).read_bytes())==v['sha256'] and (R/v['target']).resolve()==Path(v['actual_realpath']).resolve() for v in s['runtime_files']))
+ details.append({'cohort':p['cohort'],'planning_candidate':p['candidate_id'],'checks':dict(zip(['spec_two_copies_SHA','independent_cohort_request_unresolvedCPU','full_input_ROI_effective_options','source_binary_and_trace_entry','input_binding_SHA','four_config_SHAs','runtime_file_SHA_and_target_binding'],x)),'PASS':all(x),'spec_sha256':sha(b),'limits':s['limits']})
+ck('All16 contract identity config and input joins',all(x['PASS'] for x in details),{'n':len(details),'failed':[x for x in details if not x['PASS']]})
+# No model or real frontend called. Binary/library reads are hashing only.
+out={'schema':'DTC_STAGE_IIA_C_PRELIMINARY_EXACT16_CONTRACT_REVIEW_V1','all_contract_checks_PASS':all(x['PASS'] for x in checks),'checks':checks,'details':details,'preparation_only':'Root engine/registrar/attach/resource guard CPU qualification still pending, not a launch readiness certificate.','models_started_by_review':0,'registrations_by_review':0,'source_sha256':{n:sha((R/'control'/n).read_bytes()) for n in ['MATRIX.json','SINGLE_SCIENTIFIC_APPROVAL_REQUEST.json','SCIENCE_AUTHORIZATION.json','RESOURCE_POLICY.json','BUILD_PROFILE.json']}}
+(O/'PRELIMINARY_EXACT16_CONTRACT_REVIEW.json').write_text(json.dumps(out,indent=2)+'\n');print(json.dumps(checks,indent=2));print('all',out['all_contract_checks_PASS'])

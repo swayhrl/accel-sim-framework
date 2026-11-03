@@ -1,0 +1,39 @@
+﻿from pathlib import Path
+import json,importlib.util,copy,hashlib,time,subprocess
+P=Path;SOURCE=P('/root/data/dtc_stage_iia_first16_20261104_v1/tools/stage2_resources.py');s=importlib.util.spec_from_file_location('qa_resource',SOURCE);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);G=m.G;M=m.M;O=P('/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/agents/A_resource_v2');O.mkdir(parents=True,exist_ok=True);checks=[]
+def check(n,b):assert b,n;checks.append(n)
+p=m.policy();base={'utc':'CPU_FIXTURE','monotonic':100.,'host_MemAvailable_bytes':200*G,'cgroup_effective_headroom_bytes':200*G,'native_free_bytes':20*G,'free_inodes':200000,'cpu_allowed':[0,1,2,3,4,5,6,7],'cpu_topology':[dict(cpu=i,node=0,core=i,socket=0)for i in range(8)],'cpu_quota_equivalent':8,'observed_models':[],'observed_affinity_claims':[],'cpu_ticks':{},'host_pswpout_pages':0,'host_oom_kill_count':1,'cgroup_swap_current_bytes':0,'cgroup_memory_events':{'oom':0,'oom_kill':0,'max':0},'memory_pressure':{},'cpu_pressure':{},'io_pressure':{}}
+b={'required_free_bytes':64*G,'peer_reservations':[dict(request=m.STAGE1_REQ,reserved_write_bytes=24*G),dict(request=m.REQ,reserved_write_bytes=3*G),dict(request='UNKNOWN_KEEP',reserved_write_bytes=7*G)],'reserved_additional_live_and_candidate_RAM_bytes':G,'per_scope_write_ceiling_pass':{'ORIG':True},'known_remaining_writes_by_request':{'ORIG':35*G}}
+s1={'projected_write_bytes':G,'additional_RAM_bytes':G,'projection_within_registered_ceiling':True};own={'projected_write_bytes':G,'actual_unarchived_output_bytes':M,'additional_RAM_bytes':4*G,'projection_within_registered_ceiling':True,'ram':[],'writes':[]};q={'reserved_write_bytes':int(2.5*G)};spec={'cohort':'CPU_ONLY','workload':'fixture','limits':{'max_process_tree_rss_bytes':8*G,'max_result_directory_bytes':64*M},'estimated_peak_model_RAM_bytes':4*G}
+x=m._evaluate(spec,True,dict(base,native_free_bytes=80*G),None,b,s1,own,q,p);check('replace_only_named_static_peers',x['required_free_bytes']==39*G);check('unknown_peer_retained',x['other_peer_reservations']==[dict(request='UNKNOWN_KEEP',reserved_write_bytes=7*G)])
+x=m._evaluate(spec,False,base,None,b,s1,own,q,p);check('predicted_disk_hold_runtime_safe',not x['admission_disk_pass']and x['physical_disk_pass']);y=m._evaluate(spec,True,base,None,b,s1,own,q,p);check('fresh_requires_full_disk_budget',not y['physical_disk_pass']);
+for n,kw in [('hostfloor',{'host_MemAvailable_bytes':7*G}),('cgfloor',{'cgroup_effective_headroom_bytes':7*G}),('memorysome',{'memory_pressure':{'some':{'avg10':3.}}}),('memoryfull',{'memory_pressure':{'full':{'avg10':1.}}}),('cpufull',{'cpu_pressure':{'full':{'avg10':11.}}}),('iofull',{'io_pressure':{'full':{'avg10':31.}}}),('hostmemorysome',{'host_memory_pressure':{'some':{'avg10':3.}}}),('hostmemoryfull',{'host_memory_pressure':{'full':{'avg10':.75}}}),('hostcpufull',{'host_cpu_pressure':{'full':{'avg10':11.}}}),('hostiofull',{'host_io_pressure':{'full':{'avg10':31.}}})]:
+ s=dict(base,**kw);r=m._evaluate(spec,False,s,None,b,s1,own,q,p);a=m._evaluate(spec,True,s,None,b,s1,own,q,p);check(n+'_admission_pause',not a['physical_RAM_pass']and a['pressure_pause_new']);check(n+'_runtime_healthy',r['physical_RAM_pass']and r['physical_disk_pass'])
+prev=copy.deepcopy(base);prev['monotonic']=90.
+for name,kw in [('swap',{'host_pswpout_pages':200000}),('hostoom',{'host_oom_kill_count':2}),('cgswap',{'cgroup_swap_current_bytes':700*M}),('cgmax',{'cgroup_memory_events':{'oom':0,'oom_kill':0,'max':1}}),('cgoomkill',{'cgroup_memory_events':{'oom':0,'oom_kill':1,'max':0}})]:
+ check(name+'_pause',bool(m.pressure_reasons(dict(base,**kw),prev,p)))
+check('historical_event_no_repeated_pause',not m.pressure_reasons(dict(base,host_oom_kill_count=2),dict(prev,host_oom_kill_count=2),p))
+for name,kw,ow in [('diskfloor',{'native_free_bytes':5*G},own),('inode',{'free_inodes':99999},own),('actualcap',{},dict(own,actual_unarchived_output_bytes=3*G))]:
+ r=m._evaluate(spec,False,dict(base,**kw),None,b,s1,ow,q,p);check(name+'_unsafe_even_runtime',not r['physical_disk_pass'])
+check('memory_additional_all_scopes',x['total_projected_additional_RAM_bytes']==6*G)
+claim={'old':{'host_cpu':0,'predicted_peak_RAM_bytes':G,'workload':'other'}};d=m.choose_dispatch([spec],dict(base,native_free_bytes=80*G),claim,[],None,p,0);check('choose_cpu_avoids_claim',d['host_cpu']!=0);check('choose_exact_spec_prediction',d['forecast']['predicted_peak_RAM_bytes']==4*G)
+check('choose_pressure_holds',m.choose_dispatch([spec],dict(base,host_MemAvailable_bytes=7*G),{},[],None,p,0)is None)
+# CPU-only mocks exercise own/old dynamic accounting with real temporary text fixtures,
+# no native registry or specs altered.
+import tempfile
+with tempfile.TemporaryDirectory(dir=O)as td:
+ root=P(td);(root/'control/specs').mkdir(parents=True);sp=dict(spec,cohort='CPU_ONLY');f=root/'control/specs/CPU_ONLY.json';f.write_text(json.dumps(sp));fakeq={'consumed':{},'admitted_specs':{'CPU_ONLY':m.sha(f)},'reserved_write_bytes':int(2.5*G)}
+ class Peer:
+  def rss(self,root,row):return 0,False
+  def archived(self,root,c,row):return False
+  def size(self,path):return 0
+ pe=Peer();dy=m._dynamic(pe,root,fakeq,{},256*M,sp,True);check('candidate_write_full_result_restore',dy['projected_write_bytes']==256*M+128*M)
+ fakeq['consumed']={'CPU_ONLY':{'uuid':'cpu-uuid'}};dy=m._dynamic(pe,root,fakeq,{'CPU_ONLY':dict(result_cap_bytes=64*M)},256*M,None,False)if False else None
+ # Add actual output limit and prove unresolved consumed + its old claim never double counted.
+ sp['limits']['max_result_directory_bytes']=64*M;f.write_text(json.dumps(sp));fakeq['admitted_specs']['CPU_ONLY']=m.sha(f);dy=m._dynamic(pe,root,fakeq,{'CPU_ONLY':dict(result_cap_bytes=64*M)},256*M,None,False);check('unresolved_retains_future_write',dy['projected_write_bytes']==384*M);check('consumed_claim_not_double_counted',len(dy['ram'])==1 and len(dy['writes'])==1)
+# Source-pinned actual peers, no new request registered or admitted.
+peer=m._peer();reg,ep=peer.authority();realb=peer.resources({'request':peer.ORIG,'cohort':'FIRST16_CPU_QUAL_ONLY'},False);oldq=reg['registered_future_requests'][m.STAGE1_REQ];stage1=m._dynamic(peer,m.STAGE1,oldq,peer.claims(m.STAGE1),G);check('actual_old359_archived',stage1['exact_archived_nonlive_count']==359);check('actual_scan_retained',len(stage1['writes'])==1 and stage1['writes'][0]['cohort'].endswith('DH-M16-V1'));check('actual_old24GiB_not_zeroed',stage1['projected_write_bytes']>G);check('pinned_R20_ceiling_checks',all(realb['per_scope_write_ceiling_pass'].values()))
+real=m.sample_system();check('host_PSI_fields_present',all(k in real for k in ['host_memory_pressure','host_cpu_pressure','host_io_pressure','cgroup_swap_current_bytes']));fullown=dict(own,projected_write_bytes=256*M+16*128*M,actual_unarchived_output_bytes=256*M,additional_RAM_bytes=75111596032);actual=m._evaluate(spec,True,real,None,realb,stage1,fullown,q,p)
+result={'schema':'DTC_STAGE_IIA_RESOURCE_CPU_QUALIFICATION_V1','status':'PASS','source_path':str(SOURCE),'source_sha256':m.sha(SOURCE),'model_starts':0,'new_request_registrations':0,'CPU_assertions':len(checks),'checks':checks,'actual_readonly_dynamic_peer':stage1,'actual_readonly_R20':{k:realb[k]for k in ['required_free_bytes','known_remaining_writes_by_request','peer_reservations','per_scope_write_ceiling_pass']},'qualification_only_unregistered_16_claim_projection':{k:actual[k]for k in ['native_free_bytes','required_free_bytes','admission_disk_pass','physical_RAM_pass','total_projected_additional_RAM_bytes','stage1_static_peer_replaced_bytes']},'fixture_cannot_authorize_execution':True};(O/'CPU_QUALIFICATION.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps({'status':'PASS','checks':len(checks),'sourceSHA':m.sha(SOURCE),'16_projection':result['qualification_only_unregistered_16_claim_projection']}))
+
+

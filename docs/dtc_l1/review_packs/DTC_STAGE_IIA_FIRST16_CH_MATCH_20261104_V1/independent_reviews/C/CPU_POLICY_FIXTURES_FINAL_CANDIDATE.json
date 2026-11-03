@@ -1,0 +1,925 @@
+{
+  "schema": "DTC_STAGE_IIA_C_INDEPENDENT_CPU_POLICY_FIXTURES_V1",
+  "tested_policy_source": "/root/data/dtc_stage_iia_first16_20261104_v1/tools/stage2_guard_policy.py",
+  "tested_policy_sha256": "4086afd07dc9255cc8b0de97a5883127905579a9d68b3586554ea2f3f0152797",
+  "new_models": 0,
+  "registrations": 0,
+  "real_resource_module_or_output_used": false,
+  "scope": "Pure policy API fake Runtime baseline. Does not prove scheduler actually pauses, real receiver, integration or final source version.",
+  "all_PASS": true,
+  "cases": [
+    {
+      "case": "Healthy",
+      "PASS": true,
+      "decision": {
+        "decision": "CONTINUE",
+        "stop_reasons": [],
+        "warnings": [],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "LowHostHeadroomWarnNoStop",
+      "PASS": true,
+      "decision": {
+        "decision": "WARN",
+        "stop_reasons": [],
+        "warnings": [
+          "host:LOW_HEADROOM_PAUSE_NEW_ONLY"
+        ],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": [
+              "LOW_HEADROOM_PAUSE_NEW_ONLY"
+            ]
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "LowCgroupHeadroomWarnNoStop",
+      "PASS": true,
+      "decision": {
+        "decision": "WARN",
+        "stop_reasons": [],
+        "warnings": [
+          "cgroup:LOW_HEADROOM_PAUSE_NEW_ONLY"
+        ],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": [
+              "LOW_HEADROOM_PAUSE_NEW_ONLY"
+            ]
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "HostMemoryPSIWarnNoStop",
+      "PASS": true,
+      "decision": {
+        "decision": "WARN",
+        "stop_reasons": [],
+        "warnings": [
+          "host:MEMORY_PSI_PAUSE_NEW_ONLY"
+        ],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": [
+              "MEMORY_PSI_PAUSE_NEW_ONLY"
+            ]
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "CgroupMemoryPSIWarnNoStop",
+      "PASS": true,
+      "decision": {
+        "decision": "WARN",
+        "stop_reasons": [],
+        "warnings": [
+          "cgroup:MEMORY_PSI_PAUSE_NEW_ONLY"
+        ],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": [
+              "MEMORY_PSI_PAUSE_NEW_ONLY"
+            ]
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "HostOOMWarnNoStop",
+      "PASS": true,
+      "decision": {
+        "decision": "WARN",
+        "stop_reasons": [],
+        "warnings": [
+          "SHARED_HOST_OOM_EVENT_OBSERVED_ADMISSION_POLICY_REEVALUATES"
+        ],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "SwapWarnNoStop",
+      "PASS": true,
+      "decision": {
+        "decision": "WARN",
+        "stop_reasons": [],
+        "warnings": [
+          "SHARED_SWAP_OBSERVED_ADMISSION_POLICY_REEVALUATES"
+        ],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "CgroupEventWarnNoStop:oom",
+      "PASS": true,
+      "decision": {
+        "decision": "WARN",
+        "stop_reasons": [],
+        "warnings": [
+          "SHARED_CGROUP_OOM_OBSERVED_ADMISSION_POLICY_REEVALUATES"
+        ],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "CgroupEventWarnNoStop:oom_kill",
+      "PASS": true,
+      "decision": {
+        "decision": "WARN",
+        "stop_reasons": [],
+        "warnings": [
+          "SHARED_CGROUP_OOM_KILL_OBSERVED_ADMISSION_POLICY_REEVALUATES"
+        ],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "CgroupEventWarnNoStop:max",
+      "PASS": true,
+      "decision": {
+        "decision": "WARN",
+        "stop_reasons": [],
+        "warnings": [
+          "SHARED_CGROUP_MAX_OBSERVED_ADMISSION_POLICY_REEVALUATES"
+        ],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "CgroupSwapWarnNoStop",
+      "PASS": true,
+      "decision": {
+        "decision": "WARN",
+        "stop_reasons": [],
+        "warnings": [
+          "SHARED_CGROUP_SWAP_OBSERVED_ADMISSION_POLICY_REEVALUATES"
+        ],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "MissingRequiredCgroupEventsStop",
+      "PASS": true,
+      "decision": {
+        "decision": "STOP",
+        "stop_reasons": [
+          "UNKNOWN_OR_MALFORMED_REQUIRED_EVIDENCE"
+        ],
+        "warnings": [],
+        "domains": {},
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "Disk5GiBHardStop",
+      "PASS": true,
+      "decision": {
+        "decision": "STOP",
+        "stop_reasons": [
+          "USER_OUTPUT_FILESYSTEM_AT_OR_BELOW_5GiB"
+        ],
+        "warnings": [],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "OutputDeviceDriftHardStop",
+      "PASS": true,
+      "decision": {
+        "decision": "STOP",
+        "stop_reasons": [
+          "V2_OUTPUT_FILESYSTEM_CHANGED"
+        ],
+        "warnings": [],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "SafetyHardStop:authority",
+      "PASS": true,
+      "decision": {
+        "decision": "STOP",
+        "stop_reasons": [
+          "CURRENT_GUARD:authority"
+        ],
+        "warnings": [],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "SafetyHardStop:identity",
+      "PASS": true,
+      "decision": {
+        "decision": "STOP",
+        "stop_reasons": [
+          "CURRENT_GUARD:identity"
+        ],
+        "warnings": [],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "SafetyHardStop:mapper",
+      "PASS": true,
+      "decision": {
+        "decision": "STOP",
+        "stop_reasons": [
+          "CURRENT_GUARD:mapper"
+        ],
+        "warnings": [],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "SafetyHardStop:output_limits",
+      "PASS": true,
+      "decision": {
+        "decision": "STOP",
+        "stop_reasons": [
+          "CURRENT_GUARD:output_limits"
+        ],
+        "warnings": [],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "SafetyHardStop:output_device",
+      "PASS": true,
+      "decision": {
+        "decision": "STOP",
+        "stop_reasons": [
+          "CURRENT_GUARD:output_device"
+        ],
+        "warnings": [],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "SafetyHardStop:expected_growth",
+      "PASS": true,
+      "decision": {
+        "decision": "STOP",
+        "stop_reasons": [
+          "CURRENT_GUARD:expected_growth"
+        ],
+        "warnings": [],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "SafetyHardStop:explicit_abort_clear",
+      "PASS": true,
+      "decision": {
+        "decision": "STOP",
+        "stop_reasons": [
+          "CURRENT_GUARD:explicit_abort_clear"
+        ],
+        "warnings": [],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "SafetyHardStop:ownership",
+      "PASS": true,
+      "decision": {
+        "decision": "STOP",
+        "stop_reasons": [
+          "CURRENT_GUARD:ownership"
+        ],
+        "warnings": [],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "UnknownIOHardStop",
+      "PASS": true,
+      "decision": {
+        "decision": "STOP",
+        "stop_reasons": [
+          "UNVERIFIABLE_IO_IMPACT_SCOPE"
+        ],
+        "warnings": [],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "MalformedMemorySampleHardStop",
+      "PASS": true,
+      "decision": {
+        "decision": "STOP",
+        "stop_reasons": [
+          "INVALID_SHARED_MEMORY_SAMPLE"
+        ],
+        "warnings": [],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "FutureProgressHardStop",
+      "PASS": true,
+      "decision": {
+        "decision": "STOP",
+        "stop_reasons": [
+          "STALE_OR_FUTURE_PRODUCER"
+        ],
+        "warnings": [],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "LimitProducerHardStop",
+      "PASS": true,
+      "decision": {
+        "decision": "STOP",
+        "stop_reasons": [
+          "NONNATURAL_PRODUCER_RUN_END"
+        ],
+        "warnings": [],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    },
+    {
+      "case": "FreshSameValueDoesNotReset600sRetirement",
+      "PASS": true,
+      "decision": {
+        "decision": "STOP",
+        "stop_reasons": [
+          "NO_SEMANTIC_RETIREMENT_600S"
+        ],
+        "warnings": [],
+        "domains": {
+          "host": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          },
+          "cgroup": {
+            "decision": "CONTINUE",
+            "stop_reasons": [],
+            "warnings": []
+          }
+        },
+        "next_full_sample_seconds": 10,
+        "profile": {
+          "nominal_sample_s": 10,
+          "max_sample_gap_s": 30,
+          "max_progress_age_s": 30,
+          "no_retirement_s": 600,
+          "max_cgroup_high_episode_s": 1800,
+          "wall_deadline_s": 7776000
+        },
+        "scientific_acceptance": false,
+        "no_signal_in_this_policy_module": true
+      }
+    }
+  ]
+}

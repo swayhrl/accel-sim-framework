@@ -1,0 +1,73 @@
+{
+  "candidate_count": 16,
+  "candidate_ids": [
+    "PLAN-DTC-IIA-4114a3dc0d06b55b-CH-F128-V1",
+    "PLAN-DTC-IIA-4114a3dc0d06b55b-CH-F256-V1",
+    "PLAN-DTC-IIA-6df3a84b612086e8-CH-F128-V1",
+    "PLAN-DTC-IIA-6df3a84b612086e8-CH-F256-V1",
+    "PLAN-DTC-IIA-d984ea5475a581ad-CH-F128-V1",
+    "PLAN-DTC-IIA-d984ea5475a581ad-CH-F256-V1",
+    "PLAN-DTC-IIA-eededb785179fc04-CH-F128-V1",
+    "PLAN-DTC-IIA-eededb785179fc04-CH-F256-V1",
+    "PLAN-DTC-IIA-f437190767aaed49-CH-F128-V1",
+    "PLAN-DTC-IIA-f437190767aaed49-CH-F256-V1",
+    "PLAN-DTC-IIA-ae34174fbbdf83b2-CH-F128-V1",
+    "PLAN-DTC-IIA-ae34174fbbdf83b2-CH-F256-V1",
+    "PLAN-DTC-IIA-e7bb67e63e3c3847-CH-F128-V1",
+    "PLAN-DTC-IIA-e7bb67e63e3c3847-CH-F256-V1",
+    "PLAN-DTC-IIA-fc0705ae3721e999-CH-F128-V1",
+    "PLAN-DTC-IIA-fc0705ae3721e999-CH-F256-V1"
+  ],
+  "deferred4": [
+    {
+      "profile": "F128",
+      "program": "hybridsort",
+      "reason": "Original DH variant missing/negative; SYRK also lacks both original P0 baselines. New separately authorized recovery prerequisite; IR/R2 not substituted."
+    },
+    {
+      "profile": "F128",
+      "program": "SYRK",
+      "reason": "Original DH variant missing/negative; SYRK also lacks both original P0 baselines. New separately authorized recovery prerequisite; IR/R2 not substituted."
+    },
+    {
+      "profile": "F256",
+      "program": "SYRK",
+      "reason": "Original DH variant missing/negative; SYRK also lacks both original P0 baselines. New separately authorized recovery prerequisite; IR/R2 not substituted."
+    },
+    {
+      "profile": "F256",
+      "program": "lavamd",
+      "reason": "Original DH variant missing/negative; SYRK also lacks both original P0 baselines. New separately authorized recovery prerequisite; IR/R2 not substituted."
+    }
+  ],
+  "execution_authorized": false,
+  "models_started": 0,
+  "ordering_rule": "Declared program order; F128 then F256 within each program. Future dispatch may resource-fill without changing membership.",
+  "program_selection_basis": {
+    "2DCONV": "Single-kernel overlapping 3x3 neighborhoods; locality contrast to streaming.",
+    "ATAX": "Row then column access with intermediate dependency.",
+    "BICG": "Column and row matrix-vector paths; input reuse/direction comparison.",
+    "GEMM": "Dense multiply zero downstream-response control despite L1 gap.",
+    "MVT": "Opposite access directions and independent vector outputs.",
+    "convolutionSeparable": "Two separable-filter stages: intermediate and orientation contrast.",
+    "scan": "Multi-kernel dependency chain: local scan, partial sums, uniform update.",
+    "vectorAdd": "Streaming/boundary control, preserve adverse response."
+  },
+  "programs": [
+    "convolutionSeparable",
+    "scan",
+    "2DCONV",
+    "ATAX",
+    "MVT",
+    "BICG",
+    "vectorAdd",
+    "GEMM"
+  ],
+  "proposed_first_batch_reservations_bytes": 75111596032,
+  "registered": false,
+  "remaining48_core_batch_definition": "DEFERRED_UNTIL_FIRST16_EXECUTION_AND_REVIEW_APPROVED; no admission now, fixed32 core membership already frozen.",
+  "resource_estimate_not_timing_prediction": true,
+  "schema": "DTC_STAGE_IIA_FIRST16_PROPOSAL_V1",
+  "selection_rule": "Predeclared mechanism/control coverage; batching only, fixed final35/32 core unchanged. Existing plan lists priority mechanisms but not an exact eight-program batch. No first-batch outcome may redefine final population.",
+  "supplement2": "hybridsort CH-F256 and lavamd CH-F128; resource and baseline caveats separate."
+}
