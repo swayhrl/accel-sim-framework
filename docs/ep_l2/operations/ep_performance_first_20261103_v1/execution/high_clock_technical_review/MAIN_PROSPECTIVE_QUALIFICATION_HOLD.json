@@ -1,0 +1,29 @@
+{
+  "CORE_MHz": 1132,
+  "approved_by": "EP-MAIN",
+  "assertion": "gpu-cache.cc2724 ep_l2_wad_complete: one completion CAM query per physical cycle",
+  "failure_cohort": "EP_PERF_PF_DRAM_VECTOR4M_F_1275_V1",
+  "failure_done_ref": {
+    "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_PF_DRAM_VECTOR4M_F_1275_V1.DONE.json",
+    "sha256": "b4324d23cd8faf66e40e756946de1dc320cba38d049063d6f8e3201535221579"
+  },
+  "failure_raw_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_performance_first_20261103_v1/service/cases/EP_PERF_PF_DRAM_VECTOR4M_F_1275_V1/run/def8c1b6-675e-434c-a791-26062ec3a60a/raw.log.gz",
+    "sha256": "786c1eea1a521032568eb9dbd6f0c8ccbf41a098a02828ac00a403da4fa68c0f"
+  },
+  "held_DRAM_MHz": [
+    1275,
+    1700
+  ],
+  "known_operational_effect": "Fail-closed native conditional binding blocks future unqualified forks; controller may report operational review HOLD when its automatic criterion tries to release this pair. Running model monitor and poll/accept remain active. Safe later queues may require Main operational review.",
+  "no_controller_or_Source_or_ELF_or_spec_changes": true,
+  "no_model_retry_or_refund": true,
+  "read_only_audit": "DRAM WB completion direct callback lacks same-core-cycle CAM arbitration; DRAM>CORE can deliver multiple WB completions per core cycle; detailed source audit pending",
+  "running_GEMM1020_preserved": true,
+  "schema": "EP_MAIN_PROSPECTIVE_SOURCE78_HIGH_DRAM_CLOCK_QUALIFICATION_HOLD_V1",
+  "scientific_starts": 0,
+  "scope": "Unconsumed prospective same-background GEMM S/WV higher-clock pairs; Vector1700 already HOLD; FWT higher levels already PRUNED",
+  "source_core": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+  "status": "MAIN_WITHHOLDS_UNCONSUMED_EP_HIGH_CLOCK_SCOPE_PENDING_NEW_QUALIFICATION",
+  "utc": "2026-11-03T12:54:49.331656+00:00"
+}

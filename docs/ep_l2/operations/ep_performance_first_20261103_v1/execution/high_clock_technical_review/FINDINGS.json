@@ -1,0 +1,41 @@
+{
+  "schema": "EP_PF_VECTOR_F1275_COMPLETION_CAM_FAILURE_REVIEW_V1",
+  "status": "READ_ONLY_REVIEW_COMPLETE_NO_FIX_NO_MODELS",
+  "classification": {
+    "implementation": "P1_FINITE_COMPLETION_CAM_BACKPRESSURE_MISSING_FOR_DRAM_GREATER_CORE",
+    "resource": "P2_ONE_QUERY_PER_CORE_CYCLE_COST",
+    "P0": "NOT_DEMONSTRATED_ACCEPTED_850_1020_CONTAMINATION"
+  },
+  "source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+  "source_refs": [
+    {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/gpu-cache.cc",
+      "sha256": "9c516c0a81f591fedf1f043d0b10662ad9219fbd69aa8b43a70bdcf9d31b6b76"
+    },
+    {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/gpu-cache.h",
+      "sha256": "0a12d46d92abf95f5f908cb407835a7371b828cf9f184392f5a9b9c4e577bcfa"
+    },
+    {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/dram.cc",
+      "sha256": "525bf91f679be5e640cf56a03ba0a9c8b2fe9f2a86ad355fdb318d1627ed267a"
+    },
+    {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/l2cache.cc",
+      "sha256": "629ae76b38e339d71b47f6c93f55c0fb249e8afea77df04ef1c025a9b1fba903"
+    },
+    {
+      "path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "d9b1e85fdf5eb33fa84dfd2fdca37bb07fb40d251e6d3940621674998f6f8908"
+    }
+  ],
+  "observed_failure": "L2_WRBK_ACC_WAD_TVD_COMPLETION_CAM_DUPLICATE_CORE_CYCLE_ASSERT",
+  "exact_failing_UIDs": "UNKNOWN",
+  "recommended_unconsumed_HOLD": "TVD-enabled EP clock1275/1700; pairedS defer until viableEP route",
+  "existing_GEMM1020": "LEAVE_NATURAL_RUN_UNTOUCHED",
+  "models_started": 0,
+  "source_changes": 0,
+  "active_pipeline_changes": 0,
+  "raw_decompression_passes": 1,
+  "Trace_reads": 0
+}
