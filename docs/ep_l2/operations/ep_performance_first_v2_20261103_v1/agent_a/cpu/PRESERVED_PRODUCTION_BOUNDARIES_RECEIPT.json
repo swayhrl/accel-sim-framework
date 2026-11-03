@@ -1,0 +1,180 @@
+{
+  "compile_command": [
+    "/usr/bin/c++",
+    "-std=gnu++17",
+    "-O0",
+    "-g0",
+    "-fPIC",
+    "-UNDEBUG",
+    "-DCUDART_VERSION=12040",
+    "-DDEBUG=0",
+    "-DTRACING_ON=1",
+    "-I/root/data/dtc_main_20261023_v1/ae_fair_v1/toolchain/include",
+    "-I/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/libcuda",
+    "-I/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/build/gpgpu-sim/libcuda",
+    "-I/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/src/gpgpu-sim",
+    "-I/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/src/intersim2",
+    "-I/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/src",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/tests/ep_l2/test_tvd_production.cc",
+    "-Wl,--version-script=/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/linux-so-version.txt",
+    "-Wl,--start-group",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/build/gpgpu-sim/libentrypoint.a",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/build/gpgpu-sim/libcuda/libcuda.a",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/build/gpgpu-sim/src/cuda-sim/libptxsim.a",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/build/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/build/gpgpu-sim/src/intersim2/libintersim.a",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/build/gpgpu-sim/src/accelwattch/libaccelwattch.a",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/build/trace-driven/libtrace-driven.a",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/build/trace-parser/libtrace-parser.a",
+    "-Wl,--end-group",
+    "-lm",
+    "-lz",
+    "-lGL",
+    "-ldl",
+    "-pthread",
+    "-o",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/tvd_native.cpu",
+    "-UNDEBUG"
+  ],
+  "compile_exit": 0,
+  "runs": [
+    {
+      "label": "cap128_study-clean",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/tvd_native.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/cap128_study-clean.config",
+        "--study-clean"
+      ],
+      "returncode": 0,
+      "seconds": 1.176727533340454,
+      "PASS_markers": [
+        "PASS production_clean_victim_lookup_bank_icnt_same_handle_no_lower_read",
+        "PASS production_clean_missing_sector_fallback_epoch",
+        "PASS production_clean_write_promotion_dirty_victim_real_wb_reference",
+        "PASS production_clean_atomic_promotion_dirty_victim_real_wb_reference",
+        "PASS production_matched_off_on_actual_lower_packets_bytes_NOT_DRAM_saved",
+        "PASS production_primary_64sets_16ways_bank_class_preserved_same_handle_promotion"
+      ],
+      "stderr": ""
+    },
+    {
+      "label": "cap128_study-dirty-inflight",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/tvd_native.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/cap128_study-dirty-inflight.config",
+        "--study-dirty-inflight"
+      ],
+      "returncode": 0,
+      "seconds": 0.6954987049102783,
+      "PASS_markers": [
+        "PASS production_dirty_forward_before_wad_write_wait_then_same_handle_promote",
+        "PASS production_dirty_forward_before_wad_atomic_wait_then_same_handle_promote",
+        "PASS production_dirty_missing_sector_wait_completion_then_real_lower_fallback",
+        "PASS production_WAD128_lower_full_no_partial_mutation_then_set_done_epoch_drain"
+      ],
+      "stderr": ""
+    },
+    {
+      "label": "cap128_study-dirty-boundaries",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/tvd_native.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/cap128_study-dirty-boundaries.config",
+        "--study-dirty-boundaries"
+      ],
+      "returncode": 0,
+      "seconds": 0.7352991104125977,
+      "PASS_markers": [
+        "PASS production_same_bank_pool_full_reclaims_only_completed_TVD_then_drains",
+        "PASS production_partial_dirty_victim_WAD_only_no_false_sector_forward_or_promotion_deadlock"
+      ],
+      "stderr": ""
+    },
+    {
+      "label": "cap128_r14-dirty-promotion-gate",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/tvd_native.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/cap128_r14-dirty-promotion-gate.config",
+        "--r14-dirty-promotion-gate"
+      ],
+      "returncode": 0,
+      "seconds": 0.3245205879211426,
+      "PASS_markers": [
+        "PASS r14_shared128_clean_to_mandatory_dirty_promotion_same_slot_same_payload"
+      ],
+      "stderr": ""
+    },
+    {
+      "label": "cap128_candidate62-gates",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/tvd_native.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/cap128_candidate62-gates.config",
+        "--candidate62-gates"
+      ],
+      "returncode": 0,
+      "seconds": 0.2334606647491455,
+      "PASS_markers": [
+        "PASS candidate62_try_prefill_TVD_refusal_atomicity_full_address_exact_alias"
+      ],
+      "stderr": ""
+    },
+    {
+      "label": "cap32_study-dirty-inflight",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/tvd_native.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/cap32_study-dirty-inflight.config",
+        "--study-dirty-inflight"
+      ],
+      "returncode": 0,
+      "seconds": 0.7067966461181641,
+      "PASS_markers": [
+        "PASS production_dirty_forward_before_wad_write_wait_then_same_handle_promote",
+        "PASS production_dirty_forward_before_wad_atomic_wait_then_same_handle_promote",
+        "PASS production_dirty_missing_sector_wait_completion_then_real_lower_fallback",
+        "PASS production_WAD128_lower_full_no_partial_mutation_then_set_done_epoch_drain"
+      ],
+      "stderr": ""
+    },
+    {
+      "label": "invalid_limit129",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/production_new.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/invalid_limit129.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1"
+      ],
+      "returncode": -6,
+      "expected_rejection": true,
+      "PASS": true,
+      "stderr": "CLEAN optional cap requires finite W+V both classes, RO disabled, limit0..128; default128 preserves other modes\n"
+    },
+    {
+      "label": "partial_mode_wrong_scope",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/production_new.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/partial_mode_wrong_scope.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1"
+      ],
+      "returncode": -6,
+      "expected_rejection": true,
+      "PASS": true,
+      "stderr": "CLEAN optional cap requires finite W+V both classes, RO disabled, limit0..128; default128 preserves other modes\n"
+    }
+  ],
+  "models_started": 0,
+  "status": "PASS"
+}

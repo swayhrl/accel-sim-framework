@@ -1,0 +1,312 @@
+# EP-L2 Performance-First V2
+## Parallel Architecture Optimization & Cross-Clock Repair
+
+### 0. 当前状态与主目标
+
+继续EP-L2性能潜力探索主线，不恢复论文编辑工作。
+
+最新已核实Framework提交：
+
+`519ad40d167744a576e90ec12bb3b903292751dd`
+
+当前研究基线：
+
+- Accepted Core：`78f4b59e865b136eede74df74c44c210f5b4ca04`
+- Framework：`9dd1ee57a83d83b56b7874bc7c716185ab52c8f7`
+- Accepted ELF：`78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a`
+- 标准DRAM：850 MHz
+- GPU Core：1132 MHz
+
+已批准的Performance-First执行范围为retention8、service16，总计24个上限内的精确点。原始授权、实际已消费数、条件释放和HOLD均保持原样。
+
+现有GEMM：
+
+- CLEAN_ONLY_ON：原生运行中。
+- DIRTY_ONLY_OFF：原生运行中。
+- DIRTY_ONLY_ON：安全队列等待。
+- CLEAN_ONLY_OFF：553632 cycles，已接受。
+
+不要重发、重启、改变、抢占或重新登记上述任务。
+
+本轮目标：
+
+**继续探索EP-L2在真实应用中的性能潜力，同时修复限制结构能力发挥的实现问题，找出可实现、有明显绝对性能改善的参数与结构组合。**
+
+强调实验效率，避免每运行少量点就停下来进行大篇幅机理报告。
+
+### 1. 立即实际启动四个并行Agent
+
+Main继续作为唯一科学实验调度、资源准入和正式结果集成者。
+
+四个Agent使用独立工作树及工程/研究目录，不能竞争写入原实验控制器或正式账本。
+
+### Agent A：W/V与Victim结构优化
+
+任务一：完成现有Clean/Dirty结果的性能比较。
+
+使用已经验收的850MHz数据：
+
+FWT：
+
+- W_ONLY：181635
+- CLEAN_ONLY：181441
+- DIRTY_ONLY：179267
+- CLEAN+DIRTY：178951
+
+GEMM：
+
+- W_ONLY：558957
+- CLEAN_ONLY_OFF：553632
+- CLEAN+DIRTY：550642
+- 其余CLEAN/DIRTY点按实际自然验收状态使用。
+
+重点比较：
+
+1. Clean和Dirty各自实际服务多少Victim读取。
+2. 资源占用及服务效率。
+3. 两种保留类别是否争用目录、Payload和Bank。
+4. 是否出现某种类别长期占用容量却很少服务请求。
+5. Dirty-forward、写回进度与Victim回收之间的实际竞争。
+
+不要将OFF/ON观测器结果重复当作两个独立的缓存性能点。FWT的MS-only NI不能自动证明B0/M0a应用NI。
+
+任务二：准备具体结构参数及优化候选。
+
+优先考虑：
+
+- TVD容量与回收规则。
+- CLEAN/WB_COMPLETE之间的选择策略。
+- Dirty mandatory与可选保留的资源分配。
+- Payload物理资源及Bank兼容约束。
+- Bank读写服务能力与请求仲裁。
+- 可实现的有限资源分配策略。
+
+此前的dirty-install跨类别event-age方案可作为候选之一，不预设最优。
+
+每个候选明确原结构、改动、硬件资源代价、预期适用Workload及最小CPU验证。
+
+允许独立实现工程候选和CPU fixture，不直接修改accepted Core。
+
+交付：
+
+`WV_STRUCTURE_CANDIDATES_V2`
+
+`WV_PER_WORKLOAD_PERFORMANCE_FRONTIER`
+
+`WV_EXPERIMENT_FAMILY_PROPOSAL`
+
+### Agent B：跨时钟Completion-CAM P1修复
+
+这是本轮最高优先级工程任务之一。
+
+现有证据：
+
+- Vector4M F1275已正式技术失败，不重跑、不退款。
+- Source78在`gpu-cache.cc:2724`触发写回完成CAM每核心周期一次的断言。
+- DRAM>CORE时同一核心周期可能出现多次合法的L2写回完成。
+- 当前路径没有对完成CAM实行跨时钟有限排队或背压。
+- 1275/1700MHz未消费候选保持HOLD。
+
+立即在独立Core工作树开展修复。
+
+优先研究：
+
+1. 在DRAM完成侧与Core完成CAM之间建立有限且真实的事务交接。
+2. 保持每Slice每Core周期一次的CAM服务限制。
+3. 正确保留原始UID、地址、Directory incarnation、Payload generation和Writeback身份。
+4. 明确何时归还credit、何时释放mem_fetch或已复制的完成记录。
+5. 禁止丢包、重复完成、提前释放和指向已删除对象的引用。
+6. 队列满时必须具有合法背压和最终前进能力。
+7. 正确处理多个Slice、相同Slice竞争及跨时钟日历。
+
+不能通过删除断言、允许无限CAM访问、修改为DRAM时钟计费或免费增加端口来掩盖问题。
+
+先制作真实生产路径CPU复现：
+
+- 850/1020/1132/1275/1700MHz。
+- 相邻DRAM ticks的两次同Slice L2 WB完成。
+- 部分dirty sector写回。
+- 相同/不同地址、UID、generation。
+- Queue full、连续到达、ReturnQ背压。
+- stale completion、pin与完整drain。
+- 默认850MHz原行为不退化。
+
+需要的话可准备两个实现方案比较，但只选正确性和真实硬件成本更明确的一个进入新Source。
+
+工程PASS后，形成新的Core/ELF与完整来源绑定。
+
+未来性能实验要求同一个新Source下的S和EP公平配对，保留850MHz参考资格，不能直接用旧Source78的Vector S1275填充新Source对照。
+
+交付：
+
+`CROSS_CLOCK_COMPLETION_CAM_REPAIR_V1`
+
+`CPU_PROTOCOL_AND_FREQUENCY_MATRIX`
+
+`NEW_SOURCE_AND_ELF_QUALIFICATION`
+
+`HIGH_CLOCK_REQUALIFICATION_PLAN`
+
+本任务不授权重新运行已失败的Vector F1275。
+
+### Agent C：850MHz下的系统参数与结构组合探索
+
+不等待Agent B修复，继续利用已接受Source78和可靠850MHz基线。
+
+目标是发现：哪些合理的上下游资源配置能够提高EP的绝对性能，哪些配置可扩大EP相对S的有效优势。
+
+考虑参数族：
+
+- L2 Miss Queue。
+- Line-MSHR entries和merge能力。
+- Descriptor与WAD/TVD资源容量。
+- Payload Bank服务端口、吞吐及仲裁。
+- L2与NoC接口缓冲。
+- NoC注入/返回通道及队列。
+- DRAM scheduler、FR-FCFS容量及下游排队。
+
+先检查此前已执行的参数实验，尤其已完成的G64/W16、MissQ256、ICNT1024及其他负结果，不重复盲扫。
+
+将新探索分为：
+
+**真实可实现配置：** 有明确容量、端口、时序和面积成本的结构变化。
+
+**诊断性宽松配置：** 用于发现性能上界，不直接排名为可实现硬件。
+
+优先使用代表性输入：
+
+- FWT、GEMM、3MM：已有机制增量收益。
+- Stencil：历史完整F强收益。
+- Scan、Conv：已知负例和资源压力。
+- Vector：RO/并发与内存行为不同。
+
+根据当前已接受输入身份和仿真时长，选择短程序初筛、中长程序验证。
+
+对每一项资源改变，必须保持S与EP硬件背景可比，记录：
+
+- S绝对cycles。
+- EP绝对cycles。
+- 同配置S/EP。
+- 与原850MHz参考相比的绝对改善。
+- 资源增量及硬件可实现性。
+- 不利输入和失败结果。
+
+不要只追求让S退化更多而产生较高的相对加速比。
+
+采用自适应筛选，允许对有潜力的参数族继续扩展、组合及复核，不要求停留在任意固定的两点试验。
+
+交付：
+
+`SYSTEM_PARAMETER_FAMILY_V2`
+
+`EP_ABSOLUTE_PERFORMANCE_FRONTIER`
+
+`MATCHED_S_EP_CONFIG_MATRIX`
+
+`RESOURCE_RELAXATION_UPPER_BOUND`
+
+### Agent D：执行效率、排队与结果收敛
+
+重点解决如何让性能实验持续有效执行，而不是不断等待人工重新协调。
+
+首先只读核查当前继任控制器、已有PID/generation、consumed INTENT、真实预算和已发布接受回执。
+
+必须保证：
+
+- 已运行、已消费、已接受、已失败及未消费HOLD状态清楚区分。
+- 当前两个GEMM原生进程不重复fork。
+- DIRTY_ONLY_ON仍按原授权自然排队。
+- 不建立第二个竞争科学dispatcher。
+- 不抢占或修改其他账户的合法资源承诺。
+- 正确执行动态RAM/CPU/SSD/写入量与真164归档准入。
+- 技术HOLD只作用于相关高频参数族，不扩散成全局停摆。
+- 失败不得擅自重试或退款。
+- 所有负结果保留。
+
+同时建立统一的性能结果索引，记录Source5、完整配置、输入、模式、cycles、绝对改善、同背景比值、资源成本和资格等级。
+
+分别建立：
+
+1. Per-workload best legal configuration。
+2. Unified configuration across workloads。
+3. Diagnostic upper bound，不参与真实配置排名。
+
+对于已经授权的参数族，允许现有控制器按原合同连续执行，无需每完成两个点就停下写总结。
+
+对于新参数族，Agent D与Main整理成一次性明确范围的科学实验授权包，批准后连续执行。
+
+交付：
+
+`EXECUTION_AND_RESOURCE_STATUS_V2`
+
+`UNIFIED_PERFORMANCE_SCOREBOARD`
+
+`NEXT_ADAPTIVE_FAMILY_AUTHORIZATION_PACK`
+
+### 2. Main集成和实验节奏
+
+Main负责将四条工作线整合成连续性能探索流程：
+
+**第一阶段：立即并行**
+
+- A利用现有结果推进W/V候选。
+- B修复跨时钟P1并完成CPU验证。
+- C准备850MHz系统参数族及工程资格。
+- D维护实验调度、结果汇总和精确资源准入。
+
+不等待所有Agent结束后才开展彼此独立的工作。
+
+**第二阶段：新实验家族**
+
+Main优先提交两份可执行范围申请：
+
+- `SYSTEM_850MHZ_PARAMETER_FAMILY_V2`
+- `HIGH_CLOCK_REPAIRED_SOURCE_QUALIFICATION_AND_PERFORMANCE_V1`
+
+每份包含实际Source/ELF、参数取值集合、输入身份、对照、预计资源、准入要求、允许的自适应扩展规则及具体启动范围。
+
+不要把诊断上界与正式可实现配置混为一组。
+
+没有新授权的科学点只准备规格，不登记或启动。
+
+**第三阶段：结构组合与收敛**
+
+在第一轮筛选基础上，组合真正有价值的资源维度，例如Victim策略×目录容量、Payload组织×Bank服务、MissQ×NoC。
+
+避免全笛卡尔积盲扫，但不以任意全局启动次数限制阻止合理、已获授权的扩展。
+
+主目标是找到显著改善真实应用绝对性能的统一EP-L2配置，同时保留每程序最优配置作为性能潜力参考。
+
+### 3. 科学与工程边界
+
+保留完整正确性、资源和身份检查。
+
+不修改已接受Source78或历史结果，不污染已有实验账本。
+
+新Source独立分支，严格保留Source5和ELF身份。
+
+不要将CPU fixture cycles当作GPU性能结果；也不要将单一资源占用峰值当作已证实的关键路径瓶颈。
+
+可以进行必要的小型定位，但不要为报告完整性开展大型Trace扫描、反复文字归因或论文编辑。
+
+本轮授权四Agent实际并行开展工程、分析、配置准备及CPU验证。现有已经批准的科学实验按原调度继续；**新科学实验必须通过精确参数族授权及资源资格后启动**。
+
+### 4. 汇报要求
+
+先实际启动A/B/C/D，并回报其各自工作树和任务。
+
+本轮完成后，Main仅需重点报告：
+
+1. GEMM CLEAN/DIRTY所有已完成结果及最优模式。
+2. 跨时钟P1工程修复是否PASS，还缺哪些测试。
+3. 850MHz系统参数空间的首批可执行候选。
+4. 哪些配置预计最可能产生绝对性能提升。
+5. 新Source高频测试是否具备科学资格。
+6. 现有运行、失败、HOLD、等待队列和剩余授权。
+7. 下一批参数族的一次性范围授权方案。
+
+报告以性能数据、结构变化、可执行计划为中心。论文继续保持归档状态，不在本轮重新编辑。
+
+完成后由Main统一提交GitHub并回读HEAD；必要的小型证据归档真164。
+
+**最终目标：找到经过真实完整应用验证、具有足够性能收益和合理资源成本的EP-L2结构配置，而不是只证明现有固定参数上的小幅改进。**

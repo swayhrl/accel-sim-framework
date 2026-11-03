@@ -1,0 +1,166 @@
+{
+  "schema": "EP_PF_V2_SYSTEM_PARAMETER_FAMILY_SCOPE_DRAFT_V1",
+  "status": "PREPARED_NOT_NEW_SCIENCE_AUTHORIZED",
+  "client_date": "2026-11-04 Asia/Shanghai",
+  "family_id": "EP_L2_PFV2_SYSTEM850_GEOMETRY_AND_SCHEDULER_FWT_GEMM_V1",
+  "source_identity": {
+    "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+    "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+    "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "new_Source": false,
+  "fixed": {
+    "clocks": "1132.0:1132.0:1132.0:850.0",
+    "dram_latency": 100,
+    "channels": 32,
+    "slices": 64,
+    "line_bytes": 128,
+    "physical_payload_slots_per_slice": 1168,
+    "Resident_nominal_slots": 1024,
+    "Bypass_nominal_slots": 128,
+    "WB_nominal_slots": 16,
+    "descriptor": 512,
+    "per_address_cap": 32,
+    "LineMSHR": 128,
+    "WAD": 128,
+    "bank_ops": 1,
+    "L2_MissQ": 128,
+    "L1_MissQ": 16,
+    "partition_queues": "64:128:64:64",
+    "returnQ": 192,
+    "ICNT_buffers": "512/512",
+    "RO_switches": 0,
+    "observer_bits": "111"
+  },
+  "parameter_domains": {
+    "Tag_geometry": [
+      "32x8",
+      "64x16"
+    ],
+    "FRFCFS": [
+      128,
+      256
+    ]
+  },
+  "inputs": [
+    "140f6ed3a5cdb1d7183cd4d2acc37b086224a054893ef12d990fdb2d5ea3659b",
+    "fc3a90622744ba1f63bec264284983747a372e3a34543249c3977d4bd285fe2e"
+  ],
+  "modes": [
+    "S",
+    "WV_ZERO_RO"
+  ],
+  "exact_matrix_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/MATCHED_S_EP_CONFIG_MATRIX.json",
+    "sha256": "b8da1ab2703ca5b87c9422cb90a060b28fa0c7be25fabfb815aba4575b0f1ca2",
+    "bytes": 35620
+  },
+  "initial8": [
+    "EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_V1",
+    "EP_PERF_PFV2_SYSTEM850_FWT_S_FRFCFS256_V1",
+    "EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_V1",
+    "EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_FRFCFS256_V1",
+    "EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_V1",
+    "EP_PERF_PFV2_SYSTEM850_GEMM_S_FRFCFS256_V1",
+    "EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_V1",
+    "EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_FRFCFS256_V1"
+  ],
+  "conditional4": [
+    "EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_FRFCFS256_V1",
+    "EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_FRFCFS256_V1",
+    "EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_FRFCFS256_V1",
+    "EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_FRFCFS256_V1"
+  ],
+  "max_new_starts_this_exact_scope": 12,
+  "not_arbitrary_global_goal_cap": true,
+  "old_budget_inherited": false,
+  "science_starts_now": 0,
+  "order": [
+    "FWT four single-family short points first",
+    "GEMM four single-family points next after qualifications/resources",
+    "Per-input combination pair gated by actual accepted absolute EP gains"
+  ],
+  "combination_gate": "Both exact-input single-family S/WV pairs CLOSED_ACCEPTED with true164 mandatory archive. Release combo pair if both WV absolute cycles reductions against own accepted850/WV reference >=1%, OR one >=3% and other nonnegative. S slowing down or ratio-only improvement never triggers extension. Main publishes explicit stage-release receipt.",
+  "qualification": {
+    "Source78_G64W16_and_FRFCFS256_S_WV_cpu": "PASS_REAL_CONSTRUCTOR_PROTOCOL_4_FINAL_RUNS",
+    "actual282_core_plus_trace_echo": "PASS_ALL12",
+    "pure_finite_Host_candidate": "PASS_12_POSITIVE_CELLS_19_NEGATIVE_CASES",
+    "Main_full_Host_parser_native": "NOT_QUALIFIED_FOR_NEW_PROFILES",
+    "application": "NOT_RUN; no old acceptance inheritance",
+    "observer_NI": "same existing111, no newcollector; do not promote old mode NI to a changedcollector or Source. Main assesses exact profile assurance; any extra app control must be explicitly budgeted."
+  },
+  "qualification_refs": [
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/cpu/PRODUCTION_CPU_RECEIPT.json",
+      "sha256": "f19a684bd30643e08602ca11a822530dfe58c434c246353c13e3e26a3b5c8e5c",
+      "bytes": 6844
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/ACTUAL_282_SYSTEM850_CPU_RECEIPT.json",
+      "sha256": "c85a4a9b1c134bfa8d9ba4f5c8963defc13e35f37488e6d1175da88bd9b245f9",
+      "bytes": 26356
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/HOST_CANDIDATE_CPU_RECEIPT.json",
+      "sha256": "17c2e4518bc872d17b4299e3534dcd2f30755bff1f062a03391da1d61a3ca101",
+      "bytes": 1065
+    }
+  ],
+  "hardware_cost": {
+    "Tag": "256->1024entries/slice, nominalGPUlinecoverage2->8MiB; Tag SRAM4x entrycount. PPA unknown.",
+    "Payload": "1168 slots/slice unchanged (GPU9.125MiB). S nominalResident1024 has only256 Tag landing IDs reachable atREF, restored1024 withG64W16. Do not claim larger PayloadSRAM or equalarea. F optionalWB/V compete for sharedstore.",
+    "Scheduler": "FRFCFS128->256 entries/channel also sharedcredit319->447/partition (Return192,2subpartitions); not isolated scheduler throughput."
+  },
+  "fairness_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/MODELED_PAYLOAD_UNITS_AND_FAIRNESS_OVERLAY_V1.json",
+    "sha256": "cca46c6cdcee746a042192af87a88fbe9d1a90d5cf1089a8bda058fcea9e6de8",
+    "bytes": 8924
+  },
+  "resource_contract": {
+    "max_EP_models": 2,
+    "count_active_X_models": true,
+    "foreign_promises_preserved": true,
+    "actual_RSS_based_admission": true,
+    "trace_andbulk": "true164 only",
+    "hot_cap_perpoint_bytes": 134217728,
+    "shared_sequential_restore_bytes": 268435456,
+    "emergency_floor_bytes": 1073741824,
+    "no_legacy_pool_or_perpoint_multigiB_extra_reserve": true,
+    "reference_FWT_seconds_perarm": [
+      826.6,
+      893.5
+    ],
+    "reference_GEMM_seconds_perarm": [
+      4435.6,
+      4525.9
+    ],
+    "reference_FWT_RSS_bytes": 704643072,
+    "reference_GEMM_RSS_bytes": 4034920448,
+    "runtime": "~6host-hours initial8, ideal ~3h at2slots plus prep/admission/archive; active tasks may delay. Not a promise."
+  },
+  "acceptance": [
+    "new exact user range/freshbudget/native soleentry",
+    "sameSource5 andactual282echo percell",
+    "fullcommandlist CTA instructions kernels/drain",
+    "allpositive zero negative/HOLD failures retained",
+    "no retries/refunds",
+    "SourceKEEP",
+    "true164 fullSHA/two independent native restores"
+  ],
+  "future_not_in_this12": [
+    "3MM/Stencil matched S/WV at selected winner, only by later exact authorization",
+    "Conv WV G64W16 may reuse oldexactS64 after282 check; not necessary to repeat acceptedF64",
+    "Scan negative-class validation selective, not automatic long sweep",
+    "otherqueue,DRAMfrequency,RO mode,PayloadP2,Source changes excluded"
+  ],
+  "additional_application_NI_starts_proposed": 0,
+  "application_NI_boundary": {
+    "new_FWT_GEMM_profiles": "NOT_MEASURED",
+    "old_S_F_input_application_evidence": "exactBlack/Conv/Vector4M only; not inherited byWV or FWT/GEMM",
+    "new_domain_MS_CPU": "6separateS_WV profile pairs PASS, not applicationNI",
+    "B0_M0a_application_NI": "NOT_PROVEN_ALL_ON",
+    "Main_engineering_acknowledgement": "Accept engineering preparation using unchangedSource/modes/collector111 with CPU-domain evidence and existingSource contract. No new application starts granted."
+  }
+}

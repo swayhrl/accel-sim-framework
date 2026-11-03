@@ -1,0 +1,151 @@
+diff --git a/src/gpgpu-sim/ep-l2-tvd-cache.inc b/src/gpgpu-sim/ep-l2-tvd-cache.inc
+index c6da475..7b3ced9 100644
+--- a/src/gpgpu-sim/ep-l2-tvd-cache.inc
++++ b/src/gpgpu-sim/ep-l2-tvd-cache.inc
+@@ -244,9 +244,10 @@ void l2_cache::tvd_epoch_cleanup(unsigned long long now) {
+ 
+ void l2_cache::tvd_print(FILE *fp, unsigned slice) {
+   m_tvd->advance(m_gpu_cycle_for_tvd()); const auto &s = m_tvd->stats();
+-  fprintf(fp,"EPL2TVDV3|METADATA_COST|slice=%u|frontend_cam_queries=%llu|frontend_cam_ports=1|completion_cam_queries=%llu|completion_cam_ports=1|indexed_wb_accept=%llu|indexed_rollback=%llu|native_install_commits=%llu|native_promotion_commits=%llu|extra_packet_identity_bits=0|directory_bound_wb_uid_bits=32|indexed_control_read_views=3|indexed_control_update_lanes=3|metadata_PPA=UNKNOWN|metadata_clock_closure=UNKNOWN\n",
++  fprintf(fp,"EPL2TVDV3|METADATA_COST|slice=%u|frontend_cam_queries=%llu|frontend_cam_ports=1|completion_cam_queries=%llu|completion_cam_ports=1|indexed_wb_accept=%llu|indexed_rollback=%llu|native_install_commits=%llu|native_promotion_commits=%llu|extra_packet_identity_bits=0|directory_bound_wb_uid_bits=32|indexed_control_read_views=3|indexed_control_update_lanes=3|clean_limit=%u|clean_live=%u|clean_limit_counter_bits=8|metadata_PPA=UNKNOWN|metadata_clock_closure=UNKNOWN\n",
+       slice,m_tvd_lookup_queries,m_tvd_indexed_completions,m_tvd_indexed_accepts,
+-      m_tvd_indexed_rollbacks,m_tvd_native_installs,m_tvd_native_promotions);
++      m_tvd_indexed_rollbacks,m_tvd_native_installs,m_tvd_native_promotions,
++      m_tvd->clean_limit(),m_tvd->clean_occupancy());
+   fprintf(fp, "EPL2TVDV2|SUMMARY|slice=%u|clean_installs=%llu|dirty_installs=%llu|"
+       "read_responses=%llu|dirty_forward_responses=%llu|served_sectors=%llu|served_sector_bytes=%llu|"
+       "promotions=%llu|live=%u|mandatory=%u|role_tvd=%u|retention_slot_cycles=%llu|"
+diff --git a/src/gpgpu-sim/ep-l2-tvd-directory.h b/src/gpgpu-sim/ep-l2-tvd-directory.h
+index 3ce1b89..83b0737 100644
+--- a/src/gpgpu-sim/ep-l2-tvd-directory.h
++++ b/src/gpgpu-sim/ep-l2-tvd-directory.h
+@@ -113,14 +113,19 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+   };
+ 
+   explicit ep_l2_tvd_directory(unsigned capacity = 128, bool clean = false,
+-                               bool dirty = false)
+-      : m_capacity(capacity), m_clean(clean), m_dirty(dirty), m_revision(0),
++                               bool dirty = false,
++                                unsigned clean_limit = std::numeric_limits<unsigned>::max())
++      : m_capacity(capacity),
++        m_clean_limit(clean_limit==std::numeric_limits<unsigned>::max()?capacity:clean_limit),
++        m_clean_count(0), m_clean(clean), m_dirty(dirty), m_revision(0),
+         m_clock(0), m_age(0) {
+-    if (!capacity || capacity > 128) throw std::invalid_argument("WAD/TVD capacity");
++    if (!capacity || capacity > 128 || m_clean_limit > capacity) throw std::invalid_argument("WAD/TVD capacity");
+   }
+   ep_l2_tvd_directory(const ep_l2_tvd_directory &) = delete;
+   ep_l2_tvd_directory &operator=(const ep_l2_tvd_directory &) = delete;
+   unsigned capacity() const { return m_capacity; }
++  unsigned clean_limit() const { return m_clean_limit; }
++  unsigned clean_occupancy() const { return m_clean_count; }
+   unsigned occupied() const {
+     unsigned n = 0;
+     for (unsigned i = 0; i < m_capacity; ++i) n += m_entries[i].status != EMPTY;
+@@ -157,12 +162,15 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+       assert(!live(find(line)));
+     } else if (live(find(line))) { p.status = INVALID_INPUT; return p; }
+     if (!dirty && !m_clean) { p.status = DISABLED; return p; }
++    if (!dirty && !m_clean_limit) { p.status = DISABLED; return p; }
++    const bool clean_limited = !dirty && m_clean_count >= m_clean_limit;
+     for (unsigned i = 0; i < m_capacity; ++i)
+-      if (m_entries[i].status == EMPTY) {
++      if (!clean_limited && m_entries[i].status == EMPTY) {
+         p.status = OK; p.index = i; return p;
+       }
+     for (unsigned i = 0; i < m_capacity; ++i) {
+-      if (!m_entries[i].reclaimable()) continue;
++      if (!m_entries[i].reclaimable() ||
++          (clean_limited && m_entries[i].status != CLEAN)) continue;
+       if (p.index == 128 ||
+           (dirty && m_entries[i].status == CLEAN && m_entries[p.index].status != CLEAN) ||
+           ((!dirty || m_entries[i].status == m_entries[p.index].status) &&
+@@ -199,7 +207,10 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+     assert(e.status == EMPTY || e.reclaimable());
+     if (e.status != EMPTY) ++m_stats.reclaimed;
+     bump(e.incarnation);
++    if (e.status == CLEAN) { assert(m_clean_count); --m_clean_count; }
+     e.status = writeback ? WB_STAGED : CLEAN;
++    if (e.status == CLEAN) ++m_clean_count;
++    assert(m_clean_count <= m_clean_limit);
+     e.line = line; e.payload = handle;
+     e.valid_sectors = valid; e.dirty_sectors = dirty; e.readers = 0;
+     e.wb_request_uid = 0; e.wb_uid_bound = false;
+@@ -313,6 +324,7 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+     entry &e = m_entries[p.source.index];
+     assert(!e.mandatory() && !e.readers);
+     advance(now); promoted = e.payload;
++    if (e.status == CLEAN) { assert(m_clean_count); --m_clean_count; }
+     bump(e.incarnation); e.status = WB_STAGED; e.line = p.victim_line;
+     e.payload = p.retain_payload ? p.victim : Handle(); e.valid_sectors = p.valid; e.dirty_sectors = p.dirty;
+     e.wb_request_uid = 0; e.wb_uid_bound = false;
+@@ -393,11 +405,13 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+     ++v;
+   }
+   void erase(entry &e) {
+-    assert(!e.readers); bump(e.incarnation); e.status = EMPTY;
++    assert(!e.readers);
++    if (e.status == CLEAN) { assert(m_clean_count); --m_clean_count; }
++    bump(e.incarnation); e.status = EMPTY;
+     e.payload = Handle(); e.valid_sectors = e.dirty_sectors = 0; ++m_revision;
+     e.wb_uid_bound = false;
+   }
+-  unsigned m_capacity;
++  unsigned m_capacity, m_clean_limit, m_clean_count;
+   bool m_clean, m_dirty;
+   std::uint64_t m_revision;
+   cycle_type m_clock;
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index 49f9298..fc52f0a 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -629,6 +629,7 @@ class cache_config {
+     m_ep_l2_feature_tvd = false;
+     m_ep_l2_tvd_clean = m_ep_l2_tvd_dirty = false;
+     m_ep_l2_tvd_fixed_entries=0;
++    m_ep_l2_tvd_clean_limit=128;
+     m_ep_l2_feature_adaptive_policy = false;
+     m_ep_l2_b0_stats = true;
+     // M0a is deliberately opt-in.  It is a telemetry sidecar and is never
+@@ -1018,6 +1019,7 @@ class cache_config {
+   bool m_ep_l2_feature_tvd;
+   bool m_ep_l2_tvd_clean, m_ep_l2_tvd_dirty;
+   unsigned m_ep_l2_tvd_fixed_entries;
++  unsigned m_ep_l2_tvd_clean_limit;
+   bool m_ep_l2_feature_adaptive_policy;
+   // Observational only. Disabling it must not change simulator timing.
+   bool m_ep_l2_b0_stats;
+@@ -2959,7 +2961,7 @@ class l2_cache : public data_cache {
+     m_tvd_query_cycle = (unsigned long long)-1; m_tvd_lookup_done = false;
+     m_tvd_lookup_wait = m_tvd_wb_wait = m_tvd_bank_wait = m_tvd_resp_wait = m_tvd_lookup_queries = 0;
+     if (config.m_ep_l2_tvd_clean || config.m_ep_l2_tvd_dirty)
+-      m_tvd.reset(new ep_l2_tvd_directory<>(128, config.m_ep_l2_tvd_clean, config.m_ep_l2_tvd_dirty));
++      m_tvd.reset(new ep_l2_tvd_directory<>(128, config.m_ep_l2_tvd_clean, config.m_ep_l2_tvd_dirty, config.m_ep_l2_tvd_clean_limit));
+     if (ft_enabled()) m_tag_array->bind_ft_replacement(&m_ft_pending.request, &m_ft_pending.tag_index);
+   }
+ 
+@@ -3335,6 +3337,11 @@ class l2_cache : public data_cache {
+   ep_l2_ro_runtime *m_ro;
+   void ro_init();
+   void validate_ep_l2_mode_config() const {
++    if (m_config.m_ep_l2_tvd_clean_limit > 128 ||
++        (m_config.m_ep_l2_tvd_clean_limit != 128 &&
++         (!m_config.m_ep_l2_tvd_clean || !m_config.m_ep_l2_tvd_dirty || m_config.ro_requested()))) {
++      fprintf(stderr,"CLEAN optional cap requires finite W+V both classes, RO disabled, limit0..128; default128 preserves other modes\n"); abort();
++    }
+     if ((m_config.m_ep_l2_tvd_clean || m_config.m_ep_l2_tvd_dirty) &&
+         (m_config.m_ep_l2_diag_copy_free || m_config.m_ep_l2_payload_mode != 2 ||
+          m_config.m_ep_l2_descriptor_pool_size != 512 || m_config.m_mshr_entries != 128 ||
+diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
+index 683b7c8..5a85e21 100644
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -342,6 +342,8 @@ void memory_config::reg_options(class OptionParser *opp) {
+                          "EP-L2 future RO pending-state feature (unsupported in M1)", "0");
+   option_parser_register(opp,"-gpgpu_ep_l2_tvd_fixed_entries",OPT_UINT32,
+       &m_L2_config.m_ep_l2_tvd_fixed_entries,"Fixed victim/non-victim bank quotas:0 dynamic,64 fixed (1168 total)","0");
++  option_parser_register(opp,"-gpgpu_ep_l2_tvd_clean_limit",OPT_UINT32,
++      &m_L2_config.m_ep_l2_tvd_clean_limit,"Optional CLEAN directory admission cap0..128 (default128 legacy); mandatory WB remains128", "128");
+   option_parser_register(opp,"-gpgpu_ep_l2_tvd_clean",OPT_BOOL,&m_L2_config.m_ep_l2_tvd_clean,"study CLEAN_ONLY", "0");
+   option_parser_register(opp,"-gpgpu_ep_l2_tvd_dirty",OPT_BOOL,&m_L2_config.m_ep_l2_tvd_dirty,"study DIRTY_PENDING_INFLIGHT (new source, native qualification required)", "0");
+   option_parser_register(opp, "-gpgpu_ep_l2_feature_tvd", OPT_BOOL,

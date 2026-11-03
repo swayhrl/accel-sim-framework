@@ -1,0 +1,246 @@
+{
+  "status": "PASS",
+  "runs": [
+    {
+      "label": "legacy",
+      "command": [
+        "/usr/bin/c++",
+        "-std=gnu++17",
+        "-O0",
+        "-g0",
+        "-fPIC",
+        "-UNDEBUG",
+        "-DCUDART_VERSION=12040",
+        "-DDEBUG=0",
+        "-DTRACING_ON=1",
+        "-I/root/data/dtc_main_20261023_v1/ae_fair_v1/toolchain/include",
+        "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/libcuda",
+        "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/libcuda",
+        "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim",
+        "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/intersim2",
+        "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/test_cap_production_legacy.cc",
+        "-Wl,--version-script=/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/linux-so-version.txt",
+        "-Wl,--start-group",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/libentrypoint.a",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/libcuda/libcuda.a",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/cuda-sim/libptxsim.a",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/intersim2/libintersim.a",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/accelwattch/libaccelwattch.a",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/trace-driven/libtrace-driven.a",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/trace-parser/libtrace-parser.a",
+        "-Wl,--end-group",
+        "-lm",
+        "-lz",
+        "-lGL",
+        "-ldl",
+        "-pthread",
+        "-o",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/production_legacy.cpu",
+        "-UNDEBUG"
+      ],
+      "compile_exit": 0,
+      "seconds": 3.435638666152954,
+      "stderr": ""
+    },
+    {
+      "label": "new",
+      "command": [
+        "/usr/bin/c++",
+        "-std=gnu++17",
+        "-O0",
+        "-g0",
+        "-fPIC",
+        "-UNDEBUG",
+        "-DCUDART_VERSION=12040",
+        "-DDEBUG=0",
+        "-DTRACING_ON=1",
+        "-I/root/data/dtc_main_20261023_v1/ae_fair_v1/toolchain/include",
+        "-I/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/libcuda",
+        "-I/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/build/gpgpu-sim/libcuda",
+        "-I/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/src/gpgpu-sim",
+        "-I/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/src/intersim2",
+        "-I/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/src",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/test_cap_production_new.cc",
+        "-Wl,--version-script=/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/linux-so-version.txt",
+        "-Wl,--start-group",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/build/gpgpu-sim/libentrypoint.a",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/build/gpgpu-sim/libcuda/libcuda.a",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/build/gpgpu-sim/src/cuda-sim/libptxsim.a",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/build/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/build/gpgpu-sim/src/intersim2/libintersim.a",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/build/gpgpu-sim/src/accelwattch/libaccelwattch.a",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/build/trace-driven/libtrace-driven.a",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/build/trace-parser/libtrace-parser.a",
+        "-Wl,--end-group",
+        "-lm",
+        "-lz",
+        "-lGL",
+        "-ldl",
+        "-pthread",
+        "-o",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/production_new.cpu",
+        "-UNDEBUG",
+        "-DNEW_CAP"
+      ],
+      "compile_exit": 0,
+      "seconds": 3.4312853813171387,
+      "stderr": ""
+    },
+    {
+      "label": "legacy128",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/production_legacy.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/legacy128.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 0.0163724422454834,
+      "semantic": [
+        "CLEAN_CAP_PRODUCTION|cycles=574|replies=91|lowerWB=1|digest=13251528066382148141|grants=181|bankmax=1|drain=1"
+      ],
+      "state": [],
+      "stderr": ""
+    },
+    {
+      "label": "legacy_dirty",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/production_legacy.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/legacy_dirty.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 0.017194509506225586,
+      "semantic": [
+        "CLEAN_CAP_PRODUCTION|cycles=577|replies=91|lowerWB=1|digest=13251528066382148141|grants=182|bankmax=1|drain=1"
+      ],
+      "state": [],
+      "stderr": ""
+    },
+    {
+      "label": "new0",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/production_new.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/new0.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 0.020380735397338867,
+      "semantic": [
+        "CLEAN_CAP_PRODUCTION|cycles=577|replies=91|lowerWB=1|digest=13251528066382148141|grants=182|bankmax=1|drain=1"
+      ],
+      "state": [
+        "CLEAN_CAP_STATE|limit=0|clean=0|live=1|mandatory=0"
+      ],
+      "stderr": ""
+    },
+    {
+      "label": "new32",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/production_new.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/new32.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 0.020598649978637695,
+      "semantic": [
+        "CLEAN_CAP_PRODUCTION|cycles=577|replies=91|lowerWB=1|digest=13251528066382148141|grants=182|bankmax=1|drain=1"
+      ],
+      "state": [
+        "CLEAN_CAP_STATE|limit=32|clean=32|live=33|mandatory=0"
+      ],
+      "stderr": ""
+    },
+    {
+      "label": "new64",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/production_new.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/new64.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 0.019603490829467773,
+      "semantic": [
+        "CLEAN_CAP_PRODUCTION|cycles=577|replies=91|lowerWB=1|digest=13251528066382148141|grants=182|bankmax=1|drain=1"
+      ],
+      "state": [
+        "CLEAN_CAP_STATE|limit=64|clean=64|live=65|mandatory=0"
+      ],
+      "stderr": ""
+    },
+    {
+      "label": "new96",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/production_new.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/new96.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 0.02020859718322754,
+      "semantic": [
+        "CLEAN_CAP_PRODUCTION|cycles=574|replies=91|lowerWB=1|digest=13251528066382148141|grants=181|bankmax=1|drain=1"
+      ],
+      "state": [
+        "CLEAN_CAP_STATE|limit=96|clean=81|live=82|mandatory=0"
+      ],
+      "stderr": ""
+    },
+    {
+      "label": "new128",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/production_new.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/new128.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1"
+      ],
+      "returncode": 0,
+      "seconds": 0.019473791122436523,
+      "semantic": [
+        "CLEAN_CAP_PRODUCTION|cycles=574|replies=91|lowerWB=1|digest=13251528066382148141|grants=181|bankmax=1|drain=1"
+      ],
+      "state": [
+        "CLEAN_CAP_STATE|limit=128|clean=81|live=82|mandatory=0"
+      ],
+      "stderr": ""
+    }
+  ],
+  "default128_semantic_equal_acceptedSource78": true,
+  "cap0_semantic_equal_acceptedSource78_dirtyOnly": true,
+  "scope": "actual production 32x8 IPOLY cache/subpartition 91requests; all replies version-checked; retained-clean revisit; P1/color/quota/ownership invariants; delayed dirtyWB completion/full drain; no app/Trace",
+  "science_models_started": 0
+}

@@ -1,0 +1,76 @@
+{
+  "status": "PASS",
+  "runs": [
+    {
+      "label": "quota_component",
+      "compile_command": [
+        "g++",
+        "-std=c++11",
+        "-O1",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-UNDEBUG",
+        "-fsanitize=undefined",
+        "-fno-sanitize-recover=all",
+        "-I/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/src/gpgpu-sim",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/test_clean_quota.cc",
+        "-o",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/quota_component"
+      ],
+      "compile_exit": 0,
+      "stderr": "",
+      "run_exit": 0,
+      "stdout": "CLEAN_QUOTA_COMPONENT|limits=0,1,2,3,32,64,96,128|mandatory128=PASS|pin=PASS|generation=PASS|promotion_count=PASS|preview_pure=PASS|full_drain=PASS\n",
+      "run_stderr": ""
+    },
+    {
+      "label": "legacy_default",
+      "compile_command": [
+        "g++",
+        "-std=c++11",
+        "-O1",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-UNDEBUG",
+        "-fsanitize=undefined",
+        "-fno-sanitize-recover=all",
+        "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/test_directory_capacity.cc",
+        "-o",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/legacy_default"
+      ],
+      "compile_exit": 0,
+      "stderr": "",
+      "run_exit": 0,
+      "stdout": "BASELINE_SEQUENCE_PASS cap=2 clean=1 dirty=2 cancelled=1 complete=1 stale_protected=1 drain=1\n",
+      "run_stderr": ""
+    },
+    {
+      "label": "candidate_default",
+      "compile_command": [
+        "g++",
+        "-std=c++11",
+        "-O1",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-UNDEBUG",
+        "-fsanitize=undefined",
+        "-fno-sanitize-recover=all",
+        "-I/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/src/gpgpu-sim",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_20261103_v1/agent_a/test_directory_capacity.cc",
+        "-o",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/candidate_default"
+      ],
+      "compile_exit": 0,
+      "stderr": "",
+      "run_exit": 0,
+      "stdout": "BASELINE_SEQUENCE_PASS cap=2 clean=1 dirty=2 cancelled=1 complete=1 stale_protected=1 drain=1\n",
+      "run_stderr": ""
+    }
+  ],
+  "models_started": 0,
+  "scope": "real directory header component; not full production pipeline until full newCore build+fixture"
+}

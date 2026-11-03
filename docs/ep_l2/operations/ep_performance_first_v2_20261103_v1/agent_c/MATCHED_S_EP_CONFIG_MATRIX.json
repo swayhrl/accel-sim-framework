@@ -1,0 +1,778 @@
+{
+  "schema": "EP_PF_V2_SYSTEM850_MATCHED_CONFIG_MATRIX_V1",
+  "status": "EXACT12_CANDIDATE_CELLS_NOT_NATIVE_REGISTERED",
+  "source_identity": {
+    "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+    "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+    "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "cells": [
+    {
+      "id": "EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_V1",
+      "program": "FWT",
+      "mode": "S",
+      "family": "G64W16",
+      "stage": "PRIMARY_SINGLE_FAMILY",
+      "geometry": {
+        "slices": 64,
+        "sets": 64,
+        "ways": 16,
+        "line_bytes": 128
+      },
+      "input_identity_sha256": "fc3a90622744ba1f63bec264284983747a372e3a34543249c3977d4bd285fe2e",
+      "source_identity": {
+        "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+        "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+        "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "DRAM_MHz": 850,
+      "dram_latency": 100,
+      "FRFCFS": 128,
+      "returnQ": 192,
+      "shared_credit_limit": 319,
+      "modeled_incremental_resources": {
+        "Tag_entries_per_slice": 768,
+        "FRFCFS_entries_per_channel": 0,
+        "shared_credit_per_partition": 0,
+        "physical_payload_extra_slots": 0
+      },
+      "option_delta": {
+        "-gpgpu_cache:dl2": {
+          "before": "S:32:128:8,L:B:m:L:P,A:128:1,128:0,32",
+          "after": "S:64:128:16,L:B:m:L:P,A:128:1,128:0,32"
+        }
+      },
+      "old_REF850_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_FASTWALSHTRANSFORM_FC3A9062_S_REF_V1/control/FROZEN_SPEC.json",
+        "sha256": "893ede5568187939839478cc38f7a191bfd483b9289b1ee092e9bc2bbd8f14b6",
+        "bytes": 32685
+      },
+      "candidate_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/spec_candidates/EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_V1.json",
+        "sha256": "fba4179ca521a8e06d085973caee4adadb5cd68fb8c438bc5e52fad34424ca21",
+        "bytes": 27801
+      },
+      "option_preview_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_V1.json",
+        "sha256": "708e6ae3b5e862680af84aa668ddd7cf883337d5c3251c9db86c84c42bb2a5fe",
+        "bytes": 11445
+      },
+      "final_overlay_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_V1.config",
+        "sha256": "3b1e5e75eb75693b74ca92f793e01a58cc720c09bba2c37496121da3148236b2",
+        "bytes": 116
+      },
+      "CPU_echo_pass": true,
+      "Host_native_status": "NOT_QUALIFIED_FOR_NEW_PROFILE",
+      "new_science_starts": 0
+    },
+    {
+      "id": "EP_PERF_PFV2_SYSTEM850_FWT_S_FRFCFS256_V1",
+      "program": "FWT",
+      "mode": "S",
+      "family": "FRFCFS256",
+      "stage": "PRIMARY_SINGLE_FAMILY",
+      "geometry": {
+        "slices": 64,
+        "sets": 32,
+        "ways": 8,
+        "line_bytes": 128
+      },
+      "input_identity_sha256": "fc3a90622744ba1f63bec264284983747a372e3a34543249c3977d4bd285fe2e",
+      "source_identity": {
+        "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+        "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+        "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "DRAM_MHz": 850,
+      "dram_latency": 100,
+      "FRFCFS": 256,
+      "returnQ": 192,
+      "shared_credit_limit": 447,
+      "modeled_incremental_resources": {
+        "Tag_entries_per_slice": 0,
+        "FRFCFS_entries_per_channel": 128,
+        "shared_credit_per_partition": 128,
+        "physical_payload_extra_slots": 0
+      },
+      "option_delta": {
+        "-gpgpu_frfcfs_dram_sched_queue_size": {
+          "before": "128",
+          "after": "256"
+        }
+      },
+      "old_REF850_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_FASTWALSHTRANSFORM_FC3A9062_S_REF_V1/control/FROZEN_SPEC.json",
+        "sha256": "893ede5568187939839478cc38f7a191bfd483b9289b1ee092e9bc2bbd8f14b6",
+        "bytes": 32685
+      },
+      "candidate_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/spec_candidates/EP_PERF_PFV2_SYSTEM850_FWT_S_FRFCFS256_V1.json",
+        "sha256": "2debd178a0a4806202130bd075d63f441a3c0198287b4b8f4ead2ccc62916597",
+        "bytes": 27814
+      },
+      "option_preview_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_FWT_S_FRFCFS256_V1.json",
+        "sha256": "9f7d898b414da56dbe9f150e0ebd1ed9b1d1aadf830331390245fb440aedef45",
+        "bytes": 11444
+      },
+      "final_overlay_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_FWT_S_FRFCFS256_V1.config",
+        "sha256": "6491ccf23fb00488c54d618686feaed4fa10b3ab83da1e6ac4f22ba4a0b0135f",
+        "bytes": 100
+      },
+      "CPU_echo_pass": true,
+      "Host_native_status": "NOT_QUALIFIED_FOR_NEW_PROFILE",
+      "new_science_starts": 0
+    },
+    {
+      "id": "EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_FRFCFS256_V1",
+      "program": "FWT",
+      "mode": "S",
+      "family": "G64W16_FRFCFS256",
+      "stage": "CONDITIONAL_COMBINATION",
+      "geometry": {
+        "slices": 64,
+        "sets": 64,
+        "ways": 16,
+        "line_bytes": 128
+      },
+      "input_identity_sha256": "fc3a90622744ba1f63bec264284983747a372e3a34543249c3977d4bd285fe2e",
+      "source_identity": {
+        "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+        "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+        "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "DRAM_MHz": 850,
+      "dram_latency": 100,
+      "FRFCFS": 256,
+      "returnQ": 192,
+      "shared_credit_limit": 447,
+      "modeled_incremental_resources": {
+        "Tag_entries_per_slice": 768,
+        "FRFCFS_entries_per_channel": 128,
+        "shared_credit_per_partition": 128,
+        "physical_payload_extra_slots": 0
+      },
+      "option_delta": {
+        "-gpgpu_cache:dl2": {
+          "before": "S:32:128:8,L:B:m:L:P,A:128:1,128:0,32",
+          "after": "S:64:128:16,L:B:m:L:P,A:128:1,128:0,32"
+        },
+        "-gpgpu_frfcfs_dram_sched_queue_size": {
+          "before": "128",
+          "after": "256"
+        }
+      },
+      "old_REF850_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_FASTWALSHTRANSFORM_FC3A9062_S_REF_V1/control/FROZEN_SPEC.json",
+        "sha256": "893ede5568187939839478cc38f7a191bfd483b9289b1ee092e9bc2bbd8f14b6",
+        "bytes": 32685
+      },
+      "candidate_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/spec_candidates/EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_FRFCFS256_V1.json",
+        "sha256": "3eaba2700c8d191faf73c50f6fbb4833d87e32ecb1c45ce448f23f3a14741f1d",
+        "bytes": 27851
+      },
+      "option_preview_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_FRFCFS256_V1.json",
+        "sha256": "081ad7fde30b704776fa6ed1c5ae5a81b4d78472068a8981b941678bba39ed8e",
+        "bytes": 11445
+      },
+      "final_overlay_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_FRFCFS256_V1.config",
+        "sha256": "a8f1f0817b8f270cf0dd461724b9b3446589de14385722776df4eb90eebfda9f",
+        "bytes": 156
+      },
+      "CPU_echo_pass": true,
+      "Host_native_status": "NOT_QUALIFIED_FOR_NEW_PROFILE",
+      "new_science_starts": 0
+    },
+    {
+      "id": "EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_V1",
+      "program": "FWT",
+      "mode": "WV_ZERO_RO",
+      "family": "G64W16",
+      "stage": "PRIMARY_SINGLE_FAMILY",
+      "geometry": {
+        "slices": 64,
+        "sets": 64,
+        "ways": 16,
+        "line_bytes": 128
+      },
+      "input_identity_sha256": "fc3a90622744ba1f63bec264284983747a372e3a34543249c3977d4bd285fe2e",
+      "source_identity": {
+        "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+        "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+        "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "DRAM_MHz": 850,
+      "dram_latency": 100,
+      "FRFCFS": 128,
+      "returnQ": 192,
+      "shared_credit_limit": 319,
+      "modeled_incremental_resources": {
+        "Tag_entries_per_slice": 768,
+        "FRFCFS_entries_per_channel": 0,
+        "shared_credit_per_partition": 0,
+        "physical_payload_extra_slots": 0
+      },
+      "option_delta": {
+        "-gpgpu_cache:dl2": {
+          "before": "S:32:128:8,L:B:m:L:P,A:128:1,128:0,32",
+          "after": "S:64:128:16,L:B:m:L:P,A:128:1,128:0,32"
+        }
+      },
+      "old_REF850_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_FASTWALSHTRANSFORM_FC3A9062_WV_ZERO_RO_REF_V1/control/FROZEN_SPEC.json",
+        "sha256": "bc9b320dd93dada542d5a4d9c2f4daae7a1b4e50899eb83ee124e855a5fc4c1b",
+        "bytes": 32757
+      },
+      "candidate_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/spec_candidates/EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_V1.json",
+        "sha256": "78a99fbd2eb81176c64f18dbcdc3bded3ca2182157428a43e5038b29ee864c49",
+        "bytes": 27891
+      },
+      "option_preview_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_V1.json",
+        "sha256": "50b6546e2818caab9a545338e99d44070623ba31af7db02d95aa13d34fceb872",
+        "bytes": 11445
+      },
+      "final_overlay_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_V1.config",
+        "sha256": "3b1e5e75eb75693b74ca92f793e01a58cc720c09bba2c37496121da3148236b2",
+        "bytes": 116
+      },
+      "CPU_echo_pass": true,
+      "Host_native_status": "NOT_QUALIFIED_FOR_NEW_PROFILE",
+      "new_science_starts": 0
+    },
+    {
+      "id": "EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_FRFCFS256_V1",
+      "program": "FWT",
+      "mode": "WV_ZERO_RO",
+      "family": "FRFCFS256",
+      "stage": "PRIMARY_SINGLE_FAMILY",
+      "geometry": {
+        "slices": 64,
+        "sets": 32,
+        "ways": 8,
+        "line_bytes": 128
+      },
+      "input_identity_sha256": "fc3a90622744ba1f63bec264284983747a372e3a34543249c3977d4bd285fe2e",
+      "source_identity": {
+        "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+        "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+        "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "DRAM_MHz": 850,
+      "dram_latency": 100,
+      "FRFCFS": 256,
+      "returnQ": 192,
+      "shared_credit_limit": 447,
+      "modeled_incremental_resources": {
+        "Tag_entries_per_slice": 0,
+        "FRFCFS_entries_per_channel": 128,
+        "shared_credit_per_partition": 128,
+        "physical_payload_extra_slots": 0
+      },
+      "option_delta": {
+        "-gpgpu_frfcfs_dram_sched_queue_size": {
+          "before": "128",
+          "after": "256"
+        }
+      },
+      "old_REF850_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_FASTWALSHTRANSFORM_FC3A9062_WV_ZERO_RO_REF_V1/control/FROZEN_SPEC.json",
+        "sha256": "bc9b320dd93dada542d5a4d9c2f4daae7a1b4e50899eb83ee124e855a5fc4c1b",
+        "bytes": 32757
+      },
+      "candidate_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/spec_candidates/EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_FRFCFS256_V1.json",
+        "sha256": "242a9143f55714d697322ee72b2e3d04bd7e4e7b2f4aa301d50b5eacee49052b",
+        "bytes": 27904
+      },
+      "option_preview_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_FRFCFS256_V1.json",
+        "sha256": "f9182cd989a0181db7e9e2684235be7599e1af37a2bf1fa4223c734081941f62",
+        "bytes": 11444
+      },
+      "final_overlay_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_FRFCFS256_V1.config",
+        "sha256": "6491ccf23fb00488c54d618686feaed4fa10b3ab83da1e6ac4f22ba4a0b0135f",
+        "bytes": 100
+      },
+      "CPU_echo_pass": true,
+      "Host_native_status": "NOT_QUALIFIED_FOR_NEW_PROFILE",
+      "new_science_starts": 0
+    },
+    {
+      "id": "EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_FRFCFS256_V1",
+      "program": "FWT",
+      "mode": "WV_ZERO_RO",
+      "family": "G64W16_FRFCFS256",
+      "stage": "CONDITIONAL_COMBINATION",
+      "geometry": {
+        "slices": 64,
+        "sets": 64,
+        "ways": 16,
+        "line_bytes": 128
+      },
+      "input_identity_sha256": "fc3a90622744ba1f63bec264284983747a372e3a34543249c3977d4bd285fe2e",
+      "source_identity": {
+        "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+        "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+        "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "DRAM_MHz": 850,
+      "dram_latency": 100,
+      "FRFCFS": 256,
+      "returnQ": 192,
+      "shared_credit_limit": 447,
+      "modeled_incremental_resources": {
+        "Tag_entries_per_slice": 768,
+        "FRFCFS_entries_per_channel": 128,
+        "shared_credit_per_partition": 128,
+        "physical_payload_extra_slots": 0
+      },
+      "option_delta": {
+        "-gpgpu_cache:dl2": {
+          "before": "S:32:128:8,L:B:m:L:P,A:128:1,128:0,32",
+          "after": "S:64:128:16,L:B:m:L:P,A:128:1,128:0,32"
+        },
+        "-gpgpu_frfcfs_dram_sched_queue_size": {
+          "before": "128",
+          "after": "256"
+        }
+      },
+      "old_REF850_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_FASTWALSHTRANSFORM_FC3A9062_WV_ZERO_RO_REF_V1/control/FROZEN_SPEC.json",
+        "sha256": "bc9b320dd93dada542d5a4d9c2f4daae7a1b4e50899eb83ee124e855a5fc4c1b",
+        "bytes": 32757
+      },
+      "candidate_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/spec_candidates/EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_FRFCFS256_V1.json",
+        "sha256": "16208ca786b5cff5f01e56ac08c39b00134ea43956b569b72e22d2cda24791ba",
+        "bytes": 27941
+      },
+      "option_preview_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_FRFCFS256_V1.json",
+        "sha256": "13df6b24175fe3acff4eb2d86ae061636ca65304334234a23c72f9a0b532b45a",
+        "bytes": 11445
+      },
+      "final_overlay_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_FRFCFS256_V1.config",
+        "sha256": "a8f1f0817b8f270cf0dd461724b9b3446589de14385722776df4eb90eebfda9f",
+        "bytes": 156
+      },
+      "CPU_echo_pass": true,
+      "Host_native_status": "NOT_QUALIFIED_FOR_NEW_PROFILE",
+      "new_science_starts": 0
+    },
+    {
+      "id": "EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_V1",
+      "program": "GEMM",
+      "mode": "S",
+      "family": "G64W16",
+      "stage": "PRIMARY_SINGLE_FAMILY",
+      "geometry": {
+        "slices": 64,
+        "sets": 64,
+        "ways": 16,
+        "line_bytes": 128
+      },
+      "input_identity_sha256": "140f6ed3a5cdb1d7183cd4d2acc37b086224a054893ef12d990fdb2d5ea3659b",
+      "source_identity": {
+        "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+        "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+        "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "DRAM_MHz": 850,
+      "dram_latency": 100,
+      "FRFCFS": 128,
+      "returnQ": 192,
+      "shared_credit_limit": 319,
+      "modeled_incremental_resources": {
+        "Tag_entries_per_slice": 768,
+        "FRFCFS_entries_per_channel": 0,
+        "shared_credit_per_partition": 0,
+        "physical_payload_extra_slots": 0
+      },
+      "option_delta": {
+        "-gpgpu_cache:dl2": {
+          "before": "S:32:128:8,L:B:m:L:P,A:128:1,128:0,32",
+          "after": "S:64:128:16,L:B:m:L:P,A:128:1,128:0,32"
+        }
+      },
+      "old_REF850_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_GEMM_140F6ED3_S_REF_V1/control/FROZEN_SPEC.json",
+        "sha256": "506342de800727af72a367cece1ffdadcf1ac8b5725d6cbbd33ffa94e7a5c227",
+        "bytes": 25250
+      },
+      "candidate_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/spec_candidates/EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_V1.json",
+        "sha256": "065beb41d6a1fbefcfb39d5c7812003b907c5ddd36b5dc5e12bdfe31a5e85a38",
+        "bytes": 18254
+      },
+      "option_preview_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_V1.json",
+        "sha256": "30a914fa03fa257d4f6efe113b230dadeb4e17c8f905d9770a573949326dacc3",
+        "bytes": 11445
+      },
+      "final_overlay_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_V1.config",
+        "sha256": "3b1e5e75eb75693b74ca92f793e01a58cc720c09bba2c37496121da3148236b2",
+        "bytes": 116
+      },
+      "CPU_echo_pass": true,
+      "Host_native_status": "NOT_QUALIFIED_FOR_NEW_PROFILE",
+      "new_science_starts": 0
+    },
+    {
+      "id": "EP_PERF_PFV2_SYSTEM850_GEMM_S_FRFCFS256_V1",
+      "program": "GEMM",
+      "mode": "S",
+      "family": "FRFCFS256",
+      "stage": "PRIMARY_SINGLE_FAMILY",
+      "geometry": {
+        "slices": 64,
+        "sets": 32,
+        "ways": 8,
+        "line_bytes": 128
+      },
+      "input_identity_sha256": "140f6ed3a5cdb1d7183cd4d2acc37b086224a054893ef12d990fdb2d5ea3659b",
+      "source_identity": {
+        "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+        "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+        "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "DRAM_MHz": 850,
+      "dram_latency": 100,
+      "FRFCFS": 256,
+      "returnQ": 192,
+      "shared_credit_limit": 447,
+      "modeled_incremental_resources": {
+        "Tag_entries_per_slice": 0,
+        "FRFCFS_entries_per_channel": 128,
+        "shared_credit_per_partition": 128,
+        "physical_payload_extra_slots": 0
+      },
+      "option_delta": {
+        "-gpgpu_frfcfs_dram_sched_queue_size": {
+          "before": "128",
+          "after": "256"
+        }
+      },
+      "old_REF850_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_GEMM_140F6ED3_S_REF_V1/control/FROZEN_SPEC.json",
+        "sha256": "506342de800727af72a367cece1ffdadcf1ac8b5725d6cbbd33ffa94e7a5c227",
+        "bytes": 25250
+      },
+      "candidate_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/spec_candidates/EP_PERF_PFV2_SYSTEM850_GEMM_S_FRFCFS256_V1.json",
+        "sha256": "f9ab73a07d993e096e460c1ba3d8994d73df0e0f854bd991f203fe812cb10249",
+        "bytes": 18267
+      },
+      "option_preview_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_GEMM_S_FRFCFS256_V1.json",
+        "sha256": "d7941d4a8c56c9cd5832cb901706ed5d801a5739980aa0fe2f33d629c64078c2",
+        "bytes": 11444
+      },
+      "final_overlay_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_GEMM_S_FRFCFS256_V1.config",
+        "sha256": "6491ccf23fb00488c54d618686feaed4fa10b3ab83da1e6ac4f22ba4a0b0135f",
+        "bytes": 100
+      },
+      "CPU_echo_pass": true,
+      "Host_native_status": "NOT_QUALIFIED_FOR_NEW_PROFILE",
+      "new_science_starts": 0
+    },
+    {
+      "id": "EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_FRFCFS256_V1",
+      "program": "GEMM",
+      "mode": "S",
+      "family": "G64W16_FRFCFS256",
+      "stage": "CONDITIONAL_COMBINATION",
+      "geometry": {
+        "slices": 64,
+        "sets": 64,
+        "ways": 16,
+        "line_bytes": 128
+      },
+      "input_identity_sha256": "140f6ed3a5cdb1d7183cd4d2acc37b086224a054893ef12d990fdb2d5ea3659b",
+      "source_identity": {
+        "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+        "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+        "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "DRAM_MHz": 850,
+      "dram_latency": 100,
+      "FRFCFS": 256,
+      "returnQ": 192,
+      "shared_credit_limit": 447,
+      "modeled_incremental_resources": {
+        "Tag_entries_per_slice": 768,
+        "FRFCFS_entries_per_channel": 128,
+        "shared_credit_per_partition": 128,
+        "physical_payload_extra_slots": 0
+      },
+      "option_delta": {
+        "-gpgpu_cache:dl2": {
+          "before": "S:32:128:8,L:B:m:L:P,A:128:1,128:0,32",
+          "after": "S:64:128:16,L:B:m:L:P,A:128:1,128:0,32"
+        },
+        "-gpgpu_frfcfs_dram_sched_queue_size": {
+          "before": "128",
+          "after": "256"
+        }
+      },
+      "old_REF850_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_GEMM_140F6ED3_S_REF_V1/control/FROZEN_SPEC.json",
+        "sha256": "506342de800727af72a367cece1ffdadcf1ac8b5725d6cbbd33ffa94e7a5c227",
+        "bytes": 25250
+      },
+      "candidate_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/spec_candidates/EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_FRFCFS256_V1.json",
+        "sha256": "03aa0c696776fb8a061fd128cb1511e56f96876d9502b2dbaebde7003a92eb12",
+        "bytes": 18304
+      },
+      "option_preview_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_FRFCFS256_V1.json",
+        "sha256": "dc3ba5e24b4f8877151420e91c486f472c4a9d00e9f789f6704df1e30cde885b",
+        "bytes": 11445
+      },
+      "final_overlay_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_FRFCFS256_V1.config",
+        "sha256": "a8f1f0817b8f270cf0dd461724b9b3446589de14385722776df4eb90eebfda9f",
+        "bytes": 156
+      },
+      "CPU_echo_pass": true,
+      "Host_native_status": "NOT_QUALIFIED_FOR_NEW_PROFILE",
+      "new_science_starts": 0
+    },
+    {
+      "id": "EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_V1",
+      "program": "GEMM",
+      "mode": "WV_ZERO_RO",
+      "family": "G64W16",
+      "stage": "PRIMARY_SINGLE_FAMILY",
+      "geometry": {
+        "slices": 64,
+        "sets": 64,
+        "ways": 16,
+        "line_bytes": 128
+      },
+      "input_identity_sha256": "140f6ed3a5cdb1d7183cd4d2acc37b086224a054893ef12d990fdb2d5ea3659b",
+      "source_identity": {
+        "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+        "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+        "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "DRAM_MHz": 850,
+      "dram_latency": 100,
+      "FRFCFS": 128,
+      "returnQ": 192,
+      "shared_credit_limit": 319,
+      "modeled_incremental_resources": {
+        "Tag_entries_per_slice": 768,
+        "FRFCFS_entries_per_channel": 0,
+        "shared_credit_per_partition": 0,
+        "physical_payload_extra_slots": 0
+      },
+      "option_delta": {
+        "-gpgpu_cache:dl2": {
+          "before": "S:32:128:8,L:B:m:L:P,A:128:1,128:0,32",
+          "after": "S:64:128:16,L:B:m:L:P,A:128:1,128:0,32"
+        }
+      },
+      "old_REF850_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_GEMM_140F6ED3_WV_ZERO_RO_REF_V1/control/FROZEN_SPEC.json",
+        "sha256": "647b026041961f216d1f7d1581d6b654b5495ad0fdd941d1b03f46e7d3c47b24",
+        "bytes": 25322
+      },
+      "candidate_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/spec_candidates/EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_V1.json",
+        "sha256": "e58567e0de34b8baccdd5c433296e9725eec068acaa82345a6d9c2ba5df3a667",
+        "bytes": 18344
+      },
+      "option_preview_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_V1.json",
+        "sha256": "80bba14b38f54620e5860bd433fd20962f32c692590dedf8b214bc77854b652f",
+        "bytes": 11445
+      },
+      "final_overlay_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_V1.config",
+        "sha256": "3b1e5e75eb75693b74ca92f793e01a58cc720c09bba2c37496121da3148236b2",
+        "bytes": 116
+      },
+      "CPU_echo_pass": true,
+      "Host_native_status": "NOT_QUALIFIED_FOR_NEW_PROFILE",
+      "new_science_starts": 0
+    },
+    {
+      "id": "EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_FRFCFS256_V1",
+      "program": "GEMM",
+      "mode": "WV_ZERO_RO",
+      "family": "FRFCFS256",
+      "stage": "PRIMARY_SINGLE_FAMILY",
+      "geometry": {
+        "slices": 64,
+        "sets": 32,
+        "ways": 8,
+        "line_bytes": 128
+      },
+      "input_identity_sha256": "140f6ed3a5cdb1d7183cd4d2acc37b086224a054893ef12d990fdb2d5ea3659b",
+      "source_identity": {
+        "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+        "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+        "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "DRAM_MHz": 850,
+      "dram_latency": 100,
+      "FRFCFS": 256,
+      "returnQ": 192,
+      "shared_credit_limit": 447,
+      "modeled_incremental_resources": {
+        "Tag_entries_per_slice": 0,
+        "FRFCFS_entries_per_channel": 128,
+        "shared_credit_per_partition": 128,
+        "physical_payload_extra_slots": 0
+      },
+      "option_delta": {
+        "-gpgpu_frfcfs_dram_sched_queue_size": {
+          "before": "128",
+          "after": "256"
+        }
+      },
+      "old_REF850_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_GEMM_140F6ED3_WV_ZERO_RO_REF_V1/control/FROZEN_SPEC.json",
+        "sha256": "647b026041961f216d1f7d1581d6b654b5495ad0fdd941d1b03f46e7d3c47b24",
+        "bytes": 25322
+      },
+      "candidate_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/spec_candidates/EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_FRFCFS256_V1.json",
+        "sha256": "b11a4a0b6821bf3bf6fdcce0344dafebc9ee3e7938c2c111b68a4595b5d3e078",
+        "bytes": 18357
+      },
+      "option_preview_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_FRFCFS256_V1.json",
+        "sha256": "9d81dfebc25ad224d6116adeb4dde56bb723a0a8eaa4655fb6a6d8be91f1f7f0",
+        "bytes": 11444
+      },
+      "final_overlay_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_FRFCFS256_V1.config",
+        "sha256": "6491ccf23fb00488c54d618686feaed4fa10b3ab83da1e6ac4f22ba4a0b0135f",
+        "bytes": 100
+      },
+      "CPU_echo_pass": true,
+      "Host_native_status": "NOT_QUALIFIED_FOR_NEW_PROFILE",
+      "new_science_starts": 0
+    },
+    {
+      "id": "EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_FRFCFS256_V1",
+      "program": "GEMM",
+      "mode": "WV_ZERO_RO",
+      "family": "G64W16_FRFCFS256",
+      "stage": "CONDITIONAL_COMBINATION",
+      "geometry": {
+        "slices": 64,
+        "sets": 64,
+        "ways": 16,
+        "line_bytes": 128
+      },
+      "input_identity_sha256": "140f6ed3a5cdb1d7183cd4d2acc37b086224a054893ef12d990fdb2d5ea3659b",
+      "source_identity": {
+        "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+        "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+        "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "DRAM_MHz": 850,
+      "dram_latency": 100,
+      "FRFCFS": 256,
+      "returnQ": 192,
+      "shared_credit_limit": 447,
+      "modeled_incremental_resources": {
+        "Tag_entries_per_slice": 768,
+        "FRFCFS_entries_per_channel": 128,
+        "shared_credit_per_partition": 128,
+        "physical_payload_extra_slots": 0
+      },
+      "option_delta": {
+        "-gpgpu_cache:dl2": {
+          "before": "S:32:128:8,L:B:m:L:P,A:128:1,128:0,32",
+          "after": "S:64:128:16,L:B:m:L:P,A:128:1,128:0,32"
+        },
+        "-gpgpu_frfcfs_dram_sched_queue_size": {
+          "before": "128",
+          "after": "256"
+        }
+      },
+      "old_REF850_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_GEMM_140F6ED3_WV_ZERO_RO_REF_V1/control/FROZEN_SPEC.json",
+        "sha256": "647b026041961f216d1f7d1581d6b654b5495ad0fdd941d1b03f46e7d3c47b24",
+        "bytes": 25322
+      },
+      "candidate_spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/spec_candidates/EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_FRFCFS256_V1.json",
+        "sha256": "8f1b0b1d2e188b34ed6debb6f0cf8f2b457dde2b597e3b0a93cd3288f97eb8ed",
+        "bytes": 18394
+      },
+      "option_preview_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_FRFCFS256_V1.json",
+        "sha256": "ad83bc5abcf682f0b1ff77c34ab779710b68b050ca3a7d35fe52ac2a6f76168c",
+        "bytes": 11445
+      },
+      "final_overlay_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/option_previews/EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_FRFCFS256_V1.config",
+        "sha256": "a8f1f0817b8f270cf0dd461724b9b3446589de14385722776df4eb90eebfda9f",
+        "bytes": 156
+      },
+      "CPU_echo_pass": true,
+      "Host_native_status": "NOT_QUALIFIED_FOR_NEW_PROFILE",
+      "new_science_starts": 0
+    }
+  ],
+  "first8": [
+    "EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_V1",
+    "EP_PERF_PFV2_SYSTEM850_FWT_S_FRFCFS256_V1",
+    "EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_V1",
+    "EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_FRFCFS256_V1",
+    "EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_V1",
+    "EP_PERF_PFV2_SYSTEM850_GEMM_S_FRFCFS256_V1",
+    "EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_V1",
+    "EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_FRFCFS256_V1"
+  ],
+  "conditional4": [
+    "EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_FRFCFS256_V1",
+    "EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_FRFCFS256_V1",
+    "EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_FRFCFS256_V1",
+    "EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_FRFCFS256_V1"
+  ],
+  "new_science_starts": 0
+}

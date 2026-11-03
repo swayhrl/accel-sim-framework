@@ -1,0 +1,171 @@
+diff --git a/src/gpgpu-sim/dram.cc b/src/gpgpu-sim/dram.cc
+index e675e95..3f1024d 100644
+--- a/src/gpgpu-sim/dram.cc
++++ b/src/gpgpu-sim/dram.cc
+@@ -293,7 +293,18 @@ void dram_t::scheduler_fifo() {
+   a ^= b;
+ 
+ void dram_t::cycle() {
+-  if (!returnq->full()) {
++  // The finite rwq already reserves a slot for each issued data beat. A final
++  // L2-WB beat is the completion ready/valid boundary: retain it at the head
++  // while its destination slice's single completion CAM is busy. Never pop or
++  // advance dqbytes/status/credit/free before that handshake. Subsequent issued
++  // beats remain bounded by rwq's existing CL+1 slots and block column issue
++  // when full; DRAM bank timing/scheduling below still advances normally.
++  const dram_req_t *head = rwq->top();
++  const bool completion_blocked = head &&
++      head->data->get_access_type() == L2_WRBK_ACC &&
++      head->dqbytes + m_config->dram_atom_size >= head->nbytes &&
++      !m_memory_partition_unit->can_complete_writeback(head->data);
++  if (!returnq->full() && !completion_blocked) {
+     dram_req_t *cmd = rwq->pop();
+     if (cmd) {
+ #ifdef DRAM_VIEWCMD
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index 49f9298..e587eda 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -3201,6 +3201,12 @@ class l2_cache : public data_cache {
+   // C4 WAD ownership is intentionally address-indexed. A reservation must
+   // exist before tag_array::access can evict a dirty victim; release happens
+   // only when the corresponding no-return writeback reaches set_done().
++  // Ready/valid handshake for the finite completion-address CAM. Inspect its
++  // one-bit current-core-cycle availability only; no address/directory lookup,
++  // reservation, timestamp or ownership mutation is allowed in this preview.
++  bool ep_l2_wad_completion_ready(unsigned long long cycle) const {
++    return !ep_l2_wad_enabled() || !m_tvd || m_tvd_completion_cam_cycle != cycle;
++  }
+   void ep_l2_wad_complete(new_addr_type block_addr, unsigned long long cycle,
+       unsigned completing_request_uid = (unsigned)-1);
+   unsigned ep_l2_wad_occupancy() const { return m_tvd ? m_tvd->mandatory() : m_ep_l2_wad_entries_live.size(); }
+diff --git a/src/gpgpu-sim/l2cache.cc b/src/gpgpu-sim/l2cache.cc
+index fc7f70d..c544be5 100644
+--- a/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/l2cache.cc
+@@ -677,9 +677,13 @@ void memory_partition_unit::simple_dram_model_cycle() {
+       }
+ 
+     } else {
+-      this->set_done(mf_return);
+-      delete mf_return;
+-      m_dram_latency_queue.pop_front();
++      // Keep the original no-return WB and its credit in the finite lower
++      // path until the one-query-per-core-cycle completion CAM is available.
++      if (can_complete_writeback(mf_return)) {
++        this->set_done(mf_return);
++        delete mf_return;
++        m_dram_latency_queue.pop_front();
++      }
+     }
+   }
+ 
+@@ -855,10 +859,25 @@ void memory_partition_unit::dram_cycle() {
+   }
+ }
+ 
++bool memory_partition_unit::can_complete_writeback(const mem_fetch *mf) const {
++  if (mf->get_access_type() != L2_WRBK_ACC) return true;
++  const unsigned global_spid = mf->get_sub_partition_id();
++  const int spid = global_spid -
++      m_id * m_config->m_n_sub_partition_per_memory_channel;
++  assert(spid >= 0 && static_cast<unsigned>(spid) <
++         m_config->m_n_sub_partition_per_memory_channel);
++  assert(m_sub_partition[spid]->get_id() == global_spid);
++  return m_sub_partition[spid]->can_set_done(mf);
++}
++
+ void memory_partition_unit::set_done(mem_fetch *mf) {
+   unsigned global_spid = mf->get_sub_partition_id();
+   int spid = global_sub_partition_id_to_local_id(global_spid);
+   assert(m_sub_partition[spid]->get_id() == global_spid);
++  // Validate and retire the matching WAD/TVD owner before returning credit.
++  // A rejected stale UID must not release resources it does not own. Valid
++  // callbacks remain in this same timestamp; no arbitration re-enters here.
++  m_sub_partition[spid]->set_done(mf);
+   if (mf->get_access_type() == L1_WRBK_ACC ||
+       mf->get_access_type() == L2_WRBK_ACC) {
+     m_arbitration_metadata.return_credit(spid, mf);
+@@ -866,7 +885,7 @@ void memory_partition_unit::set_done(mem_fetch *mf) {
+         "mem_fetch request %p return from dram to sub partition %d\n", mf,
+         spid);
+   }
+-  m_sub_partition[spid]->set_done(mf);
++
+ }
+ 
+ void memory_partition_unit::set_dram_power_stats(
+@@ -2752,6 +2771,12 @@ mem_fetch *memory_sub_partition::top() {
+   return mf;
+ }
+ 
++bool memory_sub_partition::can_set_done(const mem_fetch *mf) const {
++  return mf->get_access_type() != L2_WRBK_ACC ||
++      m_L2cache->ep_l2_wad_completion_ready(
++          m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);
++}
++
+ void memory_sub_partition::set_done(mem_fetch *mf) {
+   if (mf->get_access_type() == L2_WRBK_ACC) {
+     assert(!m_L2cache->ft_enabled() || mf->has_ft_wb_data());
+diff --git a/src/gpgpu-sim/l2cache.h b/src/gpgpu-sim/l2cache.h
+index 497cee6..fe38a2e 100644
+--- a/src/gpgpu-sim/l2cache.h
++++ b/src/gpgpu-sim/l2cache.h
+@@ -149,6 +149,7 @@ class memory_partition_unit {
+   void dram_cycle();
+   void simple_dram_model_cycle();
+ 
++  bool can_complete_writeback(const mem_fetch *mf) const;
+   void set_done(mem_fetch *mf);
+ 
+   void visualizer_print(gzFile visualizer_file) const;
+@@ -319,6 +320,7 @@ class memory_sub_partition {
+   void push(class mem_fetch *mf, unsigned long long clock_cycle);
+   class mem_fetch *pop();
+   class mem_fetch *top();
++  bool can_set_done(const mem_fetch *mf) const;
+   void set_done(mem_fetch *mf);
+ 
+   unsigned flushL2();
+diff --git a/tests/ep_l2/test_cross_clock_completion_wb.cc b/tests/ep_l2/test_cross_clock_completion_wb.cc
+new file mode 100644
+index 0000000..0aadc34
+--- /dev/null
++++ b/tests/ep_l2/test_cross_clock_completion_wb.cc
+@@ -0,0 +1,35 @@
++// Directed CPU memory-component fixture; no input Trace or application kernels.
++#include <cassert>
++#include <cstdio>
++#include <cstdlib>
++#include <map>
++#include <set>
++#include <vector>
++#include "gpgpu_context.h"
++#include "gpu-sim.h"
++#include "icnt_wrapper.h"
++#include "l2cache.h"
++#include "mem_latency_stat.h"
++#include "option_parser.h"
++#include "trace_driven.h"
++struct calendar {
++ double ct=0,it=0,dt=0,lt=0,cp,ip,dp,lp;
++ int next(){double sm=std::min(ct,std::min(it,dt));int m=0;if(lt<=sm){sm=lt;m|=8;lt+=lp;}if(it<=sm){m|=2;it+=ip;}if(dt<=sm){m|=4;dt+=dp;}if(ct<=sm){m|=1;ct+=cp;}return m;}
++};
++int main(int argc,char**argv){
++ assert(argc==4);setvbuf(stdout,nullptr,_IONBF,0);unsigned mhz=std::stoul(argv[2]),writes=std::stoul(argv[3]);
++ gpgpu_context ctx;gpgpu_sim_config cfg(&ctx);option_parser_t opt=option_parser_create();ctx.ptx_reg_options(opt);ctx.func_sim->ptx_opcocde_latency_options(opt);icnt_reg_options(opt);cfg.reg_options(opt);trace_config tc;tc.reg_options(opt);option_parser_cfgfile(opt,argv[1]);cfg.init();option_parser_destroy(opt);
++ exec_gpgpu_sim gpu(cfg,&ctx);gpu.gpu_sim_cycle=1;const memory_config*mc=gpu.getMemoryConfig();memory_stats_t stats(cfg.num_shader(),gpu.getShaderCoreConfig(),mc,&gpu);memory_partition_unit part(0,mc,&stats,&gpu);partition_mf_allocator allocator(mc);auto sub=part.get_sub_partition(0);auto cache=sub->ft_cache_for_test();assert(cache->tvd_enabled());
++ unsigned responses=0;std::set<unsigned> seen;auto collect=[&](){while(auto p=sub->pop()){assert(seen.insert(p->get_request_uid()).second);++responses;delete p;}};
++ unsigned made=0;new_addr_type addr=0;while(made<writes){addrdec_t decoded;mc->m_address_mapping.addrdec_tlx(addr,&decoded);if(decoded.sub_partition!=0){addr+=128;continue;}
++  active_mask_t active;active.set(0);mem_access_byte_mask_t bytes;for(unsigned b=0;b<32;++b)bytes.set(b);mem_access_sector_mask_t sec;sec.set(0);auto mf=allocator.alloc(addr,GLOBAL_ACC_W,active,bytes,sec,32,true,gpu.gpu_sim_cycle,0,0,0,nullptr,0);assert(mf->get_sub_partition_id()==0);assert(!sub->full());sub->push(mf,gpu.gpu_sim_cycle);
++  unsigned expect=made+1;for(unsigned n=0;n<2000&&responses<expect;++n){part.cache_cycle(gpu.gpu_sim_cycle);collect();++gpu.gpu_sim_cycle;}assert(responses==expect);++made;addr+=128;
++ }
++ unsigned pending=cache->ep_l2_wad_occupancy();assert(pending>2&&pending<128);printf("CPU_WB_PREPARED|DRAM=%u|writes=%u|realWAD=%u|lowerFIFO=%u|actual_TVD=1|partial_sector_bytes=32|GPU_application_kernels=0\n",mhz,writes,pending,sub->ep_l2_l2dram_occupancy());
++ calendar cal;cal.cp=cal.ip=cal.lp=1./1132.;cal.dp=1./double(mhz);unsigned steps=0,dram_ticks=0;std::map<unsigned long long,unsigned> callbacks;
++ while((part.busy()||cache->ep_l2_wad_occupancy()||!cache->ft_drained()||!sub->L2_dram_queue_empty()||!part.l2_char_no_credit_leak())&&steps++<2000000){int m=cal.next();if(m&4){++callbacks[gpu.gpu_sim_cycle];++dram_ticks;part.dram_cycle();}if(m&8){part.cache_cycle(gpu.gpu_sim_cycle);collect();}if(m&1)++gpu.gpu_sim_cycle;}
++ printf("CPU_DRAIN_STATE|steps=%u|busy=%u|WAD=%u|lower=%u|ft=%u|creditclean=%u\n",steps,part.busy(),cache->ep_l2_wad_occupancy(),sub->ep_l2_l2dram_occupancy(),cache->ft_drained(),part.l2_char_no_credit_leak());
++ assert(!part.busy()&&sub->l2_char_no_resource_leak()&&cache->ft_drained()&&cache->ep_l2_wad_occupancy()==0&&part.l2_char_no_credit_leak());assert(responses==writes);
++ printf("CPU_WB_DRAIN_PASS|DRAM=%u|writes=%u|responses=%u|initialWB=%u|DRAMticks=%u|steps=%u|core_counter=%llu|port_count=1|app_kernels=0|Trace_body_reads=0\n",mhz,writes,responses,pending,dram_ticks,steps,gpu.gpu_sim_cycle);
++ return 0;
++}

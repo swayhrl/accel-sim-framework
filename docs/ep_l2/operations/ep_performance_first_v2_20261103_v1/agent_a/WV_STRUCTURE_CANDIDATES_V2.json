@@ -1,0 +1,137 @@
+{
+  "schema": "EP_WV_STRUCTURE_CANDIDATES_V2",
+  "status": "ENGINEERING_AND_PROPOSED_FAMILIES_NO_NEW_SCIENCE_AUTHORITY",
+  "candidates": [
+    {
+      "id": "A_DIR128_256_OPTIONAL_METADATA",
+      "performance_priority": 1,
+      "engineering_state": "DESIGN_PLUS_PRIOR_HEADER_COMPONENT_PROTOTYPE_NOT_FULL_PIPELINE",
+      "original": "directory128 serves mandatoryWB and optionalCLEAN/WB_COMPLETE; Payload1168,4banksP1",
+      "change": "directory entries128->256; independent mandatoryWB ceiling128 retained; physicalPayload1168 and Tag32x8 fixed; ticket sentinel/index/owner-generation must support256",
+      "evidence": "StencilWV final8192/8192 entries,4.93Mserved; GEMM both7578/8192 and609858served with usefulCLEAN; free physicalpayload may exist despite metadata limit. Terminal occupancy alone is not bottleneck proof.",
+      "first_inputs": [
+        "GEMM",
+        "Stencil"
+      ],
+      "hardware_cost": "128 additional directory entries per slice plus comparisons/selection; no payload SRAM increase; evaluate explicit2GPUcycle lookup as realistic latency candidate and1cycle onlydiagnostic upper bound unless timing closure; no second query port implicitly",
+      "mandatory_progress": "do not permit256mandatoryWB; separate finite128credit/counter before all native preview/commit/promotion; oldft_wb<128 assertions remain",
+      "minimum_CPU": [
+        "128/256ticket invalid sentinel and generations",
+        "128mandatory+128optional;129thmandatory blocks",
+        "same-slot dirty promotion at directoryfull",
+        "32x8 actualcolors, returned pins, response/lower backpressure, complete drain",
+        "default128sameSource reference, purepreview",
+        "onequery/slice/GPUcycle and specifiedlatency"
+      ],
+      "performance_status": "UNKNOWN_HYPOTHESIS; not approved for apps"
+    },
+    {
+      "id": "A_CLEAN_OPTIONAL_CAP",
+      "performance_priority": 2,
+      "engineering_state": "FULL_NEW_CORE_BUILD_AND_PRODUCTION_CPU_PASS",
+      "original": "unbounded within shared directory128 optionalCLEAN admission; mandatoryWB already preempts optional",
+      "change": "-gpgpu_ep_l2_tvd_clean_limit values0,32,64,96,128;default128legacy; when Cquota reached, CLEAN installs may replace onlyeligibleCLEAN and cannot consume emptyrows or evict WB_COMPLETE; dirtymandatory unmodified",
+      "evidence": "isolatedFWT clean0services with439.7Mcleanticks vsdirty88103services; oppositeGEMM clean592450/dirty0. Both already better ineach, so reducingCLEAN is not predicted to improve by itself. Source policy control tests bounded allocation tradeoff and can produce negative result.",
+      "first_inputs": [
+        "FWT shortcostscreen",
+        "Scan legitimate pressure-negativecontrol",
+        "GEMM protectivecounterexample onlyafter screen"
+      ],
+      "hardware_cost": "one8bitclean-live counter+8bitconfiglimit/slice, finitecompare/increment/decrement onexisting directoryupdate lanes; no newCAM query orbank/payload port; sameDir128/WAD128/Payload1168/P1; physicaltiming/PPAUNKNOWN",
+      "Source_ref": "NEW_SOURCE_BUILD_IDENTITY.json",
+      "correctness_actual": [
+        "componentquota0/1/2/3/32/64/96/128 UBSan",
+        "default128semantic match Source78both",
+        "cap0semanticmatchSource78dirty-only",
+        "actual32x8 production91versionchecked replies, clean revisit,1delayedWB, P1/color/ownership/drain",
+        "actual WAD128 lowerfull, dirty-forward write/atomic wait, partialsectorfallback",
+        "samebankpool exhaustion default; shared128clean-to-dirty same-slot promotion default; hostprefill alias/pin protections default",
+        "invalidlimit129 and customcap partialmode correctlyabort"
+      ],
+      "not_covered": [
+        "newSource SformalCPU qualification",
+        "RO/Fqualifications not inherited",
+        "fullapplicationNI/Host/native",
+        "everyquota x everybank/UIDinterleaving"
+      ],
+      "performance_status": "NO_NEW_APPLICATION;CPUcyclesnotGPUperformance"
+    },
+    {
+      "id": "A_PRESSURE_CONDITIONAL_OPTIONAL_ADMISSION",
+      "performance_priority": 3,
+      "engineering_state": "DESIGN_NOT_IMPLEMENTED",
+      "change": "apply boundedCLEAN admission limit only above frozen mandatoryWB pressure threshold(e.g64/128), releasebelow32; no workload-name oracle. Use maintained mandatorycredit count or explicitly cost count; do not scan an additional addressCAM.",
+      "evidence": "preserves useful GEMM clean retention atlowWB demand while Scan/Conv actualWAD waits; avoids uniformCLEANcap risk. FWT both already littleCLEAN, so activation/performance unknown.",
+      "first_inputs": [
+        "Scan",
+        "Conv",
+        "GEMM protective"
+      ],
+      "hardware_cost": "finite8bitmandatory count+threshold/hysteresis state/comparators and existingcounterupdate-lane contention; keepmandatory priority, no extraPayload/ports",
+      "minimum_CPU": [
+        "WB staged/inflight/complete counter transitions;exact128credit",
+        "samecyclecompletion/admissionordering",
+        "nooscillation/starvation;continuousdirtyprogress",
+        "pins/generation/partialdirty promotion andfull drain",
+        "defaultdisabledsemanticNI"
+      ],
+      "performance_status": "HYPOTHESIS"
+    },
+    {
+      "id": "A_EVENT_AGE_DIRTY_INSTALL",
+      "performance_priority": 4,
+      "engineering_state": "NARROW_DESIGN_ONLY_EXISTING_MAIN_SCOPE_REUSED",
+      "change": "at full directory for newdirty install, chooseoldest eligibleacrossCLEAN/WB_COMPLETE instead ofCLEAN-first; useexistingservice-updatedage; allotherreclaim/bankcolor/promotionpaths unchanged",
+      "evidence": "GEMM usefulCLEAN and FWT usefulcompletedDIRTY conflict; event-age canretain recently served whicheverclass. No currentcombined perclass service/reclaimloss event provesbenefit.",
+      "hardware_cost": "samefinite128selection candidates +class-policy mux; no newservedbit/timestamp orlookup; selectiontiming/PPAunknown",
+      "minimum_CPU": [
+        "mandatoryWB/pin/readersnevereligible",
+        "previewnoage/statechange",
+        "oldestactualservice ordering",
+        "bothclasses,bankcolor,fullsharedDIR promotion",
+        "defaultlegacy outputs unchanged"
+      ],
+      "performance_status": "HYPOTHESIS_NOT_KNOWN_BEST"
+    },
+    {
+      "id": "A_OPTIONAL_COLOR_HEADROOM",
+      "performance_priority": 5,
+      "engineering_state": "DESIGN_NOT_IMPLEMENTED",
+      "change": "optional retained entries receiveper-color admission credits that preserve a small same-color landing headroom; mandatory/fill/response ownership progress wins; no newbanks orcolorremap",
+      "evidence": "Source requires32x8 tag-payloadbank identity. DefaultCPUstress provesbanklocalexhaustioncorrectly; acceptedglobal waits do not prove percolor opportunity.",
+      "first_inputs": [
+        "Conv",
+        "Scan",
+        "Stencil protective"
+      ],
+      "hardware_cost": "fourboundedfree/optional counters andcredit arbitration; same1168slots andfourP1banks; withheld optionalcapacity can hurtreadreuse",
+      "minimum_CPU": [
+        "onecolorfull whileothercolorsfree",
+        "latefill/generation andpins",
+        "mandatoryprogressunderoptionalstream",
+        "noimplicitcrossbankmove/freecopy",
+        "complete resource drain"
+      ],
+      "performance_status": "HYPOTHESIS_REQUIRE_JOINT_LOCAL_EVIDENCE"
+    },
+    {
+      "id": "A_P2_OR_ARB_SERVICE",
+      "performance_priority": 6,
+      "engineering_state": "DESIGN_AND_EXISTING_BASE_OPTION_CONSTRAINT",
+      "change": "P1->P2 for S/WV with matchedphysicalservice orfinite retained-read/WB arbitration atP1; currentSource78WV/ROguardforbidsP2 and MSobserverforcesP1; do notjustdelete guards",
+      "evidence": "usefulV service isreal but aggregatebankwaitsmall and notexclusive; no broadpositive prediction. Testonlyafterservicestalls/CPUqual justify.",
+      "hardware_cost": "P2 doublesbankoperations/cycle, extra ports/pipeline/arbitration/PPA explicit; diagnosticdatafree isupperboundonly; equalbackgroundS mustalso getP2",
+      "minimum_CPU": [
+        "twooperations/bank/tickbounds andrealaddresscolors",
+        "read/write/fill/multipleclockclients",
+        "returnqueuebackpressure/starvation/progress",
+        "S/EPsameports/latency",
+        "mode-specificNI"
+      ],
+      "performance_status": "UNKNOWN"
+    }
+  ],
+  "Source78_assets_unchanged": true,
+  "only_implemented": "A_CLEAN_OPTIONAL_CAP",
+  "not_a_paper_claim_report": true
+}

@@ -1,0 +1,623 @@
+{
+  "schema": "EP_MAIN_V2_NEXT_ADAPTIVE_FAMILY_AUTHORIZATION_PACK_V1",
+  "utc": "2026-11-03T16:56:07.050974+00:00",
+  "client_timezone": "Asia/Shanghai",
+  "status": "FINAL_ENGINEERING_SOURCE_BOUND_TWO_PRIORITY_CANDIDATE_RANGES_NOT_SCIENCE_AUTHORIZED",
+  "current24_unchanged": true,
+  "new_science_starts_by_D": 0,
+  "registry_writes": 0,
+  "priority_families": [
+    {
+      "family_id": "SYSTEM_850MHZ_PARAMETER_FAMILY_V2",
+      "scientific_request_id_proposed": "EP_L2_SYSTEM_850MHZ_PARAMETER_FAMILY_V2_20261104_V1",
+      "status": "ENGINEERING_PREPARED_NEEDS_USER_RANGE_AND_MAIN_NATIVE_QUALIFICATION",
+      "source_identity": {
+        "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+        "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+        "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "exact_candidate_owner_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/SYSTEM_PARAMETER_FAMILY_V2.json",
+        "sha256": "1d4725875cccaa774ec1d606b875b81378ec04abafa2cd4701b7edf2d5ece3b4",
+        "bytes": 7541
+      },
+      "exact_matrix_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/MATCHED_S_EP_CONFIG_MATRIX.json",
+        "sha256": "b8da1ab2703ca5b87c9422cb90a060b28fa0c7be25fabfb815aba4575b0f1ca2",
+        "bytes": 35620
+      },
+      "owner_delivery_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/DELIVERY_MANIFEST.json",
+        "sha256": "609d5aead0406700e3b57b62f7bf34b5c781d8139ec12d5431ac3a59a7c167c2",
+        "bytes": 20950
+      },
+      "parameters": {
+        "Tag_geometry": [
+          "32x8",
+          "64x16"
+        ],
+        "FRFCFS": [
+          128,
+          256
+        ]
+      },
+      "fixed_hardware": {
+        "clocks": "1132.0:1132.0:1132.0:850.0",
+        "dram_latency": 100,
+        "channels": 32,
+        "slices": 64,
+        "line_bytes": 128,
+        "physical_payload_slots_per_slice": 1168,
+        "Resident_nominal_slots": 1024,
+        "Bypass_nominal_slots": 128,
+        "WB_nominal_slots": 16,
+        "descriptor": 512,
+        "per_address_cap": 32,
+        "LineMSHR": 128,
+        "WAD": 128,
+        "bank_ops": 1,
+        "L2_MissQ": 128,
+        "L1_MissQ": 16,
+        "partition_queues": "64:128:64:64",
+        "returnQ": 192,
+        "ICNT_buffers": "512/512",
+        "RO_switches": 0,
+        "observer_bits": "111"
+      },
+      "primary_points": {
+        "initial": 8,
+        "conditional": 4,
+        "max_this_finite_family": 12
+      },
+      "proposed_additional_application_NI_starts": 0,
+      "NI_boundary": {
+        "new_Source": false,
+        "new_collector": false,
+        "new_modes": false,
+        "S_and_WV_new_domain_MS_only_CPU_pairs": "6_PASS",
+        "new_profile_application_NI": "NOT_MEASURED",
+        "B0_M0a_application_NI": "NOT_PROVEN",
+        "Main_qualification_assurance_review_required": true,
+        "zero_extra_start_proposal_is_not_zero_missing_evidence": true
+      },
+      "fair_pairs": {
+        "Source5": "SAME_SOURCE78_PER_PAIR",
+        "same_input_geometry_clock_queues_payload_observer": true,
+        "reusable_REF850": "EXACT_SOURCE_INPUT_MODE_HARDWARE_OBSERVER_OLD_S_AND_WV_ONLY_AFTER_MAIN_REVIEW",
+        "only_this_modes": [
+          "S",
+          "WV_ZERO_RO"
+        ]
+      },
+      "stages": [
+        "FWT four single-family short points first",
+        "GEMM four single-family points next after qualifications/resources",
+        "Per-input combination pair gated by actual accepted absolute EP gains"
+      ],
+      "combination_gate": "Both exact-input single-family S/WV pairs CLOSED_ACCEPTED with true164 mandatory archive. Release combo pair if both WV absolute cycles reductions against own accepted850/WV reference >=1%, OR one >=3% and other nonnegative. S slowing down or ratio-only improvement never triggers extension. Main publishes explicit stage-release receipt.",
+      "cost_and_resources": {
+        "max_EP_models": 2,
+        "count_active_X_models": true,
+        "foreign_promises_preserved": true,
+        "actual_RSS_based_admission": true,
+        "trace_andbulk": "true164 only",
+        "hot_cap_perpoint_bytes": 134217728,
+        "shared_sequential_restore_bytes": 268435456,
+        "emergency_floor_bytes": 1073741824,
+        "no_legacy_pool_or_perpoint_multigiB_extra_reserve": true,
+        "reference_FWT_seconds_perarm": [
+          826.6,
+          893.5
+        ],
+        "reference_GEMM_seconds_perarm": [
+          4435.6,
+          4525.9
+        ],
+        "reference_FWT_RSS_bytes": 704643072,
+        "reference_GEMM_RSS_bytes": 4034920448,
+        "runtime": "~6host-hours initial8, ideal ~3h at2slots plus prep/admission/archive; active tasks may delay. Not a promise."
+      },
+      "known_resource_delta": {
+        "Tag": "256->1024entries/slice, nominalGPUlinecoverage2->8MiB; Tag SRAM4x entrycount. PPA unknown.",
+        "Payload": "1168 slots/slice unchanged (GPU9.125MiB). S nominalResident1024 has only256 Tag landing IDs reachable atREF, restored1024 withG64W16. Do not claim larger PayloadSRAM or equalarea. F optionalWB/V compete for sharedstore.",
+        "Scheduler": "FRFCFS128->256 entries/channel; derived shared-credit pool limit319->447 per partition (l2cache.cc:478). Each of2 subpartitions retains private1 credit and WB-progress1 credit unchanged. These319/447 values are not total/outstanding transaction caps."
+      },
+      "not_yet_qualified": [
+        "new_full_Host_profile_registration",
+        "native_exact_scope_and_fresh_budget",
+        "new_scope_readonly_resource_mapping",
+        "actual_current_resource_gate_before_consume"
+      ],
+      "acceptance": [
+        "new exact user range/freshbudget/native soleentry",
+        "sameSource5 andactual282echo percell",
+        "fullcommandlist CTA instructions kernels/drain",
+        "allpositive zero negative/HOLD failures retained",
+        "no retries/refunds",
+        "SourceKEEP",
+        "true164 fullSHA/two independent native restores"
+      ],
+      "new_science_authorized_now": false,
+      "old_24_or_227_budget_reuse": false,
+      "derived_shared_credit_resource": {
+        "shared_pool_limit_REF": 319,
+        "shared_pool_limit_FRFCFS256": 447,
+        "private_credit_per_subpartition": 1,
+        "subpartitions_per_partition": 2,
+        "WB_progress_credit": "1_UNCHANGED",
+        "not_total_outstanding_cap": true,
+        "source_location": "Source78 src/gpgpu-sim/l2cache.cc:478"
+      },
+      "future_group_root": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system",
+      "full_runtime_engineering_candidate_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/host_runtime_candidate/DELIVERY_MANIFEST.json",
+        "sha256": "0d768fbbba61c2c2eb463568864a779c015f511f90e346c2fc7c1371e1277a7d",
+        "bytes": 22389
+      },
+      "full_runtime_engineering_status": "PASS_PRIVATE_102_ENGINE_FULLTERMINAL_8ARCHIVE_6LOCK_CONTROLS_NOT_MAIN_SIGNED_NOT_NATIVE_REGISTERED",
+      "cross_scope_restore_mutex": "NOT_PROVEN_BY_C_RUNTIME_ALONE; MAIN_SINGLE_EXECUTOR_OUTER_SHARED_LOCK_OR_SERIAL_ACCEPT_REQUIRED",
+      "full_runtime_Main_activation_interface_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/host_runtime_candidate/MAIN_ACTIVATION_INTERFACE.json",
+        "sha256": "5fbfa3db28a896de92ff5e0bcf555de144988305620db02681d84e1d8147747f",
+        "bytes": 6448
+      }
+    },
+    {
+      "family_id": "HIGH_CLOCK_REPAIRED_SOURCE_QUALIFICATION_AND_PERFORMANCE_V1",
+      "status": "ENGINEERING_SOURCE_CPU_BUILD_PASS_HOST_INPUT_NATIVE_PENDING_NOT_AUTHORIZED",
+      "source_identity": {
+        "archive_sha256": "5901a821fc0a9556b52a4107be1decf650a04e2091c31f4460938924d750d6cb",
+        "binary_sha256": "083aa0d72173e8f27b298a76b88898bf117f44d119379b3e3ef9edd1b7ffa52b",
+        "core_source_commit": "862376f62ab19f9a677abe31c6a422028b44fcd0",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "ELF_sha256": "083aa0d72173e8f27b298a76b88898bf117f44d119379b3e3ef9edd1b7ffa52b",
+      "source_parent": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+      "included_change": "FINITE_EXISTING_RWQ_HEAD_TO_CORE_COMPLETION_CAM_READY_HANDSHAKE_ACTUAL_COMMITTED_IMPLEMENTATION",
+      "different_from_A_quota_source": true,
+      "points": [
+        {
+          "candidate_id": "EP_PERF_CC_CAM_VECTOR4M_S_850_V1",
+          "input_identity_sha256": "ddf26d4f6b4b672de3c5f6d1ab633cc44d3d9ef8023b87ae9a10760f3f4057dc",
+          "mode": "S",
+          "DRAM_MHz": 850,
+          "stage": "STAGE1_NEW850_REFERENCE_PAIR2",
+          "source_identity": {
+            "archive_sha256": "5901a821fc0a9556b52a4107be1decf650a04e2091c31f4460938924d750d6cb",
+            "binary_sha256": "083aa0d72173e8f27b298a76b88898bf117f44d119379b3e3ef9edd1b7ffa52b",
+            "core_source_commit": "862376f62ab19f9a677abe31c6a422028b44fcd0",
+            "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+            "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+          },
+          "source_qualification": "ENGINEERING_SOURCE_CPU_BUILD_PASS_HOST_INPUT_NATIVE_PENDING_NOT_AUTHORIZED",
+          "geometry": {
+            "slices": 64,
+            "sets": 32,
+            "ways": 8,
+            "line_bytes": 128
+          },
+          "other_clocks": "CORE/L2/ICNT1132",
+          "dram_latency": 100,
+          "not_old_failed_cohort": true,
+          "cohort": "EP_PERF_CC_CAM_VECTOR4M_S_850_V1",
+          "science_request_id": "EP_L2_CC_CAM_REPAIRED_VECTOR4M_850_1275_1700_V1",
+          "future_group_root": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/highclock",
+          "effective_option_count": 282,
+          "scientific_class": "NEW_SOURCE_DEFAULT850_REFERENCE",
+          "launch_permission": false
+        },
+        {
+          "candidate_id": "EP_PERF_CC_CAM_VECTOR4M_F_850_V1",
+          "input_identity_sha256": "ddf26d4f6b4b672de3c5f6d1ab633cc44d3d9ef8023b87ae9a10760f3f4057dc",
+          "mode": "F",
+          "DRAM_MHz": 850,
+          "stage": "STAGE1_NEW850_REFERENCE_PAIR2",
+          "source_identity": {
+            "archive_sha256": "5901a821fc0a9556b52a4107be1decf650a04e2091c31f4460938924d750d6cb",
+            "binary_sha256": "083aa0d72173e8f27b298a76b88898bf117f44d119379b3e3ef9edd1b7ffa52b",
+            "core_source_commit": "862376f62ab19f9a677abe31c6a422028b44fcd0",
+            "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+            "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+          },
+          "source_qualification": "ENGINEERING_SOURCE_CPU_BUILD_PASS_HOST_INPUT_NATIVE_PENDING_NOT_AUTHORIZED",
+          "geometry": {
+            "slices": 64,
+            "sets": 32,
+            "ways": 8,
+            "line_bytes": 128
+          },
+          "other_clocks": "CORE/L2/ICNT1132",
+          "dram_latency": 100,
+          "not_old_failed_cohort": true,
+          "cohort": "EP_PERF_CC_CAM_VECTOR4M_F_850_V1",
+          "science_request_id": "EP_L2_CC_CAM_REPAIRED_VECTOR4M_850_1275_1700_V1",
+          "future_group_root": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/highclock",
+          "effective_option_count": 282,
+          "scientific_class": "NEW_SOURCE_DEFAULT850_REFERENCE",
+          "launch_permission": false
+        },
+        {
+          "candidate_id": "EP_PERF_CC_CAM_VECTOR4M_S_1275_V1",
+          "input_identity_sha256": "ddf26d4f6b4b672de3c5f6d1ab633cc44d3d9ef8023b87ae9a10760f3f4057dc",
+          "mode": "S",
+          "DRAM_MHz": 1275,
+          "stage": "STAGE2_NEW1275_PAIR2",
+          "source_identity": {
+            "archive_sha256": "5901a821fc0a9556b52a4107be1decf650a04e2091c31f4460938924d750d6cb",
+            "binary_sha256": "083aa0d72173e8f27b298a76b88898bf117f44d119379b3e3ef9edd1b7ffa52b",
+            "core_source_commit": "862376f62ab19f9a677abe31c6a422028b44fcd0",
+            "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+            "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+          },
+          "source_qualification": "ENGINEERING_SOURCE_CPU_BUILD_PASS_HOST_INPUT_NATIVE_PENDING_NOT_AUTHORIZED",
+          "geometry": {
+            "slices": 64,
+            "sets": 32,
+            "ways": 8,
+            "line_bytes": 128
+          },
+          "other_clocks": "CORE/L2/ICNT1132",
+          "dram_latency": 100,
+          "not_old_failed_cohort": true,
+          "cohort": "EP_PERF_CC_CAM_VECTOR4M_S_1275_V1",
+          "science_request_id": "EP_L2_CC_CAM_REPAIRED_VECTOR4M_850_1275_1700_V1",
+          "future_group_root": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/highclock",
+          "effective_option_count": 282,
+          "scientific_class": "DIAGNOSTIC_DRAM_SERVICE_SENSITIVITY_NOT_CALIBRATED_HARDWARE",
+          "launch_permission": false
+        },
+        {
+          "candidate_id": "EP_PERF_CC_CAM_VECTOR4M_F_1275_V1",
+          "input_identity_sha256": "ddf26d4f6b4b672de3c5f6d1ab633cc44d3d9ef8023b87ae9a10760f3f4057dc",
+          "mode": "F",
+          "DRAM_MHz": 1275,
+          "stage": "STAGE2_NEW1275_PAIR2",
+          "source_identity": {
+            "archive_sha256": "5901a821fc0a9556b52a4107be1decf650a04e2091c31f4460938924d750d6cb",
+            "binary_sha256": "083aa0d72173e8f27b298a76b88898bf117f44d119379b3e3ef9edd1b7ffa52b",
+            "core_source_commit": "862376f62ab19f9a677abe31c6a422028b44fcd0",
+            "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+            "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+          },
+          "source_qualification": "ENGINEERING_SOURCE_CPU_BUILD_PASS_HOST_INPUT_NATIVE_PENDING_NOT_AUTHORIZED",
+          "geometry": {
+            "slices": 64,
+            "sets": 32,
+            "ways": 8,
+            "line_bytes": 128
+          },
+          "other_clocks": "CORE/L2/ICNT1132",
+          "dram_latency": 100,
+          "not_old_failed_cohort": true,
+          "cohort": "EP_PERF_CC_CAM_VECTOR4M_F_1275_V1",
+          "science_request_id": "EP_L2_CC_CAM_REPAIRED_VECTOR4M_850_1275_1700_V1",
+          "future_group_root": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/highclock",
+          "effective_option_count": 282,
+          "scientific_class": "DIAGNOSTIC_DRAM_SERVICE_SENSITIVITY_NOT_CALIBRATED_HARDWARE",
+          "launch_permission": false
+        },
+        {
+          "candidate_id": "EP_PERF_CC_CAM_VECTOR4M_S_1700_V1",
+          "input_identity_sha256": "ddf26d4f6b4b672de3c5f6d1ab633cc44d3d9ef8023b87ae9a10760f3f4057dc",
+          "mode": "S",
+          "DRAM_MHz": 1700,
+          "stage": "STAGE3_CONDITIONAL1700_PAIR2",
+          "source_identity": {
+            "archive_sha256": "5901a821fc0a9556b52a4107be1decf650a04e2091c31f4460938924d750d6cb",
+            "binary_sha256": "083aa0d72173e8f27b298a76b88898bf117f44d119379b3e3ef9edd1b7ffa52b",
+            "core_source_commit": "862376f62ab19f9a677abe31c6a422028b44fcd0",
+            "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+            "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+          },
+          "source_qualification": "ENGINEERING_SOURCE_CPU_BUILD_PASS_HOST_INPUT_NATIVE_PENDING_NOT_AUTHORIZED",
+          "geometry": {
+            "slices": 64,
+            "sets": 32,
+            "ways": 8,
+            "line_bytes": 128
+          },
+          "other_clocks": "CORE/L2/ICNT1132",
+          "dram_latency": 100,
+          "not_old_failed_cohort": true,
+          "cohort": "EP_PERF_CC_CAM_VECTOR4M_S_1700_V1",
+          "science_request_id": "EP_L2_CC_CAM_REPAIRED_VECTOR4M_850_1275_1700_V1",
+          "future_group_root": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/highclock",
+          "effective_option_count": 282,
+          "scientific_class": "DIAGNOSTIC_DRAM_SERVICE_SENSITIVITY_NOT_CALIBRATED_HARDWARE",
+          "launch_permission": false
+        },
+        {
+          "candidate_id": "EP_PERF_CC_CAM_VECTOR4M_F_1700_V1",
+          "input_identity_sha256": "ddf26d4f6b4b672de3c5f6d1ab633cc44d3d9ef8023b87ae9a10760f3f4057dc",
+          "mode": "F",
+          "DRAM_MHz": 1700,
+          "stage": "STAGE3_CONDITIONAL1700_PAIR2",
+          "source_identity": {
+            "archive_sha256": "5901a821fc0a9556b52a4107be1decf650a04e2091c31f4460938924d750d6cb",
+            "binary_sha256": "083aa0d72173e8f27b298a76b88898bf117f44d119379b3e3ef9edd1b7ffa52b",
+            "core_source_commit": "862376f62ab19f9a677abe31c6a422028b44fcd0",
+            "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+            "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+          },
+          "source_qualification": "ENGINEERING_SOURCE_CPU_BUILD_PASS_HOST_INPUT_NATIVE_PENDING_NOT_AUTHORIZED",
+          "geometry": {
+            "slices": 64,
+            "sets": 32,
+            "ways": 8,
+            "line_bytes": 128
+          },
+          "other_clocks": "CORE/L2/ICNT1132",
+          "dram_latency": 100,
+          "not_old_failed_cohort": true,
+          "cohort": "EP_PERF_CC_CAM_VECTOR4M_F_1700_V1",
+          "science_request_id": "EP_L2_CC_CAM_REPAIRED_VECTOR4M_850_1275_1700_V1",
+          "future_group_root": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/highclock",
+          "effective_option_count": 282,
+          "scientific_class": "DIAGNOSTIC_DRAM_SERVICE_SENSITIVITY_NOT_CALIBRATED_HARDWARE",
+          "launch_permission": false
+        }
+      ],
+      "primary_points": {
+        "initial": 4,
+        "conditional": 2,
+        "max_this_finite_family": 6,
+        "sequential_initial_pair_stages": [
+          2,
+          2
+        ]
+      },
+      "extra_application_NI_starts_proposed": 0,
+      "observer_boundary": "B_REPORTED_NO_NEW_OBSERVER; DEFAULT850_CPU_NONREGRESSION_REQUIRED; DOES_NOT_REUSE_OLD_SOURCE_APPLICATION_ACCEPTANCE",
+      "stage_release": "Sequential exact stages: new850 S/F2 must CLOSED_ACCEPTED/full drain/true164 archive/two independent restores before new1275 S/F2. 1700 S/F2 requires all first4 accepted/archived, CPU1700PASS, fresh actual resources and max(S850/S1275,F850/F1275)>=1.03. Entire same-clock S/F pair released together. A trigger met only byS is general service improvement, never EP success. No extra frequency/input/Source or retry.",
+      "qualification_before_any_new_model": [
+        "final exact Source5 incl Framework/vendor/ELF/library and cleanworktree binding",
+        "wholeTU O3/assert identity and embedded Core ID consistency",
+        "real production WB protocol matrix850/1020/1132/1275/1700 and backpressure/UID/generation/sector/default850 checks",
+        "newSource S/F Host/parser/native qualified",
+        "Vector whole-commandlist RO certificate newSource loader/input binding",
+        "full actual effective-option echo count from final binary; no guessed282/283",
+        "fresh exact source-specific scoped science budget and sole-entry registration",
+        "resource admission and current max2 globalEP models",
+        "archive true164/fullSHA/two independent restores"
+      ],
+      "historical_failed_VectorF1275": "REMAINS_CLOSED_UNACCEPTED_CONSUMED_NO_REFUND_NO_RETRY; NEW_SOURCE_COHORT_REQUIRES_SEPARATE_AUTHORIZATION",
+      "old_Source78_S1275_cannot_fill_new_Source_S_control": true,
+      "default850_and_higher_clock_ratios": "COMPARE_WITHIN_NEW_ELF; OLD_SOURCE78_DEFAULT_AS_DESCRIPTIVE_ENGINEERING_REFERENCE_ONLY",
+      "PPA_CDC_physical_timing": "UNKNOWN_UNTIL_B_FINAL_MODEL_COST_REVIEW",
+      "new_science_authorized_now": false,
+      "old_budget_inherited": false,
+      "current_B_build_measurements_reported": {
+        "full_build_seconds": 60,
+        "translation_units": 142,
+        "build_hot_MiB": 90,
+        "peak_single_child_RSS_GiB": 0.79,
+        "aggregate_build_RSS": "NOT_MEASURED; retain boundedj4 engineering forecast2-4GiB"
+      },
+      "binary_path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_b/build/accel-sim.out",
+      "static_library_path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_b/build/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+      "effective_option_count": 282,
+      "source_worktrees": {
+        "core": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_b/core",
+        "framework": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_b/framework"
+      },
+      "source_qualification_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_b/NEW_SOURCE_AND_ELF_QUALIFICATION.json",
+        "sha256": "36959a7a19708bbad4ce5b1c863c688d306aa45836669baad0ddc850b393822e",
+        "bytes": 6459
+      },
+      "source_engineering_archive_receipt_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_b/ENGINEERING_ARCHIVE_RECEIPT.json",
+        "sha256": "d2c3c29cc15db9f24a8fcbcc9a589e8ab838079dd6f99aea503b19e947f533c2",
+        "bytes": 1665
+      },
+      "source_NAS_archive_ref": {
+        "bytes": 25738304,
+        "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/ep_l2_performance_first_v2_20261103_v1/agent_b_cross_clock_completion_cam_v1/862376f62ab19f9a677abe31c6a422028b44fcd0/ENGINEERING_SOURCE_AND_ELF.tar.gz",
+        "sha256": "13ea2f5b2ecf8edcef7b45cff30a1cfb35c74251c54ee26c7f60e31bb0a10f89"
+      },
+      "source_NAS_manifest_ref": {
+        "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/ep_l2_performance_first_v2_20261103_v1/agent_b_cross_clock_completion_cam_v1/862376f62ab19f9a677abe31c6a422028b44fcd0/MANIFEST.json",
+        "sha256": "ddd4a72422bf2bfdcab83ad1a9e19a4b18738d3318ba00d27b63c8fb33814536"
+      },
+      "source_NAS_two_native_restores": [
+        {
+          "ELF_sha256": "083aa0d72173e8f27b298a76b88898bf117f44d119379b3e3ef9edd1b7ffa52b",
+          "label": "FIRST",
+          "logical_bytes": 312813387,
+          "members": 1746,
+          "only_owned_scratch_released": true,
+          "status": "PASS_FRESH_NATIVE_FULL_CONTENT_SHA_METADATA"
+        },
+        {
+          "ELF_sha256": "083aa0d72173e8f27b298a76b88898bf117f44d119379b3e3ef9edd1b7ffa52b",
+          "label": "INDEPENDENT",
+          "logical_bytes": 312813387,
+          "members": 1746,
+          "only_owned_scratch_released": true,
+          "status": "PASS_FRESH_NATIVE_FULL_CONTENT_SHA_METADATA"
+        }
+      ],
+      "source_archive_Git_graph_boundary": "Shared .git pointers excluded; full tracked consumed source/vendor/build/ELF bytes and local delta bundle included; base78 historical Git graph not claimed independently restored",
+      "included_changes": [
+        "WB completion ready handshake before final rwqbeat dequeue/dqbytes/status/credit/free",
+        "simple-DRAM WB complete waits in existing delay queue",
+        "validate subpartition WAD/TVD completion before returning partition credit"
+      ],
+      "not_integrated": [
+        "ordinary RO Tag relief Source1e07",
+        "Source92",
+        "hostwriteV3",
+        "MSHR64",
+        "A CLEAN quota/reclaim candidates",
+        "new observer"
+      ],
+      "scientific_request_id_proposed": "EP_L2_CC_CAM_REPAIRED_VECTOR4M_850_1275_1700_V1",
+      "future_group_root": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/highclock",
+      "source_identity_is_final_for_this_candidate": true,
+      "application_science_qualified": false,
+      "new_source_application_NI": "NOT_MEASURED_NOT_INHERITED_FROM_SOURCE78",
+      "physical_CDC_PPA_timing": "UNKNOWN",
+      "stages": [
+        {
+          "stage_id": "STAGE1_NEW850_REFERENCE_PAIR2",
+          "cohorts": [
+            "EP_PERF_CC_CAM_VECTOR4M_S_850_V1",
+            "EP_PERF_CC_CAM_VECTOR4M_F_850_V1"
+          ],
+          "max_starts": 2,
+          "release": "EXPLICIT_NEW_RANGE_USER_AUTHORIZATION_AND_ALL_NEW_SOURCE_HOST_INPUT_NATIVE_RESOURCE_GATES"
+        },
+        {
+          "stage_id": "STAGE2_NEW1275_PAIR2",
+          "cohorts": [
+            "EP_PERF_CC_CAM_VECTOR4M_S_1275_V1",
+            "EP_PERF_CC_CAM_VECTOR4M_F_1275_V1"
+          ],
+          "max_starts": 2,
+          "release": "BOTH_NEW850_S_F_CLOSED_ACCEPTED_COMPLETE_DRAIN_TRUE164_TWO_RESTORES"
+        },
+        {
+          "stage_id": "STAGE3_CONDITIONAL1700_PAIR2",
+          "cohorts": [
+            "EP_PERF_CC_CAM_VECTOR4M_S_1700_V1",
+            "EP_PERF_CC_CAM_VECTOR4M_F_1700_V1"
+          ],
+          "max_starts": 2,
+          "release": "ALL_FIRST4_ACCEPTED_ARCHIVED_AND_CPU1700PASS_AND_ACTUAL_RESOURCE_ADMISSION_AND_MAX_S_OR_F_850_OVER1275_GE1.03",
+          "ratio_definition": {
+            "S_absolute_speedup": "cycles_newS850/cycles_newS1275",
+            "F_absolute_speedup": "cycles_newF850/cycles_newF1275",
+            "threshold": 1.03,
+            "threshold_type": "ABSOLUTE_SPEEDUP_RATIO_C850_OVER_C1275",
+            "do_not_substitute_cycle_reduction_ge_003": true
+          },
+          "S_only_trigger_is_not_EP_success": true
+        }
+      ],
+      "remaining_qualification_gates": {
+        "exact_final_full_Host_runtime": {
+          "status": "PENDING_INDEPENDENT_MAIN_REVIEW",
+          "required": [
+            "all6 exact Source5/input/mode/282/clocks/profile allowlists, default-deny and scientific-permission separation",
+            "sameclock S/F complete282 fairness and no changed nonclock resources",
+            "Main formal newSource S/F modeCPU and actualVector whole-commandlist newSource RO-loader/input eligibility",
+            "engine/common/frontend/terminal/parser/archive/resource module exact immutable version bindings",
+            "positive/negative private-ledger preconsume/run/postprocess controls; no real model or realledger writes during qualification",
+            "no Source78 acceptedS1275 application identity inheritance"
+          ]
+        },
+        "input_and_RO": {
+          "status": "PENDING_MAIN_NEW_SOURCE_BINDING",
+          "input_identity_sha256": "ddf26d4f6b4b672de3c5f6d1ab633cc44d3d9ef8023b87ae9a10760f3f4057dc",
+          "RO_F": "newSource exact whole-commandlist certificate/loader/source binding required; noS ROauthority inheritance"
+        },
+        "native_scope_and_budget": {
+          "status": "NOT_REGISTERED_NOT_AUTHORIZED",
+          "required": [
+            "fresh request-specific budget6 for this exact newSource scope; no oldX held10 or epoch2 reuse",
+            "soleMain native entry/source/input/config qualification and currentboot/mount checks",
+            "sequential850then1275 stage gate and exact1700predicate receipts enforced beforeconsume",
+            "future scope mapped in readonly resourceadapter preserving old and foreign owners",
+            "one Main dispatcher/publisher, max2 globalEP models, consume-beforefork/no retries/refunds"
+          ]
+        },
+        "science_acceptance": {
+          "status": "NOT_RUN_NOT_APPLICATION_QUALIFIED",
+          "required": [
+            "actual282 echo and exactSource/input/kernel/CTA/instructions",
+            "fullsector/UID/generation/WAD/credit/mem_fetch ownership closure and full drain",
+            "positive/zero/negative/failure retained; 850default vs diagnostic-service results separate",
+            "actual RSS/write resources and genuine164 resultSHA/two independent native restores"
+          ]
+        }
+      }
+    }
+  ],
+  "optional_separate_structure_candidate": {
+    "family_id": "WV_CLEAN_RETENTION_CAP_NEW_SOURCE_OPTIONAL",
+    "status": "ENGINEERING_BUILD_PASS_NOT_MAIN_PRIORITY_SCOPE_AUTHORIZED",
+    "source_identity": {
+      "core_source_commit": "bf4e48447136b990bd2db15e2972a4394e37d21f",
+      "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+      "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+      "binary_sha256": "bab27c440a58426b05d4d10312feeaa55cd28319d52e9396009738e036667553",
+      "archive_sha256": "ffe77ffc39d805b0c5d044f9cd3782d983ce8b17d2056b9ec67d11aa5193b579"
+    },
+    "identity_ref": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/NEW_SOURCE_BUILD_IDENTITY.json",
+      "sha256": "3bdf18162f1133310cc23b1a255f3d21d42e0b769e74e5bf7d350fe32e138e63",
+      "bytes": 4536
+    },
+    "effective_option_count": 283,
+    "new_option": "-gpgpu_ep_l2_tvd_clean_limit",
+    "default": 128,
+    "candidate_values": [
+      128,
+      32
+    ],
+    "scope": "WV both classes/ROoff; mandatoryWB128/Directory128/Payload1168/P1 unchanged",
+    "formal_budget": {
+      "initial": 6,
+      "conditional": 12,
+      "max_this_separate_family": 18,
+      "performance_primary": 9,
+      "MS_only_NI_controls": 9
+    },
+    "reported_primary_design": "Each input S128/WV128/WV32 three ON primary plus same-three-mode MS011 NI controls; FWT first6, conditionalScan6 andGEMM6. Samecap32 uniform protection, nocap64 inthisrange.",
+    "application_and_Host_native": "NOT_QUALIFIED",
+    "is_crossclock_repair": false,
+    "no_accepted_application_results": true,
+    "implemented_but_not_in_requested_scope": [
+      0,
+      64,
+      96
+    ],
+    "exact_proposal_ref": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/WV_EXPERIMENT_FAMILY_PROPOSAL.json",
+      "sha256": "e0f95d998347d891b0391c5cb5dd7d3a766ec151b80ef03ecb873fe61149c417",
+      "bytes": 23977
+    },
+    "owner_delivery_ref": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/DELIVERY_MANIFEST.json",
+      "sha256": "7a873e66cebad48b64e4143da0d66ae3f6f00e60565da735eded62046ad074f0",
+      "bytes": 24924
+    }
+  },
+  "proposed_primary_ranges_summary": {
+    "SYSTEM850": 12,
+    "newSource_HIGHCLOCK": 6,
+    "sum_if_separately_user_approved_and_qualified": 18,
+    "not_a_global_research_cap": true,
+    "any_new_NI_if_later_required_needs_explicit_range_amendment": true
+  },
+  "shared_contract": {
+    "single_Main_owner_and_dispatcher": true,
+    "no_second_Git_writer": true,
+    "current_existing_authorized_scope_continues_naturally": true,
+    "max_concurrent_EP_models": 2,
+    "no_consumed_retries_or_refunds": true,
+    "Trace_raw_largearchives": "GENUINE164_ONLY_NO_LOCAL_TRACE_COPY",
+    "hot174": "BUILD_SMALL_HOT_RESULTS_BOUNDED_RESTORE_ONLY",
+    "RAM": "ACTUAL_RSS_PLUS_PENDING_GROWTH_NO_DUPLICATE_HARDPOOL",
+    "SSD": "ACTUAL_INCREMENTAL_WRITES_PLUS_FOREIGN_UNREALIZED_PROMISES_ONE_SHARED_RESTORE_AND_APPROX1GiB_EMERGENCY",
+    "fairness": "EXACT_SOURCE5_INPUT_HARDWARE_OBSERVER; NO_CROSS_ELF_S_CONTROL",
+    "performance": "REPORT_ABSOLUTE_S_EP_CYCLES_AND_SAME_BACKGROUND_RATIO; NO_RATIO_ONLY_PROMOTION",
+    "all_negative_zero_failure_HOLD_retained": true,
+    "no_unbounded_cartesian_scan": true,
+    "model_launch_only_after_explicit_user_range_approval_and_native_qualification": true
+  },
+  "source_qualification_frontier": {
+    "Source78": "ACCEPTED_BASELINE; NEW_SYSTEM_PROFILES_NOT_NATIVE_QUALIFIED",
+    "B_clock_repair": "ENGINEERING_SOURCE_CPU_BUILD_PASS_HOST_INPUT_NATIVE_PENDING_NOT_AUTHORIZED",
+    "A_clean_cap": "EXACT_NEW_SOURCE5_BUILD_PASS_APPLICATION_NOT_QUALIFIED"
+  },
+  "supersedes_only_the_prior_B_unknown_source_binding_and_stage_gates": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_d/NEXT_ADAPTIVE_FAMILY_AUTHORIZATION_PACK.json",
+    "sha256": "b19665b33aec95263e5e43f59043b06d34a9041bf5119c03e8b79ee42f6402ae",
+    "bytes": 16983
+  },
+  "prior_15files_immutable": true
+}

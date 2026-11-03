@@ -1,0 +1,207 @@
+DRAM Timing Options:
+nbk                                    16 # number of banks
+CCD                                     1 # column to column delay
+RRD                                     3 # minimal delay between activation of rows in different banks
+RCD                                    12 # row to column delay
+RAS                                    28 # time needed to activate row
+RP                                     12 # time needed to precharge (deactivate) row
+RC                                     40 # row cycle time
+CDLR                                    3 # switching from write to read (changes tWTR)
+WR                                     10 # last data-in to row precharge
+CL                                     12 # CAS latency
+WL                                      2 # Write latency
+nbkgrp                                  4 # number of bank groups
+CCDL                                    2 # column to column delay between accesses to different bank groups
+RTPL                                    3 # read to precharge delay between accesses to different bank groups
+Total number of memory sub partition = 1
+addr_dec_mask[CHIP]  = 0000000000000000 	high:64 low:0
+addr_dec_mask[BK]    = 0000000000007100 	high:15 low:8
+addr_dec_mask[ROW]   = 000000000fff8000 	high:28 low:15
+addr_dec_mask[COL]   = 0000000000000eff 	high:12 low:0
+addr_dec_mask[BURST] = 000000000000001f 	high:5 low:0
+sub_partition_id_mask = 0000000000000000
+GPGPU-Sim uArch: clock freqs: 1132000000.000000:1132000000.000000:1132000000.000000:850000000.000000
+GPGPU-Sim uArch: clock periods: 0.00000000088339222615:0.00000000088339222615:0.00000000088339222615:0.00000000117647058824
+*** Initializing Memory Statistics ***
+GPGPU-Sim uArch: performance model initialization complete.
+*** Initializing Memory Statistics ***
+SYSTEM_SOURCE78_CONSTRUCTOR|sets=64|ways=16|FT=2|Payload=1168|D=512|LineMSHR=128|WAD=128|P1|PASS
+SYSTEM850_SEMANTIC|cycles=85|replies=17|dirtyWB=1|reverse_returns=15|drain=1
+Memory Partition 0: 
+L2_char_credit_leak_free = 1
+L2_char_wb_progress_credit_use_count = 0
+L2_char_wb_progress_credit_current = 0
+L2_char_wb_progress_credit_max = 0
+L2_char_wb_progress_credit_limit = 1
+L2_char_wb_issued_while_returnq_full = 0
+L2_char_wb_head_while_returnq_full = 0
+L2_char_read_head_while_returnq_full = 0
+L2_char_read_issue_blocked_while_returnq_full = 0
+EPL2DRAMV1|scope=application|channel=0|dram_cycles=0|scheduler_occ_avg=0|scheduler_occ_max=0|scheduler_full_cycles=0|returnq_occ_avg=0|returnq_occ_max=0|returnq_full_cycles=0|successful_read_issues=0|successful_write_issues=0|successful_read_bytes=0|successful_write_bytes=0|bandwidth_util_numerator_bytes=0|bandwidth_util_denominator_bytes=0|bandwidth_util=0.000000000
+Cache L2_bank_000:
+MSHR contents
+
+L2_char_subpartition = 0
+L2_char_corrected_path_activation_count = 17
+L2_char_corrected_path_lowerq_activation_count = 0
+L2_char_corrected_path_respq_activation_count = 0
+L2_char_corrected_path_dataport_activation_count = 17
+L2_char_dataport_clean_miss_admit_while_busy = 15
+L2_char_dataport_mshr_merge_admit_while_busy = 0
+L2_char_dataport_hit_block_cycles = 0
+L2_char_missq_merge_admit_while_full = 0
+L2_char_missq_clean_miss_admit_one_slot = 0
+L2_char_missq_dirty_miss_block_one_slot = 0
+L2_char_missq_dirty_miss_admit_two_slots = 0
+L2_char_missq_dirty_block_no_mutation = 0
+L2_char_missq_dirty_block_partial_mutation = 0
+L2_char_dirty_victim_preview_count = 1
+L2_char_preview_commit_mismatch = 0
+L2_char_mshr_entries_avg = 8.214286
+L2_char_mshr_entries_max = 15
+L2_char_mshr_targets_avg = 8.214286
+L2_char_mshr_targets_max = 15
+L2_char_mshr_ready_entries_avg = 0.178571
+L2_char_mshr_ready_targets_avg = 0.178571
+L2_char_missq_avg = 0.190476
+L2_char_missq_max = 1
+L2_char_missq_demand_avg = 0.178571
+L2_char_missq_wb_avg = 0.011905
+L2_char_l2_dramq_avg = 0.190476
+L2_char_dram_l2q_avg = 0.000000
+L2_char_l2_icntq_avg = 0.202381
+L2_char_icnt_l2q_avg = 0.404762
+L2_char_rop_avg = 0.000000
+L2_char_data_port_busy_cycles = 84
+L2_char_fill_port_busy_cycles = 84
+L2_char_missq_full_cycles = 0
+L2_char_dram_l2q_full_cycles = 0
+L2_char_l2_icntq_full_cycles = 0
+L2_char_icnt_l2q_full_cycles = 0
+L2_char_block_cycles_line_alloc = 0
+L2_char_block_requests_line_alloc = 0
+L2_char_block_episodes_line_alloc = 0
+L2_char_block_cycles_mshr_new = 0
+L2_char_block_requests_mshr_new = 0
+L2_char_block_episodes_mshr_new = 0
+L2_char_block_cycles_mshr_merge = 0
+L2_char_block_requests_mshr_merge = 0
+L2_char_block_episodes_mshr_merge = 0
+L2_char_block_cycles_missq = 0
+L2_char_block_requests_missq = 0
+L2_char_block_episodes_missq = 0
+L2_char_block_cycles_data_port = 0
+L2_char_block_requests_data_port = 0
+L2_char_block_episodes_data_port = 0
+L2_char_block_cycles_respq = 0
+L2_char_block_requests_respq = 0
+L2_char_block_episodes_respq = 0
+L2_char_block_cycles_other = 0
+L2_char_block_requests_other = 0
+L2_char_block_episodes_other = 0
+L2_char_resource_leak_free = 1
+EPL2M0AV1|scope=application|interval=application_cumulative|slice=0|kernel_uid=18446744073709551615|start_cycle=0|completion_cycle=85|resident_samples=84|m0_resident_payload_occupied_sum=832|m0_resident_payload_free_sum=85184|m0_resident_payload_occupied_avg=9|m0_resident_payload_free_avg=1014|m0_resident_payload_occupied_max=16|m0_resident_payload_free_min=1008|m0_frontend_head_observed_cycles=17|m0_frontend_head_any_blocked_cycles=0|m0_frontend_head_blocked_cycles_tag_way=0|m0_frontend_head_blocked_cycles_wad_full=0|m0_frontend_head_blocked_cycles_wad_hazard=0|m0_frontend_head_blocked_cycles_line_mshr=0|m0_frontend_head_blocked_cycles_descriptor=0|m0_frontend_head_blocked_cycles_per_address=0|m0_frontend_head_blocked_cycles_missq=0|m0_frontend_head_blocked_cycles_payload_service=0|m0_frontend_head_blocked_cycles_payload_capacity=0|m0_frontend_head_blocked_cycles_lowerq=0|m0_frontend_head_blocked_cycles_responseq=0|m0_useful_frontend_admit=17|m0_useful_response_enqueue=17
+EPL2B0V1|scope=application|interval=application_cumulative|slice=0|kernel_uid=18446744073709551615|start_cycle=0|completion_cycle=85|overlap_detected=0|samples=84|line_mshr_avg=8|line_mshr_p95=15|line_mshr_max=15|descriptor_avg=8|descriptor_p95=15|descriptor_max=15|wad_avg=0|wad_p95=1|wad_max=1|resident_payload_avg=9|resident_payload_p95=16|resident_payload_max=16|bypass_payload_avg=0|bypass_payload_p95=0|bypass_payload_max=0|missq_avg=0|missq_max=1|lowerq_avg=0|lowerq_max=1|block_descriptor=0|block_wad=0|block_payload=0|block_bank=0|block_l1=0|block_lower=0|bank_requests=33|bank_grants=33|bank_conflicts=0|bank_logical_ops=33|bank_attempts=33|bank_retry_attempts=0|bank_true_conflict_ops=0|bank_true_conflict_events=0|bank_wait_cycles=0|c7d_line_alloc_eligible=17|c7d_line_alloc_block=0|c7d_tag_set_all_reserved_block=0|c7d_line_mshr_alloc_eligible=15|c7d_line_mshr_full_block=0|c7d_descriptor_alloc_eligible=15|c7d_descriptor_pool_full_block=0|c7d_per_address_cap_eligible=0|c7d_per_address_cap_block=0|c7d_descriptor_chain_depth_avg=1|c7d_descriptor_chain_depth_p95=1|c7d_descriptor_chain_depth_max=1|c7d_wad_full_events=0|c7d_wad_hazard_events=0|c7d_wad_hazard_wait_cycles=0|c7d_wad_lifetime_avg=17|c7d_wad_lifetime_p95=17|c7d_wad_lifetime_max=17|c7d_reserved_avg=8|c7d_reserved_p95=15|c7d_reserved_max=15|c7d_reserved_set_max=15|c7d_resident_valid_avg=1|c7d_resident_valid_p95=13|c7d_resident_valid_max=16|c7d_resident_dirty_avg=0|c7d_resident_dirty_p95=1|c7d_resident_dirty_max=1|c7d_resident_pending_sector_avg=8|c7d_resident_pending_sector_p95=15|c7d_resident_pending_sector_max=15|c7d_bypass_pending_avg=0|c7d_bypass_pending_p95=0|c7d_bypass_pending_max=0|c7d_bypass_ready_avg=0|c7d_bypass_ready_p95=0|c7d_bypass_ready_max=0|c7d_payload_service_port_denial=0|c7d_payload_capacity_allocation_denial=0|c7d_missq_full_block=0|c7d_l2_to_dram_full_block=0|c7d_dram_issue_eligible=0|c7d_dram_read_issues=0|c7d_dram_write_issues=0|c7d_dram_scheduler_full_block=0|c7d_dram_returnq_block=0|c7d_dram_credit_block=0|c7d_dram_return_eligible=0|c7d_dram_to_l2_full_block=0|c7d_dram_scheduler_occ_avg=0|c7d_dram_scheduler_occ_max=0|c7d_bank0_logical_ops=9|c7d_bank1_logical_ops=8|c7d_bank2_logical_ops=8|c7d_bank3_logical_ops=8|c7d_bank0_grants=9|c7d_bank1_grants=8|c7d_bank2_grants=8|c7d_bank3_grants=8|c7d_bank0_true_conflict_ops=0|c7d_bank1_true_conflict_ops=0|c7d_bank2_true_conflict_ops=0|c7d_bank3_true_conflict_ops=0|c7d_bank0_wait_cycles=0|c7d_bank1_wait_cycles=0|c7d_bank2_wait_cycles=0|c7d_bank3_wait_cycles=0|c7d_bank_resident_hit_read=15|c7d_bank_resident_write=2|c7d_bank_fill_write=15|c7d_bank_wb_readout=1|c7d_bank_bypass_fill=0|c7d_bank_bypass_read=0|c7e_tag_way_alloc_need=17|c7e_tag_way_alloc_block=0|c7e_line_mshr_need=15|c7e_descriptor_need=15|c7e_per_address_cap_check=0|c7e_dram_issue_attempt=0|c7e_dram_successful_read_issues=0|c7e_dram_successful_write_issues=0|c7e_dram_successful_read_bytes=0|c7e_dram_successful_write_bytes=0|c7e_dram_scheduler_full_observed=0|c7e_dram_scheduler_causal_block=0|c7e_dram_to_l2_return_path_block=0|c7e_wad_lifetime_kernel_available=1
+EPL2MSV1|OBSERVER|slice=0|enabled=1|sampled_cycles=84|wb_sum=0|wb_peak=0|wad_sum=16|wad_peak=1|descriptor_peak=15|physical_resident_peak=16|bound_tag_peak=16|pending_landing_peak=15|lower_reads=15|lower_read_bytes=480|lower_writes=1|lower_write_bytes=32|lower_wb_bytes=32|unfinished_head=0|head_changes_without_admission=0|unclassified_refusal_observations=0
+EPL2MSV1|WAIT|slice=0|reason=0|requests=0|observations=0|resolved=0|sum=0|max=0|unknown_while_unresolved=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+EPL2MSV1|WAIT|slice=0|reason=1|requests=0|observations=0|resolved=0|sum=0|max=0|unknown_while_unresolved=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+EPL2MSV1|WAIT|slice=0|reason=2|requests=0|observations=0|resolved=0|sum=0|max=0|unknown_while_unresolved=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+EPL2MSV1|WAIT|slice=0|reason=3|requests=0|observations=0|resolved=0|sum=0|max=0|unknown_while_unresolved=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+EPL2MSV1|WAIT|slice=0|reason=4|requests=0|observations=0|resolved=0|sum=0|max=0|unknown_while_unresolved=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+EPL2MSV1|WAIT|slice=0|reason=5|requests=0|observations=0|resolved=0|sum=0|max=0|unknown_while_unresolved=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+EPL2MSV1|WAIT|slice=0|reason=6|requests=0|observations=0|resolved=0|sum=0|max=0|unknown_while_unresolved=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+EPL2MSV1|WAIT|slice=0|reason=7|requests=0|observations=0|resolved=0|sum=0|max=0|unknown_while_unresolved=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+EPL2MSV1|WAIT|slice=0|reason=8|requests=0|observations=0|resolved=0|sum=0|max=0|unknown_while_unresolved=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+EPL2MSV1|WAIT|slice=0|reason=9|requests=0|observations=0|resolved=0|sum=0|max=0|unknown_while_unresolved=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+EPL2MSV1|WAIT|slice=0|reason=10|requests=0|observations=0|resolved=0|sum=0|max=0|unknown_while_unresolved=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+EPL2MSV1|WAIT|slice=0|reason=11|requests=0|observations=0|resolved=0|sum=0|max=0|unknown_while_unresolved=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+EPL2MSV1|WAIT|slice=0|reason=12|requests=0|observations=0|resolved=0|sum=0|max=0|unknown_while_unresolved=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+EPL2MSV1|WAIT|slice=0|reason=13|requests=0|observations=0|resolved=0|sum=0|max=0|unknown_while_unresolved=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+EPL2MSV1|WAIT|slice=0|reason=14|requests=17|observations=17|resolved=17|sum=17|max=1|unknown_while_unresolved=0|hist_log2=0,17,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+EPL2MSV2|WAIT|slice=0|reason=15|requests=17|observations=17|resolved=17|sum=17|max=1|unknown_while_unresolved=0|hist_log2=0,17,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+EPL2MSV2|WAIT|slice=0|reason=16|requests=0|observations=0|resolved=0|sum=0|max=0|unknown_while_unresolved=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+EPL2MSV1|LOCAL_DIAGNOSTIC|slice=0|copy_free=0|l2_data_free=0|logical_copy_reads=0|logical_copy_writes=0|exempt_response=0|exempt_fill=0|exempt_lower_wb=0|exempt_frontend=0|exempt_copy_read=0|exempt_copy_write=0|physical_grants=33|hardware_P1_throughput_eligible=1
+EPL2SERVICEV1|RG1_BANK|slice=0|bank=0|enabled=0|held_not_ready_cycles=0|another_ready_cycles=0|recovered_grants=0|physical_services=9
+EPL2SERVICEV1|RG1_BANK|slice=0|bank=1|enabled=0|held_not_ready_cycles=0|another_ready_cycles=0|recovered_grants=0|physical_services=8
+EPL2SERVICEV1|RG1_BANK|slice=0|bank=2|enabled=0|held_not_ready_cycles=0|another_ready_cycles=0|recovered_grants=0|physical_services=8
+EPL2SERVICEV1|RG1_BANK|slice=0|bank=3|enabled=0|held_not_ready_cycles=0|another_ready_cycles=0|recovered_grants=0|physical_services=8
+EPL2SERVICEV1|RG1_CLIENT|slice=0|client=0|max_attempt_to_first_ready=0|max_attempt_to_consume=0|max_first_ready_to_consume=0|consumed=0|cancellations=0
+EPL2SERVICEV1|RG1_CLIENT|slice=0|client=1|max_attempt_to_first_ready=0|max_attempt_to_consume=0|max_first_ready_to_consume=0|consumed=0|cancellations=0
+EPL2SERVICEV1|RG1_CLIENT|slice=0|client=2|max_attempt_to_first_ready=0|max_attempt_to_consume=0|max_first_ready_to_consume=0|consumed=0|cancellations=0
+EPL2SERVICEV1|RG1_CLIENT|slice=0|client=3|max_attempt_to_first_ready=0|max_attempt_to_consume=0|max_first_ready_to_consume=0|consumed=0|cancellations=0
+EPL2SERVICEV1|RG1_CLIENT|slice=0|client=4|max_attempt_to_first_ready=0|max_attempt_to_consume=0|max_first_ready_to_consume=0|consumed=0|cancellations=0
+EPL2SERVICEV1|RG1_CLIENT|slice=0|client=5|max_attempt_to_first_ready=0|max_attempt_to_consume=0|max_first_ready_to_consume=0|consumed=0|cancellations=0
+EPL2SERVICEV1|RG1_CLIENT|slice=0|client=6|max_attempt_to_first_ready=0|max_attempt_to_consume=0|max_first_ready_to_consume=0|consumed=0|cancellations=0
+EPL2SERVICEV1|MQ2|slice=0|enabled=0|wb_bank_waits=0|bypasses=0|window=2|lower_enqueues_per_cycle=1
+EPL2STRUCTV1|BANK_PEAK|slice=0|ops_per_physical_cycle=1|bank0=1|bank1=1|bank2=1|bank3=1
+EPL2STRUCTV1|WB_QUOTA|slice=0|cap=0|reserved=0|live=0|reserved_peak=0|live_peak=0|total_peak=0|refusal_attempts=0|pending_retry_calls=0|rollback_releases=0|lower_accept_releases=0
+EPL2STRUCTV1|CONFIG|slice=0|static_s64=0|physical_slots=1168|resident_nominal=1024|bypass_capacity=128|wb_begin=1152|static_wb_capacity=16|legacy_wbuf=16|bank_count=4|bank_ops_per_physical_cycle=1|copy_latch_bytes=128
+EPL2FTV1|SUMMARY|slice=0|mode=2|wbuf=16|physical_slots=1168|accepted=17|wb_created=1|wb_completed=1|wb_lower_accept=1|wbuf_full=0|pool_full=0|pin_block=0|bank_block=0|issue_block=0|copy_lines=0|copy_bytes=0|staging_reads=1|staged_max=1|staging_lifetime=1|borrow_resident=1|borrow_bypass=0|rollback=0|version_checks=1|wb_live=0|wb_slots=0|reserved=0|read_refs=0|role_free=1151|role_resident=16|role_bypass=0|ownership_consistent=1|observed_cycles=84|wb_occupancy_sum=0|descriptor_responses=15
+EPL2TVDV3|METADATA_COST|slice=0|frontend_cam_queries=17|frontend_cam_ports=1|completion_cam_queries=1|completion_cam_ports=1|indexed_wb_accept=1|indexed_rollback=0|native_install_commits=1|native_promotion_commits=0|extra_packet_identity_bits=0|directory_bound_wb_uid_bits=32|indexed_control_read_views=3|indexed_control_update_lanes=3|metadata_PPA=UNKNOWN|metadata_clock_closure=UNKNOWN
+EPL2TVDV2|SUMMARY|slice=0|clean_installs=0|dirty_installs=1|read_responses=0|dirty_forward_responses=0|served_sectors=0|served_sector_bytes=0|promotions=0|live=1|mandatory=0|role_tvd=1|retention_slot_cycles=17|clean_retention_slot_cycles=0|total_retention_slot_cycles=17|lookup_wait_cycles=17|wb_wait_cycles=0|bank_wait_cycles=0|icnt_wait_cycles=0|directory_queries=17
+EPL2FTV1|TERMINAL|slice=0|unique_requesters=17|responses=17|absorbed_writebacks=0|requester_live=0|requester_exact_once=1|hardware_drained=1|pending_lower_reads=0|pending_returns=0|pending_responses=0
+EPL2B0V1|INVARIANT|slice=0|kernel_uid=18446744073709551615|line_mshr_used=0|line_mshr_capacity=128|descriptor_used=0|descriptor_free=512|descriptor_capacity=512|wad_live=0|wad_capacity=128|resident_live=16|resident_capacity=1024|resident_pending=0|bypass_live=0|bypass_capacity=128|bank_pending=0|resident_tag_payload_consistent=1|payload_double_owner=0|terminal_clean=1
+In Dram Latency Queue (total = 0): 
+DRAM[0]: 16 bks, busW=16 BL=2 CL=12, tRRD=3 tCCD=1, tRCD=12 tRAS=28 tRP=12 tRC=40
+n_cmd=0 n_nop=0 n_act=0 n_pre=0 n_ref_event=0 n_req=0 n_rd=0 n_rd_L2_A=0 n_write=0 n_wr_bk=0 bw_util=-nan
+n_activity=0 dram_eff=-nan
+bk0: 0a 0i bk1: 0a 0i bk2: 0a 0i bk3: 0a 0i bk4: 0a 0i bk5: 0a 0i bk6: 0a 0i bk7: 0a 0i bk8: 0a 0i bk9: 0a 0i bk10: 0a 0i bk11: 0a 0i bk12: 0a 0i bk13: 0a 0i bk14: 0a 0i bk15: 0a 0i 
+
+------------------------------------------------------------------------
+
+Row_Buffer_Locality = -nan
+Row_Buffer_Locality_read = -nan
+Row_Buffer_Locality_write = -nan
+Bank_Level_Parallism = -nan
+Bank_Level_Parallism_Col = -nan
+Bank_Level_Parallism_Ready = -nan
+write_to_read_ratio_blp_rw_average = -nan
+GrpLevelPara = -nan 
+
+BW Util details:
+bwutil = -nan 
+total_CMD = 0 
+util_bw = 0 
+Wasted_Col = 0 
+Wasted_Row = 0 
+Idle = 0 
+
+BW Util Bottlenecks: 
+RCDc_limit = 0 
+RCDWRc_limit = 0 
+WTRc_limit = 0 
+RTWc_limit = 0 
+CCDLc_limit = 0 
+rwq = 0 
+CCDLc_limit_alone = 0 
+WTRc_limit_alone = 0 
+RTWc_limit_alone = 0 
+
+Commands details: 
+total_CMD = 0 
+n_nop = 0 
+Read = 0 
+Write = 0 
+L2_Alloc = 0 
+L2_WB = 0 
+n_act = 0 
+n_pre = 0 
+n_ref = 0 
+n_req = 0 
+total_req = 0 
+
+Dual Bus Interface Util: 
+issued_total_row = 0 
+issued_total_col = 0 
+Row_Bus_Util =  -nan 
+CoL_Bus_Util = -nan 
+Either_Row_CoL_Bus_Util = -nan 
+Issued_on_Two_Bus_Simul_Util = -nan 
+issued_two_Eff = -nan 
+queue_avg = -nan 
+
+
+dram_util_bins: 0 0 0 0 0 0 0 0 0 0
+dram_eff_bins: 0 0 0 0 0 0 0 0 0 0
+mrqq: max=0 avg=-nan
+SYSTEM_SOURCE78_REAL_REQUESTS|sets=64|ways=16|requests=17|pending_peak=15|dirtyWB=1|reverse_returns=15|bankP1=1|drain=1|PASS

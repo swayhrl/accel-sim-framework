@@ -1,0 +1,264 @@
+{
+  "family_id": "SYSTEM_850MHZ_PARAMETER_FAMILY_V2",
+  "scientific_request_id_proposed": "EP_L2_SYSTEM_850MHZ_PARAMETER_FAMILY_V2_20261104_V1",
+  "status": "ENGINEERING_STATIC_HOST_PASS_USER_APPROVAL_AND_SCOPED_NATIVE_PENDING",
+  "source_identity": {
+    "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+    "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+    "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "exact_candidate_owner_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/SYSTEM_PARAMETER_FAMILY_V2.json",
+    "sha256": "1d4725875cccaa774ec1d606b875b81378ec04abafa2cd4701b7edf2d5ece3b4",
+    "bytes": 7541
+  },
+  "exact_matrix_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/MATCHED_S_EP_CONFIG_MATRIX.json",
+    "sha256": "b8da1ab2703ca5b87c9422cb90a060b28fa0c7be25fabfb815aba4575b0f1ca2",
+    "bytes": 35620
+  },
+  "owner_delivery_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/DELIVERY_MANIFEST.json",
+    "sha256": "609d5aead0406700e3b57b62f7bf34b5c781d8139ec12d5431ac3a59a7c167c2",
+    "bytes": 20950
+  },
+  "parameters": {
+    "Tag_geometry": [
+      "32x8",
+      "64x16"
+    ],
+    "FRFCFS": [
+      128,
+      256
+    ]
+  },
+  "fixed_hardware": {
+    "clocks": "1132.0:1132.0:1132.0:850.0",
+    "dram_latency": 100,
+    "channels": 32,
+    "slices": 64,
+    "line_bytes": 128,
+    "physical_payload_slots_per_slice": 1168,
+    "Resident_nominal_slots": 1024,
+    "Bypass_nominal_slots": 128,
+    "WB_nominal_slots": 16,
+    "descriptor": 512,
+    "per_address_cap": 32,
+    "LineMSHR": 128,
+    "WAD": 128,
+    "bank_ops": 1,
+    "L2_MissQ": 128,
+    "L1_MissQ": 16,
+    "partition_queues": "64:128:64:64",
+    "returnQ": 192,
+    "ICNT_buffers": "512/512",
+    "RO_switches": 0,
+    "observer_bits": "111"
+  },
+  "primary_points": {
+    "initial": 8,
+    "conditional": 4,
+    "max_this_finite_family": 12
+  },
+  "proposed_additional_application_NI_starts": 0,
+  "NI_boundary": {
+    "new_Source": false,
+    "new_collector": false,
+    "new_modes": false,
+    "S_and_WV_new_domain_MS_only_CPU_pairs": "6_PASS",
+    "new_profile_application_NI": "NOT_MEASURED",
+    "B0_M0a_application_NI": "NOT_PROVEN",
+    "Main_qualification_assurance_review_required": true,
+    "zero_extra_start_proposal_is_not_zero_missing_evidence": true
+  },
+  "fair_pairs": {
+    "Source5": "SAME_SOURCE78_PER_PAIR",
+    "same_input_geometry_clock_queues_payload_observer": true,
+    "reusable_REF850": "EXACT_SOURCE_INPUT_MODE_HARDWARE_OBSERVER_OLD_S_AND_WV_ONLY_AFTER_MAIN_REVIEW",
+    "only_this_modes": [
+      "S",
+      "WV_ZERO_RO"
+    ]
+  },
+  "stages": [
+    "FWT four single-family short points first",
+    "GEMM four single-family points next after qualifications/resources",
+    "Per-input combination pair gated by actual accepted absolute EP gains"
+  ],
+  "combination_gate": "Both exact-input single-family S/WV pairs CLOSED_ACCEPTED with true164 mandatory archive. Release combo pair if both WV absolute cycles reductions against own accepted850/WV reference >=1%, OR one >=3% and other nonnegative. S slowing down or ratio-only improvement never triggers extension. Main publishes explicit stage-release receipt.",
+  "cost_and_resources": {
+    "max_EP_models": 2,
+    "count_active_X_models": true,
+    "foreign_promises_preserved": true,
+    "actual_RSS_based_admission": true,
+    "trace_andbulk": "true164 only",
+    "hot_cap_perpoint_bytes": 134217728,
+    "shared_sequential_restore_bytes": 268435456,
+    "emergency_floor_bytes": 1073741824,
+    "no_legacy_pool_or_perpoint_multigiB_extra_reserve": true,
+    "reference_FWT_seconds_perarm": [
+      826.6,
+      893.5
+    ],
+    "reference_GEMM_seconds_perarm": [
+      4435.6,
+      4525.9
+    ],
+    "reference_FWT_RSS_bytes": 704643072,
+    "reference_GEMM_RSS_bytes": 4034920448,
+    "runtime": "~6host-hours initial8, ideal ~3h at2slots plus prep/admission/archive; active tasks may delay. Not a promise.",
+    "restore_bytes_meaning": "Aggregate two128MiB carrier windows, not extra reservation",
+    "initial8_host_hours_estimate": 5.9,
+    "conditional4_additional_host_hours_estimate": 3.0
+  },
+  "known_resource_delta": {
+    "Tag": "256->1024entries/slice, nominalGPUlinecoverage2->8MiB; Tag SRAM4x entrycount. PPA unknown.",
+    "Payload": "1168 slots/slice unchanged (GPU9.125MiB). S nominalResident1024 has only256 Tag landing IDs reachable atREF, restored1024 withG64W16. Do not claim larger PayloadSRAM or equalarea. F optionalWB/V compete for sharedstore.",
+    "Scheduler": "FRFCFS128->256 entries/channel; derived shared-credit pool limit319->447 per partition (l2cache.cc:478). Each of2 subpartitions retains private1 credit and WB-progress1 credit unchanged. These319/447 values are not total/outstanding transaction caps."
+  },
+  "not_yet_qualified": [
+    "Explicit user approval of this exact finite family, counts and conditional predicates",
+    "Main exact source/input/mode eligibility and immutable REF binding",
+    "Install and verify scoped sole entry without changing shared global native preimage or foreign authority",
+    "Fresh request budget exact admitted spec SHA set; no old HOLD balance reuse",
+    "Main only global admission/consume and serialized archive/restore lock qualification",
+    "Fresh RAM/CPU/cgroup/SSD/foreign remaining write checks before each consume"
+  ],
+  "acceptance": [
+    "new exact user range/freshbudget/native soleentry",
+    "sameSource5 andactual282echo percell",
+    "fullcommandlist CTA instructions kernels/drain",
+    "allpositive zero negative/HOLD failures retained",
+    "no retries/refunds",
+    "SourceKEEP",
+    "true164 fullSHA/two independent native restores"
+  ],
+  "new_science_authorized_now": false,
+  "old_24_or_227_budget_reuse": false,
+  "derived_shared_credit_resource": {
+    "shared_pool_limit_REF": 319,
+    "shared_pool_limit_FRFCFS256": 447,
+    "private_credit_per_subpartition": 1,
+    "subpartitions_per_partition": 2,
+    "WB_progress_credit": "1_UNCHANGED",
+    "not_total_outstanding_cap": true,
+    "source_location": "Source78 src/gpgpu-sim/l2cache.cc:478"
+  },
+  "future_group_root": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system",
+  "full_runtime_engineering_candidate_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/host_runtime_candidate/DELIVERY_MANIFEST.json",
+    "sha256": "0d768fbbba61c2c2eb463568864a779c015f511f90e346c2fc7c1371e1277a7d",
+    "bytes": 22389
+  },
+  "full_runtime_engineering_status": "PASS_PRIVATE_102_ENGINE_FULLTERMINAL_8ARCHIVE_6LOCK_CONTROLS_NOT_MAIN_SIGNED_NOT_NATIVE_REGISTERED",
+  "cross_scope_restore_mutex": "NOT_PROVEN_BY_C_RUNTIME_ALONE; MAIN_SINGLE_EXECUTOR_OUTER_SHARED_LOCK_OR_SERIAL_ACCEPT_REQUIRED",
+  "full_runtime_Main_activation_interface_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_c/host_runtime_candidate/MAIN_ACTIVATION_INTERFACE.json",
+    "sha256": "5fbfa3db28a896de92ff5e0bcf555de144988305620db02681d84e1d8147747f",
+    "bytes": 6448
+  },
+  "schema": "EP_MAIN_PERFORMANCE_FIRST_V2_PRECISE_FAMILY_REVIEW_PROPOSAL_V1",
+  "utc": "2026-11-03T17:15:49.374613+00:00",
+  "authorizes_start": false,
+  "Main_engineering_review_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/main/qualification_review/MAIN_ENGINEERING_QUALIFICATION_REVIEW.json",
+    "sha256": "a74720ef5d361578e301519ae882831d1a5d79b0220ac202294a733f33ae382b"
+  },
+  "Main_HostQ_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/main/qualification_review/SYSTEM850_HOST_QUALIFICATION.json",
+    "sha256": "6b0604f37fa8854d2381c899f9fc2fe11e52e51b1fb60b13bbb25fa3dda2abee"
+  },
+  "resource_adapter_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_d/resources_v2_candidate/resources_system.py",
+    "sha256": "10914487663e5d4965e259fe5c6ccc1727970194797007fada321556b2a82156"
+  },
+  "resource_policy_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/main/qualification_review/RESOURCE_POLICY_NUMERIC.json",
+    "sha256": "2cbdd28e2752ab82a00a3d360ad615d1bebad96a5d03214c24e24233fab90b2d"
+  },
+  "resource_contract_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_d/resources_v2_candidate/RESOURCE_POLICY_AND_CONTRACT.json",
+    "sha256": "cb98d60051d0f7d2e285f6f9aeff0dd128a52df9e455e87bb23e8102b2897540"
+  },
+  "exact_review_drafts": [
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/main/qualification_review/system_drafts/EP_PERF_PFV2_SYSTEM850_FWT_S_FRFCFS256_V1.json",
+      "sha256": "a45a17c929a78469d4a7a9fa3cec4f6336aa8e28aa71247b6660ff51d09ba473"
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/main/qualification_review/system_drafts/EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_FRFCFS256_V1.json",
+      "sha256": "5772b13c6d2088d4cbef0aaa68415ec3eb0dcdf0178021040fdc8587a74322f3"
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/main/qualification_review/system_drafts/EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_V1.json",
+      "sha256": "8914e334ff02a6dc72977d5108f3f59bef3da067cc0a495f3b5f5c040c481f03"
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/main/qualification_review/system_drafts/EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_FRFCFS256_V1.json",
+      "sha256": "a49590ab32daad88a02fdfc9aa00ff3a8fc3672949700614470dbcde93895bc5"
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/main/qualification_review/system_drafts/EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_FRFCFS256_V1.json",
+      "sha256": "4baed39725ad8160059cb825f1f2553026573219844525ac4d8714b3a0e37222"
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/main/qualification_review/system_drafts/EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_V1.json",
+      "sha256": "3d208689a00f4f75f08f03787fed46df814c364ae68afc72e3e1fd6b6b26829f"
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/main/qualification_review/system_drafts/EP_PERF_PFV2_SYSTEM850_GEMM_S_FRFCFS256_V1.json",
+      "sha256": "4c9810c527817eddda70ae0f31146f015ac6f245bedec6455a3350ae37d4c83f"
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/main/qualification_review/system_drafts/EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_FRFCFS256_V1.json",
+      "sha256": "ac229415fc5bd253c54b969023fdc53becc21a1b2162d2f877ac87d93bbd1fb6"
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/main/qualification_review/system_drafts/EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_V1.json",
+      "sha256": "ae36ce675f3b2040017772a2f24068d8479461b60d72d30b9697c2ec4386b745"
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/main/qualification_review/system_drafts/EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_FRFCFS256_V1.json",
+      "sha256": "e99269def594a09be5358997aefcc0e1dfc6c7a6b5270ff6a8e6330e1527d496"
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/main/qualification_review/system_drafts/EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_FRFCFS256_V1.json",
+      "sha256": "7c6cd17f450a0dac26e8951350cb783003426d5bfaa5d02fdac23dd48a425872"
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/main/qualification_review/system_drafts/EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_V1.json",
+      "sha256": "1b8e06411ea017eaa439b044b4bc86f5179f776a7df39d66495767694418f4df"
+    }
+  ],
+  "draft_activation_boundary": "All full282/input/config/mode/Source fixed for review. Native boot/ns, actual source/input/authorization references and pins must be finalized by Main AFTER approval. These drafts contain explicit NOT_BOUND_NOT_AUTHORIZED and are never registered specs.",
+  "qualification_now": {
+    "SourceCPU": "PASS_ACCEPTED_SOURCE",
+    "ModeCPU": "PASS",
+    "fullHost": "PASS",
+    "Main_static_fair_pairs": "PASS",
+    "new_profile_application_NI": "NOT_MEASURED",
+    "B0_M0a_application_NI": "NOT_PROVEN",
+    "new_850_application_reference": "NOT_APPLICABLE_REUSE_EXACT_PRIOR_ACCEPTED_ONLY",
+    "native_and_new_budget": "NOT_REGISTERED",
+    "application_science": "NOT_RUN"
+  },
+  "remaining_activation_checks": [
+    "Explicit user approval of this exact finite family, counts and conditional predicates",
+    "Main exact source/input/mode eligibility and immutable REF binding",
+    "Install and verify scoped sole entry without changing shared global native preimage or foreign authority",
+    "Fresh request budget exact admitted spec SHA set; no old HOLD balance reuse",
+    "Main only global admission/consume and serialized archive/restore lock qualification",
+    "Fresh RAM/CPU/cgroup/SSD/foreign remaining write checks before each consume"
+  ],
+  "resource_restore_contract": {
+    "per_family_carrier_window_bytes": 134217728,
+    "two_family_aggregate_upper_bound_bytes": 268435456,
+    "metadata_per_family_bytes": 2097152,
+    "emergency_bytes": 1073741824,
+    "do_not_add_another_global_restore_reservation": true,
+    "cross_scope_archive_mutual_exclusion": "PENDING_MAIN_INTEGRATION_NOT_PROVEN",
+    "old_trace_copy_bytes": 0
+  }
+}
