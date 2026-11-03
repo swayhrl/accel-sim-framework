@@ -10,7 +10,7 @@
     },
     "service": {
       "budget": 16,
-      "remaining": 12,
+      "remaining": 10,
       "state": "RUNNING"
     }
   },
@@ -425,21 +425,44 @@
       "validation_ref": null
     },
     {
-      "accepted_point_ref": null,
-      "archive_receipt_ref": null,
+      "CTA": 15625,
+      "accepted_point_ref": {
+        "bytes": 2568,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_performance_first_20261103_v1/service/cases/EP_PERF_PF_DRAM_VECTOR4M_S_1275_V1/run/c1717b3e-0c8f-49fa-ad86-a2355c626b9f/ACCEPTED_POINT.json",
+        "sha256": "713e73e25da7de583847214c47ef53b5f4a078afb19b7b16cb7f3bc9176ce378"
+      },
+      "archive_receipt_ref": {
+        "bytes": 1961,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_performance_first_20261103_v1/service/cases/EP_PERF_PF_DRAM_VECTOR4M_S_1275_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "3272abdb9310dcbd8f3a4e2acda2adc314b97460dbedb8d58279b1656ae0e5b0"
+      },
       "cohort": "EP_PERF_PF_DRAM_VECTOR4M_S_1275_V1",
       "consumed": true,
       "controller_state": {
-        "cpu": 0,
-        "native_frontend_pid": 3454543,
-        "status": "NATIVE_IN_PROGRESS",
-        "utc": "2026-11-03T12:29:26.677852+00:00"
+        "accept_returncode": 0,
+        "status": "CLOSED_ACCEPTED",
+        "utc": "2026-11-03T12:35:26.355290+00:00"
       },
-      "done_ref": null,
+      "cycles": 53910,
+      "done_ref": {
+        "bytes": 4329,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_PF_DRAM_VECTOR4M_S_1275_V1.DONE.json",
+        "sha256": "95cb6dc266804b0e3c59d1a55904ef4c3608fb2528320b47f8313496441f2c5c"
+      },
+      "elapsed_seconds": 356.6386212799698,
       "group": "service",
+      "hardware_drained": true,
       "input_identity_sha256": "ddf26d4f6b4b672de3c5f6d1ab633cc44d3d9ef8023b87ae9a10760f3f4057dc",
+      "instructions": 56000000,
+      "kernel_count": 1,
+      "mechanism_metrics_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_performance_first_20261103_v1/control/MECHANISM_METRICS/EP_PERF_PF_DRAM_VECTOR4M_S_1275_V1.json",
+        "sha256": "04d42cb5bf6edda3d518f5be616679ebfd817420203eaac0786b2ec8740e3e52"
+      },
       "mode": "S",
       "observer_variant": "ON",
+      "peak_hot_bytes": 1818624,
+      "peak_process_tree_RSS_bytes": 515899392,
       "proposal_cell_id": "PF_DRAM_VECTOR4M_S_1275",
       "purpose": "PERFORMANCE_PRIMARY",
       "source_identity": {
@@ -454,14 +477,18 @@
         "sha256": "af624edd9b19eb8abb1caefb2d3e52e0f99d5e5a42cd429ef8e5b0b1a3359243"
       },
       "stage": "FIRST6",
-      "state": "CONSUMED_BEFORE_FORK",
-      "validation_ref": null
+      "state": "CLOSED_ACCEPTED",
+      "stop_reason": null,
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_performance_first_20261103_v1/service/cases/EP_PERF_PF_DRAM_VECTOR4M_S_1275_V1/run/c1717b3e-0c8f-49fa-ad86-a2355c626b9f/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "87c178d9faa995cd8a8b44121c3f8fef88fee5ae70ad9f2791ca746bd1217588"
+      }
     },
     {
       "accepted_point_ref": null,
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_PF_DRAM_GEMM_S_1020_V1",
-      "consumed": false,
+      "consumed": true,
       "controller_state": {
         "cpu": 1,
         "native_frontend_pid": 3454581,
@@ -487,15 +514,20 @@
         "sha256": "15f89bf72d328b26d2ca7e5cc746a1d5e6517b94cd34e95e2aef173e5141034b"
       },
       "stage": "FIRST6",
-      "state": "NATIVE_IN_PROGRESS",
+      "state": "CONSUMED_BEFORE_FORK",
       "validation_ref": null
     },
     {
       "accepted_point_ref": null,
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_PF_DRAM_GEMM_WV_ZERO_RO_1020_V1",
-      "consumed": false,
-      "controller_state": null,
+      "consumed": true,
+      "controller_state": {
+        "cpu": 0,
+        "native_frontend_pid": 3454629,
+        "status": "NATIVE_IN_PROGRESS",
+        "utc": "2026-11-03T12:35:26.848518+00:00"
+      },
       "done_ref": null,
       "group": "service",
       "input_identity_sha256": "140f6ed3a5cdb1d7183cd4d2acc37b086224a054893ef12d990fdb2d5ea3659b",
@@ -515,7 +547,7 @@
         "sha256": "1840fe3ced574a115f3db9f00f9bc3f673ef29a27bf78031e34f4e4c26acfc90"
       },
       "stage": "FIRST6",
-      "state": "NOT_STARTED",
+      "state": "CONSUMED_BEFORE_FORK",
       "validation_ref": null
     },
     {
@@ -523,7 +555,12 @@
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_PF_DRAM_FWT_S_1275_V1",
       "consumed": false,
-      "controller_state": null,
+      "controller_state": {
+        "reason": "APPROVED_3PCT_EP_ABSOLUTE_OR_1PCT_INTERACTION",
+        "status": "PRUNED_NOT_CONSUMED",
+        "terminal_hold": true,
+        "utc": "2026-11-03T13:02:37.979237+00:00"
+      },
       "done_ref": null,
       "group": "service",
       "input_identity_sha256": "fc3a90622744ba1f63bec264284983747a372e3a34543249c3977d4bd285fe2e",
@@ -543,7 +580,7 @@
         "sha256": "4d40329cb57e9420b5871e73c35bdd5c3b68665edb664c521fc86bee5dc3160d"
       },
       "stage": "CONDITIONAL_FWT_1275",
-      "state": "NOT_STARTED",
+      "state": "PRUNED_NOT_CONSUMED",
       "validation_ref": null
     },
     {
@@ -551,7 +588,12 @@
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_PF_DRAM_FWT_S_1700_V1",
       "consumed": false,
-      "controller_state": null,
+      "controller_state": {
+        "reason": "PREVIOUS_FREQUENCY_PAIR_PRUNED",
+        "status": "PRUNED_NOT_CONSUMED",
+        "terminal_hold": true,
+        "utc": "2026-11-03T13:02:37.979243+00:00"
+      },
       "done_ref": null,
       "group": "service",
       "input_identity_sha256": "fc3a90622744ba1f63bec264284983747a372e3a34543249c3977d4bd285fe2e",
@@ -571,7 +613,7 @@
         "sha256": "d5cf68777ac5a8451ef4d413ee48a062e2e46966e39d32496c460ec800934a50"
       },
       "stage": "CONDITIONAL_FWT_1700",
-      "state": "NOT_STARTED",
+      "state": "PRUNED_NOT_CONSUMED",
       "validation_ref": null
     },
     {
@@ -579,7 +621,12 @@
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_PF_DRAM_FWT_WV_ZERO_RO_1275_V1",
       "consumed": false,
-      "controller_state": null,
+      "controller_state": {
+        "reason": "APPROVED_3PCT_EP_ABSOLUTE_OR_1PCT_INTERACTION",
+        "status": "PRUNED_NOT_CONSUMED",
+        "terminal_hold": true,
+        "utc": "2026-11-03T13:02:37.979246+00:00"
+      },
       "done_ref": null,
       "group": "service",
       "input_identity_sha256": "fc3a90622744ba1f63bec264284983747a372e3a34543249c3977d4bd285fe2e",
@@ -599,7 +646,7 @@
         "sha256": "ff03981c1e81c8ff6bc2524e3fa33000f42d26954e6c911a5dbe67cb9ee558b6"
       },
       "stage": "CONDITIONAL_FWT_1275",
-      "state": "NOT_STARTED",
+      "state": "PRUNED_NOT_CONSUMED",
       "validation_ref": null
     },
     {
@@ -607,7 +654,12 @@
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_PF_DRAM_FWT_WV_ZERO_RO_1700_V1",
       "consumed": false,
-      "controller_state": null,
+      "controller_state": {
+        "reason": "PREVIOUS_FREQUENCY_PAIR_PRUNED",
+        "status": "PRUNED_NOT_CONSUMED",
+        "terminal_hold": true,
+        "utc": "2026-11-03T13:02:37.979249+00:00"
+      },
       "done_ref": null,
       "group": "service",
       "input_identity_sha256": "fc3a90622744ba1f63bec264284983747a372e3a34543249c3977d4bd285fe2e",
@@ -627,7 +679,7 @@
         "sha256": "104f61a2f9a8fe9858249a4286b5ac87da8583c66522ffb46c1ba785b9157f38"
       },
       "stage": "CONDITIONAL_FWT_1700",
-      "state": "NOT_STARTED",
+      "state": "PRUNED_NOT_CONSUMED",
       "validation_ref": null
     },
     {
@@ -635,7 +687,12 @@
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_PF_DRAM_VECTOR4M_F_1700_V1",
       "consumed": false,
-      "controller_state": null,
+      "controller_state": {
+        "reason": "PREVIOUS_PAIR_FAILED_NO_RETRY_OR_REFUND",
+        "status": "CONDITIONAL_SCIENTIFIC_REVIEW_HOLD",
+        "terminal_hold": true,
+        "utc": "2026-11-03T13:02:37.979252+00:00"
+      },
       "done_ref": null,
       "group": "service",
       "input_identity_sha256": "ddf26d4f6b4b672de3c5f6d1ab633cc44d3d9ef8023b87ae9a10760f3f4057dc",
@@ -655,7 +712,7 @@
         "sha256": "abfc438c5936b7993d40f7c15512c5324ef86f7c8a79a2c34a3321c97655a737"
       },
       "stage": "CONDITIONAL_VECTOR4M_1700",
-      "state": "NOT_STARTED",
+      "state": "CONDITIONAL_SCIENTIFIC_REVIEW_HOLD",
       "validation_ref": null
     },
     {
@@ -663,7 +720,12 @@
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_PF_DRAM_VECTOR4M_S_1700_V1",
       "consumed": false,
-      "controller_state": null,
+      "controller_state": {
+        "reason": "PREVIOUS_PAIR_FAILED_NO_RETRY_OR_REFUND",
+        "status": "CONDITIONAL_SCIENTIFIC_REVIEW_HOLD",
+        "terminal_hold": true,
+        "utc": "2026-11-03T13:02:37.979255+00:00"
+      },
       "done_ref": null,
       "group": "service",
       "input_identity_sha256": "ddf26d4f6b4b672de3c5f6d1ab633cc44d3d9ef8023b87ae9a10760f3f4057dc",
@@ -683,7 +745,7 @@
         "sha256": "7665398bd3130158bd973fe463471d7a636f0466505dd50435a271b99c59be33"
       },
       "stage": "CONDITIONAL_VECTOR4M_1700",
-      "state": "NOT_STARTED",
+      "state": "CONDITIONAL_SCIENTIFIC_REVIEW_HOLD",
       "validation_ref": null
     },
     {
@@ -918,5 +980,5 @@
     "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_performance_first_20261103_v1/control/STAGE_RELEASES.json",
     "sha256": "45a54dec957ef21033c2bae3dcc8e795ddf76c43ac411ed5c6c0ba219bdc5e55"
   },
-  "utc": "2026-11-03T12:32:22.851640+00:00"
+  "utc": "2026-11-03T13:02:37.992361+00:00"
 }
