@@ -1,0 +1,107 @@
+{
+  "atlas_commit": "47a097aad4406893a07f8d230e1e0a850609bf39",
+  "source_matrix_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_preparation_20261103_v1/agents/B/KERNEL_HYPOTHESIS_MATRIX.json",
+  "source_matrix_sha256": "6b5ab45fed4a32aacfaca5ebd12338e04f4cb6f23af01d6b6862af80548e1092",
+  "rows": [
+    {
+      "program_id": "P42-07",
+      "program": "BICG",
+      "suite": "PolyBench/GPU",
+      "selection_state": "IDENTITY_FROZEN",
+      "phase_id": "P42-07-K01",
+      "source_kernel_symbol_or_name": "_Z12bicg_kernel1PfS_S_",
+      "source_stage": "s=A^T*r",
+      "source_global_access_facts": "A lane stride4B, loop stride16384B; broadcast r",
+      "source_reuse_opportunity_not_measured": "Aligned A warp 1 line/4 sectors; first matrix traversal",
+      "source_dependency_or_barrier": "Source explicitly initializes s; host serializes second launch",
+      "host_cpu_gpu_and_capture_scope": "16 CTAs; not full iterative BiCG solver",
+      "program_registered_launch_count": "2",
+      "phase_capture_scope": "REGISTERED_PROGRAM_SOURCE_KERNEL_CANDIDATE_NOT_CAPTURE_ELF_CERTIFIED",
+      "candidate_source_level": "INSPECTED_FIXED_CANDIDATE_SOURCE_ONLY_NOT_CAPTURE_SOURCE_OR_ELF",
+      "runtime_measurement_in_this_audit": "NONE",
+      "fixed_candidate_report": "programs/polybench_gpu/BICG.md \u00a7\u00a73-7",
+      "source_line_reference": "BICG/bicg.cu:99-113;launch166-196",
+      "inspected_candidate_commit": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+      "atlas_report": {
+        "commit": "47a097aad4406893a07f8d230e1e0a850609bf39",
+        "path": "docs/workload_atlas/programs/polybench_gpu/BICG.md",
+        "sha256": "9caf0a8afedfc47b398a2adab9634aad0861b8a4875bd2696ca0744b723a22d7",
+        "local_snapshot": "atlas/programs/polybench_gpu/BICG.md"
+      },
+      "trace_header_kernel_occurrence_ordinal_1_based": [
+        1
+      ],
+      "trace_evidence_level": "T_HEADER_SEQUENCE_FROM_EXISTING_ATLAS; instruction bodies not newly scanned",
+      "address_and_geometry_source_derived": "s=A^T*r: A4*(t*4096+q),lane4B;loop16384B.",
+      "dependency_and_potential_concurrency_source_derived": "16 CTAs;4096 recurrence; explicit zero s; coalesced phase first.",
+      "testable_hypothesis_not_cause": "Reverse order from ATAX/MVT is a natural phase-order control, not a causal intervention.",
+      "needed_observation_design_only": "Phase1 cycles, return service/PIB, actual vector merging and carried cache state.",
+      "runtime_program_record_reference": "PROGRAM_EVIDENCE.json#BICG",
+      "per_kernel_cycles": null,
+      "per_kernel_L2_queue_wait": null,
+      "per_kernel_MSHR_merge": null,
+      "runtime_gap": "NOT_AVAILABLE_IN_CONSUMED_WHOLE_INPUT_PROJECTION; cannot assign program speedup or counters to this phase",
+      "capture_source_link": "UNRESOLVED",
+      "capture_elf_link": "UNRESOLVED",
+      "new_runtime_measurement": false
+    },
+    {
+      "program_id": "P42-07",
+      "program": "BICG",
+      "suite": "PolyBench/GPU",
+      "selection_state": "IDENTITY_FROZEN",
+      "phase_id": "P42-07-K02",
+      "source_kernel_symbol_or_name": "_Z12bicg_kernel2PfS_S_",
+      "source_stage": "q=A*p",
+      "source_global_access_facts": "A lane stride16384B, loop stride4B; broadcast p",
+      "source_reuse_opportunity_not_measured": "Aligned A warp 32 lines/32 sectors; per-thread sequential reuse potential",
+      "source_dependency_or_barrier": "Source explicitly initializes q; matrix visited second",
+      "host_cpu_gpu_and_capture_scope": "16 CTAs; no producer tmp dependence as in ATAX",
+      "program_registered_launch_count": "2",
+      "phase_capture_scope": "REGISTERED_PROGRAM_SOURCE_KERNEL_CANDIDATE_NOT_CAPTURE_ELF_CERTIFIED",
+      "candidate_source_level": "INSPECTED_FIXED_CANDIDATE_SOURCE_ONLY_NOT_CAPTURE_SOURCE_OR_ELF",
+      "runtime_measurement_in_this_audit": "NONE",
+      "fixed_candidate_report": "programs/polybench_gpu/BICG.md \u00a7\u00a73-7",
+      "source_line_reference": "BICG/bicg.cu:117-131;launch166-196",
+      "inspected_candidate_commit": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+      "atlas_report": {
+        "commit": "47a097aad4406893a07f8d230e1e0a850609bf39",
+        "path": "docs/workload_atlas/programs/polybench_gpu/BICG.md",
+        "sha256": "9caf0a8afedfc47b398a2adab9634aad0861b8a4875bd2696ca0744b723a22d7",
+        "local_snapshot": "atlas/programs/polybench_gpu/BICG.md"
+      },
+      "trace_header_kernel_occurrence_ordinal_1_based": [
+        2
+      ],
+      "trace_evidence_level": "T_HEADER_SEQUENCE_FROM_EXISTING_ATLAS; instruction bodies not newly scanned",
+      "address_and_geometry_source_derived": "q=A*p: A4*(q*4096+t),lane16384B;loop4B.",
+      "dependency_and_potential_concurrency_source_derived": "16 CTAs; explicit zero q; synchronized after coalesced first product; no solver iterations.",
+      "testable_hypothesis_not_cause": "Late scattered row accesses may expose tag/reuse constraints; previous Tag/PIB work does not prove current bottleneck.",
+      "needed_observation_design_only": "Phase2 tag allocation vs MSHR merge/capacity vs downstream credit blocking, with exact model identity.",
+      "runtime_program_record_reference": "PROGRAM_EVIDENCE.json#BICG",
+      "per_kernel_cycles": null,
+      "per_kernel_L2_queue_wait": null,
+      "per_kernel_MSHR_merge": null,
+      "runtime_gap": "NOT_AVAILABLE_IN_CONSUMED_WHOLE_INPUT_PROJECTION; cannot assign program speedup or counters to this phase",
+      "capture_source_link": "UNRESOLVED",
+      "capture_elf_link": "UNRESOLVED",
+      "new_runtime_measurement": false
+    }
+  ],
+  "candidate_source_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_preparation_20261103_v1/agents/B/atlas/contributions/polybench/source_snapshot/BICG/bicg.cu",
+  "candidate_source_sha256": "c38c3b0bb1a543ce37ee6d4d7abe433a36574f05b49574e6bf1004c45b68f6fe",
+  "candidate_source_commit": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+  "capture_ELF_bound": false,
+  "excerpts": [
+    {
+      "start": 99,
+      "end": 131,
+      "text": "99: __global__ void bicg_kernel1(DATA_TYPE *A, DATA_TYPE *r, DATA_TYPE *s)\n100: {\n101: \tint j = blockIdx.x * blockDim.x + threadIdx.x;\n102: \t\n103: \tif (j < NY)\n104: \t{\n105: \t\ts[j] = 0.0f;\n106: \n107: \t\tint i;\n108: \t\tfor(i = 0; i < NX; i++)\n109: \t\t{\n110: \t\t\ts[j] += A[i * NY + j] * r[i];\n111: \t\t}\n112: \t}\t\n113: }\n114: \n115: \n116: //Distributed (split) from initial loop to allow parallelism\n117: __global__ void bicg_kernel2(DATA_TYPE *A, DATA_TYPE *p, DATA_TYPE *q)\n118: {\n119: \tint i = blockIdx.x * blockDim.x + threadIdx.x;\n120: \t\n121: \tif (i < NX)\n122: \t{\n123: \t\tq[i] = 0.0f;\n124: \n125: \t\tint j;\n126: \t\tfor(j=0; j < NY; j++)\n127: \t\t{\n128: \t\t\tq[i] += A[i * NY + j] * p[j];\n129: \t\t}\n130: \t}\n131: }"
+    },
+    {
+      "start": 166,
+      "end": 196,
+      "text": "166: \tcudaMalloc((void **)&A_gpu, sizeof(DATA_TYPE) * NX * NY);\n167: \tcudaMalloc((void **)&r_gpu, sizeof(DATA_TYPE) * NX);\n168: \tcudaMalloc((void **)&s_gpu, sizeof(DATA_TYPE) * NY);\n169: \tcudaMalloc((void **)&p_gpu, sizeof(DATA_TYPE) * NY);\n170: \tcudaMalloc((void **)&q_gpu, sizeof(DATA_TYPE) * NX);\n171: \tcudaMemcpy(A_gpu, A, sizeof(DATA_TYPE) * NX * NY, cudaMemcpyHostToDevice);\n172: \tcudaMemcpy(r_gpu, r, sizeof(DATA_TYPE) * NX, cudaMemcpyHostToDevice);\n173: \tcudaMemcpy(s_gpu, s, sizeof(DATA_TYPE) * NY, cudaMemcpyHostToDevice);\n174: \tcudaMemcpy(p_gpu, p, sizeof(DATA_TYPE) * NY, cudaMemcpyHostToDevice);\n175: \tcudaMemcpy(q_gpu, q, sizeof(DATA_TYPE) * NX, cudaMemcpyHostToDevice);\n176: \n177: \tdim3 block(DIM_THREAD_BLOCK_X, DIM_THREAD_BLOCK_Y);\n178: \tdim3 grid1((size_t)(ceil( ((float)NY) / ((float)block.x) )), 1);\n179: \tdim3 grid2((size_t)(ceil( ((float)NX) / ((float)block.x) )), 1);\n180: \n181: \tt_start = rtclock();\n182: \tbicg_kernel1<<< grid1, block >>>(A_gpu, r_gpu, s_gpu);\n183: \tcudaThreadSynchronize();\n184: \tbicg_kernel2<<< grid2, block >>>(A_gpu, p_gpu, q_gpu);\n185: \tcudaThreadSynchronize();\n186: \tt_end = rtclock();\n187: \tfprintf(stdout, \"GPU Runtime: %0.6lfs\\n\", t_end - t_start);\n188: \t\n189: \tcudaMemcpy(s_outputFromGpu, s_gpu, sizeof(DATA_TYPE) * NY, cudaMemcpyDeviceToHost);\n190: \tcudaMemcpy(q_outputFromGpu, q_gpu, sizeof(DATA_TYPE) * NX, cudaMemcpyDeviceToHost);\n191: \n192: \tcudaFree(A_gpu);\n193: \tcudaFree(r_gpu);\n194: \tcudaFree(s_gpu);\n195: \tcudaFree(p_gpu);\n196: \tcudaFree(q_gpu);"
+    }
+  ]
+}
