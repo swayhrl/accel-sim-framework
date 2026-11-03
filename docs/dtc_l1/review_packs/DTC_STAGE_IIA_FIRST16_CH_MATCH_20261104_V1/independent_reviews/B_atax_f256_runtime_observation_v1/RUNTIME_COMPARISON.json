@@ -1,0 +1,89 @@
+{
+  "schema": "DTC_ATAX_F256_TWO_FRESH_RUNTIME_OBSERVATIONS_V1",
+  "sample_times": [
+    "2026-11-03T21:27:53.376307+00:00",
+    "2026-11-03T21:29:18.800238+00:00"
+  ],
+  "capture_gap_seconds": 85.38230858,
+  "cpu_measurement_wall_seconds": 85.423938742,
+  "same_PID_generation_input_ROI": true,
+  "affinity_same": true,
+  "current_kernel": {
+    "ordinal": 1,
+    "kernel": "_Z12atax_kernel1PfS_S_",
+    "instructions": 71380992,
+    "prior_instructions": 0,
+    "current_kernel_completed": 6236608,
+    "current_kernel_retired_fraction": 0.0873707106788317
+  },
+  "retirement_scope": "whole_input cumulative GPU-thread retired instructions; in current K1 prior-kernel sum0, K1 bound71380992 vs app145666048",
+  "progress_timestamp_window_seconds": 90.0009729,
+  "retired_instruction_delta": 190112,
+  "retired_inst_per_progress_second": 2112.332721238839,
+  "cpu_seconds_delta": 78.12999999999965,
+  "CPU_over_capture_wall": 0.9146148158301418,
+  "schedstat_runtime_seconds_delta": 78.137674329,
+  "schedstat_runqueue_wait_seconds_delta": 1.651361528,
+  "proc_IO_deltas": {
+    "rchar": 0,
+    "wchar": 1299,
+    "syscr": 0,
+    "syscw": 1,
+    "read_bytes": 0,
+    "write_bytes": 4096,
+    "cancelled_write_bytes": 0
+  },
+  "minor_fault_delta": 62,
+  "major_fault_delta": 0,
+  "delayacct_blkio_tick_delta": 0,
+  "cgroup_throttle_event_delta": 0,
+  "cgroup_throttled_usec_delta": 0,
+  "VmSwap_kB": 0,
+  "matched_second_sample_history": [
+    {
+      "history": "CH_P0",
+      "at_same_retired_position_host_seconds_bracket": [
+        3410.550956454,
+        3420.551122794
+      ],
+      "current_elapsed_seconds": 2803.5999999996275,
+      "current_over_historical_position_elapsed": 0.8196340002980484,
+      "historical_remaining_seconds_at_this_position": 6481.802530266272,
+      "remaining_if_same_later_wall_curve_scaled_by_matched_position_seconds": 5312.705737024156
+    },
+    {
+      "history": "CH_F128",
+      "at_same_retired_position_host_seconds_bracket": [
+        2850.555118041,
+        2860.55513741
+      ],
+      "current_elapsed_seconds": 2803.5999999996275,
+      "current_over_historical_position_elapsed": 0.9800894810012504,
+      "historical_remaining_seconds_at_this_position": 5647.600905022413,
+      "remaining_if_same_later_wall_curve_scaled_by_matched_position_seconds": 5535.154239905609
+    }
+  ],
+  "live_cycle_observability": {
+    "current_raw_diagnostic_cycle_lines": [],
+    "perf_files": [
+      {
+        "path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/run/results/3b949083-a0f8-4778-92f1-d940c66acfe6/perf_counter_2026-11-03_20-42-35.csv.gz",
+        "prefix_sha256": "2644fd0a5b434dc5e5829bd9ba4ffda68dafa58ec4743643ce015221e2a98081",
+        "prefix_bytes": 43015,
+        "complete_data_rows": 0,
+        "cycle_column_names_present": [
+          "gpu_tot_sim_cycle",
+          "gpu_sim_cycle",
+          "gpu_tot_sim_insn"
+        ],
+        "large_header_not_exported": true
+      }
+    ],
+    "numeric_live_cycle_rate": "UNAVAILABLE_IN_CURRENT_EMITTED_FILES; missing is not0",
+    "source_bound_implication": "Advancing SIMULATE retirement is observed after m_gpgpu_sim->cycle in fixed Framework; numeric cycle advancement/rate is not directly sampled and no live cycle speedup is computed"
+  },
+  "interpretation": "Current same-position elapsed is comparable to or slightly ahead of closed F128, rather than obviously degraded. Host sample does not support swap, CPU-quota throttle or active trace read IO as dominant current cause. Later F256 modeled-system behavior is unverified.",
+  "conditional_ETA": "If remaining phase curve stays comparable to matched closed F128, remaining model wall time around1-3hours is a broad planning scenario; no reliable final deadline or unclosed scientific performance prediction",
+  "new_models": 0,
+  "failure_classification": null
+}
