@@ -1,0 +1,212 @@
+{
+  "spec_path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/specs/E2-DTC2A16-4114a3dc0d06b55b-CH-F256-V1.json",
+  "spec_sha256": "e25b89322b2a43e0426cb4aa35bebdbc7eb057318ef258e392ed4e0ee95a3655",
+  "input_binding_path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/input_bindings/4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449.json",
+  "input_binding_sha256": "89d0a283742f6bceb5550d05f417555e1753065c5460a83201edd4452d47f4b7",
+  "input_digest": "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+  "roi_sha256": "67d34154dfce7379f5fec107db7e87b8789d7594d7b3e7bc904019c33aa0f651",
+  "expected": {
+    "CTA": 27648,
+    "instructions": 714547200,
+    "kernels": 2
+  },
+  "qualification": {
+    "bundle_id": "869cdb7901fded18d39e37189b70a1d1eac3dcc6f3551f5bde2b583dfb36c474",
+    "capture_complete_native_input": "NOT_NEWLY_CERTIFIED;whole_declared_trace_only",
+    "elapsed_seconds": 1305.5396938323975,
+    "expected_CTA": 27648,
+    "expected_commands": [
+      "MemcpyHtoD,0x00007f759fa00900,68",
+      "MemcpyHtoD,0x00007f7590000000,37748736",
+      "kernel-1.traceg",
+      "kernel-2.traceg"
+    ],
+    "expected_instructions": 714547200,
+    "expected_kernels": 2,
+    "input_digest": "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+    "issues": [],
+    "model_starts": 0,
+    "native_numerical_correctness": "UNPROVEN",
+    "opcode_map_source_sha256": "dc88c632ab09210faf8239bd9eb988056641e0643642d622dc43304c4b787da4",
+    "prior_scientific_statuses_preserved": [
+      "EXISTING_FROZEN_REPLAY_SELECTION_NOT_NEW_SCIENTIFIC_QUALIFICATION"
+    ],
+    "program": "convolutionSeparable",
+    "rows": [
+      {
+        "FUSE_after_inode_informational": 88766922,
+        "FUSE_before_inode_informational": 88766922,
+        "active_thread_instructions": 375029760,
+        "binary_version": 70,
+        "cacheable_local_max_width": 0,
+        "complete_ctas": 18432,
+        "complete_warps": 36864,
+        "coverage": "ALL_DECLARED_WARPS_AND_FULL_GRID_WITH_TERMINAL_EXIT",
+        "full_SHA_current_size_mtime": [
+          4072647057,
+          1792779778000000000
+        ],
+        "global_reference_histogram": {
+          "0": 3072,
+          "2": 365568
+        },
+        "kernel": "_Z21convolutionRowsKernelPfS_iii",
+        "max_global_128b_line_references": 2,
+        "memory_instruction_paths": {
+          "CACHEABLE_GLOBAL_LOAD": 368640,
+          "ORDINARY_STORE": 294912,
+          "SHARED": 5124096
+        },
+        "opcodes": {
+          "BAR.SYNC": 36864,
+          "EXIT": 36864,
+          "FFMA": 5013504,
+          "IADD3": 110592,
+          "IMAD": 73728,
+          "IMAD.WIDE": 36864,
+          "ISETP.GE.AND": 73728,
+          "LDG.E.SYS": 368640,
+          "LDS.U": 4755456,
+          "LEA": 110592,
+          "LEA.HI.X": 36864,
+          "LEA.HI.X.SX32": 36864,
+          "MOV": 147456,
+          "NOP": 36864,
+          "S2R": 147456,
+          "SHF.L.U32": 36864,
+          "SHFL.IDX": 36864,
+          "STG.E.SYS": 294912,
+          "STS": 368640
+        },
+        "ordinal": 1,
+        "path": "/root/workspace/assets/traces/bundles/869cdb7901fded18d39e37189b70a1d1eac3dcc6f3551f5bde2b583dfb36c474/tree/kernel-1.traceg",
+        "sha256": "9678e3146630e7c77bd4609cc2fc82a6651552e66a5513ea47dcd2d9eb270724",
+        "source_input_shape": "NOT_INFERRED_FROM_TRACE_OR_FILENAME",
+        "sparse_mask_base_stride_records": 0,
+        "steady_interval": "NOT_PROVEN_BY_TRACE_GEOMETRY",
+        "trace_version": 0,
+        "unaligned_lane_memory_addresses": 0,
+        "warp_instruction_records": 11759616,
+        "width_counts": [
+          {
+            "opcode": "LDG.E.SYS",
+            "parser_width": 4,
+            "records": 368640,
+            "trace_width": 4
+          },
+          {
+            "opcode": "STS",
+            "parser_width": 4,
+            "records": 368640,
+            "trace_width": 4
+          },
+          {
+            "opcode": "LDS.U",
+            "parser_width": 4,
+            "records": 4755456,
+            "trace_width": 4
+          },
+          {
+            "opcode": "STG.E.SYS",
+            "parser_width": 4,
+            "records": 294912,
+            "trace_width": 4
+          }
+        ],
+        "workload": "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+        "zero_active_memory_records": 3072
+      },
+      {
+        "FUSE_after_inode_informational": 88766924,
+        "FUSE_before_inode_informational": 88766924,
+        "active_thread_instructions": 339517440,
+        "binary_version": 70,
+        "cacheable_local_max_width": 0,
+        "complete_ctas": 9216,
+        "complete_warps": 36864,
+        "coverage": "ALL_DECLARED_WARPS_AND_FULL_GRID_WITH_TERMINAL_EXIT",
+        "full_SHA_current_size_mtime": [
+          2772248484,
+          1792780085000000000
+        ],
+        "global_reference_histogram": {
+          "0": 1536,
+          "2": 367104
+        },
+        "kernel": "_Z24convolutionColumnsKernelPfS_iii",
+        "max_global_128b_line_references": 2,
+        "memory_instruction_paths": {
+          "CACHEABLE_GLOBAL_LOAD": 368640,
+          "ORDINARY_STORE": 294912,
+          "SHARED": 3059712
+        },
+        "opcodes": {
+          "BAR.SYNC": 36864,
+          "EXIT": 36864,
+          "FFMA": 5013504,
+          "IADD3": 221184,
+          "IADD3.X": 73728,
+          "IMAD": 110592,
+          "IMAD.WIDE": 516096,
+          "ISETP.GE.AND": 73728,
+          "LDG.E.SYS": 368640,
+          "LDS.U": 2691072,
+          "LEA": 147456,
+          "LEA.HI.X": 73728,
+          "LEA.HI.X.SX32": 73728,
+          "MOV": 147456,
+          "NOP": 36864,
+          "S2R": 147456,
+          "SHF.L.U32": 110592,
+          "SHF.L.U64.HI": 36864,
+          "SHF.R.S32.HI": 36864,
+          "SHFL.IDX": 36864,
+          "STG.E.SYS": 294912,
+          "STS": 368640
+        },
+        "ordinal": 2,
+        "path": "/root/workspace/assets/traces/bundles/869cdb7901fded18d39e37189b70a1d1eac3dcc6f3551f5bde2b583dfb36c474/tree/kernel-2.traceg",
+        "sha256": "1c4c91bd017adb4fedce9dc93b5edd8454dc28d969db095b78a6ea972c4ef28b",
+        "source_input_shape": "NOT_INFERRED_FROM_TRACE_OR_FILENAME",
+        "sparse_mask_base_stride_records": 0,
+        "steady_interval": "NOT_PROVEN_BY_TRACE_GEOMETRY",
+        "trace_version": 0,
+        "unaligned_lane_memory_addresses": 0,
+        "warp_instruction_records": 10653696,
+        "width_counts": [
+          {
+            "opcode": "LDG.E.SYS",
+            "parser_width": 4,
+            "records": 368640,
+            "trace_width": 4
+          },
+          {
+            "opcode": "STS",
+            "parser_width": 4,
+            "records": 368640,
+            "trace_width": 4
+          },
+          {
+            "opcode": "LDS.U",
+            "parser_width": 4,
+            "records": 2691072,
+            "trace_width": 4
+          },
+          {
+            "opcode": "STG.E.SYS",
+            "parser_width": 4,
+            "records": 294912,
+            "trace_width": 4
+          }
+        ],
+        "workload": "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+        "zero_active_memory_records": 1536
+      }
+    ],
+    "schema": "DTC_SWEEP_FULL_CURRENT_BODY_SHA_QUALIFICATION_V1",
+    "status": "BODY_COMPLETE_SHA_AND_BASIC_FORMAT_PASS",
+    "suite": "CUDA Samples",
+    "trace_entry": "/root/workspace/assets/traces/bundles/869cdb7901fded18d39e37189b70a1d1eac3dcc6f3551f5bde2b583dfb36c474/tree/kernelslist.g"
+  },
+  "source_scope": "Complete declared trace,not certification of native full application/numerical values;old scientific statuses are preserved"
+}

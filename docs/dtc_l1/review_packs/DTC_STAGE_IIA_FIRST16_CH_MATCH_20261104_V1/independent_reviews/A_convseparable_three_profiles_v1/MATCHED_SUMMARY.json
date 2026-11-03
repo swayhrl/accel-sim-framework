@@ -1,0 +1,145 @@
+{
+  "schema": "DTC_STAGEIIA_CONVSEPARABLE_SIX_SOURCE_MATCHED_SUMMARY_V1",
+  "full_input_digest": "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+  "reference_index": {
+    "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/ORIGINAL_REFERENCE_INDEX.json",
+    "sha256": "1ca94d35e835920187b50ad103b5a177cc362c473c4b21dc35372a152e7beb4f",
+    "total_original_reference_count": 32,
+    "consumed_here": 4
+  },
+  "per_profile": [
+    {
+      "profile": "F128",
+      "S_CH": 1.1738569436936297,
+      "S_DH": 1.187151152789888,
+      "R_P0": 1.0307017982142768,
+      "R_variant": 1.0423747412376698,
+      "I": 1.0113252378560091,
+      "DH_cycles_over_CH_variant": 0.959347881753777,
+      "CH_cycle_change_pct": -14.810743730541443,
+      "DH_cycles_reduction_pct": 15.764728219323176,
+      "I_inverse_CH_speedup": 0.8518925626945856,
+      "I_factor_from_DH_speedup": 1.187151152789888
+    },
+    {
+      "profile": "F256",
+      "S_CH": 1.3704550739079886,
+      "S_DH": 1.4222631225505697,
+      "R_P0": 1.0307017982142768,
+      "R_variant": 1.069665971440043,
+      "I": 1.037803536671104,
+      "DH_cycles_over_CH_variant": 0.9348712838398937,
+      "CH_cycle_change_pct": -27.031537258029125,
+      "DH_cycles_reduction_pct": 29.68952199177588,
+      "I_inverse_CH_speedup": 0.7296846274197087,
+      "I_factor_from_DH_speedup": 1.4222631225505697
+    }
+  ],
+  "phase_cycle_savings": [
+    {
+      "cell": "CH",
+      "profile": "F128",
+      "stage": "Rows",
+      "kernel": "_Z21convolutionRowsKernelPfS_iii",
+      "cycles_P0": 379655,
+      "cycles_variant": 328720,
+      "cycle_savings": 50935,
+      "cycle_reduction_pct": 13.416127800239696,
+      "speedup": 1.154949501095157,
+      "share_of_total_cycle_savings_pct": 41.67791769971606
+    },
+    {
+      "cell": "CH",
+      "profile": "F128",
+      "stage": "Columns",
+      "kernel": "_Z24convolutionColumnsKernelPfS_iii",
+      "cycles_P0": 445496,
+      "cycles_variant": 374220,
+      "cycle_savings": 71276,
+      "cycle_reduction_pct": 15.999245784473937,
+      "speedup": 1.1904655015766128,
+      "share_of_total_cycle_savings_pct": 58.32208230028394
+    },
+    {
+      "cell": "DH",
+      "profile": "F128",
+      "stage": "Rows",
+      "kernel": "_Z21convolutionRowsKernelPfS_iii",
+      "cycles_P0": 365625,
+      "cycles_variant": 311113,
+      "cycle_savings": 54512,
+      "cycle_reduction_pct": 14.909264957264956,
+      "speedup": 1.1752160790452344,
+      "share_of_total_cycle_savings_pct": 43.19219066937119
+    },
+    {
+      "cell": "DH",
+      "profile": "F128",
+      "stage": "Columns",
+      "kernel": "_Z24convolutionColumnsKernelPfS_iii",
+      "cycles_P0": 434947,
+      "cycles_variant": 363251,
+      "cycle_savings": 71696,
+      "cycle_reduction_pct": 16.4838474572764,
+      "speedup": 1.1973731662128941,
+      "share_of_total_cycle_savings_pct": 56.80780933062881
+    },
+    {
+      "cell": "CH",
+      "profile": "F256",
+      "stage": "Rows",
+      "kernel": "_Z21convolutionRowsKernelPfS_iii",
+      "cycles_P0": 379655,
+      "cycles_variant": 288224,
+      "cycle_savings": 91431,
+      "cycle_reduction_pct": 24.082653988489554,
+      "speedup": 1.3172220217608526,
+      "share_of_total_cycle_savings_pct": 40.991073790299076
+    },
+    {
+      "cell": "CH",
+      "profile": "F256",
+      "stage": "Columns",
+      "kernel": "_Z24convolutionColumnsKernelPfS_iii",
+      "cycles_P0": 445496,
+      "cycles_variant": 313876,
+      "cycle_savings": 131620,
+      "cycle_reduction_pct": 29.54459748235675,
+      "speedup": 1.4193375727994495,
+      "share_of_total_cycle_savings_pct": 59.008926209700924
+    },
+    {
+      "cell": "DH",
+      "profile": "F256",
+      "stage": "Rows",
+      "kernel": "_Z21convolutionRowsKernelPfS_iii",
+      "cycles_P0": 365625,
+      "cycles_variant": 269306,
+      "cycle_savings": 96319,
+      "cycle_reduction_pct": 26.34365811965812,
+      "speedup": 1.3576563463123732,
+      "share_of_total_cycle_savings_pct": 40.52363201871376
+    },
+    {
+      "cell": "DH",
+      "profile": "F256",
+      "stage": "Columns",
+      "kernel": "_Z24convolutionColumnsKernelPfS_iii",
+      "cycles_P0": 434947,
+      "cycles_variant": 293580,
+      "cycle_savings": 141367,
+      "cycle_reduction_pct": 32.50212094806953,
+      "speedup": 1.4815280332447713,
+      "share_of_total_cycle_savings_pct": 59.47636798128624
+    }
+  ],
+  "traffic_unit_bytes": 32,
+  "traffic_print_boundary_warning": "Completed-kernel print intervals are not request-origin attribution; cumulative last metrics contain mixed scopes.",
+  "active_path_source": {
+    "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/agents/B_gemm_2d_f128_controls_v1/typed_active_path.py",
+    "sha256": "85d4bbaf2b8524ff6b1679b8291be3e689921dc63e5d238f1b4fdf4a1a109288"
+  },
+  "no_isolated_queue_cause_claim": true,
+  "no_model_or_runtime_actions": true,
+  "remaining48_design_or_release": false
+}

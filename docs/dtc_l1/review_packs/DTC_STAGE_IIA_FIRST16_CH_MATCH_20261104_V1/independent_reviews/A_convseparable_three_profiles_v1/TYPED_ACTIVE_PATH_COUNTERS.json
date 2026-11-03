@@ -1,0 +1,253 @@
+{
+  "source_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/agents/B_gemm_2d_f128_controls_v1/typed_active_path.py",
+  "source_sha256": "85d4bbaf2b8524ff6b1679b8291be3e689921dc63e5d238f1b4fdf4a1a109288",
+  "rows": [
+    {
+      "cell": "CH",
+      "profile": "P0",
+      "RESULT_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-4114a3dc0d06b55b-CH-P0-V1.RESULT.json",
+      "RESULT_sha256": "e02e394e333973f4f5d936d45148c7a18a7183433badce0863a70fb220b9528f",
+      "common_downstream_counters": {
+        "L2_GLOBAL_read_accepted_sectors": 4604248,
+        "L2_GLOBAL_read_miss_sectors": 2360500,
+        "DRAM_issued_read_atoms32B": 2360500,
+        "DRAM_issued_write_atoms32B": 2166185,
+        "L2_total_cache_reservation_fails": 17940250,
+        "gpu_stall_dramfull": 18970630
+      },
+      "CH_common_frontend": {
+        "active_mode": "PAPER_BASE",
+        "active_common_PIB_capacity": 256,
+        "capacity_parameter": "-gpgpu_dtc_l1_pib_entries",
+        "common_PIB_full_events": 3247700,
+        "common_tag_bank_conflict_attempts": 3967488,
+        "common_tag_request_attempts": 31314959,
+        "common_terminal_PIB_occupancy": 0,
+        "common_running_PIB_peak_per_SM": 256,
+        "ordinary_L1_MSHR_entries": 512,
+        "ordinary_L1_MSHR_entry_full_events": 0,
+        "ordinary_L1_MSHR_merge_full_events": 0
+      },
+      "DH_PAPER_OO_frontend": null,
+      "DH_finite_service": null,
+      "cross_mode_proxies_not_assumed_equivalent": true
+    },
+    {
+      "cell": "DH",
+      "profile": "F128",
+      "RESULT_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-4114a3dc0d06b55b-DH-F128-V1.RESULT.json",
+      "RESULT_sha256": "05c86bd6fee65c55bf30b9aae6f2526ffff2d0fae9fb910b1c15a05e1a8ffe55",
+      "common_downstream_counters": {
+        "L2_GLOBAL_read_accepted_sectors": 4647964,
+        "L2_GLOBAL_read_miss_sectors": 2359296,
+        "DRAM_issued_read_atoms32B": 2359296,
+        "DRAM_issued_write_atoms32B": 2171576,
+        "L2_total_cache_reservation_fails": 14756434,
+        "gpu_stall_dramfull": 18028711
+      },
+      "CH_common_frontend": null,
+      "DH_PAPER_OO_frontend": {
+        "active_mode": "PAPER_OO",
+        "active_OO_PIB_capacity": 128,
+        "capacity_parameter": "-gpgpu_dtc_l1_oo_pib_entries",
+        "generic_pib_parameter_value": 8,
+        "generic_pib_parameter_active_for_OO_admission": false,
+        "OO_valid_line_hits": 2460,
+        "OO_pending_line_hits": 300893,
+        "OO_new_line_misses": 1161991,
+        "OO_tag_mapping_evictions": 1129223,
+        "OO_lower_requests_created": 1161991,
+        "OO_terminal_PIB_occupancy": 0,
+        "OO_PIB_full_events": null,
+        "OO_tag_bank_conflict_attempts": null,
+        "missing_reason": "These OO full/conflict event fields are not printed in this active mode; CH common counters are never assigned here"
+      },
+      "DH_finite_service": {
+        "domain": "DTC finite-service entries and all64SM samples; not CH ordinary-cache service",
+        "raw_cumulative": {
+          "DTC_SERVICE_V1_samples": 43159296,
+          "DTC_SERVICE_V1_pib_integral": 4739907854,
+          "DTC_SERVICE_V1_physical_integral": 22121193633,
+          "DTC_SERVICE_V1_collected_sectors": 2930688,
+          "DTC_SERVICE_V1_fully_ready_to_complete_sum": 2001429,
+          "DTC_SERVICE_V1_retired": 732672,
+          "DTC_SERVICE_V1_ready_to_collect_sum": 1192522,
+          "DTC_SERVICE_V1_collection_cycles": 732672,
+          "DTC_SERVICE_V1_wb_wait": 76235,
+          "DTC_SERVICE_V1_map_loss_to_free_sum": 712949015,
+          "DTC_SERVICE_V1_map_loss_to_free_count": 1129223
+        },
+        "mean_PIB_entries_across_all64SMs": 109.82356741870859,
+        "mean_physical_lines_across_all64SMs": 512.5476011703249,
+        "fully_ready_to_retire_cycles_per_retired_entry": 2.7316848466981134,
+        "map_loss_to_free_cycles_per_recorded_event": 631.3624633929702
+      },
+      "cross_mode_proxies_not_assumed_equivalent": true
+    },
+    {
+      "cell": "DH",
+      "profile": "F256",
+      "RESULT_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-4114a3dc0d06b55b-DH-F256-V1.RESULT.json",
+      "RESULT_sha256": "4e139d063b2e7103b30358442446537d02406a7d0bea7f3fe39177b9f11bf7f4",
+      "common_downstream_counters": {
+        "L2_GLOBAL_read_accepted_sectors": 4649940,
+        "L2_GLOBAL_read_miss_sectors": 2359296,
+        "DRAM_issued_read_atoms32B": 2359296,
+        "DRAM_issued_write_atoms32B": 2170825,
+        "L2_total_cache_reservation_fails": 12199317,
+        "gpu_stall_dramfull": 16218216
+      },
+      "CH_common_frontend": null,
+      "DH_PAPER_OO_frontend": {
+        "active_mode": "PAPER_OO",
+        "active_OO_PIB_capacity": 128,
+        "capacity_parameter": "-gpgpu_dtc_l1_oo_pib_entries",
+        "generic_pib_parameter_value": 8,
+        "generic_pib_parameter_active_for_OO_admission": false,
+        "OO_valid_line_hits": 1898,
+        "OO_pending_line_hits": 300961,
+        "OO_new_line_misses": 1162485,
+        "OO_tag_mapping_evictions": 1129717,
+        "OO_lower_requests_created": 1162485,
+        "OO_terminal_PIB_occupancy": 0,
+        "OO_PIB_full_events": null,
+        "OO_tag_bank_conflict_attempts": null,
+        "missing_reason": "These OO full/conflict event fields are not printed in this active mode; CH common counters are never assigned here"
+      },
+      "DH_finite_service": {
+        "domain": "DTC finite-service entries and all64SM samples; not CH ordinary-cache service",
+        "raw_cumulative": {
+          "DTC_SERVICE_V1_samples": 36024704,
+          "DTC_SERVICE_V1_pib_integral": 3845781072,
+          "DTC_SERVICE_V1_physical_integral": 18345112008,
+          "DTC_SERVICE_V1_collected_sectors": 2930688,
+          "DTC_SERVICE_V1_fully_ready_to_complete_sum": 2013455,
+          "DTC_SERVICE_V1_retired": 732672,
+          "DTC_SERVICE_V1_ready_to_collect_sum": 1199051,
+          "DTC_SERVICE_V1_collection_cycles": 732672,
+          "DTC_SERVICE_V1_wb_wait": 81732,
+          "DTC_SERVICE_V1_map_loss_to_free_sum": 583994229,
+          "DTC_SERVICE_V1_map_loss_to_free_count": 1129717
+        },
+        "mean_PIB_entries_across_all64SMs": 106.7539950362951,
+        "mean_physical_lines_across_all64SMs": 509.2369949243719,
+        "fully_ready_to_retire_cycles_per_retired_entry": 2.7480987399545773,
+        "map_loss_to_free_cycles_per_recorded_event": 516.9385155751396
+      },
+      "cross_mode_proxies_not_assumed_equivalent": true
+    },
+    {
+      "cell": "DH",
+      "profile": "P0",
+      "RESULT_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-4114a3dc0d06b55b-DH-P0-V1.RESULT.json",
+      "RESULT_sha256": "3216b129cb5d9914410cc0610d783c3883910b70e85265a057ce8a0ee5c9cbc4",
+      "common_downstream_counters": {
+        "L2_GLOBAL_read_accepted_sectors": 4645512,
+        "L2_GLOBAL_read_miss_sectors": 2359408,
+        "DRAM_issued_read_atoms32B": 2359408,
+        "DRAM_issued_write_atoms32B": 2170788,
+        "L2_total_cache_reservation_fails": 17783805,
+        "gpu_stall_dramfull": 20420241
+      },
+      "CH_common_frontend": null,
+      "DH_PAPER_OO_frontend": {
+        "active_mode": "PAPER_OO",
+        "active_OO_PIB_capacity": 128,
+        "capacity_parameter": "-gpgpu_dtc_l1_oo_pib_entries",
+        "generic_pib_parameter_value": 8,
+        "generic_pib_parameter_active_for_OO_admission": false,
+        "OO_valid_line_hits": 2549,
+        "OO_pending_line_hits": 301417,
+        "OO_new_line_misses": 1161378,
+        "OO_tag_mapping_evictions": 1128610,
+        "OO_lower_requests_created": 1161378,
+        "OO_terminal_PIB_occupancy": 0,
+        "OO_PIB_full_events": null,
+        "OO_tag_bank_conflict_attempts": null,
+        "missing_reason": "These OO full/conflict event fields are not printed in this active mode; CH common counters are never assigned here"
+      },
+      "DH_finite_service": {
+        "domain": "DTC finite-service entries and all64SM samples; not CH ordinary-cache service",
+        "raw_cumulative": {
+          "DTC_SERVICE_V1_samples": 51236608,
+          "DTC_SERVICE_V1_pib_integral": 5740050201,
+          "DTC_SERVICE_V1_physical_integral": 26399169250,
+          "DTC_SERVICE_V1_collected_sectors": 2930688,
+          "DTC_SERVICE_V1_fully_ready_to_complete_sum": 2003529,
+          "DTC_SERVICE_V1_retired": 732672,
+          "DTC_SERVICE_V1_ready_to_collect_sum": 1196959,
+          "DTC_SERVICE_V1_collection_cycles": 732672,
+          "DTC_SERVICE_V1_wb_wait": 73898,
+          "DTC_SERVICE_V1_map_loss_to_free_sum": 849931656,
+          "DTC_SERVICE_V1_map_loss_to_free_count": 1128610
+        },
+        "mean_PIB_entries_across_all64SMs": 112.03025385677365,
+        "mean_physical_lines_across_all64SMs": 515.2403775441185,
+        "fully_ready_to_retire_cycles_per_retired_entry": 2.7345510678721174,
+        "map_loss_to_free_cycles_per_recorded_event": 753.0782608695653
+      },
+      "cross_mode_proxies_not_assumed_equivalent": true
+    },
+    {
+      "cell": "CH",
+      "profile": "F128",
+      "RESULT_path": "/root/data/dtc_stage_iia_first16_20261104_v1/analysis/E2-DTC2A16-4114a3dc0d06b55b-CH-F128-V1.RESULT.json",
+      "RESULT_sha256": "d88def02bee9c24be1fd3c3f782e8bc77b77e88926d804b1f7ea2f42aa8fd325",
+      "common_downstream_counters": {
+        "L2_GLOBAL_read_accepted_sectors": 4608244,
+        "L2_GLOBAL_read_miss_sectors": 2359392,
+        "DRAM_issued_read_atoms32B": 2359392,
+        "DRAM_issued_write_atoms32B": 2168285,
+        "L2_total_cache_reservation_fails": 15425984,
+        "gpu_stall_dramfull": 18034419
+      },
+      "CH_common_frontend": {
+        "active_mode": "PAPER_BASE",
+        "active_common_PIB_capacity": 256,
+        "capacity_parameter": "-gpgpu_dtc_l1_pib_entries",
+        "common_PIB_full_events": 3243650,
+        "common_tag_bank_conflict_attempts": 3967488,
+        "common_tag_request_attempts": 23579743,
+        "common_terminal_PIB_occupancy": 0,
+        "common_running_PIB_peak_per_SM": 256,
+        "ordinary_L1_MSHR_entries": 512,
+        "ordinary_L1_MSHR_entry_full_events": 0,
+        "ordinary_L1_MSHR_merge_full_events": 0
+      },
+      "DH_PAPER_OO_frontend": null,
+      "DH_finite_service": null,
+      "cross_mode_proxies_not_assumed_equivalent": true
+    },
+    {
+      "cell": "CH",
+      "profile": "F256",
+      "RESULT_path": "/root/data/dtc_stage_iia_first16_20261104_v1/analysis/E2-DTC2A16-4114a3dc0d06b55b-CH-F256-V1.RESULT.json",
+      "RESULT_sha256": "5cc22a35d6c6a8ea597b0f18e4c0fda58dc6948635f56990b3d70c0fd78bca41",
+      "common_downstream_counters": {
+        "L2_GLOBAL_read_accepted_sectors": 4612044,
+        "L2_GLOBAL_read_miss_sectors": 2359296,
+        "DRAM_issued_read_atoms32B": 2359296,
+        "DRAM_issued_write_atoms32B": 2168384,
+        "L2_total_cache_reservation_fails": 13553108,
+        "gpu_stall_dramfull": 17461703
+      },
+      "CH_common_frontend": {
+        "active_mode": "PAPER_BASE",
+        "active_common_PIB_capacity": 256,
+        "capacity_parameter": "-gpgpu_dtc_l1_pib_entries",
+        "common_PIB_full_events": 3518122,
+        "common_tag_bank_conflict_attempts": 3967488,
+        "common_tag_request_attempts": 17023097,
+        "common_terminal_PIB_occupancy": 0,
+        "common_running_PIB_peak_per_SM": 256,
+        "ordinary_L1_MSHR_entries": 512,
+        "ordinary_L1_MSHR_entry_full_events": 0,
+        "ordinary_L1_MSHR_merge_full_events": 0
+      },
+      "DH_PAPER_OO_frontend": null,
+      "DH_finite_service": null,
+      "cross_mode_proxies_not_assumed_equivalent": true
+    }
+  ],
+  "notes": "CH commonPIB256 and DH OO128 counter domains remain separate; absent DH full/conflict counts are unknown, not CHcommon0 proxies."
+}

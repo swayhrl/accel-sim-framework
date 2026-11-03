@@ -1,0 +1,1 @@
+Read REPORT.md. This one-input six-source packet separates shared CH/DH downstream improvement from the small extra relative DTC change. It consumes only closed sources and preserves typed missingness; no model/runtime/48-stage action.
