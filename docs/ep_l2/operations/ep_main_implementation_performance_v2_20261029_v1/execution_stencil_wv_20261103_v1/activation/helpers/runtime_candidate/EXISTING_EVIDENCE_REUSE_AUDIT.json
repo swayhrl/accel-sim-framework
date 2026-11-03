@@ -1,0 +1,92 @@
+{
+  "schema": "EP_STENCIL_WV_EXISTING_EVIDENCE_REUSE_AUDIT_V1",
+  "status": "ENGINEERING_PASS_REQUIRES_MAIN_RUNTIME_HOSTQ_AND_NATIVE_ACTIVATION",
+  "Source78_unchanged": true,
+  "source_identity": {
+    "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+    "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+    "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "modeCPU_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/MAIN_SOURCE78_W_ONLY_MODE_CPU_QUALIFICATION_V2.json",
+    "sha256": "c1f97f153ca260da8e825c2fea04e31907f7e8a0db21e0db0bdb62f561966d77",
+    "bytes": 3558
+  },
+  "HostQ_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/MAIN_SOURCE78_W_ONLY_HOST_QUALIFICATION_V2.json",
+    "sha256": "847f2ce2be8be420328f040f73e2b3f136f1ef7c271496d28903f2ef42592463",
+    "bytes": 4965
+  },
+  "HostQ_modes_qualified": [
+    "S",
+    "W_ONLY",
+    "WV_ZERO_RO"
+  ],
+  "HostQ_evidence_refs": {
+    "host_native": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_b/HOST_NATIVE_V2_ACTUAL_CONTROLS.json",
+      "sha256": "75d864e5fcffd38037384cb8d36b43e4006d031137801d3686d9683adcc66a2b",
+      "bytes": 8777
+    },
+    "full_parser_synthetic": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_b/FULL_PARSER_SYNTHETIC_V2_ACTUAL_CONTROLS.json",
+      "sha256": "279964a5b84ddbfd01d80caaa8a52faf869076239881a596cb68d2129b9b8952",
+      "bytes": 9857
+    },
+    "old_component_controls": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/round2/agent_b/HOST_CONTRACT_ACTUAL_CONTROLS.json",
+      "sha256": "aecd93e37f516b89cfe7ea67f443e527c53a4851ab7999dd87bd8a587c2c13e3",
+      "bytes": 6355
+    },
+    "old_numeric_preservation": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/observation_guided_20261029_v1/round2/agent_b/HOST_NUMERIC_PRESERVATION_ACTUAL.json",
+      "sha256": "54571f6eb08d31029f49b00f1264f7dd9680b5fa64830040c3b48776ac59157d",
+      "bytes": 4342
+    }
+  },
+  "old_CPU_evidence_not_rerun": true,
+  "accepted_S_anchor_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/main/dedicated_S_anchor_reviews/stencil_S.json",
+    "sha256": "c897153a1ce5e723a0dca36d268700a06accb38368939be2eca35f93da6426e0",
+    "bytes": 2854
+  },
+  "accepted_S_point_ref": {
+    "bytes": 2405,
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_STENCIL_BD0309DF_S_REF_V1/run/d2ba4deb-286b-4361-bc01-67a44f72de17/ACCEPTED_POINT.json",
+    "sha256": "3270d23d7d7e9407c69b3ce3e08188d4eb895485d6373f91398dce378f817934"
+  },
+  "accepted_S_current_population_state": "CLOSED_ACCEPTED",
+  "accepted_S_cycles": 5242939,
+  "accepted_S_instructions": 2193446000,
+  "accepted_S_kernels": 100,
+  "accepted_S_CTA": 6400,
+  "accepted_S_drained": true,
+  "S_numeric_output": "UNKNOWN",
+  "exact_Stencil_input": "bd0309dfeec5745ba97400978c2c5f1413fa9c604376b3dd97e1dd3d5c8cc146",
+  "geometry": {
+    "line_bytes": 128,
+    "sets": 32,
+    "slices": 64,
+    "ways": 8
+  },
+  "observer_env": {
+    "EPL2_DETACH_DIAG": "0",
+    "EPL2_LIFE_WIRE": "SUMMARY_STAGE",
+    "EPL2_TAGPRESSURE_DIAG": "0",
+    "EPL2_TAG_LIFETIME": "0",
+    "EP_L2_EVENT_TIMELINE": "0"
+  },
+  "new_observer_or_source": false,
+  "application_NI_points_requested": 0,
+  "NI_boundary": "No new Core/observer/environment. Existing exact Source78 low-overhead profile only; CPU scope controls do not prove GPU NI. No inheritance from S-only NI to changed F path is asserted. W/WV profile and parser scope independently checked.",
+  "new_WV_application_acceptance_inherited": false,
+  "remaining": [
+    "Main issue real relocated HostQ for H/runtime engine/parser/contract pins",
+    "Main issue fresh Stencil W/WV eligibility binding exact Source78+input+ordered kernels",
+    "Main bind final spec source/resource/authorization/native domain refs",
+    "Main exact fresh2 registration and H/bin/native suffix current global bytes",
+    "Main resource admission and sole-entry launch; no scan/stencil beyond exact two"
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "Git_writes": 0,
+  "actual_science_starts": 0,
+  "code_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_stencil_wv_20261103_v1/helpers/admission_handoff/finite_stencil_successor.py",
+    "sha256": "931c312389bcc18681fb5652487f3d19f3a85502f5782a1940525379ca7bc9b1"
+  },
+  "count": 23,
+  "native_entry_writes": 0,
+  "production_models_affected": false,
+  "registry_writes": 0,
+  "resource_candidate_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_stencil_wv_20261103_v1/helpers/admission_handoff/stage2_resources_stencil.py",
+    "sha256": "4869dab32f58c99a6f9e41a53722f176d2965195f7a5636d56073cd64af1264a"
+  },
+  "schema": "EP_MAIN_STENCIL_SUCCESSOR_PRIVATE_CPU_CONTROLS_V1",
+  "status": "PASS",
+  "tests": [
+    {
+      "expected_rejection": false,
+      "status": "PASS",
+      "test": "handoff_waits_missing_finish"
+    },
+    {
+      "expected_rejection": false,
+      "status": "PASS",
+      "test": "handoff_holds_nonterminal_prior"
+    },
+    {
+      "expected_rejection": false,
+      "status": "PASS",
+      "test": "handoff_waits_live_prior_generation"
+    },
+    {
+      "expected_rejection": false,
+      "status": "PASS",
+      "test": "handoff_allterminal_dead_generation_ready"
+    },
+    {
+      "expected_rejection": false,
+      "status": "PASS",
+      "test": "dead_generation_does_not_signal"
+    },
+    {
+      "expected_rejection": false,
+      "status": "PASS",
+      "test": "actual_own_generation_live"
+    },
+    {
+      "expected_rejection": false,
+      "status": "PASS",
+      "test": "exact_two_modes_manifest_pass"
+    },
+    {
+      "expected_rejection": true,
+      "status": "PASS",
+      "test": "ceiling3_reject"
+    },
+    {
+      "expected_rejection": true,
+      "status": "PASS",
+      "test": "concurrency3_reject"
+    },
+    {
+      "expected_rejection": true,
+      "status": "PASS",
+      "test": "retry_true_reject"
+    },
+    {
+      "expected_rejection": true,
+      "status": "PASS",
+      "test": "foreign_request_reject"
+    },
+    {
+      "expected_rejection": true,
+      "status": "PASS",
+      "test": "publication_escape_reject"
+    },
+    {
+      "expected_rejection": true,
+      "status": "PASS",
+      "test": "unapproved_F_mode_reject"
+    },
+    {
+      "expected_rejection": true,
+      "status": "PASS",
+      "test": "input_mismatch_reject"
+    },
+    {
+      "expected_rejection": false,
+      "status": "PASS",
+      "test": "zero_prestarted_no_receipt_pass"
+    },
+    {
+      "expected_rejection": true,
+      "status": "PASS",
+      "test": "prestarted_without_Main_review_reject"
+    },
+    {
+      "expected_rejection": true,
+      "status": "PASS",
+      "test": "two_prestarted_reject"
+    },
+    {
+      "expected_rejection": false,
+      "status": "PASS",
+      "test": "one_prestarted_exact_receipt_pass"
+    },
+    {
+      "expected_rejection": true,
+      "status": "PASS",
+      "test": "adoption_reconsume_reject"
+    },
+    {
+      "expected_rejection": false,
+      "status": "PASS",
+      "test": "three_peer_scopes_mapped"
+    },
+    {
+      "expected_rejection": false,
+      "status": "PASS",
+      "test": "one_GiB_only_emergency_floor"
+    },
+    {
+      "expected_rejection": false,
+      "status": "PASS",
+      "test": "empty_scope_no_future_doublecharge"
+    },
+    {
+      "expected_rejection": false,
+      "status": "PASS",
+      "test": "unresolved_consumed_without_claim_reject"
+    }
+  ]
+}
