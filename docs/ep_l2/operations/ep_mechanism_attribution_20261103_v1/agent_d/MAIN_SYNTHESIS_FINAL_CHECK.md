@@ -1,0 +1,13 @@
+# Main Synthesis Final Independent Check
+
+**PASS. No required correction to the four reviewed Main files.** Their exact SHA/bytes appear in MAIN_SYNTHESIS_FINAL_CHECK.json, with13review assertions. This is a read-only synthesis/source check, not new CPU/model qualification. Main files, Git, raw, Source and scientific bookkeeping were not changed.
+
+The final report correctly upgrades backend237/360detach to direct PROVEN Rows-phase evidence while retaining backend requester class, per-kernel2954query exposure, seven-trigger later UID chains and direct boundary inventory as UNKNOWN. Frontend63/297classes are not promoted to backend measurements. Lower-memory counters use fixed-delay-queue admission and declared return-required/no-return-WB populations; nominal admitted-load ratio is distinguished from physical bus utilization. W/S and WV/W remain whole-organization/package contrasts.
+
+The narrowed structural hypothesis matches Source78: preview_install first selects EMPTY (directory.h:160-162), then dirty installation prefers reclaimable CLEAN over WB_COMPLETE regardless of cross-class event-age (:164-170). Existing install206, successful response_commit253-257 and WB completion361update age. Thus the proposed full-directory dirty-install-only switch can compare existing event-age across legal CLEAN/WB_COMPLETE without claiming pure LRU or adding a served bit. The proposed recent-served-CLEAN versus older-WB_COMPLETE CPU choice example is constructible. It is not evidence of real application incidence or benefit.
+
+The candidate explicitly preserves clean incoming installs, EMPTY priority, mandatory/readers/pins/ownership protections and the separate tvd_reclaim_one39-57Payload/landing path. The second path's independent CLEAN-first and bank/payload filters cannot be silently included in the first experiment. Preview/commit/landing consistency and selector timing/cost still need engineering qualification; existing metadata does not make comparator/timing/PPA free.
+
+The proposed same-newELF policyOFF/ON across two frozen inputs would be4future primary starts plus separately specified NI if needed. This is a plan only, with no registered allocation or launch authority. Scan remains conditional and unstarted; existing Stencil continues naturally. There is no automatic new policy integration, ideal free query, arbitrary resource expansion or generalized35/96performance claim.
+
+Remaining candidate questions are correctly labeled HYPOTHESIS/UNKNOWN: actual full-directory dirty-install invocation/usefulness population, whether class priority discards useful data, net selector/retention tradeoff and physical implementation feasibility. No newly demonstrated P0/P1 defect is claimed. The full ISCAS manuscript remains not supplied.

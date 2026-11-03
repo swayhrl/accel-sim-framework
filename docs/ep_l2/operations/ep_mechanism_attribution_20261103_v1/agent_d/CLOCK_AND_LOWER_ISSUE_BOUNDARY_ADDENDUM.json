@@ -1,0 +1,51 @@
+{
+  "schema": "EP_INDEPENDENT_CLOCK_LOWER_ISSUE_BOUNDARY_ADDENDUM_V1",
+  "utc": "2026-11-03T08:39:28.119236+00:00",
+  "status": "PROVEN_PRODUCER_BOUNDARY_CLARIFICATION_NOT_NEW_BUG",
+  "source_core": "1e07b263ca0879798387d2a712914a914f298775",
+  "source78_core": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+  "source_refs": [
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_d/core/src/gpgpu-sim/l2cache.cc",
+      "bytes": 135882,
+      "sha256": "82e5907e162cb0199d448d0b7f8d80704466086913824a43477bfc22902e37cc"
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_d/core/src/gpgpu-sim/gpu-cache.cc",
+      "bytes": 135029,
+      "sha256": "52df35af8883e185521646616d0d3e95f8ca8d70c27013832e24762cfce63b01"
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/implementation_performance_v2_20261029_v1/agent_d/core/src/gpgpu-sim/gpu-cache.h",
+      "bytes": 163002,
+      "sha256": "523f19590b961dd6002fac5ba79dbf2241e06b76825190889ee7c8829cd21c8d"
+    }
+  ],
+  "matching_source78_fragments": [
+    {
+      "name": "dram_cycle",
+      "sha256": "52b0aea7a6d736b126c4064459209035fcd2530053c0a6089e91cf02eae78194"
+    },
+    {
+      "name": "requires_dram_to_l2_return_and_can_issue",
+      "sha256": "4bf49217502f3ddfcea0454c59a723327c12453caa6a183b62a550bac380025a"
+    },
+    {
+      "name": "l2_char_record_dram_success",
+      "sha256": "f44eee0dcce2adebb6302e9d19d00e839e28d2cb8ad74343ab52ff4399ab3457"
+    }
+  ],
+  "counter_boundary": "L2->DRAM FIFO pop / before fixed-delay enqueue, not MC push or service complete",
+  "event_clock": "DRAM-domain arbitration head opportunities",
+  "fixed_deadline_clock": "physicalGPU/core cycle stamp + dram_latency",
+  "measurement_classes": [
+    "return-requiring non-L1/L2-WB",
+    "no-return L1/L2-WB"
+  ],
+  "bandwidth_util_semantics": "nominal admitted-payload load ratio, not measured physical DRAM bus utilization",
+  "kernel_scope": "accounting admission interval, not packet source kernel or service-completion interval",
+  "new_models": 0,
+  "new_CPU_tests": 0,
+  "raw_Trace_reads": 0,
+  "source_or_registry_or_Git_writes": 0
+}

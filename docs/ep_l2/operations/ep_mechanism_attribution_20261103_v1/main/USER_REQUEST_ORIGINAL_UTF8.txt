@@ -1,0 +1,285 @@
+# EP-L2-MAIN：Observation-Guided Mechanism Attribution V1
+
+## 一、当前科学基点
+
+继续EP-L2 / ISCAS2027研究主线，现有EP-MAIN保持唯一科学调度与Git集成责任。
+
+本轮依据2026-11-03已验收结果，优先读取：
+
+- 审查入口：`a67a8089d233c5a6a169f141f1eed4aaa57b848d`
+- `chatgpt_review_20261103_v1/CHATGPT_REVIEW_START_HERE.md`
+- `COMPLETED_EIGHT_RESULTS.json`
+- `analysis/PRELIMINARY_ANALYSIS_AND_NEXT_DECISION.md`
+- `analysis/ACCEPTED_PRIMARY_AND_MATCHED_REFERENCE_METRICS.json`
+- `analysis/T_KERNEL_CYCLE_DECOMPOSITION.json`
+- `evidence/NI_RESULTS/`与最新NI收尾回执
+- `execution_v2_20261103_v1/MECHANISM_METRICS/`下三组T的诊断ON结果
+
+正式基点以实际远端HEAD及已接受Source5为准，不以过时报告覆盖新回执。
+
+已经完成：
+
+- 8项新科学实验CLOSED_ACCEPTED。
+- Conv16×8三臂OFF/ON全部完成。
+- 3组应用级compact NI PASS。
+- GEMM/FWT W-only及合法S/WV参考闭合。
+- 真164归档及独立恢复验证。
+
+Stencil W-only、WV两项已进入原生运行。**不得重启、reset、追加启动、修改其配置或干预进程。**
+
+当前主目标是：利用已有实验，完成W/V/T机制的因果与资源行为分析，为下一项真正有意义的结构优化提供依据。
+
+## 二、立即启动4个并行子Agent
+
+四个Agent使用独立分析目录或工作树；Main统一整合。
+
+### Agent A：T机制完整事件漏斗
+
+重点分析Conv16×8的A/B/C三臂，尤其是已经验收的诊断ON结构化计数。
+
+构建真实执行漏斗：
+
+1. 原始Tag Probe与全Reserved观察。
+2. 目标Set内旧RO事务实际存活。
+3. 结构上存在可Detach的RO。
+4. 前端是否执行合法资格查询。
+5. 查询是否支付端口及周期成本。
+6. 预检是否虚拟允许MISS。
+7. 实际后端是否执行relieve/detach。
+8. 新请求是否最终准入。
+9. 旧RO返回、完成和退休是否闭合。
+
+特别审查已观察到的数据：
+
+- A/B/C实际Detach：0/237/360。
+- C新增普通查询：2954次。
+- C触发请求Detach后准入353次，另7次未准入。
+- B/C结构eligibility记录：13012/724。
+- 前端Raw Tag满路观察：311545/322938/320603。
+
+**不能直接拿B/C eligibility计数做机会损失比例。**
+
+必须检查计数器所在执行阶段、是否重复Head观察、模式开关和查询前后的筛选条件。不同人口不直接相减，不用边际数重建联合概率。
+
+明确区分：
+
+- Head-cycle观察；
+- 独立requester/UID；
+- 实际成功Detach；
+- 最终准入与退休；
+- 不同Slice/GPU时钟域。
+
+现有strict demand-unique NEW及后来UID完成链没有实现的部分必须保持UNKNOWN。
+
+交付：
+
+`T_DETACH_EVENT_FUNNEL_V1.md`
+
+`T_DETACH_FUNNEL_BY_ARM.csv`
+
+`T_COUNTER_POPULATION_AUDIT.json`
+
+目标是说明T在哪里创造了真实机会，以及哪些机会被其他资源限制抵消。
+
+### Agent B：T性能差异与执行阶段分析
+
+独立研究Conv16×8三臂的时间和资源变化。
+
+冻结数据：
+
+| 模式 | Rows | Columns | 总cycles |
+|---|---:|---:|---:|
+| F−T |174205|188456|362791|
+| Legacy-F |176424|190570|367152|
+| Corrected-F |177078|187262|364463|
+
+重点解释：
+
+- 为什么Legacy-F相对F−T慢1.2021%？
+- 为什么P1修复使Legacy-F改善0.7324%？
+- 为什么Corrected-F仍比F−T慢0.4609%？
+- 为什么Corrected-F的Rows变慢654cycles，而Columns改善3308cycles？
+
+从现有接受结果中核查：
+
+- Tag压力和准入；
+- V响应及实际局部服务；
+- RO lookup；
+- WAD和同址WB等待；
+- MissQ、lower FIFO、DRAM调度；
+- Bank等待及Payload状态；
+- 跨kernel保留的Cache/RO状态。
+
+使用已有小型结果和原有有界kernel摘要。
+
+不要重新扫描巨大Trace，不新增重型观测器，也不要为了补齐因果链而无条件扫描raw。
+
+2954次付费查询是Slice级暴露，不是2954个可直接从应用总cycles扣除的独占停顿。
+
+将结果分为：
+
+- PROVEN：已接受数据能够直接证明；
+- LIKELY：有相关证据支持但未隔离；
+- UNKNOWN：缺少必要联合人口或关键路径；
+- HYPOTHESIS：需要未来实验验证。
+
+交付：
+
+`T_KERNEL_AND_RESOURCE_ATTRIBUTION_V1.md`
+
+`T_RESOURCE_DELTA_BY_ARM.csv`
+
+`T_UNRESOLVED_CAUSAL_QUESTIONS.md`
+
+### Agent C：W/V收益机理及Stencil后续判别
+
+基于已接受的GEMM、FWT三模式数据继续分析。
+
+当前已证明：
+
+- GEMM：S/W/WV = 558588/558957/550642 cycles。
+- FWT：S/W/WV = 181827/181635/178951 cycles。
+- W-only基本中性。
+- W→WV在两者上均改善约1.48%。
+
+重点研究：
+
+1. W-only去除了哪些Payload Bank操作与copy。
+2. 为什么这些变化对cycles作用很小。
+3. WV实际减少了哪些lower reads。
+4. Victim服务、保留和查询开销是否有明确代价。
+5. W/V改变请求队列与下游资源压力的方式。
+6. 哪些特征可能预测V的收益。
+
+严格保留：
+
+- S→W是完整共享Payload组织变化，不是纯copy-free消融。
+- W→WV是完整V机制包，不是单个Victim命中。
+- 已完成DRAM写入量不等于强制最终Flush的写入量。
+
+对于Stencil：
+
+- 当前S参考为5242939cycles。
+- W-only/WV尚未在提供的冻结审查包内获得接受结果。
+- 现有两项由独立正式执行者负责。
+
+只读取已经自然发布的正式状态，不轮询或干预活动raw。
+
+若本轮分析时已有正式接受和归档回执，可以增量纳入；否则完成条件式判别方案，**不要等待任务结束才交付本轮分析**。
+
+重点判断：
+
+- W接近S、WV接近F：是否支持V为主要贡献？
+- W已获得大部分F收益：是否应优先优化W？
+- W/WV均未接近F：是否需要检查M及其他机制的贡献？
+
+Stencil之后再判断Scan两点负对照是否必要；**本任务不自动批准Scan启动**。
+
+交付：
+
+`WV_MECHANISM_ATTRIBUTION_V1.md`
+
+`STENCIL_RESULT_DECISION_MATRIX.md`
+
+`WV_NEXT_ARCHITECTURE_CANDIDATES.md`
+
+### Agent D：独立科学审查与论文结论核对
+
+Agent D不参与A/B/C结论推导，负责独立审查其统计、证据和科学表述。
+
+重点核查：
+
+1. 8项接受点与四个复用参考点的完整Source、输入、模式和几何。
+2. T三臂的283项配置与同一新ELF身份。
+3. 三组NI OFF/ON比较的完整适用范围。
+4. NI自动分析器最初因缺少json导入HOLD，后来离线修复的证据链。
+5. 归档后续回执与早期ACCEPTED_POINT中PENDING字段的时间关系。
+6. B/C的结构机会计数是否属于同人口。
+7. 任一结果是否存在将重复Head观察当作独立请求的错误。
+8. W/V/T是否存在未经验证的单机制归因。
+
+特别检查论文当前是否有以下不成立的表达：
+
+- T已经证明端到端加速；
+- Detach越多性能越好；
+- 所有被消除的阻塞都是GPU关键路径等待；
+- V响应数等于减少的DRAM请求数；
+- 负载已经形成全35/96统一加速；
+- NI PASS意味着数值输出正确；
+- 相同物理Payload容量等于相同可用资源组织；
+- P1修复的共享查询端口在RTL中一定可用且无面积/时序代价。
+
+交付：
+
+`INDEPENDENT_SCIENTIFIC_AUDIT_V1.md`
+
+`CLAIM_EVIDENCE_MATRIX.csv`
+
+`REMAINING_PAPER_RISKS.md`
+
+如果发现真正的P0/P1实现错误或实验证据冲突，及时向Main报告，并保留可复核的源码/数据依据。
+
+## 三、Main整合任务
+
+Main在四个Agent并行期间负责：
+
+1. 核对实际远端HEAD、已经发布的接受结果及归档回执。
+2. 保持四个Agent工作相互独立。
+3. 统一核对计数分母、Clock域、Source身份和NI口径。
+4. 将四个报告收敛成一份真正面向ISCAS论文的机理研究结果。
+5. 提出下一阶段少量有针对性的结构优化与验证方案。
+
+论文观察必须优先从实际程序行为出发，不能为了对应W/V/M/T四个机制而强行构造四条正收益结论。
+
+重点交付一张表：
+
+**Workload/执行阶段 → 观察到的资源限制 → 实际机制行为 → 性能变化 → 已证明的因果程度 → 尚需的最小实验。**
+
+建议新建独立研究目录，例如：
+
+`docs/ep_l2/operations/ep_mechanism_attribution_20261103_v1/`
+
+全部小型报告及派生统计提交独立研究分支，由Main唯一集成和推送，回读远端HEAD。
+
+不要与正在运行的Stencil自动Git发布者竞争同一工作树、index或分支写入。
+
+## 四、明确执行边界
+
+本Goal授权：
+
+- 四Agent并行只读分析；
+- 复用已验收小型JSON/CSV；
+- 必要的确定性离线重新计算；
+- 有界原始kernel摘要回读（仅在已有小汇总不充分且可准确绑定身份时）；
+- 科学审查与论文论证准备；
+- 独立研究文档提交及真164小型证据归档。
+
+不授权：
+
+- 新增GPU仿真；
+- 重启、reset或干预Stencil W-only/WV；
+- 启动Scan或其他候选；
+- 修改accepted Source、ELF或正式账本；
+- 新建竞争科学dispatcher；
+- 增加长期Trace扫描任务；
+- 自动合入新的W/V/T策略；
+- 将已有负结果删除或改写。
+
+现有Stencil科学执行、归档和自动结果发布机制继续自然运行。
+
+## 五、完成标准
+
+请实际并行启动A/B/C/D，而不是只登记任务。
+
+四个Agent完成后，Main统一提交：
+
+1. T完整真实事件漏斗和口径审查。
+2. Conv Rows/Columns性能差异分析。
+3. GEMM/FWT W/V增量机理分析。
+4. Stencil下一步判别框架及已有正式结果（如已自然验收）。
+5. 独立科学审查和论文Claim矩阵。
+6. 下一项最有价值的结构优化建议及必要实验，不自动启动。
+
+所有结果需要明确PROVEN/LIKELY/UNKNOWN/HYPOTHESIS，并保留Source、输入SHA及负结果。
+
+本轮**新增正式GPU仿真预算为0**。结束后推送独立研究提交，回读远端HEAD，向用户报告完整结论与下一步建议。
