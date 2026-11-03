@@ -5,17 +5,50 @@
   "budgets": {
     "t3": {
       "budget": 6,
-      "remaining": 4,
+      "remaining": 3,
       "state": "RUNNING"
     },
     "wv": {
       "budget": 2,
-      "remaining": 2,
-      "state": "REGISTERED_NOT_STARTED"
+      "remaining": 0,
+      "state": "RUNNING"
     }
   },
   "combined_GM": false,
-  "contrasts": [],
+  "contrasts": [
+    {
+      "baseline": "EP_PERF_T3_CONV16X8_A_F_MINUS_T_OFF_V1",
+      "contrast": "Legacy_T_independent",
+      "cycle_reduction_fraction": -0.012020695110959156,
+      "same_new_Source": true,
+      "speedup": 0.9881220856756875,
+      "treatment": "EP_PERF_T3_CONV16X8_B_LEGACY_F_OFF_V1"
+    },
+    {
+      "Main_exact_reference_ref": {
+        "bytes": 2453,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_FASTWALSHTRANSFORM_FC3A9062_S_REF_V1/run/1de868e7-e434-4ead-85b3-a2caf283695b/ACCEPTED_POINT.json",
+        "sha256": "1d1f80e7a6857817bc22b0b560839b8295e0bdfbc364e70d42c6dc2c0442be0d"
+      },
+      "baseline": "EP_PERF_FASTWALSHTRANSFORM_FC3A9062_S_REF_V1",
+      "contrast": "S_to_W_ONLY",
+      "cycle_reduction_fraction": 0.0010559487864838513,
+      "speedup": 1.0010570649929804,
+      "treatment": "EP_PERF_V2_PROPOSED_FASTWALSHTRANSFORM_FC3A9062_W_ONLY"
+    },
+    {
+      "Main_exact_reference_ref": {
+        "bytes": 2508,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_FASTWALSHTRANSFORM_FC3A9062_WV_ZERO_RO_REF_V1/run/f7f6e8a3-18d4-4c30-be5e-2965f752eaa5/ACCEPTED_POINT.json",
+        "sha256": "e3c5d8512fbbf4cf992eb5526fdc1bae6c9a432bb2096878bdd29082395710e1"
+      },
+      "baseline": "EP_PERF_FASTWALSHTRANSFORM_FC3A9062_WV_ZERO_RO_REF_V1",
+      "contrast": "WV_to_W_ONLY",
+      "cycle_reduction_fraction": -0.014998519147699563,
+      "speedup": 0.9852231122856278,
+      "treatment": "EP_PERF_V2_PROPOSED_FASTWALSHTRANSFORM_FC3A9062_W_ONLY"
+    }
+  ],
   "fatal": [],
   "host_overhead": "descriptive OFF/ON single-pair timing, separate from simulated GPU cycles",
   "later_UID_completion_chain": "NOT_MEASURED",
@@ -23,21 +56,44 @@
   "numeric_application_output": "UNKNOWN",
   "points": [
     {
-      "accepted_point_ref": null,
-      "archive_receipt_ref": null,
+      "CTA": 27648,
+      "accepted_point_ref": {
+        "bytes": 2487,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/t3/cases/EP_PERF_T3_CONV16X8_A_F_MINUS_T_OFF_V1/run/6d6ec96a-81ba-4003-860b-22da85a5579d/ACCEPTED_POINT.json",
+        "sha256": "54c4a4240792f70de3e9b8188e845ce24642a26eb29c645fba9070b1a7f966d2"
+      },
+      "archive_receipt_ref": {
+        "bytes": 1914,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/t3/cases/EP_PERF_T3_CONV16X8_A_F_MINUS_T_OFF_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "662b2360de3e51b8f2da906225de191e62874795b6fb22b6745117161e1884f8"
+      },
       "cohort": "EP_PERF_T3_CONV16X8_A_F_MINUS_T_OFF_V1",
       "consumed": true,
       "controller_state": {
-        "cpu": 0,
-        "native_frontend_pid": 3393413,
-        "status": "NATIVE_IN_PROGRESS",
-        "utc": "2026-11-03T03:12:36.447286+00:00"
+        "accept_returncode": 0,
+        "status": "CLOSED_ACCEPTED",
+        "utc": "2026-11-03T03:56:21.393015+00:00"
       },
-      "done_ref": null,
+      "cycles": 362791,
+      "done_ref": {
+        "bytes": 4503,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_T3_CONV16X8_A_F_MINUS_T_OFF_V1.DONE.json",
+        "sha256": "3736204941cca8f8d99d147df4eb3d61070586c0192d2adcb73148b711875197"
+      },
+      "elapsed_seconds": 2612.049731131643,
       "group": "t3",
+      "hardware_drained": true,
       "input_identity_sha256": "438eefd67b073f1ca0e2c08be6aa99b3b9b9619d7832cc6cad9cc4467e63654e",
+      "instructions": 714547200,
+      "kernel_count": 2,
+      "mechanism_metrics_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/control/MECHANISM_METRICS/EP_PERF_T3_CONV16X8_A_F_MINUS_T_OFF_V1.json",
+        "sha256": "1dbfeb682a12d92569ef9fb89594925484964d5d6d28f6d8395f53f3a880c295"
+      },
       "mode": "F_MINUS_T",
       "observer_profile": "T3_PRIMARY_OFF",
+      "peak_hot_bytes": 3919872,
+      "peak_process_tree_RSS_bytes": 998244352,
       "source_identity": {
         "archive_sha256": "4ea74720bec776712d56b84e493c376d364691d6eae40267f52bc836c703e2db",
         "binary_sha256": "54c3fbba9bb152d1a26539cccb617ac4a3368547a06509f427a202eeda6d8505",
@@ -49,25 +105,52 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/t3/cases/EP_PERF_T3_CONV16X8_A_F_MINUS_T_OFF_V1/control/FROZEN_SPEC.json",
         "sha256": "eb95ee3d039a5ba0fb4c696ab4909476aa1e9371e01facbe1cf8efa3d6be1f79"
       },
-      "state": "CONSUMED_BEFORE_FORK",
-      "validation_ref": null
+      "state": "CLOSED_ACCEPTED",
+      "stop_reason": null,
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/t3/cases/EP_PERF_T3_CONV16X8_A_F_MINUS_T_OFF_V1/run/6d6ec96a-81ba-4003-860b-22da85a5579d/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "58635887a275268653211d29dcbd84bd416473edc3353a48e213226742d2f067"
+      }
     },
     {
-      "accepted_point_ref": null,
-      "archive_receipt_ref": null,
+      "CTA": 27648,
+      "accepted_point_ref": {
+        "bytes": 2480,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/t3/cases/EP_PERF_T3_CONV16X8_B_LEGACY_F_OFF_V1/run/2e07a5fd-9c96-4b65-bf93-83d0f369f83e/ACCEPTED_POINT.json",
+        "sha256": "0329120258813f64543804a0b129165ee59f05d6a2fd47e926eb659c6d008fa8"
+      },
+      "archive_receipt_ref": {
+        "bytes": 1909,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/t3/cases/EP_PERF_T3_CONV16X8_B_LEGACY_F_OFF_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "e37fc4191fef9b8090f7092ce2fd79f698e705a93b196fa919c7e258d4397cda"
+      },
       "cohort": "EP_PERF_T3_CONV16X8_B_LEGACY_F_OFF_V1",
       "consumed": true,
       "controller_state": {
-        "cpu": 1,
-        "native_frontend_pid": 3393423,
-        "status": "NATIVE_IN_PROGRESS",
-        "utc": "2026-11-03T03:12:36.883360+00:00"
+        "accept_returncode": 0,
+        "status": "CLOSED_ACCEPTED",
+        "utc": "2026-11-03T03:56:35.562906+00:00"
       },
-      "done_ref": null,
+      "cycles": 367152,
+      "done_ref": {
+        "bytes": 4496,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_T3_CONV16X8_B_LEGACY_F_OFF_V1.DONE.json",
+        "sha256": "2c115b5aa0662183004485368a064179d554fb5dd1029ca00fd2047185457fea"
+      },
+      "elapsed_seconds": 2624.2021836414933,
       "group": "t3",
+      "hardware_drained": true,
       "input_identity_sha256": "438eefd67b073f1ca0e2c08be6aa99b3b9b9619d7832cc6cad9cc4467e63654e",
+      "instructions": 714547200,
+      "kernel_count": 2,
+      "mechanism_metrics_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/control/MECHANISM_METRICS/EP_PERF_T3_CONV16X8_B_LEGACY_F_OFF_V1.json",
+        "sha256": "be42d1d95e46d37c2ceff04c8c1c16cfeb418a5be60ff1ca03a2d5ac7fee5e3b"
+      },
       "mode": "LEGACY_F",
       "observer_profile": "T3_PRIMARY_OFF",
+      "peak_hot_bytes": 3923968,
+      "peak_process_tree_RSS_bytes": 1023410176,
       "source_identity": {
         "archive_sha256": "4ea74720bec776712d56b84e493c376d364691d6eae40267f52bc836c703e2db",
         "binary_sha256": "54c3fbba9bb152d1a26539cccb617ac4a3368547a06509f427a202eeda6d8505",
@@ -79,15 +162,24 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/t3/cases/EP_PERF_T3_CONV16X8_B_LEGACY_F_OFF_V1/control/FROZEN_SPEC.json",
         "sha256": "f56413a1e0fcb9c21a4182bdfc585ecbe5080e758b7a3272012b4a3e7ad876d5"
       },
-      "state": "CONSUMED_BEFORE_FORK",
-      "validation_ref": null
+      "state": "CLOSED_ACCEPTED",
+      "stop_reason": null,
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/t3/cases/EP_PERF_T3_CONV16X8_B_LEGACY_F_OFF_V1/run/2e07a5fd-9c96-4b65-bf93-83d0f369f83e/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "0c5b39aa25378fa3e72754e52fd2c51a3ac37b4f10120688995e5b3548a3a26c"
+      }
     },
     {
       "accepted_point_ref": null,
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_T3_CONV16X8_C_CORRECTED_F_OFF_V1",
-      "consumed": false,
-      "controller_state": null,
+      "consumed": true,
+      "controller_state": {
+        "cpu": 1,
+        "native_frontend_pid": 3394856,
+        "status": "NATIVE_IN_PROGRESS",
+        "utc": "2026-11-03T04:05:53.808917+00:00"
+      },
       "done_ref": null,
       "group": "t3",
       "input_identity_sha256": "438eefd67b073f1ca0e2c08be6aa99b3b9b9619d7832cc6cad9cc4467e63654e",
@@ -104,15 +196,20 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/t3/cases/EP_PERF_T3_CONV16X8_C_CORRECTED_F_OFF_V1/control/FROZEN_SPEC.json",
         "sha256": "b8e012fae75a279a70a632e9cd581ba94356bda52fb7b8d76c0cc6719229544f"
       },
-      "state": "NOT_STARTED",
+      "state": "CONSUMED_BEFORE_FORK",
       "validation_ref": null
     },
     {
       "accepted_point_ref": null,
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_V2_PROPOSED_GEMM_140F6ED3_W_ONLY",
-      "consumed": false,
-      "controller_state": null,
+      "consumed": true,
+      "controller_state": {
+        "cpu": 0,
+        "native_frontend_pid": 3394579,
+        "status": "NATIVE_IN_PROGRESS",
+        "utc": "2026-11-03T03:56:22.496258+00:00"
+      },
       "done_ref": null,
       "group": "wv",
       "input_identity_sha256": "140f6ed3a5cdb1d7183cd4d2acc37b086224a054893ef12d990fdb2d5ea3659b",
@@ -129,20 +226,48 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/wv/cases/EP_PERF_V2_PROPOSED_GEMM_140F6ED3_W_ONLY/control/FROZEN_SPEC.json",
         "sha256": "727e16ffad3b97b082a82074f5a1f0ec1a8b563cdea1c69d6c66d8add8d72255"
       },
-      "state": "NOT_STARTED",
+      "state": "CONSUMED_BEFORE_FORK",
       "validation_ref": null
     },
     {
-      "accepted_point_ref": null,
-      "archive_receipt_ref": null,
+      "CTA": 7040,
+      "accepted_point_ref": {
+        "bytes": 2558,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/wv/cases/EP_PERF_V2_PROPOSED_FASTWALSHTRANSFORM_FC3A9062_W_ONLY/run/f3425e6a-aec5-4922-86ff-9bac5077efc4/ACCEPTED_POINT.json",
+        "sha256": "631f54e346607a5be8a3649d6454be2d2621780e12194bcef1984a5eb7a16f3a"
+      },
+      "archive_receipt_ref": {
+        "bytes": 1999,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/wv/cases/EP_PERF_V2_PROPOSED_FASTWALSHTRANSFORM_FC3A9062_W_ONLY/control/ARCHIVE_RECEIPT.json",
+        "sha256": "c66efbe2579eba23c4aa249249c45c1caa8ed5b7ad91097993bae055c060fc3b"
+      },
       "cohort": "EP_PERF_V2_PROPOSED_FASTWALSHTRANSFORM_FC3A9062_W_ONLY",
-      "consumed": false,
-      "controller_state": null,
-      "done_ref": null,
+      "consumed": true,
+      "controller_state": {
+        "accept_returncode": 0,
+        "status": "CLOSED_ACCEPTED",
+        "utc": "2026-11-03T04:05:53.259738+00:00"
+      },
+      "cycles": 181635,
+      "done_ref": {
+        "bytes": 9347,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_V2_PROPOSED_FASTWALSHTRANSFORM_FC3A9062_W_ONLY.DONE.json",
+        "sha256": "f4fd85759b7423cdfea849a94f21fa5364a4712e20bf10aee6c0af0fde0c8cd3"
+      },
+      "elapsed_seconds": 543.4027095809579,
       "group": "wv",
+      "hardware_drained": true,
       "input_identity_sha256": "fc3a90622744ba1f63bec264284983747a372e3a34543249c3977d4bd285fe2e",
+      "instructions": 180944896,
+      "kernel_count": 16,
+      "mechanism_metrics_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/control/MECHANISM_METRICS/EP_PERF_V2_PROPOSED_FASTWALSHTRANSFORM_FC3A9062_W_ONLY.json",
+        "sha256": "f4b4b638fa61a69676ad81163967da6da0ef600cbe67f422ea4f9455e04d8f2f"
+      },
       "mode": "W_ONLY",
       "observer_profile": null,
+      "peak_hot_bytes": 3076096,
+      "peak_process_tree_RSS_bytes": 700448768,
       "source_identity": {
         "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
         "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
@@ -154,8 +279,12 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/wv/cases/EP_PERF_V2_PROPOSED_FASTWALSHTRANSFORM_FC3A9062_W_ONLY/control/FROZEN_SPEC.json",
         "sha256": "2c87425a9ff65e2b6c25c6dad5a3c7f91c721f5fe3ec6f1cca1d741768661c2c"
       },
-      "state": "NOT_STARTED",
-      "validation_ref": null
+      "state": "CLOSED_ACCEPTED",
+      "stop_reason": null,
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/wv/cases/EP_PERF_V2_PROPOSED_FASTWALSHTRANSFORM_FC3A9062_W_ONLY/run/f3425e6a-aec5-4922-86ff-9bac5077efc4/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "05ed08d028166525a08f36603a94d42e5dc70c409be11ff6d4c27d1ff999f001"
+      }
     },
     {
       "accepted_point_ref": null,
@@ -236,5 +365,5 @@
   "schema": "EP_MAIN_STAGEII_FINITE_RESULTS_V1",
   "session": "943eaad3-a32f-43c2-9a7f-effdcdaaa9d6",
   "strict_demand_NEW": "NOT_INSTRUMENTED",
-  "utc": "2026-11-03T03:42:54.837716+00:00"
+  "utc": "2026-11-03T04:13:05.996122+00:00"
 }
