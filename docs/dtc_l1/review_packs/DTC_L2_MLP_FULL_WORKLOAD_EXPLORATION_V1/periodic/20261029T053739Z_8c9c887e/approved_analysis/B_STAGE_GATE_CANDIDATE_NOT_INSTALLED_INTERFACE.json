@@ -1,0 +1,40 @@
+{
+  "API": {
+    "append_locked": "append_locked(reg,request,before_q,row); pure passed-q CAS only, suitable for native.update_authority callback; zero other mutations",
+    "install_on_frame": "install_on_frame(actual_run_scheduler_frame,cfg,engine.assert_parent_lease,main=Main)->state; requires row already registered and same existing aging.lock",
+    "record": "record(cfg)->zero-grant operational row",
+    "restore_in_owner": "restore_in_owner(engine.assert_parent_lease,main=Main); exact previous adaptive.recommend reference only; do not restore before qualified next-stage replacement is ready",
+    "validate": "validate(cfg,q)->True; outside authority EX only"
+  },
+  "QA": {
+    "backend": "ISOLATED_CPU_REAL_OLD_RECOMMENDATION_WITH_EXPLICIT_STANDINS",
+    "count": 6,
+    "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/B/adaptive_stage_transition_gate_v1/CPU_QUALIFICATION.json",
+    "sha256": "b753ff2e66e6c42dddb96d609afa3efbbc91fe441670e1eba880f422a3207cf6"
+  },
+  "actual_source_requirements": "Main must capture prior.__code__.co_filename and current source SHA; the current callable may be the IR exclusion wrapper rather than raw tools/l2_adaptive.py. Pin the actual captured source and do not replace its code.",
+  "future": "A separate source-bound stage gate/new transactional registrar generation must replace this hold-only gate; this version never permits legacy registry.extend.",
+  "mutation": "Only captured frame.f_locals.adaptive.recommend attribute; preserve adaptive object, original function and source, registry.extend callable, worker, E/state/R/tokens, claims, consumer and resources.",
+  "no_activation_mode": true,
+  "operational_sequence": [
+    "ActualMain PID/start/lease and current frame refs outside authority EX",
+    "Capture actual recommendation and native source/QA/readback pins, build cfg immutable",
+    "Under same aging RLock read currentq and validate against shadow added row outside EX",
+    "Pure native.update_authority callback append_locked only",
+    "install_on_frame and verify only one changed reference; preserve all old rows/grants/UUIDs",
+    "ACK no model starts; on failure retain operational row/config evidence and contain callback error; source drift makes gate fail closed"
+  ],
+  "schema": "B_ADAPTIVE_STAGE_GATE_INTERFACE_V1",
+  "source_sha256": "604eae1ff5d2fdd1a705c9c4b6ea91becac5c1251ec668aa99ac8984280f3308",
+  "state_fields": [
+    "prior",
+    "wrapper",
+    "cfg",
+    "last_issue",
+    "last_original",
+    "calls",
+    "original_calls",
+    "receipt"
+  ],
+  "unknown_batch_contract_behavior": "HOLD, no original/registrar delegation"
+}
