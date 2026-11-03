@@ -1,0 +1,42 @@
+{
+  "API": {
+    "apply": "apply(proposal, engine, res, history, claims, aging, owner_assert) -> COMMITTED receipt; Main only under existing aging.lock. Caller must pin source/QA and save returned proposal bytes before apply.",
+    "prepare": "prepare(root, engine, res, history, policy, scope_path, claims) -> immutable-ready proposal; READ ONLY",
+    "reconcile": "Reinvoke apply with SAME proposal after a partial file/q failure, preserving lock and HOLD new admission until closure. No new grant/refund; pre-existing file pairs must be exact old/new bytes."
+  },
+  "DB_present": [
+    "E2-DTCL2MLP-b51811aca9dc70cf-DH-F128-V1"
+  ],
+  "authority_callback": "No engine/registered/canonical/forecast/authority calls. Pure passed-q identity plus file/claim CAS only.",
+  "important": "This is not a scheduler wrapper. Main must run before decision under same aging lock; retain failed transaction proposal and HOLD new admission if interrupted. Never call prepare from inside authority EX.",
+  "mutation_scope": [
+    "estimated_peak_model_RAM_bytes",
+    "limits.max_process_tree_rss_bytes",
+    "limits.max_process_tree_vms_bytes",
+    "q.admitted_specs canonical SHA",
+    "existing same-CPU DB canonical/resolved SHA"
+  ],
+  "preserved": [
+    "all science/input/270 options/Core/FW/binary",
+    "IR lineage and initial-spec provenance",
+    "timeout/result cap",
+    "budget/remaining/consumed/old UUID/history/peer requests",
+    "CPU of existing DB"
+  ],
+  "production_applied": false,
+  "schema": "PENDING_RESOURCE_REFRESH_INTERFACE_V1",
+  "scope_exact10": [
+    "E2-DTCL2MLP-b51811aca9dc70cf-CH-P0-IR1-V1",
+    "E2-DTCL2MLP-b51811aca9dc70cf-DH-E384-IR1-V1",
+    "E2-DTCL2MLP-b51811aca9dc70cf-DH-E768-IR1-V1",
+    "E2-DTCL2MLP-b51811aca9dc70cf-DH-F128-V1",
+    "E2-DTCL2MLP-b51811aca9dc70cf-DH-F256-IR1-V1",
+    "E2-DTCL2MLP-b51811aca9dc70cf-DH-M16-IR1-V1",
+    "E2-DTCL2MLP-b51811aca9dc70cf-DH-M8-V1",
+    "E2-DTCL2MLP-b51811aca9dc70cf-DH-P0-IR1-V1",
+    "E2-DTCL2MLP-b51811aca9dc70cf-DH-Q128-V1",
+    "E2-DTCL2MLP-b51811aca9dc70cf-DH-Q64-V1"
+  ],
+  "source_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/B/pending_resource_forecast_refresh_v1/resource_refresh.py",
+  "source_sha256": "c4103056c90807ee72ac550ba2886e95ff4fa15996857e713f9a9ad3d6105369"
+}
