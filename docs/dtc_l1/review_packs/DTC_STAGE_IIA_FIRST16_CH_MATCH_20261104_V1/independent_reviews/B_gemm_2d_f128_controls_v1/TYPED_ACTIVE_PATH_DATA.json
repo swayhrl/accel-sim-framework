@@ -1,0 +1,338 @@
+[
+  {
+    "program": "GEMM",
+    "cell": "CH",
+    "profile": "P0",
+    "RESULT_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-CH-P0-V1.RESULT.json",
+    "RESULT_sha256": "52b200fef6a295bcf646f5020cf96c3b8359f15dfb982fbc28849e307866dce9",
+    "common_downstream_counters": {
+      "L2_GLOBAL_read_accepted_sectors": 4796228,
+      "L2_GLOBAL_read_miss_sectors": 0,
+      "DRAM_issued_read_atoms32B": 0,
+      "DRAM_issued_write_atoms32B": 0,
+      "L2_total_cache_reservation_fails": 0,
+      "gpu_stall_dramfull": 0
+    },
+    "CH_common_frontend": {
+      "active_mode": "PAPER_BASE",
+      "active_common_PIB_capacity": 256,
+      "capacity_parameter": "-gpgpu_dtc_l1_pib_entries",
+      "common_PIB_full_events": 0,
+      "common_tag_bank_conflict_attempts": 25214976,
+      "common_tag_request_attempts": 81405215,
+      "common_terminal_PIB_occupancy": 0,
+      "common_running_PIB_peak_per_SM": 71,
+      "ordinary_L1_MSHR_entries": 512,
+      "ordinary_L1_MSHR_entry_full_events": 0,
+      "ordinary_L1_MSHR_merge_full_events": 226209642
+    },
+    "DH_PAPER_OO_frontend": null,
+    "DH_finite_service": null,
+    "cross_mode_proxies_not_assumed_equivalent": true
+  },
+  {
+    "program": "GEMM",
+    "cell": "DH",
+    "profile": "F128",
+    "RESULT_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-DH-F128-V1.RESULT.json",
+    "RESULT_sha256": "602e7a1061785c66c398d7eb0e8ce7170ef9e279a926069ac81e42ba90e6320c",
+    "common_downstream_counters": {
+      "L2_GLOBAL_read_accepted_sectors": 1716504,
+      "L2_GLOBAL_read_miss_sectors": 0,
+      "DRAM_issued_read_atoms32B": 0,
+      "DRAM_issued_write_atoms32B": 0,
+      "L2_total_cache_reservation_fails": 0,
+      "gpu_stall_dramfull": 1165837
+    },
+    "CH_common_frontend": null,
+    "DH_PAPER_OO_frontend": {
+      "active_mode": "PAPER_OO",
+      "active_OO_PIB_capacity": 128,
+      "capacity_parameter": "-gpgpu_dtc_l1_oo_pib_entries",
+      "generic_pib_parameter_value": 8,
+      "generic_pib_parameter_active_for_OO_admission": false,
+      "OO_valid_line_hits": 4150568,
+      "OO_pending_line_hits": 3817106,
+      "OO_new_line_misses": 429126,
+      "OO_tag_mapping_evictions": 396358,
+      "OO_lower_requests_created": 429126,
+      "OO_terminal_PIB_occupancy": 0,
+      "OO_PIB_full_events": null,
+      "OO_tag_bank_conflict_attempts": null,
+      "missing_reason": "These OO full/conflict event fields are not printed in this active mode; CH common counters are never assigned here"
+    },
+    "DH_finite_service": {
+      "domain": "DTC finite-service entries and all64SM samples; not CH ordinary-cache service",
+      "raw_cumulative": {
+        "DTC_SERVICE_V1_samples": 52869696,
+        "DTC_SERVICE_V1_pib_integral": 3116491485,
+        "DTC_SERVICE_V1_physical_integral": 23435431151,
+        "DTC_SERVICE_V1_collected_sectors": 21004288,
+        "DTC_SERVICE_V1_fully_ready_to_complete_sum": 303490335,
+        "DTC_SERVICE_V1_retired": 8396800,
+        "DTC_SERVICE_V1_ready_to_collect_sum": 293926020,
+        "DTC_SERVICE_V1_collection_cycles": 8396800,
+        "DTC_SERVICE_V1_wb_wait": 1167515,
+        "DTC_SERVICE_V1_map_loss_to_free_sum": 10954873,
+        "DTC_SERVICE_V1_map_loss_to_free_count": 396358
+      },
+      "mean_PIB_entries_across_all64SMs": 58.94665036470041,
+      "mean_physical_lines_across_all64SMs": 443.26774927928466,
+      "fully_ready_to_retire_cycles_per_retired_entry": 36.143570765053354,
+      "map_loss_to_free_cycles_per_recorded_event": 27.638834084337898
+    },
+    "cross_mode_proxies_not_assumed_equivalent": true
+  },
+  {
+    "program": "GEMM",
+    "cell": "DH",
+    "profile": "P0",
+    "RESULT_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-DH-P0-V1.RESULT.json",
+    "RESULT_sha256": "1e7f73cb3b7fe40abda5b9f126a834b0c8e0ecf64cb411fb09e558e74059aea1",
+    "common_downstream_counters": {
+      "L2_GLOBAL_read_accepted_sectors": 1716504,
+      "L2_GLOBAL_read_miss_sectors": 0,
+      "DRAM_issued_read_atoms32B": 0,
+      "DRAM_issued_write_atoms32B": 0,
+      "L2_total_cache_reservation_fails": 0,
+      "gpu_stall_dramfull": 1165837
+    },
+    "CH_common_frontend": null,
+    "DH_PAPER_OO_frontend": {
+      "active_mode": "PAPER_OO",
+      "active_OO_PIB_capacity": 128,
+      "capacity_parameter": "-gpgpu_dtc_l1_oo_pib_entries",
+      "generic_pib_parameter_value": 8,
+      "generic_pib_parameter_active_for_OO_admission": false,
+      "OO_valid_line_hits": 4150568,
+      "OO_pending_line_hits": 3817106,
+      "OO_new_line_misses": 429126,
+      "OO_tag_mapping_evictions": 396358,
+      "OO_lower_requests_created": 429126,
+      "OO_terminal_PIB_occupancy": 0,
+      "OO_PIB_full_events": null,
+      "OO_tag_bank_conflict_attempts": null,
+      "missing_reason": "These OO full/conflict event fields are not printed in this active mode; CH common counters are never assigned here"
+    },
+    "DH_finite_service": {
+      "domain": "DTC finite-service entries and all64SM samples; not CH ordinary-cache service",
+      "raw_cumulative": {
+        "DTC_SERVICE_V1_samples": 52869696,
+        "DTC_SERVICE_V1_pib_integral": 3116491485,
+        "DTC_SERVICE_V1_physical_integral": 23435431151,
+        "DTC_SERVICE_V1_collected_sectors": 21004288,
+        "DTC_SERVICE_V1_fully_ready_to_complete_sum": 303490335,
+        "DTC_SERVICE_V1_retired": 8396800,
+        "DTC_SERVICE_V1_ready_to_collect_sum": 293926020,
+        "DTC_SERVICE_V1_collection_cycles": 8396800,
+        "DTC_SERVICE_V1_wb_wait": 1167515,
+        "DTC_SERVICE_V1_map_loss_to_free_sum": 10954873,
+        "DTC_SERVICE_V1_map_loss_to_free_count": 396358
+      },
+      "mean_PIB_entries_across_all64SMs": 58.94665036470041,
+      "mean_physical_lines_across_all64SMs": 443.26774927928466,
+      "fully_ready_to_retire_cycles_per_retired_entry": 36.143570765053354,
+      "map_loss_to_free_cycles_per_recorded_event": 27.638834084337898
+    },
+    "cross_mode_proxies_not_assumed_equivalent": true
+  },
+  {
+    "program": "GEMM",
+    "cell": "CH",
+    "profile": "F128",
+    "RESULT_path": "/root/data/dtc_stage_iia_first16_20261104_v1/analysis/E2-DTC2A16-fc0705ae3721e999-CH-F128-V1.RESULT.json",
+    "RESULT_sha256": "2e013c4fae2fcc47568576771c6a31b37ec72a8f4bc421dcf978ff16d6a821f2",
+    "common_downstream_counters": {
+      "L2_GLOBAL_read_accepted_sectors": 4796228,
+      "L2_GLOBAL_read_miss_sectors": 0,
+      "DRAM_issued_read_atoms32B": 0,
+      "DRAM_issued_write_atoms32B": 0,
+      "L2_total_cache_reservation_fails": 0,
+      "gpu_stall_dramfull": 0
+    },
+    "CH_common_frontend": {
+      "active_mode": "PAPER_BASE",
+      "active_common_PIB_capacity": 256,
+      "capacity_parameter": "-gpgpu_dtc_l1_pib_entries",
+      "common_PIB_full_events": 0,
+      "common_tag_bank_conflict_attempts": 25214976,
+      "common_tag_request_attempts": 81405215,
+      "common_terminal_PIB_occupancy": 0,
+      "common_running_PIB_peak_per_SM": 71,
+      "ordinary_L1_MSHR_entries": 512,
+      "ordinary_L1_MSHR_entry_full_events": 0,
+      "ordinary_L1_MSHR_merge_full_events": 226209642
+    },
+    "DH_PAPER_OO_frontend": null,
+    "DH_finite_service": null,
+    "cross_mode_proxies_not_assumed_equivalent": true
+  },
+  {
+    "program": "2DCONV",
+    "cell": "CH",
+    "profile": "P0",
+    "RESULT_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-CH-P0-V1.RESULT.json",
+    "RESULT_sha256": "438ac5fe48cc93afa6569b4af486fbb8f6dac94baf31dc927b29e101815bbe4c",
+    "common_downstream_counters": {
+      "L2_GLOBAL_read_accepted_sectors": 7734348,
+      "L2_GLOBAL_read_miss_sectors": 2097152,
+      "DRAM_issued_read_atoms32B": 2097152,
+      "DRAM_issued_write_atoms32B": 1931628,
+      "L2_total_cache_reservation_fails": 54,
+      "gpu_stall_dramfull": 0
+    },
+    "CH_common_frontend": {
+      "active_mode": "PAPER_BASE",
+      "active_common_PIB_capacity": 256,
+      "capacity_parameter": "-gpgpu_dtc_l1_pib_entries",
+      "common_PIB_full_events": 0,
+      "common_tag_bank_conflict_attempts": 15720960,
+      "common_tag_request_attempts": 101219048,
+      "common_terminal_PIB_occupancy": 0,
+      "common_running_PIB_peak_per_SM": 43,
+      "ordinary_L1_MSHR_entries": 512,
+      "ordinary_L1_MSHR_entry_full_events": 0,
+      "ordinary_L1_MSHR_merge_full_events": 315294062
+    },
+    "DH_PAPER_OO_frontend": null,
+    "DH_finite_service": null,
+    "cross_mode_proxies_not_assumed_equivalent": true
+  },
+  {
+    "program": "2DCONV",
+    "cell": "DH",
+    "profile": "F128",
+    "RESULT_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-DH-F128-V1.RESULT.json",
+    "RESULT_sha256": "1aff34c15932d48a6509b5153a19c0462dcbd3f80179f6ed19881a028e61883e",
+    "common_downstream_counters": {
+      "L2_GLOBAL_read_accepted_sectors": 7679232,
+      "L2_GLOBAL_read_miss_sectors": 2097152,
+      "DRAM_issued_read_atoms32B": 2097152,
+      "DRAM_issued_write_atoms32B": 1931952,
+      "L2_total_cache_reservation_fails": 1584855,
+      "gpu_stall_dramfull": 2776419
+    },
+    "CH_common_frontend": null,
+    "DH_PAPER_OO_frontend": {
+      "active_mode": "PAPER_OO",
+      "active_OO_PIB_capacity": 128,
+      "capacity_parameter": "-gpgpu_dtc_l1_oo_pib_entries",
+      "generic_pib_parameter_value": 8,
+      "generic_pib_parameter_active_for_OO_admission": false,
+      "OO_valid_line_hits": 156290,
+      "OO_pending_line_hits": 5759818,
+      "OO_new_line_misses": 1919808,
+      "OO_tag_mapping_evictions": 1887040,
+      "OO_lower_requests_created": 1919808,
+      "OO_terminal_PIB_occupancy": 0,
+      "OO_PIB_full_events": null,
+      "OO_tag_bank_conflict_attempts": null,
+      "missing_reason": "These OO full/conflict event fields are not printed in this active mode; CH common counters are never assigned here"
+    },
+    "DH_finite_service": {
+      "domain": "DTC finite-service entries and all64SM samples; not CH ordinary-cache service",
+      "raw_cumulative": {
+        "DTC_SERVICE_V1_samples": 28004672,
+        "DTC_SERVICE_V1_pib_integral": 3512214301,
+        "DTC_SERVICE_V1_physical_integral": 14065087220,
+        "DTC_SERVICE_V1_collected_sectors": 21984780,
+        "DTC_SERVICE_V1_fully_ready_to_complete_sum": 74948733,
+        "DTC_SERVICE_V1_retired": 4716288,
+        "DTC_SERVICE_V1_ready_to_collect_sum": 63525333,
+        "DTC_SERVICE_V1_collection_cycles": 9082288,
+        "DTC_SERVICE_V1_wb_wait": 2341112,
+        "DTC_SERVICE_V1_map_loss_to_free_sum": 915,
+        "DTC_SERVICE_V1_map_loss_to_free_count": 1887040
+      },
+      "mean_PIB_entries_across_all64SMs": 125.41529859731976,
+      "mean_physical_lines_across_all64SMs": 502.24074111633945,
+      "fully_ready_to_retire_cycles_per_retired_entry": 15.891466551660967,
+      "map_loss_to_free_cycles_per_recorded_event": 0.00048488638290656265
+    },
+    "cross_mode_proxies_not_assumed_equivalent": true
+  },
+  {
+    "program": "2DCONV",
+    "cell": "DH",
+    "profile": "P0",
+    "RESULT_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-DH-P0-V1.RESULT.json",
+    "RESULT_sha256": "50b11accfa168c0221bcbfce5bda02745d5fa48bea71778d359f68ad09c5b0fc",
+    "common_downstream_counters": {
+      "L2_GLOBAL_read_accepted_sectors": 7675016,
+      "L2_GLOBAL_read_miss_sectors": 2097152,
+      "DRAM_issued_read_atoms32B": 2097152,
+      "DRAM_issued_write_atoms32B": 1931720,
+      "L2_total_cache_reservation_fails": 2546098,
+      "gpu_stall_dramfull": 3701660
+    },
+    "CH_common_frontend": null,
+    "DH_PAPER_OO_frontend": {
+      "active_mode": "PAPER_OO",
+      "active_OO_PIB_capacity": 128,
+      "capacity_parameter": "-gpgpu_dtc_l1_oo_pib_entries",
+      "generic_pib_parameter_value": 8,
+      "generic_pib_parameter_active_for_OO_admission": false,
+      "OO_valid_line_hits": 167237,
+      "OO_pending_line_hits": 5749925,
+      "OO_new_line_misses": 1918754,
+      "OO_tag_mapping_evictions": 1885986,
+      "OO_lower_requests_created": 1918754,
+      "OO_terminal_PIB_occupancy": 0,
+      "OO_PIB_full_events": null,
+      "OO_tag_bank_conflict_attempts": null,
+      "missing_reason": "These OO full/conflict event fields are not printed in this active mode; CH common counters are never assigned here"
+    },
+    "DH_finite_service": {
+      "domain": "DTC finite-service entries and all64SM samples; not CH ordinary-cache service",
+      "raw_cumulative": {
+        "DTC_SERVICE_V1_samples": 29615360,
+        "DTC_SERVICE_V1_pib_integral": 3715865474,
+        "DTC_SERVICE_V1_physical_integral": 14889760477,
+        "DTC_SERVICE_V1_collected_sectors": 21984780,
+        "DTC_SERVICE_V1_fully_ready_to_complete_sum": 71495415,
+        "DTC_SERVICE_V1_retired": 4716288,
+        "DTC_SERVICE_V1_ready_to_collect_sum": 60291527,
+        "DTC_SERVICE_V1_collection_cycles": 9004421,
+        "DTC_SERVICE_V1_wb_wait": 2199467,
+        "DTC_SERVICE_V1_map_loss_to_free_sum": 1916,
+        "DTC_SERVICE_V1_map_loss_to_free_count": 1885986
+      },
+      "mean_PIB_entries_across_all64SMs": 125.47088652645114,
+      "mean_physical_lines_across_all64SMs": 502.77155087765266,
+      "fully_ready_to_retire_cycles_per_retired_entry": 15.159255541646312,
+      "map_loss_to_free_cycles_per_recorded_event": 0.0010159142220567915
+    },
+    "cross_mode_proxies_not_assumed_equivalent": true
+  },
+  {
+    "program": "2DCONV",
+    "cell": "CH",
+    "profile": "F128",
+    "RESULT_path": "/root/data/dtc_stage_iia_first16_20261104_v1/analysis/E2-DTC2A16-d984ea5475a581ad-CH-F128-V1.RESULT.json",
+    "RESULT_sha256": "09958b4f6af72c0b0952d53705873cf952b21ab63dbb09da979a0dc11d8729d8",
+    "common_downstream_counters": {
+      "L2_GLOBAL_read_accepted_sectors": 7734348,
+      "L2_GLOBAL_read_miss_sectors": 2097152,
+      "DRAM_issued_read_atoms32B": 2097152,
+      "DRAM_issued_write_atoms32B": 1931628,
+      "L2_total_cache_reservation_fails": 54,
+      "gpu_stall_dramfull": 0
+    },
+    "CH_common_frontend": {
+      "active_mode": "PAPER_BASE",
+      "active_common_PIB_capacity": 256,
+      "capacity_parameter": "-gpgpu_dtc_l1_pib_entries",
+      "common_PIB_full_events": 0,
+      "common_tag_bank_conflict_attempts": 15720960,
+      "common_tag_request_attempts": 101219048,
+      "common_terminal_PIB_occupancy": 0,
+      "common_running_PIB_peak_per_SM": 43,
+      "ordinary_L1_MSHR_entries": 512,
+      "ordinary_L1_MSHR_entry_full_events": 0,
+      "ordinary_L1_MSHR_merge_full_events": 315294062
+    },
+    "DH_PAPER_OO_frontend": null,
+    "DH_finite_service": null,
+    "cross_mode_proxies_not_assumed_equivalent": true
+  }
+]
