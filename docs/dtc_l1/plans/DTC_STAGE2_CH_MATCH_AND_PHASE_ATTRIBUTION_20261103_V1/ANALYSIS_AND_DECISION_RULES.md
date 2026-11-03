@@ -2,18 +2,18 @@
 
 ## Measurement and denominator
 
-For a single *strictly matched* input (i), a downstream F profile (f in \{128,256\}), and cycles (C):
+For a single *strictly matched* input $i$, downstream F profile $f\in\{128,256\}$, and cycle count $C$:
 
-- Downstream benefit within the conventional cache: (S_\mathrm{CH}(f,i)=C_\mathrm{CH,P0}(i)/C_\mathrm{CH,f}(i)).
-- Downstream benefit within DTC: (S_\mathrm{DH}(f,i)=C_\mathrm{DH,P0}(i)/C_\mathrm{DH,f}(i)).
-- Relative DTC effectiveness under the *same* downstream config: (R(f,i)=C_\mathrm{CH,f}(i)/C_\mathrm{DH,f}(i)). (R>1) means DTC cycles lower.
-- Interaction: (I(f,i)=S_\mathrm{DH}(f,i)/S_\mathrm{CH}(f,i)=R(f,i)/R(P0,i)). (I>1) means the new downstream configuration benefits DH proportionally more; it does not alone prove hardware-cost fairness.
+- Downstream benefit within the conventional cache: $S_{\mathrm{CH}}(f,i)=C_{\mathrm{CH},P0}(i)/C_{\mathrm{CH},f}(i)$.
+- Downstream benefit within DTC: $S_{\mathrm{DH}}(f,i)=C_{\mathrm{DH},P0}(i)/C_{\mathrm{DH},f}(i)$.
+- Relative DTC effectiveness under the *same* downstream config: $R(f,i)=C_{\mathrm{CH},f}(i)/C_{\mathrm{DH},f}(i)$. $R>1$ means DTC cycles lower.
+- Interaction: $I(f,i)=S_{\mathrm{DH}}(f,i)/S_{\mathrm{CH}}(f,i)=R(f,i)/R(P0,i)$. $I>1$ means the new downstream configuration benefits DH proportionally more; it does not alone prove hardware-cost fairness.
 
 For each metric take geometric mean **only on an identical, named intersection** of accepted input digests; report n/35, suite n/total, missing IDs, ties and negative outcomes. Cross-F comparison requires intersection accepted at both F128 and F256, not ratio of 33-member means with distinct populations.
 
 ### Stage I authoritative data (2026-11-03T07:11Z)
 
-- (C_\mathrm{CH,P0}) and (C_\mathrm{DH,P0}) strict for 33 programs, baseline CH/DH P0 GM1.096918956 (27 faster, 6 slower); excludes SYRK and lavamd. This is different from older 23-program GM1.123867.
+- $C_{\mathrm{CH},P0}$ and $C_{\mathrm{DH},P0}$ strict for 33 programs, baseline CH/DH P0 GM1.096918956 (27 faster, 6 slower); excludes SYRK and lavamd. This is different from older 23-program GM1.123867.
 - DH-F128 accepted33 (not SYRK, hybridsort); DH-F256 accepted33 (not SYRK, lavamd); DH F128/F256 joint =32. All factors' original common =31 because scan M16 original is a typed negative.
 - DH F256/P0 GM1.022440468 for available33, but GM1.011580804 for all-profile common31. F128/P0 GM1.008258561 common31. F128→F256 GM1.003295032 on same31. These numbers are **DH self-response**, not (I).
 - Whole profile F256 is not a universal winner: about 19/33 neutral; convSeparable, scan and hybridsort dominate the positive log-GM. Keep all programs including vectorAdd regression and large-input terminal losses.
