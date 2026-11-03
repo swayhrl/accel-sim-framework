@@ -13,11 +13,24 @@
         "EP_PERF_PF_RET_GEMM_DIRTY_ONLY_OFF_V1",
         "EP_PERF_PF_RET_GEMM_DIRTY_ONLY_ON_V1"
       ],
-      "evidence": {},
+      "evidence": {
+        "comparisons": [
+          {
+            "cycle_gain_vs_WV": -0.013914423501405482,
+            "mode": "WV_CLEAN_ONLY",
+            "victim_service_relative_change": 1.0
+          },
+          {
+            "cycle_gain_vs_WV": -0.0017658465166441317,
+            "mode": "WV_DIRTY_ONLY",
+            "victim_service_relative_change": 0.0003860609294984614
+          }
+        ]
+      },
       "group": "retention",
-      "reason": "ALL_FOUR_FWT_POINTS_NOT_ACCEPTED_AND_ARCHIVED",
+      "reason": "APPROVED_HALF_PERCENT_CYCLES_OR_10PCT_VICTIM_CHANGE",
       "stage": "CONDITIONAL_GEMM",
-      "status": "WAIT"
+      "status": "RELEASE"
     },
     "retention:FIRST_FWT": {
       "cohorts": [
@@ -37,11 +50,14 @@
         "EP_PERF_PF_DRAM_FWT_S_1275_V1",
         "EP_PERF_PF_DRAM_FWT_WV_ZERO_RO_1275_V1"
       ],
-      "evidence": {},
+      "evidence": {
+        "EP_absolute_gain": 0.006824652015888555,
+        "EP_interaction_gain": -0.012489335379995525
+      },
       "group": "service",
-      "reason": "PREVIOUS_EXACT_PAIR_NOT_ACCEPTED_AND_ARCHIVED",
+      "reason": "APPROVED_3PCT_EP_ABSOLUTE_OR_1PCT_INTERACTION",
       "stage": "CONDITIONAL_FWT_1275",
-      "status": "WAIT"
+      "status": "PRUNE"
     },
     "service:CONDITIONAL_FWT_1700": {
       "cohorts": [
@@ -50,9 +66,9 @@
       ],
       "evidence": {},
       "group": "service",
-      "reason": "PREVIOUS_EXACT_PAIR_NOT_ACCEPTED_AND_ARCHIVED",
+      "reason": "PREVIOUS_FREQUENCY_PAIR_PRUNED",
       "stage": "CONDITIONAL_FWT_1700",
-      "status": "WAIT"
+      "status": "PRUNE"
     },
     "service:CONDITIONAL_GEMM_1275": {
       "cohorts": [
@@ -83,9 +99,9 @@
       ],
       "evidence": {},
       "group": "service",
-      "reason": "PREVIOUS_EXACT_PAIR_NOT_ACCEPTED_AND_ARCHIVED",
+      "reason": "PREVIOUS_PAIR_FAILED_NO_RETRY_OR_REFUND",
       "stage": "CONDITIONAL_VECTOR4M_1700",
-      "status": "WAIT"
+      "status": "HOLD"
     },
     "service:FIRST6": {
       "cohorts": [
@@ -114,6 +130,10 @@
     "EP_PERF_PF_DRAM_GEMM_WV_ZERO_RO_1020_V1",
     "EP_PERF_PF_DRAM_VECTOR4M_F_1275_V1",
     "EP_PERF_PF_DRAM_VECTOR4M_S_1275_V1",
+    "EP_PERF_PF_RET_GEMM_CLEAN_ONLY_OFF_V1",
+    "EP_PERF_PF_RET_GEMM_CLEAN_ONLY_ON_V1",
+    "EP_PERF_PF_RET_GEMM_DIRTY_ONLY_OFF_V1",
+    "EP_PERF_PF_RET_GEMM_DIRTY_ONLY_ON_V1",
     "EP_PERF_PF_RET_fastWalshTransform_CLEAN_ONLY_OFF_V1",
     "EP_PERF_PF_RET_fastWalshTransform_CLEAN_ONLY_ON_V1",
     "EP_PERF_PF_RET_fastWalshTransform_DIRTY_ONLY_OFF_V1",
@@ -124,5 +144,5 @@
     "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_performance_first_20261103_v1/tools/performance_first_stage_policy.py",
     "sha256": "5563b3ef51587f3516252d7f7a284813d7ee0ab95662eeab9a8d6b5abdbb992e"
   },
-  "utc": "2026-11-03T11:58:22.596380+00:00"
+  "utc": "2026-11-03T12:32:22.244129+00:00"
 }
