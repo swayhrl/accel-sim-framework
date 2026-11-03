@@ -4,7 +4,7 @@ Only naturally or explicitly negatively closed UUIDs are consumed. Peak RSS is a
 
 | Program | F | Scientific state | Elapsed h | Observed RSS GiB | RSS cap GiB | Min native free GiB | Samples |
 |---|---|---|---:|---:|---:|---:|---:|
-| convolutionSeparable | F128 | AWAIT_CLOSED_RESULT | MISSING | MISSING | MISSING | MISSING | 0 |
+| convolutionSeparable | F128 | PASS_STAGEII_CH_STRICT_ARCHIVE_NATIVE_RESTORE | 1.2499 | 1.2578 | 8.00 | 11.850 | 443 |
 | convolutionSeparable | F256 | PASS_STAGEII_CH_STRICT_ARCHIVE_NATIVE_RESTORE | 0.8640 | 1.2383 | 8.00 | 11.945 | 306 |
 | scan | F128 | AWAIT_CLOSED_RESULT | MISSING | MISSING | MISSING | MISSING | 0 |
 | scan | F256 | AWAIT_CLOSED_RESULT | MISSING | MISSING | MISSING | MISSING | 0 |
@@ -17,6 +17,6 @@ Only naturally or explicitly negatively closed UUIDs are consumed. Peak RSS is a
 | BICG | F128 | AWAIT_CLOSED_RESULT | MISSING | MISSING | MISSING | MISSING | 0 |
 | BICG | F256 | AWAIT_CLOSED_RESULT | MISSING | MISSING | MISSING | MISSING | 0 |
 | vectorAdd | F128 | PASS_STAGEII_CH_STRICT_ARCHIVE_NATIVE_RESTORE | 0.2534 | 0.6016 | 8.00 | 12.029 | 90 |
-| vectorAdd | F256 | AWAIT_CLOSED_RESULT | MISSING | MISSING | MISSING | MISSING | 0 |
+| vectorAdd | F256 | PASS_STAGEII_CH_STRICT_ARCHIVE_NATIVE_RESTORE | 0.2629 | 0.6016 | 8.00 | 11.896 | 93 |
 | GEMM | F128 | AWAIT_CLOSED_RESULT | MISSING | MISSING | MISSING | MISSING | 0 |
 | GEMM | F256 | AWAIT_CLOSED_RESULT | MISSING | MISSING | MISSING | MISSING | 0 |
