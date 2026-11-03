@@ -1,0 +1,33 @@
+# Forward terminology clarification — frozen wording preserved
+
+The scoped audit found **no explicit blanket sentence declaring all CH common PIB inactive, and no explicit claim that DH active OO PIB capacity is8**. The following wording is incomplete as a resource-cost description but its qualified warning and literal option values are not false configuration records. Preserve the original frozen files and publish this supplement.
+
+| Evidence location | Original wording | Classification and forward clarification |
+|---|---|---|
+| 5001c3f:docs/dtc_l1/plans/DTC_STAGE_II_A_CH_FAIR_MATCH_PREPARATION_20261103_V1/STATISTICS_AND_HARDWARE_BOUNDARIES.md:30 | CH/DH恰7项有效选项不同，详见Agent A与C：`dl1`组织、unified声明、DTC mode、Tag hash flag、DTC PIB/MSHR字段和有限完成服务。CH配置数据阵列96KiB；DH physical pool80KiB、logical tags512、unified声明128KiB。CH mode1的某些DTC参数不活跃，不能把惯性配置字段当真实CH结构资源。各设计内的P0/F128/F256保持自身L1/Hash/Tag/PIB和有限服务不变，跨设计实现与成本差异仍存在。 | Qualified inactive-knob caution; do not extend it to CH PAPER_BASE PIB/Tag scheduling. State CH commonPIB256 active, DH OO PIB128 active; DH rawcommonPIB8 is not OO capacity. |
+| 5001c3f:docs/dtc_l1/plans/DTC_STAGE_II_A_CH_FAIR_MATCH_PREPARATION_20261103_V1/agents/A/README.md:15 | CH and DH have seven deliberate L1 configuration differences, reproduced exactly in CONFIG_QUALIFICATION.json: conventional CH line geometry/policy, declared unified L1 size, mode, finite service, DTC MSHR, PIB, Tag hash. Inactive DTC options under CH are not claims of actual CH DTC structures. CH declared unified96KiB versus DH128KiB are configuration quantities, not proof of comparable area. DH physical pool640×128B=80KiB/SM is distinct from its512 logical Tag slots; no iso-area/timing/power claim. Hash families and all non-L1 downstream options are preserved. | Qualified inactive-knob caution; do not extend it to CH PAPER_BASE PIB/Tag scheduling. State CH commonPIB256 active, DH OO PIB128 active; DH rawcommonPIB8 is not OO capacity. |
+| 5001c3f:docs/dtc_l1/plans/DTC_STAGE_II_A_CH_FAIR_MATCH_PREPARATION_20261103_V1/agents/C/SCIENTIFIC_REVIEW.md:34 | The seven CH/DH differences are L1 geometry/policy, DTC mode, finite service, DTC MSHR entries, PIB entries, Tag hash, and declared unified L1 size. The full exact options are in INDEPENDENT_HARDWARE_FAIRNESS.json. Conventional CH geometry specifies96KiB data; DH physical pool640×128B=80KiB, alongside512 logical Tag slots. The unified-size declarations96/128 are separate configuration quantities, not an SRAM area proof. Inert DTC knobs under CH mode1 do not instantiate CH DTC structures. Tag banking/ports, allocation width and completion/service timing remain those of each fixed design; these different paths are not equivalent physical implementations. No equal area, frequency, energy or RTL timing claim is supported. No old M5 area estimate is imported. | Qualified inactive-knob caution; do not extend it to CH PAPER_BASE PIB/Tag scheduling. State CH commonPIB256 active, DH OO PIB128 active; DH rawcommonPIB8 is not OO capacity. |
+| /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/execution-worktree/docs/dtc_l1/review_packs/DTC_STAGE_IIA_FIRST16_CH_MATCH_20261104_V1/independent_reviews/B/contract/STATISTICS_AND_HARDWARE_BOUNDARIES.md:30 | CH/DH恰7项有效选项不同，详见Agent A与C：`dl1`组织、unified声明、DTC mode、Tag hash flag、DTC PIB/MSHR字段和有限完成服务。CH配置数据阵列96KiB；DH physical pool80KiB、logical tags512、unified声明128KiB。CH mode1的某些DTC参数不活跃，不能把惯性配置字段当真实CH结构资源。各设计内的P0/F128/F256保持自身L1/Hash/Tag/PIB和有限服务不变，跨设计实现与成本差异仍存在。 | Qualified inactive-knob caution; do not extend it to CH PAPER_BASE PIB/Tag scheduling. State CH commonPIB256 active, DH OO PIB128 active; DH rawcommonPIB8 is not OO capacity. |
+
+Selected machine-readable references:
+- docs/dtc_l1/plans/DTC_STAGE_II_A_CH_FAIR_MATCH_PREPARATION_20261103_V1/agents/C/INDEPENDENT_HARDWARE_FAIRNESS.json:37 —     "-gpgpu_dtc_l1_pib_entries": {
+- docs/dtc_l1/plans/DTC_STAGE_II_A_CH_FAIR_MATCH_PREPARATION_20261103_V1/agents/C/INDEPENDENT_HARDWARE_FAIRNESS.json:70 —   "inactive_parameter_warning": "CH mode1 does not instantiate a DH mode3 PIB/MSHR datapath; do not cost CH by inert DTC option fields. Unified size declarations do not certify equal usable storage or SRAM area.",
+
+`INDEPENDENT_HARDWARE_FAIRNESS.json:37` is a raw-key difference record; literal `pib_entries=256/8` remains unchanged. Its line70 says CH mode1 does not instantiate a DH mode3 path, which does not say the common PAPER_BASE frontend is disabled.
+
+Correct active interpretation:
+
+- CHmode1=PAPER_BASE enables `paper_frontend` instruction admission and4-bank Tag service. `try_admit` uses cfg.pib_entries256. Ordinary L1D/cache-MSHR path remains.
+- DHmode3=PAPER_OO constructs `oo_frontend`, which allocates slots from cfg.oo_pib_entries128 and checks that bound. The common PAPER_BASE admission methods are gated off for mode3; its rawcommon pib_entries8 is not the active OO capacity.
+- `dtc_l1_mshr_entries` only overrides the ordinary cache when mode==PAPER_BASE; DHraw32 must not be relabeled an OO MSHR count. Ordinary compatibility L1D remains instantiated and carries its separate DSL geometry.
+- These are active modeled paths. Declared geometry and simulated object state do not prove physical SRAM/CAM area, ports, frequency or energy.
+
+Exact fixed-source support (every full-file SHA and snippet is retained in SOURCE_EVIDENCE.json):
+- /root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/dtc-l1-common.h:24–48; SHA256 `dab2df3ec8e1fd1c8953ac146eba3c93906c84af8cce66051e5728afe9963fa1`.
+- /root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/dtc-l1-common.h:1975–2055; SHA256 `dab2df3ec8e1fd1c8953ac146eba3c93906c84af8cce66051e5728afe9963fa1`.
+- /root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/shader.cc:3663–3689; SHA256 `e67a486ef18abf2b8515bc5bb887812c058d29fe9fed8544320cc008e3b4ca11`.
+- /root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/dtc-l1-common.h:516–546; SHA256 `dab2df3ec8e1fd1c8953ac146eba3c93906c84af8cce66051e5728afe9963fa1`.
+- /root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/shader.h:2429–2435; SHA256 `e3315f55d3d9ca5e23430d602b8afa2b9842aba20ca901e781461b1396853476`.
+- /root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/shader.cc:4414–4474; SHA256 `e67a486ef18abf2b8515bc5bb887812c058d29fe9fed8544320cc008e3b4ca11`.
+
+Audit scope: exact5001 planning subtree and current execution REL Markdown/text, plus selected machine-readable hardware-fairness fields. Config literals, historical reports, v0.23 and executing models are unchanged. This audit does not claim a global search of all historical papers or repositories.

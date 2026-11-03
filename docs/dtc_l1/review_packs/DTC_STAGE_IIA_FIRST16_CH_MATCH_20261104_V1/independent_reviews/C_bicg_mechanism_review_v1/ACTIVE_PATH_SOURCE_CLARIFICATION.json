@@ -1,0 +1,96 @@
+{
+  "schema": "DTC_STAGEIIA_C_ACTIVE_PATH_SOURCE_CLARIFICATION_V1",
+  "anchors": [
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/shader.cc",
+      "sha256": "e67a486ef18abf2b8515bc5bb887812c058d29fe9fed8544320cc008e3b4ca11",
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "excerpts": [
+        {
+          "start": 2591,
+          "end": 2603,
+          "text": "2591: bool ldst_unit::dtc_l1_paper_base_active() const {\n2592:   return m_dtc_l1_frontend && m_dtc_l1_frontend->enabled() &&\n2593:          m_config->dtc_l1_mode ==\n2594:              static_cast<unsigned>(dtc_l1::mode::PAPER_BASE);\n2595: }\n2596: \n2597: bool ldst_unit::dtc_l1_paper_io_active() const {\n2598:   return m_dtc_l1_io_frontend != nullptr;\n2599: }\n2600: \n2601: bool ldst_unit::dtc_l1_paper_oo_active() const {\n2602:   return m_dtc_l1_oo_frontend != nullptr || m_dtc_l1_sector_frontend != nullptr;\n2603: }"
+        },
+        {
+          "start": 3663,
+          "end": 3689,
+          "text": "3663: bool ldst_unit::dtc_l1_admit(warp_inst_t &inst) {\n3664:   if (!dtc_l1_paper_base_active()) return true;\n3665:   const unsigned uid = inst.get_uid();\n3666:   if (!m_dtc_l1_frontend->try_admit(uid)) {\n3667:     dtc_l1_debug_event(\"PIB_BLOCK\", inst, 0);\n3668:     return false;\n3669:   }\n3670:   m_dtc_l1_live_instruction_uids.insert(uid);\n3671:   dtc_l1_debug_event(\"ADMIT\", inst, 0);\n3672:   return true;\n3673: }\n3674: \n3675: bool ldst_unit::dtc_l1_try_tag(new_addr_type address) {\n3676:   if (!dtc_l1_paper_base_active()) return true;\n3677:   const unsigned long long cycle =\n3678:       m_core->get_gpu()->gpu_sim_cycle + m_core->get_gpu()->gpu_tot_sim_cycle;\n3679:   return m_dtc_l1_frontend->try_serve_tag(\n3680:       cycle, address, m_config->dtc_l1_logical_sets);\n3681: }\n3682: \n3683: void ldst_unit::dtc_l1_retire(const warp_inst_t &inst) {\n3684:   if (!dtc_l1_paper_base_active()) return;\n3685:   const unsigned uid = inst.get_uid();\n3686:   const size_t erased = m_dtc_l1_live_instruction_uids.erase(uid);\n3687:   if (!erased) return;\n3688:   m_dtc_l1_frontend->retire(uid);\n3689:   dtc_l1_debug_event(\"RETIRE\", inst, 0);"
+        },
+        {
+          "start": 4447,
+          "end": 4473,
+          "text": "4447:   // M1 attaches the shared admission/Tag layer only to PAPER_BASE.  Later\n4448:   // stages enable IO/OO after their distinct retirement semantics exist.\n4449:   dtc_config.selected_mode =\n4450:       m_config->dtc_l1_mode == static_cast<unsigned>(dtc_l1::mode::PAPER_BASE)\n4451:           ? dtc_l1::mode::PAPER_BASE\n4452:           : dtc_l1::mode::LEGACY;\n4453:   dtc_config.pib_entries = m_config->dtc_l1_pib_entries;\n4454:   dtc_config.tag_banks = m_config->dtc_l1_tag_banks;\n4455:   dtc_config.tag_requests_per_bank_per_cycle =\n4456:       m_config->dtc_l1_tag_requests_per_bank_per_cycle;\n4457:   dtc_config.tag_requests_per_cycle =\n4458:       m_config->dtc_l1_tag_requests_per_cycle;\n4459:   dtc_config.logical_sets = m_config->dtc_l1_logical_sets;\n4460:   dtc_config.logical_ways = m_config->dtc_l1_logical_ways;\n4461:   dtc_config.physical_lines = m_config->dtc_l1_physical_lines;\n4462:   dtc_config.allocation_width = m_config->dtc_l1_allocation_width;\n4463:   dtc_config.io_pib_entries = m_config->dtc_l1_io_pib_entries;\n4464:   dtc_config.oo_pib_entries = m_config->dtc_l1_oo_pib_entries;\n4465:   dtc_config.ref_count_bits = m_config->dtc_l1_ref_count_bits;\n4466:   m_dtc_l1_frontend = std::make_unique<dtc_l1::paper_frontend>(dtc_config);\n4467:   if (m_config->dtc_l1_mode == static_cast<unsigned>(dtc_l1::mode::PAPER_IO))\n4468:     m_dtc_l1_io_frontend = std::make_unique<dtc_l1::io_frontend>(dtc_config);\n4469:   if (m_config->dtc_l1_mode == static_cast<unsigned>(dtc_l1::mode::PAPER_OO)) {\n4470:     dtc_config.selected_mode = dtc_l1::mode::PAPER_OO;\n4471:     dtc_config.tag_hash_bankrow = m_config->dtc_l1_tag_hash_bankrow;\n4472:     dtc_config.progressive_wakeup = m_config->dtc_l1_progressive_wakeup;\n4473:     m_dtc_l1_oo_frontend = std::make_unique<dtc_l1::oo_frontend>(dtc_config);"
+        }
+      ]
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/shader.h",
+      "sha256": "e3315f55d3d9ca5e23430d602b8afa2b9842aba20ca901e781461b1396853476",
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "excerpts": [
+        {
+          "start": 2429,
+          "end": 2435,
+          "text": "2429:     m_L1I_config.init(m_L1I_config.m_config_string, FuncCachePreferNone);\n2430:     m_L1T_config.init(m_L1T_config.m_config_string, FuncCachePreferNone);\n2431:     m_L1C_config.init(m_L1C_config.m_config_string, FuncCachePreferNone);\n2432:     m_L1D_config.init(m_L1D_config.m_config_string, FuncCachePreferNone);\n2433:     if (dtc_l1_mode == static_cast<unsigned>(dtc_l1::mode::PAPER_BASE)) {\n2434:       m_L1D_config.override_mshr_entries(dtc_l1_mshr_entries);\n2435:     }"
+        }
+      ]
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/dram.cc",
+      "sha256": "de8a8eca8c79549193d019a510a33ca77a9c9c41e719ec29c6e59c66871cae4f",
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "excerpts": [
+        {
+          "start": 570,
+          "end": 580,
+          "text": "570:       bk[j]->mrq->txbytes += m_config->dram_atom_size;\n571:       CCDc = m_config->tCCD;\n572:       bkgrp[grp]->CCDLc = m_config->tCCDL;\n573:       RTWc = m_config->tRTW;\n574:       bk[j]->RTPc = m_config->BL / m_config->data_command_freq_ratio;\n575:       bkgrp[grp]->RTPLc = m_config->tRTPL;\n576:       issued = true;\n577:       if (bk[j]->mrq->data->get_access_type() == L2_WR_ALLOC_R)\n578:         n_rd_L2_A++;\n579:       else\n580:         n_rd++;"
+        },
+        {
+          "start": 602,
+          "end": 616,
+          "text": "602:           rwq->set_min_length(m_config->WL);\n603:         }\n604:         rwq->push(bk[j]->mrq);\n605: \n606:         bk[j]->mrq->txbytes += m_config->dram_atom_size;\n607:         CCDc = m_config->tCCD;\n608:         bkgrp[grp]->CCDLc = m_config->tCCDL;\n609:         WTRc = m_config->tWTR;\n610:         bk[j]->WTPc = m_config->tWTP;\n611:         issued = true;\n612: \n613:         if (bk[j]->mrq->data->get_access_type() == L2_WRBK_ACC)\n614:           n_wr_WB++;\n615:         else\n616:           n_wr++;"
+        }
+      ]
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/dtc-l1-common.h",
+      "sha256": "dab2df3ec8e1fd1c8953ac146eba3c93906c84af8cce66051e5728afe9963fa1",
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "excerpts": [
+        {
+          "start": 29,
+          "end": 45,
+          "text": "29: enum class mode { LEGACY, PAPER_BASE, PAPER_IO, PAPER_OO, MODERN_OO_SECTOR };\n30: \n31: struct config {\n32:   bool finite_service = false;\n33:   bool progressive_wakeup = false;\n34:   mode selected_mode = mode::LEGACY;\n35:   unsigned pib_entries = 8;\n36:   unsigned tag_banks = 4;\n37:   unsigned tag_requests_per_bank_per_cycle = 1;\n38:   unsigned tag_requests_per_cycle = 4;\n39:   unsigned coalescer_threads_per_cycle = 32;\n40:   unsigned logical_sets = 32;\n41:   unsigned logical_ways = 4;\n42:   unsigned physical_lines = 640;\n43:   unsigned allocation_width = 4;\n44:   unsigned io_pib_entries = 256;\n45:   unsigned oo_pib_entries = 128;"
+        },
+        {
+          "start": 516,
+          "end": 546,
+          "text": "516: // Whole-line OO-DTC model.  Unlike io_frontend, physical-line lifetime is\n517: // protected by one Ref per live coalesced 128B reference, and any oldest-ready\n518: // PIB entry may retire.  It has no dependency on conventional L1D MSHRs.\n519: class oo_frontend {\n520:  public:\n521:   explicit oo_frontend(config cfg)\n522:       : m_cfg(cfg),\n523:         m_tags(cfg.logical_sets * cfg.logical_ways),\n524:         m_phys(cfg.physical_lines),\n525:         m_slots(cfg.oo_pib_entries) {\n526:     check_tag_hash_bankrow(cfg.tag_hash_bankrow,\n527:                            cfg.selected_mode == mode::PAPER_OO,\n528:                            cfg.finite_service, cfg.logical_sets, cfg.tag_banks);\n529:     check_progressive_wakeup_mode(cfg.progressive_wakeup,\n530:         static_cast<unsigned>(cfg.selected_mode), cfg.finite_service);\n531:     assert(cfg.logical_sets && cfg.logical_ways && cfg.physical_lines);\n532:     assert(cfg.allocation_width && cfg.oo_pib_entries);\n533:     assert(cfg.ref_count_bits && cfg.ref_count_bits < 32);\n534:     assert(cfg.tag_banks && cfg.tag_requests_per_bank_per_cycle &&\n535:            cfg.tag_requests_per_cycle);\n536:   }\n537: \n538:   void begin_cycle(uint64_t cycle) {\n539:     if (cycle == m_cycle) return;\n540:     m_cycle = cycle;\n541:     m_allocations_this_cycle = 0;\n542:   }\n543: \n544:   bool admit(uint64_t uid) {\n545:     if (find_entry(uid)) return true;\n546:     if (m_entries.size() >= m_cfg.oo_pib_entries) return false;"
+        },
+        {
+          "start": 1975,
+          "end": 2005,
+          "text": "1975: // A deterministic, bounded M1 front-end model.  The caller owns dynamic\n1976: // instruction completion; this class only owns admission and Tag scheduling.\n1977: class paper_frontend {\n1978:  public:\n1979:   explicit paper_frontend(config cfg) : m_cfg(cfg) {\n1980:     check_tag_hash_bankrow(cfg.tag_hash_bankrow, false, cfg.finite_service,\n1981:                            cfg.logical_sets, cfg.tag_banks);\n1982:     check_progressive_wakeup_mode(cfg.progressive_wakeup,\n1983:         static_cast<unsigned>(mode::PAPER_BASE), cfg.finite_service);\n1984:     assert(m_cfg.pib_entries > 0);\n1985:     assert(m_cfg.tag_banks > 0);\n1986:     assert(m_cfg.tag_requests_per_bank_per_cycle > 0);\n1987:     assert(m_cfg.tag_requests_per_cycle > 0);\n1988:   }\n1989: \n1990:   bool enabled() const { return m_cfg.selected_mode != mode::LEGACY; }\n1991: \n1992:   bool try_admit(uint64_t dynamic_instruction_id) {\n1993:     if (!enabled()) return true;\n1994:     if (m_live_instructions.count(dynamic_instruction_id)) return true;\n1995:     if (m_live_instructions.size() >= m_cfg.pib_entries) {\n1996:       ++m_pib_full_events;\n1997:       ++m_pib_full_stall_cycles;\n1998:       ++m_nonexclusive_pib_full_cycles;\n1999:       ++m_frontend_stall_cycles;\n2000:       return false;\n2001:     }\n2002:     m_live_instructions.insert(dynamic_instruction_id);\n2003:     ++m_admits;\n2004:     m_pib_peak = std::max(m_pib_peak, m_live_instructions.size());\n2005:     return true;"
+        },
+        {
+          "start": 2038,
+          "end": 2055,
+          "text": "2038:   bool try_serve_tag(uint64_t cycle, uint64_t line_address,\n2039:                      unsigned logical_set_count) {\n2040:     if (!enabled()) return true;\n2041:     begin_cycle(cycle);\n2042:     const unsigned bank = tag_bank(line_address, logical_set_count);\n2043:     if (m_total_served_this_cycle >= m_cfg.tag_requests_per_cycle ||\n2044:         m_served_per_bank[bank] >= m_cfg.tag_requests_per_bank_per_cycle) {\n2045:       ++m_tag_conflicts;\n2046:       ++m_tag_conflict_stall_cycles;\n2047:       ++m_nonexclusive_tag_conflict_cycles;\n2048:       ++m_frontend_stall_cycles;\n2049:       return false;\n2050:     }\n2051:     ++m_served_per_bank[bank];\n2052:     ++m_requests_per_bank[bank];\n2053:     ++m_total_served_this_cycle;\n2054:     ++m_tag_requests;\n2055:     return true;"
+        }
+      ]
+    }
+  ],
+  "forward_disclosure": {
+    "old_frozen_field_naming_issue": {
+      "fields": [
+        "OO_pib_full_events",
+        "OO_tag_bank_conflicts"
+      ],
+      "meaning": "Old CH rows held real CH common-front-end values under misleading OO-prefixed labels; consume forward typed package for domains, not old labels."
+    },
+    "old_literal_configuration_values": "256 versus8 are true generic pib_entries values; they are not active capacity comparison. Active CH common=256 and DH OO=128.",
+    "future_delta_rule": "Only subtract an explicitly measured same-scope field at both printed boundaries; do not generalize prev.get(k,0). Current four-source data has no late appearing additive fields. Row_Buffer_Locality_write appears later but is a ratio and excluded.",
+    "Tag_request_wording": "CH Tag request counter counts granted Tag-service attempts (which may retry later cache access); conflicts count rejected Tag arbitration attempts. Neither equals unique misses or DH OO line probes."
+  },
+  "configuration_and_model_identity_unchanged": true
+}

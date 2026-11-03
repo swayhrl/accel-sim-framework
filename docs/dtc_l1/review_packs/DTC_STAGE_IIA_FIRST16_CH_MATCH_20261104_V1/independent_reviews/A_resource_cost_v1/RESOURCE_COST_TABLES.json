@@ -1,0 +1,275 @@
+{
+  "CH_DH_raw_option_differences": {
+    "-gpgpu_cache:dl1": {
+      "CH": [
+        "N:32:128:24,L:T:m:L:B,A:512:8,16:0,32"
+      ],
+      "DH": [
+        "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32"
+      ]
+    },
+    "-gpgpu_dtc_l1_finite_service": {
+      "CH": [
+        "0"
+      ],
+      "DH": [
+        "1"
+      ]
+    },
+    "-gpgpu_dtc_l1_mode": {
+      "CH": [
+        "1"
+      ],
+      "DH": [
+        "3"
+      ]
+    },
+    "-gpgpu_dtc_l1_mshr_entries": {
+      "CH": [
+        "512"
+      ],
+      "DH": [
+        "32"
+      ]
+    },
+    "-gpgpu_dtc_l1_pib_entries": {
+      "CH": [
+        "256"
+      ],
+      "DH": [
+        "8"
+      ]
+    },
+    "-gpgpu_dtc_l1_tag_hash_bankrow": {
+      "CH": [
+        "0"
+      ],
+      "DH": [
+        "1"
+      ]
+    },
+    "-gpgpu_unified_l1d_size": {
+      "CH": [
+        "96"
+      ],
+      "DH": [
+        "128"
+      ]
+    }
+  },
+  "active_resource_interpretation": [
+    {
+      "CH": "mode1=PAPER_BASE: ordinary L1D plus common admission/Tag scheduling",
+      "DH": "mode3=PAPER_OO: whole-line OO frontend for its selected load path; ordinary compatibility L1D object also constructed",
+      "resource": "Mode and active cache path",
+      "source": [
+        "mode_and_units",
+        "active_mode_checks",
+        "both_ordinary_cache_and_OO_object"
+      ]
+    },
+    {
+      "CH": "N:32:128:24 =>768 normal128B lines,96KiB data geometry",
+      "DH": "S:32:128:4 =>128 sector-cache128B lines,16KiB compatibility geometry; not the OO physical pool",
+      "resource": "Ordinary L1D declared geometry",
+      "source": [
+        "cache_parser",
+        "both_ordinary_cache_and_OO_object"
+      ]
+    },
+    {
+      "CH": "No oo_frontend constructed;640 raw physical_lines option is not a CH OO data pool",
+      "DH": "640 whole128B physical-line identities =>80KiB payload capacity model; tagless referenced lines can outlive tag mapping",
+      "resource": "OO physical-line capacity model",
+      "source": [
+        "mode_and_units",
+        "OO_dimensions_and_PIB",
+        "OO_reference_metadata"
+      ]
+    },
+    {
+      "CH": "No512-entry OO Tag array; ordinary cache has768 line tags from32x24 geometry",
+      "DH": "64sets x8ways=512 OO logical Tag entries, nominal64KiB address-line coverage; separate from640-line pool and128-line compatibility tags",
+      "resource": "OO searchable logical Tag array",
+      "source": [
+        "OO_dimensions_and_PIB",
+        "both_ordinary_cache_and_OO_object"
+      ]
+    },
+    {
+      "CH": "common paper_frontend pib_entries256 is ACTIVE; live-instruction set stops admission at256",
+      "DH": "OO frontend oo_pib_entries128 is ACTIVE. common pib_entries8 is a raw option for inactive PAPER_BASE admission under mode3; it is not OO PIB capacity",
+      "resource": "Actual instruction admission/PIB",
+      "source": [
+        "CH_shared_frontend",
+        "CH_admit_tag_retire",
+        "OO_dimensions_and_PIB",
+        "active_mode_checks"
+      ]
+    },
+    {
+      "CH": "dtc_l1_mshr_entries512 overrides ordinary L1D MSHR in PAPER_BASE; cache DSL A:512:8",
+      "DH": "dtc_l1_mshr_entries32 does not override ordinary cache under mode3. OO frontend owns merge/lifetime and does not depend on conventional L1D MSHR. Compatibility cache still declares A:512:8",
+      "resource": "MSHR interpretation",
+      "source": [
+        "normal_cache_MSHR_override_only_base",
+        "OO_dimensions_and_PIB"
+      ]
+    },
+    {
+      "CH": "common Tag scheduling4banks x1request/bank/cycle,4total; ordinary cache B row index uses shared bank-preserving XOR helper with32sets",
+      "DH": "OO Tag scheduling4banks x1request/bank/cycle,4total; tag_hash_bankrow1 calls same helper with64sets. Same family, different row geometry",
+      "resource": "Tag service and index",
+      "source": [
+        "CH_shared_frontend",
+        "CH_hash_calls_same_DTC_helper",
+        "bankrow_hash_formula"
+      ]
+    },
+    {
+      "CH": "No OO physical allocator/refcount resources; ordinary cache allocation remains its cache policy",
+      "DH": "OO allocation_width4;640 physical lifetime states;ref_count_bits13 bounds count<=8191;slot generations and waiter/reference lists modeled; physical bit layout unknown",
+      "resource": "Allocation and reference tracking",
+      "source": [
+        "mode_and_units",
+        "OO_reference_metadata"
+      ]
+    },
+    {
+      "CH": "finite_service0: no DH finite-service pipeline. Conventional cache/LDST plus common admission/Tag timing still apply; this does not mean zero latency",
+      "DH": "finite_service1. Default refill/create/inject/retire quota1 each/cycle;collection4sectors/cycle;return metadata edge+1 and wakeup budget4waiters/cycle;OO retire max1/cycle. progressive_wakeup0 preserves whole-line notification gate",
+      "resource": "Finite return/completion service",
+      "source": [
+        "LDST_service_quota",
+        "service_default_and_collection",
+        "OO_finite_return",
+        "OO_retire_limit",
+        "finite_service_scope"
+      ]
+    },
+    {
+      "CH": "32768, active for PAPER_BASE",
+      "DH": "32768, active for PAPER_OO; not a claim of same achieved concurrency",
+      "resource": "Global lower outstanding cap",
+      "source": [
+        "same_lower_credit_cap"
+      ]
+    },
+    {
+      "CH": "96KB configuration parameter",
+      "DH": "128KB configuration parameter; neither value is the measured OO data storage or physical area",
+      "resource": "Unified-cache declaration",
+      "source": [
+        "unified_declaration",
+        "unified_max_multiplier",
+        "adaptive_cache_only"
+      ]
+    },
+    {
+      "CH": "L1 latency20,mem_unit_ports1,adaptive_cache_config0;same values across P0/F128/F256",
+      "DH": "Same scalar knob values do not make distinct completion paths cycle-equivalent; unchanged within DH",
+      "resource": "Shared unchanged timing knobs",
+      "source": [
+        "finite_service_scope"
+      ]
+    }
+  ],
+  "authority_commit": "5001c3f35052f7f91f1ad41eeff83f2947a0878d",
+  "evidence_levels": {
+    "MODELING_DECISION": "Simulator queue/admission/service contract; not measured silicon",
+    "UNKNOWN": "Physical encoding/array layout/ports/area/timing/power and their scaling",
+    "VERIFIED_CODE": "Fixed Core source and exact configured logical capacities"
+  },
+  "identity_unchanged": true,
+  "new_simulation_or_scope": false,
+  "profiles": [
+    {
+      "DRAM_MHz": 850,
+      "DRAM_return_queue_per_controller": 192,
+      "FRFCFS_slots_per_controller": 64,
+      "FRFCFS_slots_total": 1280,
+      "L2_MSHR_entries_per_subpartition": 192,
+      "L2_MSHR_keys_total": 7680,
+      "L2_MSHR_reference_upper_bound_total": 30720,
+      "L2_MSHR_request_list_bound_per_key": 4,
+      "L2_capacity_bytes": 10485760,
+      "L2_miss_queue_per_subpartition": 32,
+      "L2_miss_queue_slots_total": 1280,
+      "area_mm2": null,
+      "clock_domains_MHz": "1410:1410:1410:850",
+      "controllers": 20,
+      "delta_shared_credit_limit_per_controller_from_P0": 0,
+      "delta_slots_per_controller_from_P0": 0,
+      "delta_slots_total_from_P0": 0,
+      "energy_cost": null,
+      "frequency_penalty": null,
+      "memory_partition_queues": "64:64:64:64",
+      "physical_queue_metadata_bytes": null,
+      "private_credit_limit_per_subpartition": 1,
+      "private_slots_per_controller": 2,
+      "profile": "P0",
+      "separate_write_queue": false,
+      "shared_credit_limit_per_controller": 255,
+      "subpartitions_per_controller": 2
+    },
+    {
+      "DRAM_MHz": 850,
+      "DRAM_return_queue_per_controller": 192,
+      "FRFCFS_slots_per_controller": 128,
+      "FRFCFS_slots_total": 2560,
+      "L2_MSHR_entries_per_subpartition": 192,
+      "L2_MSHR_keys_total": 7680,
+      "L2_MSHR_reference_upper_bound_total": 30720,
+      "L2_MSHR_request_list_bound_per_key": 4,
+      "L2_capacity_bytes": 10485760,
+      "L2_miss_queue_per_subpartition": 32,
+      "L2_miss_queue_slots_total": 1280,
+      "area_mm2": null,
+      "clock_domains_MHz": "1410:1410:1410:850",
+      "controllers": 20,
+      "delta_shared_credit_limit_per_controller_from_P0": 64,
+      "delta_slots_per_controller_from_P0": 64,
+      "delta_slots_total_from_P0": 1280,
+      "energy_cost": null,
+      "frequency_penalty": null,
+      "memory_partition_queues": "64:64:64:64",
+      "physical_queue_metadata_bytes": null,
+      "private_credit_limit_per_subpartition": 1,
+      "private_slots_per_controller": 2,
+      "profile": "F128",
+      "separate_write_queue": false,
+      "shared_credit_limit_per_controller": 319,
+      "subpartitions_per_controller": 2
+    },
+    {
+      "DRAM_MHz": 850,
+      "DRAM_return_queue_per_controller": 192,
+      "FRFCFS_slots_per_controller": 256,
+      "FRFCFS_slots_total": 5120,
+      "L2_MSHR_entries_per_subpartition": 192,
+      "L2_MSHR_keys_total": 7680,
+      "L2_MSHR_reference_upper_bound_total": 30720,
+      "L2_MSHR_request_list_bound_per_key": 4,
+      "L2_capacity_bytes": 10485760,
+      "L2_miss_queue_per_subpartition": 32,
+      "L2_miss_queue_slots_total": 1280,
+      "area_mm2": null,
+      "clock_domains_MHz": "1410:1410:1410:850",
+      "controllers": 20,
+      "delta_shared_credit_limit_per_controller_from_P0": 192,
+      "delta_slots_per_controller_from_P0": 192,
+      "delta_slots_total_from_P0": 3840,
+      "energy_cost": null,
+      "frequency_penalty": null,
+      "memory_partition_queues": "64:64:64:64",
+      "physical_queue_metadata_bytes": null,
+      "private_credit_limit_per_subpartition": 1,
+      "private_slots_per_controller": 2,
+      "profile": "F256",
+      "separate_write_queue": false,
+      "shared_credit_limit_per_controller": 447,
+      "subpartitions_per_controller": 2
+    }
+  ],
+  "schema": "DTC_STAGEIIA_RESOURCE_COST_SEMANTIC_TABLES_V1"
+}
