@@ -1,0 +1,9 @@
+# Required forward source-identity clarification
+
+The final quantitative FULL_SHA_REFERENCES.json retained a comparison-context `profile` at the top level of each distinct source and a null `cohort` for old sources. For P0 references this can display F128 even though the registered source profile is P0. Actual path, SHA, role, cycles and the computed comparisons were correct. The old manifest/file bytes are retained; this packet is the required explicit identity interpretation alongside them.
+
+SOURCE_IDENTITY_CLARIFICATION.json separates source_cell/source_profile/source_cohort from all comparison_contexts. It has48 distinct files:32 original phase-I slots and16 newly authorizedCH, with64 comparison edges. The16 P0 sources each serve both F comparisons. Source identity is read from the fixed ORIGINAL_REFERENCE_INDEX or new MATRIX and checked against source RESULT bytes; no identity is inferred merely from workload names.
+
+`source_cohort` denotes the registered source slot. Six original P0 slots were already legal REFERENCE_ACCEPTED_NO_NEW_START aliases, not fresh phase-I models: legal_prior_P0_alias records their earlier E2-DTCHASH18 cohort, RESULT path/SHA, UUID and unchanged reuse proof. The32 original reference files consist of26 fresh phase-I results plus6 legally inherited P0 slots. This disclosure does not introduce any new EP/PQPS/IR/R2 substitution or promote a prior failure/repair into an original slot.
+
+Use these actual source fields for provenance. Use comparison_profile solely to identify an F128/F256 comparison. Neither the performance table nor the16 accepted statuses is changed. The A-final source generator, original FULL_SHA_REFERENCES, Root final analysis, original ledgers, simulator/input/configuration, owner/budgets and v0.23 are untouched. No model or remaining48 registration occurs.
