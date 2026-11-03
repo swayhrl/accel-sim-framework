@@ -1,0 +1,3980 @@
+{
+  "schema": "DTC_STAGEII_FIRST16_ROOT_COMPLETION_AUDIT_V1",
+  "UTC": "2026-11-03T19:01:50.118810+00:00",
+  "audit_source_sha256": "ac0c6ef421484b06fb9817a520f39efae7908fac09a010c25c638640f6abacbe",
+  "science_execution_complete": false,
+  "goal_complete": false,
+  "final_scientific_review_and_published_recommendation_required": true,
+  "checks": [
+    {
+      "requirement": "Fixed approved contract, exact8 frozen inputs and16 one-start CH-F128/F256 cohort identities",
+      "status": "PROVEN",
+      "evidence": [
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/EXECUTION_PLAN.json",
+          "sha256": "56efce4221b9b4a192552ad530ac94a1232024f23da2b7f0045c7bd72e8f5716"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/MATRIX.json",
+          "sha256": "692ac2d0baa080f8c7f0be0006d502303496d964c61be17b3b4a113c95a0fefe"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/SCIENCE_AUTHORIZATION.json",
+          "sha256": "abbad43e2521d4b9a37932f82892af124fcd7b57154cf25ca3070613ffd4e488"
+        }
+      ]
+    },
+    {
+      "requirement": "Finite budget accounting; consumed identities never refunded",
+      "status": "PROVEN",
+      "evidence": {
+        "budget": 16,
+        "consumed": 11,
+        "remaining": 5
+      }
+    },
+    {
+      "requirement": "All62 frozen runtime/build/input/config source pins still match",
+      "status": "PROVEN",
+      "evidence": [
+        {
+          "path": "/root/data/dtc_failure_repair_20261025_v1/ops/observer_exit_race_v1.py",
+          "expected": "a91c0574287b2fc2e0ae7bee88cfb7d440e07b2d93b8570e1f859f2504c28471",
+          "observed": "a91c0574287b2fc2e0ae7bee88cfb7d440e07b2d93b8570e1f859f2504c28471"
+        },
+        {
+          "path": "/root/data/dtc_failure_repair_20261025_v1/ops/revision20/resource_accounting_v1.py",
+          "expected": "e9c864c109ea4e87521713246e5a1602d95da5413861cc7f34be100180ee866e",
+          "observed": "e9c864c109ea4e87521713246e5a1602d95da5413861cc7f34be100180ee866e"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/telemetry_v2/telemetry_receiver_cap1m.py",
+          "expected": "f523975b9780b498b988e2b3145ba5b4aebdef4d0e9b0146392d3a31a99a4ec1",
+          "observed": "f523975b9780b498b988e2b3145ba5b4aebdef4d0e9b0146392d3a31a99a4ec1"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_io.py",
+          "expected": "8bb49b82b4a0e0e72de3d4ca5a35475200bd30833735c6a5af1df4e14e478539",
+          "observed": "8bb49b82b4a0e0e72de3d4ca5a35475200bd30833735c6a5af1df4e14e478539"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_native_cap1m.py",
+          "expected": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d",
+          "observed": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_outbox.py",
+          "expected": "b2bac008c8de73d3f6e7344129f094cd073d19d1572005374dc067fb2077e229",
+          "observed": "b2bac008c8de73d3f6e7344129f094cd073d19d1572005374dc067fb2077e229"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_read_cache.py",
+          "expected": "5172b6ac7b00f8ea80fdb0dc807180a530f2a155003badbb0a86758e3db7eaa6",
+          "observed": "5172b6ac7b00f8ea80fdb0dc807180a530f2a155003badbb0a86758e3db7eaa6"
+        },
+        {
+          "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_strict_cap1m.py",
+          "expected": "87ee4025dce16a909a30c9e94a10dcaad14d3e71b3846371edd3be15a9b0bac5",
+          "observed": "87ee4025dce16a909a30c9e94a10dcaad14d3e71b3846371edd3be15a9b0bac5"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/env/CH_F128/config-0.config",
+          "expected": "4218893da117d9a0eb4a8676e4a4c7b8d111095adea0061f8a8515bafcfd56a6",
+          "observed": "4218893da117d9a0eb4a8676e4a4c7b8d111095adea0061f8a8515bafcfd56a6"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/env/CH_F128/config-1.config",
+          "expected": "e86d9ac278c389e5d641368624e4a7322263edad46f999d1bfeac45e2c08ac6a",
+          "observed": "e86d9ac278c389e5d641368624e4a7322263edad46f999d1bfeac45e2c08ac6a"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/env/CH_F128/config-2.config",
+          "expected": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+          "observed": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/env/CH_F128/config-3.config",
+          "expected": "2b4a72a90686237ba547d9a51a38f55988397944d8c0627ea1105d14b072726f",
+          "observed": "2b4a72a90686237ba547d9a51a38f55988397944d8c0627ea1105d14b072726f"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/env/CH_F256/config-0.config",
+          "expected": "c808ac5d4f3055a55364bec1f4e72ca4fd632e86b0989666a75cd31c2cc99ba8",
+          "observed": "c808ac5d4f3055a55364bec1f4e72ca4fd632e86b0989666a75cd31c2cc99ba8"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/env/CH_F256/config-1.config",
+          "expected": "e86d9ac278c389e5d641368624e4a7322263edad46f999d1bfeac45e2c08ac6a",
+          "observed": "e86d9ac278c389e5d641368624e4a7322263edad46f999d1bfeac45e2c08ac6a"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/env/CH_F256/config-2.config",
+          "expected": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+          "observed": "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/env/CH_F256/config-3.config",
+          "expected": "2b4a72a90686237ba547d9a51a38f55988397944d8c0627ea1105d14b072726f",
+          "observed": "2b4a72a90686237ba547d9a51a38f55988397944d8c0627ea1105d14b072726f"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/APPROVED_GOAL.fixed.md",
+          "expected": "98f35d083541e81838b89af23a284105da5f2bab259461ec0fe17b2efd967b11",
+          "observed": "98f35d083541e81838b89af23a284105da5f2bab259461ec0fe17b2efd967b11"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/BUILD_PROFILE.json",
+          "expected": "c917801972160f2be9e2192406e23de60ce2682f88ccf5fe3f4f05b6303e6cae",
+          "observed": "c917801972160f2be9e2192406e23de60ce2682f88ccf5fe3f4f05b6303e6cae"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/FIRST_BATCH.fixed.json",
+          "expected": "3425baf58beb8ee8e1f166a7415b32d3740db3048a9f74f7a5f5977e0a2eebb0",
+          "observed": "3425baf58beb8ee8e1f166a7415b32d3740db3048a9f74f7a5f5977e0a2eebb0"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/MATRIX.json",
+          "expected": "692ac2d0baa080f8c7f0be0006d502303496d964c61be17b3b4a113c95a0fefe",
+          "observed": "692ac2d0baa080f8c7f0be0006d502303496d964c61be17b3b4a113c95a0fefe"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/NATIVE_ROUTE_BLOCK.sh",
+          "expected": "c644cd09fb18b8112b9fb72c52e8c1198ffd7a3b90443214421b21621f52f6be",
+          "observed": "c644cd09fb18b8112b9fb72c52e8c1198ffd7a3b90443214421b21621f52f6be"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/ORIGINAL_REFERENCE_INDEX.json",
+          "expected": "1ca94d35e835920187b50ad103b5a177cc362c473c4b21dc35372a152e7beb4f",
+          "observed": "1ca94d35e835920187b50ad103b5a177cc362c473c4b21dc35372a152e7beb4f"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/PREPARATION_MANIFEST.fixed.json",
+          "expected": "863329d0255c4e85aa63743241a74f84cf64a90c8880f07f8ba157cddaf7b2eb",
+          "observed": "863329d0255c4e85aa63743241a74f84cf64a90c8880f07f8ba157cddaf7b2eb"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/RESOURCE_POLICY.json",
+          "expected": "9edc44937ccdc0741a426c07513976bfbb33f811755b83fb5e10bcae3297c80a",
+          "observed": "9edc44937ccdc0741a426c07513976bfbb33f811755b83fb5e10bcae3297c80a"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/SCIENCE_AUTHORIZATION.json",
+          "expected": "abbad43e2521d4b9a37932f82892af124fcd7b57154cf25ca3070613ffd4e488",
+          "observed": "abbad43e2521d4b9a37932f82892af124fcd7b57154cf25ca3070613ffd4e488"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/SINGLE_SCIENTIFIC_APPROVAL_REQUEST.json",
+          "expected": "a6e914d292858a1739704fd8205768a3231e4b75328d0c2e671d9e7a005d8505",
+          "observed": "a6e914d292858a1739704fd8205768a3231e4b75328d0c2e671d9e7a005d8505"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/input_bindings/4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449.json",
+          "expected": "89d0a283742f6bceb5550d05f417555e1753065c5460a83201edd4452d47f4b7",
+          "observed": "89d0a283742f6bceb5550d05f417555e1753065c5460a83201edd4452d47f4b7"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/input_bindings/6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39.json",
+          "expected": "449a8334091d5e10dc565670aeb1088e51520b79fb2e5bbd3eef1d1b456c9fbd",
+          "observed": "449a8334091d5e10dc565670aeb1088e51520b79fb2e5bbd3eef1d1b456c9fbd"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/input_bindings/ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef.json",
+          "expected": "7a6bbb1fbc0cec5a7544f103c5055610e0958229620631d98de89c9b9666d0b7",
+          "observed": "7a6bbb1fbc0cec5a7544f103c5055610e0958229620631d98de89c9b9666d0b7"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/input_bindings/d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0.json",
+          "expected": "6f1045452150fa2a9c9df5181a42a477f3b85a2d5a38023431b215275f8fe0e7",
+          "observed": "6f1045452150fa2a9c9df5181a42a477f3b85a2d5a38023431b215275f8fe0e7"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/input_bindings/e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799.json",
+          "expected": "b63d8151d3b8206a0961f637d7935d437f1edc0899149798bf2bf2eabc72aab6",
+          "observed": "b63d8151d3b8206a0961f637d7935d437f1edc0899149798bf2bf2eabc72aab6"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/input_bindings/eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950.json",
+          "expected": "fcf9289ccd69135920b0d90f6876377f52f2fb6c442fc04bc12e889ba8c2b040",
+          "observed": "fcf9289ccd69135920b0d90f6876377f52f2fb6c442fc04bc12e889ba8c2b040"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/input_bindings/f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079.json",
+          "expected": "d05ec5d8a4e438977f8997244b9faf64e63afcd04d5040cd4a93b93192c3ece3",
+          "observed": "d05ec5d8a4e438977f8997244b9faf64e63afcd04d5040cd4a93b93192c3ece3"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/input_bindings/fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318.json",
+          "expected": "dd39581a0bdcc496722e3014254424b7293b8ef15230f53d25c2e5cda2227cb1",
+          "observed": "dd39581a0bdcc496722e3014254424b7293b8ef15230f53d25c2e5cda2227cb1"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/specs/E2-DTC2A16-4114a3dc0d06b55b-CH-F128-V1.json",
+          "expected": "dfe1242e17331fcf3f7b2ff808ccc2178e685cb93b9f9fce02700bb6a866ddad",
+          "observed": "dfe1242e17331fcf3f7b2ff808ccc2178e685cb93b9f9fce02700bb6a866ddad"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/specs/E2-DTC2A16-4114a3dc0d06b55b-CH-F256-V1.json",
+          "expected": "e25b89322b2a43e0426cb4aa35bebdbc7eb057318ef258e392ed4e0ee95a3655",
+          "observed": "e25b89322b2a43e0426cb4aa35bebdbc7eb057318ef258e392ed4e0ee95a3655"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/specs/E2-DTC2A16-6df3a84b612086e8-CH-F128-V1.json",
+          "expected": "32896bcd0a1dbc92ed657e3f72bf83b70773b676b149f27d7c5982b85a20cfc0",
+          "observed": "32896bcd0a1dbc92ed657e3f72bf83b70773b676b149f27d7c5982b85a20cfc0"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/specs/E2-DTC2A16-6df3a84b612086e8-CH-F256-V1.json",
+          "expected": "33ae057b5416b8d75f82e1fe389f06affdd9fb2e58a6a8bec65cd6c3549f17ff",
+          "observed": "33ae057b5416b8d75f82e1fe389f06affdd9fb2e58a6a8bec65cd6c3549f17ff"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/specs/E2-DTC2A16-ae34174fbbdf83b2-CH-F128-V1.json",
+          "expected": "8fd7aa333396c6a9a68fcefaa62d20c6137fb775ba5a8a1efb674d1cd7ba0df2",
+          "observed": "8fd7aa333396c6a9a68fcefaa62d20c6137fb775ba5a8a1efb674d1cd7ba0df2"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/specs/E2-DTC2A16-ae34174fbbdf83b2-CH-F256-V1.json",
+          "expected": "acb1a6902890eb365e3d9d3f28bec082e029fa379773eac171a16ac52b195ef6",
+          "observed": "acb1a6902890eb365e3d9d3f28bec082e029fa379773eac171a16ac52b195ef6"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/specs/E2-DTC2A16-d984ea5475a581ad-CH-F128-V1.json",
+          "expected": "20ce2c4fcf80ea6203a06051ab751e3b158f69c8168f21702ce5e2fe264a72a7",
+          "observed": "20ce2c4fcf80ea6203a06051ab751e3b158f69c8168f21702ce5e2fe264a72a7"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/specs/E2-DTC2A16-d984ea5475a581ad-CH-F256-V1.json",
+          "expected": "dbdb992803397e7dc2222cb72b06ef403c8578579f2d57f55a6ec92b788de42c",
+          "observed": "dbdb992803397e7dc2222cb72b06ef403c8578579f2d57f55a6ec92b788de42c"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/specs/E2-DTC2A16-e7bb67e63e3c3847-CH-F128-V1.json",
+          "expected": "0a0bb69c2ab31b5aab0144fc464e3e827a69a0a53b5a2a572acc15f8260354d5",
+          "observed": "0a0bb69c2ab31b5aab0144fc464e3e827a69a0a53b5a2a572acc15f8260354d5"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/specs/E2-DTC2A16-e7bb67e63e3c3847-CH-F256-V1.json",
+          "expected": "5087aa3b7f5ba097d19ec29217a7fb0b860f629db082ac4e3b4aed3f3977f97d",
+          "observed": "5087aa3b7f5ba097d19ec29217a7fb0b860f629db082ac4e3b4aed3f3977f97d"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/specs/E2-DTC2A16-eededb785179fc04-CH-F128-V1.json",
+          "expected": "8691f4aa95a839da409660e388066e07a61ffa82eac66e0d7a30f9074d3ac5f1",
+          "observed": "8691f4aa95a839da409660e388066e07a61ffa82eac66e0d7a30f9074d3ac5f1"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/specs/E2-DTC2A16-eededb785179fc04-CH-F256-V1.json",
+          "expected": "c40de5f68e6f8f522c214e19187a7747f95a4b5cab3774911172e42266664b36",
+          "observed": "c40de5f68e6f8f522c214e19187a7747f95a4b5cab3774911172e42266664b36"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/specs/E2-DTC2A16-f437190767aaed49-CH-F128-V1.json",
+          "expected": "212de8871eb40e73c739a20e8f674455094fe9fcf0b825576e5f930efddad529",
+          "observed": "212de8871eb40e73c739a20e8f674455094fe9fcf0b825576e5f930efddad529"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/specs/E2-DTC2A16-f437190767aaed49-CH-F256-V1.json",
+          "expected": "91c1a9a94f8855c7cc944f5d3d77a8d8a126457a6baed008cc32417aed4d7cdb",
+          "observed": "91c1a9a94f8855c7cc944f5d3d77a8d8a126457a6baed008cc32417aed4d7cdb"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/specs/E2-DTC2A16-fc0705ae3721e999-CH-F128-V1.json",
+          "expected": "25be6d3d6771be105f718fd1fd06b24eaeaadcebf230c59063572811b781ad5d",
+          "observed": "25be6d3d6771be105f718fd1fd06b24eaeaadcebf230c59063572811b781ad5d"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/specs/E2-DTC2A16-fc0705ae3721e999-CH-F256-V1.json",
+          "expected": "843d13ab4f3eb2738f666f0c424b87ae1eb900d5457f58f7d788823e16c06744",
+          "observed": "843d13ab4f3eb2738f666f0c424b87ae1eb900d5457f58f7d788823e16c06744"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/tools/stage2_frontend.py",
+          "expected": "5ca82eca5b5f8184971fc3c0c88ebe87eb17c85540ba491621773241c2918fae",
+          "observed": "5ca82eca5b5f8184971fc3c0c88ebe87eb17c85540ba491621773241c2918fae"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/tools/stage2_guard.py",
+          "expected": "519579579f8c42cbd9934c1c8c5d79418e6dbe147584acf5bb6d4d6f88655236",
+          "observed": "519579579f8c42cbd9934c1c8c5d79418e6dbe147584acf5bb6d4d6f88655236"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/tools/stage2_guard_policy.py",
+          "expected": "4086afd07dc9255cc8b0de97a5883127905579a9d68b3586554ea2f3f0152797",
+          "observed": "4086afd07dc9255cc8b0de97a5883127905579a9d68b3586554ea2f3f0152797"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/tools/stage2_native.py",
+          "expected": "8e7482bf347db5f9910b1881cd74b503f81650eca59b3afc5ed2a553e8875204",
+          "observed": "8e7482bf347db5f9910b1881cd74b503f81650eca59b3afc5ed2a553e8875204"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/tools/stage2_ops.py",
+          "expected": "8c404beddf06fd7030274b8e7e5803d397cb808b507fb1f726d1a5a647f19051",
+          "observed": "8c404beddf06fd7030274b8e7e5803d397cb808b507fb1f726d1a5a647f19051"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/tools/stage2_outbox.py",
+          "expected": "6c4dca968e68305b43d2c349d3b34108e3b0289eb77500d9dbbb073cd033b092",
+          "observed": "6c4dca968e68305b43d2c349d3b34108e3b0289eb77500d9dbbb073cd033b092"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/tools/stage2_parent_addon.py",
+          "expected": "d4674694464f55b184913805c6795f80e73be96e459c24e749a8a502dc020cae",
+          "observed": "d4674694464f55b184913805c6795f80e73be96e459c24e749a8a502dc020cae"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/tools/stage2_resources.py",
+          "expected": "f14a39a4298e5b530c0acd8ac68c5f114849041d58e5fc6747c697e7e5ecad9c",
+          "observed": "f14a39a4298e5b530c0acd8ac68c5f114849041d58e5fc6747c697e7e5ecad9c"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/tools/stage2_results.py",
+          "expected": "2a26e6e360e657bcedfc675964aa05274f1386687fdb11ec31687eb31a65e336",
+          "observed": "2a26e6e360e657bcedfc675964aa05274f1386687fdb11ec31687eb31a65e336"
+        },
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/tools/stage2_strict.py",
+          "expected": "260f8468b68c639c0ef3bd4a937dd445463a98fde66c5e44e6e49243d6158035",
+          "observed": "260f8468b68c639c0ef3bd4a937dd445463a98fde66c5e44e6e49243d6158035"
+        },
+        {
+          "path": "/root/data/ep_l2_dtc_l1_native_v2/bin/experiment",
+          "expected": "46fc472f909e525daa13dad590759d5bd76726e12fcf468359595fd5367906fe",
+          "observed": "46fc472f909e525daa13dad590759d5bd76726e12fcf468359595fd5367906fe"
+        },
+        {
+          "path": "/root/data/ep_l2_dtc_l1_native_v2/tools/native_dtc_guard.py",
+          "expected": "5fc7f93e390639dead9c899d398192ca71bc600ea3daf043e31bd7fd7118f802",
+          "observed": "5fc7f93e390639dead9c899d398192ca71bc600ea3daf043e31bd7fd7118f802"
+        }
+      ]
+    },
+    {
+      "requirement": "Every spent first16 UUID is independent and not reused from any other request",
+      "status": "PROVEN",
+      "evidence": {
+        "new_UUIDs": [
+          "2b9c03da-934c-47eb-b583-8cac2a93ceba",
+          "581149d0-5020-471e-b2d1-43464edb56ad",
+          "e0f3ab35-8fa7-4cbc-9f7b-92174b5e3f1a",
+          "efb01355-ff22-4ef0-a893-2509dc30cb58",
+          "e6617bdb-dda5-4142-8952-37da47ec7847",
+          "68f571a2-9672-42ea-9c91-9d301dd54924",
+          "d7f59b7e-28e4-469b-ae15-ae93a913134b",
+          "296e83f8-7ee5-4181-8685-53d8f591b684",
+          "33aad24a-ce6f-43ec-9e1a-50fdaa9e435f",
+          "ce67bc90-9dd4-4c70-a1a8-135d22dd136a",
+          "6dcd9d5d-b873-4f16-8246-36d59f8d3c77"
+        ],
+        "other_recorded_UUIDs": 976
+      }
+    },
+    {
+      "requirement": "Historical DTC budgets, identities, DONE and consumed records unchanged",
+      "status": "PROVEN",
+      "evidence": [
+        {
+          "request": "DTC_AEFAIR_EPOCH2_V1",
+          "unchanged": true
+        },
+        {
+          "request": "DTC_AEFAIR_SHORT3_EPOCH2_20261024_V1",
+          "unchanged": true
+        },
+        {
+          "request": "DTC_AE_FAILURE_REPAIR_VALIDATION_20261025_V1",
+          "unchanged": true
+        },
+        {
+          "request": "DTC_AE_LATE_FAILURE_REPAIR_20261026_V1",
+          "unchanged": true
+        },
+        {
+          "request": "DTC_AE_LAVAMEM_REPAIR_20261026_V2",
+          "unchanged": true
+        },
+        {
+          "request": "DTC_AE_REMAINING_FAILURE_REPAIR_20261026_V1",
+          "unchanged": true
+        },
+        {
+          "request": "DTC_AE_STORAGE_RECOVERY12_20261026_V1",
+          "unchanged": true
+        },
+        {
+          "request": "DTC_AE_V100_FULL_SWEEP_20261025_V1",
+          "unchanged": true
+        },
+        {
+          "request": "DTC_HASH_DOWNSTREAM18_20261027_V1",
+          "unchanged": true
+        },
+        {
+          "request": "DTC_L2_MLP_FULL_WORKLOAD_EXPLORATION_20261027_V1",
+          "unchanged": true
+        }
+      ]
+    },
+    {
+      "requirement": "All32 original phase-I reference sources verified; no IR/R2/EP/PQ/PS substitution",
+      "status": "PROVEN",
+      "evidence": [
+        {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/ORIGINAL_REFERENCE_INDEX.json",
+          "sha256": "1ca94d35e835920187b50ad103b5a177cc362c473c4b21dc35372a152e7beb4f"
+        },
+        {
+          "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/agents/B_runtime_adapter_v1/actual_readonly_adapter.py",
+          "sha256": "c3310df8a4c8fb2d94ba57742339c3220367822c62128270810060d3967107a7"
+        }
+      ]
+    },
+    {
+      "requirement": "All16 scientific identities independently strict/negative, true164 archive and full native recovery verified",
+      "status": "INCOMPLETE_OR_CONTRADICTED",
+      "evidence": {
+        "accepted": 2,
+        "archived_negative": 0,
+        "waiting_or_hold": 14,
+        "readonly_errors": [],
+        "observations": [
+          {
+            "program": "convolutionSeparable",
+            "suite": "CUDA Samples",
+            "input_digest": "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+            "design": "CH",
+            "profile": "F128",
+            "cohort": "E2-DTC2A16-4114a3dc0d06b55b-CH-F128-V1",
+            "source_role": "STAGEII_AUTHORIZED_CH",
+            "request": "DTC_STAGE_IIA_FIRST16_CH_MATCH_20261104_V1",
+            "accepted": false,
+            "cycles": null,
+            "status": "UUID_RECORDED_AWAIT_ROOT_RESULT"
+          },
+          {
+            "program": "convolutionSeparable",
+            "suite": "CUDA Samples",
+            "input_digest": "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+            "design": "CH",
+            "profile": "F256",
+            "cohort": "E2-DTC2A16-4114a3dc0d06b55b-CH-F256-V1",
+            "source_role": "STAGEII_AUTHORIZED_CH",
+            "request": "DTC_STAGE_IIA_FIRST16_CH_MATCH_20261104_V1",
+            "accepted": true,
+            "cycles": 602100,
+            "sources": {
+              "RESULT": {
+                "path": "/root/data/dtc_stage_iia_first16_20261104_v1/analysis/E2-DTC2A16-4114a3dc0d06b55b-CH-F256-V1.RESULT.json",
+                "sha256": "5cc22a35d6c6a8ea597b0f18e4c0fda58dc6948635f56990b3d70c0fd78bca41"
+              },
+              "SPEC": {
+                "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/specs/E2-DTC2A16-4114a3dc0d06b55b-CH-F256-V1.json",
+                "sha256": "e25b89322b2a43e0426cb4aa35bebdbc7eb057318ef258e392ed4e0ee95a3655"
+              },
+              "ARCHIVE_RECEIPT": {
+                "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/E2-DTC2A16-4114a3dc0d06b55b-CH-F256-V1_ARCHIVE_RECEIPT.json",
+                "sha256": "cbf0d7c9f722a5e3681e48e66faad60a214de3357d1c4d4b88e185438e8edb8c"
+              },
+              "NATIVE_RESTORE": {
+                "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/results/E2-DTC2A16-4114a3dc0d06b55b-CH-F256-V1/db3c0fed62a364aedc0f9ee2de5efc90d4010d0f71a989441d016bcece69a78f/RESTORE_VERIFIED_NATIVE_TARGET.json",
+                "sha256": "8ca497c11b1875b9cdca04136488727be5adf2d97c12242d46a635db0771a445"
+              },
+              "STRICT": {
+                "path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/run/results/581149d0-5020-471e-b2d1-43464edb56ad/L2_STRICT.json",
+                "sha256": "244cfc073411ab3207c8c33ddaf32b5ffeadb0bd5145df62499299084a4c8e91"
+              }
+            },
+            "observed_native_state": "PASS_STAGEII_CH_STRICT_ARCHIVE_NATIVE_RESTORE",
+            "uuid": "581149d0-5020-471e-b2d1-43464edb56ad",
+            "archive_verification": {
+              "archive_receipt": {
+                "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/results/E2-DTC2A16-4114a3dc0d06b55b-CH-F256-V1/db3c0fed62a364aedc0f9ee2de5efc90d4010d0f71a989441d016bcece69a78f/RECEIPT.json",
+                "sha256": "cbf0d7c9f722a5e3681e48e66faad60a214de3357d1c4d4b88e185438e8edb8c"
+              },
+              "source_manifest": {
+                "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/results/E2-DTC2A16-4114a3dc0d06b55b-CH-F256-V1/db3c0fed62a364aedc0f9ee2de5efc90d4010d0f71a989441d016bcece69a78f/SOURCE_MANIFEST.json",
+                "sha256": "f74896feaf2b52094937756864fa83a3c844edcbc46f7e14bc2cdcd0391ad252"
+              },
+              "archive_index": {
+                "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/results/E2-DTC2A16-4114a3dc0d06b55b-CH-F256-V1/db3c0fed62a364aedc0f9ee2de5efc90d4010d0f71a989441d016bcece69a78f/ARCHIVE_INDEX.json",
+                "sha256": "631a5fb3b1614c839954467dd865a09edf2b3fbd8ba507bc1f5583a235a0aa7c"
+              },
+              "commit": {
+                "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/results/E2-DTC2A16-4114a3dc0d06b55b-CH-F256-V1/db3c0fed62a364aedc0f9ee2de5efc90d4010d0f71a989441d016bcece69a78f/COMMIT.json",
+                "sha256": "c96250231c9b24cd2cceb86666ccbc314ff1ffb98d55ecda9d8acfb1a74403b0"
+              },
+              "native_restore": {
+                "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/results/E2-DTC2A16-4114a3dc0d06b55b-CH-F256-V1/db3c0fed62a364aedc0f9ee2de5efc90d4010d0f71a989441d016bcece69a78f/RESTORE_VERIFIED_NATIVE_TARGET.json",
+                "sha256": "8ca497c11b1875b9cdca04136488727be5adf2d97c12242d46a635db0771a445"
+              },
+              "archive_stream_sha256": "5428a7f767c4976766262b520a3472c9b294d6ea603c49cf3014736a2c25e8b4",
+              "native_restored_entries_verified": 21,
+              "critical_source_members": [
+                "NATIVE_EXIT.json",
+                "DOWNSTREAM_FROZEN_SPEC.json",
+                "DISPATCH_BINDING.json",
+                "raw.log.gz",
+                "L2_STRICT.json"
+              ]
+            },
+            "native_exit": {
+              "path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/run/results/581149d0-5020-471e-b2d1-43464edb56ad/NATIVE_EXIT.json",
+              "sha256": "1a3b1550066f69e3c4534ad7404b3748cb6332b16fb8f628fdd3e24bf6bb0d3d"
+            },
+            "intent": {
+              "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/qualification_ledger/E2-DTC2A16-4114a3dc0d06b55b-CH-F256-V1.INTENT.json",
+              "sha256": "96cc9fb347d030e8ab0a9df33463bbc0fee40e3fddd62b0acb4260b1b3bb9bcd"
+            },
+            "done": {
+              "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/qualification_ledger/E2-DTC2A16-4114a3dc0d06b55b-CH-F256-V1.DONE.json",
+              "sha256": "1a3b1550066f69e3c4534ad7404b3748cb6332b16fb8f628fdd3e24bf6bb0d3d"
+            },
+            "dispatch_binding": {
+              "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/dispatch_bindings/E2-DTC2A16-4114a3dc0d06b55b-CH-F256-V1.json",
+              "sha256": "07c018c1112be6b18f5d27e4bc1af894e7b69f625820dd9fc83961840c48548e"
+            },
+            "status": "PASS_STAGEII_CH_STRICT_ARCHIVE_NATIVE_RESTORE",
+            "RESULT_sha256": "5cc22a35d6c6a8ea597b0f18e4c0fda58dc6948635f56990b3d70c0fd78bca41",
+            "input_binding_sha": "89d0a283742f6bceb5550d05f417555e1753065c5460a83201edd4452d47f4b7",
+            "roi_fingerprint": "ebee7d134885e4d861ce4ee9cee127fd3a3165fdba50e7161fa5c0fa6d84051a",
+            "build": {
+              "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+              "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+              "binary_sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d",
+              "libcudart_sha256": "694f05ce97fe3e1552d94803c2202d8d037769c61624cde5f6a832622ed60c56"
+            },
+            "build_fingerprint": "ef5494fda07506f43eb90d555681b8ff0f08a40945e7405d889bcffe3bbd2077",
+            "downstream_fingerprint": "40f21915887c371308c6e5f5d3b08f25eefdbc0c863f9f6b23f67a9438de772e",
+            "effective_options": {
+              "-SST_mode": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_CC_ACC": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_CYCLES": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_DRAM_RD": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_DRAM_WR": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_L1_RH": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_L1_RM": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_L1_WH": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_L1_WM": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_L2_RH": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_L2_RM": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_L2_WH": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_L2_WM": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_NOC": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_NUM_SM_IDLE": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_PIPE_DUTY": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_SHARED_ACC": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_VOLTAGE": [
+                "0"
+              ],
+              "-accelwattch_xml_file": [
+                "accelwattch_sass_sim.xml"
+              ],
+              "-aggregate_power_stats": [
+                "0"
+              ],
+              "-cdp_latency": [
+                "7200,8000,100,12000,1600"
+              ],
+              "-checkpoint_CTA": [
+                "0"
+              ],
+              "-checkpoint_CTA_t": [
+                "0"
+              ],
+              "-checkpoint_insn_Y": [
+                "0"
+              ],
+              "-checkpoint_kernel": [
+                "1"
+              ],
+              "-checkpoint_option": [
+                "0"
+              ],
+              "-chiplet_mem_stride": [
+                "8192"
+              ],
+              "-chiplet_partition_stride": [
+                "8192"
+              ],
+              "-dram_bnk_indexing_policy": [
+                "0"
+              ],
+              "-dram_bnkgrp_indexing_policy": [
+                "1"
+              ],
+              "-dram_data_command_freq_ratio": [
+                "2"
+              ],
+              "-dram_dual_bus_interface": [
+                "1"
+              ],
+              "-dram_elimnate_rw_turnaround": [
+                "0"
+              ],
+              "-dram_latency": [
+                "100"
+              ],
+              "-dram_seperate_write_queue_enable": [
+                "0"
+              ],
+              "-dram_write_queue_size": [
+                "32:28:16"
+              ],
+              "-dvfs_enabled": [
+                "0"
+              ],
+              "-enable_ptx_file_line_stats": [
+                "1"
+              ],
+              "-gpgpu_TB_launch_latency": [
+                "0"
+              ],
+              "-gpgpu_adaptive_cache_config": [
+                "0"
+              ],
+              "-gpgpu_cache:dl1": [
+                "N:32:128:24,L:T:m:L:B,A:512:8,16:0,32"
+              ],
+              "-gpgpu_cache:dl1PrefL1": [
+                "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32"
+              ],
+              "-gpgpu_cache:dl1PrefShared": [
+                "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32"
+              ],
+              "-gpgpu_cache:dl2": [
+                "S:128:128:16,L:B:m:L:L,A:192:4,32:0,32"
+              ],
+              "-gpgpu_cache:dl2_texture_only": [
+                "0"
+              ],
+              "-gpgpu_cache:il1": [
+                "N:64:128:16,L:R:f:N:L,S:2:48,4"
+              ],
+              "-gpgpu_cdp_enabled": [
+                "0"
+              ],
+              "-gpgpu_cflog_interval": [
+                "0"
+              ],
+              "-gpgpu_chiplet_interleave": [
+                "0"
+              ],
+              "-gpgpu_clock_domains": [
+                "1410.0:1410.0:1410.0:850.0"
+              ],
+              "-gpgpu_clock_gated_lanes": [
+                "1"
+              ],
+              "-gpgpu_clock_gated_reg_file": [
+                "0"
+              ],
+              "-gpgpu_coalesce_arch": [
+                "70"
+              ],
+              "-gpgpu_compute_capability_major": [
+                "7"
+              ],
+              "-gpgpu_compute_capability_minor": [
+                "0"
+              ],
+              "-gpgpu_concurrent_kernel_sm": [
+                "0"
+              ],
+              "-gpgpu_const_cache:l1": [
+                "N:128:64:8,L:R:f:N:L,S:2:64,4"
+              ],
+              "-gpgpu_deadlock_detect": [
+                "1"
+              ],
+              "-gpgpu_dram_burst_length": [
+                "2"
+              ],
+              "-gpgpu_dram_buswidth": [
+                "16"
+              ],
+              "-gpgpu_dram_partition_queues": [
+                "64:64:64:64"
+              ],
+              "-gpgpu_dram_return_queue_size": [
+                "192"
+              ],
+              "-gpgpu_dram_scheduler": [
+                "1"
+              ],
+              "-gpgpu_dram_timing_opt": [
+                "nbk=16:CCD=1:RRD=3:RCD=12:RAS=28:RP=12:RC=40:",
+                "CL=12:WL=2:CDLR=3:WR=10:nbkgrp=4:CCDL=2:RTPL=3"
+              ],
+              "-gpgpu_dtc_l1_allocation_width": [
+                "4"
+              ],
+              "-gpgpu_dtc_l1_debug_event_limit": [
+                "0"
+              ],
+              "-gpgpu_dtc_l1_finite_service": [
+                "0"
+              ],
+              "-gpgpu_dtc_l1_invalidate_on_source_event": [
+                "0"
+              ],
+              "-gpgpu_dtc_l1_io_pib_entries": [
+                "256"
+              ],
+              "-gpgpu_dtc_l1_logical_sets": [
+                "64"
+              ],
+              "-gpgpu_dtc_l1_logical_ways": [
+                "8"
+              ],
+              "-gpgpu_dtc_l1_lower_outstanding_cap": [
+                "32768"
+              ],
+              "-gpgpu_dtc_l1_mode": [
+                "1"
+              ],
+              "-gpgpu_dtc_l1_mshr_entries": [
+                "512"
+              ],
+              "-gpgpu_dtc_l1_oo_pib_entries": [
+                "128"
+              ],
+              "-gpgpu_dtc_l1_physical_lines": [
+                "640"
+              ],
+              "-gpgpu_dtc_l1_pib_entries": [
+                "256"
+              ],
+              "-gpgpu_dtc_l1_progressive_wakeup": [
+                "0"
+              ],
+              "-gpgpu_dtc_l1_ref_count_bits": [
+                "13"
+              ],
+              "-gpgpu_dtc_l1_tag_banks": [
+                "4"
+              ],
+              "-gpgpu_dtc_l1_tag_hash_bankrow": [
+                "0"
+              ],
+              "-gpgpu_dtc_l1_tag_req_per_bank": [
+                "1"
+              ],
+              "-gpgpu_dtc_l1_tag_req_per_cycle": [
+                "4"
+              ],
+              "-gpgpu_dual_issue_diff_exec_units": [
+                "1"
+              ],
+              "-gpgpu_enable_specialized_operand_collector": [
+                "0"
+              ],
+              "-gpgpu_experimental_lib_support": [
+                "0"
+              ],
+              "-gpgpu_flush_l1_cache": [
+                "1"
+              ],
+              "-gpgpu_flush_l2_cache": [
+                "0"
+              ],
+              "-gpgpu_frfcfs_dram_sched_queue_size": [
+                "256"
+              ],
+              "-gpgpu_gmem_skip_L1D": [
+                "0"
+              ],
+              "-gpgpu_heap_size_limit": [
+                "8388608"
+              ],
+              "-gpgpu_ignore_resources_limitation": [
+                "0"
+              ],
+              "-gpgpu_inst_fetch_throughput": [
+                "4"
+              ],
+              "-gpgpu_kernel_launch_latency": [
+                "5000"
+              ],
+              "-gpgpu_l1_banks": [
+                "4"
+              ],
+              "-gpgpu_l1_banks_byte_interleaving": [
+                "32"
+              ],
+              "-gpgpu_l1_banks_hashing_function": [
+                "0"
+              ],
+              "-gpgpu_l1_cache_write_ratio": [
+                "0"
+              ],
+              "-gpgpu_l1_latency": [
+                "20"
+              ],
+              "-gpgpu_l2_rop_latency": [
+                "200"
+              ],
+              "-gpgpu_local_mem_map": [
+                "1"
+              ],
+              "-gpgpu_lrc_enabled": [
+                "0"
+              ],
+              "-gpgpu_lrc_max_entries": [
+                "256"
+              ],
+              "-gpgpu_lrc_max_merged": [
+                "32"
+              ],
+              "-gpgpu_max_completed_cta": [
+                "0"
+              ],
+              "-gpgpu_max_concurrent_kernel": [
+                "128"
+              ],
+              "-gpgpu_max_cta": [
+                "0"
+              ],
+              "-gpgpu_max_cycle": [
+                "0"
+              ],
+              "-gpgpu_max_insn": [
+                "0"
+              ],
+              "-gpgpu_max_insn_issue_per_warp": [
+                "1"
+              ],
+              "-gpgpu_mem_addr_mapping": [
+                "NULL"
+              ],
+              "-gpgpu_mem_addr_test": [
+                "0"
+              ],
+              "-gpgpu_mem_address_mask": [
+                "1"
+              ],
+              "-gpgpu_mem_unit_ports": [
+                "1"
+              ],
+              "-gpgpu_memlatency_stat": [
+                "14"
+              ],
+              "-gpgpu_memory_partition_indexing": [
+                "0"
+              ],
+              "-gpgpu_n_chiplet_partition": [
+                "1"
+              ],
+              "-gpgpu_n_cluster_ejection_buffer_size": [
+                "32"
+              ],
+              "-gpgpu_n_clusters": [
+                "64"
+              ],
+              "-gpgpu_n_cores_per_cluster": [
+                "1"
+              ],
+              "-gpgpu_n_ldst_response_buffer_size": [
+                "2"
+              ],
+              "-gpgpu_n_mem": [
+                "20"
+              ],
+              "-gpgpu_n_mem_per_ctrlr": [
+                "1"
+              ],
+              "-gpgpu_n_sub_partition_per_mchannel": [
+                "2"
+              ],
+              "-gpgpu_num_cta_barriers": [
+                "16"
+              ],
+              "-gpgpu_num_dp_units": [
+                "4"
+              ],
+              "-gpgpu_num_int_units": [
+                "4"
+              ],
+              "-gpgpu_num_mem_units": [
+                "1"
+              ],
+              "-gpgpu_num_reg_banks": [
+                "16"
+              ],
+              "-gpgpu_num_sched_per_core": [
+                "4"
+              ],
+              "-gpgpu_num_sfu_units": [
+                "4"
+              ],
+              "-gpgpu_num_sp_units": [
+                "4"
+              ],
+              "-gpgpu_num_tensor_core_units": [
+                "4"
+              ],
+              "-gpgpu_occupancy_sm_number": [
+                "64"
+              ],
+              "-gpgpu_operand_collector_num_in_ports_dp": [
+                "0"
+              ],
+              "-gpgpu_operand_collector_num_in_ports_gen": [
+                "8"
+              ],
+              "-gpgpu_operand_collector_num_in_ports_int": [
+                "0"
+              ],
+              "-gpgpu_operand_collector_num_in_ports_mem": [
+                "1"
+              ],
+              "-gpgpu_operand_collector_num_in_ports_sfu": [
+                "1"
+              ],
+              "-gpgpu_operand_collector_num_in_ports_sp": [
+                "1"
+              ],
+              "-gpgpu_operand_collector_num_in_ports_tensor_core": [
+                "1"
+              ],
+              "-gpgpu_operand_collector_num_out_ports_dp": [
+                "0"
+              ],
+              "-gpgpu_operand_collector_num_out_ports_gen": [
+                "8"
+              ],
+              "-gpgpu_operand_collector_num_out_ports_int": [
+                "0"
+              ],
+              "-gpgpu_operand_collector_num_out_ports_mem": [
+                "1"
+              ],
+              "-gpgpu_operand_collector_num_out_ports_sfu": [
+                "1"
+              ],
+              "-gpgpu_operand_collector_num_out_ports_sp": [
+                "1"
+              ],
+              "-gpgpu_operand_collector_num_out_ports_tensor_core": [
+                "1"
+              ],
+              "-gpgpu_operand_collector_num_units_dp": [
+                "0"
+              ],
+              "-gpgpu_operand_collector_num_units_gen": [
+                "8"
+              ],
+              "-gpgpu_operand_collector_num_units_int": [
+                "0"
+              ],
+              "-gpgpu_operand_collector_num_units_mem": [
+                "2"
+              ],
+              "-gpgpu_operand_collector_num_units_sfu": [
+                "4"
+              ],
+              "-gpgpu_operand_collector_num_units_sp": [
+                "4"
+              ],
+              "-gpgpu_operand_collector_num_units_tensor_core": [
+                "4"
+              ],
+              "-gpgpu_opndcoll_model": [
+                "0"
+              ],
+              "-gpgpu_perf_sim_memcpy": [
+                "1"
+              ],
+              "-gpgpu_perfect_inst_const_cache": [
+                "1"
+              ],
+              "-gpgpu_perfect_mem": [
+                "0"
+              ],
+              "-gpgpu_pipeline_widths": [
+                "4,4,4,4,4,4,4,4,4,4,8,4,4"
+              ],
+              "-gpgpu_ptx_convert_to_ptxplus": [
+                "0"
+              ],
+              "-gpgpu_ptx_force_max_capability": [
+                "70"
+              ],
+              "-gpgpu_ptx_inst_debug_file": [
+                "inst_debug.txt"
+              ],
+              "-gpgpu_ptx_inst_debug_thread_uid": [
+                "1"
+              ],
+              "-gpgpu_ptx_inst_debug_to_file": [
+                "0"
+              ],
+              "-gpgpu_ptx_instruction_classification": [
+                "0"
+              ],
+              "-gpgpu_ptx_save_converted_ptxplus": [
+                "0"
+              ],
+              "-gpgpu_ptx_sim_mode": [
+                "0"
+              ],
+              "-gpgpu_ptx_use_cuobjdump": [
+                "1"
+              ],
+              "-gpgpu_reg_bank_use_warp_id": [
+                "0"
+              ],
+              "-gpgpu_reg_file_port_throughput": [
+                "2"
+              ],
+              "-gpgpu_registers_per_block": [
+                "65536"
+              ],
+              "-gpgpu_runtime_pending_launch_count_limit": [
+                "2048"
+              ],
+              "-gpgpu_runtime_stat": [
+                "500000"
+              ],
+              "-gpgpu_runtime_sync_depth_limit": [
+                "2"
+              ],
+              "-gpgpu_scheduler": [
+                "gto"
+              ],
+              "-gpgpu_shader_core_pipeline": [
+                "2048:32"
+              ],
+              "-gpgpu_shader_cta": [
+                "32"
+              ],
+              "-gpgpu_shader_registers": [
+                "65536"
+              ],
+              "-gpgpu_shmem_limited_broadcast": [
+                "0"
+              ],
+              "-gpgpu_shmem_num_banks": [
+                "32"
+              ],
+              "-gpgpu_shmem_option": [
+                "0,8,16,32,64,96"
+              ],
+              "-gpgpu_shmem_per_block": [
+                "65536"
+              ],
+              "-gpgpu_shmem_size": [
+                "98304"
+              ],
+              "-gpgpu_shmem_sizeDefault": [
+                "98304"
+              ],
+              "-gpgpu_shmem_size_PrefL1": [
+                "98304"
+              ],
+              "-gpgpu_shmem_size_PrefShared": [
+                "98304"
+              ],
+              "-gpgpu_shmem_warp_parts": [
+                "1"
+              ],
+              "-gpgpu_simd_model": [
+                "1"
+              ],
+              "-gpgpu_simple_dram_clock_multiplier": [
+                "1"
+              ],
+              "-gpgpu_simple_dram_model": [
+                "0"
+              ],
+              "-gpgpu_simt_core_sim_order": [
+                "1"
+              ],
+              "-gpgpu_smem_latency": [
+                "20"
+              ],
+              "-gpgpu_stack_size_limit": [
+                "1024"
+              ],
+              "-gpgpu_sub_core_model": [
+                "1"
+              ],
+              "-gpgpu_tensor_core_avail": [
+                "1"
+              ],
+              "-gpgpu_tex_cache:l1": [
+                "N:4:128:256,L:R:m:N:L,T:512:8,128:2"
+              ],
+              "-gpgpu_trywait_max_retries": [
+                "5"
+              ],
+              "-gpgpu_trywait_retry_cycles": [
+                "200"
+              ],
+              "-gpgpu_unified_l1d_size": [
+                "96"
+              ],
+              "-gpgpu_warp_issue_shader": [
+                "0"
+              ],
+              "-gpgpu_warpdistro_shader": [
+                "-1"
+              ],
+              "-hw_perf_bench_name": [],
+              "-hw_perf_file_name": [
+                "hw_perf.csv"
+              ],
+              "-icnt_arbiter_algo": [
+                "1"
+              ],
+              "-icnt_flit_size": [
+                "40"
+              ],
+              "-icnt_grant_cycles": [
+                "1"
+              ],
+              "-icnt_in_buffer_limit": [
+                "512"
+              ],
+              "-icnt_out_buffer_limit": [
+                "512"
+              ],
+              "-icnt_subnets": [
+                "2"
+              ],
+              "-icnt_verbose": [
+                "0"
+              ],
+              "-inter_chiplet_queue_latency": [
+                "100"
+              ],
+              "-inter_chiplet_queue_size": [
+                "128"
+              ],
+              "-inter_config_file": [
+                "mesh"
+              ],
+              "-keep": [
+                "0"
+              ],
+              "-l2_ideal": [
+                "0"
+              ],
+              "-liveness_message_freq": [
+                "1"
+              ],
+              "-n_regfile_gating_group": [
+                "4"
+              ],
+              "-network_mode": [
+                "2"
+              ],
+              "-power_per_cycle_dump": [
+                "0"
+              ],
+              "-power_simulation_enabled": [
+                "0"
+              ],
+              "-power_simulation_mode": [
+                "0"
+              ],
+              "-power_trace_enabled": [
+                "0"
+              ],
+              "-power_trace_zlevel": [
+                "6"
+              ],
+              "-ptx_line_stats_filename": [
+                "gpgpu_inst_stats.txt"
+              ],
+              "-ptx_opcode_initiation_dp": [
+                "4,4,4,4,130"
+              ],
+              "-ptx_opcode_initiation_fp": [
+                "2,2,2,2,4"
+              ],
+              "-ptx_opcode_initiation_int": [
+                "2,2,2,2,8,4"
+              ],
+              "-ptx_opcode_initiation_sfu": [
+                "8"
+              ],
+              "-ptx_opcode_initiation_tensor": [
+                "64"
+              ],
+              "-ptx_opcode_latency_dp": [
+                "8,19,8,8,330"
+              ],
+              "-ptx_opcode_latency_fp": [
+                "4,13,4,5,39"
+              ],
+              "-ptx_opcode_latency_int": [
+                "4,13,4,5,145,21"
+              ],
+              "-ptx_opcode_latency_sfu": [
+                "100"
+              ],
+              "-ptx_opcode_latency_tesnor": [
+                "64"
+              ],
+              "-resume_CTA": [
+                "0"
+              ],
+              "-resume_kernel": [
+                "0"
+              ],
+              "-resume_option": [
+                "0"
+              ],
+              "-save_embedded_ptx": [
+                "0"
+              ],
+              "-specialized_unit_1": [
+                "1,4,4,4,4,BRA"
+              ],
+              "-specialized_unit_2": [
+                "1,4,200,4,4,TEX"
+              ],
+              "-specialized_unit_3": [
+                "1,4,8,4,4,TENSOR"
+              ],
+              "-specialized_unit_4": [
+                "0,4,4,4,4,BRA"
+              ],
+              "-specialized_unit_5": [
+                "0,4,4,4,4,BRA"
+              ],
+              "-specialized_unit_6": [
+                "0,4,4,4,4,BRA"
+              ],
+              "-specialized_unit_7": [
+                "0,4,4,4,4,BRA"
+              ],
+              "-specialized_unit_8": [
+                "0,4,4,4,4,BRA"
+              ],
+              "-steady_power_levels_enabled": [
+                "0"
+              ],
+              "-steady_state_definition": [
+                "8:4"
+              ],
+              "-trace": [
+                "/root/workspace/assets/traces/bundles/869cdb7901fded18d39e37189b70a1d1eac3dcc6f3551f5bde2b583dfb36c474/tree/kernelslist.g"
+              ],
+              "-trace_components": [
+                "none"
+              ],
+              "-trace_enabled": [
+                "0"
+              ],
+              "-trace_opcode_latency_initiation_dp": [
+                "8,4"
+              ],
+              "-trace_opcode_latency_initiation_int": [
+                "2,2"
+              ],
+              "-trace_opcode_latency_initiation_sfu": [
+                "20,8"
+              ],
+              "-trace_opcode_latency_initiation_sp": [
+                "2,2"
+              ],
+              "-trace_opcode_latency_initiation_spec_op_1": [
+                "4,4"
+              ],
+              "-trace_opcode_latency_initiation_spec_op_2": [
+                "200,4"
+              ],
+              "-trace_opcode_latency_initiation_spec_op_3": [
+                "2,2"
+              ],
+              "-trace_opcode_latency_initiation_spec_op_4": [
+                "4,4"
+              ],
+              "-trace_opcode_latency_initiation_spec_op_5": [
+                "4,4"
+              ],
+              "-trace_opcode_latency_initiation_spec_op_6": [
+                "4,4"
+              ],
+              "-trace_opcode_latency_initiation_spec_op_7": [
+                "4,4"
+              ],
+              "-trace_opcode_latency_initiation_spec_op_8": [
+                "4,4"
+              ],
+              "-trace_opcode_latency_initiation_tensor": [
+                "2,2"
+              ],
+              "-trace_sampling_core": [
+                "0"
+              ],
+              "-trace_sampling_memory_partition": [
+                "-1"
+              ],
+              "-visualizer_enabled": [
+                "0"
+              ],
+              "-visualizer_outputfile": [
+                "NULL"
+              ],
+              "-visualizer_zlevel": [
+                "6"
+              ]
+            },
+            "config_sha256": [
+              "c808ac5d4f3055a55364bec1f4e72ca4fd632e86b0989666a75cd31c2cc99ba8",
+              "e86d9ac278c389e5d641368624e4a7322263edad46f999d1bfeac45e2c08ac6a",
+              "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+              "2b4a72a90686237ba547d9a51a38f55988397944d8c0627ea1105d14b072726f"
+            ],
+            "expected_ROI": {
+              "CTA": 27648,
+              "instructions": 714547200,
+              "kernels": 2
+            },
+            "qualification": {
+              "strict_pass": true,
+              "actual_input_verified": true,
+              "actual_build_verified": true,
+              "actual_effective_options_verified": true,
+              "natural_exit_verified": true,
+              "true164_archive_verified": true,
+              "native_restore_verified": true
+            },
+            "root_science_qualification": {
+              "path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/control/SCIENCE_QUALIFICATION_E2-DTC2A16-4114a3dc0d06b55b-CH-F256-V1.json",
+              "sha256": "84bf62ef680962335e8e21a130c39e4603df77ff7328ee78a334762be3c036c0"
+            },
+            "kernel_cycle_rows": [
+              {
+                "active_instructions": 375029760,
+                "cumulative_CTA": 18432,
+                "cycles": 288224,
+                "kernel": "_Z21convolutionRowsKernelPfS_iii",
+                "ordinal": 1,
+                "total_cycles": 288224
+              },
+              {
+                "active_instructions": 339517440,
+                "cumulative_CTA": 27648,
+                "cycles": 313876,
+                "kernel": "_Z24convolutionColumnsKernelPfS_iii",
+                "ordinal": 2,
+                "total_cycles": 602100
+              }
+            ],
+            "traffic": {
+              "DRAM_atom_bytes": 32,
+              "DRAM_controllers": {
+                "0": {
+                  "n_act": 18249,
+                  "n_cmd": 362968,
+                  "n_nop": 121300,
+                  "n_pre": 18245,
+                  "n_rd": 118016,
+                  "n_rd_L2_A": 0,
+                  "n_req": 145161,
+                  "n_wr_bk": 108580,
+                  "n_write": 0
+                },
+                "1": {
+                  "n_act": 18230,
+                  "n_cmd": 362968,
+                  "n_nop": 121356,
+                  "n_pre": 18226,
+                  "n_rd": 118016,
+                  "n_rd_L2_A": 0,
+                  "n_req": 145153,
+                  "n_wr_bk": 108548,
+                  "n_write": 0
+                },
+                "10": {
+                  "n_act": 18232,
+                  "n_cmd": 362968,
+                  "n_nop": 121599,
+                  "n_pre": 18228,
+                  "n_rd": 118016,
+                  "n_rd_L2_A": 0,
+                  "n_req": 145050,
+                  "n_wr_bk": 108136,
+                  "n_write": 0
+                },
+                "11": {
+                  "n_act": 18254,
+                  "n_cmd": 362968,
+                  "n_nop": 121397,
+                  "n_pre": 18250,
+                  "n_rd": 118016,
+                  "n_rd_L2_A": 0,
+                  "n_req": 145065,
+                  "n_wr_bk": 108196,
+                  "n_write": 0
+                },
+                "12": {
+                  "n_act": 18110,
+                  "n_cmd": 362968,
+                  "n_nop": 121950,
+                  "n_pre": 18106,
+                  "n_rd": 117760,
+                  "n_rd_L2_A": 0,
+                  "n_req": 144852,
+                  "n_wr_bk": 108368,
+                  "n_write": 0
+                },
+                "13": {
+                  "n_act": 18097,
+                  "n_cmd": 362968,
+                  "n_nop": 121958,
+                  "n_pre": 18093,
+                  "n_rd": 117760,
+                  "n_rd_L2_A": 0,
+                  "n_req": 144847,
+                  "n_wr_bk": 108348,
+                  "n_write": 0
+                },
+                "14": {
+                  "n_act": 18149,
+                  "n_cmd": 362968,
+                  "n_nop": 121939,
+                  "n_pre": 18145,
+                  "n_rd": 117760,
+                  "n_rd_L2_A": 0,
+                  "n_req": 144857,
+                  "n_wr_bk": 108388,
+                  "n_write": 0
+                },
+                "15": {
+                  "n_act": 18255,
+                  "n_cmd": 362968,
+                  "n_nop": 121745,
+                  "n_pre": 18251,
+                  "n_rd": 117760,
+                  "n_rd_L2_A": 0,
+                  "n_req": 144847,
+                  "n_wr_bk": 108348,
+                  "n_write": 0
+                },
+                "16": {
+                  "n_act": 18198,
+                  "n_cmd": 362968,
+                  "n_nop": 121750,
+                  "n_pre": 18194,
+                  "n_rd": 117760,
+                  "n_rd_L2_A": 0,
+                  "n_req": 144867,
+                  "n_wr_bk": 108428,
+                  "n_write": 0
+                },
+                "17": {
+                  "n_act": 18171,
+                  "n_cmd": 362968,
+                  "n_nop": 121893,
+                  "n_pre": 18167,
+                  "n_rd": 117760,
+                  "n_rd_L2_A": 0,
+                  "n_req": 144860,
+                  "n_wr_bk": 108400,
+                  "n_write": 0
+                },
+                "18": {
+                  "n_act": 18178,
+                  "n_cmd": 362968,
+                  "n_nop": 121878,
+                  "n_pre": 18174,
+                  "n_rd": 117760,
+                  "n_rd_L2_A": 0,
+                  "n_req": 144847,
+                  "n_wr_bk": 108348,
+                  "n_write": 0
+                },
+                "19": {
+                  "n_act": 18238,
+                  "n_cmd": 362968,
+                  "n_nop": 121647,
+                  "n_pre": 18234,
+                  "n_rd": 117760,
+                  "n_rd_L2_A": 0,
+                  "n_req": 144863,
+                  "n_wr_bk": 108412,
+                  "n_write": 0
+                },
+                "2": {
+                  "n_act": 18354,
+                  "n_cmd": 362968,
+                  "n_nop": 121045,
+                  "n_pre": 18350,
+                  "n_rd": 118016,
+                  "n_rd_L2_A": 0,
+                  "n_req": 145174,
+                  "n_wr_bk": 108632,
+                  "n_write": 0
+                },
+                "3": {
+                  "n_act": 18185,
+                  "n_cmd": 362968,
+                  "n_nop": 121325,
+                  "n_pre": 18181,
+                  "n_rd": 118016,
+                  "n_rd_L2_A": 0,
+                  "n_req": 145158,
+                  "n_wr_bk": 108568,
+                  "n_write": 0
+                },
+                "4": {
+                  "n_act": 18312,
+                  "n_cmd": 362968,
+                  "n_nop": 120957,
+                  "n_pre": 18308,
+                  "n_rd": 118272,
+                  "n_rd_L2_A": 0,
+                  "n_req": 145415,
+                  "n_wr_bk": 108572,
+                  "n_write": 0
+                },
+                "5": {
+                  "n_act": 18421,
+                  "n_cmd": 362968,
+                  "n_nop": 120790,
+                  "n_pre": 18417,
+                  "n_rd": 118272,
+                  "n_rd_L2_A": 0,
+                  "n_req": 145431,
+                  "n_wr_bk": 108636,
+                  "n_write": 0
+                },
+                "6": {
+                  "n_act": 18196,
+                  "n_cmd": 362968,
+                  "n_nop": 121064,
+                  "n_pre": 18192,
+                  "n_rd": 118272,
+                  "n_rd_L2_A": 0,
+                  "n_req": 145408,
+                  "n_wr_bk": 108544,
+                  "n_write": 0
+                },
+                "7": {
+                  "n_act": 18272,
+                  "n_cmd": 362968,
+                  "n_nop": 121010,
+                  "n_pre": 18268,
+                  "n_rd": 118272,
+                  "n_rd_L2_A": 0,
+                  "n_req": 145412,
+                  "n_wr_bk": 108560,
+                  "n_write": 0
+                },
+                "8": {
+                  "n_act": 18453,
+                  "n_cmd": 362968,
+                  "n_nop": 121491,
+                  "n_pre": 18449,
+                  "n_rd": 118016,
+                  "n_rd_L2_A": 0,
+                  "n_req": 145069,
+                  "n_wr_bk": 108212,
+                  "n_write": 0
+                },
+                "9": {
+                  "n_act": 18243,
+                  "n_cmd": 362968,
+                  "n_nop": 121685,
+                  "n_pre": 18239,
+                  "n_rd": 118016,
+                  "n_rd_L2_A": 0,
+                  "n_req": 145056,
+                  "n_wr_bk": 108160,
+                  "n_write": 0
+                }
+              },
+              "DRAM_issued_read_atoms": 2359296,
+              "DRAM_issued_write_atoms": 2168384,
+              "DRAM_n_ref_event": "UNAVAILABLE_INHERITED_UNINITIALIZED_FIELD_RAW_PRESERVED",
+              "DRAM_read_payload_bytes": 75497472,
+              "DRAM_write_payload_bytes": 69388288,
+              "L2_accepted_read_32B_sectors": 4612044,
+              "L2_buckets": {
+                "CHIPLET_ACC_R:HIT": 0,
+                "CHIPLET_ACC_R:HIT_RESERVED": 0,
+                "CHIPLET_ACC_R:MISS": 0,
+                "CHIPLET_ACC_R:MSHR_HIT": 0,
+                "CHIPLET_ACC_R:RESERVATION_FAIL": 0,
+                "CHIPLET_ACC_R:SECTOR_MISS": 0,
+                "CHIPLET_ACC_R:WRITE_ALLOCATED": 0,
+                "CHIPLET_ACC_W:HIT": 0,
+                "CHIPLET_ACC_W:HIT_RESERVED": 0,
+                "CHIPLET_ACC_W:MISS": 0,
+                "CHIPLET_ACC_W:MSHR_HIT": 0,
+                "CHIPLET_ACC_W:RESERVATION_FAIL": 0,
+                "CHIPLET_ACC_W:SECTOR_MISS": 0,
+                "CHIPLET_ACC_W:WRITE_ALLOCATED": 0,
+                "CONST_ACC_R:HIT": 0,
+                "CONST_ACC_R:HIT_RESERVED": 0,
+                "CONST_ACC_R:MISS": 0,
+                "CONST_ACC_R:MSHR_HIT": 0,
+                "CONST_ACC_R:RESERVATION_FAIL": 0,
+                "CONST_ACC_R:SECTOR_MISS": 0,
+                "CONST_ACC_R:WRITE_ALLOCATED": 0,
+                "GLOBAL_ACC_R:HIT": 1690237,
+                "GLOBAL_ACC_R:HIT_RESERVED": 562511,
+                "GLOBAL_ACC_R:MISS": 589824,
+                "GLOBAL_ACC_R:MSHR_HIT": 562511,
+                "GLOBAL_ACC_R:RESERVATION_FAIL": 13434328,
+                "GLOBAL_ACC_R:SECTOR_MISS": 1769472,
+                "GLOBAL_ACC_R:TOTAL_ACCESS": 4612044,
+                "GLOBAL_ACC_R:WRITE_ALLOCATED": 0,
+                "GLOBAL_ACC_W:HIT": 0,
+                "GLOBAL_ACC_W:HIT_RESERVED": 0,
+                "GLOBAL_ACC_W:MISS": 589824,
+                "GLOBAL_ACC_W:MSHR_HIT": 0,
+                "GLOBAL_ACC_W:RESERVATION_FAIL": 118780,
+                "GLOBAL_ACC_W:SECTOR_MISS": 1769472,
+                "GLOBAL_ACC_W:TOTAL_ACCESS": 2359296,
+                "GLOBAL_ACC_W:WRITE_ALLOCATED": 2359296,
+                "INST_ACC_R:HIT": 0,
+                "INST_ACC_R:HIT_RESERVED": 0,
+                "INST_ACC_R:MISS": 0,
+                "INST_ACC_R:MSHR_HIT": 0,
+                "INST_ACC_R:RESERVATION_FAIL": 0,
+                "INST_ACC_R:SECTOR_MISS": 0,
+                "INST_ACC_R:WRITE_ALLOCATED": 0,
+                "L1_WRBK_ACC:HIT": 0,
+                "L1_WRBK_ACC:HIT_RESERVED": 0,
+                "L1_WRBK_ACC:MISS": 0,
+                "L1_WRBK_ACC:MSHR_HIT": 0,
+                "L1_WRBK_ACC:RESERVATION_FAIL": 0,
+                "L1_WRBK_ACC:SECTOR_MISS": 0,
+                "L1_WRBK_ACC:WRITE_ALLOCATED": 0,
+                "L1_WR_ALLOC_R:HIT": 0,
+                "L1_WR_ALLOC_R:HIT_RESERVED": 0,
+                "L1_WR_ALLOC_R:MISS": 0,
+                "L1_WR_ALLOC_R:MSHR_HIT": 0,
+                "L1_WR_ALLOC_R:RESERVATION_FAIL": 0,
+                "L1_WR_ALLOC_R:SECTOR_MISS": 0,
+                "L1_WR_ALLOC_R:WRITE_ALLOCATED": 0,
+                "L2_WRBK_ACC:HIT": 0,
+                "L2_WRBK_ACC:HIT_RESERVED": 0,
+                "L2_WRBK_ACC:MISS": 0,
+                "L2_WRBK_ACC:MSHR_HIT": 0,
+                "L2_WRBK_ACC:RESERVATION_FAIL": 0,
+                "L2_WRBK_ACC:SECTOR_MISS": 0,
+                "L2_WRBK_ACC:WRITE_ALLOCATED": 0,
+                "L2_WR_ALLOC_R:HIT": 0,
+                "L2_WR_ALLOC_R:HIT_RESERVED": 0,
+                "L2_WR_ALLOC_R:MISS": 0,
+                "L2_WR_ALLOC_R:MSHR_HIT": 0,
+                "L2_WR_ALLOC_R:RESERVATION_FAIL": 0,
+                "L2_WR_ALLOC_R:SECTOR_MISS": 0,
+                "L2_WR_ALLOC_R:WRITE_ALLOCATED": 0,
+                "LOCAL_ACC_R:HIT": 0,
+                "LOCAL_ACC_R:HIT_RESERVED": 0,
+                "LOCAL_ACC_R:MISS": 0,
+                "LOCAL_ACC_R:MSHR_HIT": 0,
+                "LOCAL_ACC_R:RESERVATION_FAIL": 0,
+                "LOCAL_ACC_R:SECTOR_MISS": 0,
+                "LOCAL_ACC_R:WRITE_ALLOCATED": 0,
+                "LOCAL_ACC_W:HIT": 0,
+                "LOCAL_ACC_W:HIT_RESERVED": 0,
+                "LOCAL_ACC_W:MISS": 0,
+                "LOCAL_ACC_W:MSHR_HIT": 0,
+                "LOCAL_ACC_W:RESERVATION_FAIL": 0,
+                "LOCAL_ACC_W:SECTOR_MISS": 0,
+                "LOCAL_ACC_W:WRITE_ALLOCATED": 0,
+                "TEXTURE_ACC_R:HIT": 0,
+                "TEXTURE_ACC_R:HIT_RESERVED": 0,
+                "TEXTURE_ACC_R:MISS": 0,
+                "TEXTURE_ACC_R:MSHR_HIT": 0,
+                "TEXTURE_ACC_R:RESERVATION_FAIL": 0,
+                "TEXTURE_ACC_R:SECTOR_MISS": 0,
+                "TEXTURE_ACC_R:WRITE_ALLOCATED": 0
+              },
+              "L2_read_payload_bytes": 147585408
+            },
+            "metrics": {
+              "CCDLc_limit": 64741,
+              "CCDLc_limit_alone": 64741,
+              "DTC_L1_baseline_mshr_entries": 512,
+              "DTC_L1_baseline_mshr_entry_full_events": 0,
+              "DTC_L1_baseline_mshr_merge_full_events": 0,
+              "DTC_L1_frontend_stall_cycles": 7485610,
+              "DTC_L1_lower_cap_full_events": 0,
+              "DTC_L1_lower_outstanding": 0,
+              "DTC_L1_lower_outstanding_cap": 32768,
+              "DTC_L1_lower_outstanding_peak": 22249,
+              "DTC_L1_lower_requests_acquired": 1153011,
+              "DTC_L1_lower_requests_released": 1153011,
+              "DTC_L1_m4_atomic_admits": 0,
+              "DTC_L1_m4_bypass_load_admits": 0,
+              "DTC_L1_m4_dynamic_atomics": 0,
+              "DTC_L1_m4_dynamic_loads": 8183808,
+              "DTC_L1_m4_dynamic_stores": 1327104,
+              "DTC_L1_m4_observation_retires": 0,
+              "DTC_L1_m4_proxy_fence_admits": 0,
+              "DTC_L1_m4_source_completions": 0,
+              "DTC_L1_m4_source_reachable_fence_ops": 0,
+              "DTC_L1_m4_store_admits": 0,
+              "DTC_L1_nonexclusive_lower_cap_full_cycles": 0,
+              "DTC_L1_nonexclusive_mshr_entry_full_cycles": 0,
+              "DTC_L1_nonexclusive_mshr_merge_full_cycles": 0,
+              "DTC_L1_nonexclusive_pib_full_cycles": 3518122,
+              "DTC_L1_nonexclusive_tag_bank_conflict_cycles": 3967488,
+              "DTC_L1_pib_admits": 1322496,
+              "DTC_L1_pib_full_events": 3518122,
+              "DTC_L1_pib_occupancy": 0,
+              "DTC_L1_pib_occupancy_cycle_sum": 5404860563,
+              "DTC_L1_pib_occupancy_sample_cycles": 37401805,
+              "DTC_L1_pib_peak_per_sm": 256,
+              "DTC_L1_pib_retires": 1322496,
+              "DTC_L1_primary_stall_lower_cap": 0,
+              "DTC_L1_primary_stall_pib_full": 3518122,
+              "DTC_L1_primary_stall_tag_bank": 3967488,
+              "DTC_L1_tag_bank_0_requests": 4238422,
+              "DTC_L1_tag_bank_1_requests": 4046581,
+              "DTC_L1_tag_bank_2_requests": 4183651,
+              "DTC_L1_tag_bank_3_requests": 4554443,
+              "DTC_L1_tag_conflicts": 3967488,
+              "DTC_L1_tag_requests": 17023097,
+              "Idle": 14406,
+              "L1C_total_cache_accesses": 0,
+              "L1C_total_cache_misses": 0,
+              "L1C_total_cache_pending_hits": 0,
+              "L1C_total_cache_reservation_fails": 0,
+              "L1D_total_cache_accesses": 5289984,
+              "L1D_total_cache_misses": 2041704,
+              "L1D_total_cache_pending_hits": 1770190,
+              "L1D_total_cache_reservation_fails": 39302311,
+              "L1I_total_cache_accesses": 0,
+              "L1I_total_cache_misses": 0,
+              "L1I_total_cache_pending_hits": 0,
+              "L1I_total_cache_reservation_fails": 0,
+              "L1T_total_cache_accesses": 0,
+              "L1T_total_cache_misses": 0,
+              "L1T_total_cache_pending_hits": 0,
+              "L1T_total_cache_reservation_fails": 0,
+              "L2_Alloc": 0,
+              "L2_WB": 108412,
+              "L2_total_cache_accesses": 6971340,
+              "L2_total_cache_misses": 4718592,
+              "L2_total_cache_pending_hits": 562511,
+              "L2_total_cache_reservation_fails": 13553108,
+              "RCDWRc_limit": 36380,
+              "RCDc_limit": 43240,
+              "RTWc_limit": 137197,
+              "RTWc_limit_alone": 137197,
+              "Read": 117760,
+              "Reply_Network_cycles": 602100,
+              "Reply_Network_injected_packets_num": 6971340,
+              "Req_Network_cycles": 602100,
+              "Req_Network_injected_packets_num": 3512307,
+              "WTRc_limit": 46881,
+              "WTRc_limit_alone": 46881,
+              "Wasted_Col": 117667,
+              "Wasted_Row": 4723,
+              "Write": 0,
+              "averagemflatency": 112,
+              "avg_icnt2mem_latency": 5369,
+              "avg_icnt2sh_latency": 25,
+              "avg_mrq_latency": 963,
+              "gpgpu_n_cmem_portconflict": 0,
+              "gpgpu_n_const_mem_insn": 0,
+              "gpgpu_n_intrawarp_mshr_merge": 0,
+              "gpgpu_n_l1cache_bkconflict": 11733113,
+              "gpgpu_n_load_insn": 23445504,
+              "gpgpu_n_mem_const": 0,
+              "gpgpu_n_mem_read_global": 1153011,
+              "gpgpu_n_mem_read_local": 0,
+              "gpgpu_n_mem_texture": 0,
+              "gpgpu_n_mem_write_global": 2359296,
+              "gpgpu_n_mem_write_local": 0,
+              "gpgpu_n_param_mem_insn": 0,
+              "gpgpu_n_shmem_bkconflict": 8183808,
+              "gpgpu_n_shmem_insn": 261881856,
+              "gpgpu_n_sstarr_insn": 0,
+              "gpgpu_n_stall_shd_mem": 27402531,
+              "gpgpu_n_store_insn": 18874368,
+              "gpgpu_n_tex_insn": 0,
+              "gpgpu_n_tot_thrd_icount": 714547200,
+              "gpgpu_n_tot_w_icount": 22413312,
+              "gpu_reg_bank_conflict_stalls": 0,
+              "gpu_sim_cycle": 313876,
+              "gpu_sim_insn": 339517440,
+              "gpu_stall_dramfull": 17461703,
+              "gpu_stall_icnt2sh": 0,
+              "gpu_tot_issued_cta": 27648,
+              "gpu_tot_sim_cycle": 602100,
+              "gpu_tot_sim_insn": 714547200,
+              "gpu_total_sim_rate": 229757,
+              "icnt_total_pkts_mem_to_simt": 6971340,
+              "icnt_total_pkts_simt_to_mem": 3512307,
+              "interchip_read_requests": 0,
+              "interchip_write_requests": 0,
+              "issued_total_col": 226172,
+              "issued_total_row": 36472,
+              "kernel_launch_uid": 2,
+              "kernel_stream_id": 0,
+              "max_icnt2mem_latency": 29799,
+              "max_icnt2sh_latency": 677,
+              "max_total_param_size": 0,
+              "maxmflatency": 30217,
+              "maxmrqlatency": 3558,
+              "n_act": 18238,
+              "n_nop": 121647,
+              "n_pre": 18234,
+              "n_ref": 0,
+              "n_req": 144863,
+              "rwq": 0,
+              "total_CMD": 362968,
+              "total_req": 226172,
+              "util_bw": 226172
+            },
+            "latency_counters": {
+              "averagemflatency": 112,
+              "avg_icnt2mem_latency": 5369,
+              "avg_icnt2sh_latency": 25,
+              "avg_mrq_latency": 963
+            }
+          },
+          {
+            "program": "scan",
+            "suite": "CUDA Samples",
+            "input_digest": "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+            "design": "CH",
+            "profile": "F128",
+            "cohort": "E2-DTC2A16-6df3a84b612086e8-CH-F128-V1",
+            "source_role": "STAGEII_AUTHORIZED_CH",
+            "request": "DTC_STAGE_IIA_FIRST16_CH_MATCH_20261104_V1",
+            "accepted": false,
+            "cycles": null,
+            "status": "UUID_RECORDED_AWAIT_ROOT_RESULT"
+          },
+          {
+            "program": "scan",
+            "suite": "CUDA Samples",
+            "input_digest": "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+            "design": "CH",
+            "profile": "F256",
+            "cohort": "E2-DTC2A16-6df3a84b612086e8-CH-F256-V1",
+            "source_role": "STAGEII_AUTHORIZED_CH",
+            "request": "DTC_STAGE_IIA_FIRST16_CH_MATCH_20261104_V1",
+            "accepted": false,
+            "cycles": null,
+            "status": "UUID_RECORDED_AWAIT_ROOT_RESULT"
+          },
+          {
+            "program": "BICG",
+            "suite": "PolyBench/GPU",
+            "input_digest": "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+            "design": "CH",
+            "profile": "F128",
+            "cohort": "E2-DTC2A16-ae34174fbbdf83b2-CH-F128-V1",
+            "source_role": "STAGEII_AUTHORIZED_CH",
+            "request": "DTC_STAGE_IIA_FIRST16_CH_MATCH_20261104_V1",
+            "accepted": false,
+            "cycles": null,
+            "status": "UUID_RECORDED_AWAIT_ROOT_RESULT"
+          },
+          {
+            "program": "BICG",
+            "suite": "PolyBench/GPU",
+            "input_digest": "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+            "design": "CH",
+            "profile": "F256",
+            "cohort": "E2-DTC2A16-ae34174fbbdf83b2-CH-F256-V1",
+            "source_role": "STAGEII_AUTHORIZED_CH",
+            "request": "DTC_STAGE_IIA_FIRST16_CH_MATCH_20261104_V1",
+            "accepted": false,
+            "cycles": null,
+            "status": "AWAIT_ROOT_RESULT"
+          },
+          {
+            "program": "2DCONV",
+            "suite": "PolyBench/GPU",
+            "input_digest": "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+            "design": "CH",
+            "profile": "F128",
+            "cohort": "E2-DTC2A16-d984ea5475a581ad-CH-F128-V1",
+            "source_role": "STAGEII_AUTHORIZED_CH",
+            "request": "DTC_STAGE_IIA_FIRST16_CH_MATCH_20261104_V1",
+            "accepted": false,
+            "cycles": null,
+            "status": "UUID_RECORDED_AWAIT_ROOT_RESULT"
+          },
+          {
+            "program": "2DCONV",
+            "suite": "PolyBench/GPU",
+            "input_digest": "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+            "design": "CH",
+            "profile": "F256",
+            "cohort": "E2-DTC2A16-d984ea5475a581ad-CH-F256-V1",
+            "source_role": "STAGEII_AUTHORIZED_CH",
+            "request": "DTC_STAGE_IIA_FIRST16_CH_MATCH_20261104_V1",
+            "accepted": false,
+            "cycles": null,
+            "status": "AWAIT_ROOT_RESULT"
+          },
+          {
+            "program": "vectorAdd",
+            "suite": "CUDA Samples",
+            "input_digest": "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+            "design": "CH",
+            "profile": "F128",
+            "cohort": "E2-DTC2A16-e7bb67e63e3c3847-CH-F128-V1",
+            "source_role": "STAGEII_AUTHORIZED_CH",
+            "request": "DTC_STAGE_IIA_FIRST16_CH_MATCH_20261104_V1",
+            "accepted": true,
+            "cycles": 214503,
+            "sources": {
+              "RESULT": {
+                "path": "/root/data/dtc_stage_iia_first16_20261104_v1/analysis/E2-DTC2A16-e7bb67e63e3c3847-CH-F128-V1.RESULT.json",
+                "sha256": "293ead6b9b3ec6a606cade4c0ccba88595ee5fee3b1a5cafcfbb54bb1d6e2eb3"
+              },
+              "SPEC": {
+                "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/specs/E2-DTC2A16-e7bb67e63e3c3847-CH-F128-V1.json",
+                "sha256": "0a0bb69c2ab31b5aab0144fc464e3e827a69a0a53b5a2a572acc15f8260354d5"
+              },
+              "ARCHIVE_RECEIPT": {
+                "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/E2-DTC2A16-e7bb67e63e3c3847-CH-F128-V1_ARCHIVE_RECEIPT.json",
+                "sha256": "d005a2644e45454e9c03730555e73a8793b2bb843f06d206a67622604f912617"
+              },
+              "NATIVE_RESTORE": {
+                "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/results/E2-DTC2A16-e7bb67e63e3c3847-CH-F128-V1/25f6d3d9b1c84c0c9a947485565e6f0615840247fca839b147bd66f52017036d/RESTORE_VERIFIED_NATIVE_TARGET.json",
+                "sha256": "8dbcc6b4154a66075d33ffb6d5ccd57f800228755937048629111ca1bf1cfc13"
+              },
+              "STRICT": {
+                "path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/run/results/d7f59b7e-28e4-469b-ae15-ae93a913134b/L2_STRICT.json",
+                "sha256": "f5fb1bdeeb8ab138f9e40a41de9ba72879b75e2d0f42fcd0ddb42afd5d0ecdbe"
+              }
+            },
+            "observed_native_state": "PASS_STAGEII_CH_STRICT_ARCHIVE_NATIVE_RESTORE",
+            "uuid": "d7f59b7e-28e4-469b-ae15-ae93a913134b",
+            "archive_verification": {
+              "archive_receipt": {
+                "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/results/E2-DTC2A16-e7bb67e63e3c3847-CH-F128-V1/25f6d3d9b1c84c0c9a947485565e6f0615840247fca839b147bd66f52017036d/RECEIPT.json",
+                "sha256": "d005a2644e45454e9c03730555e73a8793b2bb843f06d206a67622604f912617"
+              },
+              "source_manifest": {
+                "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/results/E2-DTC2A16-e7bb67e63e3c3847-CH-F128-V1/25f6d3d9b1c84c0c9a947485565e6f0615840247fca839b147bd66f52017036d/SOURCE_MANIFEST.json",
+                "sha256": "f18b99fe0bf2da23f148315383705133b630680c56d17342fdaaaf61497414be"
+              },
+              "archive_index": {
+                "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/results/E2-DTC2A16-e7bb67e63e3c3847-CH-F128-V1/25f6d3d9b1c84c0c9a947485565e6f0615840247fca839b147bd66f52017036d/ARCHIVE_INDEX.json",
+                "sha256": "abdbed7b379c16270b61db458815e20419c94d2104982fb1bf0bc4f89c530a47"
+              },
+              "commit": {
+                "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/results/E2-DTC2A16-e7bb67e63e3c3847-CH-F128-V1/25f6d3d9b1c84c0c9a947485565e6f0615840247fca839b147bd66f52017036d/COMMIT.json",
+                "sha256": "f816bdac0d0eece1a792b18b6fa5c0b982b55c02438c271c9e08e3fefd6aec84"
+              },
+              "native_restore": {
+                "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/results/E2-DTC2A16-e7bb67e63e3c3847-CH-F128-V1/25f6d3d9b1c84c0c9a947485565e6f0615840247fca839b147bd66f52017036d/RESTORE_VERIFIED_NATIVE_TARGET.json",
+                "sha256": "8dbcc6b4154a66075d33ffb6d5ccd57f800228755937048629111ca1bf1cfc13"
+              },
+              "archive_stream_sha256": "44306163fd1771399275e0168f1a6b12bd4881b03194143c6e9b26279f1cc96e",
+              "native_restored_entries_verified": 21,
+              "critical_source_members": [
+                "NATIVE_EXIT.json",
+                "DOWNSTREAM_FROZEN_SPEC.json",
+                "DISPATCH_BINDING.json",
+                "raw.log.gz",
+                "L2_STRICT.json"
+              ]
+            },
+            "native_exit": {
+              "path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/run/results/d7f59b7e-28e4-469b-ae15-ae93a913134b/NATIVE_EXIT.json",
+              "sha256": "e09b51cedb8ed23248d1b591a91f116c2b97cb446d0092c11c219972079b17d3"
+            },
+            "intent": {
+              "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/qualification_ledger/E2-DTC2A16-e7bb67e63e3c3847-CH-F128-V1.INTENT.json",
+              "sha256": "10e92288ca7965d9ecc21d8e73c94f052736d1ad205db42b987d55fb36d3bd80"
+            },
+            "done": {
+              "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/qualification_ledger/E2-DTC2A16-e7bb67e63e3c3847-CH-F128-V1.DONE.json",
+              "sha256": "e09b51cedb8ed23248d1b591a91f116c2b97cb446d0092c11c219972079b17d3"
+            },
+            "dispatch_binding": {
+              "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/dispatch_bindings/E2-DTC2A16-e7bb67e63e3c3847-CH-F128-V1.json",
+              "sha256": "bd8d1a632b0ea1b90c99013a924cd017adbfad3b3cebc16e32ed4af42defafca"
+            },
+            "status": "PASS_STAGEII_CH_STRICT_ARCHIVE_NATIVE_RESTORE",
+            "RESULT_sha256": "293ead6b9b3ec6a606cade4c0ccba88595ee5fee3b1a5cafcfbb54bb1d6e2eb3",
+            "input_binding_sha": "b63d8151d3b8206a0961f637d7935d437f1edc0899149798bf2bf2eabc72aab6",
+            "roi_fingerprint": "ada13cbec98647673503c9a02663f34b59175b0047a323e194adcc1fe55e89ab",
+            "build": {
+              "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+              "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+              "binary_sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d",
+              "libcudart_sha256": "694f05ce97fe3e1552d94803c2202d8d037769c61624cde5f6a832622ed60c56"
+            },
+            "build_fingerprint": "ef5494fda07506f43eb90d555681b8ff0f08a40945e7405d889bcffe3bbd2077",
+            "downstream_fingerprint": "6a5d6e4cfb409490c64301db93bbb6400e891de72e70a85fa2cebf9cdb97f15e",
+            "effective_options": {
+              "-SST_mode": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_CC_ACC": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_CYCLES": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_DRAM_RD": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_DRAM_WR": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_L1_RH": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_L1_RM": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_L1_WH": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_L1_WM": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_L2_RH": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_L2_RM": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_L2_WH": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_L2_WM": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_NOC": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_NUM_SM_IDLE": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_PIPE_DUTY": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_SHARED_ACC": [
+                "0"
+              ],
+              "-accelwattch_hybrid_perfsim_VOLTAGE": [
+                "0"
+              ],
+              "-accelwattch_xml_file": [
+                "accelwattch_sass_sim.xml"
+              ],
+              "-aggregate_power_stats": [
+                "0"
+              ],
+              "-cdp_latency": [
+                "7200,8000,100,12000,1600"
+              ],
+              "-checkpoint_CTA": [
+                "0"
+              ],
+              "-checkpoint_CTA_t": [
+                "0"
+              ],
+              "-checkpoint_insn_Y": [
+                "0"
+              ],
+              "-checkpoint_kernel": [
+                "1"
+              ],
+              "-checkpoint_option": [
+                "0"
+              ],
+              "-chiplet_mem_stride": [
+                "8192"
+              ],
+              "-chiplet_partition_stride": [
+                "8192"
+              ],
+              "-dram_bnk_indexing_policy": [
+                "0"
+              ],
+              "-dram_bnkgrp_indexing_policy": [
+                "1"
+              ],
+              "-dram_data_command_freq_ratio": [
+                "2"
+              ],
+              "-dram_dual_bus_interface": [
+                "1"
+              ],
+              "-dram_elimnate_rw_turnaround": [
+                "0"
+              ],
+              "-dram_latency": [
+                "100"
+              ],
+              "-dram_seperate_write_queue_enable": [
+                "0"
+              ],
+              "-dram_write_queue_size": [
+                "32:28:16"
+              ],
+              "-dvfs_enabled": [
+                "0"
+              ],
+              "-enable_ptx_file_line_stats": [
+                "1"
+              ],
+              "-gpgpu_TB_launch_latency": [
+                "0"
+              ],
+              "-gpgpu_adaptive_cache_config": [
+                "0"
+              ],
+              "-gpgpu_cache:dl1": [
+                "N:32:128:24,L:T:m:L:B,A:512:8,16:0,32"
+              ],
+              "-gpgpu_cache:dl1PrefL1": [
+                "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32"
+              ],
+              "-gpgpu_cache:dl1PrefShared": [
+                "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32"
+              ],
+              "-gpgpu_cache:dl2": [
+                "S:128:128:16,L:B:m:L:L,A:192:4,32:0,32"
+              ],
+              "-gpgpu_cache:dl2_texture_only": [
+                "0"
+              ],
+              "-gpgpu_cache:il1": [
+                "N:64:128:16,L:R:f:N:L,S:2:48,4"
+              ],
+              "-gpgpu_cdp_enabled": [
+                "0"
+              ],
+              "-gpgpu_cflog_interval": [
+                "0"
+              ],
+              "-gpgpu_chiplet_interleave": [
+                "0"
+              ],
+              "-gpgpu_clock_domains": [
+                "1410.0:1410.0:1410.0:850.0"
+              ],
+              "-gpgpu_clock_gated_lanes": [
+                "1"
+              ],
+              "-gpgpu_clock_gated_reg_file": [
+                "0"
+              ],
+              "-gpgpu_coalesce_arch": [
+                "70"
+              ],
+              "-gpgpu_compute_capability_major": [
+                "7"
+              ],
+              "-gpgpu_compute_capability_minor": [
+                "0"
+              ],
+              "-gpgpu_concurrent_kernel_sm": [
+                "0"
+              ],
+              "-gpgpu_const_cache:l1": [
+                "N:128:64:8,L:R:f:N:L,S:2:64,4"
+              ],
+              "-gpgpu_deadlock_detect": [
+                "1"
+              ],
+              "-gpgpu_dram_burst_length": [
+                "2"
+              ],
+              "-gpgpu_dram_buswidth": [
+                "16"
+              ],
+              "-gpgpu_dram_partition_queues": [
+                "64:64:64:64"
+              ],
+              "-gpgpu_dram_return_queue_size": [
+                "192"
+              ],
+              "-gpgpu_dram_scheduler": [
+                "1"
+              ],
+              "-gpgpu_dram_timing_opt": [
+                "nbk=16:CCD=1:RRD=3:RCD=12:RAS=28:RP=12:RC=40:",
+                "CL=12:WL=2:CDLR=3:WR=10:nbkgrp=4:CCDL=2:RTPL=3"
+              ],
+              "-gpgpu_dtc_l1_allocation_width": [
+                "4"
+              ],
+              "-gpgpu_dtc_l1_debug_event_limit": [
+                "0"
+              ],
+              "-gpgpu_dtc_l1_finite_service": [
+                "0"
+              ],
+              "-gpgpu_dtc_l1_invalidate_on_source_event": [
+                "0"
+              ],
+              "-gpgpu_dtc_l1_io_pib_entries": [
+                "256"
+              ],
+              "-gpgpu_dtc_l1_logical_sets": [
+                "64"
+              ],
+              "-gpgpu_dtc_l1_logical_ways": [
+                "8"
+              ],
+              "-gpgpu_dtc_l1_lower_outstanding_cap": [
+                "32768"
+              ],
+              "-gpgpu_dtc_l1_mode": [
+                "1"
+              ],
+              "-gpgpu_dtc_l1_mshr_entries": [
+                "512"
+              ],
+              "-gpgpu_dtc_l1_oo_pib_entries": [
+                "128"
+              ],
+              "-gpgpu_dtc_l1_physical_lines": [
+                "640"
+              ],
+              "-gpgpu_dtc_l1_pib_entries": [
+                "256"
+              ],
+              "-gpgpu_dtc_l1_progressive_wakeup": [
+                "0"
+              ],
+              "-gpgpu_dtc_l1_ref_count_bits": [
+                "13"
+              ],
+              "-gpgpu_dtc_l1_tag_banks": [
+                "4"
+              ],
+              "-gpgpu_dtc_l1_tag_hash_bankrow": [
+                "0"
+              ],
+              "-gpgpu_dtc_l1_tag_req_per_bank": [
+                "1"
+              ],
+              "-gpgpu_dtc_l1_tag_req_per_cycle": [
+                "4"
+              ],
+              "-gpgpu_dual_issue_diff_exec_units": [
+                "1"
+              ],
+              "-gpgpu_enable_specialized_operand_collector": [
+                "0"
+              ],
+              "-gpgpu_experimental_lib_support": [
+                "0"
+              ],
+              "-gpgpu_flush_l1_cache": [
+                "1"
+              ],
+              "-gpgpu_flush_l2_cache": [
+                "0"
+              ],
+              "-gpgpu_frfcfs_dram_sched_queue_size": [
+                "128"
+              ],
+              "-gpgpu_gmem_skip_L1D": [
+                "0"
+              ],
+              "-gpgpu_heap_size_limit": [
+                "8388608"
+              ],
+              "-gpgpu_ignore_resources_limitation": [
+                "0"
+              ],
+              "-gpgpu_inst_fetch_throughput": [
+                "4"
+              ],
+              "-gpgpu_kernel_launch_latency": [
+                "5000"
+              ],
+              "-gpgpu_l1_banks": [
+                "4"
+              ],
+              "-gpgpu_l1_banks_byte_interleaving": [
+                "32"
+              ],
+              "-gpgpu_l1_banks_hashing_function": [
+                "0"
+              ],
+              "-gpgpu_l1_cache_write_ratio": [
+                "0"
+              ],
+              "-gpgpu_l1_latency": [
+                "20"
+              ],
+              "-gpgpu_l2_rop_latency": [
+                "200"
+              ],
+              "-gpgpu_local_mem_map": [
+                "1"
+              ],
+              "-gpgpu_lrc_enabled": [
+                "0"
+              ],
+              "-gpgpu_lrc_max_entries": [
+                "256"
+              ],
+              "-gpgpu_lrc_max_merged": [
+                "32"
+              ],
+              "-gpgpu_max_completed_cta": [
+                "0"
+              ],
+              "-gpgpu_max_concurrent_kernel": [
+                "128"
+              ],
+              "-gpgpu_max_cta": [
+                "0"
+              ],
+              "-gpgpu_max_cycle": [
+                "0"
+              ],
+              "-gpgpu_max_insn": [
+                "0"
+              ],
+              "-gpgpu_max_insn_issue_per_warp": [
+                "1"
+              ],
+              "-gpgpu_mem_addr_mapping": [
+                "NULL"
+              ],
+              "-gpgpu_mem_addr_test": [
+                "0"
+              ],
+              "-gpgpu_mem_address_mask": [
+                "1"
+              ],
+              "-gpgpu_mem_unit_ports": [
+                "1"
+              ],
+              "-gpgpu_memlatency_stat": [
+                "14"
+              ],
+              "-gpgpu_memory_partition_indexing": [
+                "0"
+              ],
+              "-gpgpu_n_chiplet_partition": [
+                "1"
+              ],
+              "-gpgpu_n_cluster_ejection_buffer_size": [
+                "32"
+              ],
+              "-gpgpu_n_clusters": [
+                "64"
+              ],
+              "-gpgpu_n_cores_per_cluster": [
+                "1"
+              ],
+              "-gpgpu_n_ldst_response_buffer_size": [
+                "2"
+              ],
+              "-gpgpu_n_mem": [
+                "20"
+              ],
+              "-gpgpu_n_mem_per_ctrlr": [
+                "1"
+              ],
+              "-gpgpu_n_sub_partition_per_mchannel": [
+                "2"
+              ],
+              "-gpgpu_num_cta_barriers": [
+                "16"
+              ],
+              "-gpgpu_num_dp_units": [
+                "4"
+              ],
+              "-gpgpu_num_int_units": [
+                "4"
+              ],
+              "-gpgpu_num_mem_units": [
+                "1"
+              ],
+              "-gpgpu_num_reg_banks": [
+                "16"
+              ],
+              "-gpgpu_num_sched_per_core": [
+                "4"
+              ],
+              "-gpgpu_num_sfu_units": [
+                "4"
+              ],
+              "-gpgpu_num_sp_units": [
+                "4"
+              ],
+              "-gpgpu_num_tensor_core_units": [
+                "4"
+              ],
+              "-gpgpu_occupancy_sm_number": [
+                "64"
+              ],
+              "-gpgpu_operand_collector_num_in_ports_dp": [
+                "0"
+              ],
+              "-gpgpu_operand_collector_num_in_ports_gen": [
+                "8"
+              ],
+              "-gpgpu_operand_collector_num_in_ports_int": [
+                "0"
+              ],
+              "-gpgpu_operand_collector_num_in_ports_mem": [
+                "1"
+              ],
+              "-gpgpu_operand_collector_num_in_ports_sfu": [
+                "1"
+              ],
+              "-gpgpu_operand_collector_num_in_ports_sp": [
+                "1"
+              ],
+              "-gpgpu_operand_collector_num_in_ports_tensor_core": [
+                "1"
+              ],
+              "-gpgpu_operand_collector_num_out_ports_dp": [
+                "0"
+              ],
+              "-gpgpu_operand_collector_num_out_ports_gen": [
+                "8"
+              ],
+              "-gpgpu_operand_collector_num_out_ports_int": [
+                "0"
+              ],
+              "-gpgpu_operand_collector_num_out_ports_mem": [
+                "1"
+              ],
+              "-gpgpu_operand_collector_num_out_ports_sfu": [
+                "1"
+              ],
+              "-gpgpu_operand_collector_num_out_ports_sp": [
+                "1"
+              ],
+              "-gpgpu_operand_collector_num_out_ports_tensor_core": [
+                "1"
+              ],
+              "-gpgpu_operand_collector_num_units_dp": [
+                "0"
+              ],
+              "-gpgpu_operand_collector_num_units_gen": [
+                "8"
+              ],
+              "-gpgpu_operand_collector_num_units_int": [
+                "0"
+              ],
+              "-gpgpu_operand_collector_num_units_mem": [
+                "2"
+              ],
+              "-gpgpu_operand_collector_num_units_sfu": [
+                "4"
+              ],
+              "-gpgpu_operand_collector_num_units_sp": [
+                "4"
+              ],
+              "-gpgpu_operand_collector_num_units_tensor_core": [
+                "4"
+              ],
+              "-gpgpu_opndcoll_model": [
+                "0"
+              ],
+              "-gpgpu_perf_sim_memcpy": [
+                "1"
+              ],
+              "-gpgpu_perfect_inst_const_cache": [
+                "1"
+              ],
+              "-gpgpu_perfect_mem": [
+                "0"
+              ],
+              "-gpgpu_pipeline_widths": [
+                "4,4,4,4,4,4,4,4,4,4,8,4,4"
+              ],
+              "-gpgpu_ptx_convert_to_ptxplus": [
+                "0"
+              ],
+              "-gpgpu_ptx_force_max_capability": [
+                "70"
+              ],
+              "-gpgpu_ptx_inst_debug_file": [
+                "inst_debug.txt"
+              ],
+              "-gpgpu_ptx_inst_debug_thread_uid": [
+                "1"
+              ],
+              "-gpgpu_ptx_inst_debug_to_file": [
+                "0"
+              ],
+              "-gpgpu_ptx_instruction_classification": [
+                "0"
+              ],
+              "-gpgpu_ptx_save_converted_ptxplus": [
+                "0"
+              ],
+              "-gpgpu_ptx_sim_mode": [
+                "0"
+              ],
+              "-gpgpu_ptx_use_cuobjdump": [
+                "1"
+              ],
+              "-gpgpu_reg_bank_use_warp_id": [
+                "0"
+              ],
+              "-gpgpu_reg_file_port_throughput": [
+                "2"
+              ],
+              "-gpgpu_registers_per_block": [
+                "65536"
+              ],
+              "-gpgpu_runtime_pending_launch_count_limit": [
+                "2048"
+              ],
+              "-gpgpu_runtime_stat": [
+                "500000"
+              ],
+              "-gpgpu_runtime_sync_depth_limit": [
+                "2"
+              ],
+              "-gpgpu_scheduler": [
+                "gto"
+              ],
+              "-gpgpu_shader_core_pipeline": [
+                "2048:32"
+              ],
+              "-gpgpu_shader_cta": [
+                "32"
+              ],
+              "-gpgpu_shader_registers": [
+                "65536"
+              ],
+              "-gpgpu_shmem_limited_broadcast": [
+                "0"
+              ],
+              "-gpgpu_shmem_num_banks": [
+                "32"
+              ],
+              "-gpgpu_shmem_option": [
+                "0,8,16,32,64,96"
+              ],
+              "-gpgpu_shmem_per_block": [
+                "65536"
+              ],
+              "-gpgpu_shmem_size": [
+                "98304"
+              ],
+              "-gpgpu_shmem_sizeDefault": [
+                "98304"
+              ],
+              "-gpgpu_shmem_size_PrefL1": [
+                "98304"
+              ],
+              "-gpgpu_shmem_size_PrefShared": [
+                "98304"
+              ],
+              "-gpgpu_shmem_warp_parts": [
+                "1"
+              ],
+              "-gpgpu_simd_model": [
+                "1"
+              ],
+              "-gpgpu_simple_dram_clock_multiplier": [
+                "1"
+              ],
+              "-gpgpu_simple_dram_model": [
+                "0"
+              ],
+              "-gpgpu_simt_core_sim_order": [
+                "1"
+              ],
+              "-gpgpu_smem_latency": [
+                "20"
+              ],
+              "-gpgpu_stack_size_limit": [
+                "1024"
+              ],
+              "-gpgpu_sub_core_model": [
+                "1"
+              ],
+              "-gpgpu_tensor_core_avail": [
+                "1"
+              ],
+              "-gpgpu_tex_cache:l1": [
+                "N:4:128:256,L:R:m:N:L,T:512:8,128:2"
+              ],
+              "-gpgpu_trywait_max_retries": [
+                "5"
+              ],
+              "-gpgpu_trywait_retry_cycles": [
+                "200"
+              ],
+              "-gpgpu_unified_l1d_size": [
+                "96"
+              ],
+              "-gpgpu_warp_issue_shader": [
+                "0"
+              ],
+              "-gpgpu_warpdistro_shader": [
+                "-1"
+              ],
+              "-hw_perf_bench_name": [],
+              "-hw_perf_file_name": [
+                "hw_perf.csv"
+              ],
+              "-icnt_arbiter_algo": [
+                "1"
+              ],
+              "-icnt_flit_size": [
+                "40"
+              ],
+              "-icnt_grant_cycles": [
+                "1"
+              ],
+              "-icnt_in_buffer_limit": [
+                "512"
+              ],
+              "-icnt_out_buffer_limit": [
+                "512"
+              ],
+              "-icnt_subnets": [
+                "2"
+              ],
+              "-icnt_verbose": [
+                "0"
+              ],
+              "-inter_chiplet_queue_latency": [
+                "100"
+              ],
+              "-inter_chiplet_queue_size": [
+                "128"
+              ],
+              "-inter_config_file": [
+                "mesh"
+              ],
+              "-keep": [
+                "0"
+              ],
+              "-l2_ideal": [
+                "0"
+              ],
+              "-liveness_message_freq": [
+                "1"
+              ],
+              "-n_regfile_gating_group": [
+                "4"
+              ],
+              "-network_mode": [
+                "2"
+              ],
+              "-power_per_cycle_dump": [
+                "0"
+              ],
+              "-power_simulation_enabled": [
+                "0"
+              ],
+              "-power_simulation_mode": [
+                "0"
+              ],
+              "-power_trace_enabled": [
+                "0"
+              ],
+              "-power_trace_zlevel": [
+                "6"
+              ],
+              "-ptx_line_stats_filename": [
+                "gpgpu_inst_stats.txt"
+              ],
+              "-ptx_opcode_initiation_dp": [
+                "4,4,4,4,130"
+              ],
+              "-ptx_opcode_initiation_fp": [
+                "2,2,2,2,4"
+              ],
+              "-ptx_opcode_initiation_int": [
+                "2,2,2,2,8,4"
+              ],
+              "-ptx_opcode_initiation_sfu": [
+                "8"
+              ],
+              "-ptx_opcode_initiation_tensor": [
+                "64"
+              ],
+              "-ptx_opcode_latency_dp": [
+                "8,19,8,8,330"
+              ],
+              "-ptx_opcode_latency_fp": [
+                "4,13,4,5,39"
+              ],
+              "-ptx_opcode_latency_int": [
+                "4,13,4,5,145,21"
+              ],
+              "-ptx_opcode_latency_sfu": [
+                "100"
+              ],
+              "-ptx_opcode_latency_tesnor": [
+                "64"
+              ],
+              "-resume_CTA": [
+                "0"
+              ],
+              "-resume_kernel": [
+                "0"
+              ],
+              "-resume_option": [
+                "0"
+              ],
+              "-save_embedded_ptx": [
+                "0"
+              ],
+              "-specialized_unit_1": [
+                "1,4,4,4,4,BRA"
+              ],
+              "-specialized_unit_2": [
+                "1,4,200,4,4,TEX"
+              ],
+              "-specialized_unit_3": [
+                "1,4,8,4,4,TENSOR"
+              ],
+              "-specialized_unit_4": [
+                "0,4,4,4,4,BRA"
+              ],
+              "-specialized_unit_5": [
+                "0,4,4,4,4,BRA"
+              ],
+              "-specialized_unit_6": [
+                "0,4,4,4,4,BRA"
+              ],
+              "-specialized_unit_7": [
+                "0,4,4,4,4,BRA"
+              ],
+              "-specialized_unit_8": [
+                "0,4,4,4,4,BRA"
+              ],
+              "-steady_power_levels_enabled": [
+                "0"
+              ],
+              "-steady_state_definition": [
+                "8:4"
+              ],
+              "-trace": [
+                "/root/workspace/assets/traces/bundles/d57ff01eded73f7a62a3d71b5c8e8a1b16e003d4217acaa337d591f401312326/tree/kernelslist.g"
+              ],
+              "-trace_components": [
+                "none"
+              ],
+              "-trace_enabled": [
+                "0"
+              ],
+              "-trace_opcode_latency_initiation_dp": [
+                "8,4"
+              ],
+              "-trace_opcode_latency_initiation_int": [
+                "2,2"
+              ],
+              "-trace_opcode_latency_initiation_sfu": [
+                "20,8"
+              ],
+              "-trace_opcode_latency_initiation_sp": [
+                "2,2"
+              ],
+              "-trace_opcode_latency_initiation_spec_op_1": [
+                "4,4"
+              ],
+              "-trace_opcode_latency_initiation_spec_op_2": [
+                "200,4"
+              ],
+              "-trace_opcode_latency_initiation_spec_op_3": [
+                "2,2"
+              ],
+              "-trace_opcode_latency_initiation_spec_op_4": [
+                "4,4"
+              ],
+              "-trace_opcode_latency_initiation_spec_op_5": [
+                "4,4"
+              ],
+              "-trace_opcode_latency_initiation_spec_op_6": [
+                "4,4"
+              ],
+              "-trace_opcode_latency_initiation_spec_op_7": [
+                "4,4"
+              ],
+              "-trace_opcode_latency_initiation_spec_op_8": [
+                "4,4"
+              ],
+              "-trace_opcode_latency_initiation_tensor": [
+                "2,2"
+              ],
+              "-trace_sampling_core": [
+                "0"
+              ],
+              "-trace_sampling_memory_partition": [
+                "-1"
+              ],
+              "-visualizer_enabled": [
+                "0"
+              ],
+              "-visualizer_outputfile": [
+                "NULL"
+              ],
+              "-visualizer_zlevel": [
+                "6"
+              ]
+            },
+            "config_sha256": [
+              "4218893da117d9a0eb4a8676e4a4c7b8d111095adea0061f8a8515bafcfd56a6",
+              "e86d9ac278c389e5d641368624e4a7322263edad46f999d1bfeac45e2c08ac6a",
+              "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+              "2b4a72a90686237ba547d9a51a38f55988397944d8c0627ea1105d14b072726f"
+            ],
+            "expected_ROI": {
+              "CTA": 23438,
+              "instructions": 84000768,
+              "kernels": 1
+            },
+            "qualification": {
+              "strict_pass": true,
+              "actual_input_verified": true,
+              "actual_build_verified": true,
+              "actual_effective_options_verified": true,
+              "natural_exit_verified": true,
+              "true164_archive_verified": true,
+              "native_restore_verified": true
+            },
+            "root_science_qualification": {
+              "path": "/root/data/dtc_stage_iia_first16_20261104_v1/DTC/control/SCIENCE_QUALIFICATION_E2-DTC2A16-e7bb67e63e3c3847-CH-F128-V1.json",
+              "sha256": "71262b92cd21830df43956dca312e1884fb2d50afc9574be9b6ccec7953f4d4a"
+            },
+            "kernel_cycle_rows": [
+              {
+                "active_instructions": 84000768,
+                "cumulative_CTA": 23438,
+                "cycles": 214503,
+                "kernel": "_Z6VecAddPKfS0_Pfi",
+                "ordinal": 1,
+                "total_cycles": 214503
+              }
+            ],
+            "traffic": {
+              "DRAM_atom_bytes": 32,
+              "DRAM_controllers": {
+                "0": {
+                  "n_act": 2189,
+                  "n_cmd": 129310,
+                  "n_nop": 21840,
+                  "n_pre": 2185,
+                  "n_rd": 75008,
+                  "n_rd_L2_A": 0,
+                  "n_req": 82956,
+                  "n_wr_bk": 31792,
+                  "n_write": 0
+                },
+                "1": {
+                  "n_act": 2240,
+                  "n_cmd": 129310,
+                  "n_nop": 22033,
+                  "n_pre": 2236,
+                  "n_rd": 74928,
+                  "n_rd_L2_A": 0,
+                  "n_req": 82844,
+                  "n_wr_bk": 31664,
+                  "n_write": 0
+                },
+                "10": {
+                  "n_act": 2272,
+                  "n_cmd": 129310,
+                  "n_nop": 22175,
+                  "n_pre": 2268,
+                  "n_rd": 75008,
+                  "n_rd_L2_A": 0,
+                  "n_req": 82865,
+                  "n_wr_bk": 31428,
+                  "n_write": 0
+                },
+                "11": {
+                  "n_act": 2268,
+                  "n_cmd": 129310,
+                  "n_nop": 21979,
+                  "n_pre": 2264,
+                  "n_rd": 75008,
+                  "n_rd_L2_A": 0,
+                  "n_req": 82927,
+                  "n_wr_bk": 31676,
+                  "n_write": 0
+                },
+                "12": {
+                  "n_act": 2334,
+                  "n_cmd": 129310,
+                  "n_nop": 21753,
+                  "n_pre": 2330,
+                  "n_rd": 75264,
+                  "n_rd_L2_A": 0,
+                  "n_req": 83172,
+                  "n_wr_bk": 31632,
+                  "n_write": 0
+                },
+                "13": {
+                  "n_act": 2225,
+                  "n_cmd": 129310,
+                  "n_nop": 21887,
+                  "n_pre": 2221,
+                  "n_rd": 75184,
+                  "n_rd_L2_A": 0,
+                  "n_req": 83091,
+                  "n_wr_bk": 31628,
+                  "n_write": 0
+                },
+                "14": {
+                  "n_act": 2270,
+                  "n_cmd": 129310,
+                  "n_nop": 21981,
+                  "n_pre": 2266,
+                  "n_rd": 75008,
+                  "n_rd_L2_A": 0,
+                  "n_req": 82917,
+                  "n_wr_bk": 31636,
+                  "n_write": 0
+                },
+                "15": {
+                  "n_act": 2266,
+                  "n_cmd": 129310,
+                  "n_nop": 21994,
+                  "n_pre": 2262,
+                  "n_rd": 75008,
+                  "n_rd_L2_A": 0,
+                  "n_req": 82926,
+                  "n_wr_bk": 31672,
+                  "n_write": 0
+                },
+                "16": {
+                  "n_act": 2163,
+                  "n_cmd": 129310,
+                  "n_nop": 21886,
+                  "n_pre": 2159,
+                  "n_rd": 75008,
+                  "n_rd_L2_A": 0,
+                  "n_req": 82960,
+                  "n_wr_bk": 31808,
+                  "n_write": 0
+                },
+                "17": {
+                  "n_act": 2204,
+                  "n_cmd": 129310,
+                  "n_nop": 21846,
+                  "n_pre": 2200,
+                  "n_rd": 75008,
+                  "n_rd_L2_A": 0,
+                  "n_req": 82966,
+                  "n_wr_bk": 31832,
+                  "n_write": 0
+                },
+                "18": {
+                  "n_act": 2290,
+                  "n_cmd": 129310,
+                  "n_nop": 21888,
+                  "n_pre": 2286,
+                  "n_rd": 75008,
+                  "n_rd_L2_A": 0,
+                  "n_req": 82925,
+                  "n_wr_bk": 31668,
+                  "n_write": 0
+                },
+                "19": {
+                  "n_act": 2250,
+                  "n_cmd": 129310,
+                  "n_nop": 21830,
+                  "n_pre": 2246,
+                  "n_rd": 75008,
+                  "n_rd_L2_A": 0,
+                  "n_req": 82971,
+                  "n_wr_bk": 31852,
+                  "n_write": 0
+                },
+                "2": {
+                  "n_act": 2250,
+                  "n_cmd": 129310,
+                  "n_nop": 22382,
+                  "n_pre": 2246,
+                  "n_rd": 74752,
+                  "n_rd_L2_A": 0,
+                  "n_req": 82624,
+                  "n_wr_bk": 31488,
+                  "n_write": 0
+                },
+                "3": {
+                  "n_act": 2347,
+                  "n_cmd": 129310,
+                  "n_nop": 22030,
+                  "n_pre": 2343,
+                  "n_rd": 74752,
+                  "n_rd_L2_A": 0,
+                  "n_req": 82714,
+                  "n_wr_bk": 31848,
+                  "n_write": 0
+                },
+                "4": {
+                  "n_act": 2249,
+                  "n_cmd": 129310,
+                  "n_nop": 21990,
+                  "n_pre": 2245,
+                  "n_rd": 75008,
+                  "n_rd_L2_A": 0,
+                  "n_req": 82914,
+                  "n_wr_bk": 31624,
+                  "n_write": 0
+                },
+                "5": {
+                  "n_act": 2222,
+                  "n_cmd": 129310,
+                  "n_nop": 21957,
+                  "n_pre": 2218,
+                  "n_rd": 75008,
+                  "n_rd_L2_A": 0,
+                  "n_req": 82937,
+                  "n_wr_bk": 31716,
+                  "n_write": 0
+                },
+                "6": {
+                  "n_act": 2254,
+                  "n_cmd": 129310,
+                  "n_nop": 22243,
+                  "n_pre": 2250,
+                  "n_rd": 75008,
+                  "n_rd_L2_A": 0,
+                  "n_req": 82848,
+                  "n_wr_bk": 31360,
+                  "n_write": 0
+                },
+                "7": {
+                  "n_act": 2293,
+                  "n_cmd": 129310,
+                  "n_nop": 21922,
+                  "n_pre": 2289,
+                  "n_rd": 75008,
+                  "n_rd_L2_A": 0,
+                  "n_req": 82928,
+                  "n_wr_bk": 31680,
+                  "n_write": 0
+                },
+                "8": {
+                  "n_act": 2283,
+                  "n_cmd": 129310,
+                  "n_nop": 21877,
+                  "n_pre": 2279,
+                  "n_rd": 75008,
+                  "n_rd_L2_A": 0,
+                  "n_req": 82944,
+                  "n_wr_bk": 31744,
+                  "n_write": 0
+                },
+                "9": {
+                  "n_act": 2243,
+                  "n_cmd": 129310,
+                  "n_nop": 22142,
+                  "n_pre": 2239,
+                  "n_rd": 75008,
+                  "n_rd_L2_A": 0,
+                  "n_req": 82890,
+                  "n_wr_bk": 31528,
+                  "n_write": 0
+                }
+              },
+              "DRAM_issued_read_atoms": 1500000,
+              "DRAM_issued_write_atoms": 633276,
+              "DRAM_n_ref_event": "UNAVAILABLE_INHERITED_UNINITIALIZED_FIELD_RAW_PRESERVED",
+              "DRAM_read_payload_bytes": 48000000,
+              "DRAM_write_payload_bytes": 20264832,
+              "L2_accepted_read_32B_sectors": 1500000,
+              "L2_buckets": {
+                "CHIPLET_ACC_R:HIT": 0,
+                "CHIPLET_ACC_R:HIT_RESERVED": 0,
+                "CHIPLET_ACC_R:MISS": 0,
+                "CHIPLET_ACC_R:MSHR_HIT": 0,
+                "CHIPLET_ACC_R:RESERVATION_FAIL": 0,
+                "CHIPLET_ACC_R:SECTOR_MISS": 0,
+                "CHIPLET_ACC_R:WRITE_ALLOCATED": 0,
+                "CHIPLET_ACC_W:HIT": 0,
+                "CHIPLET_ACC_W:HIT_RESERVED": 0,
+                "CHIPLET_ACC_W:MISS": 0,
+                "CHIPLET_ACC_W:MSHR_HIT": 0,
+                "CHIPLET_ACC_W:RESERVATION_FAIL": 0,
+                "CHIPLET_ACC_W:SECTOR_MISS": 0,
+                "CHIPLET_ACC_W:WRITE_ALLOCATED": 0,
+                "CONST_ACC_R:HIT": 0,
+                "CONST_ACC_R:HIT_RESERVED": 0,
+                "CONST_ACC_R:MISS": 0,
+                "CONST_ACC_R:MSHR_HIT": 0,
+                "CONST_ACC_R:RESERVATION_FAIL": 0,
+                "CONST_ACC_R:SECTOR_MISS": 0,
+                "CONST_ACC_R:WRITE_ALLOCATED": 0,
+                "GLOBAL_ACC_R:HIT": 0,
+                "GLOBAL_ACC_R:HIT_RESERVED": 0,
+                "GLOBAL_ACC_R:MISS": 375000,
+                "GLOBAL_ACC_R:MSHR_HIT": 0,
+                "GLOBAL_ACC_R:RESERVATION_FAIL": 5338337,
+                "GLOBAL_ACC_R:SECTOR_MISS": 1125000,
+                "GLOBAL_ACC_R:TOTAL_ACCESS": 1500000,
+                "GLOBAL_ACC_R:WRITE_ALLOCATED": 0,
+                "GLOBAL_ACC_W:HIT": 0,
+                "GLOBAL_ACC_W:HIT_RESERVED": 0,
+                "GLOBAL_ACC_W:MISS": 187500,
+                "GLOBAL_ACC_W:MSHR_HIT": 0,
+                "GLOBAL_ACC_W:RESERVATION_FAIL": 8291,
+                "GLOBAL_ACC_W:SECTOR_MISS": 562500,
+                "GLOBAL_ACC_W:TOTAL_ACCESS": 750000,
+                "GLOBAL_ACC_W:WRITE_ALLOCATED": 750000,
+                "INST_ACC_R:HIT": 0,
+                "INST_ACC_R:HIT_RESERVED": 0,
+                "INST_ACC_R:MISS": 0,
+                "INST_ACC_R:MSHR_HIT": 0,
+                "INST_ACC_R:RESERVATION_FAIL": 0,
+                "INST_ACC_R:SECTOR_MISS": 0,
+                "INST_ACC_R:WRITE_ALLOCATED": 0,
+                "L1_WRBK_ACC:HIT": 0,
+                "L1_WRBK_ACC:HIT_RESERVED": 0,
+                "L1_WRBK_ACC:MISS": 0,
+                "L1_WRBK_ACC:MSHR_HIT": 0,
+                "L1_WRBK_ACC:RESERVATION_FAIL": 0,
+                "L1_WRBK_ACC:SECTOR_MISS": 0,
+                "L1_WRBK_ACC:WRITE_ALLOCATED": 0,
+                "L1_WR_ALLOC_R:HIT": 0,
+                "L1_WR_ALLOC_R:HIT_RESERVED": 0,
+                "L1_WR_ALLOC_R:MISS": 0,
+                "L1_WR_ALLOC_R:MSHR_HIT": 0,
+                "L1_WR_ALLOC_R:RESERVATION_FAIL": 0,
+                "L1_WR_ALLOC_R:SECTOR_MISS": 0,
+                "L1_WR_ALLOC_R:WRITE_ALLOCATED": 0,
+                "L2_WRBK_ACC:HIT": 0,
+                "L2_WRBK_ACC:HIT_RESERVED": 0,
+                "L2_WRBK_ACC:MISS": 0,
+                "L2_WRBK_ACC:MSHR_HIT": 0,
+                "L2_WRBK_ACC:RESERVATION_FAIL": 0,
+                "L2_WRBK_ACC:SECTOR_MISS": 0,
+                "L2_WRBK_ACC:WRITE_ALLOCATED": 0,
+                "L2_WR_ALLOC_R:HIT": 0,
+                "L2_WR_ALLOC_R:HIT_RESERVED": 0,
+                "L2_WR_ALLOC_R:MISS": 0,
+                "L2_WR_ALLOC_R:MSHR_HIT": 0,
+                "L2_WR_ALLOC_R:RESERVATION_FAIL": 0,
+                "L2_WR_ALLOC_R:SECTOR_MISS": 0,
+                "L2_WR_ALLOC_R:WRITE_ALLOCATED": 0,
+                "LOCAL_ACC_R:HIT": 0,
+                "LOCAL_ACC_R:HIT_RESERVED": 0,
+                "LOCAL_ACC_R:MISS": 0,
+                "LOCAL_ACC_R:MSHR_HIT": 0,
+                "LOCAL_ACC_R:RESERVATION_FAIL": 0,
+                "LOCAL_ACC_R:SECTOR_MISS": 0,
+                "LOCAL_ACC_R:WRITE_ALLOCATED": 0,
+                "LOCAL_ACC_W:HIT": 0,
+                "LOCAL_ACC_W:HIT_RESERVED": 0,
+                "LOCAL_ACC_W:MISS": 0,
+                "LOCAL_ACC_W:MSHR_HIT": 0,
+                "LOCAL_ACC_W:RESERVATION_FAIL": 0,
+                "LOCAL_ACC_W:SECTOR_MISS": 0,
+                "LOCAL_ACC_W:WRITE_ALLOCATED": 0,
+                "TEXTURE_ACC_R:HIT": 0,
+                "TEXTURE_ACC_R:HIT_RESERVED": 0,
+                "TEXTURE_ACC_R:MISS": 0,
+                "TEXTURE_ACC_R:MSHR_HIT": 0,
+                "TEXTURE_ACC_R:RESERVATION_FAIL": 0,
+                "TEXTURE_ACC_R:SECTOR_MISS": 0,
+                "TEXTURE_ACC_R:WRITE_ALLOCATED": 0
+              },
+              "L2_read_payload_bytes": 48000000
+            },
+            "metrics": {
+              "CCDLc_limit": 13702,
+              "CCDLc_limit_alone": 13702,
+              "DTC_L1_baseline_mshr_entries": 512,
+              "DTC_L1_baseline_mshr_entry_full_events": 0,
+              "DTC_L1_baseline_mshr_merge_full_events": 0,
+              "DTC_L1_frontend_stall_cycles": 1687500,
+              "DTC_L1_lower_cap_full_events": 0,
+              "DTC_L1_lower_outstanding": 0,
+              "DTC_L1_lower_outstanding_cap": 32768,
+              "DTC_L1_lower_outstanding_peak": 7777,
+              "DTC_L1_lower_requests_acquired": 375000,
+              "DTC_L1_lower_requests_released": 375000,
+              "DTC_L1_m4_atomic_admits": 0,
+              "DTC_L1_m4_bypass_load_admits": 0,
+              "DTC_L1_m4_dynamic_atomics": 0,
+              "DTC_L1_m4_dynamic_loads": 375000,
+              "DTC_L1_m4_dynamic_stores": 187500,
+              "DTC_L1_m4_observation_retires": 0,
+              "DTC_L1_m4_proxy_fence_admits": 0,
+              "DTC_L1_m4_source_completions": 0,
+              "DTC_L1_m4_source_reachable_fence_ops": 0,
+              "DTC_L1_m4_store_admits": 0,
+              "DTC_L1_nonexclusive_lower_cap_full_cycles": 0,
+              "DTC_L1_nonexclusive_mshr_entry_full_cycles": 0,
+              "DTC_L1_nonexclusive_mshr_merge_full_cycles": 0,
+              "DTC_L1_nonexclusive_pib_full_cycles": 0,
+              "DTC_L1_nonexclusive_tag_bank_conflict_cycles": 1687500,
+              "DTC_L1_pib_admits": 562500,
+              "DTC_L1_pib_full_events": 0,
+              "DTC_L1_pib_occupancy": 0,
+              "DTC_L1_pib_occupancy_cycle_sum": 883838553,
+              "DTC_L1_pib_occupancy_sample_cycles": 13318764,
+              "DTC_L1_pib_peak_per_sm": 128,
+              "DTC_L1_pib_retires": 562500,
+              "DTC_L1_primary_stall_lower_cap": 0,
+              "DTC_L1_primary_stall_pib_full": 0,
+              "DTC_L1_primary_stall_tag_bank": 1687500,
+              "DTC_L1_tag_bank_0_requests": 562500,
+              "DTC_L1_tag_bank_1_requests": 562500,
+              "DTC_L1_tag_bank_2_requests": 562500,
+              "DTC_L1_tag_bank_3_requests": 562500,
+              "DTC_L1_tag_conflicts": 1687500,
+              "DTC_L1_tag_requests": 2250000,
+              "Idle": 4492,
+              "L1C_total_cache_accesses": 0,
+              "L1C_total_cache_misses": 0,
+              "L1C_total_cache_pending_hits": 0,
+              "L1C_total_cache_reservation_fails": 0,
+              "L1D_total_cache_accesses": 2250000,
+              "L1D_total_cache_misses": 562500,
+              "L1D_total_cache_pending_hits": 1125000,
+              "L1D_total_cache_reservation_fails": 0,
+              "L1I_total_cache_accesses": 0,
+              "L1I_total_cache_misses": 0,
+              "L1I_total_cache_pending_hits": 0,
+              "L1I_total_cache_reservation_fails": 0,
+              "L1T_total_cache_accesses": 0,
+              "L1T_total_cache_misses": 0,
+              "L1T_total_cache_pending_hits": 0,
+              "L1T_total_cache_reservation_fails": 0,
+              "L2_Alloc": 0,
+              "L2_WB": 31852,
+              "L2_total_cache_accesses": 2250000,
+              "L2_total_cache_misses": 2250000,
+              "L2_total_cache_pending_hits": 0,
+              "L2_total_cache_reservation_fails": 5346628,
+              "RCDWRc_limit": 1189,
+              "RCDc_limit": 3609,
+              "RTWc_limit": 23093,
+              "RTWc_limit_alone": 23093,
+              "Read": 75008,
+              "Reply_Network_cycles": 214503,
+              "Reply_Network_injected_packets_num": 2250000,
+              "Req_Network_cycles": 214503,
+              "Req_Network_injected_packets_num": 1125000,
+              "WTRc_limit": 15804,
+              "WTRc_limit_alone": 15804,
+              "Wasted_Col": 17865,
+              "Wasted_Row": 93,
+              "Write": 0,
+              "gpgpu_n_cmem_portconflict": 0,
+              "gpgpu_n_const_mem_insn": 0,
+              "gpgpu_n_intrawarp_mshr_merge": 0,
+              "gpgpu_n_l1cache_bkconflict": 0,
+              "gpgpu_n_load_insn": 12000000,
+              "gpgpu_n_mem_const": 0,
+              "gpgpu_n_mem_read_global": 375000,
+              "gpgpu_n_mem_read_local": 0,
+              "gpgpu_n_mem_texture": 0,
+              "gpgpu_n_mem_write_global": 750000,
+              "gpgpu_n_mem_write_local": 0,
+              "gpgpu_n_param_mem_insn": 0,
+              "gpgpu_n_shmem_bkconflict": 0,
+              "gpgpu_n_shmem_insn": 0,
+              "gpgpu_n_sstarr_insn": 0,
+              "gpgpu_n_stall_shd_mem": 1687500,
+              "gpgpu_n_store_insn": 6000000,
+              "gpgpu_n_tex_insn": 0,
+              "gpgpu_n_tot_thrd_icount": 84000768,
+              "gpgpu_n_tot_w_icount": 3000028,
+              "gpu_reg_bank_conflict_stalls": 0,
+              "gpu_sim_cycle": 214503,
+              "gpu_sim_insn": 84000768,
+              "gpu_stall_dramfull": 5263792,
+              "gpu_stall_icnt2sh": 0,
+              "gpu_tot_issued_cta": 23438,
+              "gpu_tot_sim_cycle": 214503,
+              "gpu_tot_sim_insn": 84000768,
+              "gpu_total_sim_rate": 92106,
+              "icnt_total_pkts_mem_to_simt": 2250000,
+              "icnt_total_pkts_simt_to_mem": 1125000,
+              "interchip_read_requests": 0,
+              "interchip_write_requests": 0,
+              "issued_total_col": 106860,
+              "issued_total_row": 4496,
+              "kernel_launch_uid": 1,
+              "kernel_stream_id": 0,
+              "max_icnt2mem_latency": 4300,
+              "max_icnt2sh_latency": 176,
+              "max_total_param_size": 0,
+              "maxmflatency": 4971,
+              "maxmrqlatency": 1828,
+              "n_act": 2250,
+              "n_nop": 21830,
+              "n_pre": 2246,
+              "n_ref": 0,
+              "n_req": 82971,
+              "rwq": 0,
+              "total_CMD": 129310,
+              "total_req": 106860,
+              "util_bw": 106860
+            },
+            "latency_counters": {}
+          },
+          {
+            "program": "vectorAdd",
+            "suite": "CUDA Samples",
+            "input_digest": "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+            "design": "CH",
+            "profile": "F256",
+            "cohort": "E2-DTC2A16-e7bb67e63e3c3847-CH-F256-V1",
+            "source_role": "STAGEII_AUTHORIZED_CH",
+            "request": "DTC_STAGE_IIA_FIRST16_CH_MATCH_20261104_V1",
+            "accepted": false,
+            "cycles": null,
+            "status": "UUID_RECORDED_AWAIT_ROOT_RESULT"
+          },
+          {
+            "program": "ATAX",
+            "suite": "PolyBench/GPU",
+            "input_digest": "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+            "design": "CH",
+            "profile": "F128",
+            "cohort": "E2-DTC2A16-eededb785179fc04-CH-F128-V1",
+            "source_role": "STAGEII_AUTHORIZED_CH",
+            "request": "DTC_STAGE_IIA_FIRST16_CH_MATCH_20261104_V1",
+            "accepted": false,
+            "cycles": null,
+            "status": "UUID_RECORDED_AWAIT_ROOT_RESULT"
+          },
+          {
+            "program": "ATAX",
+            "suite": "PolyBench/GPU",
+            "input_digest": "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+            "design": "CH",
+            "profile": "F256",
+            "cohort": "E2-DTC2A16-eededb785179fc04-CH-F256-V1",
+            "source_role": "STAGEII_AUTHORIZED_CH",
+            "request": "DTC_STAGE_IIA_FIRST16_CH_MATCH_20261104_V1",
+            "accepted": false,
+            "cycles": null,
+            "status": "AWAIT_ROOT_RESULT"
+          },
+          {
+            "program": "MVT",
+            "suite": "PolyBench/GPU",
+            "input_digest": "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+            "design": "CH",
+            "profile": "F128",
+            "cohort": "E2-DTC2A16-f437190767aaed49-CH-F128-V1",
+            "source_role": "STAGEII_AUTHORIZED_CH",
+            "request": "DTC_STAGE_IIA_FIRST16_CH_MATCH_20261104_V1",
+            "accepted": false,
+            "cycles": null,
+            "status": "UUID_RECORDED_AWAIT_ROOT_RESULT"
+          },
+          {
+            "program": "MVT",
+            "suite": "PolyBench/GPU",
+            "input_digest": "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+            "design": "CH",
+            "profile": "F256",
+            "cohort": "E2-DTC2A16-f437190767aaed49-CH-F256-V1",
+            "source_role": "STAGEII_AUTHORIZED_CH",
+            "request": "DTC_STAGE_IIA_FIRST16_CH_MATCH_20261104_V1",
+            "accepted": false,
+            "cycles": null,
+            "status": "AWAIT_ROOT_RESULT"
+          },
+          {
+            "program": "GEMM",
+            "suite": "PolyBench/GPU",
+            "input_digest": "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318",
+            "design": "CH",
+            "profile": "F128",
+            "cohort": "E2-DTC2A16-fc0705ae3721e999-CH-F128-V1",
+            "source_role": "STAGEII_AUTHORIZED_CH",
+            "request": "DTC_STAGE_IIA_FIRST16_CH_MATCH_20261104_V1",
+            "accepted": false,
+            "cycles": null,
+            "status": "UUID_RECORDED_AWAIT_ROOT_RESULT"
+          },
+          {
+            "program": "GEMM",
+            "suite": "PolyBench/GPU",
+            "input_digest": "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318",
+            "design": "CH",
+            "profile": "F256",
+            "cohort": "E2-DTC2A16-fc0705ae3721e999-CH-F256-V1",
+            "source_role": "STAGEII_AUTHORIZED_CH",
+            "request": "DTC_STAGE_IIA_FIRST16_CH_MATCH_20261104_V1",
+            "accepted": false,
+            "cycles": null,
+            "status": "AWAIT_ROOT_RESULT"
+          }
+        ]
+      }
+    },
+    {
+      "requirement": "Natural completion or explicit preserved negative for all16, no unspent or missing outcomes",
+      "status": "INCOMPLETE_OR_CONTRADICTED",
+      "evidence": {
+        "remaining": 5,
+        "expected": 16,
+        "verified_terminal": 2
+      }
+    },
+    {
+      "requirement": "Paired statistical tables report coverage, exact common F denominator and positive/negative/missing",
+      "status": "INCOMPLETE_OR_CONTRADICTED",
+      "evidence": {
+        "provider": {
+          "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/agents/B_runtime_analysis_v1/PUBLICATION_PROVIDER.json",
+          "sha256": "31bddeed0adba26004be6fcf3d5e1ef988751069443bd0d1bbf8ec84958422ea"
+        },
+        "summary": {
+          "schema": "DTC_STAGEIIA_FIRST16_ANALYSIS_SUMMARY_V1",
+          "request": "DTC_STAGE_IIA_FIRST16_CH_MATCH_20261104_V1",
+          "observed_utc": "2026-11-03T19:00:09.580879+00:00",
+          "expected_CH": 16,
+          "accepted_CH": 2,
+          "archived_negative_CH": 0,
+          "verification_hold": 0,
+          "await_result": 14,
+          "registered_consumed": 11,
+          "registered_remaining": 5,
+          "all_registered16_terminal_verified": false,
+          "scientific_population": "FIRST8_PREDECLARED_SUBSET_NOT_35_OR_CORE32",
+          "common_both_F_n": 0,
+          "per_profile_available_paired": {
+            "F128": {
+              "S_CH": {
+                "n": 1,
+                "expected_n": 8,
+                "population": [
+                  "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799"
+                ],
+                "missing": [
+                  "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+                  "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                  "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                  "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                  "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                  "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                  "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+                ],
+                "GM": 1.0293702185983413,
+                "positive": 1,
+                "neutral": 0,
+                "negative": 0
+              },
+              "S_DH": {
+                "n": 1,
+                "expected_n": 8,
+                "population": [
+                  "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799"
+                ],
+                "missing": [
+                  "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+                  "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                  "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                  "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                  "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                  "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                  "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+                ],
+                "GM": 1.0199574753699783,
+                "positive": 1,
+                "neutral": 0,
+                "negative": 0
+              },
+              "R": {
+                "n": 1,
+                "expected_n": 8,
+                "population": [
+                  "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799"
+                ],
+                "missing": [
+                  "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+                  "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                  "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                  "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                  "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                  "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                  "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+                ],
+                "GM": 1.0068058182705713,
+                "positive": 1,
+                "neutral": 0,
+                "negative": 0
+              },
+              "I": {
+                "n": 1,
+                "expected_n": 8,
+                "population": [
+                  "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799"
+                ],
+                "missing": [
+                  "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+                  "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                  "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                  "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                  "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                  "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                  "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+                ],
+                "GM": 0.9908558232419236,
+                "positive": 0,
+                "neutral": 0,
+                "negative": 1
+              },
+              "R_P0": {
+                "n": 1,
+                "expected_n": 8,
+                "population": [
+                  "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799"
+                ],
+                "missing": [
+                  "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+                  "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                  "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                  "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                  "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                  "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                  "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+                ],
+                "GM": 1.016097190584662,
+                "positive": 1,
+                "neutral": 0,
+                "negative": 0
+              }
+            },
+            "F256": {
+              "S_CH": {
+                "n": 1,
+                "expected_n": 8,
+                "population": [
+                  "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449"
+                ],
+                "missing": [
+                  "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                  "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                  "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                  "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+                  "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                  "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                  "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+                ],
+                "GM": 1.3704550739079886,
+                "positive": 1,
+                "neutral": 0,
+                "negative": 0
+              },
+              "S_DH": {
+                "n": 1,
+                "expected_n": 8,
+                "population": [
+                  "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449"
+                ],
+                "missing": [
+                  "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                  "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                  "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                  "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+                  "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                  "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                  "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+                ],
+                "GM": 1.4222631225505697,
+                "positive": 1,
+                "neutral": 0,
+                "negative": 0
+              },
+              "R": {
+                "n": 1,
+                "expected_n": 8,
+                "population": [
+                  "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449"
+                ],
+                "missing": [
+                  "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                  "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                  "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                  "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+                  "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                  "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                  "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+                ],
+                "GM": 1.069665971440043,
+                "positive": 1,
+                "neutral": 0,
+                "negative": 0
+              },
+              "I": {
+                "n": 1,
+                "expected_n": 8,
+                "population": [
+                  "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449"
+                ],
+                "missing": [
+                  "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                  "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                  "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                  "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+                  "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                  "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                  "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+                ],
+                "GM": 1.037803536671104,
+                "positive": 1,
+                "neutral": 0,
+                "negative": 0
+              },
+              "R_P0": {
+                "n": 1,
+                "expected_n": 8,
+                "population": [
+                  "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449"
+                ],
+                "missing": [
+                  "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                  "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                  "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                  "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+                  "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                  "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                  "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+                ],
+                "GM": 1.0307017982142768,
+                "positive": 1,
+                "neutral": 0,
+                "negative": 0
+              }
+            }
+          },
+          "common_F128_F256_metrics": {
+            "F128": {
+              "S_CH": {
+                "n": 0,
+                "expected_n": 8,
+                "population": [],
+                "missing": [
+                  "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+                  "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                  "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                  "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                  "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+                  "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                  "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                  "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+                ],
+                "GM": null,
+                "positive": 0,
+                "neutral": 0,
+                "negative": 0
+              },
+              "S_DH": {
+                "n": 0,
+                "expected_n": 8,
+                "population": [],
+                "missing": [
+                  "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+                  "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                  "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                  "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                  "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+                  "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                  "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                  "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+                ],
+                "GM": null,
+                "positive": 0,
+                "neutral": 0,
+                "negative": 0
+              },
+              "R": {
+                "n": 0,
+                "expected_n": 8,
+                "population": [],
+                "missing": [
+                  "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+                  "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                  "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                  "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                  "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+                  "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                  "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                  "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+                ],
+                "GM": null,
+                "positive": 0,
+                "neutral": 0,
+                "negative": 0
+              },
+              "I": {
+                "n": 0,
+                "expected_n": 8,
+                "population": [],
+                "missing": [
+                  "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+                  "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                  "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                  "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                  "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+                  "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                  "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                  "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+                ],
+                "GM": null,
+                "positive": 0,
+                "neutral": 0,
+                "negative": 0
+              },
+              "R_P0": {
+                "n": 0,
+                "expected_n": 8,
+                "population": [],
+                "missing": [
+                  "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+                  "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                  "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                  "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                  "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+                  "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                  "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                  "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+                ],
+                "GM": null,
+                "positive": 0,
+                "neutral": 0,
+                "negative": 0
+              }
+            },
+            "F256": {
+              "S_CH": {
+                "n": 0,
+                "expected_n": 8,
+                "population": [],
+                "missing": [
+                  "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+                  "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                  "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                  "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                  "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+                  "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                  "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                  "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+                ],
+                "GM": null,
+                "positive": 0,
+                "neutral": 0,
+                "negative": 0
+              },
+              "S_DH": {
+                "n": 0,
+                "expected_n": 8,
+                "population": [],
+                "missing": [
+                  "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+                  "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                  "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                  "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                  "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+                  "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                  "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                  "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+                ],
+                "GM": null,
+                "positive": 0,
+                "neutral": 0,
+                "negative": 0
+              },
+              "R": {
+                "n": 0,
+                "expected_n": 8,
+                "population": [],
+                "missing": [
+                  "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+                  "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                  "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                  "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                  "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+                  "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                  "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                  "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+                ],
+                "GM": null,
+                "positive": 0,
+                "neutral": 0,
+                "negative": 0
+              },
+              "I": {
+                "n": 0,
+                "expected_n": 8,
+                "population": [],
+                "missing": [
+                  "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+                  "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                  "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                  "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                  "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+                  "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                  "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                  "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+                ],
+                "GM": null,
+                "positive": 0,
+                "neutral": 0,
+                "negative": 0
+              },
+              "R_P0": {
+                "n": 0,
+                "expected_n": 8,
+                "population": [],
+                "missing": [
+                  "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+                  "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                  "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                  "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                  "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+                  "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                  "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                  "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+                ],
+                "GM": null,
+                "positive": 0,
+                "neutral": 0,
+                "negative": 0
+              }
+            }
+          },
+          "direct_F_comparison": {
+            "CH_F128_over_F256": {
+              "n": 0,
+              "expected_n": 8,
+              "population": [],
+              "missing": [
+                "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+                "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+                "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+              ],
+              "GM": null,
+              "positive": 0,
+              "neutral": 0,
+              "negative": 0
+            },
+            "DH_F128_over_F256": {
+              "n": 0,
+              "expected_n": 8,
+              "population": [],
+              "missing": [
+                "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+                "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+                "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+              ],
+              "GM": null,
+              "positive": 0,
+              "neutral": 0,
+              "negative": 0
+            },
+            "I_F256_over_F128": {
+              "n": 0,
+              "expected_n": 8,
+              "population": [],
+              "missing": [
+                "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+                "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+                "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+                "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+                "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+                "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+                "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+                "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+              ],
+              "GM": null,
+              "positive": 0,
+              "neutral": 0,
+              "negative": 0
+            }
+          },
+          "remaining48_locked": true,
+          "no_git_or_native_scientific_writes": true,
+          "new_model_starts": 0
+        }
+      }
+    },
+    {
+      "requirement": "No subsequent48 release or automatic combination execution",
+      "status": "PROVEN",
+      "evidence": {
+        "plan": {
+          "path": "/root/data/dtc_stage_iia_first16_20261104_v1/control/EXECUTION_PLAN.json",
+          "sha256": "56efce4221b9b4a192552ad530ac94a1232024f23da2b7f0045c7bd72e8f5716"
+        },
+        "new_request_cohorts": [
+          "E2-DTC2A16-4114a3dc0d06b55b-CH-F128-V1",
+          "E2-DTC2A16-4114a3dc0d06b55b-CH-F256-V1",
+          "E2-DTC2A16-6df3a84b612086e8-CH-F128-V1",
+          "E2-DTC2A16-6df3a84b612086e8-CH-F256-V1",
+          "E2-DTC2A16-ae34174fbbdf83b2-CH-F128-V1",
+          "E2-DTC2A16-ae34174fbbdf83b2-CH-F256-V1",
+          "E2-DTC2A16-d984ea5475a581ad-CH-F128-V1",
+          "E2-DTC2A16-d984ea5475a581ad-CH-F256-V1",
+          "E2-DTC2A16-e7bb67e63e3c3847-CH-F128-V1",
+          "E2-DTC2A16-e7bb67e63e3c3847-CH-F256-V1",
+          "E2-DTC2A16-eededb785179fc04-CH-F128-V1",
+          "E2-DTC2A16-eededb785179fc04-CH-F256-V1",
+          "E2-DTC2A16-f437190767aaed49-CH-F128-V1",
+          "E2-DTC2A16-f437190767aaed49-CH-F256-V1",
+          "E2-DTC2A16-fc0705ae3721e999-CH-F128-V1",
+          "E2-DTC2A16-fc0705ae3721e999-CH-F256-V1"
+        ]
+      }
+    }
+  ],
+  "new_model_starts": 0,
+  "native_scientific_writes": 0,
+  "missing_final_deliverables": [
+    "DTC-MAIN narrative interpretation with counter/causality limits.",
+    "Independent final scientific review of all16.",
+    "Evidence-based remaining48 recommendation, no release.",
+    "Final Git commit, all package member SHA and remote readback."
+  ]
+}

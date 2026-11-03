@@ -1,0 +1,61 @@
+{
+  "schema": "DTC_STAGEIIA_COUNTER_SCOPE_CLOSED34TH_ADDENDUM_V1",
+  "observed_utc": "2026-11-03T19:02:16.013220+00:00",
+  "original_closed33_audit_unchanged": true,
+  "RESULT_path": "/root/data/dtc_stage_iia_first16_20261104_v1/analysis/E2-DTC2A16-4114a3dc0d06b55b-CH-F256-V1.RESULT.json",
+  "RESULT_sha256": "5cc22a35d6c6a8ea597b0f18e4c0fda58dc6948635f56990b3d70c0fd78bca41",
+  "uuid": "581149d0-5020-471e-b2d1-43464edb56ad",
+  "raw_gzip_sha256": "9a00fbefe4ac6ab589a50742d9f9d72f590320fb7d221d8dacc0700a2deffa15",
+  "raw_uncompressed_sha256": "5a1f68c08846baf55305762666580dfdc05207ed0ad506ad478b0926c1e4ce4e",
+  "kernel_blocks": [
+    {
+      "ordinal": 1,
+      "kernel": "_Z21convolutionRowsKernelPfS_iii",
+      "gpu_sim_cycle": 288224,
+      "gpu_tot_sim_cycle": 288224,
+      "latency_tokens": [],
+      "gpu_stall_dramfull": 7833092,
+      "L2_total_cache_accesses": 2913316,
+      "L2_total_cache_reservation_fails": 6471973,
+      "maxmflatency": 30217,
+      "maxmrqlatency": 3558
+    },
+    {
+      "ordinal": 2,
+      "kernel": "_Z24convolutionColumnsKernelPfS_iii",
+      "gpu_sim_cycle": 313876,
+      "gpu_tot_sim_cycle": 602100,
+      "latency_tokens": [
+        [
+          "averagemflatency",
+          "112"
+        ],
+        [
+          "avg_icnt2mem_latency",
+          "5369"
+        ],
+        [
+          "avg_mrq_latency",
+          "963"
+        ],
+        [
+          "avg_icnt2sh_latency",
+          "25"
+        ]
+      ],
+      "gpu_stall_dramfull": 17461703,
+      "L2_total_cache_accesses": 6971340,
+      "L2_total_cache_reservation_fails": 13553108,
+      "maxmflatency": 30217,
+      "maxmrqlatency": 3558
+    }
+  ],
+  "strict_latency_counters": {
+    "averagemflatency": 112,
+    "avg_icnt2mem_latency": 5369,
+    "avg_icnt2sh_latency": 25,
+    "avg_mrq_latency": 963
+  },
+  "interpretation": "New accepted two-kernel CH-F256 corroborates cumulative event snapshots and <500000cycle mean-fold boundary; no active raw consumed",
+  "new_models": 0
+}

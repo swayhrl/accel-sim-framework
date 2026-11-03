@@ -1,0 +1,22 @@
+# First16 closed-result resource observations
+
+Only naturally or explicitly negatively closed UUIDs are consumed. Peak RSS is a periodic observation. Missing values remain missing; this table does not grant performance acceptance.
+
+| Program | F | Scientific state | Elapsed h | Observed RSS GiB | RSS cap GiB | Min native free GiB | Samples |
+|---|---|---|---:|---:|---:|---:|---:|
+| convolutionSeparable | F128 | AWAIT_CLOSED_RESULT | MISSING | MISSING | MISSING | MISSING | 0 |
+| convolutionSeparable | F256 | PASS_STAGEII_CH_STRICT_ARCHIVE_NATIVE_RESTORE | 0.8640 | 1.2383 | 8.00 | 11.945 | 306 |
+| scan | F128 | AWAIT_CLOSED_RESULT | MISSING | MISSING | MISSING | MISSING | 0 |
+| scan | F256 | AWAIT_CLOSED_RESULT | MISSING | MISSING | MISSING | MISSING | 0 |
+| 2DCONV | F128 | AWAIT_CLOSED_RESULT | MISSING | MISSING | MISSING | MISSING | 0 |
+| 2DCONV | F256 | AWAIT_CLOSED_RESULT | MISSING | MISSING | MISSING | MISSING | 0 |
+| ATAX | F128 | AWAIT_CLOSED_RESULT | MISSING | MISSING | MISSING | MISSING | 0 |
+| ATAX | F256 | AWAIT_CLOSED_RESULT | MISSING | MISSING | MISSING | MISSING | 0 |
+| MVT | F128 | AWAIT_CLOSED_RESULT | MISSING | MISSING | MISSING | MISSING | 0 |
+| MVT | F256 | AWAIT_CLOSED_RESULT | MISSING | MISSING | MISSING | MISSING | 0 |
+| BICG | F128 | AWAIT_CLOSED_RESULT | MISSING | MISSING | MISSING | MISSING | 0 |
+| BICG | F256 | AWAIT_CLOSED_RESULT | MISSING | MISSING | MISSING | MISSING | 0 |
+| vectorAdd | F128 | PASS_STAGEII_CH_STRICT_ARCHIVE_NATIVE_RESTORE | 0.2534 | 0.6016 | 8.00 | 12.029 | 90 |
+| vectorAdd | F256 | AWAIT_CLOSED_RESULT | MISSING | MISSING | MISSING | MISSING | 0 |
+| GEMM | F128 | AWAIT_CLOSED_RESULT | MISSING | MISSING | MISSING | MISSING | 0 |
+| GEMM | F256 | AWAIT_CLOSED_RESULT | MISSING | MISSING | MISSING | MISSING | 0 |
