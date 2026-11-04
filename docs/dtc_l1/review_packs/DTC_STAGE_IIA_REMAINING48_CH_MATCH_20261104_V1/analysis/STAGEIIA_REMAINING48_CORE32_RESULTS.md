@@ -1,6 +1,6 @@
 # Remaining48 CH matching / fixed CORE32 readonly results
 
-As of 2026-11-04T07:40:41.592264+00:00; source_qualified=True. New48 accepted 46/48, archived negative 0, verification HOLD 0, pending 2. Complete both-F population 31/32. Source slots accepted 190/192.
+As of 2026-11-04T08:41:28.790038+00:00; source_qualified=True. New48 accepted 46/48, archived negative 0, verification HOLD 0, pending 2. Complete both-F population 31/32. Source slots accepted 190/192.
 
 All32 fixed inputs remain listed. Interim available-subset GM is descriptive, not the full32suite result. Direct F comparison uses the same accepted six-cell intersection; negatives/HOLD/pending never become cycles. Original128, first16newCH and remaining48newCH keep distinct source roles; source_profile is actual configuration, not a comparison-context alias.
 
