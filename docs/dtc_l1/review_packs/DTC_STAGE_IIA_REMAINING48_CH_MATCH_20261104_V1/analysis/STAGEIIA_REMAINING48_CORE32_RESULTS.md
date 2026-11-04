@@ -1,6 +1,6 @@
 # Remaining48 CH matching / fixed CORE32 readonly results
 
-As of 2026-11-04T04:37:57.552030+00:00; source_qualified=True. New48 accepted 40/48, archived negative 0, verification HOLD 0, pending 8. Complete both-F population 28/32. Source slots accepted 184/192.
+As of 2026-11-04T05:26:30.213427+00:00; source_qualified=True. New48 accepted 41/48, archived negative 0, verification HOLD 0, pending 7. Complete both-F population 28/32. Source slots accepted 185/192.
 
 All32 fixed inputs remain listed. Interim available-subset GM is descriptive, not the full32suite result. Direct F comparison uses the same accepted six-cell intersection; negatives/HOLD/pending never become cycles. Original128, first16newCH and remaining48newCH keep distinct source roles; source_profile is actual configuration, not a comparison-context alias.
 
@@ -47,7 +47,7 @@ All32 fixed inputs remain listed. Interim available-subset GM is descriptive, no
 | gaussian | 16f4c42373e4961eac6b16178237f1de2bbdf21d5e08bf669c4b6102bab2c6b3 | 763932 | 763932 | 763932 | 740717 | 740717 | 740717 | 1.000000 | 1.000000 | True |
 | heartwall | 731af5428c4b81552d8750c8edf9eeb609b71bd4f3651ca378a4dd73b194d980 | 8782 | 8782 | 8782 | 8551 | 8551 | 8551 | 1.000000 | 1.000000 | True |
 | lud | b33381cf25d443599aea5253936c13914acb0a2e7c22478496025c5234aef1f8 | 485866 | 485866 | 485866 | 478654 | 478654 | 478654 | 1.000000 | 1.000000 | True |
-| myocyte | 977e34578994c3d2d1cbd1a8ecf13e09efc43b03bcb8615a141cf2a24c9d5992 | 145909578 | MISSING | MISSING | 145147976 | 145147976 | 145147976 | MISSING | MISSING | False |
+| myocyte | 977e34578994c3d2d1cbd1a8ecf13e09efc43b03bcb8615a141cf2a24c9d5992 | 145909578 | 145909578 | MISSING | 145147976 | 145147976 | 145147976 | 1.000000 | MISSING | False |
 | particlefilter_float | b41cc74c66ca6ed4975948bdce35825381473e5cf44c53f9dc9740ac3e0115b4 | 1861126 | 1861126 | 1861126 | 2100874 | 2100874 | 2100874 | 1.000000 | 1.000000 | True |
 | particlefilter_naive | 3f85d1878aba9f04916ec52cc1162b37673f92a88be07c4db815240c9564755e | 511136 | 511136 | 511136 | 384601 | 384601 | 384601 | 1.000000 | 1.000000 | True |
 | srad_v1 | 0e62c67daa020853cf8a90b9f20a42d7e960e4d6c6e1db09173de1a58af199c4 | 8043823 | MISSING | MISSING | 7324411 | 7324411 | 7324411 | MISSING | MISSING | False |
