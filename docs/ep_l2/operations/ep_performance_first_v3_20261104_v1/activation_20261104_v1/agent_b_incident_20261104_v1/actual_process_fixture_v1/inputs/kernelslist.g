@@ -1,0 +1,2 @@
+HOST_CPU_FIXTURE_DUMMY_INPUT_NOT_GPU_TRACE
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_b_incident_20261104_v1/actual_process_fixture_v1/inputs/kernel-1.HOST_CPU_DUMMY

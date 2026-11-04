@@ -1,0 +1,70 @@
+{
+  "Source5": {
+    "archive_sha256": "5901a821fc0a9556b52a4107be1decf650a04e2091c31f4460938924d750d6cb",
+    "binary_sha256": "083aa0d72173e8f27b298a76b88898bf117f44d119379b3e3ef9edd1b7ffa52b",
+    "core_source_commit": "862376f62ab19f9a677abe31c6a422028b44fcd0",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "evidence": [
+    {
+      "file_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_b/core/src/gpgpu-sim/gpu-cache.h",
+        "sha256": "70aad62785083669a123ce0dd074d7ea613c8b2ba8f00e4ff05e7cd08156969f",
+        "bytes": 163245
+      },
+      "first_line": 901,
+      "last_line": 905,
+      "label": "ro_requested is T||M",
+      "excerpt": "901:  bool ep_l2_b0_stats_enabled() const { return m_ep_l2_b0_stats; }\n902:  bool ep_l2_m0a_stats_enabled() const { return m_ep_l2_m0a_stats; }\n903:  bool ro_requested() const { return m_ro_tag_detach||m_ro_line_mshr_bypass; }\n904:  unsigned ep_l2_ft_mode() const { return m_ep_l2_ft_mode; }\n905:  // ALL_DATA is an independent reference scope on the B16 OFF background."
+    },
+    {
+      "file_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_b/core/src/gpgpu-sim/gpu-cache.h",
+        "sha256": "70aad62785083669a123ce0dd074d7ea613c8b2ba8f00e4ff05e7cd08156969f",
+        "bytes": 163245
+      },
+      "first_line": 2944,
+      "last_line": 2963,
+      "label": "constructor ro_init and V-only directory creation",
+      "excerpt": "2944:        m_ep_l2_last_payload_request_result(ep_l2_payload_store::GRANTED),\n2945:        m_ep_l2_tag_payload(config.get_num_lines()) {\n2946:    validate_ep_l2_mode_config();\n2947:    ro_init();\n2948:    m_ep_l2_payload.set_rg1_enabled(config.m_ep_l2_rg1);\n2949:    m_ep_l2_payload.set_tvd_identity(config.m_ep_l2_tvd_dirty || config.ro_requested());\n2950:    m_ep_l2_payload.set_fixed_victim_entries(config.m_ep_l2_tvd_fixed_entries);\n2951:    m_ep_l2_payload.set_local_diagnostic(config.m_ep_l2_diag_copy_free ?\n2952:        ep_l2::mechanism_v1::COPY_FREE : config.m_ep_l2_diag_l2_data_free ?\n2953:        ep_l2::mechanism_v1::L2_DATA_FREE : ep_l2::mechanism_v1::NORMAL);\n2954:    m_ms_observer.enabled = config.m_ep_l2_ms_observer;\n2955:    m_ep_l2_payload.set_tvd_identity(config.m_ep_l2_tvd_dirty || config.ro_requested());\n2956:    m_ep_l2_payload.set_fixed_victim_entries(config.m_ep_l2_tvd_fixed_entries);\n2957:    m_ft_last_wb_versions.fill(0);\n2958:    m_tvd_lookup = NULL; m_tvd_lookup_cycle = 0;\n2959:    m_tvd_query_cycle = (unsigned long long)-1; m_tvd_lookup_done = false;\n2960:    m_tvd_lookup_wait = m_tvd_wb_wait = m_tvd_bank_wait = m_tvd_resp_wait = m_tvd_lookup_queries = 0;\n2961:    if (config.m_ep_l2_tvd_clean || config.m_ep_l2_tvd_dirty)\n2962:      m_tvd.reset(new ep_l2_tvd_directory<>(128, config.m_ep_l2_tvd_clean, config.m_ep_l2_tvd_dirty));\n2963:    if (ft_enabled()) m_tag_array->bind_ft_replacement(&m_ft_pending.request, &m_ft_pending.tag_index);"
+    },
+    {
+      "file_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_b/core/src/gpgpu-sim/ep-l2-ro-runtime.inc",
+        "sha256": "3d9e8f9947c057ad5a530683e19d2caaaa27fcfc26a4359f71800e19d9e773f9",
+        "bytes": 30412
+      },
+      "first_line": 34,
+      "last_line": 53,
+      "label": "RO constructor alone opens ranges/manifest",
+      "excerpt": "34:  ep_l2_ro_runtime(l2_cache &cache) : c(cache), port(c.m_ep_l2_payload,*this,true),\n35:    generations(c.m_config.get_num_lines(),1),open(false),ever_open(false),selected(false),command_bound(false),prefer_ro(true),\n36:    reply(),response_cycle(0),cursor(0),accepted_global_reads(0),accepted_candidates(0),accepted_ro(0) {\n37:    const auto &cfg=c.m_config;\n38:    if(cfg.get_line_sz()!=128 || cfg.get_atom_sz()!=32 || cfg.m_alloc_policy!=ON_MISS ||\n39:       cfg.m_mshr_entries!=128 || cfg.m_ep_l2_descriptor_per_line_cap!=32)\n40:      throw std::invalid_argument(\"RO requires reviewed sector128/32 LineMSHR128 D512/address32 geometry\");\n41:    if(!cfg.m_ro_ranges || !cfg.m_ro_ranges_sha256 || !cfg.m_ro_manifest_sha256 || !cfg.m_ro_scope)\n42:      throw std::invalid_argument(\"RO input binding absent\");\n43:    std::ifstream f(cfg.m_ro_ranges,std::ios::binary);\n44:    if(!f)throw std::invalid_argument(\"RO ranges cannot be opened\");\n45:    std::string bytes((std::istreambuf_iterator<char>(f)),{});\n46:    if(ep_l2_ro::sha256(bytes)!=cfg.m_ro_ranges_sha256)\n47:      throw std::invalid_argument(\"RO range SHA256 mismatch\");\n48:    if(!cfg.m_ro_manifest)throw std::invalid_argument(\"RO manifest missing\");\n49:    std::ifstream mf(cfg.m_ro_manifest,std::ios::binary);\n50:    if(!mf)throw std::invalid_argument(\"RO manifest cannot be opened\");\n51:    std::string manifest((std::istreambuf_iterator<char>(mf)),{});\n52:    if(ep_l2_ro::sha256(manifest)!=cfg.m_ro_manifest_sha256)throw std::invalid_argument(\"RO manifest SHA256 mismatch\");\n53:    boost::property_tree::ptree doc;std::istringstream json(manifest);"
+    },
+    {
+      "file_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_b/core/src/gpgpu-sim/ep-l2-ro-runtime.inc",
+        "sha256": "3d9e8f9947c057ad5a530683e19d2caaaa27fcfc26a4359f71800e19d9e773f9",
+        "bytes": 30412
+      },
+      "first_line": 383,
+      "last_line": 389,
+      "label": "RO runtime creation conditional T||M",
+      "excerpt": "383:void l2_cache::ro_init() {\n384:  ep_l2_detach_diag::state.add(this);\n385:  ep_l2_tagpressure::state.add(this,ep_l2_detach_diag::state.enabled);\n386:  m_ro=NULL;\n387:  if(m_config.m_ro_tag_detach||m_config.m_ro_line_mshr_bypass)m_ro=new ep_l2_ro_runtime(*this);\n388:}\n389:l2_cache::~l2_cache(){ep_l2_tagpressure::state.erase(this);ep_l2_detach_diag::state.erase(this);delete m_ro;}"
+    },
+    {
+      "file_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_b/framework/gpu-simulator/trace-parser/trace_parser.cc",
+        "sha256": "9545c56336c8fa25cb7af842ce6955bf4e08b41835f9cfea2dcfa9a8a5802c28",
+        "bytes": 15248
+      },
+      "first_line": 418,
+      "last_line": 447,
+      "label": "regular trace uses cat via popen, compressed alternatives separately gated",
+      "excerpt": "418:      } else {\n419:        assert(start_of_tb_stream_found);\n420:        threadblock_traces[warp_id]\n421:            ->at(inst_count)\n422:            .parse_from_string(line, trace_version, enable_lineinfo);\n423:        inst_count++;\n424:      }\n425:    }\n426:  }\n427:}\n428:\n429:PipeReader::PipeReader(const std::string &filePath) { OpenFile(filePath); }\n430:\n431:void PipeReader::OpenFile(const std::string &filePath) {\n432:  if (hasEnding(filePath, \".xz\")) {\n433:    // Use xz command to decompress .xz files\n434:    command = \"xz -dc \" + filePath;\n435:  } else if (hasEnding(filePath, \".traceg\")) {\n436:    // Use cat command for regular trace files\n437:    command = \"cat \" + filePath;\n438:  } else {\n439:    throw std::runtime_error(\"Unsupported file type!\");\n440:  }\n441:\n442:  // Open the pipe\n443:  pipe = popen(command.c_str(), \"r\");\n444:  if (!pipe) {\n445:    throw std::runtime_error(\"Failed to open pipe!\");\n446:  }\n447:}"
+    }
+  ],
+  "M": false,
+  "T": false,
+  "RO_certificate_file_access": "NOT_REQUIRED_FOR_FROZEN_W_ONLY_OR_WV_ZERO_RO_PATH",
+  "scope": "Source gating plus acceptedS observed no RO opens; failed startup incomplete and not proof by itself"
+}

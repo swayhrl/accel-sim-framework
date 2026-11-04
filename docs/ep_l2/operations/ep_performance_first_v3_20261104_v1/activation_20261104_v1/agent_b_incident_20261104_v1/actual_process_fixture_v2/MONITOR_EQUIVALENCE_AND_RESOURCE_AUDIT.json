@@ -1,0 +1,109 @@
+{
+  "schema": "EP_CPU_STUB_REAL_EVENTLOOP_SCOPE_AUDIT_V2",
+  "status": "PASS",
+  "sealed_engine_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_b_formal/runtime/ep_perf_native_wv_modes_draft.py",
+    "sha256": "28e6d74a1d34c954556f2f590ff9ee61f47c482656b000569f0f2616ea4b62c9"
+  },
+  "function_source_SHA256": {
+    "verify_actual": "f0cbde9fca401cd9cb9616ca33511ccd020842928c1a088590c137ef200ba6d6",
+    "run_native": "065892708f29ab913f501565eadb1e9e5b8d256e854fcdd09597d50c14f06025"
+  },
+  "unchanged_actual_functions": [
+    "run_native eventloop",
+    "verify_actual",
+    "qualified helper command/launch_command",
+    "process_tree/info/serializable_info",
+    "RSS/footprint/AS/CPU/nice",
+    "select/pipe/rawclose",
+    "real process exit/PID generation closure",
+    "qualified syscall parser"
+  ],
+  "fixture_only_overrides": [
+    "ROOT/LEDGER/GOAL/global admission lock to ownROOT",
+    "spec_path/spec_for/dispatch binding to explicit CPU stub",
+    "prepare to candidate schema+CPU marker assertions",
+    "resource gate/transaction/write carrier to own in-memory TEST_ONLY state"
+  ],
+  "real_CPU_stub_process": true,
+  "GPU_application_or_simulator": false,
+  "observed_stub_PID": 3688761,
+  "observed_boot": "59e1e1a4-84b6-431f-ac2d-03e340207019",
+  "observed_mount": "mnt:[4026535153]",
+  "mapped_qualified_files": {
+    "/root/data/ep_l2_dtc_l1_native_v2/common-lib/ld-linux-x86-64.so.2": "9eb34cb2da3ae2a9398cc09b3cd2d069563ec40d9858cb711af15cd23fa80abf",
+    "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libc.so.6": "c53819710b163d3f1d2541778590d58d3ef31cb0ed75adcbe059faac68c1e72d",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_b_incident_20261104_v1/actual_process_fixture_v2/HOST_CPU_STUB_NOT_SIMULATOR": "5d4e6f015396ddcbc10d277c832004d374ebe1e509308b8b097a841312cdcf02"
+  },
+  "resource_samples": [
+    {
+      "allocated_hot_bytes": 94208,
+      "elapsed_seconds": 0.05453840084373951,
+      "process_tree_RSS_bytes": 16777216
+    },
+    {
+      "allocated_hot_bytes": 98304,
+      "elapsed_seconds": 2.0864991638809443,
+      "process_tree_RSS_bytes": 16777216
+    }
+  ],
+  "positive_RSS_samples": true,
+  "actual_AS_limit_bytes": 1073741824,
+  "actual_RSS_monitor_limit_bytes": 67108864,
+  "real_exit": 0,
+  "real_stop_reason": null,
+  "syscall_proof": {
+    "status": "CLOSED_LOCAL_SYSCALL_INPUT_NETWORK_PROOF_PASS",
+    "syscall_log_sha256": "2da6dc39e15dd33116a83db76ab5d57d048f95d076186379d505a9804f16ef89",
+    "successful_input_opens": {
+      "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_b_incident_20261104_v1/actual_process_fixture_v2/inputs/kernelslist.g": 1,
+      "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_b_incident_20261104_v1/actual_process_fixture_v2/inputs/kernel-1.HOST_CPU_DUMMY": 1
+    },
+    "successful_input_open_pids": {
+      "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_b_incident_20261104_v1/actual_process_fixture_v2/inputs/kernelslist.g": [
+        3688761
+      ],
+      "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_b_incident_20261104_v1/actual_process_fixture_v2/inputs/kernel-1.HOST_CPU_DUMMY": [
+        3688761
+      ]
+    },
+    "no_connect": true,
+    "no_ssh_exec": true,
+    "traced_exec_calls": 1,
+    "traced_fork_calls": 0,
+    "model_pid": 3688761,
+    "permitted_model_descendant_pids": [
+      3688761
+    ],
+    "input_open_scope": "exact observed model PID and proven traced descendants only; successful return required",
+    "unique_kernel_members_required": 1,
+    "kernel1_special_case_removed": true
+  },
+  "raw_stream_receipt": {
+    "schema": "EP_PERF_LOSSLESS_RAW_STREAM_V1",
+    "storage": "GZIP_LOSSLESS_1",
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_b_incident_20261104_v1/actual_process_fixture_v2/isolated_root_v2/cases/HOST_CPU_STUB_INTEGRATION_NOT_SCIENCE/run/5b248d01-f2b4-4951-a875-a5c0f2c87d8b/raw.log.gz",
+    "stored_sha256": "c97b29afd2681ff83a6e553746f80df5b055ff07098d28e57a82ed638793824c",
+    "stored_bytes": 192,
+    "raw_sha256": "5cff5a33e2413cd05154afb01aae591c390f9cbae7381ab177fe36e5955fa873",
+    "raw_bytes": 554,
+    "raw_crc32": 1701668291,
+    "complete_compressed_stream": true,
+    "truncated": false,
+    "source_keep": true
+  },
+  "before_consume_negative": {
+    "PASS": true,
+    "error": "ValueError:missing required runtime fields: native_boot_id",
+    "synthetic_consume_count": 0
+  },
+  "scientific_old_request": {
+    "consumed": 2,
+    "remaining": 0,
+    "states": {
+      "EP_PERF_PFV3_VECTOR4M_WV_ZERO_RO_1700_V1": "CLOSED_UNACCEPTED",
+      "EP_PERF_PFV3_VECTOR4M_W_ONLY_1700_V1": "CLOSED_UNACCEPTED"
+    }
+  },
+  "original_incident_manifest_SHA": "527595dcd4d08384eb979abcfd6932b9d02a1a3002a8b2371f6b9dd57e376a41"
+}
