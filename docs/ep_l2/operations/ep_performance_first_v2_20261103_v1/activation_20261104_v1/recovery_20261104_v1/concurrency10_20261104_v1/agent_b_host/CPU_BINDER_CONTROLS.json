@@ -1,0 +1,79 @@
+{
+  "CPU_fixture_not_cap10_resource_qualification": true,
+  "checks": 14,
+  "current_unconsumed_observed": 12,
+  "model_starts": 0,
+  "official_registry_spec_native_writes": 0,
+  "registry_snapshot_ref": {
+    "path": "/root/data/ep_l2_dtc_l1_native_v2/control/science_authority/NATIVE_SCIENCE_REGISTRY.json",
+    "sha256": "78b5198a0840becbb0b53276690d9201e5062b867aa3a3ddf7f0b987fec39a1e"
+  },
+  "rows": [
+    {
+      "name": "current dynamic count equals sum remaining",
+      "status": "PASS"
+    },
+    {
+      "name": "every currently consumed state excluded including CLOSED/RUNNING/pre-fork",
+      "protected": 6,
+      "status": "PASS",
+      "unconsumed": 12
+    },
+    {
+      "count": 12,
+      "name": "all non-resource fields byte-value identical incl source input 282 observer argv native HostQ stage limits",
+      "status": "PASS"
+    },
+    {
+      "name": "freshly consumed between bindings automatically skipped without refund",
+      "status": "PASS"
+    },
+    {
+      "name": "exclude CLOSED_ACCEPTED",
+      "status": "PASS"
+    },
+    {
+      "name": "exclude CLOSED_UNACCEPTED",
+      "status": "PASS"
+    },
+    {
+      "name": "exclude RUNNING",
+      "status": "PASS"
+    },
+    {
+      "name": "exclude CONSUMED_BEFORE_FORK",
+      "status": "PASS"
+    },
+    {
+      "name": "extra_module",
+      "reason": "only both exact resource wrappers and optional shared dependency allowed",
+      "status": "PASS_EXPECTED_REJECT"
+    },
+    {
+      "name": "cap9",
+      "reason": "exact cap10 Host contract required",
+      "status": "PASS_EXPECTED_REJECT"
+    },
+    {
+      "name": "budget_change",
+      "reason": "exact cap10 Host contract required",
+      "status": "PASS_EXPECTED_REJECT"
+    },
+    {
+      "name": "bad_module_sha",
+      "reason": "resource module drift",
+      "status": "PASS_EXPECTED_REJECT"
+    },
+    {
+      "name": "budget arithmetic mismatch",
+      "reason": "budget arithmetic",
+      "status": "PASS_EXPECTED_REJECT"
+    },
+    {
+      "name": "outside original exact cohort set",
+      "reason": "exact approved cohort scope",
+      "status": "PASS_EXPECTED_REJECT"
+    }
+  ],
+  "status": "PASS"
+}

@@ -1,0 +1,45 @@
+{
+  "manifest_schema": "EP_MAIN_V2_CAP10_SAME_OWNER_EXECUTION_MANIFEST_V1",
+  "control_root": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/activation_20261104_v1/recovery_20261104_v1/concurrency10_20261104_v1/control",
+  "max_concurrent_models": 10,
+  "unchanged": "All18 original scope/Source/input/282/stages/budgets, exact versioned Native unchanged; only unconsumed resource refs/pins may update",
+  "required_additional_fields": {
+    "predecessor_manifest_ref": "current recovery exactref",
+    "preserved_consumed_spec_refs": "dict of all final alreadyconsumed cohort->prior exact spec ref",
+    "concurrency_amendment_authorization_ref": "exact CONTROL/USER_CONCURRENCY10_AUTHORIZATION.json; original user auth files preserved",
+    "resource_only_migration_index_ref": "exact agent_b_host/bound/SPEC_INDEX.json (currently3442b9c1...); candidate SHA and unchanged original chain checked"
+  },
+  "activation": {
+    "filename": "MAIN_CAP10_IDLE_HANDOFF_AUTHORIZATION.json",
+    "schema": "EP_MAIN_V2_CAP10_IDLE_HANDOFF_ACTIVATION_V1",
+    "status": "MAIN_REVIEWED_IDLE_OWNER_CAP10_HANDOFF_AUTHORIZED",
+    "approved_by": "EP-MAIN",
+    "executor_ref": "exactref",
+    "manifest_ref": "exactref",
+    "predecessor_started_ref": "exact old EXECUTOR_STARTED.json ref",
+    "consumed_snapshot_ref": "exact latest requests{qid:q} or {system:q,highclock:q}",
+    "claims_snapshot_refs": {
+      "system": "exact emptyclaims snapshot",
+      "highclock": "exact emptyclaims snapshot"
+    },
+    "no_retry": true,
+    "no_refund": true,
+    "concurrency_amendment_authorization_ref": "same exactref as manifest; explicit10-only user amendment"
+  },
+  "quiesce": {
+    "path": "OLDcontrol/MAIN_TECHNICAL_QUALIFICATION_HOLDS.json",
+    "approved_by": "EP-MAIN",
+    "manifest_ref": "OLD current formal manifest exactref",
+    "held_cohorts": "all not yet consumed; Main creates under ADMISSION lock only; old running continue and auto final exit"
+  },
+  "dynamic_lower_cap": {
+    "filename": "MAIN_MODEL_CONCURRENCY_POLICY.json",
+    "optional": true,
+    "approved_by": "EP-MAIN",
+    "manifest_ref": "new exactref",
+    "max_concurrent_models": "integer1..10, default10; cannot increase budget or release stages"
+  },
+  "prepare": "python3 -B finite_main_concurrency10.py --manifest <newmanifest> --prepare",
+  "run": "same --run only after predecessor generation exited+all consumed archived+claims0; one owner/Git mutex",
+  "inherited_stages": "Retain original review/release hashes when only controller_manifest_ref differs, but actual current engine stage gate must accept Source/input/points/archives first; no rewrite"
+}

@@ -1,0 +1,53 @@
+{
+  "schema": "EP_MAIN_ACTUAL_CAP10_OPERATION_RECEIPT_V1",
+  "status": "CAP10_CONTROLLER_AND_NATIVE_ADMISSION_ACTIVE_MODELS_OBSERVED",
+  "utc": "2026-11-04T00:57:56.877485+00:00",
+  "client_timezone": "Asia/Shanghai",
+  "executor_pid": 3566808,
+  "authorized_global_limit": 10,
+  "actual_running_models": 2,
+  "models": [
+    {
+      "group": "system",
+      "cohort": "EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_V1",
+      "model_pid": 3566857,
+      "start_ticks": 1050573571,
+      "CPU": 1,
+      "native_pid_maps_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system/cases/EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_V1/run/f2573007-31a6-41d5-bece-acd8539ff3bf/NATIVE_SIMULATOR_PID_AND_MAPS.json",
+        "sha256": "8e40541744ccf22a07230faa05f57a4d8cbe738201b381477cd419718a94c968"
+      }
+    },
+    {
+      "group": "highclock",
+      "cohort": "EP_PERF_CC_CAM_VECTOR4M_S_1275_V1",
+      "model_pid": 3566851,
+      "start_ticks": 1050573527,
+      "CPU": 0,
+      "native_pid_maps_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/highclock/cases/EP_PERF_CC_CAM_VECTOR4M_S_1275_V1/run/4643add0-e439-48c7-af32-b219c8719b9b/NATIVE_SIMULATOR_PID_AND_MAPS.json",
+        "sha256": "0ffc16c6ae3712f011340141806b78bf44f0023c462c7845229ba48213e2ca82"
+      }
+    }
+  ],
+  "budgets": {
+    "system": {
+      "budget": 12,
+      "consumed": 4,
+      "remaining": 8
+    },
+    "highclock": {
+      "budget": 6,
+      "consumed": 4,
+      "remaining": 2
+    }
+  },
+  "preserved_accepted_count": 6,
+  "no_existing_model_interrupted": true,
+  "original_total_science_start_ceiling": 18,
+  "new_budget": 0,
+  "stage_gates_unchanged": true,
+  "why_not_ten_now": "Only remaining FWT WV/G64W16 and Vector S1275 are currently causally released. GEMM and combination/1700 arms retain original prerequisites. Fresh resources also constrain actual filling, without arbitrary extra reserve.",
+  "automatic_fill": true,
+  "publication_interval_seconds": 1800
+}
