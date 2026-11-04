@@ -1,0 +1,378 @@
+--- V2/ep_perf_common_v2.py
++++ V3_candidate/ep_perf_common_v2.py
+@@ -2,12 +2,12 @@
+ import contextlib, copy, datetime, fcntl, hashlib, importlib.util, json, os, pathlib, uuid
+ 
+ P = pathlib.Path
+-ROOT = P('/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system')
++ROOT = P('/root/data/ep_l2_full_workload_performance_20261027_v1/execution_midtag_v3_20261104_v1/midtag')
+ NATIVE = P('/root/data/ep_l2_dtc_l1_native_v2')
+ REG = NATIVE / 'control/science_authority/NATIVE_SCIENCE_REGISTRY.json'
+ EPOCH = NATIVE / 'control/CURRENT_SCIENCE_EPOCH.json'
+ FRONTEND_GOAL = 'EP_L2_FULL_WORKLOAD_PERFORMANCE_POTENTIAL_EXPLORATION_V1'
+-GOAL = 'EP_L2_SYSTEM_850MHZ_PARAMETER_FAMILY_V2_20261104_V1'
++GOAL = 'EP_L2_MID_TAG_850MHZ_V1_20261104'
+ G = 1024**3
+ M = 1024**2
+ 
+--- V2/ep_perf_native_wv_modes_draft.py
++++ V3_candidate/ep_perf_native_wv_modes_draft.py
+@@ -3,16 +3,16 @@
+ import subprocess, sys, time, uuid
+ from ep_perf_common_v2 import *
+ 
+-SCOPED_MODES = {'EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_V1': 'S', 'EP_PERF_PFV2_SYSTEM850_FWT_S_FRFCFS256_V1': 'S', 'EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_FRFCFS256_V1': 'S', 'EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_V1': 'WV_ZERO_RO', 'EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_FRFCFS256_V1': 'WV_ZERO_RO', 'EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_FRFCFS256_V1': 'WV_ZERO_RO', 'EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_V1': 'S', 'EP_PERF_PFV2_SYSTEM850_GEMM_S_FRFCFS256_V1': 'S', 'EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_FRFCFS256_V1': 'S', 'EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_V1': 'WV_ZERO_RO', 'EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_FRFCFS256_V1': 'WV_ZERO_RO', 'EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_FRFCFS256_V1': 'WV_ZERO_RO'}
++SCOPED_MODES = {'EP_PERF_PFV3_MIDTAG_FWT_S_G32W16_V1': 'S', 'EP_PERF_PFV3_MIDTAG_FWT_WV_ZERO_RO_G32W16_V1': 'WV_ZERO_RO', 'EP_PERF_PFV3_MIDTAG_FWT_S_G64W8_V1': 'S', 'EP_PERF_PFV3_MIDTAG_FWT_WV_ZERO_RO_G64W8_V1': 'WV_ZERO_RO', 'EP_PERF_PFV3_MIDTAG_GEMM_S_G32W16_V1': 'S', 'EP_PERF_PFV3_MIDTAG_GEMM_WV_ZERO_RO_G32W16_V1': 'WV_ZERO_RO', 'EP_PERF_PFV3_MIDTAG_GEMM_S_G64W8_V1': 'S', 'EP_PERF_PFV3_MIDTAG_GEMM_WV_ZERO_RO_G64W8_V1': 'WV_ZERO_RO'}
+ ALLOWED_COHORTS=frozenset(SCOPED_MODES)
+ def authorized_scope_mode(s):
+-    need(s.get('cohort')in SCOPED_MODES and s.get('mode')==SCOPED_MODES[s['cohort']],'outside exact12 SYSTEM850 scope/mode')
++    need(s.get('cohort')in SCOPED_MODES and s.get('mode')==SCOPED_MODES[s['cohort']],'outside exact8 midTag scope/mode')
+     need(type(s.get('M'))is bool and type(s.get('T'))is bool and(s['M'],s['T'])==((True,True)if s['mode']=='F'else(False,False)),'DRAM scope M/T mismatch')
+     return s['mode']
+ 
+ LEDGER = NATIVE / 'control/qualification_ledger'
+-MODE_CONTRACT_SHA='f1a338fd72e6d09b76d91a567cbc8ed9201e7e10c72e1f1c9f1224a125c6a549'
+-NEW_VALIDATOR_SHA='5206098aa508043359b94eca7f52835c244c579ebaab64452021a844d13ce035'
++MODE_CONTRACT_SHA='9276428cc14308ed9ddda54ba4aae18217365a5a09eea8f0af3e4aae02d132c9'
++NEW_VALIDATOR_SHA='a2038b653e415b6ddd49e08e3ee6643ac655f8b83ff78dbb182a06e73e607d59'
+ def formal_mode_contract(s):
+     need(s['mode_contract_ref']['sha256']==MODE_CONTRACT_SHA and s['validation_module_ref']['sha256']==NEW_VALIDATOR_SHA,'unreviewed formal mapper/parser version')
+     return module(s['mode_contract_ref'],'private_formal_mode_contract').validate_static(s)
+@@ -20,7 +20,7 @@
+ 
+ def spec_path(case):
+     need(case.startswith('EP_PERF_') and case.replace('_', '').isalnum() and len(case) < 170, 'invalid cohort')
+-    need(case in ALLOWED_COHORTS, 'not an approved12 SYSTEM850 cohort')
++    need(case in ALLOWED_COHORTS, 'not an exact8 midTag cohort')
+     return ROOT / 'cases' / case / 'control/FROZEN_SPEC.json'
+ 
+ 
+@@ -70,6 +70,19 @@
+     module(s['mode_contract_ref'],'service_fair_pair_contract').validate_fair_pair(s,read(peer_path))
+     scope=module(s['mode_contract_ref'],'service_release_contract')
+     family_row=scope.family_row(s)
++    # Preparation can overlap; consumption of any GEMM waits for all four FWT closures.
++    if require_release and '_GEMM_' in case:
++        prerequisite=[x for x in ALLOWED_COHORTS if '_FWT_' in x]
++        need(len(prerequisite)==4,'exact four FWT predecessor cells')
++        for fwt in prerequisite:
++            row=q['consumed'].get(fwt,{})
++            need(row.get('state')=='CLOSED_ACCEPTED','FWT four accepted/archive gate before GEMM')
++            pt=exact(row['accepted_point_ref']);ar=exact(row['archive_receipt_ref'])
++            need(pt.get('cohort')==fwt and pt.get('status')=='EP_FULL_PERF_APPLICATION_ACCEPTED' and pt.get('hardware_drained')is True,'FWT accepted input/drain')
++            need(pt.get('spec_ref')==ref(spec_path(fwt)) and pt.get('source_identity')==s['source_identity'],'FWT exact Source/spec')
++            need(ar.get('cohort')==fwt and ar.get('uuid')==row.get('uuid')==pt.get('uuid') and ar.get('status')=='TRUE164_RESULT_SHA_AND_TWO_NATIVE_TARGET_RESTORES_PASS' and ar.get('source_keep')is True,'FWT archive closure')
++            rs=ar.get('native_restores',[])
++            need(len(rs)==2 and len({r['target']for r in rs})==2 and all(r.get('status')=='INDEPENDENT_NATIVE_TARGET_COMPLETE_SHA_RESTORE_PASS' and r.get('archive_sha256')==ar['archive_ref']['sha256']for r in rs),'FWT two independent restores')
+     if family_row['stage']=='CONDITIONAL_COMBINATION' and require_release:
+         scope.validate_combo_release(s, registry, ROOT/'control/conditional_release'/(case+'.json'), data_root=ROOT)
+     if not (s['T'] or s['M']):
+@@ -123,18 +136,16 @@
+ 
+ def prepare(case):
+     need(os.environ.get('EP_FULL_PERF_NATIVE_ENTRY') == '1', 'native sole entry required')
+-    route=read(ROOT/'control/NATIVE_ENTRY_ROUTE_RECOVERY_20261104_V1.json')
+-    need(route['goal']==GOAL and route['status']=='MAIN_INSTALLED_ADDITIVE_NATIVE_EP_PERF_ROUTE','native route qualification missing')
+-    module(dict(path=str(P(__file__).with_name('native_recovery_review.py')),sha256='94e6c3d155b291dca5ca2868f6b753c71a703be1a1ee36a61dd4d442297335fa'),'exact_approved_native_recovery').validate_current()
+-    prior=P(route['prior_entry_ref']['path']).read_bytes()
+-    need(sha(route['prior_entry_ref']['path'])==route['prior_entry_ref']['sha256'],'prior native entry evidence changed')
+-    entry=route['entry_ref']
+-    registry,_=authority()
+-    need(registry['registered_future_requests'][GOAL]['native_entry_ref']==entry,'entry outside registered scoped sole-entry')
+-    need(P(entry['path'])==ROOT.parent/'bin/native_recovery_20261104_v1' and sha(entry['path'])==entry['sha256'],'scoped native entry path/content drift')
+-    need((NATIVE/'bin/native').read_bytes()==prior,'foreign global native bytes changed; requalification required')
+-    current=P(entry['path']).read_bytes()
+-    need(current.endswith(prior) and route['own_prelude'].encode() in current,'native route or peer suffix changed')
++    # No installed receipt => HOLD before spec consumption, resource claims or fork.
++    route=read(ROOT/'control/NATIVE_ENTRY_ROUTE_V3.json')
++    need(route['goal']==GOAL and route['status']=='MAIN_INSTALLED_ADDITIVE_NATIVE_EP_PERF_ROUTE','native route not Main installed')
++    need(route.get('approved_by')=='EP-MAIN' and route.get('scientific_scope_activated')is True,'scope not activated')
++    # Immutable exact shared Native pin. Any future route change HOLDs.
++    need(ref(NATIVE/'bin/native')==route['global_shared_native_ref'],'global Native changed; exact route review required')
++    entry=route['entry_ref'];registry,_=authority()
++    need(registry['registered_future_requests'][GOAL]['native_entry_ref']==entry,'registered sole-entry mismatch')
++    need(P(entry['path'])==ROOT.parent/'bin/native_midtag_v3' and sha(entry['path'])==entry['sha256'],'scoped entry mismatch')
++    need(route.get('exact_cohorts')==sorted(ALLOWED_COHORTS),'Native cohort scope mismatch')
+     s = spec_for(case, require_release=False)
+     input_proof = fresh_input(s)
+     for name, commit_field in [('core', 'core_source_commit'), ('framework', 'framework_source_commit')]:
+--- V2/mode_contract.py
++++ V3_candidate/mode_contract.py
+@@ -1,22 +1,14 @@
+-"""Pure exact12 SYSTEM850 contract; original geometry/queue math is byte-preserved."""
++# Exact eight mid-Tag engineering contract. No actors, imports never consume.
+ import pathlib,json,hashlib,importlib.util
+ P=pathlib.Path;ROOT=P(__file__).resolve().parent
+ GOAL='EP_L2_FULL_WORKLOAD_PERFORMANCE_POTENTIAL_EXPLORATION_V1'
+-SYSTEM_REQUEST_ID='EP_L2_SYSTEM_850MHZ_PARAMETER_FAMILY_V2_20261104_V1'
+-SERVICE_REQUEST_ID=SYSTEM_REQUEST_ID
+-SERVICE_DATA_ROOT=P('/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system')
++SYSTEM_REQUEST_ID='EP_L2_MID_TAG_850MHZ_V1_20261104';SERVICE_REQUEST_ID=SYSTEM_REQUEST_ID
+ MODES={'S':(1,0,0,0,0,'S'),'WV_ZERO_RO':(2,1,1,0,0,'F_MINUS_R')}
+-VARIABLE={'-trace','-gpgpu_ep_l2_ro_manifest','-gpgpu_ep_l2_ro_manifest_sha256','-gpgpu_ep_l2_ro_ranges','-gpgpu_ep_l2_ro_ranges_sha256','-gpgpu_ep_l2_ro_scope'}
+-FAMILY_SCOPE_SHA='8b2adf18c38eaf140c3d61e11829d3ff0266428cff77ed657e1f7b0ee3548535'
+-REF_SHA='65474df0a47f5e16ce0314004b160cbd0a8da4d83473a1f3351e4bf5cc574062'
++FAMILY_SCOPE_SHA='ef03c2cb2789a901ec5390a9c42d4434ec97773bc6f0115e8262e86643b8c41c'
+ GEOMETRY_SHA='a9d11c3f1e04ceb26849a8f083e2725ef0a4aa648916776d2d6ee353752000b9'
+ def need(x,m):
+  if not x:raise ValueError(m)
+-def sha(p):
+- h=hashlib.sha256()
+- with P(p).open('rb')as f:
+-  for b in iter(lambda:f.read(1<<20),b''):h.update(b)
+- return h.hexdigest()
++def sha(p):return hashlib.sha256(P(p).read_bytes()).hexdigest()
+ def read(p):
+  def pairs(xs):
+   d={}
+@@ -24,136 +16,64 @@
+   return d
+  return json.loads(P(p).read_bytes(),object_pairs_hook=pairs,parse_constant=lambda v:need(False,'nonfinite JSON'))
+ def exact(r):need(isinstance(r,dict)and sha(r['path'])==r['sha256'],'missing/changed immutable reference');return read(r['path'])
++def rmatch(a,b):return isinstance(a,dict)and isinstance(b,dict)and(a.get('path'),a.get('sha256'))==(b.get('path'),b.get('sha256'))
+ def digest_value(v):return hashlib.sha256(json.dumps(v,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
+-def rmatch(a,b):return isinstance(a,dict)and isinstance(b,dict)and(a.get('path'),a.get('sha256'))==(b.get('path'),b.get('sha256'))
+-def reference():need(sha(ROOT/'REF_282_S.json')==REF_SHA,'S282 reference drift');return read(ROOT/'REF_282_S.json')
+-def geometry_module():
+- p=ROOT/'deps/geometry_queue/geometry_queue_terminal.py';need(sha(p)==GEOMETRY_SHA,'frozen geometry math entry drift')
+- sp=importlib.util.spec_from_file_location('system850_original_geometry_queue',p);m=importlib.util.module_from_spec(sp);sp.loader.exec_module(m);m.verify_pins();return m
+-def family_scope():
+- need(sha(ROOT/'FAMILY_SCOPE.json')==FAMILY_SCOPE_SHA,'SYSTEM850 exact scope drift');q=read(ROOT/'FAMILY_SCOPE.json');need(q['request_id']==SYSTEM_REQUEST_ID,'request scope mismatch');return q
++def family_scope():need(sha(ROOT/'FAMILY_SCOPE.json')==FAMILY_SCOPE_SHA,'scope drift');q=read(ROOT/'FAMILY_SCOPE.json');need(q['request_id']==SYSTEM_REQUEST_ID,'scope request');return q
+ def family_row(s):
+- found=[r for r in family_scope()['points']if r['id']==s.get('cohort')];need(len(found)==1,'outside exact12 SYSTEM850 cells');r=found[0];need(s.get('system_family_point_id')==r['id'],'point binding mismatch');return r
+-def service_profile(r):return 'PFV2_SYSTEM850_'+r['family']
++ rows=[r for r in family_scope()['points']if r['id']==s.get('cohort')];need(len(rows)==1,'outside exact eight midTag cells');return rows[0]
+ def flags(mode):
+- need(mode in MODES,'unknown SYSTEM850 S/WV mode');ft,c,d,t,m,_=MODES[mode]
+- return dict(zip(['-gpgpu_ep_l2_ft_mode','-gpgpu_ep_l2_tvd_clean','-gpgpu_ep_l2_tvd_dirty','-gpgpu_ep_l2_ro_tag_detach','-gpgpu_ep_l2_ro_line_mshr_bypass'],map(str,[ft,c,d,t,m])))
++ need(mode in MODES,'unknown formal S/WV mode');f,c,d,t,m,_=MODES[mode];return dict(zip(['-gpgpu_ep_l2_ft_mode','-gpgpu_ep_l2_tvd_clean','-gpgpu_ep_l2_tvd_dirty','-gpgpu_ep_l2_ro_tag_detach','-gpgpu_ep_l2_ro_line_mshr_bypass'],map(str,[f,c,d,t,m])))
+ def ro_enabled(mode):need(mode in MODES,'mode');return False
+ def expected_peer(s):
+- r=family_row(s);p=[x for x in family_scope()['points']if x['family']==r['family']and x['input_identity_sha256']==r['input_identity_sha256']and x['mode']!=r['mode']];need(len(p)==1,'exact reciprocal S/WV peer missing');return p[0]['id']
+-def baseline_row(s,mode):
+- r=family_row(s);return next(x for x in family_scope()['points']if x['input_identity_sha256']==r['input_identity_sha256']and x['mode']==mode)
++ r=family_row(s);q=[p['id']for p in family_scope()['points']if p['family']==r['family']and p['input_identity_sha256']==r['input_identity_sha256']and p['mode']!=r['mode']];need(len(q)==1,'peer population');return q[0]
++def geometry_module():
++ p=ROOT/'deps/geometry_queue/geometry_queue_terminal.py';need(sha(p)==GEOMETRY_SHA,'frozen geometry math');z=importlib.util.spec_from_file_location('midtag_geometry',p);m=importlib.util.module_from_spec(z);z.loader.exec_module(m);m.verify_pins();return m
+ def check_background(s):
+- r=family_row(s);base=exact(r['old_REF850_spec_ref']);o=s['expected_effective_options']
+- need(s['source_identity']==base['source_identity']==family_scope()['source_identity']==reference()['source_identity'],'unknown Source5')
+- need(s['mode']==r['mode']and s['mode']in MODES,'mode not exact cell');need(s['geometry']==r['geometry'],'new geometry not exactcell')
+- need(s['profile']==service_profile(r),'SYSTEM850 profile mismatch');need(type(s.get('M'))is bool and type(s.get('T'))is bool and not s['M']and not s['T'],'typedROswitches')
+- need(s.get('science_request_id')==SYSTEM_REQUEST_ID and s.get('system_family_proposal_ref')==family_scope()['proposal_ref'],'new scope/request contract')
+- need(rmatch(s.get('absolute_REF850_spec_ref'),r['old_REF850_spec_ref']),'old same-mode absolute reference mismatch')
+- need(s.get('same_background_peer_cohort')==expected_peer(s),'wrong reciprocal pair')
++ r=family_row(s);base=exact(r['old_REF850_spec_ref']);o=s['expected_effective_options'];g=r['geometry']
++ need(s['science_request_id']==SYSTEM_REQUEST_ID and s['source_identity']==base['source_identity']==family_scope()['source_identity'],'request/Source5')
++ need(s['mode']==r['mode']and s['geometry']==g and (g['sets'],g['ways'])in[(32,16),(64,8)]and g['slices']==64 and g['line_bytes']==128,'exact mode/geometry')
++ need(s['profile']=='PFV3_MIDTAG_'+r['family'],'profile')
++ need(type(s['M'])is bool and type(s['T'])is bool and not s['M']and not s['T']and s.get('ro_qualification_ref')is None,'RO disabled typed booleans')
+  for k in ['input_identity_sha256','input_binding_ref','trace_entry','all_unique_kernel_members','expected_CTA','expected_instructions','expected_kernel_launches','expected_kernel_scopes','command_count','observer_env']:
+-  need(s.get(k)==base.get(k),'input/observer binding drift:'+k)
+- need(s.get('ro_qualification_ref')is None,'ROdisabled no inherited oracle authority')
+- need(len(o)==282 and o==exact(r['option_preview_ref']),'exact282 preview drift')
+- expected=dict(base['expected_effective_options'])
+- for k,v in r['option_delta'].items():need(expected[k]==v['before'],'base delta before drift');expected[k]=v['after']
+- need(o==expected and all(o[k]==v for k,v in flags(s['mode']).items()),'undeclared hardware/mode difference')
+- need(o['-gpgpu_clock_domains']=='1132.0:1132.0:1132.0:850.0'and o['-dram_latency']=='100','850/L100 fixed')
+- need(all(o[k]=='1'for k in ['-gpgpu_ep_l2_ms_observer','-gpgpu_ep_l2_b0_stats','-gpgpu_ep_l2_m0a_stats']),'stats111 required')
+- need(s['ordered_configs'][:-1]==base['ordered_configs'],'original ordered config prefix changed')
+- overlay=s['ordered_configs'][-1];need(rmatch(overlay,s.get('system_final_overlay_ref')),'final overlay ref mismatch')
+- # Native/Host-only recovery permits exactly the reviewed original or new
+- # per-cohort overlay path, never an arbitrary same-byte alias. GPU values,
+- # SHA, original config prefix and declared Source/input remain unchanged.
+- old_overlay=P('/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/activation_20261104_v1/agent_c_binding/qualified_runtime')/'configs'/s['cohort']/'final_system850.config'
+- new_overlay=ROOT/'configs'/s['cohort']/'final_system850.config'
+- need(P(overlay['path'])in (old_overlay,new_overlay),'overlay outside exact reviewed original/new runtime cohort')
+- need(overlay['sha256']==r['final_overlay_ref']['sha256'],'reviewed overlay SHA mismatch')
+- need(P(overlay['path']).read_bytes()==P(r['final_overlay_ref']['path']).read_bytes(),'final overlay bytes drift')
+- for q in s['ordered_configs']:need(sha(q['path'])==q['sha256'],'ordered config changed')
++  need(s.get(k)==base.get(k),'input/observer drift:'+k)
++ expected=dict(base['expected_effective_options']);expected['-gpgpu_cache:dl2']='S:'+str(g['sets'])+':128:'+str(g['ways'])+',L:B:m:L:P,A:128:1,128:0,32'
++ need(len(o)==282 and o==expected and o==exact(r['option_preview_ref']),'undeclared option drift or incomplete282')
++ need(all(o[k]==v for k,v in flags(s['mode']).items()),'mode flags')
++ need(o['-gpgpu_clock_domains']=='1132.0:1132.0:1132.0:850.0'and o['-dram_latency']=='100'and o['-gpgpu_frfcfs_dram_sched_queue_size']=='128','850/L100/FR128')
++ need(all(o[k]=='1'for k in ['-gpgpu_ep_l2_ms_observer','-gpgpu_ep_l2_b0_stats','-gpgpu_ep_l2_m0a_stats']),'observer111')
++ need(s['same_background_peer_cohort']==expected_peer(s),'peer')
++ need(s['ordered_configs'][:-1]==base['ordered_configs'],'ordered config prefix')
++ for q in s['ordered_configs']:need(sha(q['path'])==q['sha256'],'config bytes')
++ need(rmatch(s['absolute_REF850_spec_ref'],r['old_REF850_spec_ref']),'absolute REF origin')
+  geometry_module().qualify_history_spec(s)
+  return o
+-def validate_anchor(s,mode='S'):
+- field='absolute_REF850_S_anchor_qualification_ref'if mode=='S'else'absolute_REF850_EP_anchor_qualification_ref';q=exact(s[field])
+- need(q.get('approved_by')=='EP-MAIN'and q.get('current_closed_state')=='CLOSED_ACCEPTED'and q.get('currently_accepted_population')is True,'Main closed absolute850 reference review required')
+- if mode=='S':need(q.get('schema')=='EP_MAIN_EXACT_EXISTING_S_REFERENCE_QUALIFICATION_V1'and q.get('status')=='EXACT_EXISTING_S_HARDWARE_INPUT_OBSERVERS_QUALIFIED_FOR_MATCHED_REFERENCE','S absolute review schema/status')
+- else:need(q.get('schema')=='EP_MAIN_EXACT_EXISTING_MODE_REFERENCE_QUALIFICATION_V1'and q.get('status')=='EXACT_EXISTING_HARDWARE_INPUT_OBSERVERS_REFERENCE_REUSE_QUALIFIED','EP absolute review schema/status')
+- base_row=baseline_row(s,mode);a=exact(q['spec_ref']);p=exact(q['point_ref'])
+- need(rmatch(q['spec_ref'],base_row['old_REF850_spec_ref'])and rmatch(p['spec_ref'],q['spec_ref']),'absolute reference is not exact accepted REF spec')
+- need(a['mode']==p['mode']==mode and p['status']=='EP_FULL_PERF_APPLICATION_ACCEPTED'and p['hardware_drained']is True,'accepted reference mode/drain')
+- need(a['source_identity']==p['source_identity']==s['source_identity']==q['source_identity'],'absolute Source')
+- need(a['input_identity_sha256']==p['input_identity_sha256']==s['input_identity_sha256']==q['input_identity_sha256'],'absolute input')
+- need(a['geometry']==dict(slices=64,sets=32,ways=8,line_bytes=128)and a['observer_env']==s['observer_env'],'absolute reference must remain default32x8, not relabelled newgeometry')
+- need(q['expected_effective_options_sha256']==digest_value(a['expected_effective_options']),'absolute282SHA')
+- need(a['expected_effective_options']['-gpgpu_clock_domains']=='1132.0:1132.0:1132.0:850.0'and a['expected_effective_options']['-gpgpu_frfcfs_dram_sched_queue_size']=='128','850/defaultscheduler anchor')
+- need(s.get('REF850_usage')=='ABSOLUTE_REFERENCE_ONLY_NOT_SAME_BACKGROUND_S','old REF is not matched newhardware S')
+- return q
+ def validate_fair_pair(a,b):
+  check_background(a);check_background(b);need(a['same_background_peer_cohort']==b['cohort']and b['same_background_peer_cohort']==a['cohort'],'reciprocal pair')
+- need(a['source_identity']==b['source_identity']and a['input_identity_sha256']==b['input_identity_sha256'],'Source/input peer')
+- need({a['mode'],b['mode']}=={'S','WV_ZERO_RO'},'fair S/WV only')
+- ignored=set(flags('S'))|VARIABLE-{'-trace'}
+- need({k:v for k,v in a['expected_effective_options'].items()if k not in ignored}=={k:v for k,v in b['expected_effective_options'].items()if k not in ignored},'samehardware pair drift')
+- return dict(status='EXACT_SAME_BACKGROUND_PAIR_ENGINEERING_PASS',science_permission=False)
+-def validate_ro(s):need(s.get('ro_qualification_ref')is None,'RO certificate forbidden');return dict(applicability='NOT_APPLICABLE_RO_RUNTIME_DISABLED_NOT_ZERO_INPUT_ORACLE')
++ ignored=set(flags('S'));need({k:v for k,v in a['expected_effective_options'].items()if k not in ignored}=={k:v for k,v in b['expected_effective_options'].items()if k not in ignored},'unfair hardware/input pair')
++ return dict(status='EXACT_MATCHED_S_WV_CPU_ENGINEERING_PASS',science_permission=False)
++def validate_anchor(s,mode='S'):
++ k='absolute_REF850_S_anchor_qualification_ref'if mode=='S'else'absolute_REF850_EP_anchor_qualification_ref';r=family_row(s);need(rmatch(s[k],r[k]),'anchor binding');q=exact(s[k]);p=exact(q['point_ref']);a=exact(q['spec_ref'])
++ need(q.get('approved_by')=='EP-MAIN'and q['current_closed_state']=='CLOSED_ACCEPTED'and q['currently_accepted_population']is True,'accepted REF evidence')
++ need(a['mode']==p['mode']==mode and p['hardware_drained']and p['status']=='EP_FULL_PERF_APPLICATION_ACCEPTED','accepted REF population')
++ need(a['source_identity']==p['source_identity']==s['source_identity']and a['input_identity_sha256']==s['input_identity_sha256'],'anchor identity')
++ need(a['geometry']==dict(slices=64,sets=32,ways=8,line_bytes=128)and a['observer_env']==s['observer_env'],'anchor geometry/observer')
++ need(s['REF850_usage']=='ABSOLUTE_REFERENCE_ONLY_NOT_SAME_BACKGROUND_S','not newgeometry matched S')
++ return q
+ def validate_mode_cpu(s):
+- q=exact(s['mode_cpu_qualification_ref']);need(q.get('schema')=='EP_MAIN_SOURCE78_SYSTEM850_FORMAL_MODE_CPU_QUALIFICATION_V1'and q.get('status')=='MAIN_REVIEWED_SOURCE78_SYSTEM850_CPU_PASS_NOT_APPLICATION'and q.get('approved_by')=='EP-MAIN','Main SYSTEM850 modeCPU required')
+- need(q['source_identity']==s['source_identity']and s['mode']in q['modes_qualified']and s['profile']in q['profiles_qualified'],'CPU Source/mode/profile')
+- need(q.get('application_permission')is False and q.get('B0_M0a_application_NI')=='NOT_PROVEN'and q.get('new_profile_application_NI')=='NOT_MEASURED','CPU NI claim boundary')
+- for r in q['evidence_refs'].values():exact(r)
+- protocol=exact(q['evidence_refs']['protocol']);ni=exact(q['evidence_refs']['MS_domainNI']);echo=exact(q['evidence_refs']['actual282'])
+- need(protocol.get('status')=='PASS_BOUNDED_CONSTRUCTOR_PROTOCOL_NOT_APPLICATION'and protocol.get('core')==s['source_identity']['core_source_commit']and protocol.get('archive_sha256')==s['source_identity']['archive_sha256'],'actual protocol proof not sameSourcePASS')
+- need(all(z.get('exit_code')==0 for z in protocol['runs']),'incomplete production CPU controls')
+- need(ni.get('status')=='PASS_6_MODE_PROFILE_CPU_PAIRS_NOT_APPLICATION_NI'and ni.get('B0_M0a_application_NI')=='NOT_PROVEN_ALL_HELD_ON','actual CPU NI scope/status')
+- needed=family_row(s)['family'];need(any(z['family']==needed and z['mode']==s['mode']and z.get('PASS')is True for z in ni['pairs']),'missing exactmode/profile CPU NI pair')
+- need(echo.get('status')=='PASS_ALL12_CORE_PLUS_TRACE_OPTION_ECHO'and echo['source_identity']==s['source_identity']and any(z['id']==s['cohort']and z.get('exact282_PASS')is True for z in echo['runs']),'actual CPU282 exactcell absent')
+- return dict(status=q['status'],qualification_ref=s['mode_cpu_qualification_ref'],application_NI='NOT_MEASURED')
++ q=exact(s['mode_cpu_qualification_ref']);need(q['status']=='PASS_MIDTAG_CPU_ENGINEERING_NOT_APPLICATION'and q['source_identity']==s['source_identity'],'CPU qualification')
++ ni=exact(q['protocol_ref']);echo=exact(q['actual282_ref']);g=s['geometry'];need(any(p['sets']==g['sets']and p['ways']==g['ways']and p['mode']==s['mode']and p['PASS']for p in ni['pairs']),'exactgeometry mode CPU NI absent')
++ need(any(p['cohort']==s['cohort']and p['exact282_PASS']for p in echo['runs']),'exact282 absent')
++ need(q['application_NI']=='NOT_MEASURED'and q['B0_M0a_application_NI']=='NOT_PROVEN_HELD_ON','NI claim')
++ return dict(status=q['status'],application_NI='NOT_MEASURED')
+ def validate_hostq(s):
+- q=exact(s['host_qualification_ref']);need(q.get('schema')=='EP_MAIN_SOURCE78_SYSTEM850_FAMILY_HOST_QUALIFICATION_V1'and q.get('status')=='HOST_CPU_ENGINEERING_QUALIFIED_NOT_APPLICATION_ACCEPTED','new SYSTEM850 HostQ required')
+- need(q['source_identity']==s['source_identity']and s['mode']in q['modes_qualified']and s['profile']in q['profiles_qualified'],'Host Source/mode/profile')
+- for r in q['modules']:need(sha(r['path'])==r['sha256'],'HostQ module drift')
+- need(all(r in q['modules']for r in [s['host_engine_ref'],s['validation_module_ref'],s['mode_contract_ref']]),'HostQ missing runtime')
+- return q
++ q=exact(s['host_qualification_ref']);need(q['status']=='HOST_CPU_ENGINEERING_QUALIFIED_NOT_APPLICATION_ACCEPTED'and q['source_identity']==s['source_identity'],'Host qualification')
++ for r in q['modules']:need(sha(r['path'])==r['sha256'],'Host module drift')
++ need(all(any(rmatch(x,r)for x in q['modules'])for r in[s['host_engine_ref'],s['validation_module_ref'],s['mode_contract_ref']]),'Host scope incomplete');return q
+ def validate_static(s):
+- need(s['goal']==GOAL,'frontend namespace');check_background(s);need(s['mode_contract_ref']['sha256']==sha(__file__),'contractselfidentity')
+- a=validate_anchor(s);b=validate_anchor(s,'WV_ZERO_RO');cpu=validate_mode_cpu(s);validate_hostq(s)
+- return dict(schema='EP_SYSTEM850_FORMAL_MODE_BINDING_V1',mode=s['mode'],numeric_profile=MODES[s['mode']][5],T=False,M=False,RO=validate_ro(s),modeCPU=cpu,geometry_queue_math_binding=geometry_module().qualify_history_spec(s),same_background_peer_cohort=s['same_background_peer_cohort'],REF850_usage='ABSOLUTE_ONLY_NOT_MATCHED_NEW_HARDWARE',scientific_acceptance_granted=False,launch_permission=False)
++ need(s['goal']==GOAL,'namespace');check_background(s);need(s['mode_contract_ref']['sha256']==sha(__file__),'modecontract pin')
++ validate_anchor(s);validate_anchor(s,'WV_ZERO_RO');cpu=validate_mode_cpu(s);validate_hostq(s)
++ return dict(mode=s['mode'],numeric_profile=MODES[s['mode']][5],T=False,M=False,RO={'applicability':'NOT_APPLICABLE_RO_RUNTIME_DISABLED'},modeCPU=cpu,scientific_acceptance_granted=False,launch_permission=False)
+ def history_for(s):
+- check_background(s);ft,v,d,t,m,p=MODES[s['mode']];feature=dict(payload_capacity_per_slice=1168,nominal_payload_capacity_per_slice=1168,wbuf_entries=16,ops_per_bank_cycle=1,static_s64=False,wb_local_cap=0,unified_wb=ft==2)
++ check_background(s);f,v,d,t,m,p=MODES[s['mode']];feature=dict(payload_capacity_per_slice=1168,nominal_payload_capacity_per_slice=1168,wbuf_entries=16,ops_per_bank_cycle=1,static_s64=False,wb_local_cap=0,unified_wb=f==2)
+  return dict(identity=dict(feature_vector=feature,termination_contract='ENTIRE_DECLARED_COMMANDLIST_AND_HARDWARE_DRAIN'),profile=p,formal_mode=s['mode'],actual_tag_geometry=s['geometry'],profile_semantics={'effective_options':s['expected_effective_options'],'research_switches':{'V':v,'T':t,'M':m}},trace_files=[{'name':'commandlist','path':s['trace_entry']}],entry_trace_name='commandlist')
+-
+-def validate_combo_release(s,registry,release_path,data_root=SERVICE_DATA_ROOT):
+- r=family_row(s)
+- if r['stage']!='CONDITIONAL_COMBINATION':return dict(status='PRIMARY_SINGLE_FAMILY_NO_RELEASE_NEEDED')
+- release=read(release_path)
+- need(release.get('status')=='MAIN_RELEASED_APPROVED_CONDITIONAL_CELL'and release.get('cohort')==s['cohort']and release.get('request_id')==SYSTEM_REQUEST_ID,'combination not Main released')
+- specfile=SERVICE_DATA_ROOT/'cases'/s['cohort']/'control/FROZEN_SPEC.json'
+- # RegisteredSHA is canonical; CPU sandbox may relocate actual specfile only.
+- q=registry['registered_future_requests'][SYSTEM_REQUEST_ID]
+- need(release.get('spec_sha256')==q['admitted_specs'][s['cohort']],'conditional exact specSHA')
+- review=exact(release.get('criterion_review_ref'))
+- need(review.get('schema')=='EP_MAIN_SYSTEM850_ABSOLUTE_EP_COMBINATION_GATE_REVIEW_V1'and review.get('status')=='MAIN_REVIEWED_SYSTEM850_ABSOLUTE_EP_GATE_PASS'and review.get('request_id')==SYSTEM_REQUEST_ID,'Main exact absoluteEP review required')
+- need(review.get('input_identity_sha256')==s['input_identity_sha256']and review.get('source_identity')==s['source_identity'],'gate Source/input')
+- anchor=validate_anchor(s,'WV_ZERO_RO');refpoint=exact(anchor['point_ref'])
+- need(rmatch(review.get('reference_EP_point_ref'),anchor['point_ref']),'gate baselineEP reference')
+- cycles=[]
+- for family in ['G64W16','FRFCFS256']:
+-  points=[z for z in family_scope()['points']if z['family']==family and z['input_identity_sha256']==s['input_identity_sha256']]
+-  need(len(points)==2,'gate single-family pair absent')
+-  for cell in points:
+-   row=q['consumed'].get(cell['id'],{})
+-   need(row.get('state')=='CLOSED_ACCEPTED','gate bothS_WV single-family arms notclosed')
+-   pt=exact(row['accepted_point_ref']);ar=exact(row['archive_receipt_ref'])
+-   need(pt.get('cohort')==cell['id']and pt['spec_ref']['sha256']==q['admitted_specs'][cell['id']]and pt['spec_ref']['path']==str(data_root/'cases'/cell['id']/'control/FROZEN_SPEC.json'),'gate exact official spec population')
+-   need(pt.get('uuid')==row.get('uuid')==ar.get('uuid'),'gate UUID population')
+-   need(pt.get('status')=='EP_FULL_PERF_APPLICATION_ACCEPTED'and pt.get('hardware_drained')is True and pt['source_identity']==s['source_identity']and pt['input_identity_sha256']==s['input_identity_sha256']and pt['mode']==cell['mode'],'gate acceptedpoint identity')
+-   need(ar.get('status')=='TRUE164_RESULT_SHA_AND_TWO_NATIVE_TARGET_RESTORES_PASS'and ar['cohort']==cell['id'],'gate mandatoryarchive')
+-   need(ar.get('source_keep')is True and '/mnt164/'in ar['archive_ref']['path'],'gate true164 SourceKEEP')
+-   rr=ar.get('native_restores',[]);need(len(rr)==2 and all(x.get('status')=='INDEPENDENT_NATIVE_TARGET_COMPLETE_SHA_RESTORE_PASS'for x in rr)and len({x['target']for x in rr})==2 and all(x['archive_sha256']==ar['archive_ref']['sha256']for x in rr),'gate twoindependentrestores')
+-   need(pt['instructions']==s['expected_instructions']and pt['CTA']==s['expected_CTA'],'gate fullinput population')
+-   if cell['mode']=='WV_ZERO_RO':
+-    need(rmatch(review.get(family+'_EP_point_ref'),row['accepted_point_ref']),'gate review point population');cycles.append(pt['cycles'])
+- n=refpoint['cycles'];g,f=cycles;need(all(type(v)is int and v>0 for v in [n,g,f]),'gate completedcycle types')
+- passed=((100*(n-g)>=n and 100*(n-f)>=n)or(100*(n-g)>=3*n and n-f>=0)or(100*(n-f)>=3*n and n-g>=0))
+- need(passed,'EP_ABSOLUTE_CRITERION_NOT_MET_RATIO_OR_S_SLOWDOWN_CANNOT_RELEASE')
+- return dict(status='ABSOLUTE_EP_COMBINATION_CRITERION_PASS',reference_EP_cycles=n,geometry_EP_cycles=g,scheduler_EP_cycles=f,S_ratio_not_used=True)
++def validate_combo_release(*args,**kwargs):raise ValueError('midTag family has no conditional combination arm')
+--- V2/mode_aware_terminal.py
++++ V3_candidate/mode_aware_terminal.py
+@@ -1,7 +1,7 @@
+ """DRAFT pure five-mode adapter. No actors or application-acceptance writes."""
+ import pathlib,hashlib,importlib.util,json
+ P=pathlib.Path;ROOT=P(__file__).resolve().parent
+-PINS={'deps/host_scaling/dynamic_observation_scaled.py': '4db737bf5bdc09532480e401001e39bc0de414c0b692c666542e8665a011ab25', 'deps/host_scaling/lowcost_terminal_scaled.py': 'fdcaab0aef93363148a81257e548dd1cc58cc1369986cbfc809366ff83cd1df1', 'deps/host_scaling/rolling_structure_core.py': 'b8f09af83cf2eb50933b46216f825593eb218c2a304a61ec7a624fc22f3f2066', 'deps/host_scaling/PACKAGE_MANIFEST.json': '83a0ac96f6f26f0788a46cde210277e22222476157e74352d9ed41f0ae1be2c1', 'deps/host_scaling/frozen_math/parse_main_terminal.py': 'f518aed003f2f70a4d84afc95c215773da2c14761315349b7600655a1e549c8e', 'deps/host_scaling/frozen_math/lowcost_terminal_v2.py': 'cba193d8ec810219f58bbe55870814b70604082f4f6683a236a418e80b9da35c', 'deps/host_scaling/frozen_math/ft_lane5/validate.py': '08a7396a6e11893dbbcb982725765a6c9b12194b1e01e3f0dc70d337f85dd500', 'deps/host_scaling/frozen_math/ft_lane5/parse_unified_terminal.py': '536d1a8d55452b7aee5b84168648b228eb35cc5e82b523e81b59634c51db352b', 'mode_contract.py': 'f1a338fd72e6d09b76d91a567cbc8ed9201e7e10c72e1f1c9f1224a125c6a549', 'REF_282_S.json': '65474df0a47f5e16ce0314004b160cbd0a8da4d83473a1f3351e4bf5cc574062'}
++PINS={'deps/host_scaling/dynamic_observation_scaled.py': '4db737bf5bdc09532480e401001e39bc0de414c0b692c666542e8665a011ab25', 'deps/host_scaling/lowcost_terminal_scaled.py': 'fdcaab0aef93363148a81257e548dd1cc58cc1369986cbfc809366ff83cd1df1', 'deps/host_scaling/rolling_structure_core.py': 'b8f09af83cf2eb50933b46216f825593eb218c2a304a61ec7a624fc22f3f2066', 'deps/host_scaling/PACKAGE_MANIFEST.json': '83a0ac96f6f26f0788a46cde210277e22222476157e74352d9ed41f0ae1be2c1', 'deps/host_scaling/frozen_math/parse_main_terminal.py': 'f518aed003f2f70a4d84afc95c215773da2c14761315349b7600655a1e549c8e', 'deps/host_scaling/frozen_math/lowcost_terminal_v2.py': 'cba193d8ec810219f58bbe55870814b70604082f4f6683a236a418e80b9da35c', 'deps/host_scaling/frozen_math/ft_lane5/validate.py': '08a7396a6e11893dbbcb982725765a6c9b12194b1e01e3f0dc70d337f85dd500', 'deps/host_scaling/frozen_math/ft_lane5/parse_unified_terminal.py': '536d1a8d55452b7aee5b84168648b228eb35cc5e82b523e81b59634c51db352b', 'mode_contract.py': '9276428cc14308ed9ddda54ba4aae18217365a5a09eea8f0af3e4aae02d132c9', 'REF_282_S.json': '65474df0a47f5e16ce0314004b160cbd0a8da4d83473a1f3351e4bf5cc574062'}
+ BODY_SHA='7cc347a6c62974eedf9e1e39b007c2716fa886d26057f005c938c820b48e1817'
+ SUFFIX_SHA='bf91f534869a1ec59aea92ee2de961d50e16e68a28eed636448ca83122339432'
+ def need(x,m):
+--- V2/ep_perf_archive.py
++++ V3_candidate/ep_perf_archive.py
+@@ -2,7 +2,7 @@
+ import argparse, hashlib, json, os, pathlib, stat, subprocess, sys, tarfile, tempfile, uuid
+ from ep_perf_common_v2 import *
+ 
+-ARCHIVE_ROOT = P('/root/share/mnt164/huangrulin/host174_storage_recovery/ep_l2_system850_v2_20261104_v1/system')
++ARCHIVE_ROOT = P('/root/share/mnt164/huangrulin/host174_storage_recovery/ep_l2_midtag_v3_20261104_v1/midtag')
+ 
+ 
+ def inventory(root):
+--- V2/ep_perf_frontend.py
++++ V3_candidate/ep_perf_frontend.py
+@@ -1,30 +1,16 @@
+-"""Exact registered EP cohorts only; preserve per-case immutable engine versions."""
+-import importlib.util, json, os, pathlib, sys
++import json,os,sys
+ from ep_perf_common_v2 import *
+-
+-
++COHORTS=['EP_PERF_PFV3_MIDTAG_FWT_S_G32W16_V1', 'EP_PERF_PFV3_MIDTAG_FWT_S_G64W8_V1', 'EP_PERF_PFV3_MIDTAG_FWT_WV_ZERO_RO_G32W16_V1', 'EP_PERF_PFV3_MIDTAG_FWT_WV_ZERO_RO_G64W8_V1', 'EP_PERF_PFV3_MIDTAG_GEMM_S_G32W16_V1', 'EP_PERF_PFV3_MIDTAG_GEMM_S_G64W8_V1', 'EP_PERF_PFV3_MIDTAG_GEMM_WV_ZERO_RO_G32W16_V1', 'EP_PERF_PFV3_MIDTAG_GEMM_WV_ZERO_RO_G64W8_V1']
+ def main(args):
+-    need(os.environ.get('EP_FULL_PERF_NATIVE_ENTRY') == '1', 'native sole entry required')
+-    need(len(args) == 5 and args[0] == 'experiment' and args[3:] == ['--project','EP_L2'], 'exact native EP command')
+-    need(args[1] in ['prepare','inspect','run-native','accept'], 'unsupported operation')
+-    case = args[2]
+-    need(case in ('EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_FRFCFS256_V1', 'EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_V1', 'EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_FRFCFS256_V1', 'EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_FRFCFS256_V1', 'EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_V1', 'EP_PERF_PFV2_SYSTEM850_GEMM_S_FRFCFS256_V1', 'EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_FRFCFS256_V1', 'EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_V1', 'EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_FRFCFS256_V1', 'EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_FRFCFS256_V1', 'EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_V1'), 'outside exact unspent recovery scope; consumed cases postrun-only original entry')
+-    registry, unused = authority()
+-    q = registry['registered_future_requests'][GOAL]
+-    need(case in q['admitted_specs'], 'case not exactly registered for this Goal')
+-    path = ROOT/'cases'/case/'control/FROZEN_SPEC.json'
+-    need(sha(path) == q['admitted_specs'][case], 'registered spec changed')
+-    s = read(path)
+-    item = s['host_engine_ref']
+-    need(P(item['path']).is_relative_to(P(__file__).resolve().parent) and sha(item['path']) == item['sha256'], 'unqualified engine location/content')
+-    if args[1] == 'accept':
+-        return module(s['postprocess_module_ref'], 'ep_perf_exact_postprocess').postprocess(case)
+-    return module(item, 'ep_perf_exact_case_engine').main(args)
+-
+-
+-if __name__ == '__main__':
+-    try:
+-        print(json.dumps(main(sys.argv[1:])))
+-    except Exception as exc:
+-        print(json.dumps(dict(status='HOLD', reason=str(exc), automatic_retry=False)),file=sys.stderr)
+-        sys.exit(2)
++ need(os.environ.get('EP_FULL_PERF_NATIVE_ENTRY')=='1','sole entry required')
++ need(len(args)==5 and args[0]=='experiment' and args[3:]==['--project','EP_L2'],'exact Native EP command')
++ need(args[1]in['prepare','inspect','run-native','accept'],'operation')
++ case=args[2];need(case in COHORTS,'outside exact8 midTag scope')
++ registry,_=authority();q=registry['registered_future_requests'].get(GOAL);need(q is not None,'fresh Main request not registered')
++ p=ROOT/'cases'/case/'control/FROZEN_SPEC.json';need(case in q['admitted_specs']and sha(p)==q['admitted_specs'][case],'spec not exactly registered')
++ s=read(p);item=s['host_engine_ref'];need(P(item['path']).is_relative_to(P(__file__).resolve().parent)and sha(item['path'])==item['sha256'],'engine location/pin')
++ if args[1]=='accept':return module(s['postprocess_module_ref'],'midtag_exact_postprocess').postprocess(case)
++ return module(item,'midtag_exact_engine').main(args)
++if __name__=='__main__':
++ try:print(json.dumps(main(sys.argv[1:])))
++ except Exception as e:print(json.dumps(dict(status='HOLD',reason=str(e),automatic_retry=False)),file=sys.stderr);sys.exit(2)

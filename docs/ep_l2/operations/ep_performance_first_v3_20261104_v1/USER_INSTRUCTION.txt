@@ -1,0 +1,359 @@
+# EP-L2 Performance-First V3
+## Architecture Performance Exploration and Optimization
+
+### 0. 研究目标与当前基线
+
+继续EP-L2性能优先研究，不恢复论文编辑或大规模归因分析。
+
+最新已验收科学提交：
+
+`f6e39296ef3a4bb26c237119c9c4a67e4667350e`
+
+上一轮已经正式结束：
+
+- 16项CLOSED_ACCEPTED；
+- 0项失败；
+- GEMM组合2项条件未满足，未消费；
+- Controller已自然退出；
+- 全部接受结果真164归档，两次独立恢复；
+- 旧预算、Source和历史记录保持不变。
+
+当前重要性能数据：
+
+| Workload | REF S | REF WV | G64x16 S | G64x16 WV |
+|---|---:|---:|---:|---:|
+| FWT |181827|178951|170266|170105|
+| GEMM |558588|550642|548988|548988|
+
+FR-FCFS256在这些结果中没有产生值得继续扩大容量扫描的收益。
+
+修复版Vector：
+
+| DRAM MHz | S | F |
+|---|---:|---:|
+|850|77184|77237|
+|1275|53910|56038|
+|1700|45974|55925|
+
+当前目标不是重复解释这些结果，而是：
+
+**寻找实际能够提高EP-L2绝对性能、有合理硬件成本、能够推广至多个真实应用的结构及参数配置。**
+
+实际并行分派四个Agent，Main统一科学调度与集成。
+
+---
+
+### Agent A：中等Tag容量与组织优化
+
+#### 研究目标
+
+现有G64×16提供FWT约4.94%的WV绝对cycles改善，但Tag容量增加4倍，且S同样明显受益。
+
+需要寻找更合理的Tag组织与容量折中。
+
+#### 首选两种结构
+
+- G32×16：512 Tag entries/slice。
+- G64×8：512 Tag entries/slice。
+
+它们的Tag总项数均为REF32×8的2倍、G64×16的一半，但Set数及相联度不同。
+
+固定：
+
+- 原Source78 Core/ELF；
+- DRAM850MHz；
+- dram_latency100；
+- 原Payload总容量1168/slice；
+- 物理Bank资源；
+- 原FR-FCFS128；
+- 原MissQ、MSHR、WAD、Descriptor、NoC及其他参数。
+
+实际配置合法性必须由Core生产路径确认，不能仅通过512项计数推断Bank映射和访问语义合法。
+
+#### 首批精确实验候选
+
+| Workload | G32×16 S/WV | G64×8 S/WV |
+|---|---|---|
+| FWT | 2点 | 2点 |
+| GEMM | 2点 | 2点 |
+
+总计8个新应用点。
+
+优先验证4个FWT点，再执行GEMM。
+
+比较以下性能：
+
+1. 每个模式相对自身REF850的绝对改善。
+2. 同一新几何下S/WV加速比。
+3. 相对G64×16的性能损失。
+4. Tag项数、组织方式及比较/访问硬件成本。
+5. 每程序最优结构与统一结构的性能。
+
+不能将Tag容量增加造成的普通缓存性能提升直接称为EP独有收益。
+
+特别关注：
+
+**512项Tag能否用明显更低的资源成本，获得G64×16的大部分绝对性能改善？**
+
+如果两种512项结构结果不同，应优先继续探索Set/Way组织，而不是单纯增加Tag总数量。
+
+交付：
+
+`MID_TAG_GEOMETRY_QUALIFICATION_V1`
+
+`MID_TAG_MATCHED_PERFORMANCE_FAMILY_V1`
+
+`TAG_PERFORMANCE_RESOURCE_FRONTIER_V1`
+
+---
+
+### Agent B：Vector高频下的W/V/RO机制消融
+
+#### 研究目标
+
+修复版Vector在1700MHz下：
+
+- S：45974cycles；
+- F：55925cycles。
+
+完整F相对S慢21.64%，并且F从1275到1700MHz几乎不再改善。
+
+现有完整F观测包括：
+
+- RO查询等待观察1000000次；
+- Victim目录查询等待观察375000次；
+- Victim实际读响应0；
+- MissQ满等待观察降为0。
+
+这说明继续提高DRAM频率不是最有效的下一步。
+
+#### 首批实验
+
+在**同一个已经验收的跨时钟修复Source**下增加：
+
+- Vector4M W_ONLY，1700MHz；
+- Vector4M WV_ZERO_RO，1700MHz。
+
+新Source：
+
+`862376f62ab19f9a677abe31c6a422028b44fcd0`
+
+新ELF SHA256：
+
+`083aa0d72173e8f27b298a76b88898bf117f44d119379b3e3ef9edd1b7ffa52b`
+
+利用同Source已接受的S/F1700，形成：
+
+`S → W_ONLY → WV_ZERO_RO → F`
+
+注意：
+
+- S→W测量完整W组织包；
+- W→WV测量V机制包；
+- WV→F测量RO/M/T等新增路径及其交互；
+- 不能把WV→F全部归为T成本；
+- 不能将旧Source78结果混入新Source比较。
+
+W/WV必须先完成新Source下的真实Mode、Host、Native、应用资格确认。
+
+若已有Observer缺口影响结果可信度，应提出明确的最小NI资格申请，不得默认继承Source78的应用NI。
+
+#### 后续实验方向
+
+根据真实结果选择：
+
+- 如果W、WV接近S而F明显慢：优先研究RO路径、MSHR bypass及实际查询开销。
+- 如果W接近S、WV明显慢：优先研究无效Victim查询与目录服务成本。
+- 如果W已明显慢于S：优先检查W资源组织、下层写回与跨时钟完成成本。
+- 如果WV与F差异有限：重新评估高频平台期的主要来源。
+
+如需考察频率响应，可另拟850MHz W/WV精确配对，保持新Source一致。
+
+允许设计少量有成本约束的机制消融或改进候选，但不通过删除真实查询周期、免费增加目录端口或理想化服务来制造可实现性能收益。
+
+交付：
+
+`VECTOR_HIGHCLOCK_MODE_DECOMPOSITION_V1`
+
+`VECTOR_F_PERFORMANCE_COST_CANDIDATES`
+
+`NEXT_MINIMUM_VECTOR_EXPERIMENTS`
+
+---
+
+### Agent C：Victim保留容量及动态策略探索
+
+#### 研究目标
+
+现有实验证明：
+
+- FWT主要从DIRTY-only保留中获益；
+- GEMM依赖CLEAN保留；
+- CLEAN+DIRTY整体仍是两者中的最佳结果。
+
+因此，下一步不应简单选择统一保留Clean或统一保留Dirty。
+
+重点探索：
+
+**如何根据可用资源与实际请求行为，提高Victim资源的有效服务能力，减少无价值保留对Mandatory事务的挤占。**
+
+#### 已有工程候选
+
+独立CLEAN配额Core：
+
+`bf4e48447136b990bd2db15e2972a4394e37d21f`
+
+目前仅有工程CPU、构建和部分Source资格，尚无完整应用接受。
+
+保留已实现配额：
+
+`0 / 32 / 64 / 96 / 128`
+
+首先核查：
+
+- 128是否严格复现新Source默认行为；
+- 0是否保持合法的Dirty-only语义；
+- CLEAN配额是否只作用于允许的WV/RO配置；
+- mandatory WB及WAD/sector/generation/readers保护是否保持；
+- 配额控制是否有真实硬件状态及比较成本；
+- 是否改变Bank/Payload有效容量和前进性。
+
+#### 建议第一批性能候选
+
+在独立配额Source下，针对FWT和GEMM准备：
+
+- 默认CLEAN cap128；
+- 中间CLEAN cap64；
+- CLEAN cap0。
+
+共6个WV性能候选。
+
+它们必须使用**同一个配额Source/ELF**，不能直接以旧Source78 WV作为新的正式OFF参考。
+
+后续再根据结果考虑cap32、cap96，或压力感知配额。
+
+此外，可以并行研究：
+
+- Dirty-install跨CLEAN/WB_COMPLETE event-age回收；
+- 每Bank颜色的可选保留空间；
+- Optional Victim与mandatory WB的有限资源优先级；
+- 结合真实保留和访问情况的动态配额。
+
+但每个新机制应独立开关，先经过CPU正确性验证，不一次性合入多个机制而失去因果对照。
+
+本轮重点是尽快形成可运行候选，而不是继续制作长篇机制分析。
+
+交付：
+
+`VICTIM_QUOTA_PERFORMANCE_FAMILY_V1`
+
+`VICTIM_DYNAMIC_RESOURCE_POLICY_CANDIDATES`
+
+`VICTIM_CPU_AND_HARDWARE_COST_QUALIFICATION`
+
+---
+
+### Agent D：持续执行与科学资格管理
+
+负责支持A/B/C的实验高效开展。
+
+首先确认上一批：
+
+- Controller已退出；
+- 16项全部接受；
+- 2项条件未释放；
+- 旧预算不得转用；
+- 真164归档闭合；
+- 没有遗留EP模型或冲突Dispatcher。
+
+重点修复多账户共享Native时的路由变更问题。
+
+其他账户通过合法insert-only方式增加路由，不应无条件使已经运行或已完成的EP实验无法正式验收。
+
+但不得直接取消全局身份验证。
+
+应分别固定：
+
+1. EP拥有的Scoped Entry SHA。
+2. 请求对应的Source/ELF/Spec SHA。
+3. 全局路由中EP相关条目的身份。
+4. 其他账户合法insert-only变化的允许边界。
+5. 不合法修改、替换或删除已有EP路由时的fail-closed行为。
+
+通过独立Host/CPU并发验证后，由Main决定是否激活，不改动其他账户的合法工作。
+
+同时完善：
+
+- 已批准参数族的资源队列；
+- 实际RAM/cgroup/CPU/SSD/真164准入；
+- 全局最多两路EP模型；
+- 已消费/运行/失败/验收/HOLD严格区分；
+- 局部HOLD不扩散为全局停摆；
+- 唯一科学调度器；
+- 统一结果排行；
+- 自动归档与两次恢复；
+- 不重复启动已完成模型。
+
+交付：
+
+`NATIVE_MULTI_OWNER_SAFE_ROUTE_QUALIFICATION`
+
+`PERFORMANCE_FIRST_V3_QUEUE_AND_RESOURCE_CONTRACT`
+
+`UNIFIED_ABSOLUTE_PERFORMANCE_FRONTIER_V3`
+
+---
+
+### Main：实验优先级与审批准备
+
+四个Agent必须并行开始，不等待某一Agent先完成。
+
+优先准备两份正式有限科学实验授权申请：
+
+**Family A：MID_TAG_850MHZ_V1**
+
+- FWT/GEMM；
+- G32×16、G64×8；
+- S/WV；
+- 初始最多8点。
+
+**Family B：VECTOR1700_WV_DECOMPOSITION_V1**
+
+- 新跨时钟修复Source；
+- Vector4M；
+- 1700MHz；
+- W-only/WV；
+- 初始最多2点。
+
+Family C的CLEAN cap实验作为下一组独立新Source候选，完成工程与应用资格后提出独立范围申请。
+
+以上仅是候选规模，不是项目全局仿真次数上限。
+
+每个参数族都必须具备：
+
+- 完整Source5、ELF、输入SHA及实际选项；
+- 合法Mode和Host/Native入口；
+- 正式对照及不可变实验规格；
+- 必要应用NI边界；
+- 实时资源检查；
+- Scoped预算及唯一调度；
+- 正负结果完整保留；
+- 真164归档及两次恢复；
+- Source KEEP，不污染历史。
+
+**本Goal授权四Agent的工程、CPU验证、参数设计和申请准备，不自动增加新的GPU正式仿真启动。**
+
+Main完成申请后，尽快提交精确预算供用户批准。不要因为非必要论文级分析延迟实验资格与实际运行。
+
+### 完成后Main回报
+
+只需重点汇报：
+
+1. A：两种512项Tag配置是否通过工程资格。
+2. B：Vector1700 W/WV是否具备应用启动资格。
+3. C：Clean配额新Source是否已可做同Source性能对照。
+4. D：多账户Native路由及资源排队是否通过验证。
+5. 两个优先性能实验包的完整精确规格、预算及可立即启动状态。
+6. 下一批预计能获得的性能信息和后续自适应扩展空间。
+
+**评判本轮工作的标准是形成高质量、可立即运行的性能实验，并实际向更高绝对性能和合理硬件成本的结构收敛。**

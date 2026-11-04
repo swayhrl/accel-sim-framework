@@ -1,0 +1,85 @@
+{
+  "status": "FAIL",
+  "runs": [
+    {
+      "label": "cap0_study-dirty-inflight",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/tvd_native.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_c_victim_quota/cpu/cap0_study-dirty-inflight.config",
+        "--study-dirty-inflight"
+      ],
+      "exit": 0,
+      "seconds": 0.7056548595428467,
+      "PASS_markers": [
+        "PASS production_dirty_forward_before_wad_write_wait_then_same_handle_promote",
+        "PASS production_dirty_forward_before_wad_atomic_wait_then_same_handle_promote",
+        "PASS production_dirty_missing_sector_wait_completion_then_real_lower_fallback",
+        "PASS production_WAD128_lower_full_no_partial_mutation_then_set_done_epoch_drain"
+      ]
+    },
+    {
+      "label": "cap0_study-dirty-boundaries",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/tvd_native.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_c_victim_quota/cpu/cap0_study-dirty-boundaries.config",
+        "--study-dirty-boundaries"
+      ],
+      "exit": -6,
+      "seconds": 0.8199622631072998,
+      "PASS_markers": []
+    },
+    {
+      "label": "cap64_study-dirty-inflight",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/tvd_native.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_c_victim_quota/cpu/cap64_study-dirty-inflight.config",
+        "--study-dirty-inflight"
+      ],
+      "exit": 0,
+      "seconds": 0.7178945541381836,
+      "PASS_markers": [
+        "PASS production_dirty_forward_before_wad_write_wait_then_same_handle_promote",
+        "PASS production_dirty_forward_before_wad_atomic_wait_then_same_handle_promote",
+        "PASS production_dirty_missing_sector_wait_completion_then_real_lower_fallback",
+        "PASS production_WAD128_lower_full_no_partial_mutation_then_set_done_epoch_drain"
+      ]
+    },
+    {
+      "label": "cap64_study-dirty-boundaries",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/tvd_native.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_c_victim_quota/cpu/cap64_study-dirty-boundaries.config",
+        "--study-dirty-boundaries"
+      ],
+      "exit": 0,
+      "seconds": 0.738116979598999,
+      "PASS_markers": [
+        "PASS production_same_bank_pool_full_reclaims_only_completed_TVD_then_drains",
+        "PASS production_partial_dirty_victim_WAD_only_no_false_sector_forward_or_promotion_deadlock"
+      ]
+    },
+    {
+      "label": "cap64_RO_rejected",
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/cpu/production_new.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_c_victim_quota/cpu/cap64_RO_rejected.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1"
+      ],
+      "exit": -6,
+      "expected_rejection": true,
+      "expected_message": "CLEAN optional cap requires",
+      "PASS": true,
+      "stderr": "CLEAN optional cap requires finite W+V both classes, RO disabled, limit0..128; default128 preserves other modes\n"
+    }
+  ],
+  "new_application_starts": 0
+}

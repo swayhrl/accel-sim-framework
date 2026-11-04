@@ -1,0 +1,51 @@
+{
+  "Source_core": "862376f62ab19f9a677abe31c6a422028b44fcd0",
+  "evidence": [
+    {
+      "file_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_b/core/src/gpgpu-sim/gpu-cache.h",
+        "sha256": "70aad62785083669a123ce0dd074d7ea613c8b2ba8f00e4ff05e7cd08156969f",
+        "bytes": 163245
+      },
+      "first_line": 2945,
+      "last_line": 2963,
+      "claim": "Mode constructor: observer enable does not select W/V; TVD instantiated iff clean/dirty switches",
+      "source_excerpt": "2945:         m_ep_l2_tag_payload(config.get_num_lines()) {\n2946:     validate_ep_l2_mode_config();\n2947:     ro_init();\n2948:     m_ep_l2_payload.set_rg1_enabled(config.m_ep_l2_rg1);\n2949:     m_ep_l2_payload.set_tvd_identity(config.m_ep_l2_tvd_dirty || config.ro_requested());\n2950:     m_ep_l2_payload.set_fixed_victim_entries(config.m_ep_l2_tvd_fixed_entries);\n2951:     m_ep_l2_payload.set_local_diagnostic(config.m_ep_l2_diag_copy_free ?\n2952:         ep_l2::mechanism_v1::COPY_FREE : config.m_ep_l2_diag_l2_data_free ?\n2953:         ep_l2::mechanism_v1::L2_DATA_FREE : ep_l2::mechanism_v1::NORMAL);\n2954:     m_ms_observer.enabled = config.m_ep_l2_ms_observer;\n2955:     m_ep_l2_payload.set_tvd_identity(config.m_ep_l2_tvd_dirty || config.ro_requested());\n2956:     m_ep_l2_payload.set_fixed_victim_entries(config.m_ep_l2_tvd_fixed_entries);\n2957:     m_ft_last_wb_versions.fill(0);\n2958:     m_tvd_lookup = NULL; m_tvd_lookup_cycle = 0;\n2959:     m_tvd_query_cycle = (unsigned long long)-1; m_tvd_lookup_done = false;\n2960:     m_tvd_lookup_wait = m_tvd_wb_wait = m_tvd_bank_wait = m_tvd_resp_wait = m_tvd_lookup_queries = 0;\n2961:     if (config.m_ep_l2_tvd_clean || config.m_ep_l2_tvd_dirty)\n2962:       m_tvd.reset(new ep_l2_tvd_directory<>(128, config.m_ep_l2_tvd_clean, config.m_ep_l2_tvd_dirty));\n2963:     if (ft_enabled()) m_tag_array->bind_ft_replacement(&m_ft_pending.request, &m_ft_pending.tag_index);"
+    },
+    {
+      "file_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_b/core/src/gpgpu-sim/ep-l2-ro-runtime.inc",
+        "sha256": "3d9e8f9947c057ad5a530683e19d2caaaa27fcfc26a4359f71800e19d9e773f9",
+        "bytes": 30412
+      },
+      "first_line": 383,
+      "last_line": 388,
+      "claim": "RO runtime allocated iff M or T requested; both newmodes OFF",
+      "source_excerpt": "383: void l2_cache::ro_init() {\n384:   ep_l2_detach_diag::state.add(this);\n385:   ep_l2_tagpressure::state.add(this,ep_l2_detach_diag::state.enabled);\n386:   m_ro=NULL;\n387:   if(m_config.m_ro_tag_detach||m_config.m_ro_line_mshr_bypass)m_ro=new ep_l2_ro_runtime(*this);\n388: }"
+    },
+    {
+      "file_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_b/core/src/gpgpu-sim/ep-l2-ft-cache.inc",
+        "sha256": "e27b7624732f3b1c30f0803caef9b3da8cb1a7b84ea82193cd3d24e667e603cc",
+        "bytes": 41725
+      },
+      "first_line": 338,
+      "last_line": 348,
+      "claim": "RO relief guarded by m_ro; TVD lookup guarded by m_tvd; W path uses actual WAD",
+      "source_excerpt": "338:   if(probe==RESERVATION_FAIL && m_ro){m_ro->relieve(addr);probe=m_tag_array->probe(owner,index,mf,mf->is_write(),true);if(diagnostic.d)diagnostic.d->add(probe>=0&&probe<=WRITE_ALLOCATED?field(post_relief_hit+probe):post_relief_unknown);}\n339:   if (probe == RESERVATION_FAIL) return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_tag));\n340:   if (m_tvd && probe == MISS &&\n341:       !(m_tvd_lookup == mf && m_tvd_lookup_done)) return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_directory));\n342:   // Capture each original short-circuit result without extra modeled checks.\n343:   bool diagnostic_capacity_ok=false;\n344:   if(ro_new && (!(diagnostic_capacity_ok=m_ro->capacity(mf,false)) || !miss_queue_has_slots(mf->get_access_sector_mask().count()+(probe==MISS && m_tag_array->block_is_modified(index)))))return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,diagnostic_capacity_ok?denied_missq:denied_capacity));\n345:   if (m_ft_pending.request && m_ft_pending.request != mf) return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_held));\n346:   if (m_tvd ? tvd_cached_wad_contains(mf,owner) : ep_l2_wad_contains(owner)) {\n347:     ++m_ep_l2_wad_same_address_wait_count; return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_wad));\n348:   }"
+    },
+    {
+      "file_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_b/core/src/gpgpu-sim/ep-l2-tvd-cache.inc",
+        "sha256": "16456828b6bfc34496ca973a02ff308b03ab182ee8bec11359bdb20387893578",
+        "bytes": 14188
+      },
+      "first_line": 78,
+      "last_line": 94,
+      "claim": "Victim finite frontend query latency and per-cycle query arbitration retained",
+      "source_excerpt": "78:     ms_observe_frontend(mf, now, 1ULL << reason, false, known | (1ULL << reason));\n79:     return TVD_WAIT;\n80:   };\n81:   if (m_tvd_lookup != mf) {\n82:     assert(!m_tvd_read);\n83:     m_tvd_lookup = mf; m_tvd_lookup_cycle = now;\n84:     m_tvd_lookup_done = false;\n85:     ++m_tvd_lookup_wait; return wait(M::VICTIM_LOOKUP);\n86:   }\n87:   if (now <= m_tvd_lookup_cycle) return wait(M::VICTIM_LOOKUP);\n88:   if (!m_tvd_lookup_done) {\n89:     if (m_tvd_query_cycle == now) return wait(M::VICTIM_LOOKUP);\n90:     m_tvd_query_cycle = now; ++m_tvd_lookup_queries;\n91:     m_tvd_lookup_ticket = m_tvd->find(address);\n92:     m_tvd_lookup_done = true;\n93:   }\n94:   const auto ticket = m_tvd_lookup_ticket;"
+    }
+  ],
+  "source_modified": false,
+  "protocol_protections_removed": false
+}

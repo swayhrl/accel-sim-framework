@@ -1,0 +1,426 @@
+{
+  "B0_M0a_application_NI": "NOT_PROVEN_HELD_ON",
+  "Trace_body_read": false,
+  "application_NI": "NOT_MEASURED",
+  "compile": {
+    "argv": [
+      "/usr/bin/c++",
+      "-std=gnu++17",
+      "-O0",
+      "-g0",
+      "-fPIC",
+      "-UNDEBUG",
+      "-DCUDART_VERSION=12040",
+      "-DDEBUG=0",
+      "-DTRACING_ON=1",
+      "-I/root/data/dtc_main_20261023_v1/ae_fair_v1/toolchain/include",
+      "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/libcuda",
+      "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/libcuda",
+      "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/gpgpu-sim",
+      "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src/intersim2",
+      "-I/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/src",
+      "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/test_midtag_protocol.cc",
+      "-Wl,--version-script=/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/core/linux-so-version.txt",
+      "-Wl,--start-group",
+      "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/libentrypoint.a",
+      "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/libcuda/libcuda.a",
+      "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/cuda-sim/libptxsim.a",
+      "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/gpgpu-sim/libgpgpusim.a",
+      "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/intersim2/libintersim.a",
+      "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/gpgpu-sim/src/accelwattch/libaccelwattch.a",
+      "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/trace-driven/libtrace-driven.a",
+      "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/build/trace-parser/libtrace-parser.a",
+      "-Wl,--end-group",
+      "-lm",
+      "-lz",
+      "-lGL",
+      "-ldl",
+      "-pthread",
+      "-o",
+      "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/midtag.cpu",
+      "-UNDEBUG"
+    ],
+    "returncode": 0,
+    "seconds": 3.5219228211790323,
+    "stderr_ref": {
+      "bytes": 0,
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout_ref": {
+      "bytes": 0,
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/compile.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "formal_model_starts": 0,
+  "pairs": [
+    {
+      "MS011_111_semantics_equal": true,
+      "PASS": true,
+      "markers": [
+        "SYSTEM_SOURCE78_CONSTRUCTOR|sets=32|ways=16|FT=1|Payload=1168|D=512|LineMSHR=128|WAD=128|P1|PASS",
+        "SYSTEM850_SEMANTIC|cycles=70|replies=17|dirtyWB=1|reverse_returns=15|drain=1",
+        "SYSTEM_SOURCE78_REAL_REQUESTS|sets=32|ways=16|requests=17|pending_peak=15|dirtyWB=1|reverse_returns=15|bankP1=1|drain=1|PASS"
+      ],
+      "mode": "S",
+      "sets": 32,
+      "ways": 16
+    },
+    {
+      "MS011_111_semantics_equal": true,
+      "PASS": true,
+      "markers": [
+        "SYSTEM_SOURCE78_CONSTRUCTOR|sets=32|ways=16|FT=2|Payload=1168|D=512|LineMSHR=128|WAD=128|P1|PASS",
+        "SYSTEM850_SEMANTIC|cycles=85|replies=17|dirtyWB=1|reverse_returns=15|drain=1",
+        "SYSTEM_SOURCE78_REAL_REQUESTS|sets=32|ways=16|requests=17|pending_peak=15|dirtyWB=1|reverse_returns=15|bankP1=1|drain=1|PASS"
+      ],
+      "mode": "WV_ZERO_RO",
+      "sets": 32,
+      "ways": 16
+    },
+    {
+      "MS011_111_semantics_equal": true,
+      "PASS": true,
+      "markers": [
+        "SYSTEM_SOURCE78_CONSTRUCTOR|sets=64|ways=8|FT=1|Payload=1168|D=512|LineMSHR=128|WAD=128|P1|PASS",
+        "SYSTEM850_SEMANTIC|cycles=38|replies=9|dirtyWB=1|reverse_returns=7|drain=1",
+        "SYSTEM_SOURCE78_REAL_REQUESTS|sets=64|ways=8|requests=9|pending_peak=7|dirtyWB=1|reverse_returns=7|bankP1=1|drain=1|PASS"
+      ],
+      "mode": "S",
+      "sets": 64,
+      "ways": 8
+    },
+    {
+      "MS011_111_semantics_equal": true,
+      "PASS": true,
+      "markers": [
+        "SYSTEM_SOURCE78_CONSTRUCTOR|sets=64|ways=8|FT=2|Payload=1168|D=512|LineMSHR=128|WAD=128|P1|PASS",
+        "SYSTEM850_SEMANTIC|cycles=45|replies=9|dirtyWB=1|reverse_returns=7|drain=1",
+        "SYSTEM_SOURCE78_REAL_REQUESTS|sets=64|ways=8|requests=9|pending_peak=7|dirtyWB=1|reverse_returns=7|bankP1=1|drain=1|PASS"
+      ],
+      "mode": "WV_ZERO_RO",
+      "sets": 64,
+      "ways": 8
+    }
+  ],
+  "peak_child_RSS_bytes": 436207616,
+  "reused_S_constructors": [
+    {
+      "case": "G64W8_S",
+      "evidence_ref": {
+        "bytes": 139333,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/tools/qualified_geometry_queue_v1/evidence/SOURCE78_ACTUAL_CONSTRUCTOR_RESULT.json",
+        "sha256": "928e9185a2331cae661a6013043d77d540fe566d4271588084651c0580030c99"
+      },
+      "stdout_ref": {
+        "bytes": 2652,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/config_init_cpu/runs/57000dc1-d258-4aa1-9adc-5bff2f68bfd8/G64W8_S.stdout",
+        "sha256": "2bb94e4a091a2a2e8b73bb3b01ff665d77b42655cf543bd78042252b42923c32"
+      }
+    },
+    {
+      "case": "G32W16_S",
+      "evidence_ref": {
+        "bytes": 139333,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/tools/qualified_geometry_queue_v1/evidence/SOURCE78_ACTUAL_CONSTRUCTOR_RESULT.json",
+        "sha256": "928e9185a2331cae661a6013043d77d540fe566d4271588084651c0580030c99"
+      },
+      "stdout_ref": {
+        "bytes": 2654,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/agent_b/config_init_cpu/runs/57000dc1-d258-4aa1-9adc-5bff2f68bfd8/G32W16_S.stdout",
+        "sha256": "9c94bab35f916c74414b7a2f6686f2e1458bca0a6918c080616ab0bb6c88cd13"
+      }
+    }
+  ],
+  "runs": [
+    {
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/midtag.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G32W16_S_111.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1",
+        "16",
+        "32"
+      ],
+      "config_ref": {
+        "bytes": 1055,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G32W16_S_111.config",
+        "sha256": "278810403fa9262850626f63849515a72a54b796f84b9d2ea4be66295841e085"
+      },
+      "mode": "S",
+      "observer_bits": "111",
+      "returncode": 0,
+      "seconds": 0.016381949186325073,
+      "sets": 32,
+      "stderr_ref": {
+        "bytes": 0,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G32W16_S_111.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout_ref": {
+        "bytes": 18720,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G32W16_S_111.stdout",
+        "sha256": "4c7beca9a7d94b126c64ae9a9542128b5d25f98a1c3a4620a90db8990388e091"
+      },
+      "ways": 16
+    },
+    {
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/midtag.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G32W16_S_011.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1",
+        "16",
+        "32"
+      ],
+      "config_ref": {
+        "bytes": 1055,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G32W16_S_011.config",
+        "sha256": "fa4dcbe395cd47090b434bda0f6ea2a24bd93c85229606d9d84b7ea75c063cbd"
+      },
+      "mode": "S",
+      "observer_bits": "011",
+      "returncode": 0,
+      "seconds": 0.015527807176113129,
+      "sets": 32,
+      "stderr_ref": {
+        "bytes": 0,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G32W16_S_011.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout_ref": {
+        "bytes": 14225,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G32W16_S_011.stdout",
+        "sha256": "61007d7a2c38d989cb2aed16eaa26a98542ef79e1c81f4741dcd12877dece562"
+      },
+      "ways": 16
+    },
+    {
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/midtag.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G32W16_WV_ZERO_RO_111.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "16",
+        "32"
+      ],
+      "config_ref": {
+        "bytes": 1055,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G32W16_WV_ZERO_RO_111.config",
+        "sha256": "1479ef5e75574bc00c17c844ec0112fdb66276c1682da76f06be9bf31a67c093"
+      },
+      "mode": "WV_ZERO_RO",
+      "observer_bits": "111",
+      "returncode": 0,
+      "seconds": 0.01614162139594555,
+      "sets": 32,
+      "stderr_ref": {
+        "bytes": 0,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G32W16_WV_ZERO_RO_111.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout_ref": {
+        "bytes": 19480,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G32W16_WV_ZERO_RO_111.stdout",
+        "sha256": "796681ac374e35f460cad9f4a4738785f3d0cf69002edf07d5a144549e118bdf"
+      },
+      "ways": 16
+    },
+    {
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/midtag.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G32W16_WV_ZERO_RO_011.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "16",
+        "32"
+      ],
+      "config_ref": {
+        "bytes": 1055,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G32W16_WV_ZERO_RO_011.config",
+        "sha256": "9010d3fe7bee240474bbce1379c30edee28325089ffbc2e825b4107e67ab1c3f"
+      },
+      "mode": "WV_ZERO_RO",
+      "observer_bits": "011",
+      "returncode": 0,
+      "seconds": 0.015757465735077858,
+      "sets": 32,
+      "stderr_ref": {
+        "bytes": 0,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G32W16_WV_ZERO_RO_011.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout_ref": {
+        "bytes": 14975,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G32W16_WV_ZERO_RO_011.stdout",
+        "sha256": "95daa5a1fefe9af04f28dc28e89919e23791b30ebd02611f0a290ffe2c1faaff"
+      },
+      "ways": 16
+    },
+    {
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/midtag.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G64W8_S_111.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1",
+        "8",
+        "64"
+      ],
+      "config_ref": {
+        "bytes": 1055,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G64W8_S_111.config",
+        "sha256": "278810403fa9262850626f63849515a72a54b796f84b9d2ea4be66295841e085"
+      },
+      "mode": "S",
+      "observer_bits": "111",
+      "returncode": 0,
+      "seconds": 0.014946162700653076,
+      "sets": 64,
+      "stderr_ref": {
+        "bytes": 0,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G64W8_S_111.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout_ref": {
+        "bytes": 18672,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G64W8_S_111.stdout",
+        "sha256": "ceb645dfc87b526ffbc9109b7dcddfc783f1cc517c7447afdaafcc3c8b0097c7"
+      },
+      "ways": 8
+    },
+    {
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/midtag.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G64W8_S_011.config",
+        "1",
+        "16",
+        "0",
+        "0",
+        "1",
+        "8",
+        "64"
+      ],
+      "config_ref": {
+        "bytes": 1055,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G64W8_S_011.config",
+        "sha256": "fa4dcbe395cd47090b434bda0f6ea2a24bd93c85229606d9d84b7ea75c063cbd"
+      },
+      "mode": "S",
+      "observer_bits": "011",
+      "returncode": 0,
+      "seconds": 0.013563588261604309,
+      "sets": 64,
+      "stderr_ref": {
+        "bytes": 0,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G64W8_S_011.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout_ref": {
+        "bytes": 14182,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G64W8_S_011.stdout",
+        "sha256": "164e4c7e1a6b76c1381290bcd75ccd2e551e0ee77a2ad307aa939a3c0728ee85"
+      },
+      "ways": 8
+    },
+    {
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/midtag.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G64W8_WV_ZERO_RO_111.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "8",
+        "64"
+      ],
+      "config_ref": {
+        "bytes": 1055,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G64W8_WV_ZERO_RO_111.config",
+        "sha256": "1479ef5e75574bc00c17c844ec0112fdb66276c1682da76f06be9bf31a67c093"
+      },
+      "mode": "WV_ZERO_RO",
+      "observer_bits": "111",
+      "returncode": 0,
+      "seconds": 0.015530668199062347,
+      "sets": 64,
+      "stderr_ref": {
+        "bytes": 0,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G64W8_WV_ZERO_RO_111.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout_ref": {
+        "bytes": 19413,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G64W8_WV_ZERO_RO_111.stdout",
+        "sha256": "c84d5e4ecd5c2c6b233258f18f2e0cb983a56b60345c69383fc0cd5e73e66036"
+      },
+      "ways": 8
+    },
+    {
+      "argv": [
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/midtag.cpu",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+        "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G64W8_WV_ZERO_RO_011.config",
+        "2",
+        "16",
+        "0",
+        "0",
+        "1",
+        "8",
+        "64"
+      ],
+      "config_ref": {
+        "bytes": 1055,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G64W8_WV_ZERO_RO_011.config",
+        "sha256": "9010d3fe7bee240474bbce1379c30edee28325089ffbc2e825b4107e67ab1c3f"
+      },
+      "mode": "WV_ZERO_RO",
+      "observer_bits": "011",
+      "returncode": 0,
+      "seconds": 0.01723974198102951,
+      "sets": 64,
+      "stderr_ref": {
+        "bytes": 0,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G64W8_WV_ZERO_RO_011.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout_ref": {
+        "bytes": 14924,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/agent_a_mid_tag/cpu/G64W8_WV_ZERO_RO_011.stdout",
+        "sha256": "8118aba2e83e22095f7bee79cc5ac8c021b84db6b4b6e81b2e039518ee4b9ccc"
+      },
+      "ways": 8
+    }
+  ],
+  "source_identity": {
+    "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+    "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+    "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "status": "PASS_4_GEOMETRY_MODE_PROTOCOL_PAIRS_NOT_APPLICATION_NI"
+}
