@@ -1,0 +1,17 @@
+# Vector1700 two-mode formal activation handoff
+
+The immutable original engineering package remains agent_b_vector_modes/ from contract881a4f07. This owned formal package contains the same production Source862/ELF083aa0..., the same input/full282 option maps, and no production modifications or new CPU application runs.
+
+Formal request: EP_L2_VECTOR1700_WV_DECOMPOSITION_V1_20261104. Exactly two new complete applications, W_ONLY/WV_ZERO_RO at1700MHz, with accepted sameSource S45,974/F55,925 controls. No new NI allowance. Fixed111 model boundary, appNI NOT_MEASURED and B0/M0a NOT_PROVEN remain.
+
+Runtime is runtime/ and stays at that exact path for sealing. The common ROOT is the formal Vector1700 data root; NATIVE is Main's real Native root. All Source5, ELF/library, ordered-config and actual282, input, modeCPU, Main review, user authorization, reciprocal pair and scope guards remain active. The full consume/run/postprocess/archive lifecycle is present. Prepare invokes D's shared routeguard; resource admission invokes C's adapter with the exact dispatch CPU, request and cohort, supporting Main's global cap10. No sandbox root or old sharedNative SHA checker is active. The distinct archive root is true164/host174_storage_recovery/ep_l2_vector1700_decomposition_v3_20261104_v1/.
+
+Four Main review drafts are under qualification/REVIEW_DRAFTS/. Only Main may adopt/sign them into qualification/. The formal mode contract rejects unsigned/DRAFT evidence. Main should verify the evidence refs and module pins; set status to proposed_PASS_status and approved_by EP-MAIN. CPU-mode review is distinct from the existing sameSource build/whole-TU review and is not application acceptance. The Host draft includes both C resource implementation dependencies, cap10 and cap2 policies, frozen numeric dependencies and D guard/safe core.
+
+Main-invoked build_formal_candidates.py takes --resource-module, --resource-policy and --native-entry. It deterministically emits specs/W_ONLY.json, specs/WV_ZERO_RO.json and FORMAL_INSTALL_MANIFEST.json. It grants no registry/native route/dispatcher authority. --require-reviewed validates signed Main receipt and Source/mode contracts. --install-specs additionally creates exact formal FROZEN_SPECs exclusively, refusing replacement of different files. Only Main should invoke that installation option.
+
+The private bin/native_vector1700_v3_candidate is just the prepared sole-entry byte template. Main copied it to the approved formal versioned bin path; the agent did not install routes, alter real authority or execute models. D supports its explicit /bin/sh interpreter. Main's installed route receipt, shared safe route contract and global Native protections are still required before prepare passes.
+
+28/28 pure formal Host controls pass, including exact background and actual two-point authorization positives, unsigned Main-review rejection, wrongSource/clock/B0/RO/budget and vacuous/wrongSource CPU-proof negatives. run_formal_host_controls.py reproduces them without full CPU fixture, application, real authority or route mutations. No scientific startup was consumed by Agent B.
+
+Final activation steps belong to Main: review/sign, rerender exact final candidates, exclusive install/register budget2 and both exact spec SHAs, install qualified sole-entry/shared route receipts and dispatch bindings, run real prepare/inspect, then consume through the single Main controller. Source78 controls, old budgets, retry/refund and extra NI are excluded.

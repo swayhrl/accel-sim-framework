@@ -1,0 +1,86 @@
+test_FWT_all_accepted_archived_releasesGEMM (test_formal_native_v3.Queue) ... ok
+test_FWT_failure_localHOLD_Vector_continues (test_formal_native_v3.Queue) ... ok
+test_archive_shared_lock_serial (test_formal_native_v3.Queue) ... ok
+test_cap2_10_and11deny (test_formal_native_v3.Queue) ... ERROR
+test_entry_route_addition_is_byte_exact_and_finite (test_formal_native_v3.Queue) ... ok
+test_initial_releases6_waits4 (test_formal_native_v3.Queue) ... ok
+test_mocked_exact10_dryloop_no_duplicate_no_refund (test_formal_native_v3.Queue) ... ok
+test_exact_base_PASS (test_formal_native_v3.Route) ... ok
+test_finite_authorized_foreign_insert_PASS (test_formal_native_v3.Route) ... ok
+test_missing_graph_and_wrong_baseline_rejected (test_formal_native_v3.Route) ... ERROR
+test_owned_dependency_before_use_SHA_rejected (test_formal_native_v3.Route) ... ERROR
+test_repeated_and_concurrent_preview_no_state_writes (test_formal_native_v3.Route) ... ok
+test_scoped_entry_pin_before_open_reject (test_formal_native_v3.Route) ... ERROR
+test_sealed_execution_global_and_entry_swap_cannot_redirect (test_formal_native_v3.Route) ... ok
+test_shadow_and_EP_mutation_rejected (test_formal_native_v3.Route) ... ERROR
+
+======================================================================
+ERROR: test_cap2_10_and11deny (test_formal_native_v3.Queue)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_d_execution/test_formal_native_v3.py", line 82, in test_cap2_10_and11deny
+    with self.assertRaises(ValueError):D.concurrency_capacity(0,0,11)
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_d_execution/finite_main_v3.py", line 66, in concurrency_capacity
+    need(type(cap)is int and cap in[2,10],"only qualified temporary2 or approved10")
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_v2_20261103_v1/tools/finite_main_executor.py", line 15, in need
+    if not x: raise RuntimeError(msg)
+RuntimeError: only qualified temporary2 or approved10
+
+======================================================================
+ERROR: test_missing_graph_and_wrong_baseline_rejected (test_formal_native_v3.Route)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_d_execution/test_formal_native_v3.py", line 44, in test_missing_graph_and_wrong_baseline_rejected
+    with self.assertRaises(core.Hold):G.validate_current(self.route)
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_d_execution/native_route_guard_v3.py", line 31, in validate_current
+    pins=r["owned_runtime_pins"];c.need(isinstance(pins,list)and pins,"missing immutable owned dependency graph")
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_d_execution/safe_native_core_v3.py", line 8, in need
+    if not ok: raise Hold(reason)
+ep_v3_frozen_route_core.Hold: missing immutable owned dependency graph
+
+======================================================================
+ERROR: test_owned_dependency_before_use_SHA_rejected (test_formal_native_v3.Route)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_d_execution/test_formal_native_v3.py", line 41, in test_owned_dependency_before_use_SHA_rejected
+    with self.assertRaises(core.Hold):G.validate_current(self.route)
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_d_execution/native_route_guard_v3.py", line 35, in validate_current
+    b,t=c.pin(p);receipts.append(dict(path=p["path"],sha256=c.digest(b),token=t))
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_d_execution/safe_native_core_v3.py", line 29, in pin
+    need(digest(b)==ref["sha256"],"immutable artifact SHA drift: "+ref["path"])
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_d_execution/safe_native_core_v3.py", line 8, in need
+    if not ok: raise Hold(reason)
+ep_v3_frozen_route_core.Hold: immutable artifact SHA drift: /tmp/tmpuroar0yl/frontend.py
+
+======================================================================
+ERROR: test_scoped_entry_pin_before_open_reject (test_formal_native_v3.Route)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_d_execution/test_formal_native_v3.py", line 47, in test_scoped_entry_pin_before_open_reject
+    with self.assertRaises(core.Hold):G.sealed_entry(self.route)
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_d_execution/native_route_guard_v3.py", line 47, in sealed_entry
+    c=_core();receipt=validate_current(routepath);entry,_=c.pin(receipt["entry_ref"])
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_d_execution/native_route_guard_v3.py", line 30, in validate_current
+    entry,entrytoken=c.pin(r["entry_ref"])
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_d_execution/safe_native_core_v3.py", line 29, in pin
+    need(digest(b)==ref["sha256"],"immutable artifact SHA drift: "+ref["path"])
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_d_execution/safe_native_core_v3.py", line 8, in need
+    if not ok: raise Hold(reason)
+ep_v3_frozen_route_core.Hold: immutable artifact SHA drift: /tmp/tmppxa8txv1/scope
+
+======================================================================
+ERROR: test_shadow_and_EP_mutation_rejected (test_formal_native_v3.Route)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_d_execution/test_formal_native_v3.py", line 38, in test_shadow_and_EP_mutation_rejected
+    with self.assertRaises(core.Hold):G.validate_current(self.route)
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_d_execution/native_route_guard_v3.py", line 28, in validate_current
+    c.need(accepted,"unreviewed Native mutation/shadow/delete/replace/foreign route")
+  File "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_d_execution/safe_native_core_v3.py", line 8, in need
+    if not ok: raise Hold(reason)
+ep_v3_frozen_route_core.Hold: unreviewed Native mutation/shadow/delete/replace/foreign route
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.219s
+
+FAILED (errors=5)

@@ -1,0 +1,53 @@
+{
+  "schema": "EP_MAIN_V3_RESOURCE_PID_PUBLICATION_TRANSIENT_READONLY_AUDIT_V1",
+  "utc": "2026-11-04T05:22:17.416894+00:00",
+  "status": "PASS_TRANSIENT_CLEARED_NO_ACTIVE_PATCH",
+  "active_resource_module_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_c_resources/resources_v3.py",
+    "sha256": "ebaacc5efecf4e2162532b0722822763df55fb5cab05dbec0e0eaa161e6465bd"
+  },
+  "current_claims_sha256": "927b79de6e4a67ee77b5297c3f46525c92230815c2953cb9fe89b210be7ce222",
+  "foreign_metadata_errors": [],
+  "global_EP_active_count": 4,
+  "DTC48_loader_models": 8,
+  "current_A_joins": [
+    {
+      "cohort": "EP_PERF_PFV3_MIDTAG_FWT_S_G32W16_V1",
+      "claim_state": "RUNNING",
+      "pid": 3681349,
+      "start_ticks": 1052149645,
+      "model_identity_mapped": true,
+      "CPU_binding_matches": true
+    },
+    {
+      "cohort": "EP_PERF_PFV3_MIDTAG_FWT_S_G64W8_V1",
+      "claim_state": "RUNNING",
+      "pid": 3681602,
+      "start_ticks": 1052153410,
+      "model_identity_mapped": true,
+      "CPU_binding_matches": true
+    },
+    {
+      "cohort": "EP_PERF_PFV3_MIDTAG_FWT_WV_ZERO_RO_G32W16_V1",
+      "claim_state": "RUNNING",
+      "pid": 3681403,
+      "start_ticks": 1052150183,
+      "model_identity_mapped": true,
+      "CPU_binding_matches": true
+    },
+    {
+      "cohort": "EP_PERF_PFV3_MIDTAG_FWT_WV_ZERO_RO_G64W8_V1",
+      "claim_state": "RUNNING",
+      "pid": 3681831,
+      "start_ticks": 1052157335,
+      "model_identity_mapped": true,
+      "CPU_binding_matches": true
+    }
+  ],
+  "interpretation": "Observed new EP process can become visible before asynchronous model_PID/startticks publication in own dispatch claim. Current adapter deliberately HOLDs until exact generation join exists. Fresh reads now join all4 new A models,8 DTC48 loader models with zero errors. Global count comes from consumed-before-fork/RUNNING registry and does not depend on PID receipt publication, so this race cannot admit an eleventh EP model.",
+  "persistent_failure": false,
+  "safe_current_action": "Leave frozen adapter/Spec/Source graph unchanged; continue next passive admission sample.",
+  "candidate_if_future_needed": "Separate resource-only candidate could join same UUID registered INTENT and exact native PID/maps receipt before own claim gains PID, requiring loaded ELF, argv/input/config, generation and CPU all exact. Never infer ownership from executable name or CPU alone. Not implemented or installed.",
+  "source_specs_native_or_ledger_modified": false,
+  "scientific_starts": 0
+}
