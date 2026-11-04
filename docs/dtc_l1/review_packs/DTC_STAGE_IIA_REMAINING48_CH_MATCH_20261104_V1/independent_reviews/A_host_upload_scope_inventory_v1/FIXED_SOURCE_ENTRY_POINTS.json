@@ -1,0 +1,85 @@
+{
+  "direct_selected_entry_fact": "At the shown idle-cluster entry, flush_l1=1 calls cache_invalidate(IDLE_CLUSTER). The shown ldst_unit::invalidate only requests OO frontend invalidation when dtc_l1_invalidate_on_source_event is true; with actual0 it calls m_L1D->invalidate(). The shown perf_memcpy_to_gpu routine steps32B and delegates to memory-partition/L2 tag fill. These selected entry points do not establish that repeated CPU uploads invalidate/refresh OO values.",
+  "framework_prefill_call": {
+    "commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+    "line_end": 145,
+    "line_start": 128,
+    "native_path": "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/accel-sim.cc",
+    "path": "gpu-simulator/accel-sim.cc",
+    "sha256": "36e11eb6aa8975b208d3f5e65f2a389bc93809483c17a15d3743c8fe272a37d8",
+    "text": "128: void accel_sim_framework::parse_commandlist() {\n129:   // gulp up as many commands as possible - either cpu_gpu_mem_copy\n130:   // or kernel_launch - until the vector \"kernels_info\" has reached\n131:   // the window_size or we have read every command from commandlist\n132:   while (kernels_info.size() < window_size && commandlist_index < commandlist.size()) {\n133:     trace_kernel_info_t *kernel_info = NULL;\n134:     if (commandlist[commandlist_index].m_type == command_type::cpu_gpu_mem_copy) {\n135:       size_t addre, Bcount;\n136:       tracer.parse_memcpy_info(commandlist[commandlist_index].command_string, addre, Bcount);\n137:       std::cout << \"launching memcpy command : \"\n138:                 << commandlist[commandlist_index].command_string << std::endl;\n139:       m_gpgpu_sim->perf_memcpy_to_gpu(addre, Bcount);\n140:       commandlist_index++;\n141:     } else if (commandlist[commandlist_index].m_type == command_type::kernel_launch) {\n142:       // Read trace header info for window_size number of kernels\n143:       kernel_trace_t *kernel_trace_info =\n144:           tracer.parse_kernel_info(commandlist[commandlist_index].command_string);\n145:       kernel_info = create_kernel_info(kernel_trace_info, m_gpgpu_context,"
+  },
+  "limits": [
+    "Selected idle-cluster/source-event callsites only; not proof OO state is never reset through another path.",
+    "Declared HtoD positions do not establish data-value change, exact hook timing or overlap with OO-read addresses.",
+    "No interkernel HtoD does not certify GPU-store/other-host/coherence safety.",
+    "No safe/unsafe classification or accepted/input downgrade."
+  ],
+  "reused_C_source_fact": {
+    "bytes": 6829,
+    "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_remaining48_execution_20261104_v1/agents/C_completed_myocyte_review_v1/FIXED_CORE_INVALIDATION_ENTRY_FACTS.json",
+    "sha256": "72587e571dfde4f1b834f4cce48176205ec1d4e0ce64dd79ea78d26520fa5697"
+  },
+  "source_references": [
+    {
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "excerpts": [
+        {
+          "line_end": 2559,
+          "line_start": 2548,
+          "text": "2548:     // Depending on configuration, invalidate the caches once all of threads are\n2549:     // completed.\n2550:     int all_threads_complete = 1;\n2551:     if (m_config.gpgpu_flush_l1_cache) {\n2552:       for (unsigned i = 0; i < m_shader_config->n_simt_clusters; i++) {\n2553:         if (m_cluster[i]->get_not_completed() == 0)\n2554:           m_cluster[i]->cache_invalidate(\n2555:               dtc_l1::invalidation_source::IDLE_CLUSTER);\n2556:         else\n2557:           all_threads_complete = 0;\n2558:       }\n2559:     }"
+        },
+        {
+          "line_end": 2691,
+          "line_start": 2670,
+          "text": "2670: void gpgpu_sim::perf_memcpy_to_gpu(size_t dst_start_addr, size_t count) {\n2671:   if (m_memory_config->m_perf_sim_memcpy) {\n2672:     // if(!m_config.trace_driven_mode)    //in trace-driven mode, CUDA runtime\n2673:     // can start nre data structure at any position \tassert (dst_start_addr %\n2674:     // 32\n2675:     //== 0);\n2676: \n2677:     for (unsigned counter = 0; counter < count; counter += 32) {\n2678:       const size_t wr_addr = dst_start_addr + counter;\n2679:       addrdec_t raw_addr;\n2680:       mem_access_sector_mask_t mask;\n2681:       mask.set(wr_addr % 128 / 32);\n2682:       unsigned tpc = 0;\n2683:       m_memory_config->m_address_mapping.addrdec_tlx(wr_addr, &raw_addr, tpc);\n2684:       const unsigned partition_id =\n2685:           raw_addr.sub_partition /\n2686:           m_memory_config->m_n_sub_partition_per_memory_channel;\n2687:       m_memory_partition_unit[partition_id]->handle_memcpy_to_gpu(\n2688:           wr_addr, raw_addr.sub_partition, mask);\n2689:     }\n2690:   }\n2691: }"
+        }
+      ],
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c"
+    },
+    {
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "excerpts": [
+        {
+          "line_end": 4112,
+          "line_start": 4095,
+          "text": "4095: void ldst_unit::flush() {\n4096:   // Flush L1D cache\n4097:   m_L1D->flush();\n4098: }\n4099: \n4100: void ldst_unit::invalidate(dtc_l1::invalidation_source source) {\n4101:   if (m_config->dtc_l1_invalidate_on_source_event) {\n4102:     assert(m_dtc_l1_oo_frontend && m_L1D);\n4103:     auto &ordinary =\n4104:         *static_cast<dtc_l1::invalidation_observed_cache<l1_cache> *>(m_L1D);\n4105:     const uint64_t cycle = m_core->get_gpu()->global_cycle();\n4106:     if (dtc_l1_finite_service_active()) dtc_l1_sample_service_occupancy(cycle);\n4107:     m_dtc_invalidation.request(cycle, source, *m_dtc_l1_oo_frontend, ordinary);\n4108:     return;\n4109:   }\n4110:   // Original K0 ordinary request, including its existing deferred commit.\n4111:   m_L1D->invalidate();\n4112: }"
+        },
+        {
+          "line_end": 6746,
+          "line_start": 6740,
+          "text": "6740: void shader_core_ctx::cache_flush() { m_ldst_unit->flush(); }\n6741: \n6742: void shader_core_ctx::cache_invalidate(dtc_l1::invalidation_source source) {\n6743:   m_ldst_unit->invalidate(source);\n6744: }\n6745: \n6746: // modifiers"
+        },
+        {
+          "line_end": 7764,
+          "line_start": 7753,
+          "text": "7753: void simt_core_cluster::cache_flush() {\n7754:   for (unsigned i = 0; i < m_config->n_simt_cores_per_cluster; i++)\n7755:     m_core[i]->cache_flush();\n7756: }\n7757: \n7758: void simt_core_cluster::cache_invalidate(dtc_l1::invalidation_source source) {\n7759:   for (unsigned i = 0; i < m_config->n_simt_cores_per_cluster; i++)\n7760:     m_core[i]->cache_invalidate(source);\n7761: }\n7762: \n7763: bool simt_core_cluster::icnt_injection_buffer_full(unsigned size, bool write) {\n7764:   unsigned request_size = size;"
+        }
+      ],
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/shader.cc",
+      "sha256": "e67a486ef18abf2b8515bc5bb887812c058d29fe9fed8544320cc008e3b4ca11"
+    },
+    {
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "excerpts": [
+        {
+          "line_end": 120,
+          "line_start": 109,
+          "text": "109: void memory_partition_unit::handle_memcpy_to_gpu(\n110:     size_t addr, unsigned global_subpart_id, mem_access_sector_mask_t mask) {\n111:   unsigned p = global_sub_partition_id_to_local_id(global_subpart_id);\n112:   std::string mystring = mask.to_string<char, std::string::traits_type,\n113:                                         std::string::allocator_type>();\n114:   MEMPART_DPRINTF(\n115:       \"Copy Engine Request Received For Address=%zx, local_subpart=%u, \"\n116:       \"global_subpart=%u, sector_mask=%s \\n\",\n117:       addr, p, global_subpart_id, mystring.c_str());\n118:   m_sub_partition[p]->force_l2_tag_update(\n119:       addr, m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle, mask);\n120: }"
+        }
+      ],
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/l2cache.cc",
+      "sha256": "1b2b0ebca49a2f5943c9350a637d849961da96159a147a70b887434bd7f37ff5"
+    }
+  ],
+  "trace_parser": {
+    "commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+    "line_end": 445,
+    "line_start": 394,
+    "native_path": "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/trace-parser/trace_parser.cc",
+    "path": "gpu-simulator/trace-parser/trace_parser.cc",
+    "sha256": "8e3b727b054e75825181cf22778283b97f0d4c3c9e3ec7c1234f65c631bb9370",
+    "text": "394: std::vector<trace_command> trace_parser::parse_commandlist_file() {\n395:   std::ifstream fs;\n396:   fs.open(kernellist_filename);\n397: \n398:   if (!fs.is_open()) {\n399:     std::cerr << \"Unable to open file: \" << kernellist_filename << std::endl;\n400:     exit(1);\n401:   }\n402: \n403:   std::string directory(kernellist_filename);\n404:   const size_t last_slash_idx = directory.rfind('/');\n405:   if (std::string::npos != last_slash_idx) {\n406:     directory = directory.substr(0, last_slash_idx);\n407:   }\n408: \n409:   std::string line, filepath;\n410:   std::vector<trace_command> commandlist;\n411:   while (!fs.eof()) {\n412:     getline(fs, line);\n413:     if (line.empty())\n414:       continue;\n415:     else if (line.substr(0, 10) == \"MemcpyHtoD\") {\n416:       trace_command command;\n417:       command.command_string = line;\n418:       command.m_type = command_type::cpu_gpu_mem_copy;\n419:       commandlist.push_back(command);\n420:     } else if (line.substr(0, 6) == \"kernel\") {\n421:       trace_command command;\n422:       command.m_type = command_type::kernel_launch;\n423:       filepath = directory + \"/\" + line;\n424:       command.command_string = filepath;\n425:       commandlist.push_back(command);\n426:     }\n427:     // ignore gpu_to_cpu_memory_cpy\n428:   }\n429: \n430:   fs.close();\n431:   return commandlist;\n432: }\n433: \n434: void trace_parser::parse_memcpy_info(const std::string &memcpy_command,\n435:                                      size_t &address, size_t &count) {\n436:   std::vector<std::string> params;\n437:   split(memcpy_command, params, ',');\n438:   assert(params.size() == 3);\n439:   std::stringstream ss;\n440:   ss.str(params[1]);\n441:   ss >> std::hex >> address;\n442:   ss.clear();\n443:   ss.str(params[2]);\n444:   ss >> std::dec >> count;\n445: }"
+  }
+}

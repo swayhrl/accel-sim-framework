@@ -1,5 +1,27 @@
 # DTC-L1 Stage II-A Remaining48 CH fair matching
 
+## Full fixed CORE32 upload/configuration scope
+
+Read the [32-input host-upload inventory](independent_reviews/A_host_upload_scope_inventory_v1/REPORT.md) and its [356-check independent review](independent_reviews/C_host_upload_scope_review_v1/README.md). This is32-input event/configuration coverage, separate from the timestamped performance table and its accepted six-cell intersection. No missing performance cell is filled by this inventory.
+
+All32 frozen commandlists and64 legal P0 option records are SHA/identity-bound, including the six inherited P0 wrapper/underlying joins. Five inputs declare HtoD between kernel commands:
+
+| Program | Interkernel copies | Declared bytes |
+|---|---:|---:|
+|bfs|15|60|
+|histo|19|152|
+|mri-q|6|442368|
+|myocyte|11984|2612512|
+|particlefilter_naive|48|384000|
+
+bfs also declares one4B post-last upload. All32 have pre-first uploads;27 have only that declared HtoD position category. Command format/binding UNKNOWN count is0. Positions are trace command order, not measured hook timestamps; declared addresses/bytes do not establish value changes or OO-read overlap. These groups are not safety labels or workload-selection rules. Absence of interkernel HtoD does not certify GPU-store,other-host-path or numerical coherence.
+
+Every one of64 P0 records explicitly has prefill=1,flushL1=1,flushL2=0,source-event OO invalidation=0. Fixed-source defaults1/0/0/0 are recorded separately; actual values are not imputed from defaults, and matching values do not establish inheritance. Selected fixed Core/Framework entrypoints are pinned with their limited scope; OO global reset behavior,numerical freshness and source/capture ELF binding remain distinct questions. All accepted outcomes and32 identities remain unchanged.
+
+The64 P0 records also explicitly report64 clusters x1 core and shader_core_pipeline2048:32. Report the executed profile as a fixed SM70/V100-derived64SM simulation with the frozen10MiB L2 and850MHz DRAM. The trace/profile label is not a stock/native V100 hardware measurement. This publication changes no geometry,clock,cache policy,input or scientific identity.
+
+The remaining GES outcomes,final48 lifecycle/archive/recovery audit,full32 performance interpretation,final resource consumption,visual approval and final immutable closure remain separate requirements. The current performance snapshot retains its own timestamp. This packet starts no simulator,capture,GPU work,service or new experimental phase and leaves EnglishLaTeXv0.23 frozen.
+
 ## Completed31 review: final GES pair pending
 
 Start with the [completed31 scientific report](independent_reviews/root_completed31_consolidation_v1/REPORT.md) and its [independent review](independent_reviews/C_completed31_consolidation_review_v1/README.md). This frozen source has46 accepted new CH identities and the same31 complete six-cell inputs for both F profiles. GESUMMV-F128/F256 remain absent. The current execution table has an independent timestamp; no31-program result is promoted to final32 coverage.

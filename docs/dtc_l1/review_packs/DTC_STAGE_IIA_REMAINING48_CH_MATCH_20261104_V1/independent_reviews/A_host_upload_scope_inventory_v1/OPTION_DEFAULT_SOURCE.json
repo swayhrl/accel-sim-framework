@@ -1,0 +1,55 @@
+{
+  "default_is_not_used_to_fill_missing_actual_proof_fields": true,
+  "fields": {
+    "-gpgpu_dtc_l1_invalidate_on_source_event": {
+      "default": "0",
+      "source": {
+        "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+        "line_end": 30,
+        "line_start": 24,
+        "native_path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/dtc-l1-invalidation.h",
+        "path": "src/gpgpu-sim/dtc-l1-invalidation.h",
+        "sha256": "85dbad1028354142c5f3ca9873fe612aca89d8d6cd666652bcbd28c8280ab2b9",
+        "text": "24: inline void register_source_invalidation_option(option_parser_t parser,\n25:                                                 bool *enabled) {\n26:   option_parser_register(parser, \"-gpgpu_dtc_l1_invalidate_on_source_event\",\n27:                          OPT_BOOL, enabled,\n28:                          \"Opt-in OO lookup invalidation at existing LDST source \"\n29:                          \"requests; preserves physical owners (IO unsupported)\",\n30:                          \"0\");"
+      }
+    },
+    "-gpgpu_flush_l1_cache": {
+      "default": "0",
+      "source": {
+        "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+        "line_end": 808,
+        "line_start": 806,
+        "native_path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+        "path": "src/gpgpu-sim/gpu-sim.cc",
+        "sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+        "text": "806:   option_parser_register(opp, \"-gpgpu_flush_l1_cache\", OPT_BOOL,\n807:                          &gpgpu_flush_l1_cache,\n808:                          \"Flush L1 cache at the end of each kernel call\", \"0\");"
+      }
+    },
+    "-gpgpu_flush_l2_cache": {
+      "default": "0",
+      "source": {
+        "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+        "line_end": 811,
+        "line_start": 809,
+        "native_path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+        "path": "src/gpgpu-sim/gpu-sim.cc",
+        "sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+        "text": "809:   option_parser_register(opp, \"-gpgpu_flush_l2_cache\", OPT_BOOL,\n810:                          &gpgpu_flush_l2_cache,\n811:                          \"Flush L2 cache at the end of each kernel call\", \"0\");"
+      }
+    },
+    "-gpgpu_perf_sim_memcpy": {
+      "default": "1",
+      "source": {
+        "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+        "line_end": 242,
+        "line_start": 239,
+        "native_path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+        "path": "src/gpgpu-sim/gpu-sim.cc",
+        "sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+        "text": "239: void memory_config::reg_options(class OptionParser *opp) {\n240:   option_parser_register(opp, \"-gpgpu_perf_sim_memcpy\", OPT_BOOL,\n241:                          &m_perf_sim_memcpy, \"Fill the L2 cache on memcpy\",\n242:                          \"1\");"
+      }
+    }
+  },
+  "fixed_Core": "9eedb3131937748f0492fa83aad37d3691118d70",
+  "matching_default_does_not_prove_runtime_inheritance": true
+}
