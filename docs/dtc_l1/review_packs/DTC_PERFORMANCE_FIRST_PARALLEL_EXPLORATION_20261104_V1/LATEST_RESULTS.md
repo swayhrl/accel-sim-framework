@@ -1,8 +1,8 @@
 # Latest Performance-First results
 
-Updated 2026-11-04T13:42:55.082745+00:00. Fixed48 planned cells: Tag safety HOLD=16; non-Tag accepted=2, archived negative=0, unused-family-HOLD=0, pending=30. Fixed exploratory inputs=8. These are not the core32 population.
+Updated 2026-11-04T14:08:22.200223+00:00. Fixed48 planned cells: Tag safety HOLD=16; non-Tag accepted=3, archived negative=0, unused-family-HOLD=0, pending=29. Fixed exploratory inputs=8. These are not the core32 population.
 
-Immutable complete table, source identities, CSV and missingness: [snapshot](progress_snapshots/20261104T134254_9b0dad89/README.md). See LATEST_RESULTS_SUMMARY.json and the matching JSON/CSV in that snapshot.
+Immutable complete table, source identities, CSV and missingness: [snapshot](progress_snapshots/20261104T140821_934b30f5/README.md). See LATEST_RESULTS_SUMMARY.json and the matching JSON/CSV in that snapshot.
 
 All curves and GM use one fixed variant at a time. Direct variant comparison requires the common accepted input intersection; no best-per-program stitching. Tag HOLD cells have no simulated cycles and are not performance negatives. Missing counters are unavailable, not zero.
 
@@ -10,7 +10,7 @@ All curves and GM use one fixed variant at a time. Direct variant comparison req
 | --- | ---: | ---: |
 | OO_PIB192 | 0 / 8 | missing |
 | PHYS1024_TAG64x8 | 0 / 8 | missing |
-| PHYS768_TAG64x8 | 2 / 8 | 1.000000 |
+| PHYS768_TAG64x8 | 3 / 8 | 0.975595 |
 | TAG4BANK_PERBANK2_TOTAL8 | 0 / 8 | missing |
 
 The four original PHYS768 points must all pass the independent complete strict/true164/native-restore gate before the separate remaining28 request can attach. This report process cannot dispatch, register, reset, stop models or change any Goal. Only the existing legal owner may execute models. Full32 direction review and frozen manuscript v0.23 boundaries remain in CURRENT_STATUS.md and authority_amendments/.
