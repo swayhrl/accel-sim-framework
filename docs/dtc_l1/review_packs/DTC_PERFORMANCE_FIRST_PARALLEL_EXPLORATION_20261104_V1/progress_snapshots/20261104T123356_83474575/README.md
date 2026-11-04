@@ -1,0 +1,1 @@
+Read-only fixed8 structural snapshot:32nonTagplanned+16safetyHOLD, notCORE32. Only actual strict/natural/archive/native-restored closedRESULTs havecycles; other rowsnull. AvailableGM/commonintersection explicit; no perprogrambest. Sourceflags preserved; missingcounter!=0. No rawdecompression/model/controller action.
