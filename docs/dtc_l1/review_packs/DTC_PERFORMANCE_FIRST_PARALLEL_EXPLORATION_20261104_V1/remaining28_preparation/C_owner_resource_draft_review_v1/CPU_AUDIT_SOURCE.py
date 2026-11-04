@@ -1,0 +1,31 @@
+﻿from pathlib import Path
+import sys,json,hashlib,types,copy,subprocess,os,collections,datetime,ast
+sys.dont_write_bytecode=True
+P=Path;A=P('/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_parallel_exploration_20261104_v1');D=A/'agents/A_remaining28_owner_resource_v1';O=A/'C_remaining28_owner_resource_draft_review_v1';O.mkdir(exist_ok=True);F=O/'private_cpu';F.mkdir(exist_ok=True);checks=[]
+def rd(p):return json.loads(P(p).read_bytes())
+def sha(p):return hashlib.sha256(P(p).read_bytes()).hexdigest()
+def ck(n,v):assert v,n;checks.append(dict(name=n,PASS=True))
+def load(n,p):m=types.ModuleType(n);m.__file__=str(p);exec(compile(P(p).read_bytes(),str(p),'exec'),m.__dict__);return m
+ck('A_manifest_pin',sha(D/'MANIFEST.json')=='adf3484bda991a9c7b3860462304349791b668ed464950424c0015fb3acdd3f0')
+for x in rd(D/'MANIFEST.json')['files']:ck('A_member:'+x['relative_path'],sha(D/x['relative_path'])==x['sha256']and(D/x['relative_path']).stat().st_size==x['size_bytes'])
+for x in rd(D/'DEPENDENCY_PINS.json')['refs']:ck('dependency:'+x['path'],sha(x['path'])==x['sha256'])
+fields=rd(D/'REMAINING28_RESOURCE_SPEC_FIELDS.json');matrix=rd(P(fields['source_matrix_path']));ck('prior48_matrix_SHA',sha(fields['source_matrix_path'])==fields['source_matrix_sha256']);points=fields['points'];ck('28_unique_exact_plans',len(points)==len({x['cohort']for x in points})==len({x['plan_candidate_id']for x in points})==28)
+cs=matrix['candidates'];print('CANDIDATE_KEYS',list(cs[0]))
+lookup={x['plan_candidate_id']:x for x in cs};expected={x['plan_candidate_id']for x in cs if x['variant']not in['TAG64x16_PHYS640','TAG128x8_PHYS640']and not(x['variant']=='PHYS768_TAG64x8'and x['program']in['2DCONV','GEMM','MVT','BICG'])};ck('original48_minusTag16_minusFirst4',{x['plan_candidate_id']for x in points}==expected)
+ck('family_counts',collections.Counter(x['profile']for x in points)=={'PHYS768_TAG64x8':4,'PHYS1024_TAG64x8':8,'OO_PIB192':8,'TAG4BANK_PERBANK2_TOTAL8':8})
+for x in points:
+ v=lookup[x['plan_candidate_id']];ck('frozen_input_profile:'+x['cohort'],x['input_digest']==v['input_digest']and x['profile']==v['variant']and x['program']==v['program']and x['downstream_profile']=='P0'and x['cell']=='DH');ck('binding:'+x['cohort'],sha(x['input_binding']['path'])==x['input_binding']['sha256']);ck('forecast_caps:'+x['cohort'],x['estimated_peak_model_RAM_bytes']<=x['limits']['max_process_tree_rss_bytes']<=x['limits']['max_process_tree_vms_bytes']and x['limits']['max_result_directory_bytes']==(128 if x['program']=='scan'else 64)*1024**2)
+ for k in x['configs']:ck('config:'+x['cohort']+':'+P(k['path']).name,sha(k['path'])==k['sha256'])
+ck('forecast_sum_not_actualRSS',sum(x['estimated_peak_model_RAM_bytes']for x in points)==73479172926)
+m=load('C_perf28_resources',D/'perf28_resources.py');a=load('C_perf28_addon',D/'perf28_parent_addon.py');ops=load('C_perf28_ops',D/'perf28_ops.py');gate=m.first4_completion_gate();ck('actual_first4_gate_false',gate['pass']is False);ck('fixed28_cohort_set',set(m.EXPECTED28_COHORTS)if hasattr(m,'EXPECTED28_COHORTS')else set(a.EXPECTED28_COHORTS)=={x['cohort']for x in points})
+policy=rd(D/'RESOURCE_POLICY.template.json');s=m.sample_system();ck('Root_complete32_direction_scope_verified',m.old_completion_gate(s,policy)['Root_full32_direction_review_file_SHA_verified']);p=copy.deepcopy(policy);p['old_final_review_release']['direction_review_sha256']='wrong';ck('direction_SHA_drift_pauses',m.old_completion_gate(s,p)['pause_new'])
+before=b'#!/bin/sh\nset -eu\n# oldbytes\n\xff\x80\n';block=b'# E2-DTCPF28-exact\n';after=a.exact_native_route(before,block);ck('new28_route_preserves_oldbytes',after.replace(block,b'',1)==before)
+sa=(D/'perf28_parent_addon.py').read_text();so=(D/'perf28_ops.py').read_text();ck('gate_before_registry_write',sa.index("gate=resources28.first4_completion_gate(reg)")<sa.index('e.update_authority(register)'));ck('independent_CPU_review_pin_before_register',sa.index("independent=plan['independent_CPU_review_manifest']")<sa.index('e.update_authority(register)'));ck('28fixed_expected_budget',"candidate['budget']==candidate['remaining']==28"in sa and 'set(EXPECTED28_COHORTS)'in sa);ck('28_no_spent_retry',"if c not in q['consumed']and c not in claims"in so);ck('preclaim_before_binding',so.index('fresh=res.resources(spec,True)')<so.index('if db.exists():')<so.index('claims[c]=dict('))
+# Independently build/replay A exact original-header CPU fixture in own namespace.
+cpp=F/'family_lifecycle_cpu.cpp';cpp.write_bytes((D/'family_lifecycle_cpu.cpp').read_bytes());binary=F/'family_lifecycle_cpu';cmd=['g++','-std=c++17','-O2','-Wall','-Wextra','-I/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim',str(cpp),'-o',str(binary)];env=dict(os.environ,TMPDIR=str(F));build=subprocess.run(cmd,capture_output=True,text=True,env=env,timeout=60);ck('originalheader_CPU_compile',build.returncode==0);run=subprocess.run([str(binary)],capture_output=True,text=True,timeout=30);ck('originalheader_CPU_run',run.returncode==0);rows=[json.loads(x)for x in run.stdout.splitlines()];ck('10_originalheader_cases_reproduced',rows==rd(D/'FAMILY_LIFECYCLE_CPU_RESULT.json')['cases'])
+(O/'HEADER_CPU_REPLAY.json').write_text(json.dumps(dict(command=cmd,source_sha256=sha(cpp),header_sha256=sha(P('/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/dtc-l1-common.h')),returncode=run.returncode,cases=rows,no_trace_or_model=True),indent=2)+'\n')
+(O/'CHECKS.json').write_text(json.dumps(dict(count=len(checks),checks=checks),indent=2)+'\n');(O/'ACTUAL_METADATA_GATE.json').write_text(json.dumps(gate,indent=2)+'\n')
+r=dict(status='PASS_CPU_DRAFT_WITH_REQUIRED_FORWARD_FULL_RESTORE_GATE',count=len(checks),source_manifest_sha256=sha(D/'MANIFEST.json'),first4_metadata_gate_currently_passed=False,actual28_runtime_qualified=False,actual28_granted=False,required_forward_correction='Metadata R20 archived status is insufficient full-source/native/chunk SHA evidence. Final28 plan/owner must pin and verify C independent first4 terminal proof; source frozen adf remains unchanged.',other_required_integration='Actual28 Core/native/strict capacity family helper/guard/outbox/specs/plan remain to qualify. This is not an actual runtime release.',newmodel_starts=0,registry_writes=0)
+(O/'REVIEW.json').write_text(json.dumps(r,indent=2)+'\n');print('PASS_DRAFT',len(checks))
+
+

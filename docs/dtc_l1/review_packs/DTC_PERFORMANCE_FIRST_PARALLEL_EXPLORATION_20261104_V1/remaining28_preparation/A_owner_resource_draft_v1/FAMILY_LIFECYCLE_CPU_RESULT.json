@@ -1,0 +1,120 @@
+{
+  "status": "PASS_EXPECTED_TAG_HOLD_AND_NON_TAG_LIFECYCLE_CONTROLS",
+  "cases": [
+    {
+      "case": "BASE64x8_POOL640",
+      "sets": 64,
+      "ways": 8,
+      "physical_lines": 640,
+      "prior_requests_completed_and_retired": 640,
+      "prior_live_PIB_entries": 0,
+      "initial_per_set_min": 10,
+      "initial_per_set_max": 10,
+      "repeated_NO_FREE_LINE": 0,
+      "new_misses": 641,
+      "allocated_lines": 512,
+      "tag_evictions": 129,
+      "expected_structural_HOLD": false
+    },
+    {
+      "case": "TAG64x16_POOL640",
+      "sets": 64,
+      "ways": 16,
+      "physical_lines": 640,
+      "prior_requests_completed_and_retired": 640,
+      "prior_live_PIB_entries": 0,
+      "initial_per_set_min": 10,
+      "initial_per_set_max": 10,
+      "repeated_NO_FREE_LINE": 16,
+      "new_misses": 640,
+      "allocated_lines": 640,
+      "tag_evictions": 0,
+      "expected_structural_HOLD": true
+    },
+    {
+      "case": "TAG128x8_POOL640",
+      "sets": 128,
+      "ways": 8,
+      "physical_lines": 640,
+      "prior_requests_completed_and_retired": 640,
+      "prior_live_PIB_entries": 0,
+      "initial_per_set_min": 5,
+      "initial_per_set_max": 5,
+      "repeated_NO_FREE_LINE": 16,
+      "new_misses": 640,
+      "allocated_lines": 640,
+      "tag_evictions": 0,
+      "expected_structural_HOLD": true
+    },
+    {
+      "case": "PHYS768_TAG64x8",
+      "sets": 64,
+      "ways": 8,
+      "physical_lines": 768,
+      "prior_requests_completed_and_retired": 640,
+      "prior_live_PIB_entries": 0,
+      "initial_per_set_min": 10,
+      "initial_per_set_max": 10,
+      "repeated_NO_FREE_LINE": 0,
+      "new_misses": 641,
+      "allocated_lines": 512,
+      "tag_evictions": 129,
+      "expected_structural_HOLD": false
+    },
+    {
+      "case": "PHYS1024_TAG64x8",
+      "sets": 64,
+      "ways": 8,
+      "physical_lines": 1024,
+      "prior_requests_completed_and_retired": 640,
+      "prior_live_PIB_entries": 0,
+      "initial_per_set_min": 10,
+      "initial_per_set_max": 10,
+      "repeated_NO_FREE_LINE": 0,
+      "new_misses": 641,
+      "allocated_lines": 512,
+      "tag_evictions": 129,
+      "expected_structural_HOLD": false
+    },
+    {
+      "case": "OO_PIB192_ADMISSION_AND_RETIRE_LIMIT",
+      "admitted": 192,
+      "next_admission_blocked": true,
+      "one_retirement_per_cycle_preserved": true
+    },
+    {
+      "case": "TAG4BANK_2PERBANK_8TOTAL",
+      "eight_grants_accepted": true,
+      "ninth_total_and_third_samebank_rejected": true,
+      "baseline_four_limit_preserved": true
+    },
+    {
+      "case": "PHYS1024_INFLIGHT_128x8_FULLPOOL_COMPLETE_RETIRE",
+      "physical_allocated_before": 1024,
+      "after_refcount_release": 512,
+      "retired": 128,
+      "residual_valid_tags_not_freed": 512,
+      "PASS": true
+    },
+    {
+      "case": "PIB192_MERGED_REFERENCE_COMPLETE_RETIRE",
+      "instructions": 192,
+      "shared_inflight_physical_line": 1,
+      "retired": 192,
+      "finite_retirement1_preserved": true,
+      "PASS": true
+    },
+    {
+      "case": "TAG_GRANTS8_ALLOCATION4_RETAINED",
+      "cycle1_tag_grants": 8,
+      "cycle1_new_allocations": 4,
+      "nextcycle_remaining_allocations": 4,
+      "PASS": true
+    }
+  ],
+  "header_path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/dtc-l1-common.h",
+  "header_sha256": "dab2df3ec8e1fd1c8953ac146eba3c93906c84af8cce66051e5728afe9963fa1",
+  "model_starts": 0,
+  "trace_body_reads": 0,
+  "GPU_tasks": 0
+}

@@ -1,0 +1,7 @@
+CPU draft review PASS with required forward full-restore gate: 247 independent checks and replay of10 original-header CPU lifecycle cases. Exact28 equals original48 minus16 Tag safety HOLD minusfour first4phys768; counts4phys768/8phys1024/8PIB192/8Tag2perbank8total. New architecture/API/strict/outbox/spec/plan integration still requires separate actual qualification. No28 grant or model was issued.
+
+A first4_completion_gate is a metadata gate. R20 archived checks receipt status/SOURCE_KEEP and DONE/EXIT/UUID joins; it does not rehash archive chunks/native typed entries. The final28 owner must additionally bind and verify C independent first4 full terminal gate. Actual first4 metadata gate was false. Original adf frozen bytes remain unchanged.
+
+Forward documentation correction: scan has four128MiB output caps, remaining24 have64MiB, consistent with total SOURCE_KEEP/restore+metadata ceiling4,563,402,752B. A README all64MiB phrase is inaccurate; resource fields/total are correct. RAM forecasts are predictions derived from sampled old RSS, not actual maxima or silicon area.
+
+Original-header cases reproduce pool1024 full occupancy/refcount retirement to512 valid Tags,192 merged references retired with finite service1, and Tag8 grants while allocation width remains4. These checks are bounded CPU evidence, not universal integrated liveness/performance/numerical proof. Old source-event/coherence/capture-ELF boundaries remain. No model, old source, registry, owner, Goal, Git or service action occurred.

@@ -1,0 +1,30 @@
+{
+  "plan_only": true,
+  "model_starts": 0,
+  "counts": {
+    "PHYS1024_TAG64x8": 8,
+    "OO_PIB192": 8,
+    "TAG4BANK_PERBANK2_TOTAL8": 8,
+    "PHYS768_TAG64x8": 4
+  },
+  "original_Tag16_status": "SAFETY_HOLD_NOT_PERFORMANCE_NEGATIVE",
+  "first4_status": {
+    "schema": "PERFFIRST4_NATURAL_STRICT_ARCHIVE_NATIVE_RESTORE_PREDECESSOR_GATE_V1",
+    "reasons": [
+      "KeyError:'DTC_PERF_FIRST_PHYS768_FIRST4_20261104_V1'"
+    ],
+    "points": {},
+    "model_starts": 0,
+    "pass": false
+  },
+  "source_family_qualification": "fixedCore originalheader10 CPUcases plusA4001 exactdeltas/integrationanchors; no model qualification claimed",
+  "input_config_SHA_reverified": true,
+  "all28_resource_prediction_bytes": 73479172926,
+  "all28_registered_source_restore_metadata_write_ceiling_bytes": 4563402752,
+  "resource_formulas": "sameinput historicalDH sampledRSS*1.2+384MiB; RSS hard2*prediction+2GiB; VMS4*hard+4GiB; forecasts not caps or absolute measured peaks",
+  "structure_costs": {
+    "PHYS1024": "+48KiB nominalOOdata/SM vsphysical640; Tag512fixed",
+    "OO_PIB192": "+64activeOOslots and +64lowercreatebound/SM; finite retire/create/inject1 fixed",
+    "TAGSVC8": "4Tagbanks fixed; perbank1->2 and total4->8 coupled; allocation4 fixed; integrated throughput not certified"
+  }
+}

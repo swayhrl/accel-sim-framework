@@ -1,0 +1,9 @@
+# Independent first4 full terminal gate preparation
+
+CPU preparation PASS (22 checks), source 06996cc8f27ddbe67eb73e8979c98bcceb63e8993d98edfb3d7485076070d516. No actual full-first4 audit or service was launched.
+
+`--check-readiness` reads only control/RESULT/closure/PID metadata, returns readiness true or exit2 HOLD, and creates no gate output or reads live raw. `--audit` first requires ALL4 exact unique one-use UUIDs naturally exited, strict accepted positive cycles, archived SOURCE_KEEP, nonlive generations, approved source/spec/Tag pins. It then makes one exclusive attempt and reexecutes the already qualified strict reader against closed logs, matches complete proofs/cycles, hashes every true164 archive chunk and concatenated stream, checks all source/native restored typed files/directories/symlinks and exact member sets, and records path SHA proofs. It never calls a model entrypoint or writes any scientific source/result/registry/owner/route.
+
+Only the fixed C_first4_terminal_gate_v1 output is allowed. A successful immutable C_FIRST4_TERMINAL_GATE.json and manifest are evidence, not a new28 grant. The new28 owner must separately source-pin this validator and reverify the proof/current four UUID/RESULT/DONE/strict/archive metadata/independent proof digests and nonlive generations before registration. The existing A metadata-only gate is insufficient alone. Any audit error preserves HOLD; no blind duplicate attempt. Root may arrange one background CPU call after all4 readiness.
+
+The CPU tests used clearly labeled synthetic files in private namespaces plus actual current first4 metadata demonstrating NOT READY. They did not synthesize any scientific result. File and chunk corruption, extra membership, path escape, wrong device, symlink drift and live generation checks were exercised. CPU helpers are preserved for inspection; independent replay must clone into a new namespace instead of rewriting frozen files.
