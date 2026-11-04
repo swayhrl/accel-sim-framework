@@ -1,0 +1,9 @@
+# Root complete32 direction review for Performance-First exploration
+
+Remaining48 is naturally terminal and accepted48/48. The published fixed CORE32 has all192 accepted six-cell source slots, with no missing or negative CH cells. Root rechecked all192 RESULT SHA/cycles and independently recalculated the same32 profile metrics; the existing final CPU chain completed independent C lifecycle/archive/restore review and integer statistics. Source publication: `b665d5ea77b5ae022a86cd03c6c464f5b11cb15e`.
+
+The full32 P0 CH/DH GM is1.100072. F128 gives S_CH1.015816, S_DH1.012595, CH/DH1.096584 and I0.996830; F256 gives1.020645,1.019138,1.098448 and0.998523. Both profiles use exactly the same32 inputs. These common downstream benefits do not establish an overall relative-DTC improvement.
+
+Decision: continue the exact previously frozen eight inputs and four non-Tag structural families. MVT/BICG remain weak, while ATAX, the strong2DCONV/GEMM cases, responsive convolution/scan and vectorAdd control still provide distinct falsifiable tests. Final GESUMMV does not require an input or parameter change and is not added to this scope. No result yet demonstrates that any new structural candidate improves performance. First4 physical768 qualification remains mandatory before the authorized remaining28; Tag16 remain safety HOLD without performance-cycle imputations.
+
+This is the direction decision required by the new exploration contract. It does not resume or complete the paused old session Goal, modify its artifacts/owner/requests, or claim its remaining manual narrative/visual/cost signoff is complete. It does not authorize combinations, extra inputs, captures,109 jobs, numerical validation or manuscript changes. v0.23 remains frozen. All raw sources, accepted references, area/timing costs and unresolved semantic limitations retain their prior identities.

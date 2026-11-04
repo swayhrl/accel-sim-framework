@@ -1,0 +1,182 @@
+{
+  "request": "DTC_PERF_FIRST_PHYS768_FIRST4_20261104_V1",
+  "budget": 4,
+  "history_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/agents/B/HISTORICAL_WALLCLOCK.json",
+  "history_sha256": "9126d1ae4341652dabffbfb3f239b587565b06d6628515d7ef9360469dfb3ab6",
+  "formulas": {
+    "prediction": "ceil(max same-input historical DH sampled peak RSS *1.2)+384MiB",
+    "RSS_hard": "2*prediction+2GiB",
+    "VMS_hard": "4*RSS_hard+4GiB",
+    "output_cap": "max(64MiB,nextpow2(4*sameinput historical logical outputpeak+4MiB))"
+  },
+  "points": [
+    {
+      "input_digest": "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+      "population_origin": "FROZEN_FIRST8",
+      "program": "2DCONV",
+      "reporting_batch": "FIRST8",
+      "suite": "PolyBench/GPU",
+      "variant": "PHYS768_TAG64x8",
+      "estimated_peak_model_RAM_bytes": 1137495245,
+      "historical_elapsed_seconds": 6724.227949125692,
+      "limits": {
+        "max_process_tree_rss_bytes": 4422474138,
+        "max_process_tree_vms_bytes": 21984863848,
+        "max_result_directory_bytes": 67108864,
+        "timeout_seconds": 7776000
+      },
+      "historical_DH_receipt_sampled_RSS_peak_bytes": 612368384,
+      "historical_DH_output_logical_peak_bytes": 7294078,
+      "history_refs": [
+        {
+          "profile": "P0",
+          "native_exit_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/a659b723-15eb-45cb-90f8-13857f764329/NATIVE_EXIT.json",
+          "native_exit_sha256": "f9a99d713ab8a06ac56746370c11bb2e42a3f30653d92eebe2f0076ee51a074d",
+          "peak_observed_rss_bytes": 608174080,
+          "elapsed_seconds": 6724.227949125692
+        },
+        {
+          "profile": "F128",
+          "native_exit_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/17e5f613-18f6-4633-97c3-70a34e33b1b8/NATIVE_EXIT.json",
+          "native_exit_sha256": "9a452cce2a7b83ef8784c2eb930656ad5cd6fb812535e3c6a936da094c711e95",
+          "peak_observed_rss_bytes": 608174080,
+          "elapsed_seconds": 5149.273933142424
+        },
+        {
+          "profile": "F256",
+          "native_exit_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/55e7c2a1-8880-425f-b419-5cf51009c52a/NATIVE_EXIT.json",
+          "native_exit_sha256": "46d6388d3f11e24123ecf6a9d0126f2816f1ab9cf6291ca70693119303b78a10",
+          "peak_observed_rss_bytes": 612368384,
+          "elapsed_seconds": 5301.620738754049
+        }
+      ],
+      "measurement_semantics": "historical DONE peak_observed RSS sample maximum, not absolute allocation peak; prediction is not hard cap; max_output is a different logical-byte scope"
+    },
+    {
+      "input_digest": "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318",
+      "population_origin": "FROZEN_FIRST8",
+      "program": "GEMM",
+      "reporting_batch": "FIRST8",
+      "suite": "PolyBench/GPU",
+      "variant": "PHYS768_TAG64x8",
+      "estimated_peak_model_RAM_bytes": 6563246900,
+      "historical_elapsed_seconds": 10384.59145241417,
+      "limits": {
+        "max_process_tree_rss_bytes": 15273977448,
+        "max_process_tree_vms_bytes": 65390877088,
+        "max_result_directory_bytes": 67108864,
+        "timeout_seconds": 7776000
+      },
+      "historical_DH_receipt_sampled_RSS_peak_bytes": 5133828096,
+      "historical_DH_output_logical_peak_bytes": 6120595,
+      "history_refs": [
+        {
+          "profile": "P0",
+          "native_exit_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/af004a3c-c264-41c4-a6a4-b7a14d896c69/NATIVE_EXIT.json",
+          "native_exit_sha256": "d45fcea1891999b3e80c21bb2253827b73c793c9c700a6be429785773cea99e4",
+          "peak_observed_rss_bytes": 5133828096,
+          "elapsed_seconds": 7507.082176603377
+        },
+        {
+          "profile": "F128",
+          "native_exit_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/54b18004-c1a0-4735-aa74-116aa20e857d/NATIVE_EXIT.json",
+          "native_exit_sha256": "0823d5ac1613c7a45f66c1cb56e4eacdd7e44eb60b239d3a50e8f1982bb8ac1f",
+          "peak_observed_rss_bytes": 5133828096,
+          "elapsed_seconds": 6996.082294436172
+        },
+        {
+          "profile": "F256",
+          "native_exit_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/edcd9d78-80c2-4e89-90a4-f800be7f9940/NATIVE_EXIT.json",
+          "native_exit_sha256": "fbbc4a845a0a86b36115a1afed8f710c9a22e6e82002d6c309edd3ed5796584f",
+          "peak_observed_rss_bytes": 5133828096,
+          "elapsed_seconds": 10384.59145241417
+        }
+      ],
+      "measurement_semantics": "historical DONE peak_observed RSS sample maximum, not absolute allocation peak; prediction is not hard cap; max_output is a different logical-byte scope"
+    },
+    {
+      "input_digest": "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+      "population_origin": "FROZEN_FIRST8",
+      "program": "MVT",
+      "reporting_batch": "FIRST8",
+      "suite": "PolyBench/GPU",
+      "variant": "PHYS768_TAG64x8",
+      "estimated_peak_model_RAM_bytes": 3321888768,
+      "historical_elapsed_seconds": 14307.066720437258,
+      "limits": {
+        "max_process_tree_rss_bytes": 8791261184,
+        "max_process_tree_vms_bytes": 39460012032,
+        "max_result_directory_bytes": 67108864,
+        "timeout_seconds": 7776000
+      },
+      "historical_DH_receipt_sampled_RSS_peak_bytes": 2432696320,
+      "historical_DH_output_logical_peak_bytes": 1286835,
+      "history_refs": [
+        {
+          "profile": "P0",
+          "native_exit_path": "/root/data/dtc_hash_downstream18_20261027_v1/DTC/run/results/93cd6c4f-02cf-4e47-9a73-cba755167f47/NATIVE_EXIT.json",
+          "native_exit_sha256": "2c103e1c1f50d1ea2d472acc57791fff2326b1b46063d903fdbc674e3db55266",
+          "peak_observed_rss_bytes": 2432696320,
+          "elapsed_seconds": 14307.066720437258
+        },
+        {
+          "profile": "F128",
+          "native_exit_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/4b2fdd92-6b0f-4880-afc1-c12113099931/NATIVE_EXIT.json",
+          "native_exit_sha256": "64f29167b592a13f0d573ec5716962367b4e2c0e7d2cb19de78f5c36377357e1",
+          "peak_observed_rss_bytes": 2432696320,
+          "elapsed_seconds": 12436.0760209281
+        },
+        {
+          "profile": "F256",
+          "native_exit_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/2eb2507b-42f5-4ffe-8e1b-b4e5cde0f7d2/NATIVE_EXIT.json",
+          "native_exit_sha256": "1fa6b4693378fae7dbae12b895261a86559fa6452e8ce4f04ea06d30388582f5",
+          "peak_observed_rss_bytes": 2432696320,
+          "elapsed_seconds": 11931.492818012834
+        }
+      ],
+      "measurement_semantics": "historical DONE peak_observed RSS sample maximum, not absolute allocation peak; prediction is not hard cap; max_output is a different logical-byte scope"
+    },
+    {
+      "input_digest": "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+      "population_origin": "FROZEN_FIRST8",
+      "program": "BICG",
+      "reporting_batch": "FIRST8",
+      "suite": "PolyBench/GPU",
+      "variant": "PHYS768_TAG64x8",
+      "estimated_peak_model_RAM_bytes": 3377253581,
+      "historical_elapsed_seconds": 14137.329860519618,
+      "limits": {
+        "max_process_tree_rss_bytes": 8901990810,
+        "max_process_tree_vms_bytes": 39902930536,
+        "max_result_directory_bytes": 67108864,
+        "timeout_seconds": 7776000
+      },
+      "historical_DH_receipt_sampled_RSS_peak_bytes": 2478833664,
+      "historical_DH_output_logical_peak_bytes": 1261850,
+      "history_refs": [
+        {
+          "profile": "P0",
+          "native_exit_path": "/root/data/dtc_hash_downstream18_20261027_v1/DTC/run/results/fbb45ea4-716d-46f5-abfb-2842f03a8e99/NATIVE_EXIT.json",
+          "native_exit_sha256": "93ad790f5bf6588e9bbff278a65046af8b035d9cbc6851790532c04ef0644734",
+          "peak_observed_rss_bytes": 2478833664,
+          "elapsed_seconds": 14137.329860519618
+        },
+        {
+          "profile": "F128",
+          "native_exit_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/1a9da968-f307-4a73-8c69-77b1b9eb8211/NATIVE_EXIT.json",
+          "native_exit_sha256": "4cfe6ab84be99497f402030decd4043a4f7b4697631e538b9fcd1582d38b86a5",
+          "peak_observed_rss_bytes": 2478833664,
+          "elapsed_seconds": 10503.76614329964
+        },
+        {
+          "profile": "F256",
+          "native_exit_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/6ceeda27-593f-4a62-a0b2-58a694c38394/NATIVE_EXIT.json",
+          "native_exit_sha256": "c7c27e7cbe95b595c52acc437bebe5e9b303dfbdb374819441abadd4c901ae41",
+          "peak_observed_rss_bytes": 2478833664,
+          "elapsed_seconds": 10159.484362848103
+        }
+      ],
+      "measurement_semantics": "historical DONE peak_observed RSS sample maximum, not absolute allocation peak; prediction is not hard cap; max_output is a different logical-byte scope"
+    }
+  ]
+}

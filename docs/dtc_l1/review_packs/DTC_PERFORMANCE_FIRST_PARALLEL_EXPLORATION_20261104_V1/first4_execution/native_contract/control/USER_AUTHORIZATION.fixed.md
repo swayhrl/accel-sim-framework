@@ -1,0 +1,25 @@
+# DTC-L1 Performance-First Parallel Exploration V1 — user authorization scope
+
+This records the fresh user instruction in this conversation on2026-11-04; the complete original user message remains in the conversation. It is a new independent scientific task and does not replace,stop,resume or modify the paused Remaining48 Goal or its running models/final analysis chain.
+
+Authorities: StageI361fa6fa0700825bb9cda43e25b9fd1f60e0b262;StageIIA preparation5001c3f35052f7f91f1ad41eeff83f2947a0878d;first16 final5f67b4d6b94568a9f1acc80c3e56736bd81e4753;Remaining48 snapshotf9ed07de2370836b8a3f8cf4fbc8491265fe00ad. Same174-new/DTC-MAIN legal owner and scientific dispatcher only. No competing dispatcher,old budget/UUID/request reuse,reset,refund or silent model retry.
+
+Fixed64SM,SM70/V100-derived,10MiB L2,850MHz DRAM,existing accepted DH-P0 downstream reference and matching CH-P0. Eight exact frozen inputs:2DCONV,GEMM,convolutionSeparable,scan,ATAX,MVT,BICG,vectorAdd. Six initial single-variable or declared-coupled candidates:Tag64x8->64x16;Tag64x8->128x8;physical640->768;physical640->1024;activeOO PIB128->192;Tag4banks unchanged,perbank1->2,total4->8. Tag-set changes disclose hash-row remapping;PIB-linked queue and tag-port/compare/arbitration cost must be explicit. Allocation width and finite completion service are investigated as fixed lifecycle constraints,not automatically changed.
+
+48 planned cells are not a whole-project simulation cap or permission for48 simultaneous launches. First8 remain the exact Cartesian set(2DCONV,GEMM,MVT,BICG)x(Tag64x16 whilepool640,physical768 whileTag64x8). Unacceptable configurations/lifecycle/cost remainHOLD; no implicit pool growth,substitute inputs or new combinations.
+
+User condition: 首个8格通过实际配置、strict及归档资格后，可以在剩余资源允许的条件下继续本轮其他已冻结候选，不必为每个参数重复建立准备Goal。
+
+The two Tag1024/pool640 candidates are now independently CPU-qualified as structural progress HOLD. The first8 therefore contain4TagHOLD and4physical768 candidates. The already-authorized4physical768 may proceed after full actual-native qualification. Because4accepted+4HOLD is not automatically an all8PASS gate, the remaining28 non-Tag candidate release is awaiting the user's explicit clarification; no model grant is inferred while unanswered. The16Tag planned cells receive no scientific launch identities.
+
+The first actual request is DTC_PERF_FIRST_PHYS768_FIRST4_20261104_V1 with an exact finite4 one-use budget if final native/owner/resource qualification permits registration. This phase budget is not a cap on the larger authorized project. Any later phase uses an independent finite request after its authorization/gates,not a reset/refund of these4.
+
+GES highest priority: preserve actual PID/start/affinity,NUMA,cgroup,log,binary,archive. No signal,preemption,restart/reset/repeat. Only fresh CPU/RAM/IO/native/true164 headroom admits new models;pressure stops new admission rather than healthy existing models. Same owner's exclusive native locks and shared authority update lock remain. Unsupported dual-request capability meansCPU-only preparation,never a second dispatcher. Each actual launch binds a new UUID,strict cycles/resources,raw evidence,true164 fullSHA and native restore. Preserve all failures,stops,zeros,regressions and consumed identities.
+
+When Remaining48 formally completes and publishes final32,new exploration admission pauses while healthy exploration models continue. Root reviews full32 bottlenecks/negatives/resources;consistent direction may continue unchanged scope,otherwise unused candidates becomeSTOP/DEFERRED. Any necessary active-model stop goes through legal owner with consumed identity/reason/evidence and excludes accepted-performanceGM. A conservative earlier admission-only pause at old all48terminal protects old closure and waits for the same direction review.
+
+Compare each candidate to same full-input/same-downstream DH-P0 and retain legalCH-P0. Report DTC-self gain,absolute CH/candidate ratio,actual resources/cost,kernel/lifecycle evidence and all outcomes/missing. The8-input exploratory set does not replace core32/35. No per-program best-config GM;any final unified scheme needs a prospectively fixed broad set and new scope authorization. No dismissal solely from tinyGM/few zeros and no retaining only favorable programs.
+
+Publish an independent exploration branch with configuration/48plan,first8 qualification and actual strict results if native/resources allow,other candidate states,paired statistics,positive/negative hypotheses,cost,independent review and remoteSHA readback,plus direction response when old final32 arrives. No v0.23 edit,automatic combination search,new capture,109GPU task or extra numerical validation. Existing coherence/numerical/source-ELF uncertainties are disclosed,not silently repaired or used to relabel oldaccepted rows.
+
+Conversation Goal UI refuses a second unfinished Goal;old Goal remainspaused. This task is recorded independently in native scientific authority/artifacts,not by falsely completing or replacing the old Goal.
