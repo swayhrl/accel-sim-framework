@@ -1,0 +1,14 @@
+--- frozen597
+
++++ forwardV2R1
+
+@@ -90,7 +90,7 @@
+
+  other={row['uuid']for key,q in reg['registered_future_requests'].items()if key not in REQUESTS.values()and isinstance(q.get('consumed'),dict)for row in q['consumed'].values()if isinstance(row,dict)and'uuid'in row};assert not set(uuids)&other
+  before=read(A/'C_remaining28_execution_qualification_v1/OLD_IDENTITIES_PRE_28_REGISTRATION.json')
+  for key,old in before.items():
+-  q=reg['registered_future_requests'][key];assert q['budget']==old['budget']and q['remaining']==old['remaining']and ({c:r.get('uuid')for c,r in q['consumed'].items()}if isinstance(q['consumed'],dict)else q['consumed'])==old['UUIDs']
++  q=reg['registered_future_requests'][key];assert q.get('budget')==old['budget']and q.get('remaining')==old['remaining']and ({c:r.get('uuid')for c,r in q.get('consumed',{}).items()}if isinstance(q.get('consumed'),dict)else q.get('consumed'))==old['UUIDs']
+  # Rejoin the actual strong predecessor proof and exact runtime release hash; never run audit.
+  r=load(ROOTS['28']/'tools/perf28_terminal_gate_receipt.py');r.verify(contexts['28']['plan'],reg,contexts['28']['q']['runtime_release_evidence'])
+  return contexts,prior

@@ -1,0 +1,22 @@
+{
+  "schema": "C_FINAL32_FOREIGN_OPTIONAL_METADATA_GET_FORWARD_FIX_V1",
+  "old_source_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_parallel_exploration_20261104_v1/C_final_structure32_preparation_v1/final_structure32_readonly_audit.py",
+  "old_source_sha256": "597a7aac6aa7409452ff497206dfde2b252ec7ce8308863450555dc5223b298d",
+  "old_manifest_sha256": "cfa6d179e854b40d64f564d4330f0e565bf2b68d385d1d3fab2e252a1e0e3d33",
+  "new_source_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_parallel_exploration_20261104_v1/C_final_structure32_preparation_v2r1/final_structure32_readonly_audit.py",
+  "new_source_sha256": "aa3918b351c8831b202295f43213177e96605c62bc8773310fc4618eac3bc453",
+  "exact_replacement_count": 1,
+  "one_line_before": "q=reg['registered_future_requests'][key];assert q['budget']==old['budget']and q['remaining']==old['remaining']and ({c:r.get('uuid')for c,r in q['consumed'].items()}if isinstance(q['consumed'],dict)else q['consumed'])==old['UUIDs']",
+  "one_line_after": "q=reg['registered_future_requests'][key];assert q.get('budget')==old['budget']and q.get('remaining')==old['remaining']and ({c:r.get('uuid')for c,r in q.get('consumed',{}).items()}if isinstance(q.get('consumed'),dict)else q.get('consumed'))==old['UUIDs']",
+  "all_other_source_bytes_roundtrip_unchanged": true,
+  "scope": "Only historically optional foreign peer fields use the same get semantics as their pre28 baseline. Own R3/R28 strict budget/remaining/consumed unchanged. No model/science/source102 change.",
+  "actual_error_preserved": "Old597 readiness KeyError remaining at source_context line93 after R28 registration; not a scientific negative.",
+  "old_source_bytes_recovered_by_exact_reverse_replacement": true,
+  "original_UTF8_signature_preserved": true,
+  "prepublication_encoding_candidate_preserved": {
+    "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_parallel_exploration_20261104_v1/C_final_structure32_preparation_v2/MANIFEST.json",
+    "sha256": "83bc539027b94c4103b9d931e969b59a9591576ac0669bf9e196bf135fd40144",
+    "not_for_release": true,
+    "reason": "The initial uninstalled candidate omitted UTF8signature; this release preserves all original bytes outside the single assertion. No scientific or runtime source was changed."
+  }
+}
