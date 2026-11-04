@@ -1,0 +1,19 @@
+# Fixed CORE32 figures and read-only walltime scenarios
+
+The only performance data provider is the SHA-verified, source-qualified B snapshot runner `agents/B_runtime_analysis_v1/snapshot_runner_v1/PUBLICATION_PROVIDER.json`. Each immutable figure snapshot copies its consumed provider, full32 input identities, six-cell source refs/status and exact plot data. The fixed32 order is frozen5001 CORE membership sorted by suite/program/full digest; no result-based membership or winner selection. First8 authorized CH results, Remaining48 CH and original references retain distinct roles.
+
+Three PNG/SVG pairs: `CH_DH_own_P0_normalized_CORE32`, `relative_change_I_CORE32`, `absolute_CH_over_DH_R_CORE32`. Every F point requires an accepted matched CH/DH P0/F quadruple; unmatched F points remain pending/negative/HOLD. Own performance = own P0 cycles / F cycles. R = CH/DH cycles; I = S_DH/S_CH. Main F128/F256 GM uses the B-declared common accepted six-cell intersection, explicitly n/32, independently recalculated. The current snapshot has11 newaccepted/48 and common11/32; these are different denominators. Common subset results are descriptive, not full-suite conclusions. No equal-area or isolated queue-causality claim is added.
+
+Exact positive/negative/zero labels use integer cycles and, for I, integer cross-products. A printed1.000+ or1.000- is not an exact zero. `FIGURE_DATA.json` includes exact counts separate from B's legacy tolerance-based statistic fields. CH/DH own-speedup axes share the same range within each fixed8-input row. Source and provider determine immutable snapshot IDs; existing snapshots are checked and reused without overwriting. Matplotlib SVG has fixed hashsalt and no Date metadata. Six fixture cases PASS; a fresh rerender of all6 PNG/SVG files is byte-identical to the immutable preview.
+
+Environment: reuse read-only first16 `agents/A_figures_v1/plot-venv/bin/python` (Matplotlib3.10.8, numpy2.2.6). This script forcibly places TMPDIR/TMP/TEMP and MPLCONFIGDIR under this new A2 agent directory. No pip/system install, model identity, controller action or registration is involved.
+
+CLI:
+
+```
+/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/agents/A_figures_v1/plot-venv/bin/python -B /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_remaining48_execution_20261104_v1/agents/A_figures_v1/plot_core32.py --provider /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_remaining48_execution_20261104_v1/agents/B_runtime_analysis_v1/snapshot_runner_v1/PUBLICATION_PROVIDER.json
+```
+
+`estimate_walltime_readonly.py` is separate from performance statistics and only reads frozen historical same-input receipt evidence plus current intent/launch/DONE/PID-generation walltime. `ETA_SCENARIOS.json` has timestamped13 execution receipts/10live/25unstarted; execution receipts do not promote accepted results. Old CH-P0 uncalibrated no-new-wait nominal critical tail8.8h; broad historical duration sensitivity0.5×min to2×max gives4.0–18.2h assuming every unstarted point can start now. Explicit1h/4h hypothetical admission delays shift that to5.0–19.2h/8.0–22.2h. These are scenarios, not confidence intervals, deadlines or guaranteed bounds. Queue delay and archive/strict/restore settlement are not bounded; no application-% extrapolation is used. Dominant tails are GESUMMV, srad_v1,3MM and myocyte. The13 short closed executions' ratios are retained as context and not assumed to calibrate long tails. ETA does not change dispatch order or population.
+
+Only Root publishes. Figure generation can consume future qualified snapshots using the same source. The top-level frozen handoff manifest is a snapshot of current source/QA/ETA/provider; future publication pointer updates should be recorded by a new Root handoff manifest. Existing figure snapshot manifests remain immutable.

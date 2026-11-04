@@ -1,0 +1,111 @@
+{
+  "schema": "DTC_OWNED_NATIVE_UNUSED_ASSET_READONLY_SCREEN_V1",
+  "observed_utc": "2026-11-04T01:59:49.820496+00:00",
+  "scope": "Known DTC-owned native roots only; shallow du summaries and targeted pack/bundle/temp names. No broad disk attribution, no trace scan, no historical sourcekeep content scan.",
+  "decision": "NO_UNAMBIGUOUS_SAFE_MIGRATION_CANDIDATE_FOUND",
+  "qualified_migration_candidate_count": 0,
+  "decision_rule": "Require non-original/non-SOURCE_KEEP asset, verified complete sameSHA164 copy, no active spec/process/lock dependency and documented restore path; any evidence gap excludes.",
+  "observed_scopes": [
+    {
+      "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1",
+      "shallow_du": "7.0G",
+      "run_subtree": "6.5G",
+      "reason_excluded": "original experiment output/native restore SOURCE_KEEP boundary; control and logs retain authority/owner dependencies"
+    },
+    {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1",
+      "shallow_du": "1.5G",
+      "run_subtree": "1.1G",
+      "reason_excluded": "original sweep results SOURCE_KEEP; control/tools/logs not disposable"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1",
+      "shallow_du": "795M",
+      "reason_excluded": "repair/result/authority scopes; active binary/library assets remain pinned"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core-build",
+      "shallow_du": "35M",
+      "reason_excluded": "small and active library/build identity; object migration not qualified"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/framework-build",
+      "shallow_du": "860K",
+      "reason_excluded": "active simulator binary path"
+    },
+    {
+      "path": "/root/data/dtc_stage_iia_first16_20261104_v1",
+      "shallow_du": "144M",
+      "reason_excluded": "frozen completed first16 assets explicitly preserved"
+    },
+    {
+      "path": "/root/data/dtc_stage_iia_remaining48_20261104_v1",
+      "shallow_du": "107M",
+      "reason_excluded": "active new48 runtime, pins, source and outputs"
+    },
+    {
+      "path": "/root/data/dtc_main_20261023_v1",
+      "shallow_du": "251M",
+      "reason_excluded": "historical experiment and source assets, no fullsameSHA164/active-dependency absence qualification"
+    },
+    {
+      "path": "/root/data/dtc_main_short3_20261024_v1",
+      "shallow_du": "164M",
+      "reason_excluded": "historical result/review/docs, no complete relocation certificate"
+    },
+    {
+      "path": "/root/data/dtc_hash_downstream18_20261027_v1",
+      "shallow_du": "44M",
+      "reason_excluded": "historical result source and reference paths"
+    }
+  ],
+  "small_unqualified_assets": [
+    {
+      "path": "/root/data/dtc-main-consolidation-20261023.bundle",
+      "bytes": 663744,
+      "sha256": "5b7b54d3bada45de90295377210060b26d04b4ccf40f74ee7e4f0eff7f95d428",
+      "qualification": "NOT_A_MIGRATION_CANDIDATE_NO_LOCATED_SAME_SHA_ARCHIVE_AND_NO_DEPENDENCY_EXCLUSION",
+      "value": "under9MiB individually"
+    },
+    {
+      "path": "/root/data/dtc-main-current-tree-blobs-20261023.pack",
+      "bytes": 8937057,
+      "sha256": "aa8fb7c75b4f3a39ae8c6d1044b27cdc3718557f0e543e469dc3a5711f83c969",
+      "qualification": "NOT_A_MIGRATION_CANDIDATE_NO_LOCATED_SAME_SHA_ARCHIVE_AND_NO_DEPENDENCY_EXCLUSION",
+      "value": "under9MiB individually"
+    }
+  ],
+  "small_guard_CPU_temp_dirs": {
+    "pattern": "/root/data/dtc_l2_guard_CPU_A_*",
+    "count": 6,
+    "aggregate_du_bytes": 1612099,
+    "qualified": false,
+    "reason": "tiny; no fullsameSHA164 or no-reference certificate established"
+  },
+  "targeted_archive_name_search": {
+    "roots": [
+      "/root/share/mnt164/huangrulin/host174_storage_recovery/174new_archive",
+      "/root/share/mnt164/huangrulin/host174_storage_recovery/git_packs_20260928"
+    ],
+    "patterns": [
+      "*dtc-main*",
+      "*consolidation*",
+      "*tree-blobs*"
+    ],
+    "matching_paths_found": [],
+    "absence_is_not_proof_about_other_archive_directories": true
+  },
+  "excluded_from_search": [
+    "assets/traces and input capture bodies",
+    "active122 pins/runtime/source",
+    "original outputs and all SOURCE_KEEP result scopes",
+    "other lanes or unrelated disk growth"
+  ],
+  "restoration_evidence_for_migration": "NONE; no candidate promoted",
+  "recommended_action": "Continue resource-aware admission with5GiB floor. Do not release or migrate uncertain assets to obtain concurrency. Root may separately qualify a concrete disposable file if new archive/dependency evidence becomes available.",
+  "file_moves": 0,
+  "file_deletions": 0,
+  "source_changes": 0,
+  "controller_actions": 0,
+  "models_started": 0
+}

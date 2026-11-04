@@ -1,0 +1,17 @@
+# Independent report-only publication qualification
+
+**PASS_REPORT_ONLY_PUBLICATION_BOUNDARIES** for publisheracbb284231abf5c0d3dfe53a588e2101bdf778d7729d9fe38736b82a3f4c9f1f and starter51ca912ddc28f4612b08a3eee5b59c8dae7bc05ee79497a2b72eae6d7686b5de.31 publisher checks and5 starter state/generation fixtures pass. Root alone may start this report service; C did not start it or publish/push anything.
+
+The publisher targets only new branchhrl/dtc-stage-iia-remaining48-execution-20261104-v1 and newreviewpackREL. Read-only Git checks confirm branch/base isolation. Explicit staging checks everychangedpath under thatREL, and push uses the exactcommit/newbranch without forcepush. Imports/subprocess flow contain no model/native/controller imports or dispatch, registration, queue or signal calls. Writes target report/artifact/service paths, not scientific sources/owner/registry.
+
+The current source-qualified Bprovider is verified through exactadaptermanifestff7555, snapshot fileSHA and hashboundSUMMARY equality, with48new identities,32coreinputs,192sixcellslots and144frozenreference slots. Budget and terminal fields must agree; malformed/unqualified/path/scope/summary fixtures reject. Accepted/negative RESULT exports follow the same Bsnapshot's observation SHA, avoiding liveglob/as-of substitution. Original128, first16 and new48 source roles stay separate; missing/negative/HOLD data are not zero-imputed.
+
+The only figure snapshot exported is frozen076136470ec6c047f59d6e293d08c69df16512d6880b855e315173c5f7ba857f:01:35 UTC,11newaccepted/common11of32. It is read from a fixedapprovedprovider, independent of the moving Aprovider, so newer tables can publish while no unreviewed figure is promoted. README/LATEST_STATUS explicitly distinguish dates andcoverage.
+
+All122 frozenpins and8reviewpacks/66members were verified read-only.98 code/config/metadata pins are public;24bulkyinputbindings stay complete on164 with a publicpath/SHAindex. No rawtrace, rawlog, archivechunks or simulatorELF is exported. Nested reviewmanifests remain included.
+
+Productionpublish pending-commit path was exercised only in a C-owned sandbox with fakeGit/HTTPS: transportfailure preserves the pendingrecord, retry pushes the exactsamecommit and performs no rebuild/add/commit. Actual branch/commit/HTTPSreadback remains Root's execution responsibility. The source schedule publishes every1800seconds and at qualified48terminal state, then exits only after confirmedpush/readback. Terminalprogress publication always retains final_scientific_closure=false and is not the full48 independent endreview or Goalcompletion.
+
+Starter checks source==contract==RootCPUchecks, uses a separate startlock and the publisher's own servicelock, and refuses silentrestart of a dead priorreceipt. ExactASTfixtures cover live matchinggeneration, stalePIDgeneration, missingprocess andZ/Xdead states. Only a reportpublisher subprocess may be started; no native scientific dispatcher is added.
+
+Initial review identified and Root fixed adapter/summary/terminal validation, movingfigure coupling, and zombieprocess liveness reporting before this PASS. No scientificsource/model/control changes were requested or made. Temporary/preliminary Cfixtures are excluded from publicmanifest and are not scientific evidence. Source snapshots are for audit reference; do not execute the copies. Existing dispatcher and v0.23 remain untouched.

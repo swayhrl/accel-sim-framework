@@ -1,0 +1,9 @@
+DTC-L1 Stage II-A Remaining48 正式科学执行授权（2026-11-04）
+用户明确批准固定commit5f67b4d6b94568a9f1acc80c3e56736bd81e4753所发布root_remaining48_proposal_v1/PROPOSED_MATRIX.json全部48个PLAN候选，即CORE64减已完成FIRST_BATCH16。24固定程序各CH-F128/F256，R1/R2/R3仅报告里程碑，允许跨组资源感知并行，不逐组再审批。
+由174-new/DTC-MAIN既有合法唯一owner/lease执行，建立独立新epoch2 request及严格48一次性启动身份。不reset/延长/退款first16或旧预算，不复用UUID/请求/失败模型，不额外资格模拟，已消耗身份真实负例/结果保留不可静默重跑。未启动工程问题在合同内解决。
+固定Core9eedb3131937748f0492fa83aad37d3691118d70、Framework02775fd795cde5aae1480d81cee6eb481d0a08f4、binary02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d、既有libcudart、35输入及配置SHA；仅授权CH-F128/F256及FRFCFS/shared-credit耦合，不改变其他架构或输入语义。
+启动前重新核host/cgroup/CPU/NUMA/RAM/Swap/IO/native及true164归档恢复。历史RSS/规划预留是估计非硬上限，安全范围充分动态并行，压力暂停新准入保护健康模型。大文件/压缩日志/原结果按既有true164 SOURCE_KEEP与native恢复合同保留。
+每身份完整input/config/source/binary、自然终态GPUcycles/strict、原日志计数资源轨迹、true164完整SHA/native恢复、accepted/HOLD/negative分类。合法P0及first16来源独立，不用IR/R2/EP/PQPS恢复数据填原缺口。
+最终48合法终态后独立终审，合法合并first16成固定core32六格同SHA配对；S_CH/S_DH/R/I、同accepted交集直接F比较、GM/suite/逐程序/逐kernel、正负零缺失工程停止全部保留。不可按程序择优F，不把源码局部性当动态hit/merge因果。Git科学包/远端SHA回读、后续结构/组合建议但不执行。
+结束后停止，不启动supplement2/deferred4/UNRESOLVED7/参数组合/新插桩/capture/109GPU或新架构试验；英文LaTeXv0.23冻结。
+此文件为本会话用户正式授权的作用域转录，完整用户消息保留于会话；旧pending proposal标签不阻止本次明确授权。

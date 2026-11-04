@@ -1,0 +1,167 @@
+{
+  "schema": "C_NEW48_OWNER_OPS_CLOSURE_CPU_REVIEW_V1",
+  "UTC": "2026-11-04T01:25:53.932905+00:00",
+  "status": "PASS",
+  "checks": [
+    {
+      "check": "Exactops prefix widens only callingnewthread sched_setaffinity0",
+      "PASS": true,
+      "detail": null
+    },
+    {
+      "check": "Exactops prefix refusesMain beforeaffinity mutation",
+      "PASS": true,
+      "detail": null
+    },
+    {
+      "check": "Newmask is realcpuset/online subset and disjoint unchangedoldMain32to63",
+      "PASS": true,
+      "detail": {
+        "Main_actual_cpus": [
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63
+        ],
+        "newmask_count": 480,
+        "cpuset": "0-511",
+        "quota_not_used_as_cpuset": true
+      }
+    },
+    {
+      "check": "Productioninlinepreclaim None hascorrect binding/claim/submit boundary",
+      "PASS": true,
+      "detail": {
+        "binding_writes_mocked": 1,
+        "claims_mocked": 1,
+        "submits_mocked_not_executed": 1
+      }
+    },
+    {
+      "check": "Productioninlinepreclaim physical_RAM_pass hascorrect binding/claim/submit boundary",
+      "PASS": true,
+      "detail": {
+        "binding_writes_mocked": 0,
+        "claims_mocked": 0,
+        "submits_mocked_not_executed": 0
+      }
+    },
+    {
+      "check": "Productioninlinepreclaim physical_disk_pass hascorrect binding/claim/submit boundary",
+      "PASS": true,
+      "detail": {
+        "binding_writes_mocked": 0,
+        "claims_mocked": 0,
+        "submits_mocked_not_executed": 0
+      }
+    },
+    {
+      "check": "Productioninlinepreclaim admission_disk_pass hascorrect binding/claim/submit boundary",
+      "PASS": true,
+      "detail": {
+        "binding_writes_mocked": 0,
+        "claims_mocked": 0,
+        "submits_mocked_not_executed": 0
+      }
+    },
+    {
+      "check": "stage2_outbox.py exactproven semantics onlynamespace/schema relabel",
+      "PASS": true,
+      "detail": null
+    },
+    {
+      "check": "stage2_strict.py exactproven semantics onlynamespace/schema relabel",
+      "PASS": true,
+      "detail": null
+    },
+    {
+      "check": "stage2_guard.py exactproven semantics onlynamespace/schema relabel",
+      "PASS": true,
+      "detail": null
+    },
+    {
+      "check": "Ownerparent preflight beforemarker exactnewcallback onlynooldreset",
+      "PASS": true,
+      "detail": null
+    },
+    {
+      "check": "Exact96 experiment/result whitelist patterns nofirst16 orsupp broadglob",
+      "PASS": true,
+      "detail": null
+    },
+    {
+      "check": "Canarymembers inside48 healthgate neverperformance selection",
+      "PASS": true,
+      "detail": null
+    }
+  ],
+  "plan_sha256": "9f257eeea3ebe81610a88cef8ad37512b54bdb50728f965e8d73ccf5dd89a4b3",
+  "candidate_sha256": "6f7aa38a351e58e0711cba1a2aabe5df916cc05fe3968e9fc70d595df6490703",
+  "source_ops_sha256": "d4933ffa089daa56a1e15b617b3093b3f8ee0ccc987ece0c35ede14f3761a8bb",
+  "actual_Main_affinity_after_review": [
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63
+  ],
+  "actual_affinity_changed_by_C": false,
+  "actual_submits_or_modelstarts": 0,
+  "owner_callbacks_or_registrations_by_C": 0,
+  "fixtures": "Exact production AST prefixes/loop in C-local mocks only; no real affinity setter/pool/nativeengine called."
+}
