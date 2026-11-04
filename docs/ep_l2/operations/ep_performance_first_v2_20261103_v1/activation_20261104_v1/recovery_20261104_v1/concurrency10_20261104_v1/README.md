@@ -1,3 +1,9 @@
+Final status (2026-11-04): COMPLETED. 16 consumed models CLOSED_ACCEPTED, zero failures; two GEMM combinations NOT_RELEASED_CONDITION_FALSE and unconsumed. The same-owner executor has exited. Budgets remain 12/10/2 and 6/6/0 (authorized/consumed/unspent); unspent conditional allowance is not reusable automatically.
+
+Read the [final performance report](closeout_20261104_v1/FINAL_SCIENTIFIC_REPORT.md), [18-point status table](closeout_20261104_v1/FINAL_PERFORMANCE_RESULTS.csv), [scope closure receipt](closeout_20261104_v1/FINAL_SCOPE_CLOSEOUT_RECEIPT.json), and [true164 archive/restore receipt](closeout_20261104_v1/FINAL_CLOSEOUT_ARCHIVE_RECEIPT.json). All earlier progress snapshots below remain historical.
+
+---
+
 # User-authorized global EP cap10
 
 2026-11-04 Asia/Shanghai. The single Main controller3566808 and prospective resource gate now both permit up to10 EP models. The11th is rejected. Original total scientific-start ceiling18, Source/ELF/input/282/observer/limits and every scientific stage condition are unchanged; no added NI, budget or retry.
