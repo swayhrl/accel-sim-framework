@@ -1,0 +1,170 @@
+{
+  "status": "GPU_RESOURCE_DEFERRED",
+  "lock_attempt_count": 1,
+  "lock_acquired": true,
+  "lock_released": true,
+  "NVML_initialized": true,
+  "worker_launches": 0,
+  "samples": [
+    {
+      "wall_time": 1793780903.9559672,
+      "held_seconds": 0.011143251322209835,
+      "goal_elapsed_seconds": 442.9559676647186,
+      "phase": "PRE_MODEL_ADMISSION",
+      "state": "EXTERNAL_GPU_PID",
+      "live_own_pids": [
+        3458567
+      ],
+      "known_own_pids": [
+        3458567
+      ],
+      "gpu_processes": [
+        {
+          "pid": 3246996,
+          "kinds": [
+            "compute"
+          ],
+          "usedGpuMemory": 423624704,
+          "memory_observation_consistent": true
+        },
+        {
+          "pid": 1760,
+          "kinds": [
+            "graphics"
+          ],
+          "usedGpuMemory": 10248192,
+          "memory_observation_consistent": true
+        },
+        {
+          "pid": 2035,
+          "kinds": [
+            "graphics"
+          ],
+          "usedGpuMemory": 6758400,
+          "memory_observation_consistent": true
+        }
+      ],
+      "external_gpu_pids": [
+        1760,
+        2035,
+        3246996
+      ],
+      "unknown_gpu_pids": [],
+      "invalid_pid_rows": [],
+      "monitor_gaps": [],
+      "own_NVML_bytes": 0,
+      "own_NVML_MiB": 0.0,
+      "own_tree_RSS_bytes": 37642240,
+      "own_new_disk_bytes": 242938
+    },
+    {
+      "wall_time": 1793780903.960911,
+      "held_seconds": 0.01608701143413782,
+      "goal_elapsed_seconds": 442.9609112739563,
+      "phase": "FINAL_OBSERVATION",
+      "state": "EXTERNAL_GPU_PID",
+      "live_own_pids": [
+        3458567
+      ],
+      "known_own_pids": [
+        3458567
+      ],
+      "gpu_processes": [
+        {
+          "pid": 3246996,
+          "kinds": [
+            "compute"
+          ],
+          "usedGpuMemory": 423624704,
+          "memory_observation_consistent": true
+        },
+        {
+          "pid": 1760,
+          "kinds": [
+            "graphics"
+          ],
+          "usedGpuMemory": 10248192,
+          "memory_observation_consistent": true
+        },
+        {
+          "pid": 2035,
+          "kinds": [
+            "graphics"
+          ],
+          "usedGpuMemory": 6758400,
+          "memory_observation_consistent": true
+        }
+      ],
+      "external_gpu_pids": [
+        1760,
+        2035,
+        3246996
+      ],
+      "unknown_gpu_pids": [],
+      "invalid_pid_rows": [],
+      "monitor_gaps": [],
+      "own_NVML_bytes": 0,
+      "own_NVML_MiB": 0.0,
+      "own_tree_RSS_bytes": 37785600,
+      "own_new_disk_bytes": 244285
+    }
+  ],
+  "children": [],
+  "monitor_gaps": [],
+  "GPU_model_initializations": 0,
+  "EXCLUSIVITY_EVIDENCE_COMPLETE": false,
+  "lock_acquired_epoch": 1793780903.9448245,
+  "device": {
+    "name": "NVIDIA GeForce RTX 4080",
+    "UUID": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+    "total_MiB": 16376.0
+  },
+  "reason": "External GPU process; no exemptions or interference",
+  "own_GPU_contexts_cleared": true,
+  "final_GPU_pids": [
+    3246996,
+    1760,
+    2035
+  ],
+  "final_observation_state": "EXTERNAL_GPU_PID",
+  "GPU_lock_held_seconds": 0.019663329236209393,
+  "lock_closed": true,
+  "NVML_shutdown": true,
+  "whole_Goal_elapsed_seconds": 442.96627831459045,
+  "limits": {
+    "goal_start_epoch": 1793780461,
+    "out": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-bf16-decode-weight-supply-probe-109-v2/docs/ai_workload_research/runs/QWEN_BF16_DECODE_WEIGHT_SUPPLY_PROBE_109_V2",
+    "root": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-bf16-decode-weight-supply-probe-109-v2",
+    "tool": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-bf16-decode-weight-supply-probe-109-v2/util/ai_workload_research/bf16_decode_weight_supply_probe_v2",
+    "lock": "/data/c16/locks/c16_gpu_campaign.lock",
+    "UUID": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+    "held_seconds_max": 720,
+    "goal_seconds_max": 2700,
+    "own_vram_bytes_max": 16148070400,
+    "rss_bytes_max": 17179869184,
+    "disk_bytes_max": 3221225472,
+    "monitor_seconds": 1,
+    "shutdown_reserve_seconds": 10,
+    "V1_base_commit": "efeb32f7e8f08b58a1518a3bef6227ad5d3f15ee"
+  },
+  "CPU_preflight_sampled_peak_RSS_bytes": 36343808,
+  "measurement_scope": {
+    "GPU": "Actual pre-admission and final NVML snapshots; own0MiB; no worker or model launched",
+    "RSS": "1-second CPU revalidation samples and two real supervisor-tree snapshots; entire Goal metadata/test/publication phases not continuously sampled. No whole-Goal measured-peak PASS claimed.",
+    "observation_gaps_in_real_gpu_samples": 0,
+    "CUDA_model_initialization_calls": 0,
+    "lock_attempts": 1,
+    "lock_retries": 0,
+    "external_process_exemptions": 0,
+    "other_process_signals": 0
+  },
+  "original_raw_sha256": "f3fce1f7e011d8471edc47f5c7750dff70db5a23b38f3dc077783a643e757ebe",
+  "prohibited_actions": {
+    "model_dataset_download_bytes": 0,
+    "dependency_installs_upgrades": 0,
+    "old_assets_or_caches_written": 0,
+    "node164_accesses": 0,
+    "profiler_NCU_NSYS_NVBit": 0,
+    "simulator_RTL": 0
+  }
+}
