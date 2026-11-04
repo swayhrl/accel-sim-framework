@@ -1,0 +1,159 @@
+"""Single-attempt locked execution; all driver observation is dependency-injected for CPU tests."""
+import os,sys,json,time,fcntl,subprocess,signal,traceback
+from pathlib import Path
+from types import SimpleNamespace
+from persistence import save_json
+from shared_gate import SharedClient
+from resource_monitor import collect_snapshot,enforce_snapshot,disk_bytes,MonitorStop
+from desktop_policy import apply_desktop_policy,admit_low_activity,runtime_activity,read_identity
+TOOL=Path(__file__).resolve().parent
+ROOT=TOOL.parents[2]
+OUT=ROOT/"docs/ai_workload_research/runs/QWEN_BF16_DECODE_WEIGHT_SUPPLY_PROBE_109_V5"
+
+class Supervisor:
+    def __init__(self,cfg,services):
+        self.cfg=cfg;self.s=services;self.out=Path(cfg["out"]);self.owned={services.pid}
+        self.child=None;self.lock=None;self.held=None;self.handle=None;self.log=None
+        self.shared=SharedClient(cfg) if cfg.get("shared_resident") else None
+        self.r=dict(status="PRELOCK",lock_attempt_count=0,lock_acquired=False,lock_released=False,NVML_initialized=False,worker_launches=0,samples=[],children=[],monitor_gaps=[],GPU_model_initializations=0,EXCLUSIVITY_EVIDENCE_COMPLETE=False)
+    def save(self):
+        save_json(self.out/"RESOURCE_RECEIPT.json",self.r)
+    def snapshot(self,phase,enforce=True):
+        row=collect_snapshot(self.s.nv,self.handle,self.s.ps,self.s.pid,self.owned,phase,self.s.wall(),self.s.mono()-self.held,self.s.wall()-self.cfg["goal_start_epoch"],self.s.disk())
+        row=apply_desktop_policy(row,self.cfg,getattr(self.s,"read_identity",read_identity))
+        if self.shared:
+            try:row=self.shared.check(row)
+            except Exception as e:raise MonitorStop("GPU_RESOURCE_DEFERRED","Shared gate qualification: "+str(e))
+        self.r["samples"].append(row);self.save()
+        if enforce:
+            enforce_snapshot(row,self.cfg)
+            try:runtime_activity(self,row)
+            except MonitorStop as activity_error:
+                if self.shared and str(activity_error)=="Desktop activity attribution unavailable during own work":
+                    self.r["performance_comparability_gap"]="Desktop per-process NVML activity unavailable;retain INCONCLUSIVE"
+                    self.save()
+                else:raise
+        return row
+    def stop_own(self):
+        if self.child is not None:
+            self.s.terminate(self.child)
+            self.r["controlled_shutdown"]=True
+    def run(self):
+        try:
+            if self.s.wall()-self.cfg["goal_start_epoch"]>self.cfg["goal_seconds_max"]-300:
+                raise MonitorStop("INCONCLUSIVE","CPU preparation consumed execution/archival reserve")
+            if self.shared:
+                try:self.r["shared_reservation"]=self.shared.reserve()
+                except Exception as e:raise MonitorStop("GPU_RESOURCE_DEFERRED","Prelock shared reservation: "+str(e))
+            self.lock=self.s.open_lock(self.cfg["lock"])
+            self.r["lock_attempt_count"]+=1
+            try:self.s.flock(self.lock.fileno(),fcntl.LOCK_EX|fcntl.LOCK_NB)
+            except BlockingIOError:
+                raise MonitorStop("GPU_RESOURCE_DEFERRED","Single nonblocking lock conflict; no retry")
+            self.held=self.s.mono();self.r.update(lock_acquired=True,lock_acquired_epoch=self.s.wall())
+            self.save()
+            self.s.nv.nvmlInit();self.r["NVML_initialized"]=True
+            self.handle=self.s.nv.nvmlDeviceGetHandleByUUID(self.cfg["UUID"])
+            name=self.s.nv.nvmlDeviceGetName(self.handle);uuid=self.s.nv.nvmlDeviceGetUUID(self.handle)
+            if isinstance(name,bytes):name=name.decode()
+            if isinstance(uuid,bytes):uuid=uuid.decode()
+            self.r["device"]=dict(name=name,UUID=uuid,total_MiB=self.s.nv.nvmlDeviceGetMemoryInfo(self.handle).total/1024**2)
+            if uuid!=self.cfg["UUID"] or "4080" not in name:
+                raise MonitorStop("NUMERIC_OR_RUNTIME_NO_GO","Device identity mismatch")
+            self.snapshot("PRE_MODEL_ADMISSION")
+            admit_low_activity(self)
+            if self.shared:
+                self.r["environment_classification"]="VERIFIED_GATED_RESIDENT_CONTEXT"
+                self.r["measurement_condition"]="VERIFIED_GATED_RESIDENT_CO_RESIDENT_NATIVE_OBSERVATION"
+                self.save()
+            self.child=self.s.spawn();self.owned.add(self.child.pid)
+            self.r["worker_launches"]=1
+            self.r["children"].append(dict(pid=self.child.pid,start_epoch=self.s.wall()))
+            while self.child.poll() is None:
+                self.snapshot("WORKER");self.s.sleep(self.cfg["monitor_seconds"])
+            self.r["children"][-1].update(exit_code=self.child.returncode,finish_epoch=self.s.wall())
+            self.snapshot("WORKER_EXIT")
+            if self.child.returncode!=0:
+                raise MonitorStop("NUMERIC_OR_RUNTIME_NO_GO","Worker stopped; retain raw error and log")
+            raw=self.s.worker_result()
+            self.r["GPU_model_initializations"]=raw.get("model_initializations",0)
+            if raw.get("status")!="NATIVE_BATCH_SENSITIVITY_COMPLETE" or sum(s.get("role")=="FORMAL" and s.get("status")=="PASS" for s in raw.get("samples",[]))!=30:
+                raise MonitorStop("NUMERIC_OR_RUNTIME_NO_GO","Incomplete six-point worker result")
+            self.r["status"]="NATIVE_BATCH_SENSITIVITY_COMPLETE"
+        except MonitorStop as e:
+            self.r.update(status=e.status,reason=str(e));self.stop_own()
+        except BaseException as e:
+            self.r.update(status="NUMERIC_OR_RUNTIME_NO_GO",reason=str(e),traceback=traceback.format_exc());self.stop_own()
+        finally:
+            # Errors in final observation must never skip unlock, close or error persistence.
+            try:
+                if self.child is not None:
+                    self.r["children"][-1]["exit_code"]=self.child.poll()
+                    try:self.r["GPU_model_initializations"]=self.s.worker_result().get("model_initializations",0)
+                    except Exception:pass
+                if self.handle is not None:
+                    deadline=min(self.held+self.cfg["held_seconds_max"]-2,self.s.mono()+6)
+                    while True:
+                        row=self.snapshot("FINAL_OBSERVATION",enforce=False)
+                        own_gpu={x["pid"] for x in row["gpu_processes"] if x["pid"] in self.owned}
+                        if not own_gpu or self.s.mono()>=deadline:break
+                        self.stop_own();self.s.sleep(0.5)
+                    self.r["own_GPU_contexts_cleared"]=not bool(own_gpu)
+                    self.r["final_GPU_pids"]=[x["pid"] for x in row["gpu_processes"]]
+                    self.r["final_observation_state"]=row["state"]
+                    if own_gpu:
+                        self.r.update(status="NUMERIC_OR_RUNTIME_NO_GO",cleanup_gap="Own context unresolved")
+                    elif row["state"]=="UNKNOWN":
+                        self.r["cleanup_gap"]="Final observation incomplete; admission STOP preserved"
+                        if self.r["status"]=="NATIVE_BATCH_SENSITIVITY_COMPLETE":self.r["status"]="NUMERIC_OR_RUNTIME_NO_GO"
+            except BaseException as e:
+                self.r.update(status="NUMERIC_OR_RUNTIME_NO_GO",final_observation_error=str(e))
+            finally:
+                try:
+                    if self.held is not None:
+                        self.r["GPU_lock_held_seconds"]=self.s.mono()-self.held
+                        self.s.flock(self.lock.fileno(),fcntl.LOCK_UN)
+                        self.r["lock_released"]=True
+                except BaseException as e:self.r.update(status="NUMERIC_OR_RUNTIME_NO_GO",unlock_error=str(e))
+                finally:
+                    if self.lock is not None:
+                        try:self.lock.close();self.r["lock_closed"]=True
+                        except BaseException as e:self.r["lock_close_error"]=str(e)
+                    if self.r["NVML_initialized"]:
+                        try:self.s.nv.nvmlShutdown();self.r["NVML_shutdown"]=True
+                        except BaseException as e:self.r.update(status="NUMERIC_OR_RUNTIME_NO_GO",NVML_shutdown_error=str(e))
+                    self.r["DESKTOP_CO_RESIDENCE_EVIDENCE_COMPLETE"]=bool(self.r.get("environment_classification")=="QUALIFIED_DESKTOP_CO_RESIDENT" and self.r["worker_launches"] and self.r.get("own_GPU_contexts_cleared") and not any(x.get("unqualified_external_gpu_pids") for x in self.r["samples"]))
+                    if self.shared:
+                        try:self.r["shared_reservation_cleanup"]=self.shared.release()
+                        except Exception as e:self.r["shared_reservation_cleanup_error"]=str(e)
+                    self.r["whole_Goal_elapsed_seconds"]=self.s.wall()-self.cfg["goal_start_epoch"]
+                    self.r["EXCLUSIVITY_EVIDENCE_COMPLETE"]=bool(self.r["worker_launches"] and self.r["lock_released"] and self.r.get("own_GPU_contexts_cleared") and all(s["state"] in ["EMPTY","OWN_LIVE_PID"] for s in self.r["samples"]) and all(c.get("exit_code") is not None for c in self.r["children"]))
+                    self.save()
+        return self.r
+
+def real_services(cfg):
+    import psutil,pynvml
+    context=Path(cfg["out"])/".private/PROBE"
+    state={}
+    def spawn():
+        context.mkdir(parents=True,exist_ok=False);(context/"tmp").mkdir()
+        env=os.environ.copy();env.update(WEIGHT_PROBE_LOCK_OWNER=str(os.getpid()),HF_HUB_OFFLINE="1",TRANSFORMERS_OFFLINE="1",VLLM_ENABLE_V1_MULTIPROCESSING="0",PYTHONDONTWRITEBYTECODE="1",TOKENIZERS_PARALLELISM="false",CUDA_VISIBLE_DEVICES="0",OMP_NUM_THREADS="1",OPENBLAS_NUM_THREADS="1",MKL_NUM_THREADS="1",NUMEXPR_NUM_THREADS="1",TORCHINDUCTOR_COMPILE_THREADS="1",VLLM_NO_USAGE_STATS="1",DO_NOT_TRACK="1")
+        for key,sub in [("VLLM_CACHE_ROOT","vllm"),("VLLM_CONFIG_ROOT","vllm_config"),("TORCHINDUCTOR_CACHE_DIR","inductor"),("TRITON_CACHE_DIR","triton"),("CUDA_CACHE_PATH","cuda"),("XDG_CACHE_HOME","xdg"),("HF_HOME","hf"),("TORCH_HOME","torch"),("TORCH_EXTENSIONS_DIR","extensions"),("HOME","home"),("TMPDIR","tmp"),("NUMBA_CACHE_DIR","numba")]:
+            env[key]=str(context/sub)
+        state["log"]=(context/"worker.log").open("w")
+        child=subprocess.Popen([sys.executable,str(TOOL/"worker.py"),"PROBE"],cwd=cfg["root"],env=env,stdout=state["log"],stderr=subprocess.STDOUT,start_new_session=True)
+        return child
+    def terminate(child):
+        try:os.killpg(child.pid,signal.SIGTERM)
+        except ProcessLookupError:return
+        try:child.wait(timeout=3)
+        except subprocess.TimeoutExpired:
+            try:os.killpg(child.pid,signal.SIGKILL)
+            except ProcessLookupError:pass
+            child.wait(timeout=2)
+    return SimpleNamespace(pid=os.getpid(),nv=pynvml,ps=psutil,wall=time.time,mono=time.monotonic,sleep=time.sleep,disk=lambda:disk_bytes(cfg["root"]),open_lock=lambda p:open(p,"r"),flock=fcntl.flock,spawn=spawn,terminate=terminate,worker_result=lambda:json.loads((Path(cfg["out"])/"raw/PROBE.json").read_text()))
+def main():
+    cfg=json.loads((OUT/"EXECUTION_BINDING.json").read_text())
+    r=Supervisor(cfg,real_services(cfg)).run()
+    print(json.dumps({k:r.get(k) for k in ["status","reason","lock_attempt_count","lock_acquired","lock_released","worker_launches","GPU_model_initializations","GPU_lock_held_seconds"]}),flush=True)
+if __name__=="__main__":main()

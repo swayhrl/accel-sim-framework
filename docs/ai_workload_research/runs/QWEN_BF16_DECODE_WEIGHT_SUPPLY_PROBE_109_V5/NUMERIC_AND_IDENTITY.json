@@ -1,0 +1,100 @@
+{
+  "status": "CONFIRMED_FROZEN_NUMERIC_STOP",
+  "failure_point": "P3",
+  "source": "TRAIN_A_DISCOVERY_00",
+  "reference_point": "P1",
+  "token_exact": true,
+  "all_preserved_logprobs_finite": true,
+  "atol": 0.05,
+  "rtol": 0.01,
+  "tolerance_changed": false,
+  "failed_comparisons": [
+    {
+      "step": 0,
+      "reference": -0.9105782508850098,
+      "actual": -1.0132758617401123,
+      "abs_error": 0.10269761085510254,
+      "allowed": 0.0591057825088501,
+      "excess": 0.04359182834625244,
+      "pass_gate": false
+    }
+  ],
+  "B1_A00_32_historical": [
+    {
+      "point": "P4",
+      "token_exact": true,
+      "within_frozen_tolerance": true,
+      "max_abs_error": 0.0
+    }
+  ],
+  "private_completion_records_verified": 5,
+  "capture_limitation": "P3returned2responses;workerfailedfirstA00gatebeforepersistingsecondA01response. It is missing,not reconstructed or rerun.",
+  "engine_runtime": {
+    "vllm": "0.30.0",
+    "torch": "2.13.0+cu130",
+    "source_sha256": {
+      "compilation.py": "c9cec5c7200e8e559810ec8c30113ad61dab6780f9f7fb3c116bd0d9b5a43065",
+      "qwen2.py": "eb2f0eeb13c57a28bbc06bc64afff18cd8865f89fbe9ff2a3cf3a896f037cfe9"
+    },
+    "attention": [
+      "FlashAttentionImpl"
+    ],
+    "linear": [
+      "UnquantizedLinearMethod"
+    ],
+    "capacity": {
+      "max_model_len": 544,
+      "max_num_batched_tokens": 1088,
+      "max_num_seqs": 2
+    },
+    "compilation_mode": "VLLM_COMPILE",
+    "backend": "inductor",
+    "cudagraph_mode": "FULL_AND_PIECEWISE",
+    "cache_root": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-bf16-decode-weight-supply-probe-109-v5/docs/ai_workload_research/runs/QWEN_BF16_DECODE_WEIGHT_SUPPLY_PROBE_109_V5/.private/PROBE",
+    "local_cache_dir": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-bf16-decode-weight-supply-probe-109-v5/docs/ai_workload_research/runs/QWEN_BF16_DECODE_WEIGHT_SUPPLY_PROBE_109_V5/.private/PROBE/compilation/rank_0_0/backbone",
+    "cache_identity": "NEW_MODE_A_COMPILATION_IDENTITY",
+    "initialization_seconds": 61.7314217062667,
+    "graph_observation": "Accepted manager-level fullgraph counter only; descriptors may contain padding and are not kernel/profiler observations."
+  },
+  "graph_observation": [
+    {
+      "point": "P1",
+      "replays": 0,
+      "descriptors": [],
+      "compiled_model_observed": true,
+      "snapshot_complete": true
+    },
+    {
+      "point": "P4",
+      "replays": 31,
+      "descriptors": [
+        "{'num_tokens': 1, 'num_reqs': 1, 'uniform_token_count': 1, 'max_query_len': None, 'cg_mode': 'FULL', 'descriptor': 'BatchExecutionDescriptor(cg_mode=<CUDAGraphMode.FULL: 2>, num_tokens=1, num_reqs=1, uniform_token_count=1, max_query_len=None, num_active_loras=0, num_ubatches=1)'}"
+      ],
+      "compiled_model_observed": true,
+      "snapshot_complete": true
+    },
+    {
+      "point": "P2",
+      "replays": 0,
+      "descriptors": [],
+      "compiled_model_observed": true,
+      "snapshot_complete": true
+    },
+    {
+      "point": "P5",
+      "replays": 31,
+      "descriptors": [
+        "{'num_tokens': 1, 'num_reqs': 1, 'uniform_token_count': 1, 'max_query_len': None, 'cg_mode': 'FULL', 'descriptor': 'BatchExecutionDescriptor(cg_mode=<CUDAGraphMode.FULL: 2>, num_tokens=1, num_reqs=1, uniform_token_count=1, max_query_len=None, num_active_loras=0, num_ubatches=1)'}"
+      ],
+      "compiled_model_observed": true,
+      "snapshot_complete": true
+    },
+    {
+      "point": "P3",
+      "replays": 0,
+      "descriptors": [],
+      "compiled_model_observed": false,
+      "snapshot_complete": false
+    }
+  ]
+}
