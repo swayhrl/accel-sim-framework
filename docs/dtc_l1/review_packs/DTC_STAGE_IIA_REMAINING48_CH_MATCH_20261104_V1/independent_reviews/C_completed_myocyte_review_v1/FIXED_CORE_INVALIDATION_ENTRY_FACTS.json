@@ -1,0 +1,77 @@
+{
+  "schema": "C_MYOCYTE_FIXED_INVALIDATION_AND_UPLOAD_ENTRY_FACTS_V1",
+  "actual_effective_options": {
+    "-gpgpu_flush_l1_cache": [
+      "1"
+    ],
+    "-gpgpu_flush_l2_cache": [
+      "0"
+    ],
+    "-gpgpu_perf_sim_memcpy": [
+      "1"
+    ],
+    "-gpgpu_dtc_l1_invalidate_on_source_event": [
+      "0"
+    ]
+  },
+  "source_references": [
+    {
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+      "excerpts": [
+        {
+          "line_start": 2548,
+          "line_end": 2559,
+          "text": "2548:     // Depending on configuration, invalidate the caches once all of threads are\n2549:     // completed.\n2550:     int all_threads_complete = 1;\n2551:     if (m_config.gpgpu_flush_l1_cache) {\n2552:       for (unsigned i = 0; i < m_shader_config->n_simt_clusters; i++) {\n2553:         if (m_cluster[i]->get_not_completed() == 0)\n2554:           m_cluster[i]->cache_invalidate(\n2555:               dtc_l1::invalidation_source::IDLE_CLUSTER);\n2556:         else\n2557:           all_threads_complete = 0;\n2558:       }\n2559:     }"
+        },
+        {
+          "line_start": 2670,
+          "line_end": 2691,
+          "text": "2670: void gpgpu_sim::perf_memcpy_to_gpu(size_t dst_start_addr, size_t count) {\n2671:   if (m_memory_config->m_perf_sim_memcpy) {\n2672:     // if(!m_config.trace_driven_mode)    //in trace-driven mode, CUDA runtime\n2673:     // can start nre data structure at any position \tassert (dst_start_addr %\n2674:     // 32\n2675:     //== 0);\n2676: \n2677:     for (unsigned counter = 0; counter < count; counter += 32) {\n2678:       const size_t wr_addr = dst_start_addr + counter;\n2679:       addrdec_t raw_addr;\n2680:       mem_access_sector_mask_t mask;\n2681:       mask.set(wr_addr % 128 / 32);\n2682:       unsigned tpc = 0;\n2683:       m_memory_config->m_address_mapping.addrdec_tlx(wr_addr, &raw_addr, tpc);\n2684:       const unsigned partition_id =\n2685:           raw_addr.sub_partition /\n2686:           m_memory_config->m_n_sub_partition_per_memory_channel;\n2687:       m_memory_partition_unit[partition_id]->handle_memcpy_to_gpu(\n2688:           wr_addr, raw_addr.sub_partition, mask);\n2689:     }\n2690:   }\n2691: }"
+        }
+      ]
+    },
+    {
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/shader.cc",
+      "sha256": "e67a486ef18abf2b8515bc5bb887812c058d29fe9fed8544320cc008e3b4ca11",
+      "excerpts": [
+        {
+          "line_start": 4095,
+          "line_end": 4112,
+          "text": "4095: void ldst_unit::flush() {\n4096:   // Flush L1D cache\n4097:   m_L1D->flush();\n4098: }\n4099: \n4100: void ldst_unit::invalidate(dtc_l1::invalidation_source source) {\n4101:   if (m_config->dtc_l1_invalidate_on_source_event) {\n4102:     assert(m_dtc_l1_oo_frontend && m_L1D);\n4103:     auto &ordinary =\n4104:         *static_cast<dtc_l1::invalidation_observed_cache<l1_cache> *>(m_L1D);\n4105:     const uint64_t cycle = m_core->get_gpu()->global_cycle();\n4106:     if (dtc_l1_finite_service_active()) dtc_l1_sample_service_occupancy(cycle);\n4107:     m_dtc_invalidation.request(cycle, source, *m_dtc_l1_oo_frontend, ordinary);\n4108:     return;\n4109:   }\n4110:   // Original K0 ordinary request, including its existing deferred commit.\n4111:   m_L1D->invalidate();\n4112: }"
+        },
+        {
+          "line_start": 6740,
+          "line_end": 6746,
+          "text": "6740: void shader_core_ctx::cache_flush() { m_ldst_unit->flush(); }\n6741: \n6742: void shader_core_ctx::cache_invalidate(dtc_l1::invalidation_source source) {\n6743:   m_ldst_unit->invalidate(source);\n6744: }\n6745: \n6746: // modifiers"
+        },
+        {
+          "line_start": 7753,
+          "line_end": 7764,
+          "text": "7753: void simt_core_cluster::cache_flush() {\n7754:   for (unsigned i = 0; i < m_config->n_simt_cores_per_cluster; i++)\n7755:     m_core[i]->cache_flush();\n7756: }\n7757: \n7758: void simt_core_cluster::cache_invalidate(dtc_l1::invalidation_source source) {\n7759:   for (unsigned i = 0; i < m_config->n_simt_cores_per_cluster; i++)\n7760:     m_core[i]->cache_invalidate(source);\n7761: }\n7762: \n7763: bool simt_core_cluster::icnt_injection_buffer_full(unsigned size, bool write) {\n7764:   unsigned request_size = size;"
+        }
+      ]
+    },
+    {
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/l2cache.cc",
+      "sha256": "1b2b0ebca49a2f5943c9350a637d849961da96159a147a70b887434bd7f37ff5",
+      "excerpts": [
+        {
+          "line_start": 109,
+          "line_end": 120,
+          "text": "109: void memory_partition_unit::handle_memcpy_to_gpu(\n110:     size_t addr, unsigned global_subpart_id, mem_access_sector_mask_t mask) {\n111:   unsigned p = global_sub_partition_id_to_local_id(global_subpart_id);\n112:   std::string mystring = mask.to_string<char, std::string::traits_type,\n113:                                         std::string::allocator_type>();\n114:   MEMPART_DPRINTF(\n115:       \"Copy Engine Request Received For Address=%zx, local_subpart=%u, \"\n116:       \"global_subpart=%u, sector_mask=%s \\n\",\n117:       addr, p, global_subpart_id, mystring.c_str());\n118:   m_sub_partition[p]->force_l2_tag_update(\n119:       addr, m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle, mask);\n120: }"
+        }
+      ]
+    }
+  ],
+  "direct_source_fact": "At the shown idle-cluster entry, flush_l1=1 calls cache_invalidate(IDLE_CLUSTER). The shown ldst_unit::invalidate only requests OO frontend invalidation when dtc_l1_invalidate_on_source_event is true; with actual0 it calls m_L1D->invalidate(). The shown perf_memcpy_to_gpu routine steps32B and delegates to memory-partition/L2 tag fill. These selected entry points do not establish that repeated CPU uploads invalidate/refresh OO values.",
+  "limits": [
+    "This is a selected entry-point source fact, not a proof OO state is never reset through any other path.",
+    "Runtime observation: DH L2 accepted reads/new misses stop increasing after ordinal32 while5993 state/params upload pairs remain declared. Association does not establish stale-data error or numerically valid reuse.",
+    "Original source/ELF/y/params identity evidence and simulator host-upload/OO coherence qualification are separate unresolved questions.",
+    "Current accepted timing rows, frozen input/architecture/options and scientific statuses remain unchanged. Any invalidate_on_source_event experiment or numerical correctness qualification requires independent authorization; none is run here."
+  ]
+}

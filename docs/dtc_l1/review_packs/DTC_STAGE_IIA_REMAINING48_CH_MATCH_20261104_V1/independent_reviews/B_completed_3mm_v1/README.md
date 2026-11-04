@@ -1,0 +1,1 @@
+Current-contract3MM six-source FR zero-response supplement. Read REPORT.md; all3actual kernels/cell are closed. Historical Hash gains are not recomputed or substituted. Publish MANIFEST members only, each<8MiB.

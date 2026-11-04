@@ -1,0 +1,48 @@
+[
+  {
+    "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+    "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-cache.h",
+    "sha256": "092946c8149946f37d381ad86eff8b4df31ece9e7dd52cb0fbe3836aa900c1c9",
+    "excerpts": [
+      {
+        "start": 696,
+        "end": 712,
+        "text": "696:     // For more details about difference between FETCH_ON_WRITE and WRITE\n697:     // VALIDAE policies Read: Jouppi, Norman P. \"Cache write policies and\n698:     // performance\". ISCA 93. WRITE_ALLOCATE is the old write policy in\n699:     // GPGPU-sim 3.x, that send WRITE and READ for every write request\n700:     switch (wap) {\n701:       case 'N':\n702:         m_write_alloc_policy = NO_WRITE_ALLOCATE;\n703:         break;\n704:       case 'W':\n705:         m_write_alloc_policy = WRITE_ALLOCATE;\n706:         break;\n707:       case 'F':\n708:         m_write_alloc_policy = FETCH_ON_WRITE;\n709:         break;\n710:       case 'L':\n711:         m_write_alloc_policy = LAZY_FETCH_ON_READ;\n712:         break;"
+      },
+      {
+        "start": 1610,
+        "end": 1626,
+        "text": "1610:     // Set write miss function\n1611:     switch (m_config.m_write_alloc_policy) {\n1612:       case NO_WRITE_ALLOCATE:\n1613:         m_wr_miss = &data_cache::wr_miss_no_wa;\n1614:         break;\n1615:       case WRITE_ALLOCATE:\n1616:         m_wr_miss = &data_cache::wr_miss_wa_naive;\n1617:         break;\n1618:       case FETCH_ON_WRITE:\n1619:         m_wr_miss = &data_cache::wr_miss_wa_fetch_on_write;\n1620:         break;\n1621:       case LAZY_FETCH_ON_READ:\n1622:         m_wr_miss = &data_cache::wr_miss_wa_lazy_fetch_on_read;\n1623:         break;\n1624:       default:\n1625:         assert(0 && \"Error: Must set valid cache write miss policy\\n\");\n1626:         break;  // Need to set a write miss function"
+      }
+    ]
+  },
+  {
+    "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+    "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-cache.cc",
+    "sha256": "f600601f96c07b6618f198e7b37dd394f07bb286a5d7b7f76c72634d7f2b1dd1",
+    "excerpts": [
+      {
+        "start": 1858,
+        "end": 1922,
+        "text": "1858: enum cache_request_status data_cache::wr_miss_wa_lazy_fetch_on_read(\n1859:     new_addr_type addr, unsigned cache_index, mem_fetch *mf, unsigned time,\n1860:     std::list<cache_event> &events, enum cache_request_status status) {\n1861:   new_addr_type block_addr = m_config.block_addr(addr);\n1862: \n1863:   // if the request writes to the whole cache line/sector, then, write and set\n1864:   // cache line Modified. and no need to send read request to memory or reserve\n1865:   // mshr\n1866: \n1867:   if (miss_queue_full(0)) {\n1868:     m_stats.inc_fail_stats(mf->get_access_type(), MISS_QUEUE_FULL,\n1869:                            mf->get_streamID());\n1870:     return RESERVATION_FAIL;  // cannot handle request this cycle\n1871:   }\n1872: \n1873:   if (m_config.m_write_policy == WRITE_THROUGH) {\n1874:     send_write_request(mf, cache_event(WRITE_REQUEST_SENT), time, events);\n1875:   }\n1876: \n1877:   bool wb = false;\n1878:   evicted_block_info evicted;\n1879: \n1880:   cache_request_status m_status =\n1881:       m_tag_array->access(block_addr, time, cache_index, wb, evicted, mf);\n1882:   assert(m_status != HIT);\n1883:   cache_block_t *block = m_tag_array->get_block(cache_index);\n1884:   if (!block->is_modified_line()) {\n1885:     m_tag_array->inc_dirty();\n1886:   }\n1887:   block->set_status(MODIFIED, mf->get_access_sector_mask());\n1888:   block->set_byte_mask(mf);\n1889:   if (m_status == HIT_RESERVED) {\n1890:     block->set_ignore_on_fill(true, mf->get_access_sector_mask());\n1891:     block->set_modified_on_fill(true, mf->get_access_sector_mask());\n1892:     block->set_byte_mask_on_fill(true);\n1893:   }\n1894: \n1895:   if (mf->get_access_byte_mask().count() == m_config.get_atom_sz()) {\n1896:     block->set_m_readable(true, mf->get_access_sector_mask());\n1897:   } else {\n1898:     block->set_m_readable(false, mf->get_access_sector_mask());\n1899:     if (m_status == HIT_RESERVED)\n1900:       block->set_readable_on_fill(true, mf->get_access_sector_mask());\n1901:   }\n1902:   update_m_readable(mf, cache_index);\n1903: \n1904:   if (m_status != RESERVATION_FAIL) {\n1905:     // If evicted block is modified and not a write-through\n1906:     // (already modified lower level)\n1907:     if (wb && (m_config.m_write_policy != WRITE_THROUGH)) {\n1908:       mem_fetch *wb = m_memfetch_creator->alloc(\n1909:           evicted.m_block_addr, m_wrbk_type, mf->get_access_warp_mask(),\n1910:           evicted.m_byte_mask, evicted.m_sector_mask, evicted.m_modified_size,\n1911:           true, m_gpu->gpu_tot_sim_cycle + m_gpu->gpu_sim_cycle, -1,\n1912:           mf->get_sid(), mf->get_tpc(), NULL, mf->get_streamID());\n1913:       // the evicted block may have wrong chip id when advanced L2 hashing  is\n1914:       // used, so set the right chip address from the original mf\n1915:       wb->set_chip(mf->get_tlx_addr().chip);\n1916:       wb->set_partition(mf->get_tlx_addr().sub_partition);\n1917:       send_write_request(wb, cache_event(WRITE_BACK_REQUEST_SENT, evicted),\n1918:                          time, events);\n1919:     }\n1920:     return MISS;\n1921:   }\n1922:   return RESERVATION_FAIL;"
+      }
+    ]
+  },
+  {
+    "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+    "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+    "sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+    "excerpts": [
+      {
+        "start": 1862,
+        "end": 1868,
+        "text": "1862:   fprintf(statfout, \"max_total_param_size = %llu\\n\",\n1863:           gpgpu_ctx->device_runtime->g_max_total_param_size);\n1864: \n1865:   // performance counter for stalls due to congestion.\n1866:   printf(\"gpu_stall_dramfull = %lu\\n\", gpu_stall_icnt2mem);\n1867:   printf(\"gpu_stall_icnt2sh    = %lu\\n\", gpu_stall_mem2icnt);\n1868: "
+      },
+      {
+        "start": 2450,
+        "end": 2473,
+        "text": "2450:     }\n2451:   }\n2452: \n2453:   // L2 operations follow L2 clock domain\n2454:   unsigned partiton_reqs_in_parallel_per_cycle = 0;\n2455:   if (clock_mask & L2) {\n2456:     m_power_stats->pwr_mem_stat->l2_cache_stats[CURRENT_STAT_IDX].clear();\n2457:     for (unsigned i = 0; i < m_memory_config->m_n_mem_sub_partition; i++) {\n2458:       // move memory request from interconnect into memory partition (if not\n2459:       // backed up) Note:This needs to be called in DRAM clock domain if there\n2460:       // is no L2 cache in the system In the worst case, we may need to push\n2461:       // SECTOR_CHUNCK_SIZE requests, so ensure you have enough buffer for them\n2462:       if (m_memory_sub_partition[i]->full(SECTOR_CHUNCK_SIZE)) {\n2463:         // Only count as a stall if ICNT actually has a packet waiting for\n2464:         // this sub-partition; otherwise the L2 being full is not blocking\n2465:         // anything.\n2466:         if (icnt_has_packet(m_shader_config->mem2device(i)))\n2467:           gpu_stall_icnt2mem++;\n2468:       } else if (m_memory_sub_partition[i]->lrc_full(SECTOR_CHUNCK_SIZE)) {\n2469:         m_memory_stats->add_l2_stall_due_to_lrc_full(i);\n2470: \n2471:       } else {\n2472:         mem_fetch *mf = (mem_fetch *)icnt_pop(m_shader_config->mem2device(i));\n2473:         m_memory_sub_partition[i]->push(mf, gpu_sim_cycle + gpu_tot_sim_cycle);"
+      }
+    ]
+  }
+]

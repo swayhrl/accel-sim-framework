@@ -1,0 +1,27 @@
+from pathlib import Path
+import json,gzip,hashlib,collections,datetime
+D=Path(__file__).resolve().parent
+sha=lambda b:hashlib.sha256(b).hexdigest()
+def put(n,v):(D/n).write_text(json.dumps(v,indent=2,sort_keys=True)+'\n')
+rs=json.load(gzip.open(D/'CLOSED_SOURCE_KERNEL_COUNTERS.json.gz','rt'))['rows'];by={(r['cell'],r['profile']):r for r in rs};checks=[]
+def ck(n,v):assert v,n;checks.append({'check':n,'pass':True})
+mp=json.loads((D/'A_PINNED_PHASE_SELECTOR_REFERENCE.json').read_bytes());ck('A_mapping144f_exact_SHA',sha(Path(mp['source_manifest']['path']).read_bytes())==mp['source_manifest']['sha256']);seqp=Path(mp['trace_sequence']['path']);ck('A_trace_sequence_exact_SHA',sha(seqp.read_bytes())==mp['trace_sequence']['sha256']);seq=json.load(gzip.open(seqp,'rt'))['rows'];digest=rs[0]['input_digest'];overlay={x['kernel_ordinal']:x for x in seq if x['input_digest']==digest};ph=mp['programs'][digest]['phases'];ck('one_fixed_RHS_phase_not_ODE_steps',len(ph)==1);x=ph[0]['kernel_ordinals'];ords=list(range(x['first'],x['last_inclusive']+1,x['step']));ck('5993_exact_phase_coverage',len(ords)==x['count']==5993 and set(ords)==set(range(1,5994)) and set(overlay)==set(ords));phase=[];missing=[]
+for r in rs:
+ q=json.loads(Path(r['input_binding_path']).read_bytes())['qualification']['rows'];prefix=r['cell']+r['profile'];ck(prefix+'_A_trace_symbols_instructions_memberSHA',all(overlay[k['ordinal']]['symbol']==k['kernel']and overlay[k['ordinal']]['active_thread_instructions']==k['instructions']and overlay[k['ordinal']]['trace_sha256']==q[k['ordinal']-1]['sha256']for k in r['kernels']));ck(prefix+'_all_A_step_attempt_ids_null',all(overlay[i].get('accepted_ODE_step_or_adaptive_attempt_id')is None for i in ords));fields={}
+ for key,final in r['totals'].items():
+  values=[k['print_interval_additive'].get(key)for k in r['kernels']];total=sum(values)if all(v is not None for v in values)else None;ck(prefix+'_'+key+'_endpoint_sum_reconciles_or_explicitmissing',total is None or total==final);fields[key]={'value':total,'missing_intervals':sum(v is None for v in values),'final_cumulative':final}
+ ck(prefix+'_phase_cycles_reconcile',sum(k['cycles']for k in r['kernels'])==r['cycles']);phase.append({'input_digest':digest,'cell':r['cell'],'profile':r['profile'],'source_RESULT_sha256':r['RESULT_sha256'],'phase_candidate':ph[0],'kernel_n':5993,'cycles':sum(k['cycles']for k in r['kernels']),'fields':fields,'accepted_ODE_step_or_attempt_ids':None,'phase_epoch_to_kernel_ordinal_binding':None,'means_gauges_peaks_excluded':True});missing.append({'cell':r['cell'],'profile':r['profile'],'reason_prints_with_empty_dict':sum(not k['positive_only_retry_reasons']for k in r['kernels']),'reason_missing_interval_values':sum(v is None for k in r['kernels']for v in k['positive_only_reason_interval'].values()),'kernels_without_latency_tokens':sum(not k['printed_latency_tokens']for k in r['kernels']),'raw_latency_tokens_final_diagnostic_only':r['kernels'][-1]['printed_latency_tokens'],'per_kernel_epoch_fields':'Not consumed; no map to scientific phase or ordinal inferred.'})
+# Compare observed phase events/cycles to P0, not to a conjectured ODE/epoch grouping.
+changes=[]
+for c in ['CH','DH']:
+ for p in ['F128','F256']:
+  a=next(r for r in phase if r['cell']==c and r['profile']=='P0');b=next(r for r in phase if r['cell']==c and r['profile']==p);changes.append({'cell':c,'profile':p,'phase':ph[0]['source_stage'],'cycle_delta':b['cycles']-a['cycles'],'additive_deltas':{k:b['fields'][k]['value']-v['value']if b['fields'][k]['value']is not None and v['value']is not None else None for k,v in a['fields'].items()},'myocyte_step_or_attempt_grouping':None})
+put('EXACT_PHASE_MAPPING_AND_COUNTERS.json',phase);put('PHASE_COMPARISONS.json',changes);put('MISSING_AND_LATENCY_SCOPE.json',missing)
+a=by['CH','P0'];b=by['DH','P0'];d=[y['cycles']-x['cycles']for x,y in zip(a['kernels'],b['kernels'])];put('CROSS_DESIGN_KERNEL_DELTA_DISTRIBUTION.json',{'difference':'DH_minus_CH_cycles at exact matched ordinal, currentP0; all F profiles invariant','kernel_n':len(d),'sum':sum(d),'minimum':min(d),'maximum':max(d),'counts_by_delta':dict(collections.Counter(d)),'slower_DH_n':sum(v>0 for v in d),'faster_DH_n':sum(v<0 for v in d),'equal_n':sum(v==0 for v in d),'no_causal_or_equal_area_claim':True});ck('cross_design_delta_sum',sum(d)==b['cycles']-a['cycles']);put('PHASE_CPU_VALIDATION.json',{'checks':checks,'all_pass':True,'count':len(checks),'extra_raw_scan':False,'live_data':False,'new_model':0,'final24_chain_unchanged':True})
+# Compression is lossless packaging of this analysis output only. Private originals are excluded from public manifest.
+private=D/'private_analysis_intermediates';private.mkdir(exist_ok=True);packed=[]
+for p in sorted(D.iterdir()):
+ if p.is_file()and p.stat().st_size>=8*1024**2:
+  raw=p.read_bytes();out=p.with_name(p.name+'.gz');out.write_bytes(gzip.compress(raw,compresslevel=6,mtime=0));ck(p.name+'_compressed_member_lt8MiB',out.stat().st_size<8*1024**2);ck(p.name+'_lossless',gzip.decompress(out.read_bytes())==raw);p.rename(private/p.name);packed.append({'uncompressed_name':p.name,'uncompressed_bytes':len(raw),'uncompressed_sha256':sha(raw),'public_gzip_name':out.name,'gzip_bytes':out.stat().st_size,'gzip_sha256':sha(out.read_bytes()),'private_original_excluded':True})
+put('LOSSLESS_PUBLIC_COMPRESSION.json',packed)
+print('PHASE_CHECKS',len(checks),'DELTA',sum(d),dict(collections.Counter(d)),'PACKED',packed)

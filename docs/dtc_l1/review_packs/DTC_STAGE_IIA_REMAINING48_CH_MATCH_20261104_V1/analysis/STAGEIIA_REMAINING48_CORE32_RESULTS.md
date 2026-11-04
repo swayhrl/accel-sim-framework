@@ -1,21 +1,21 @@
 # Remaining48 CH matching / fixed CORE32 readonly results
 
-As of 2026-11-04T06:31:32.675849+00:00; source_qualified=True. New48 accepted 44/48, archived negative 0, verification HOLD 0, pending 4. Complete both-F population 29/32. Source slots accepted 188/192.
+As of 2026-11-04T07:02:04.003962+00:00; source_qualified=True. New48 accepted 46/48, archived negative 0, verification HOLD 0, pending 2. Complete both-F population 31/32. Source slots accepted 190/192.
 
 All32 fixed inputs remain listed. Interim available-subset GM is descriptive, not the full32suite result. Direct F comparison uses the same accepted six-cell intersection; negatives/HOLD/pending never become cycles. Original128, first16newCH and remaining48newCH keep distinct source roles; source_profile is actual configuration, not a comparison-context alias.
 
 | Suite | Common n | Profile | GM S_CH | GM S_DH | GM CH/DH | GM I |
 | --- | --- | --- | --- | --- | --- | --- |
-| ALL_CORE32 | 29 | F128 | 1.014950 | 1.012701 | 1.074661 | 0.997784 |
-| ALL_CORE32 | 29 | F256 | 1.022006 | 1.021393 | 1.076402 | 0.999401 |
+| ALL_CORE32 | 31 | F128 | 1.013978 | 1.011876 | 1.092349 | 0.997927 |
+| ALL_CORE32 | 31 | F256 | 1.020572 | 1.020000 | 1.094004 | 0.999439 |
 | CUDA Samples | 9 | F128 | 1.040091 | 1.037979 | 1.018892 | 0.997970 |
 | CUDA Samples | 9 | F256 | 1.062320 | 1.059559 | 1.018311 | 0.997401 |
 | Parboil | 7 | F128 | 1.002158 | 1.002002 | 1.022350 | 0.999844 |
 | Parboil | 7 | F256 | 1.003420 | 1.003439 | 1.022529 | 1.000019 |
-| PolyBench/GPU | 6 | F128 | 1.010296 | 1.002756 | 1.287365 | 0.992537 |
-| PolyBench/GPU | 6 | F256 | 1.010599 | 1.011594 | 1.298322 | 1.000984 |
-| Rodinia | 7 | F128 | 1.000000 | 1.000000 | 1.036272 | 1.000000 |
-| Rodinia | 7 | F256 | 1.000000 | 1.000000 | 1.036272 | 1.000000 |
+| PolyBench/GPU | 7 | F128 | 1.008819 | 1.002362 | 1.344465 | 0.993600 |
+| PolyBench/GPU | 7 | F256 | 1.009078 | 1.009929 | 1.354267 | 1.000843 |
+| Rodinia | 8 | F128 | 1.000000 | 1.000000 | 1.043821 | 1.000000 |
+| Rodinia | 8 | F256 | 1.000000 | 1.000000 | 1.043821 | 1.000000 |
 
 | Program | Full input SHA | CH0 | CH128 | CH256 | DH0 | DH128 | DH256 | I128 | I256 | Common bothF |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -37,7 +37,7 @@ All32 fixed inputs remain listed. Interim available-subset GM is descriptive, no
 | stencil | c885293ad99e21ee6f270647dc47f1e6b214c71856b189cd011266ce4ae21266 | 4965921 | 4965921 | 4965921 | 4662889 | 4662889 | 4662889 | 1.000000 | 1.000000 | True |
 | 2DCONV | d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0 | 1548909 | 1548909 | 1548909 | 462740 | 437573 | 429253 | 1.057515 | 1.078012 | True |
 | 3DCONV | 79f8ab6241faeed64b49d05deecb1ad239fac5f123c4ceec75f7e0f6a9c5166d | 2958083 | 2956986 | 2958542 | 2200332 | 2205628 | 2211632 | 0.997229 | 0.995045 | True |
-| 3MM | 977a2f7007cb1f9673fe3a5c17cdbb469335c619c172a0a882eb18410049eb3d | 4191465 | MISSING | 4191465 | 2402871 | 2402871 | 2402871 | MISSING | 1.000000 | False |
+| 3MM | 977a2f7007cb1f9673fe3a5c17cdbb469335c619c172a0a882eb18410049eb3d | 4191465 | 4191465 | 4191465 | 2402871 | 2402871 | 2402871 | 1.000000 | 1.000000 | True |
 | ATAX | eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950 | 28428842 | 29882110 | 31081550 | 31880220 | 31894637 | 31321955 | 1.050644 | 1.112797 | True |
 | BICG | ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef | 26298698 | 24464891 | 24651923 | 28685812 | 29210480 | 28883488 | 0.913561 | 0.930967 | True |
 | GEMM | fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318 | 1395216 | 1395216 | 1395216 | 826089 | 826089 | 826089 | 1.000000 | 1.000000 | True |
@@ -50,6 +50,6 @@ All32 fixed inputs remain listed. Interim available-subset GM is descriptive, no
 | myocyte | 977e34578994c3d2d1cbd1a8ecf13e09efc43b03bcb8615a141cf2a24c9d5992 | 145909578 | 145909578 | 145909578 | 145147976 | 145147976 | 145147976 | 1.000000 | 1.000000 | True |
 | particlefilter_float | b41cc74c66ca6ed4975948bdce35825381473e5cf44c53f9dc9740ac3e0115b4 | 1861126 | 1861126 | 1861126 | 2100874 | 2100874 | 2100874 | 1.000000 | 1.000000 | True |
 | particlefilter_naive | 3f85d1878aba9f04916ec52cc1162b37673f92a88be07c4db815240c9564755e | 511136 | 511136 | 511136 | 384601 | 384601 | 384601 | 1.000000 | 1.000000 | True |
-| srad_v1 | 0e62c67daa020853cf8a90b9f20a42d7e960e4d6c6e1db09173de1a58af199c4 | 8043823 | 8043823 | MISSING | 7324411 | 7324411 | 7324411 | 1.000000 | MISSING | False |
+| srad_v1 | 0e62c67daa020853cf8a90b9f20a42d7e960e4d6c6e1db09173de1a58af199c4 | 8043823 | 8043823 | 8043823 | 7324411 | 7324411 | 7324411 | 1.000000 | 1.000000 | True |
 
 JSON retains all source path/SHA/role/UUID/alias/status, sign distributions, suites, missing reasons and same-set F comparisons. I>1 is relative improvement, not proof DTC exceeds CH. No per-program bestF GM or equal-area claim. FR queue/shared credits coupled; fixed850MHz DRAM/10MiB L2/frontend mechanisms preserved. No new model, registry/controller action, extra48/combination or v0.23 edit by this readonly consumer.

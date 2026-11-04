@@ -1,5 +1,17 @@
 # DTC-L1 Stage II-A Remaining48 CH fair matching
 
+## Naturally closed myocyte and3MM: independent mechanism supplements
+
+Read [myocyte](independent_reviews/B_completed_myocyte_v1/REPORT.md) and [3MM](independent_reviews/B_completed_3mm_v1/REPORT.md), with their companion [myocyte review](independent_reviews/C_completed_myocyte_review_v1/README.md) and [3MM review](independent_reviews/C_completed_3mm_review_v1/README.md). These are six-source matched, dated supplements; the current execution table retains its own timestamp. Neither supplement is the final CORE32 aggregate or the final48 lifecycle audit.
+
+Both programs preserve exact own-design zero F responses. Current-contract CH/DH differences are architecture comparisons with the same Hash family, not newly isolated Hash gains. Selected additive counters use explicit cumulative endpoints; absent counters remain unavailable. Means, gauges and running maxima are not differenced. The3MM zero DRAM exposure is specific to the registered prefilled replay and does not prove compute-bound execution. Blocked ICNT admission events are not DRAM wait cycles or a critical-path fraction. CH common and DH OO counters do not describe equal structures.
+
+myocyte issues one32B DRAM-read atom inK1. Its5993 registered kernel instances match the fixed single-RHS mapping;5993=13x461 is arithmetic compatibility with a candidate13-RHS solver, not a measured count of solver attempts or ODE steps. Accepted-step/retry IDs, native full-application completeness and live phase_epoch-to-kernel-ordinal bindings remain unproved. The repeated state/parameter HtoD uploads require an explicit cache-coherence and numeric-correctness boundary: measured simulator cache counters do not certify valid numerical reuse after CPU writes. The3MM candidate source S copies uninitialized E/F/G and uses +=, while its binding to historical capture source/ELF/macros and native numerical correctness remains unproved. Preserve that limitation without asserting historical captured numeric error, repairing or replacing the frozen input, or removing its accepted performance row. No new simulation, trace, controller, source-pin, final-waiter, budget or v0.23 manuscript action is performed here.
+
+The independent myocyte review pins the specific kernel-idle invalidation and memcpy entrypoints, including the effective source-event OO-invalidation option0. These callsite facts define a pending coherence question; they do not exhaust all possible OO reset paths or prove stale-data behavior. Downstream F matching alone is not numerical-coherence certification.
+
+The companion CPU-capacity observation records the successful V1 myocyte six-source parser subset under its6GiB AS limit. Its sampled RSS is not a peak; exact final wall/CPU time and start generation were not collected. This limited engineering observation does not qualify the final24 consumer's complete end-to-end capacity, and the original gated final chain remains unchanged.
+
 ## Measured host resources: closed40 snapshot
 
 Read the [per-point resource report](independent_reviews/A_actual_resource_summary_v1/updates/current40_v1/REPORT.md), its manifest-pinned data and the [independent review](independent_reviews/C_actual_resource_summary_review_v1/README.md). This dated evidence covers40 closed identities, with all8 pending resource rows retained as null. It is distinct from resource admission estimates and simulated hardware capacity.

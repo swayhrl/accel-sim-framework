@@ -1,0 +1,1 @@
+myocyte six-source/5993kernel-per-source current-contract zero-F-response supplement. Read REPORT.md and exact phase/ordinal scopes. Publish MANIFEST members only; private_analysis_intermediates is excluded. MEMCPY command detail is public gzip, not a missing file. All publicmembers<8MiB.
