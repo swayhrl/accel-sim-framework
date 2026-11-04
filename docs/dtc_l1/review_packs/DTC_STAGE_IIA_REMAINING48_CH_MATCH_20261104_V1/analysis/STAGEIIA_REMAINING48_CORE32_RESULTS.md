@@ -1,6 +1,6 @@
 # Remaining48 CH matching / fixed CORE32 readonly results
 
-As of 2026-11-04T05:26:30.213427+00:00; source_qualified=True. New48 accepted 41/48, archived negative 0, verification HOLD 0, pending 7. Complete both-F population 28/32. Source slots accepted 185/192.
+As of 2026-11-04T06:01:05.684591+00:00; source_qualified=True. New48 accepted 42/48, archived negative 0, verification HOLD 0, pending 6. Complete both-F population 28/32. Source slots accepted 186/192.
 
 All32 fixed inputs remain listed. Interim available-subset GM is descriptive, not the full32suite result. Direct F comparison uses the same accepted six-cell intersection; negatives/HOLD/pending never become cycles. Original128, first16newCH and remaining48newCH keep distinct source roles; source_profile is actual configuration, not a comparison-context alias.
 
@@ -50,6 +50,6 @@ All32 fixed inputs remain listed. Interim available-subset GM is descriptive, no
 | myocyte | 977e34578994c3d2d1cbd1a8ecf13e09efc43b03bcb8615a141cf2a24c9d5992 | 145909578 | 145909578 | MISSING | 145147976 | 145147976 | 145147976 | 1.000000 | MISSING | False |
 | particlefilter_float | b41cc74c66ca6ed4975948bdce35825381473e5cf44c53f9dc9740ac3e0115b4 | 1861126 | 1861126 | 1861126 | 2100874 | 2100874 | 2100874 | 1.000000 | 1.000000 | True |
 | particlefilter_naive | 3f85d1878aba9f04916ec52cc1162b37673f92a88be07c4db815240c9564755e | 511136 | 511136 | 511136 | 384601 | 384601 | 384601 | 1.000000 | 1.000000 | True |
-| srad_v1 | 0e62c67daa020853cf8a90b9f20a42d7e960e4d6c6e1db09173de1a58af199c4 | 8043823 | MISSING | MISSING | 7324411 | 7324411 | 7324411 | MISSING | MISSING | False |
+| srad_v1 | 0e62c67daa020853cf8a90b9f20a42d7e960e4d6c6e1db09173de1a58af199c4 | 8043823 | 8043823 | MISSING | 7324411 | 7324411 | 7324411 | 1.000000 | MISSING | False |
 
 JSON retains all source path/SHA/role/UUID/alias/status, sign distributions, suites, missing reasons and same-set F comparisons. I>1 is relative improvement, not proof DTC exceeds CH. No per-program bestF GM or equal-area claim. FR queue/shared credits coupled; fixed850MHz DRAM/10MiB L2/frontend mechanisms preserved. No new model, registry/controller action, extra48/combination or v0.23 edit by this readonly consumer.
