@@ -1,0 +1,39 @@
+--- 2c7aef73
++++ final_preload_guard
+@@ -62,7 +62,8 @@
+ def held(state,c,reason):
+  try:
+   q=state['engine'].registered()[2];spent=c in q['consumed']or(R/'control/qualification_ledger'/(c+'.INTENT.json')).exists()
+-  return dict(state='SPENT_BROAD_SCOPE_PRESERVE'if spent else'ZERO_START_DEFERRED',cohort=c,model_retries=0,model_starts=0,reason=reason)
++  if spent:return dict(state='SPENT_BROAD_SCOPE_PRESERVE',cohort=c,model_retries=0,reason=reason)
++  return dict(state='ZERO_START_DEFERRED',cohort=c,model_retries=0,model_starts=0,reason=reason)
+  except BaseException as e:return dict(state='BROAD_SCOPE_PRESERVE',cohort=c,model_retries=0,reason=reason,identity_error=repr(e))
+ def contain(state):
+  """Retain all installed mandatory generations; fence only selected new IDs."""
+@@ -88,17 +89,23 @@
+  state=dict(frame=frame,engine=engine,directory=str(directory),scope=scope_ids,phase='PREFLIGHT',armed=False,ever_exposed=False,old_Main2=old)
+  setattr(main,MARKER,state)
+  try:
++  rcfg=read(cfg['resource_configuration_path']);ocfg=read(cfg['observation_configuration_path'])
++  assert set(cfg['modules'])=={'library','producer','consumer','owner_frame','IR_view'}
++  assert cfg['modules']['library']==rcfg['source_paths']['library']
++  assert cfg['modules']['producer']==ocfg['source_paths']['producer']==rcfg['source_paths']['owner']
++  assert cfg['modules']['consumer']==ocfg['source_paths']['consumer']==rcfg['source_paths']['consumer']
++  for name,path in cfg['modules'].items():assert path in cfg['source_pins']and sha(path)==cfg['source_pins'][path],'PRELOAD_UNQUALIFIED_MODULE '+name
++  assert cfg['source_pins'][str(P(__file__))]==cfg['installer_sha256']and cfg['source_pins'][cfg['Main1_source_path']]==MAIN1_SHA
++  for contract in [rcfg,ocfg]:
++   for role,path in contract['source_paths'].items():assert cfg['source_pins'][path]==contract['qualified_sources'][role]==sha(path)
+   modules={k:load('broad_Main_'+k,p)for k,p in cfg['modules'].items()};state['modules']=modules
+   lib=modules['library'];producer=modules['producer'];bridge=modules['consumer'];framehelper=modules['owner_frame'];irhelper=modules['IR_view']
+-  rcfg=read(cfg['resource_configuration_path']);ocfg=read(cfg['observation_configuration_path'])
+   assert lib.ID==RESOURCE_ID and producer.ID==OBSERVER_ID
+   assert set(rcfg['allowed_cohorts'])==scope_ids and rcfg['max_shared_running']is None
+   assert rcfg['scope_contract_path']==cfg['scope_contract_path']and sha(cfg['scope_contract_path'])==rcfg['scope_contract_sha256']
+   assert ocfg['resource_configuration_path']==cfg['resource_configuration_path']and ocfg['resource_configuration_sha256']==sha(cfg['resource_configuration_path'])
+   assert ocfg['future_primary_policy']=='MATRIX_REGISTERED_UNSPENT_BPF_REQUIRED'and ocfg['future_ir_policy']=='EXACT_REGISTERED_IR11_BPF_REQUIRED'
+   assert rcfg['qualification_only']is ocfg['qualification_only']is False
+-  for contract in [rcfg,ocfg]:
+-   for role,path in contract['source_paths'].items():assert cfg['source_pins'][path]==contract['qualified_sources'][role]==sha(path)
+   with aging.lock:
+    engine.assert_parent_lease();q=engine.registered()[2];canonical=check_unused(R,q,scope,frame.f_locals['claims'])
+    lib.validate_broad_approval(rcfg,q)
