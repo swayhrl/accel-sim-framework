@@ -1,0 +1,71 @@
+{
+  "execution_status": "GPU_RESOURCE_DEFERRED",
+  "scientific_status": "INCONCLUSIVE",
+  "reason": "Own process-tree RSS NoSuchProcess during initialization; strict inherited monitor stopped and released the sole lock before any diagnostic generate.",
+  "GPU_lock_attempts": 1,
+  "GPU_lock_held_seconds": 25.002496623434126,
+  "model_constructor_attempts": 1,
+  "model_constructor_completed_and_strong_runtime_asserted": false,
+  "diagnostic_requests": 0,
+  "diagnostic_groups_completed": 0,
+  "formal_samples": 0,
+  "V5_numeric_fact": {
+    "reference": -0.9105782508850098,
+    "actual": -1.0132758617401123,
+    "abs_error": 0.10269761085510254,
+    "allowed": 0.0591057825088501,
+    "selected_token_equal": true,
+    "returned_top20_common_count": 20,
+    "delta_min": -0.22769784927368164,
+    "delta_max": 0.14730238914489746,
+    "delta_span": 0.3750002384185791,
+    "uniform_shift": false,
+    "relative_spacing": {
+      "anchor": -0.22769784927368164,
+      "spacing": 0.125,
+      "max_residual": 2.384185791015625e-07,
+      "interpretation": "Observed near-0.125 relative spacing, consistent with quantized score changes plus normalization offset; not proof of BF16 kernel, forward layer or sampler cause. No logits captured."
+    }
+  },
+  "classifications": {
+    "MODEL_FORWARD_NUMERIC": "POSSIBLE_NOT_LOCALIZED",
+    "LOGPROB_OR_SAMPLER_NUMERIC": "POSSIBLE_NOT_LOCALIZED",
+    "BATCH_EXECUTION_PATH": "B1/B2 changed request/prefill shape; V5 P3 graph snapshot missing",
+    "OBSERVATION_OR_PAIRING_DEFECT": "Confirmed partial-batch persistence defect; does not negate already preserved A00 mismatch. No selected-token index error found.",
+    "UNRESOLVED": "No logits/intermediate tensors; attribution cannot be uniquely established."
+  },
+  "numeric_reproducibility": "UNTESTED_IN_V6; no completion returned; old V5 difference remains valid observed failure, no new positive or negative replication.",
+  "delta_A00": null,
+  "delta_A01": null,
+  "delta_B2": null,
+  "R": null,
+  "point_statistics": {},
+  "H1": "Not tested; conditional streamed weight bytes are not measured DRAM.",
+  "H2": "Not separated from H1; no legal formal samples.",
+  "H3": "V5 pairing checks support preserved A00 comparison; missing P3 execution snapshot remains unresolved; V6 actual strong runtime qualification not reached.",
+  "resource_gaps": [
+    {
+      "index": 14,
+      "phase": "WORKER",
+      "monitor_gaps": [
+        "RSS_PID_3542974:NoSuchProcess"
+      ],
+      "unknown_gpu_pids": [],
+      "unqualified_external_gpu_pids": [],
+      "own_NVML_MiB": 14290.0
+    }
+  ],
+  "external_interference": "No unknown external compute observed; no ImageLab completed-scope change while held. Desktop per-process utilization unavailable; cannot claim exclusive or interference-free environment.",
+  "condition": "VERIFIED_GATED_RESIDENT_CO_RESIDENT_NATIVE_OBSERVATION",
+  "next_hardware_candidate": null,
+  "performance_ranking": null,
+  "execution_cleanup": {
+    "lock_released": true,
+    "own_GPU_contexts_cleared": true,
+    "reservation": {
+      "released": true,
+      "ownership_granted": false
+    }
+  },
+  "no_retry": true
+}
