@@ -1,0 +1,205 @@
+{
+  "schema": "BF16_WEIGHT_SUPPLY_PROBE_V1",
+  "status": "G0_PASS_AND_FROZEN_BEFORE_ADMISSION",
+  "base_commit": "ed365741b230718f6ffc1ccbed125fc2566aac15",
+  "base_tree": "e2f3c9d2d4485b0d41db6c6ceec33af0d8e35304",
+  "new_independent_experiment": true,
+  "old_goals_resumed": false,
+  "question": "Are full-generate 32-minus-1 token deltas compatible with BF16 streaming-weight supply, and does a two-real-request batch amortize that cost?",
+  "hypotheses": {
+    "H1": "Streaming weight supply: one full dense weight pass per decode step; ideal B2 shares one pass across two requests. A ratio near1 is compatible but also possible under H2.",
+    "H2": "Compute, launch/scheduling, padded graph dispatch, sampling/logprobs or other execution changes may explain deltas/batch response; no resource-only causal axis.",
+    "H3": "Model/input/backend/dtype/graph or actual scheduling identity mismatches invalidate the structural comparison; STOP runtime/numeric failures."
+  },
+  "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+  "dtype": "bfloat16",
+  "TP": 1,
+  "quantization": null,
+  "one_engine": true,
+  "engine": {
+    "max_model_len": 544,
+    "max_num_batched_tokens": 1088,
+    "max_num_seqs": 2,
+    "compilation_mode": "VLLM_COMPILE",
+    "backend": "inductor",
+    "cudagraph_mode": "FULL_AND_PIECEWISE",
+    "enforce_eager": false,
+    "enable_prefix_caching": false,
+    "cpu_offload_gb": 0,
+    "gpu_memory_utilization": 0.92
+  },
+  "points": [
+    {
+      "point": "P1",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00"
+      ],
+      "output_tokens": 1
+    },
+    {
+      "point": "P2",
+      "sources": [
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 1
+    },
+    {
+      "point": "P3",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00",
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 1
+    },
+    {
+      "point": "P4",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00"
+      ],
+      "output_tokens": 32
+    },
+    {
+      "point": "P5",
+      "sources": [
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 32
+    },
+    {
+      "point": "P6",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00",
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 32
+    }
+  ],
+  "warmup_rounds": [
+    [
+      "P1",
+      "P4",
+      "P2",
+      "P5",
+      "P3",
+      "P6"
+    ],
+    [
+      "P6",
+      "P3",
+      "P5",
+      "P2",
+      "P4",
+      "P1"
+    ]
+  ],
+  "formal_rounds": [
+    [
+      "P1",
+      "P4",
+      "P2",
+      "P5",
+      "P3",
+      "P6"
+    ],
+    [
+      "P6",
+      "P3",
+      "P5",
+      "P2",
+      "P4",
+      "P1"
+    ],
+    [
+      "P2",
+      "P5",
+      "P3",
+      "P6",
+      "P1",
+      "P4"
+    ],
+    [
+      "P4",
+      "P1",
+      "P6",
+      "P3",
+      "P5",
+      "P2"
+    ],
+    [
+      "P3",
+      "P6",
+      "P1",
+      "P4",
+      "P2",
+      "P5"
+    ]
+  ],
+  "warmups_per_point": 2,
+  "formal_per_point": 5,
+  "sampling": {
+    "seed": 0,
+    "temperature": 0,
+    "top_p": 1,
+    "ignore_eos": true,
+    "detokenize": false,
+    "logprobs": 20
+  },
+  "numeric": {
+    "tokens": "Exact lengths and exact same-source tokens across repetitions and B1/B2 at same output length",
+    "logprobs": "All returned finite; sampled per-step abs(delta)<=0.05+0.01*abs(reference)",
+    "atol": 0.05,
+    "rtol": 0.01,
+    "historical_A00_32": "Pinned MP02_A reference exact tokens and sampled logprobs, B1 and B2; A01 has self-repeatability plus B1/B2 crosscheck, no independent oracle",
+    "failure": "NUMERIC_OR_RUNTIME_NO_GO; no tolerance change"
+  },
+  "timing": "pre-sync; CUDA-event start; one llm.generate; event stop; post-sync; event elapsed. Host generate-call wall separately (excludes post-sync), plus synchronized host request wall.",
+  "analysis": {
+    "delta_A00": "median(P4)-median(P1)",
+    "delta_A01": "median(P5)-median(P2)",
+    "delta_batch": "median(P6)-median(P3)",
+    "ratio": "delta_batch / mean(delta_A00,delta_A01)",
+    "statistics": "5-sample median and unscaled MAD; all raw samples; no posthoc point selection",
+    "descriptive_envelope": "abs(delta)>max(0.05*min(two medians),3*sum(two MADs)); ratio no causal classification",
+    "stability": "MAD/median<=0.05 per point; otherwise INCONCLUSIVE",
+    "weight_model": "Conditional traffic/bandwidth bound only, not measured DRAM; signed deltas include prefill and graph effects"
+  },
+  "GPU": {
+    "lock": "/data/c16/locks/c16_gpu_campaign.lock",
+    "single_nonblocking_attempt": true,
+    "UUID": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+    "held_seconds_max": 720,
+    "own_NVML_MiB_max": 15400,
+    "tree_RSS_bytes_max": 17179869184,
+    "new_disk_bytes_max": 3221225472,
+    "goal_start_epoch": 1793775066,
+    "goal_seconds_max": 2700,
+    "owner_count": 1
+  },
+  "stops": [
+    "Missing real input/model/source identity",
+    "Lock conflict: GPU_RESOURCE_DEFERRED no retry",
+    "Any eager/weak/fallback backend or non-BF16/quantized path",
+    "Frozen numeric failure",
+    "Formal compile/capture or absent32-token graph replay",
+    "Unknown/foreign GPU process or resource overrun",
+    "No additional scientific points/Profiler/RTL/Goal"
+  ],
+  "next_candidate": "Only if concrete residual cost and a new falsifiable hardware variable exist after software exclusion; never automatic.",
+  "frozen_utc_epoch": 1793775524.336446,
+  "frozen_tool_hashes": {
+    "g0.py": "3a62c7a1aac7dc00019a82e703fc7e0ffd1fcecff3b8c94234a6cd9bb0fff116",
+    "supervisor.py": "fa88c98c8354a5698c36e4002c672bad6d32c49e65e2d52db55f74dda58b2d6d",
+    "worker.py": "e8871a2c1430b2fecab50588f021014c97fdf354c9f632df061710d131fc3222"
+  },
+  "G0_validation": {
+    "model_all12_original_SHA": "PASS_FULL_STREAMING_RECHECK",
+    "A00_A01_512": "PASS_ORIGINAL_BYTES_AND_TOKENIZER_PREFIX",
+    "historical_reference": "PASS_SHA",
+    "syntax": "PASS",
+    "six_point_order": "PASS",
+    "event_endpoint_order": "PASS_STATIC",
+    "one_nonblocking_lock_before_NVML_CUDA": "PASS_STATIC",
+    "capacity": "CPU scheduler source fields and544*2=1088; live engine config/backend must pass after lock.",
+    "engineering": "Fixed one Python source transport newline before admission, no science change."
+  }
+}

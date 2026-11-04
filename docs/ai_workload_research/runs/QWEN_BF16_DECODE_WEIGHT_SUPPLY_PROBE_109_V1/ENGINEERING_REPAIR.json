@@ -1,0 +1,12 @@
+{
+  "status": "CPU_FIX_VERIFIED_GPU_NOT_RETRIED",
+  "executed_supervisor_sha256": "fa88c98c8354a5698c36e4002c672bad6d32c49e65e2d52db55f74dda58b2d6d",
+  "final_supervisor_sha256": "d3bf417dda426d5cdee3565cc9c64e9a0b6fd1326d33e1a14a00ae6dc8e0b052",
+  "original_matches_frozen_contract": true,
+  "cause": "Installed pynvml exposes NVML_VALUE_NOT_AVAILABLE_ulonglong and converts unavailable memory to None, not NVML_VALUE_NOT_AVAILABLE.",
+  "fix": "CPU-only normalization handles None, uint64 sentinel, ctypes values and negative values. No driver call in CPU test.",
+  "cpu_test": "PASS: 7 memory normalization cases; installed symbol shape verified; no NVML/CUDA initialization",
+  "gpu_or_lock_retry": false,
+  "reason_no_gpu_revalidation": "Original supervisor already released sole acquired lock in finally. Reacquisition would exceed single-attempt contract; preserve runtime failure.",
+  "frozen_science_contract_unchanged": true
+}

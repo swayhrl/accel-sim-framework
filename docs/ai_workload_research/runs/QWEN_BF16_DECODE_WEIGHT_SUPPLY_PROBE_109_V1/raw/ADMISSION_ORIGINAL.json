@@ -1,0 +1,33 @@
+{
+  "status": "IDENTITY_OR_INPUT_NO_GO",
+  "supervisor_pid": 3444511,
+  "GPU_seconds_limit": 720,
+  "whole_Goal_seconds_limit": 2700,
+  "VRAM_limit_MiB": 15400,
+  "RSS_tree_limit_bytes": 17179869184,
+  "new_disk_limit_bytes": 3221225472,
+  "samples": [],
+  "children": [],
+  "GPU_model_initializations": 0,
+  "lock_acquired": true,
+  "lock_released": true,
+  "NVML_contexts_cleared": false,
+  "EXCLUSIVITY_EVIDENCE_COMPLETE": false,
+  "lock_acquired_utc_epoch": 1793775525.2921214,
+  "NVML_initialized": true,
+  "device": {
+    "UUID": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+    "name": "NVIDIA GeForce RTX 4080",
+    "total_MiB": 16376.0
+  },
+  "reason": "module 'pynvml' has no attribute 'NVML_VALUE_NOT_AVAILABLE'",
+  "traceback": "Traceback (most recent call last):\n  File \"/home/huangrulin/workspace/worktrees/accel-sim-aiarch-bf16-decode-weight-supply-probe-109-v1/util/ai_workload_research/bf16_decode_weight_supply_probe/supervisor.py\", line 62, in main\n    snapshot('PRE_MODEL_ADMISSION')\n  File \"/home/huangrulin/workspace/worktrees/accel-sim-aiarch-bf16-decode-weight-supply-probe-109-v1/util/ai_workload_research/bf16_decode_weight_supply_probe/supervisor.py\", line 37, in snapshot\n    if not psutil.pid_exists(pid) or item['usedGpuMemory'] is None or item['usedGpuMemory']==nv.NVML_VALUE_NOT_AVAILABLE:unknown.append(pid)\n                                                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: module 'pynvml' has no attribute 'NVML_VALUE_NOT_AVAILABLE'\n",
+  "final_GPU_pids": [
+    1760,
+    2035,
+    3246996
+  ],
+  "own_GPU_contexts_cleared": true,
+  "GPU_lock_held_seconds": 0.014348847791552544,
+  "whole_Goal_elapsed_seconds": 459.30811309814453
+}
