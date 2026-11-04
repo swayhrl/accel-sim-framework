@@ -1,0 +1,15 @@
+# Shared CPU Stage2: original four engineering identities
+
+This is an isolated future-entry generation. It preserves all Stage1 source paths and bytes. The resource and observation IDs are unchanged; immutable configuration/source SHA and each actual INTENT identify the generation. The Main scope certificate authenticates the first real heartwall control's natural 8551-cycle result, joined DONE, complete original physics/resource/IO/observation replay, true 164 archive and native restore. This is permission to extend only to the original four excluded engineering identities, with one shared job at a time.
+
+The first control UUID is already consumed and accepted. It is never rerun. On installation the new owner freezes the subset of the four identities that are still unused (currently three). A worker outside that subset delegates the exact previous route, including old postprocessing. The new consumer must replay historical INTENT/source generations using their original libraries; a new configuration is not evidence that an old birth used the new source.
+
+The three remaining cases are heartwall BPF and gaussian control/BPF. Their actual native argv differs only by one explicit `--seccomp-bpf` flag in BPF mode. Default control is not fallback. BPF mode requires same-generation raw model/tracer evidence for Seccomp 2/filter 1; control requires 0/0. Unknown activation remains unaccepted, with no automatic retry or fallback. Gaussian must retain all 126 kernels and reference 740717 cycles; it cannot inherit the heartwall reference.
+
+The owner first calls the captured ordinary chooser. Its finite fallback preserves full candidate and peer/own forecasts, protected R, original legal CPU allocator, qualified CPU rebind, .95/10-GiB physical policy and every non-CPUfull gate. The prospective shared count remains one. No extra technical grant, primary/IR rollout, scientific matrix change, union, signal or resource refund is part of this code.
+
+Main must restore the qualified Stage1 worker and consumer in guarded reverse order, preserve the saved underlying worker/chooser/masks, prearm-fence the still-unused new scope, then install the Stage2 typed consumer before this closed owner. Installation defaults to armed=False. Only after current canonical/alias/registry/dispatch/source/approval/claims and both configurations agree may Main explicitly arm. Worker assignment is considered potential exposure. Once armed, missing terminal proof cannot silently restore an old entry: the owner remains installed and reports HOLD. Already-running other jobs are not interrupted.
+
+CPU qualifications use the real frozen native/observer/atomic IO and the actual new resource/observation code, but a mocked Popen/proc/physics/progress/resource backend. They do not constitute real BPF activation, production cadence, natural simulation, actual archive transfer or performance evidence. Those gates remain required for every real new identity.
+
+This package is agent-prepared only. No production installation, registration, model start, budget change or Git operation was performed by Agent B.
