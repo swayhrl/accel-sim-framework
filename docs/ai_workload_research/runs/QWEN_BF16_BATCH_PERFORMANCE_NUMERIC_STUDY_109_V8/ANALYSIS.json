@@ -1,0 +1,121 @@
+{
+  "status": "V8_COMPLETE",
+  "requests": 255,
+  "completions": 340,
+  "formal_samples": 150,
+  "configurations": [
+    "MAIN",
+    "LP20_CONTROL",
+    "LP_NONE",
+    "APC_COLD",
+    "APC_WARM"
+  ],
+  "checks": [
+    {
+      "task": "BASE",
+      "requests": 129,
+      "all_samples_and_sources_verified": true,
+      "sha": "0aa1700cd0f88463687084d45ed2f04c16f37bc693335dfd003cf8f0f0a69e8d"
+    },
+    {
+      "task": "PREFIX",
+      "requests": 126,
+      "all_samples_and_sources_verified": true,
+      "sha": "619b399ab9fc1ec14545a27216a0a06dbe8c206ebc7816ccde344e478176b144"
+    }
+  ],
+  "runtime": {
+    "BASE": {
+      "vllm": "0.30.0",
+      "torch": "2.13.0+cu130",
+      "source_sha256": {
+        "compilation.py": "c9cec5c7200e8e559810ec8c30113ad61dab6780f9f7fb3c116bd0d9b5a43065",
+        "qwen2.py": "eb2f0eeb13c57a28bbc06bc64afff18cd8865f89fbe9ff2a3cf3a896f037cfe9"
+      },
+      "attention": [
+        "FlashAttentionImpl"
+      ],
+      "linear": [
+        "UnquantizedLinearMethod"
+      ],
+      "capacity": {
+        "max_model_len": 544,
+        "max_num_batched_tokens": 1088,
+        "max_num_seqs": 2
+      },
+      "compilation_mode": "VLLM_COMPILE",
+      "backend": "inductor",
+      "cudagraph_mode": "FULL_AND_PIECEWISE",
+      "cache_root": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-bf16-batch-performance-and-numeric-study-109-v8/docs/ai_workload_research/runs/QWEN_BF16_BATCH_PERFORMANCE_NUMERIC_STUDY_109_V8/.private/BASE",
+      "local_cache_dir": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-bf16-batch-performance-and-numeric-study-109-v8/docs/ai_workload_research/runs/QWEN_BF16_BATCH_PERFORMANCE_NUMERIC_STUDY_109_V8/.private/BASE/compilation/rank_0_0/backbone",
+      "cache_identity": "NEW_MODE_A_COMPILATION_IDENTITY",
+      "initialization_seconds": 60.09601323958486,
+      "graph_observation": "Accepted manager-level fullgraph counter only; descriptors may contain padding and are not kernel/profiler observations.",
+      "runner_class": "vllm.v1.worker.gpu.model_runner.GPUModelRunner",
+      "sampler_class": "vllm.v1.worker.gpu.sample.sampler.Sampler",
+      "sampler_source": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/v1/worker/gpu/sample/sampler.py",
+      "sampler_source_sha256": "832c9945d201a1e730ff9b4b52076aa83bd4a5064e1e4cfea952cf84d4a8d1f0",
+      "sampler_logprobs_mode": "raw_logprobs",
+      "lm_head_dtype": "torch.bfloat16",
+      "logits_head_dtype": "torch.bfloat16",
+      "enable_prefix_caching": false
+    },
+    "PREFIX": {
+      "vllm": "0.30.0",
+      "torch": "2.13.0+cu130",
+      "source_sha256": {
+        "compilation.py": "c9cec5c7200e8e559810ec8c30113ad61dab6780f9f7fb3c116bd0d9b5a43065",
+        "qwen2.py": "eb2f0eeb13c57a28bbc06bc64afff18cd8865f89fbe9ff2a3cf3a896f037cfe9"
+      },
+      "attention": [
+        "FlashAttentionImpl"
+      ],
+      "linear": [
+        "UnquantizedLinearMethod"
+      ],
+      "capacity": {
+        "max_model_len": 544,
+        "max_num_batched_tokens": 1088,
+        "max_num_seqs": 2
+      },
+      "compilation_mode": "VLLM_COMPILE",
+      "backend": "inductor",
+      "cudagraph_mode": "FULL_AND_PIECEWISE",
+      "cache_root": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-bf16-batch-performance-and-numeric-study-109-v8/docs/ai_workload_research/runs/QWEN_BF16_BATCH_PERFORMANCE_NUMERIC_STUDY_109_V8/.private/PREFIX",
+      "local_cache_dir": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-bf16-batch-performance-and-numeric-study-109-v8/docs/ai_workload_research/runs/QWEN_BF16_BATCH_PERFORMANCE_NUMERIC_STUDY_109_V8/.private/PREFIX/compilation/rank_0_0/backbone",
+      "cache_identity": "NEW_MODE_A_COMPILATION_IDENTITY",
+      "initialization_seconds": 60.51101104076952,
+      "graph_observation": "Accepted manager-level fullgraph counter only; descriptors may contain padding and are not kernel/profiler observations.",
+      "runner_class": "vllm.v1.worker.gpu.model_runner.GPUModelRunner",
+      "sampler_class": "vllm.v1.worker.gpu.sample.sampler.Sampler",
+      "sampler_source": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/v1/worker/gpu/sample/sampler.py",
+      "sampler_source_sha256": "832c9945d201a1e730ff9b4b52076aa83bd4a5064e1e4cfea952cf84d4a8d1f0",
+      "sampler_logprobs_mode": "raw_logprobs",
+      "lm_head_dtype": "torch.bfloat16",
+      "logits_head_dtype": "torch.bfloat16",
+      "enable_prefix_caching": true
+    }
+  },
+  "input_runtime_validity": "PASS",
+  "performance_measurement_validity": "VALID_DESCRIPTIVE_NATIVE_SHARED_CONDITION",
+  "token_sequence_identity": "Seeperconfigandcrossconfigurationresults",
+  "logprob_numeric_sensitivity": "OldthresholdstillFAILinmultiplecomparisons;retainedseparately",
+  "architectural_causal_evidence": "INSUFFICIENT_FOR_MEMORY_BOUND_OR_HARDWARE_INNOVATION",
+  "conditional_weight_model": {
+    "bytes": 191313215488,
+    "nominal_ideal_ms": 266.89901714285713,
+    "L2_credit_ideal_ms": 263.9967085714286,
+    "inferred_model_bytes_over_single_delta_GB_s": 602.1225833187817,
+    "ratio_to_nominal": 0.8400147646746396,
+    "status": "MEMORY_SUPPLY_CONSISTENT_NOT_CAUSALLY_PROVEN",
+    "not_DRAM_measured": true,
+    "alternatives": [
+      "Launch/control overhead can be shared",
+      "GEMM shape/occupancy/padding",
+      "Scheduler/sampler/graph overhead",
+      "No independent memory versus compute hardwareaxis"
+    ]
+  },
+  "all_formal_compile_capture_flags": 0,
+  "prior_monitor_interpretation": "V7 retained INCONCLUSIVE text for missing desktop perprocess telemetry. V8 separates valid recorded timings from strictexclusive/causal interpretation;the gap remains,with no claim of no interference."
+}

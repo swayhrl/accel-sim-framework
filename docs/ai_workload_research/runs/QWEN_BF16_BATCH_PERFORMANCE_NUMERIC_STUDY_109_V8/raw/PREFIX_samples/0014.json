@@ -1,0 +1,220 @@
+{
+  "config": "APC_WARM",
+  "point": "P3",
+  "role": "WARMUP",
+  "round": 0,
+  "block": "INITIAL",
+  "index": 14,
+  "batch_size": 2,
+  "output_tokens_each": 1,
+  "request_gpu_elapsed_ms": 20.78838348388672,
+  "host_generate_call_ms": 20.762528,
+  "host_synchronized_request_ms": 20.827058,
+  "graph_replays": [],
+  "new_graph_descriptors": [],
+  "counters_before": {
+    "num_models_seen": 1,
+    "num_graphs_seen": 1,
+    "num_piecewise_graphs_seen": 73,
+    "num_piecewise_capturable_graphs_seen": 37,
+    "num_backend_compilations": 37,
+    "num_gpu_runner_capture_triggers": 1,
+    "num_cudagraph_captured": 113,
+    "num_inductor_compiles": 37,
+    "num_eager_compiles": 0,
+    "num_cache_entries_updated": 0,
+    "num_compiled_artifacts_saved": 3,
+    "num_compiled_artifacts_loaded": 0,
+    "num_aot_compiles": 1,
+    "num_aot_artifacts_saved": 1,
+    "num_aot_artifacts_loaded": 0,
+    "stock_torch_compile_count": 0
+  },
+  "counters_after": {
+    "num_models_seen": 1,
+    "num_graphs_seen": 1,
+    "num_piecewise_graphs_seen": 73,
+    "num_piecewise_capturable_graphs_seen": 37,
+    "num_backend_compilations": 37,
+    "num_gpu_runner_capture_triggers": 1,
+    "num_cudagraph_captured": 113,
+    "num_inductor_compiles": 37,
+    "num_eager_compiles": 0,
+    "num_cache_entries_updated": 0,
+    "num_compiled_artifacts_saved": 3,
+    "num_compiled_artifacts_loaded": 0,
+    "num_aot_compiles": 1,
+    "num_aot_artifacts_saved": 1,
+    "num_aot_artifacts_loaded": 0,
+    "stock_torch_compile_count": 0
+  },
+  "active_compiled_Qwen2Model": [
+    {
+      "name": "model",
+      "cls": "Qwen2Model",
+      "do_not_compile": false,
+      "compiled": true,
+      "aot": true
+    }
+  ],
+  "actual_request_description": {
+    "requests": 2,
+    "input_lengths": [
+      512,
+      512
+    ],
+    "requested_output_tokens": 1,
+    "source_order": [
+      "TRAIN_A_DISCOVERY_00",
+      "TRAIN_A_DISCOVERY_01"
+    ]
+  },
+  "sampling": {
+    "temperature": 0,
+    "top_p": 1,
+    "max_tokens": 1,
+    "ignore_eos": true,
+    "detokenize": false,
+    "logprobs": 20
+  },
+  "prefix_enabled": true,
+  "returned_requests": 2,
+  "outputs": [
+    {
+      "source": "TRAIN_A_DISCOVERY_00",
+      "request_id": "16",
+      "prompt_token_sha256": "9c0bd2abdbe09ccd65d7e656759a84275a7ce164d32b4f0ae1bf62f387258cf5",
+      "completion_count": 1,
+      "num_cached_tokens": 496,
+      "token_count": 1,
+      "token_sha256": "a23c83f7f1938ff7a18319b9390e69203ee50a746aa7ab6cc222caaff05fbd3f",
+      "logprob_sha256": "7a66fbd8d25f2686d6316dd7645b45ea227413b4221bfdac3f0b868eeba0c0b6",
+      "sampled_logprob_sha256": "70c1bb260f21f4ce659c122f2451451bac77380092ee6831a1385d9e0e5e25f0",
+      "all_finite": true
+    },
+    {
+      "source": "TRAIN_A_DISCOVERY_01",
+      "request_id": "17",
+      "prompt_token_sha256": "2603f85ea3378081c60adb1a978145bacea62e8777bdf5b1d0624e8cc9fb92bb",
+      "completion_count": 1,
+      "num_cached_tokens": 496,
+      "token_count": 1,
+      "token_sha256": "ccb485376a8317ea99c98272f41f94e27460b30bb28bde3926106dea7ab3b0d8",
+      "logprob_sha256": "4cb325beac287a335f306a572f3a302bfaf20cd0b825a36bcf65939113f5d3a3",
+      "sampled_logprob_sha256": "d3e41212b1db4aa73e92ce166bf72e5ff1ebddfcd5a624e76d698da25693b93c",
+      "all_finite": true
+    }
+  ],
+  "capture_complete_before_numeric_gate": true,
+  "validity": {
+    "INPUT_AND_RUNTIME_VALIDITY": "PASS",
+    "PERFORMANCE_MEASUREMENT_VALIDITY": "VALID",
+    "TOKEN_SEQUENCE_IDENTITY": "OBSERVED_SEPARATELY",
+    "LOGPROB_NUMERIC_SENSITIVITY": "OBSERVED_SEPARATELY",
+    "ARCHITECTURAL_CAUSAL_EVIDENCE": "NOT_ESTABLISHED"
+  },
+  "formal_compile_or_capture": false,
+  "numeric_observations": [
+    {
+      "config": "APC_WARM",
+      "index": 14,
+      "source": "TRAIN_A_DISCOVERY_00",
+      "point": "P3",
+      "role": "WARMUP",
+      "round": 0,
+      "same_point": {
+        "tokens_exact": true,
+        "first_divergence": null,
+        "common_prefix_tokens": 1,
+        "equal_length": true,
+        "sampled_logprobs": [
+          {
+            "step": 0,
+            "token_same": true,
+            "common_prefix_before_step": true,
+            "reference": -1.0300624370574951,
+            "actual": -1.0300624370574951,
+            "abs_error": 0.0,
+            "allowed": 0.06030062437057496,
+            "old_gate_pass": true
+          }
+        ],
+        "logprob_observable": true,
+        "old_logprob_all_pass": true,
+        "comparison_semantics": "SAME_TOKEN_SEQUENCE"
+      },
+      "B1_B2": {
+        "tokens_exact": true,
+        "first_divergence": null,
+        "common_prefix_tokens": 1,
+        "equal_length": true,
+        "sampled_logprobs": [
+          {
+            "step": 0,
+            "token_same": true,
+            "common_prefix_before_step": true,
+            "reference": -0.9727404713630676,
+            "actual": -1.0300624370574951,
+            "abs_error": 0.05732196569442749,
+            "allowed": 0.05972740471363068,
+            "old_gate_pass": true
+          }
+        ],
+        "logprob_observable": true,
+        "old_logprob_all_pass": true,
+        "comparison_semantics": "SAME_TOKEN_SEQUENCE"
+      }
+    },
+    {
+      "config": "APC_WARM",
+      "index": 14,
+      "source": "TRAIN_A_DISCOVERY_01",
+      "point": "P3",
+      "role": "WARMUP",
+      "round": 0,
+      "same_point": {
+        "tokens_exact": true,
+        "first_divergence": null,
+        "common_prefix_tokens": 1,
+        "equal_length": true,
+        "sampled_logprobs": [
+          {
+            "step": 0,
+            "token_same": true,
+            "common_prefix_before_step": true,
+            "reference": -1.2931278944015503,
+            "actual": -1.2931278944015503,
+            "abs_error": 0.0,
+            "allowed": 0.06293127894401551,
+            "old_gate_pass": true
+          }
+        ],
+        "logprob_observable": true,
+        "old_logprob_all_pass": true,
+        "comparison_semantics": "SAME_TOKEN_SEQUENCE"
+      },
+      "B1_B2": {
+        "tokens_exact": true,
+        "first_divergence": null,
+        "common_prefix_tokens": 1,
+        "equal_length": true,
+        "sampled_logprobs": [
+          {
+            "step": 0,
+            "token_same": true,
+            "common_prefix_before_step": true,
+            "reference": -1.2249367237091064,
+            "actual": -1.2931278944015503,
+            "abs_error": 0.06819117069244385,
+            "allowed": 0.06224936723709107,
+            "old_gate_pass": false
+          }
+        ],
+        "logprob_observable": true,
+        "old_logprob_all_pass": false,
+        "comparison_semantics": "SAME_TOKEN_SEQUENCE"
+      }
+    }
+  ],
+  "status": "PASS_RUNTIME_VALID"
+}

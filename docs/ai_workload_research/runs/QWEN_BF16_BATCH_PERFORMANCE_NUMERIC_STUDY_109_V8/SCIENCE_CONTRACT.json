@@ -1,0 +1,286 @@
+{
+  "schema": "V8_PERFORMANCE_NUMERIC_STUDY",
+  "status": "FROZEN_CPU_TESTED_PRELOCK",
+  "base_commit": "a43a44a49da80496547dc29c68a3030730fd9adb",
+  "base_tree": "c707f1f18abe8f17fca03007d37b1074f91d8f01",
+  "goal_start_epoch": 1793813975,
+  "previous_science_SHA": "8571824801bf46ae9f1c84c55470274e580fa7d8b9ff5491ded36e87172a5397",
+  "explicit_scientific_contract_change": true,
+  "question": "Measure strong full-request decode/batch performance while independently observing numerical sensitivity; distinguish strong software costs from unresolved hardware attribution.",
+  "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+  "dtype": "bfloat16",
+  "TP": 1,
+  "quantization": null,
+  "engine": {
+    "max_model_len": 544,
+    "max_num_batched_tokens": 1088,
+    "max_num_seqs": 2,
+    "compilation_mode": "VLLM_COMPILE",
+    "backend": "inductor",
+    "cudagraph_mode": "FULL_AND_PIECEWISE",
+    "enforce_eager": false,
+    "enable_prefix_caching": false,
+    "cpu_offload_gb": 0,
+    "gpu_memory_utilization": 0.92
+  },
+  "points": [
+    {
+      "point": "P1",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00"
+      ],
+      "output_tokens": 1
+    },
+    {
+      "point": "P2",
+      "sources": [
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 1
+    },
+    {
+      "point": "P3",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00",
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 1
+    },
+    {
+      "point": "P4",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00"
+      ],
+      "output_tokens": 32
+    },
+    {
+      "point": "P5",
+      "sources": [
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 32
+    },
+    {
+      "point": "P6",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00",
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 32
+    }
+  ],
+  "warmup_rounds": [
+    [
+      "P1",
+      "P4",
+      "P2",
+      "P5",
+      "P3",
+      "P6"
+    ],
+    [
+      "P6",
+      "P3",
+      "P5",
+      "P2",
+      "P4",
+      "P1"
+    ]
+  ],
+  "formal_rounds": [
+    [
+      "P1",
+      "P4",
+      "P2",
+      "P5",
+      "P3",
+      "P6"
+    ],
+    [
+      "P6",
+      "P3",
+      "P5",
+      "P2",
+      "P4",
+      "P1"
+    ],
+    [
+      "P2",
+      "P5",
+      "P3",
+      "P6",
+      "P1",
+      "P4"
+    ],
+    [
+      "P4",
+      "P1",
+      "P6",
+      "P3",
+      "P5",
+      "P2"
+    ],
+    [
+      "P3",
+      "P6",
+      "P1",
+      "P4",
+      "P2",
+      "P5"
+    ]
+  ],
+  "sampling": {
+    "seed": 0,
+    "temperature": 0,
+    "top_p": 1,
+    "ignore_eos": true,
+    "detokenize": false,
+    "logprobs": 20
+  },
+  "timing": "pre-sync; CUDA-event start; one llm.generate; event stop; post-sync; event elapsed. Host generate-call wall separately (excludes post-sync), plus synchronized host request wall.",
+  "numeric": {
+    "old_atol": 0.05,
+    "old_rtol": 0.01,
+    "old_gate": "abs(actual-reference)<=0.05+0.01*abs(reference)",
+    "role": "OBSERVATION_NOT_PERFORMANCE_STOP",
+    "old_failures_unchanged": true,
+    "tokens": "Preserve all full sequences,first divergence/commonprefix/shape; token divergence permitted for descriptive fixedlength performance but not strict same-token equivalence.",
+    "validity_stops": [
+      "Input/source mapping error",
+      "Wrong model/dtype/backend",
+      "Output length invalid",
+      "Nonfinite returned logprobs or timing",
+      "Runtimecrash",
+      "Resource/gatesafety"
+    ]
+  },
+  "layers": [
+    "INPUT_AND_RUNTIME_VALIDITY",
+    "TOKEN_SEQUENCE_IDENTITY",
+    "LOGPROB_NUMERIC_SENSITIVITY",
+    "PERFORMANCE_MEASUREMENT_VALIDITY",
+    "ARCHITECTURAL_CAUSAL_EVIDENCE"
+  ],
+  "configurations": [
+    {
+      "id": "MAIN",
+      "worker": "BASE",
+      "prefix": false,
+      "logprobs": 20,
+      "question": "Original strong sixpoint fullgenerate performance",
+      "minimum_warmup": 2,
+      "formal": 5
+    },
+    {
+      "id": "LP20_CONTROL",
+      "worker": "BASE",
+      "prefix": false,
+      "logprobs": 20,
+      "question": "Time-interleaved reference for LP_NONE;independentpool",
+      "minimum_warmup": 2,
+      "formal": 5
+    },
+    {
+      "id": "LP_NONE",
+      "worker": "BASE",
+      "prefix": false,
+      "logprobs": null,
+      "question": "Official no-logprobs path;runtime identical and separate numericobservability",
+      "minimum_warmup": 2,
+      "formal": 5
+    },
+    {
+      "id": "APC_COLD",
+      "worker": "PREFIX",
+      "prefix": true,
+      "logprobs": 20,
+      "question": "Prefix-cache enablement with reset before eachtimedrequest",
+      "minimum_warmup": 2,
+      "formal": 5
+    },
+    {
+      "id": "APC_WARM",
+      "worker": "PREFIX",
+      "prefix": true,
+      "logprobs": 20,
+      "question": "Controlled512token prompt reuse;reset+untimedoutput1primeofsamesources before eachtimedrequest",
+      "minimum_warmup": 2,
+      "formal": 5
+    }
+  ],
+  "controls": {
+    "logprobs": "After MAIN,LP20_CONTROL and LP_NONE paired withinpoint;pairorderalternatesbyround/point;separatepools,sameengine.",
+    "prefix": "Secondserialengine,sameownerandstrongbackend;COLD/WARMpairorderalternates. reset_prefix_cache must succeed;prime completions persist;actual num_cached_tokens recorded. No inference of weightsharing from cachehits.",
+    "rejection_criteria": "If source/API unsupported,mark optionalcontrolunsupported and preserveprimary;never silentlytogglecache or weakenbackend. Cachehitidentity must agree with cold/warmdeclaration."
+  },
+  "adaptive": {
+    "high_noise_MAD_over_median": 0.05,
+    "additional_symmetric_formal_rounds_max": 5,
+    "rule": "One prespecified extra5-round block forall6pointsinMAINifanypointnoisy;forpairedcontrolsrepeatbothconfigurationssymmetricallyifanypointnoisy;keepallsamplesandblockidentity.;formal compile/capture also triggers one symmetricextra5block and is flagged,neverhidden."
+  },
+  "numerical_local_observer": {
+    "when": "After BASE formal/controltimings,neverattachedtoformal",
+    "requests": [
+      "P4",
+      "P5",
+      "P6"
+    ],
+    "captured_generated_steps": [
+      0,
+      1,
+      15,
+      31
+    ],
+    "question": "Bind actualrunner/sampler,selectedhiddenstates,lm_headoutputandpre-logsoftmaxlogits;compareCPUFP32normalizationandFP64selectedheaddots tolocalizebefore/aftersampler.",
+    "unchanged": "SameBF16strongengine,sampling,input/outputlength;onlyseparateobservercopies/synchronizations,notperf",
+    "bounded_private_tensor_bytes_max": 33554432,
+    "stop_or_skip": "Unsupportedwrapperoptional;runtime/data/resourcefailuresfatal;restoreoriginalmethodsfinally"
+  },
+  "architecture": {
+    "weight_bytes": "Conditionalmodelonly,notmeasuredDRAM",
+    "H1": "Weight supply compatiblehypothesis",
+    "H2": "Compute/launch/Graph/scheduler/sampler alternatives",
+    "H3": "Runtime/shape/inputconfounding must bechecked",
+    "hardware_candidates": "Onlyfalsifiablequestions,noinnovationclaimfromordinaryBatchamortization"
+  },
+  "resource": {
+    "held_seconds_max": 1800,
+    "goal_seconds_max": 5400,
+    "own_NVML_MiB_max": 15400,
+    "RSS_observation_bytes_max": 17179869184,
+    "new_disk_bytes_max": 3221225472,
+    "lock_attempts_max": 1,
+    "one_GPU_owner": true,
+    "ImageLab_policy": "V7 acceptedsharedresidentandnarrowRSS/cgroupscope",
+    "downloads": 0,
+    "installs": 0,
+    "access164": 0,
+    "RTL": 0,
+    "profiling": "No external Profiler planned;localcapturedobserveronly"
+  },
+  "frozen_utc_epoch": 1793814630.4695003,
+  "frozen_tool_hashes": {
+    "util/ai_workload_research/bf16_batch_performance_numeric_v8/numeric_observation.py": "32097e3c4e7e4a09bc987db6288bd2c2b64195957fe9d8bffc64750575165217",
+    "util/ai_workload_research/bf16_batch_performance_numeric_v8/supervisor.py": "afa5b83236c9222c5c8612594ecee0b927aee7d1cc9c6dddf0fd708ee742ea5b",
+    "util/ai_workload_research/bf16_batch_performance_numeric_v8/postrun_analysis.py": "26865148f1e068e1bcfbff539376411b5d8a46130b230ac343501ca6f7674aee",
+    "util/ai_workload_research/bf16_batch_performance_numeric_v8/persistence.py": "8ae2447aa05c65c45688a1d16c755aa9d412176118293c1d3358adc02b122c4a",
+    "util/ai_workload_research/bf16_batch_performance_numeric_v8/worker.py": "6ca8ab7b1e2a51e42341901786e0155da43c8222a2efbd79bbded38e75380de7",
+    "util/ai_workload_research/bf16_batch_performance_numeric_v8/test_shared_monitoring.py": "60a4bdf242c0e3aec2a17da9fee493e258b6207c3f22bbb0d514cf10df382b15",
+    "util/ai_workload_research/bf16_batch_performance_numeric_v8/test_desktop_policy.py": "a083fb683d15c5e43f81628a0b3e719c567f3e4202c7204ef8c801416e045470",
+    "util/ai_workload_research/bf16_batch_performance_numeric_v8/analyze.py": "f2a665f097b8784ed31f5bcea77588b01446239a2ca1db7bf0f743b9615d7cc9",
+    "util/ai_workload_research/bf16_batch_performance_numeric_v8/independent_analysis.py": "edc10fe2749813298da1833b2b6797ffae6b1c69d2d2761199da1fbaa9a88830",
+    "util/ai_workload_research/bf16_batch_performance_numeric_v8/test_rss_lifecycle.py": "7e325e282ffabdaca89a0536abfa9689096fa58d9b3a895070387a7278a27865",
+    "util/ai_workload_research/bf16_batch_performance_numeric_v8/test_v8.py": "b284fb4f06eb36a082b2334b587e18b11623a392f1ee30104396a0a2a97fbb50",
+    "util/ai_workload_research/bf16_batch_performance_numeric_v8/revalidate.py": "3c7f985ef7c9fe00500b84de23684159d693e77d86c7348b3e722970858b052d",
+    "util/ai_workload_research/bf16_batch_performance_numeric_v8/shared_gate.py": "96267cf3933235442d4416a4e38d0ac3b69d96865d251fe92fa7877089c45c06",
+    "util/ai_workload_research/bf16_batch_performance_numeric_v8/desktop_policy.py": "77bc5e9eabb6f2df45c78a3c8911489beb260d7f3ce8f520287a85030278677f",
+    "util/ai_workload_research/bf16_batch_performance_numeric_v8/rss_lifecycle.py": "fed7f292c927be7fc181cd5e0db5e745e6dc0a3ebd92343c6f3b9b499381f9bc",
+    "util/ai_workload_research/bf16_batch_performance_numeric_v8/test_capture.py": "8d2319e0e684ac131d6e68c51573e483996007c3c4ec367b78ee7ff399f2647b",
+    "util/ai_workload_research/bf16_batch_performance_numeric_v8/test_shared_gate.py": "8de716a771d2270d7858860f1502d598c64d5de73299a8f3da0d0578f35e8a2b",
+    "util/ai_workload_research/bf16_batch_performance_numeric_v8/local_observer.py": "c9f8204938383b47a800aa6eaf8ea54013c3c5dbcd955f5affa3622c35144f00",
+    "util/ai_workload_research/bf16_batch_performance_numeric_v8/capture.py": "743d409297564b8f44e5008458e106d75f5208dbadfa53f4dcd46ca752683c4c",
+    "util/ai_workload_research/bf16_batch_performance_numeric_v8/resource_monitor.py": "9cd0ffaade661c07d8d5c6760a1b7a219c545c0846de55e4272a43a6ec3cd9b1",
+    "util/ai_workload_research/bf16_batch_performance_numeric_v8/test_supervision.py": "5052894f7e29beedd8bfb3467efe75768f5ca82daf608260b50e01bbbe8c4e52"
+  },
+  "V8_resource_observation_contract": "RESOURCE_OBSERVATION_CONTRACT.json"
+}

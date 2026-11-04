@@ -1,0 +1,135 @@
+{
+  "config": "MAIN",
+  "point": "P2",
+  "role": "FORMAL",
+  "round": 0,
+  "block": "INITIAL",
+  "index": 14,
+  "batch_size": 1,
+  "output_tokens_each": 1,
+  "request_gpu_elapsed_ms": 36.17484664916992,
+  "host_generate_call_ms": 36.150355,
+  "host_synchronized_request_ms": 36.22663,
+  "graph_replays": [],
+  "new_graph_descriptors": [],
+  "counters_before": {
+    "num_models_seen": 1,
+    "num_graphs_seen": 1,
+    "num_piecewise_graphs_seen": 73,
+    "num_piecewise_capturable_graphs_seen": 37,
+    "num_backend_compilations": 37,
+    "num_gpu_runner_capture_triggers": 1,
+    "num_cudagraph_captured": 113,
+    "num_inductor_compiles": 37,
+    "num_eager_compiles": 0,
+    "num_cache_entries_updated": 0,
+    "num_compiled_artifacts_saved": 3,
+    "num_compiled_artifacts_loaded": 0,
+    "num_aot_compiles": 1,
+    "num_aot_artifacts_saved": 1,
+    "num_aot_artifacts_loaded": 0,
+    "stock_torch_compile_count": 0
+  },
+  "counters_after": {
+    "num_models_seen": 1,
+    "num_graphs_seen": 1,
+    "num_piecewise_graphs_seen": 73,
+    "num_piecewise_capturable_graphs_seen": 37,
+    "num_backend_compilations": 37,
+    "num_gpu_runner_capture_triggers": 1,
+    "num_cudagraph_captured": 113,
+    "num_inductor_compiles": 37,
+    "num_eager_compiles": 0,
+    "num_cache_entries_updated": 0,
+    "num_compiled_artifacts_saved": 3,
+    "num_compiled_artifacts_loaded": 0,
+    "num_aot_compiles": 1,
+    "num_aot_artifacts_saved": 1,
+    "num_aot_artifacts_loaded": 0,
+    "stock_torch_compile_count": 0
+  },
+  "active_compiled_Qwen2Model": [
+    {
+      "name": "model",
+      "cls": "Qwen2Model",
+      "do_not_compile": false,
+      "compiled": true,
+      "aot": true
+    }
+  ],
+  "actual_request_description": {
+    "requests": 1,
+    "input_lengths": [
+      512
+    ],
+    "requested_output_tokens": 1,
+    "source_order": [
+      "TRAIN_A_DISCOVERY_01"
+    ]
+  },
+  "sampling": {
+    "temperature": 0,
+    "top_p": 1,
+    "max_tokens": 1,
+    "ignore_eos": true,
+    "detokenize": false,
+    "logprobs": 20
+  },
+  "prefix_enabled": false,
+  "returned_requests": 1,
+  "outputs": [
+    {
+      "source": "TRAIN_A_DISCOVERY_01",
+      "request_id": "18",
+      "prompt_token_sha256": "2603f85ea3378081c60adb1a978145bacea62e8777bdf5b1d0624e8cc9fb92bb",
+      "completion_count": 1,
+      "num_cached_tokens": 0,
+      "token_count": 1,
+      "token_sha256": "dee19c0717a543ec30e25a8c6fb35ccf0c57edb5a2584e0d543ca2b7b221cac1",
+      "logprob_sha256": "a48f437dc33a8e42697341b5bbbac2b8787ea0d2dd7bafc3fc0dfb1259b5a6eb",
+      "sampled_logprob_sha256": "2f42336aa74a8b2d442d2e27f1ddfd14481f14ac5c2f1e9b2d14cc795c9797cf",
+      "all_finite": true
+    }
+  ],
+  "capture_complete_before_numeric_gate": true,
+  "validity": {
+    "INPUT_AND_RUNTIME_VALIDITY": "PASS",
+    "PERFORMANCE_MEASUREMENT_VALIDITY": "VALID",
+    "TOKEN_SEQUENCE_IDENTITY": "OBSERVED_SEPARATELY",
+    "LOGPROB_NUMERIC_SENSITIVITY": "OBSERVED_SEPARATELY",
+    "ARCHITECTURAL_CAUSAL_EVIDENCE": "NOT_ESTABLISHED"
+  },
+  "formal_compile_or_capture": false,
+  "numeric_observations": [
+    {
+      "config": "MAIN",
+      "index": 14,
+      "source": "TRAIN_A_DISCOVERY_01",
+      "point": "P2",
+      "role": "FORMAL",
+      "round": 0,
+      "same_point": {
+        "tokens_exact": true,
+        "first_divergence": null,
+        "common_prefix_tokens": 1,
+        "equal_length": true,
+        "sampled_logprobs": [
+          {
+            "step": 0,
+            "token_same": true,
+            "common_prefix_before_step": true,
+            "reference": -1.2801917791366577,
+            "actual": -1.2801917791366577,
+            "abs_error": 0.0,
+            "allowed": 0.06280191779136658,
+            "old_gate_pass": true
+          }
+        ],
+        "logprob_observable": true,
+        "old_logprob_all_pass": true,
+        "comparison_semantics": "SAME_TOKEN_SEQUENCE"
+      }
+    }
+  ],
+  "status": "PASS_RUNTIME_VALID"
+}

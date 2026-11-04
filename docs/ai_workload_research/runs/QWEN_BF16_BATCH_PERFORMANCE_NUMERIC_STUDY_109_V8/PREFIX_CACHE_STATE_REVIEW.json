@@ -1,0 +1,75 @@
+{
+  "status": "RESET_IS_NOT_ZERO_WITHIN_BATCH_REUSE",
+  "input_common_prefix_tokens": 23,
+  "formal_APC_COLD_B1_cached": [
+    0
+  ],
+  "formal_APC_COLD_B2_cached": [
+    0,
+    16
+  ],
+  "formal_APC_WARM_cached_per_request": [
+    496
+  ],
+  "interpretation": "APC_COLD is explicitresetbeforegenerate,not blanket zero-hit. 0/16cachedtokensinB2matches23-token commonpromptprefixand16-tokenblocksharingfollowingreset. Thisisconsistentwithin-callreuse;noindependentcacheeventtracewascollected. WARM reset+untimedoutput1primegives496cachedtokens/request. Allrawcountsretained.",
+  "source": [
+    {
+      "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/v1/core/sched/scheduler.py",
+      "sha256": "c1db45f3bbad3a875dd8638331b8870c4380ac1ab4734265ba5c863833a82884",
+      "excerpts": [
+        {
+          "line": 536,
+          "excerpt": "            return self.kv_cache_manager.get_computed_blocks_for_connector(request)\n\n        blocks, num_local, shared_prefix_boundary = (\n            self.kv_cache_manager.get_computed_blocks(request)\n        )\n        return blocks, num_local, shared_prefix_boundary, False\n\n    def _reserve_prefill_lookahead(\n        self,\n        request: Request,\n        num_computed_tokens: int,\n        num_new_tokens: int,\n    ) -> int:\n        \"\"\"Never end a prefill chunk within num_prefill_lookahead of the\n        prefill end."
+        },
+        {
+          "line": 980,
+          "excerpt": "                                new_computed_blocks,\n                                num_new_local_computed_tokens,\n                                request.shared_prefix_boundary,\n                            ) = self.kv_cache_manager.get_computed_blocks(request)\n\n                        connector_prefix_cache_queries = (\n                            request.num_tokens - num_new_local_computed_tokens\n                        )\n                        connector_prefix_cache_hits = num_external_computed_tokens\n\n                    # Total computed tokens (local + external).\n                    num_computed_tokens = (\n                        num_new_local_computed_tokens + num_external_computed_tokens\n                    )\n                    assert num_computed_tokens <= request.num_tokens"
+        },
+        {
+          "line": 2688,
+          "excerpt": "            )\n        )\n\n    def reset_prefix_cache(\n        self, reset_running_requests: bool = False, reset_connector: bool = False\n    ) -> bool:\n        \"\"\"Reset the KV prefix cache.\n\n        If reset_running_requests is True, all the running requests will be\n        preempted and moved to the waiting queue.\n        Otherwise, this method will only reset the KV prefix cache when there\n        is no running requests taking KV cache.\n        \"\"\"\n        if reset_running_requests:\n            # For logging."
+        }
+      ]
+    },
+    {
+      "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/v1/core/kv_cache_manager.py",
+      "sha256": "58800535eda854580d84e1025bf32fe01b2a43ce0bba501b4f3d125e4f2c8afa",
+      "excerpts": [
+        {
+          "line": 265,
+          "excerpt": "            preempted=request.num_preemptions > 0,\n        )\n\n    def get_computed_blocks(self, request: Request) -> tuple[KVCacheBlocks, int, int]:\n        \"\"\"Get the computed (cached) blocks for the request.\n        Note that the computed blocks must be full.\n\n        Args:\n            request: The request to get the computed blocks.\n\n        Returns:\n            A tuple containing:\n                - A list of blocks that are computed for the request.\n                - The number of computed tokens.\n                - ``shared_prefix_boundary``: the block-aligned token position of"
+        },
+        {
+          "line": 350,
+          "excerpt": "            and isinstance(coordinator, HybridKVCacheCoordinator)\n            and coordinator.full_attention_group_id is not None\n        ):\n            return *self.get_computed_blocks(request), False\n\n        if not self.prefix_cache_lookup_enabled(request):\n            return self.empty_kv_cache_blocks, 0, 0, False\n\n        fa_group_id = coordinator.full_attention_group_id\n        computed, per_group_hits = coordinator.find_longest_cache_hit_per_group(\n            request.block_hashes, request.num_tokens - 1\n        )\n        if any(hit > per_group_hits[fa_group_id] for hit in per_group_hits):\n            # A lagging group hit deeper than full attention means its\n            # full-attention blocks were evicted; use the reconciled boundary"
+        },
+        {
+          "line": 363,
+          "excerpt": "            # A lagging group hit deeper than full attention means its\n            # full-attention blocks were evicted; use the reconciled boundary\n            # that every group agrees on.\n            return *self.get_computed_blocks(request), False\n\n        num_local = per_group_hits[fa_group_id]\n        blocks = self.create_kv_cache_blocks(computed)\n        # Per-group lookups do not detect an uncached shared prefix (boundary 0).\n        return blocks, num_local, 0, min(per_group_hits) < num_local\n\n    def allocate_slots(\n        self,\n        request: Request,\n        num_new_tokens: int,\n        num_new_computed_tokens: int = 0,"
+        },
+        {
+          "line": 653,
+          "excerpt": "        \"\"\"\n        self.block_pool.evict_blocks(block_ids)\n\n    def reset_prefix_cache(self) -> bool:\n        \"\"\"Reset prefix cache. This function may be used in RLHF\n        flows to invalidate prefix caching after the weights are updated,\n        or used for resetting prefix caching status for benchmarking.\n\n        Returns:\n            bool: True if the prefix cache is successfully reset,\n            False otherwise.\n        \"\"\"\n        if not self.coordinator.reset_prefix_cache():\n            return False\n        if self.log_stats:"
+        }
+      ]
+    },
+    {
+      "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/v1/core/block_pool.py",
+      "sha256": "34c2fd67148cecb7763ff49ad694a57073759b0fa67572a4270dc995b4acf8fc",
+      "excerpts": [
+        {
+          "line": 231,
+          "excerpt": "            cached_blocks.append(block)\n        return cached_blocks\n\n    def cache_full_blocks(\n        self,\n        request: Request,\n        blocks: list[KVCacheBlock],\n        num_cached_blocks: int,\n        num_full_blocks: int,\n        block_size: int,\n        kv_cache_group_id: int,\n        block_mask: list[bool] | None = None,\n    ) -> None:\n        \"\"\"Cache a list of full blocks for prefix caching.\n        This function takes a list of blocks that will have their block hash"
+        },
+        {
+          "line": 389,
+          "excerpt": "    ) -> None:\n        \"\"\"Generate BlockStored events for blocks reused from prefix cache.\n\n        Unlike cache_full_blocks(), this does NOT modify block state \u2014\n        the blocks are already cached. It only generates events so that\n        external consumers (e.g. gateway) can learn about reused blocks.\n\n        Args:\n            request: The request whose prefix cache blocks were reused.\n            num_cached_blocks: Number of blocks that were cache hits.\n            block_size: Number of tokens per block.\n            kv_cache_group_id: The KV cache group ID.\n        \"\"\"\n        if not self.enable_kv_cache_events or num_cached_blocks == 0:\n            return"
+        },
+        {
+          "line": 821,
+          "excerpt": "            block = self.blocks[block_id]\n            self._maybe_evict_cached_block(block)\n\n    def reset_prefix_cache(self) -> bool:\n        \"\"\"Reset prefix cache. This function may be used in RLHF\n        flows to invalid prefix caching after the weights are updated,\n        or used for resetting prefix caching status for benchmarking.\n\n        Returns:\n            bool: True if the prefix cache is successfully reset,\n            False otherwise.\n        \"\"\"\n        num_used_blocks = self.num_gpu_blocks - self.get_num_free_blocks()\n        if num_used_blocks != 1:  # The null block is always marked as used\n            logger.warning("
+        }
+      ]
+    }
+  ]
+}

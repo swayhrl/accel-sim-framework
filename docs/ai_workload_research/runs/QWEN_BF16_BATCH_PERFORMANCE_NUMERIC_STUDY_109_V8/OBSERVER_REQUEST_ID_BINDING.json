@@ -1,0 +1,20 @@
+{
+  "status": "RESOLVED_OFFICIAL_INTERNAL_EXTERNAL_ID_MAPPING",
+  "source": [
+    {
+      "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/v1/engine/input_processor.py",
+      "sha256": "c8abd8e4e14d99929d45a7ff3b2a74898269c5e2a7fa30b826623ee85e4ce813",
+      "start_line": 261,
+      "excerpt": "    @staticmethod\n    def assign_request_id(request: EngineCoreRequest):\n        \"\"\"Replace the externally supplied request ID with an internal request ID\n        that adds 8 random characters in order to ensure uniqueness.\n        \"\"\"\n        if request.external_req_id is not None:\n            raise ValueError(\n                \"The external_req_id field should not be set on EngineCoreRequests\"\n                \" passed to vLLM; use the request_id field.\"\n            )\n        request.external_req_id = request.request_id\n        if envs.VLLM_DISABLE_REQUEST_ID_RANDOMIZATION:\n            logger.warning_once(\n                \"VLLM_DISABLE_REQUEST_ID_RANDOMIZATION is set and will be \"\n                \"removed in a future release. Duplicate externally-provided \"\n                \"request IDs may cause failures and/or subtle correctness errors.\"\n            )\n        else:\n            request.request_id = f\"{request.external_req_id}-{random_uuid():.8}\"\n\n    def process_inputs("
+    },
+    {
+      "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/v1/engine/output_processor.py",
+      "sha256": "e47b86cd69ce1c1e3f53dac655eaa75c32a4057d10f4a1db16bb83a397f2a329",
+      "start_line": 377,
+      "excerpt": "        if self.output_kind == RequestOutputKind.DELTA:\n            # Side effect: logprobs processor forgets prompt logprobs\n            prompt_logprobs = self.logprobs_processor.pop_prompt_logprobs()\n        else:\n            prompt_logprobs = self.logprobs_processor.prompt_logprobs\n\n        return RequestOutput(\n            request_id=external_req_id,  # request_id is what was provided externally\n            lora_request=self.lora_request,\n            prompt=self.prompt,\n            prompt_token_ids=prompt_token_ids,\n            prompt_logprobs=prompt_logprobs,\n            outputs=cast(list[CompletionOutput], outputs),\n            finished=finished,\n            kv_transfer_params=kv_transfer_params,\n            ec_transfer_params=ec_transfer_params,"
+    }
+  ],
+  "mapping": "Internalrequest_id=external_req_id + hyphen +8hexrandomchars;outputRequestOutputusesexternal_req_id. Exact documented suffix isvalidated anduniquelymapped;samplertokennumericidentityalsoassertedatallcapturedsteps.",
+  "raw_changed": false,
+  "additional_GPU_requests": 0
+}

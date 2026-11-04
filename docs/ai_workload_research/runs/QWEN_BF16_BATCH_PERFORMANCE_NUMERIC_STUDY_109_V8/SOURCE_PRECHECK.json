@@ -1,0 +1,97 @@
+[
+  {
+    "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/entrypoints/llm.py",
+    "sha256": "52de4ac99489e004ef6c61d0bedc84aa96020dd58b8bd1ae500814b548b2b83e",
+    "excerpts": [
+      {
+        "line": 796,
+        "excerpt": "        self.llm_engine.stop_profile()\n\n    def reset_prefix_cache(\n        self, reset_running_requests: bool = False, reset_connector: bool = False\n    ) -> bool:\n        return self.llm_engine.reset_prefix_cache(\n            reset_running_requests, reset_connector\n        )\n\n    def sleep(self, level: int = 1, mode: PauseMode = \"abort\"):\n        \"\"\"\n        Put the engine to sleep. The engine should not process any requests."
+      }
+    ]
+  },
+  {
+    "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/v1/engine/llm_engine.py",
+    "sha256": "d4d5fba309db4d3f271ac7479e3ddaa623045499e4c6cfac41c0c7710012413c",
+    "excerpts": [
+      {
+        "line": 357,
+        "excerpt": "        self.engine_core.reset_mm_cache()\n\n    def reset_prefix_cache(\n        self, reset_running_requests: bool = False, reset_connector: bool = False\n    ) -> bool:\n        return self.engine_core.reset_prefix_cache(\n            reset_running_requests, reset_connector\n        )\n\n    def reset_encoder_cache(self) -> None:\n        \"\"\"Reset the encoder cache to invalidate all cached encoder outputs.\n"
+      }
+    ]
+  },
+  {
+    "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/v1/worker/gpu/model_runner.py",
+    "sha256": "174c93db921c23cf0396eee4764be25b2bd2d4b6a06e9fa41ce3598b884ce8ce",
+    "excerpts": [
+      {
+        "line": 915,
+        "excerpt": "\n        assert hidden_states is not None  # Last PP rank always has hidden_states\n        sample_hidden_states = hidden_states[input_batch.logits_indices]\n        return hidden_states, sample_hidden_states\n\n    @torch.inference_mode()\n    def _dummy_sampler_run(self, hidden_states: torch.Tensor) -> None:\n        num_reqs = hidden_states.shape[0]\n        logits = self.model.compute_logits(hidden_states)\n        dummy_input_batch = InputBatch.make_dummy(\n            num_reqs, num_reqs, self.input_buffers\n        )"
+      },
+      {
+        "line": 1534,
+        "excerpt": "            logits = logits[:, : self.vocab_size]\n        else:\n            sample_hidden_states = hidden_states[input_batch.logits_indices]\n            logits = self.model.compute_logits(sample_hidden_states)\n\n        if grammar_output is not None:\n            # Apply grammar bitmask to the logits in-place.\n            assert self.structured_outputs_worker is not None\n            self.structured_outputs_worker.apply_grammar_bitmask(\n                logits,\n                input_batch,\n                grammar_output.structured_output_request_ids,"
+      },
+      {
+        "line": 1554,
+        "excerpt": "        elif input_batch.num_draft_tokens == 0 or self.rejection_sampler is None:\n            assert self.sampler is not None\n            sampler_output = self.sampler(logits, input_batch)\n        else:\n            # Rejection sampling for spec decoding.\n            assert self.rejection_sampler is not None\n            assert self.speculator is not None\n            sampler_output = self.rejection_sampler(\n                logits,\n                input_batch,\n                # Draft logits are needed for probabilistic rejection sampling.\n                self.speculator.draft_logits,"
+      }
+    ]
+  },
+  {
+    "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/v1/worker/gpu/sample/sampler.py",
+    "sha256": "832c9945d201a1e730ff9b4b52076aa83bd4a5064e1e4cfea952cf84d4a8d1f0",
+    "excerpts": [
+      {
+        "line": 163,
+        "excerpt": "            expanded_logits = logits.shape[0] != idx_mapping_np.shape[0]\n            cu_num_logits = cu_num_logits_np.tolist() if expanded_logits else None\n            logprobs_tensors = compute_topk_scores(\n                logits,\n                num_logprobs,\n                sampled,\n                cu_num_logits,\n                logprob_token_ids_state=self.logprob_token_ids_state,\n                expanded_idx_mapping=input_batch.expanded_idx_mapping,\n                max_per_req_token_ids=max_per_req_token_ids,\n                logits_mode=self.logprobs_mode in (\"raw_logits\", \"processed_logits\"),\n            )"
+      }
+    ]
+  },
+  {
+    "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/v1/worker/gpu/sample/logprob.py",
+    "sha256": "f47479a818192acb6b297c79fa67a3b2f9820e3492a394d5adda777e9b7c832e",
+    "excerpts": [
+      {
+        "line": 17,
+        "excerpt": "\n@triton.jit\ndef _topk_log_softmax_kernel(\n    output_ptr,\n    logits_ptr,\n    logits_stride,\n    topk_ids_ptr,\n    topk,\n    vocab_size,\n    BLOCK_SIZE: tl.constexpr,\n    TOPK_BLOCK_SIZE: tl.constexpr,\n):"
+      },
+      {
+        "line": 42,
+        "excerpt": "        logits = tl.load(row_ptr + block, mask=block < vocab_size, other=0.0)\n        # NOTE(woosuk): Make sure that logits and all following operations use FP32.\n        logits = logits.to(tl.float32)\n        e = tl.exp(logits - max_val)\n        e = tl.where(block < vocab_size, e, 0.0)\n        se += tl.sum(e)\n    lse = tl.log(se)\n\n    for j in range(0, topk, TOPK_BLOCK_SIZE):\n        k_offset = j + tl.arange(0, TOPK_BLOCK_SIZE)\n        k_mask = k_offset < topk\n        topk_ids = tl.load("
+      },
+      {
+        "line": 55,
+        "excerpt": "        )\n        logits = tl.load(row_ptr + topk_ids, mask=k_mask)\n        logits = logits.to(tl.float32)\n        o = logits - max_val - lse\n        tl.store(output_ptr + req_idx * topk + k_offset, o, mask=k_mask)\n\n\n@triton.jit\ndef _ranks_kernel(\n    output_ptr,\n    logits_ptr,\n    logits_stride,"
+      },
+      {
+        "line": 109,
+        "excerpt": "\n\ndef compute_topk_scores(\n    logits: torch.Tensor,\n    num_logprobs: int,\n    sampled_token_ids: torch.Tensor,\n    cu_num_logits: list[int] | torch.Tensor | None = None,\n    logprob_token_ids_state: \"LogprobTokenIdsState | None\" = None,\n    expanded_idx_mapping: torch.Tensor | None = None,\n    max_per_req_token_ids: int = 0,\n    logits_mode: bool = False,\n) -> LogprobsTensors:"
+      }
+    ]
+  },
+  {
+    "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/v1/worker/gpu/input_batch.py",
+    "sha256": "d5dd956eb319bd69dd9e762047833d81ad40b21fce619fcb2133759e73620694",
+    "excerpts": [
+      {
+        "line": 44,
+        "excerpt": "\n@dataclass\nclass InputBatch:\n    # batch_idx -> req_id\n    req_ids: list[str]\n    num_reqs: int\n    num_reqs_after_padding: int\n\n    # batch_idx -> req_state_idx\n    idx_mapping: torch.Tensor\n    idx_mapping_np: np.ndarray\n    # Identical to idx_mapping except for spec decoding."
+      }
+    ]
+  },
+  {
+    "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/model_executor/models/qwen2.py",
+    "sha256": "eb2f0eeb13c57a28bbc06bc64afff18cd8865f89fbe9ff2a3cf3a896f037cfe9",
+    "excerpts": [
+      {
+        "line": 511,
+        "excerpt": "        return hidden_states\n\n    def compute_logits(\n        self,\n        hidden_states: torch.Tensor,\n    ) -> torch.Tensor | None:\n        logits = self.logits_processor(self.lm_head, hidden_states)\n        return logits\n\n    def load_weights(self, weights: Iterable[tuple[str, torch.Tensor]]) -> set[str]:\n        loader = AutoWeightsLoader(self)\n        return loader.load_weights(weights)"
+      }
+    ]
+  },
+  {
+    "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/model_executor/layers/logits_processor.py",
+    "sha256": "6b0603d67b0c756253c2fdc882a3896d2e873a16e9aa2ef877aabca8d36bdb5f",
+    "excerpts": []
+  }
+]
