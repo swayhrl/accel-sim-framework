@@ -1,5 +1,15 @@
 # DTC-L1 Stage II-A Remaining48 CH fair matching
 
+## Measured host resources: closed40 snapshot
+
+Read the [per-point resource report](independent_reviews/A_actual_resource_summary_v1/updates/current40_v1/REPORT.md), its manifest-pinned data and the [independent review](independent_reviews/C_actual_resource_summary_review_v1/README.md). This dated evidence covers40 closed identities, with all8 pending resource rows retained as null. It is distinct from resource admission estimates and simulated hardware capacity.
+
+All40 receipt RSS maxima match their closed sample streams. These are approximately10-second observations of launcher plus observed simulator VmRSS, with possible shared-page double counting; they are not full-descendant or absolute physical peaks. Per-point CPU time/utilization is unknown. Elapsed receipt time includes wrapper activity; summing it would produce job-seconds, not round walltime. Per-point RSS maxima do not establish simultaneous memory usage.
+
+The40 closed points contain15,941,022 bytes of compressed raw logs and122,040,320 bytes of archive containers. Source logical bytes, stored gzip files, archive containers and native allocated source/restore bytes are separately defined; these scopes must not be added into a current disk-usage claim. This excludes input libraries, binaries, other requests and the8 live points. Event records preserve their declared source coverage and are not a complete absence-of-fault proof. Larger raw/archive-content integrity is reused from qualified lifecycle evidence, pending final C full48 audit.
+
+The resource consumer is CPU-only and starts no service or model. Its final-mode command is for a fresh output directory after actual legal48 terminal outcomes. Existing owner, dispatcher, source pins, budgets, original final-analysis waiter and SOURCE_KEEP remain unchanged. This evidence is not final scientific closure.
+
 ## Completed28 consolidated scientific review
 
 Read [the completed28 report](independent_reviews/root_completed28_consolidation_v1/CURRENT_SCIENTIFIC_REPORT_40_OF_48.md), its [independent review](independent_reviews/C_completed28_consolidation_review_v1/README.md), and the current execution table below. The frozen report covers40 accepted new CH points and the same28/32 complete six-cell inputs for both F profiles; it is not the final CORE32 result. Independent review passed911 checks, including raw RESULT identities/cycles, legal P0 aliases, exact signs and independently recomputed geometric means. The machine-readable report member is `CONSOLIDATION.json.gz`; the frozen prose's uncompressed filename is a location shorthand only.

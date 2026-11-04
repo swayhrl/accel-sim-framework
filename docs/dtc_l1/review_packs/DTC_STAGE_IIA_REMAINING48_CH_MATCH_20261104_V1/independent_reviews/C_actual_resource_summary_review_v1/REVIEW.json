@@ -1,0 +1,179 @@
+{
+  "schema": "C_ACTUAL_RESOURCE_CURRENT40_AND_PREPARATION_FINAL_REVIEW_V1",
+  "created_utc": "2026-11-04T05:30:16.095625+00:00",
+  "status": "PASS_WITH_PRECISE_OUTPUT_PEAK_SYMLINK_SCOPE",
+  "A_preparation_manifest_sha256": "254ba557a3b6c4ffbb31d85cea70f469cc95a908e96506828745fe16281ef3a4",
+  "A_consumer_source_sha256": "ea28e3cdb270f4edbc5fcade46d3317defc13b25262a0cea961699ba2398b81c",
+  "current40_report_manifest_sha256": "536194688b6ca38260c5dbbabbd7824adeb428ba8ca7dbefc5a1b81a83872853",
+  "CURRENT40_AUDIT_sha256": "0744c23759b41112bf262b4c81a02cf13705eae9e94ee9b1340302b3c54e1a7f",
+  "preliminary_checks": 908,
+  "final_checks": [
+    {
+      "check": "A final manifest exact pin",
+      "pass": true
+    },
+    {
+      "check": "A final member CPU_QUALIFICATION.json",
+      "pass": true
+    },
+    {
+      "check": "A final member CURRENT_PROVIDER.fixed.json",
+      "pass": true
+    },
+    {
+      "check": "A final member EXISTING_COVERAGE_CHECK.json",
+      "pass": true
+    },
+    {
+      "check": "A final member README.md",
+      "pass": true
+    },
+    {
+      "check": "A final member SOURCE_FIELD_SEMANTICS.json",
+      "pass": true
+    },
+    {
+      "check": "A final member qualify_actual_resources_cpu.py",
+      "pass": true
+    },
+    {
+      "check": "A final member summarize_actual_resources.py",
+      "pass": true
+    },
+    {
+      "check": "A final member updates/current40_v1/MANIFEST.json",
+      "pass": true
+    },
+    {
+      "check": "A final member updates/current40_v1/POINT_RESOURCES.json",
+      "pass": true
+    },
+    {
+      "check": "A final member updates/current40_v1/PROVIDER.fixed.json",
+      "pass": true
+    },
+    {
+      "check": "A final member updates/current40_v1/REPORT.md",
+      "pass": true
+    },
+    {
+      "check": "A final member updates/current40_v1/SUMMARY.json",
+      "pass": true
+    },
+    {
+      "check": "actual pinned base native collector source",
+      "pass": true
+    },
+    {
+      "check": "base collector exact anchor 176",
+      "pass": true
+    },
+    {
+      "check": "base collector exact anchor 183",
+      "pass": true
+    },
+    {
+      "check": "base collector exact anchor 191",
+      "pass": true
+    },
+    {
+      "check": "base collector exact anchor 201",
+      "pass": true
+    },
+    {
+      "check": "base collector exact anchor 236",
+      "pass": true
+    },
+    {
+      "check": "RSS name retains exact scope flags",
+      "pass": true
+    },
+    {
+      "check": "no sample is null not measured zero",
+      "pass": true
+    },
+    {
+      "check": "zero receipt without samples initializer",
+      "pass": true
+    },
+    {
+      "check": "nonzero receipt with missing samples unknown",
+      "pass": true
+    },
+    {
+      "check": "sampled max not sum/integral/CPUtime",
+      "pass": true
+    },
+    {
+      "check": "receipt mismatch is not repaired",
+      "pass": true
+    },
+    {
+      "check": "negative RSS rejected",
+      "pass": true
+    },
+    {
+      "check": "bool RSS rejected as nonmeasurement",
+      "pass": true
+    },
+    {
+      "check": "backwards times rejected",
+      "pass": true
+    },
+    {
+      "check": "actual INTENT identity validator no live resources",
+      "pass": true
+    },
+    {
+      "check": "INTENT wrong spec rejected",
+      "pass": true
+    },
+    {
+      "check": "INTENT retry not hidden",
+      "pass": true
+    },
+    {
+      "check": "INTENT UUID disagreement rejected",
+      "pass": true
+    },
+    {
+      "check": "empty rows remain pending resources null",
+      "pass": true
+    },
+    {
+      "check": "base output peak stat follows file symlink whereas manifest regular bytes exclude it",
+      "pass": true
+    },
+    {
+      "check": "published engineering/RSS/CPU/storage scope honest",
+      "pass": true
+    },
+    {
+      "check": "consumer has no process/service/model/native/Git implementation",
+      "pass": true
+    },
+    {
+      "check": "frozen908 preliminary checks unchanged",
+      "pass": true
+    }
+  ],
+  "final_check_count": 37,
+  "total_independent_checks": 945,
+  "coverage": "48 fixed identities/unique actual INTENT UUIDs;40 closed receipts,8pending all resources null. Frozen as-of40 snapshot is not advanced by later completions.",
+  "exact_original_RSS_definition": {
+    "stream_field": "process_tree_observed_rss_bytes",
+    "receipt_field": "peak_observed_rss_bytes",
+    "scope": "Approximately10-second samples of launcher PID plus first observed simulator PID(s) Linux VmRSS, summed. Shared pages can be counted more than once; not guaranteed every descendant and not an absolute true peak. Receipt equals maximum explicit sampled sum.",
+    "CPU": "Per-point CPU seconds and utilization UNKNOWN; no attribution of global cgroup or later /proc CPU counters. Affinity is an initial observation only."
+  },
+  "forward_output_peak_clarification": {
+    "receipt_field": "peak_result_logical_bytes",
+    "source": "base native line191 x.is_file()+x.stat().st_size",
+    "meaning": "Maximum wrapper-polled sum of that file-size expression during execution. is_file/stat follow reachable file symlinks, so target size can be included. It may exclude later strict/receipt/archive files. It is not SOURCE_MANIFEST regular-file logical bytes, lstat allocated bytes, realtime df or hardware area.",
+    "A_frozen_bytes_unchanged": true
+  },
+  "engineering_boundary": "PREPARE/NATIVE_COMMAND metadata, DONE stop/return/retry and sampled policy observations only. Not a full postprocess/archive/controller/preclaim fault inventory; zero listed errors does not prove none.",
+  "permission_boundary": "Read-only actual-resource consumer only. No watcher/sourcepins/owner/model/ledger/Goal/Git/paper mutation or final48 execution by reviewer. Root may later invoke existing CPU-only --mode final only after actual all48 terminal qualified gate and fresh output. This review does not assert final48 completion.",
+  "large_log_and_archive_content_scope": "No raw.log contents, live resource streams or archive chunks opened. Qualified B lifecycle proofs reused;3 closed resource streams independently recomputed and6 source/restore lstat trees independently checked.",
+  "private_CPU_fixtures_not_scientific_results": true
+}

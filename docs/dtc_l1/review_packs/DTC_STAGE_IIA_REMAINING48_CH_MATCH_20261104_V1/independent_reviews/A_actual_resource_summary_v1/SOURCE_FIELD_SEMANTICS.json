@@ -1,0 +1,62 @@
+{
+  "schema": "DTC_NATIVE_EXECUTION_RECEIPT_RESOURCE_FIELD_SEMANTICS_V1",
+  "base_native_source": {
+    "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_native_cap1m.py",
+    "sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d",
+    "source_identity_kind": "qualified execution launcher source pin; not simulator Core identity"
+  },
+  "anchors": [
+    {
+      "line_start": 176,
+      "line_end": 179,
+      "text": "176:  raw=RawCapture(out/'raw.log.gz');samples=compressed_stream(out/'RESOURCE_SAMPLES.jsonl.gz');start=time.monotonic();p=None;reason=None;observations=[];peak=0;last_full=start-10;peak_rss=0\n177:  try:\n178:   p=subprocess.Popen(argv,cwd=out,env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,pass_fds=passed,preexec_fn=limits);raw.start(p.stdout)\n179:   exclusive(out/'NATIVE_LAUNCH.json',{'utc':now(),'launcher_pid':p.pid,'argv':argv,'environment':env,'host':identity(),'prepared':prepared,'resources':res,'effective_result_cap_bytes':output_cap(s),'frozen_upper_result_cap_bytes':s['limits']['max_result_directory_bytes'],'native_DTC_original_rebound_admission':admission,'scientific_qualification_uuid':ident,'old174_SSH_invocation':False,'finite_native_launcher_sha256':sha(__file__),'operational_resource_profile':prepared['operational_resource_profile']})"
+    },
+    {
+      "line_start": 183,
+      "line_end": 186,
+      "text": "183:     try:\n184:      n=child_info(int(child))\n185:      if s['native_simulator_argv'][0] in n['maps'] and not observations:\n186:       require(n['mnt_namespace']=='mnt:[4026535153]','simulator namespace mismatch');observations.append(n);exclusive(out/'NATIVE_SIMULATOR_PID_AND_MAPS.json',n)"
+    },
+    {
+      "line_start": 191,
+      "line_end": 192,
+      "text": "191:    size=sum(x.stat().st_size for x in out.rglob('*') if x.is_file());peak=max(peak,size)\n192:    free=os.statvfs(ROOT).f_bavail*os.statvfs(ROOT).f_frsize"
+    },
+    {
+      "line_start": 201,
+      "line_end": 208,
+      "text": "201:    if time.monotonic()-last_full>=10:\n202:     r=resources(s);last_full=time.monotonic();r['elapsed_seconds']=last_full-start\n203:     rss=0\n204:     for pid in [p.pid,*[x['pid'] for x in observations]]:\n205:      status=P('/proc')/str(pid)/'status'\n206:      try:rss+=int(next(x.split()[1] for x in status.read_text().splitlines() if x.startswith('VmRSS:')))*1024\n207:      except (FileNotFoundError,StopIteration):pass\n208:     peak_rss=max(peak_rss,rss);r['process_tree_observed_rss_bytes']=rss;samples.write((json.dumps(r)+'\\n').encode());samples.flush()"
+    },
+    {
+      "line_start": 236,
+      "line_end": 241,
+      "text": "236:  finally:\n237:   if p is not None and p.poll() is None:os.killpg(p.pid,signal.SIGKILL);p.wait()\n238:   raw.flush();os.fsync(raw.fileno());raw.close();close_compressed(progress);close_compressed(samples)\n239:   if channel is not None:channel.close();sender.close()\n240:  receipt={'schema':'NATIVE_QUALIFICATION_EXECUTION_RECEIPT_V1','cohort':cohort,'uuid':ident,'native_simulator_observed':bool(observations),'launcher_wait_returncode':rc,'launcher_is_strace_parent_of_native_simulator':True,'actual_simulator_wait_and_file_evidence':'actual_file_process_network.log','stop_reason':reason,'elapsed_seconds':time.monotonic()-start,'peak_result_logical_bytes':peak,'peak_observed_rss_bytes':peak_rss,'raw_sha256':sha(out/'raw.log.gz'),'raw_storage':'GZIP_LOSSLESS_1','raw_uncompressed_sha256':raw.hash.hexdigest(),'raw_uncompressed_bytes':raw.bytes,'output':str(out),'scientific_acceptance':'PENDING_EXACT_INDEPENDENT_TERMINAL_AND_BASELINE_COMPARISON','source_disposition':'SOURCE_KEEP','old_EP_starts':57,'old_DTC_starts':2,'new_attempt_consumed':1,'automatic_retry':False}\n241:  exclusive(out/'NATIVE_EXIT.json',receipt);exclusive(budget_dir/(cohort+'.DONE.json'),receipt);return receipt"
+    }
+  ],
+  "elapsed": {
+    "unit": "seconds",
+    "source": "time.monotonic() before launcher Popen through final stream flush/close",
+    "includes": "launcher fork/wait and final raw/progress/resource stream closure",
+    "excludes": "prior queue/prepare and subsequent strict/archive/native restore work; not CPU time or whole Goal walltime"
+  },
+  "RSS": {
+    "unit": "bytes, Linux VmRSS KiB\u00d71024",
+    "collector": "roughly10-second sample of launcher PID plus first observed simulator PID(s)",
+    "receipt_field": "peak_observed_rss_bytes",
+    "stream_field": "process_tree_observed_rss_bytes",
+    "comparison": "receipt max equals max explicit stream samples",
+    "not_absolute_peak": true,
+    "not_every_possible_descendant": true,
+    "shared_pages_may_be_counted_twice": true,
+    "zero_initializer_without_samples_is_not_measurement": true
+  },
+  "output_peak": {
+    "receipt_field": "peak_result_logical_bytes",
+    "meaning": "max observed sum of file st_size during execution polling; not allocated bytes and may precede final strict/receipt files"
+  },
+  "per_job_CPU": {
+    "time_seconds": null,
+    "utilization": null,
+    "meaning": "not recorded by these per-point sources; global/cgroup CPU counters remain shared context"
+  },
+  "stored_scope": "source regular-file logical; gzip member stored; archive container stream; native listed-tree lstat allocated are separate scopes, never realtime df/hardware area or summed point maxima"
+}
