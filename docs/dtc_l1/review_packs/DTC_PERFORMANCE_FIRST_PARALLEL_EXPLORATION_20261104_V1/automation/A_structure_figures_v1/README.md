@@ -1,0 +1,15 @@
+# CPU structural figures: fixed8, four nonTag families
+
+`plot_structure.py` reads only the fixed qualified B V3 PUBLICATION_PROVIDER.json and its SHA-checked manifest/files. It freezes exactprovider bytes and records itsSHA; --provider-sha256 optionally pins the caller-observed pointerSHA. Unknown schema/input/status, conflicting acceptedcycles/metrics, or mismatched commonGM are rejected. No native, model, service, registry, tracebody, raw simulator log, source or paper edit is performed.
+
+Two heatmaps are generated: DH_P0/candidate (S_DH) and CH_P0/candidate (Rnew). Roworder is the frozen8inputs/fullSHA; columns are the uniform4parameter families, never perprogrambest. Accepted cells alone have numbers. Archivedunaccepted negatives, verifiedunusedfamilyHOLD, pending/unregistered and verificationHOLD stay null and are explicitlymarked. Accepted ratio<1 is a measured regression, not the NEG status. Arrows compare integercycle numerators/denominator exactly, including rounded1.000 nonzero differences. The16Tag safetyHOLD cells remain a separate annotation, never numericzeros.
+
+All columnGM use one identical acceptedinput intersection across allfourcolumns, with n/8 explicit; the script checks B SUMMARY's common-set IDs, denominator and values. It never compares available-setGM from different inputsets. This is an8-input exploration subset, not the old complete32-program suite. Costs refer to nominal128B-line slot accounting; payload/PPA/equalarea/timing claims are excluded. PIB192/lowercreate coupling and Taggrant-vs-dataports limits are printed on the figures.
+
+CLI (existing matplotlibvenv read-only):
+
+/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_first16_execution_20261104_v1/agents/A_figures_v1/plot-venv/bin/python -B <thisdirectory>/plot_structure.py --provider /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_parallel_exploration_20261104_v1/agents/B_perf_results_consumer_v3/PUBLICATION_PROVIDER.json --output-root <newtrue164directory> [--provider-sha256 <pointerSHA>]
+
+Output includes PNG/SVG pairs, FIGURE_DATA.json (all32cells, full8input identities, exactdirections, sourceRefs and commonGM), exact PROVIDER_SNAPSHOT.json, SOURCE_PINS.json and an independentMANIFEST. Outputnames contain providerSHA+sourceSHA. Existing snapshots are verified/reused and never overwritten; SVG hash salt/Date are fixed, and repeated PNG/SVG bytes were tested identical. TMP/TEMP/MPL cache are confined to the true164 outputroot. Environment: matplotlib3.10.8/numpy2.2.6, no installation/systemPython mutation.
+
+CPU_QA.py tests10 small identity/null/status/SHA/exactzero/commonGM/layout checks. Synthetic render fixtures are conspicuously titled NOT EXPERIMENTAL DATA and are kept separately under qa_render; they never appear in the actual provider output. The actualpreview contains2 real accepted phys768 points (2DCONV/GEMM) with S_DH1.0; everyother nonTagcell is pending and commonGM n0/8. The Agent inspected both actualPNG layouts; final Root visual/scientific/publication approval remains pending. Source and preview manifests are separate; no automatic refresh/service/publication occurs.

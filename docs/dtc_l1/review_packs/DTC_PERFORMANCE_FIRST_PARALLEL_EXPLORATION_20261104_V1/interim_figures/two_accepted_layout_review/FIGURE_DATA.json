@@ -1,0 +1,1835 @@
+{
+  "schema": "DTC_FIXED8_NON_TAG_STRUCTURE_FIGURE_DATA_V1",
+  "synthetic_layout_only": false,
+  "scope": "FIXED8_INPUT_SUBSET_NOT_CORE32",
+  "provenance": {
+    "provider_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_parallel_exploration_20261104_v1/agents/B_perf_results_consumer_v3/PUBLICATION_PROVIDER.json",
+    "provider_sha256": "d94643aea7de5786299a0dc3c6566ea7d254b98782b76ca80ca7afe6626e1cac",
+    "provider_manifest": {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_parallel_exploration_20261104_v1/agents/B_perf_results_consumer_v3/snapshots/20261104T131628_ccd541e3/MANIFEST.json",
+      "sha256": "90a23f2297d0550533eba0a7283be771ad714e45ad6538becf696233f6b7b759"
+    },
+    "files": [
+      {
+        "bytes": 465,
+        "name": "FAMILY_HOLD_REPORT.json",
+        "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_parallel_exploration_20261104_v1/agents/B_perf_results_consumer_v3/snapshots/20261104T131628_ccd541e3/FAMILY_HOLD_REPORT.json",
+        "sha256": "1246feda0ecf7056b0a6473bc02623fa7c5685c7be3bd1414da93758eba895c9"
+      },
+      {
+        "bytes": 492,
+        "name": "README.md",
+        "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_parallel_exploration_20261104_v1/agents/B_perf_results_consumer_v3/snapshots/20261104T131628_ccd541e3/README.md",
+        "sha256": "6753b201b221962335ed87045ff9667841ae2f352b4cc9bcb28dd0b242997cc2"
+      },
+      {
+        "bytes": 9939,
+        "name": "RESULTS.csv",
+        "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_parallel_exploration_20261104_v1/agents/B_perf_results_consumer_v3/snapshots/20261104T131628_ccd541e3/RESULTS.csv",
+        "sha256": "7ada69f18318b006ed4bcb422b19e8339feb872cd30326653949c3e9de87e60e"
+      },
+      {
+        "bytes": 513667,
+        "name": "SNAPSHOT.json",
+        "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_parallel_exploration_20261104_v1/agents/B_perf_results_consumer_v3/snapshots/20261104T131628_ccd541e3/SNAPSHOT.json",
+        "sha256": "cc3f27df2aa8a53bd97d16cc92831ae162061164b37a13df72dda0c2439d6621"
+      },
+      {
+        "bytes": 13046,
+        "name": "SUMMARY.json",
+        "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_parallel_exploration_20261104_v1/agents/B_perf_results_consumer_v3/snapshots/20261104T131628_ccd541e3/SUMMARY.json",
+        "sha256": "881277679f5c59d88034d9eaa9630360146a023d56bdaa317845d72827e00f31"
+      }
+    ],
+    "plot_source_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_parallel_exploration_20261104_v1/agents/A_structure_figures_v1/plot_structure.py",
+    "plot_source_sha256": "c7b75be014d09a90fa8a752da4a96f3e1d7f36f928417ed750dee61a8abd114a",
+    "observed_utc": "2026-11-04T13:16:29.124183+00:00",
+    "provider_qualification_flags": {
+      "baseline_source_qualified": true,
+      "all_existing_closed_results_qualified": true,
+      "admission_hold_metadata_qualified": true
+    }
+  },
+  "input_order": [
+    {
+      "program": "2DCONV",
+      "input_digest": "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0"
+    },
+    {
+      "program": "GEMM",
+      "input_digest": "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318"
+    },
+    {
+      "program": "convolutionSeparable",
+      "input_digest": "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449"
+    },
+    {
+      "program": "scan",
+      "input_digest": "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39"
+    },
+    {
+      "program": "ATAX",
+      "input_digest": "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950"
+    },
+    {
+      "program": "MVT",
+      "input_digest": "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079"
+    },
+    {
+      "program": "BICG",
+      "input_digest": "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef"
+    },
+    {
+      "program": "vectorAdd",
+      "input_digest": "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799"
+    }
+  ],
+  "variant_order": [
+    "PHYS768_TAG64x8",
+    "PHYS1024_TAG64x8",
+    "OO_PIB192",
+    "TAG4BANK_PERBANK2_TOTAL8"
+  ],
+  "cells": [
+    {
+      "program": "2DCONV",
+      "suite": "PolyBench/GPU",
+      "input_digest": "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+      "variant": "PHYS768_TAG64x8",
+      "cohort": "E2-DTCPF4-d984ea5475a581ad-DH-PHYS768-V1",
+      "uuid": "f936fc53-3563-4131-896d-a94b455d9cbb",
+      "status": "ACCEPTED_STRICT_ARCHIVE_RESTORE",
+      "display_state": "ACCEPTED",
+      "reason": null,
+      "accepted": true,
+      "cycles": 462740,
+      "CH_P0_cycles": 1548909,
+      "DH_P0_cycles": 462740,
+      "S_DH": 1.0,
+      "Rnew": 3.3472554782383197,
+      "S_DH_direction": "exact_zero",
+      "Rnew_direction": "positive",
+      "source_references": {
+        "STRICT": {
+          "path": "/root/data/dtc_perf_first_parallel_exploration_20261104_v1/DTC/run/results/f936fc53-3563-4131-896d-a94b455d9cbb/L2_STRICT.json",
+          "sha256": "b38defee78ea58c76d72689c3e7adc6bb2fdffc99442ad79de85b8e8200d609d"
+        },
+        "baseline_CH_P0": {
+          "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-CH-P0-V1.RESULT.json",
+          "sha256": "438ac5fe48cc93afa6569b4af486fbb8f6dac94baf31dc927b29e101815bbe4c"
+        },
+        "baseline_CH_bottom": {
+          "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-CH-P0-V1.RESULT.json",
+          "sha256": "438ac5fe48cc93afa6569b4af486fbb8f6dac94baf31dc927b29e101815bbe4c"
+        },
+        "baseline_DH_P0": {
+          "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-DH-P0-V1.RESULT.json",
+          "sha256": "50b11accfa168c0221bcbfce5bda02745d5fa48bea71778d359f68ad09c5b0fc"
+        },
+        "baseline_DH_bottom": {
+          "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-DH-P0-V1.RESULT.json",
+          "sha256": "50b11accfa168c0221bcbfce5bda02745d5fa48bea71778d359f68ad09c5b0fc"
+        },
+        "native_EXIT": {
+          "path": "/root/data/dtc_perf_first_parallel_exploration_20261104_v1/DTC/run/results/f936fc53-3563-4131-896d-a94b455d9cbb/NATIVE_EXIT.json",
+          "sha256": "164f44f2279828f6ff7d02acfcb24de2201f18e50e32be9175259ad32f43db5b"
+        },
+        "science_qualification": {
+          "path": "/root/data/dtc_perf_first_parallel_exploration_20261104_v1/DTC/control/SCIENCE_QUALIFICATION_E2-DTCPF4-d984ea5475a581ad-DH-PHYS768-V1.json",
+          "sha256": "e31d15b6c41159972638da494a13331a41b8cba7700f1af958c14afe1ef3faec"
+        },
+        "source_DONE": {
+          "path": "/root/data/dtc_perf_first_parallel_exploration_20261104_v1/control/qualification_ledger/E2-DTCPF4-d984ea5475a581ad-DH-PHYS768-V1.DONE.json",
+          "sha256": "164f44f2279828f6ff7d02acfcb24de2201f18e50e32be9175259ad32f43db5b"
+        },
+        "source_INTENT": {
+          "path": "/root/data/dtc_perf_first_parallel_exploration_20261104_v1/control/qualification_ledger/E2-DTCPF4-d984ea5475a581ad-DH-PHYS768-V1.INTENT.json",
+          "sha256": "3ae59faa3b5e7705e600bc33d9aa8899d803efd952d92fd4bbfb777ecbf44cbf"
+        },
+        "source_RESULT": {
+          "path": "/root/data/dtc_perf_first_parallel_exploration_20261104_v1/analysis/E2-DTCPF4-d984ea5475a581ad-DH-PHYS768-V1.RESULT.json",
+          "sha256": "1bf0f50f55ec5d25c1c24080953a66c0d37f4d27ec8889b3140994e25c7b2be0"
+        },
+        "source_SPEC": {
+          "path": "/root/data/dtc_perf_first_parallel_exploration_20261104_v1/control/specs/E2-DTCPF4-d984ea5475a581ad-DH-PHYS768-V1.json",
+          "sha256": "2473a846a6dbf1144a4847e51be793a3a65021ff0e4f711dbd6e198240a3a98e"
+        }
+      },
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-CH-P0-V1.RESULT.json",
+            "sha256": "438ac5fe48cc93afa6569b4af486fbb8f6dac94baf31dc927b29e101815bbe4c"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-CH-P0-V1.RESULT.json",
+            "sha256": "438ac5fe48cc93afa6569b4af486fbb8f6dac94baf31dc927b29e101815bbe4c"
+          },
+          "source_uuid": "49f5e8c8-7db9-46a8-974f-8f585f5ba83d",
+          "legal_prior_P0_alias": null
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-DH-P0-V1.RESULT.json",
+            "sha256": "50b11accfa168c0221bcbfce5bda02745d5fa48bea71778d359f68ad09c5b0fc"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-DH-P0-V1.RESULT.json",
+            "sha256": "50b11accfa168c0221bcbfce5bda02745d5fa48bea71778d359f68ad09c5b0fc"
+          },
+          "source_uuid": "a659b723-15eb-45cb-90f8-13857f764329",
+          "legal_prior_P0_alias": null
+        }
+      }
+    },
+    {
+      "program": "2DCONV",
+      "suite": "PolyBench/GPU",
+      "input_digest": "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+      "variant": "PHYS1024_TAG64x8",
+      "cohort": "E2-DTCPF28-d984ea5475a581ad-DH-PHYS1024-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 1548909,
+      "DH_P0_cycles": 462740,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-CH-P0-V1.RESULT.json",
+            "sha256": "438ac5fe48cc93afa6569b4af486fbb8f6dac94baf31dc927b29e101815bbe4c"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-CH-P0-V1.RESULT.json",
+            "sha256": "438ac5fe48cc93afa6569b4af486fbb8f6dac94baf31dc927b29e101815bbe4c"
+          },
+          "source_uuid": "49f5e8c8-7db9-46a8-974f-8f585f5ba83d",
+          "legal_prior_P0_alias": null
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-DH-P0-V1.RESULT.json",
+            "sha256": "50b11accfa168c0221bcbfce5bda02745d5fa48bea71778d359f68ad09c5b0fc"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-DH-P0-V1.RESULT.json",
+            "sha256": "50b11accfa168c0221bcbfce5bda02745d5fa48bea71778d359f68ad09c5b0fc"
+          },
+          "source_uuid": "a659b723-15eb-45cb-90f8-13857f764329",
+          "legal_prior_P0_alias": null
+        }
+      }
+    },
+    {
+      "program": "2DCONV",
+      "suite": "PolyBench/GPU",
+      "input_digest": "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+      "variant": "OO_PIB192",
+      "cohort": "E2-DTCPF28-d984ea5475a581ad-DH-PIB192-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 1548909,
+      "DH_P0_cycles": 462740,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-CH-P0-V1.RESULT.json",
+            "sha256": "438ac5fe48cc93afa6569b4af486fbb8f6dac94baf31dc927b29e101815bbe4c"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-CH-P0-V1.RESULT.json",
+            "sha256": "438ac5fe48cc93afa6569b4af486fbb8f6dac94baf31dc927b29e101815bbe4c"
+          },
+          "source_uuid": "49f5e8c8-7db9-46a8-974f-8f585f5ba83d",
+          "legal_prior_P0_alias": null
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-DH-P0-V1.RESULT.json",
+            "sha256": "50b11accfa168c0221bcbfce5bda02745d5fa48bea71778d359f68ad09c5b0fc"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-DH-P0-V1.RESULT.json",
+            "sha256": "50b11accfa168c0221bcbfce5bda02745d5fa48bea71778d359f68ad09c5b0fc"
+          },
+          "source_uuid": "a659b723-15eb-45cb-90f8-13857f764329",
+          "legal_prior_P0_alias": null
+        }
+      }
+    },
+    {
+      "program": "2DCONV",
+      "suite": "PolyBench/GPU",
+      "input_digest": "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+      "variant": "TAG4BANK_PERBANK2_TOTAL8",
+      "cohort": "E2-DTCPF28-d984ea5475a581ad-DH-TAGSVC8-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 1548909,
+      "DH_P0_cycles": 462740,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-CH-P0-V1.RESULT.json",
+            "sha256": "438ac5fe48cc93afa6569b4af486fbb8f6dac94baf31dc927b29e101815bbe4c"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-CH-P0-V1.RESULT.json",
+            "sha256": "438ac5fe48cc93afa6569b4af486fbb8f6dac94baf31dc927b29e101815bbe4c"
+          },
+          "source_uuid": "49f5e8c8-7db9-46a8-974f-8f585f5ba83d",
+          "legal_prior_P0_alias": null
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-DH-P0-V1.RESULT.json",
+            "sha256": "50b11accfa168c0221bcbfce5bda02745d5fa48bea71778d359f68ad09c5b0fc"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-d984ea5475a581ad-DH-P0-V1.RESULT.json",
+            "sha256": "50b11accfa168c0221bcbfce5bda02745d5fa48bea71778d359f68ad09c5b0fc"
+          },
+          "source_uuid": "a659b723-15eb-45cb-90f8-13857f764329",
+          "legal_prior_P0_alias": null
+        }
+      }
+    },
+    {
+      "program": "GEMM",
+      "suite": "PolyBench/GPU",
+      "input_digest": "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318",
+      "variant": "PHYS768_TAG64x8",
+      "cohort": "E2-DTCPF4-fc0705ae3721e999-DH-PHYS768-V1",
+      "uuid": "61dcda7d-f09b-42f9-a701-e8e75e024b1d",
+      "status": "ACCEPTED_STRICT_ARCHIVE_RESTORE",
+      "display_state": "ACCEPTED",
+      "reason": null,
+      "accepted": true,
+      "cycles": 826089,
+      "CH_P0_cycles": 1395216,
+      "DH_P0_cycles": 826089,
+      "S_DH": 1.0,
+      "Rnew": 1.6889415063025897,
+      "S_DH_direction": "exact_zero",
+      "Rnew_direction": "positive",
+      "source_references": {
+        "STRICT": {
+          "path": "/root/data/dtc_perf_first_parallel_exploration_20261104_v1/DTC/run/results/61dcda7d-f09b-42f9-a701-e8e75e024b1d/L2_STRICT.json",
+          "sha256": "818dc6c6c2891c4705a03a920a3caec8094ea4a14dea878e9c798e7ac5332bae"
+        },
+        "baseline_CH_P0": {
+          "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-CH-P0-V1.RESULT.json",
+          "sha256": "52b200fef6a295bcf646f5020cf96c3b8359f15dfb982fbc28849e307866dce9"
+        },
+        "baseline_CH_bottom": {
+          "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-CH-P0-V1.RESULT.json",
+          "sha256": "52b200fef6a295bcf646f5020cf96c3b8359f15dfb982fbc28849e307866dce9"
+        },
+        "baseline_DH_P0": {
+          "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-DH-P0-V1.RESULT.json",
+          "sha256": "1e7f73cb3b7fe40abda5b9f126a834b0c8e0ecf64cb411fb09e558e74059aea1"
+        },
+        "baseline_DH_bottom": {
+          "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-DH-P0-V1.RESULT.json",
+          "sha256": "1e7f73cb3b7fe40abda5b9f126a834b0c8e0ecf64cb411fb09e558e74059aea1"
+        },
+        "native_EXIT": {
+          "path": "/root/data/dtc_perf_first_parallel_exploration_20261104_v1/DTC/run/results/61dcda7d-f09b-42f9-a701-e8e75e024b1d/NATIVE_EXIT.json",
+          "sha256": "323b3bbbeb8bed382751d24f98f143460f0c1a45a5585a600dfff1d5e0a94f76"
+        },
+        "science_qualification": {
+          "path": "/root/data/dtc_perf_first_parallel_exploration_20261104_v1/DTC/control/SCIENCE_QUALIFICATION_E2-DTCPF4-fc0705ae3721e999-DH-PHYS768-V1.json",
+          "sha256": "eb200f3722b3462d54e53cad9f63915d928504e23753c8dcb5bfe370467efc4c"
+        },
+        "source_DONE": {
+          "path": "/root/data/dtc_perf_first_parallel_exploration_20261104_v1/control/qualification_ledger/E2-DTCPF4-fc0705ae3721e999-DH-PHYS768-V1.DONE.json",
+          "sha256": "323b3bbbeb8bed382751d24f98f143460f0c1a45a5585a600dfff1d5e0a94f76"
+        },
+        "source_INTENT": {
+          "path": "/root/data/dtc_perf_first_parallel_exploration_20261104_v1/control/qualification_ledger/E2-DTCPF4-fc0705ae3721e999-DH-PHYS768-V1.INTENT.json",
+          "sha256": "b658cd1306963e65eeec1cdb8a1bdf0d0c2cd45dcd25c2db00d37fbdb89e132e"
+        },
+        "source_RESULT": {
+          "path": "/root/data/dtc_perf_first_parallel_exploration_20261104_v1/analysis/E2-DTCPF4-fc0705ae3721e999-DH-PHYS768-V1.RESULT.json",
+          "sha256": "7482c657f8510d86375ced42856c9166ca1a050f774e27c71b4ea12f8e90d306"
+        },
+        "source_SPEC": {
+          "path": "/root/data/dtc_perf_first_parallel_exploration_20261104_v1/control/specs/E2-DTCPF4-fc0705ae3721e999-DH-PHYS768-V1.json",
+          "sha256": "c9ed8a2a8e48ae6594cf3a08dcd2eb3afe7364d4ecb1d5ce4b56350eefd1e68b"
+        }
+      },
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-CH-P0-V1.RESULT.json",
+            "sha256": "52b200fef6a295bcf646f5020cf96c3b8359f15dfb982fbc28849e307866dce9"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-CH-P0-V1.RESULT.json",
+            "sha256": "52b200fef6a295bcf646f5020cf96c3b8359f15dfb982fbc28849e307866dce9"
+          },
+          "source_uuid": "f1ea9a8e-173b-4d68-8009-c96179587ddc",
+          "legal_prior_P0_alias": null
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-DH-P0-V1.RESULT.json",
+            "sha256": "1e7f73cb3b7fe40abda5b9f126a834b0c8e0ecf64cb411fb09e558e74059aea1"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-DH-P0-V1.RESULT.json",
+            "sha256": "1e7f73cb3b7fe40abda5b9f126a834b0c8e0ecf64cb411fb09e558e74059aea1"
+          },
+          "source_uuid": "af004a3c-c264-41c4-a6a4-b7a14d896c69",
+          "legal_prior_P0_alias": null
+        }
+      }
+    },
+    {
+      "program": "GEMM",
+      "suite": "PolyBench/GPU",
+      "input_digest": "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318",
+      "variant": "PHYS1024_TAG64x8",
+      "cohort": "E2-DTCPF28-fc0705ae3721e999-DH-PHYS1024-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 1395216,
+      "DH_P0_cycles": 826089,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-CH-P0-V1.RESULT.json",
+            "sha256": "52b200fef6a295bcf646f5020cf96c3b8359f15dfb982fbc28849e307866dce9"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-CH-P0-V1.RESULT.json",
+            "sha256": "52b200fef6a295bcf646f5020cf96c3b8359f15dfb982fbc28849e307866dce9"
+          },
+          "source_uuid": "f1ea9a8e-173b-4d68-8009-c96179587ddc",
+          "legal_prior_P0_alias": null
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-DH-P0-V1.RESULT.json",
+            "sha256": "1e7f73cb3b7fe40abda5b9f126a834b0c8e0ecf64cb411fb09e558e74059aea1"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-DH-P0-V1.RESULT.json",
+            "sha256": "1e7f73cb3b7fe40abda5b9f126a834b0c8e0ecf64cb411fb09e558e74059aea1"
+          },
+          "source_uuid": "af004a3c-c264-41c4-a6a4-b7a14d896c69",
+          "legal_prior_P0_alias": null
+        }
+      }
+    },
+    {
+      "program": "GEMM",
+      "suite": "PolyBench/GPU",
+      "input_digest": "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318",
+      "variant": "OO_PIB192",
+      "cohort": "E2-DTCPF28-fc0705ae3721e999-DH-PIB192-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 1395216,
+      "DH_P0_cycles": 826089,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-CH-P0-V1.RESULT.json",
+            "sha256": "52b200fef6a295bcf646f5020cf96c3b8359f15dfb982fbc28849e307866dce9"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-CH-P0-V1.RESULT.json",
+            "sha256": "52b200fef6a295bcf646f5020cf96c3b8359f15dfb982fbc28849e307866dce9"
+          },
+          "source_uuid": "f1ea9a8e-173b-4d68-8009-c96179587ddc",
+          "legal_prior_P0_alias": null
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-DH-P0-V1.RESULT.json",
+            "sha256": "1e7f73cb3b7fe40abda5b9f126a834b0c8e0ecf64cb411fb09e558e74059aea1"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-DH-P0-V1.RESULT.json",
+            "sha256": "1e7f73cb3b7fe40abda5b9f126a834b0c8e0ecf64cb411fb09e558e74059aea1"
+          },
+          "source_uuid": "af004a3c-c264-41c4-a6a4-b7a14d896c69",
+          "legal_prior_P0_alias": null
+        }
+      }
+    },
+    {
+      "program": "GEMM",
+      "suite": "PolyBench/GPU",
+      "input_digest": "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318",
+      "variant": "TAG4BANK_PERBANK2_TOTAL8",
+      "cohort": "E2-DTCPF28-fc0705ae3721e999-DH-TAGSVC8-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 1395216,
+      "DH_P0_cycles": 826089,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-CH-P0-V1.RESULT.json",
+            "sha256": "52b200fef6a295bcf646f5020cf96c3b8359f15dfb982fbc28849e307866dce9"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-CH-P0-V1.RESULT.json",
+            "sha256": "52b200fef6a295bcf646f5020cf96c3b8359f15dfb982fbc28849e307866dce9"
+          },
+          "source_uuid": "f1ea9a8e-173b-4d68-8009-c96179587ddc",
+          "legal_prior_P0_alias": null
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-DH-P0-V1.RESULT.json",
+            "sha256": "1e7f73cb3b7fe40abda5b9f126a834b0c8e0ecf64cb411fb09e558e74059aea1"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-fc0705ae3721e999-DH-P0-V1.RESULT.json",
+            "sha256": "1e7f73cb3b7fe40abda5b9f126a834b0c8e0ecf64cb411fb09e558e74059aea1"
+          },
+          "source_uuid": "af004a3c-c264-41c4-a6a4-b7a14d896c69",
+          "legal_prior_P0_alias": null
+        }
+      }
+    },
+    {
+      "program": "convolutionSeparable",
+      "suite": "CUDA Samples",
+      "input_digest": "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+      "variant": "PHYS768_TAG64x8",
+      "cohort": "E2-DTCPF28-4114a3dc0d06b55b-DH-PHYS768-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 825151,
+      "DH_P0_cycles": 800572,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-4114a3dc0d06b55b-CH-P0-V1.RESULT.json",
+            "sha256": "e02e394e333973f4f5d936d45148c7a18a7183433badce0863a70fb220b9528f"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-4114a3dc0d06b55b-CH-P0-V1.RESULT.json",
+            "sha256": "e02e394e333973f4f5d936d45148c7a18a7183433badce0863a70fb220b9528f"
+          },
+          "source_uuid": "a1bac64e-24d8-4c30-97e5-4a5f87245f79",
+          "legal_prior_P0_alias": null
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-4114a3dc0d06b55b-DH-P0-V1.RESULT.json",
+            "sha256": "3216b129cb5d9914410cc0610d783c3883910b70e85265a057ce8a0ee5c9cbc4"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-4114a3dc0d06b55b-DH-P0-V1.RESULT.json",
+            "sha256": "3216b129cb5d9914410cc0610d783c3883910b70e85265a057ce8a0ee5c9cbc4"
+          },
+          "source_uuid": "9807b16e-bf2e-47b3-bc12-c0ca4e75b901",
+          "legal_prior_P0_alias": null
+        }
+      }
+    },
+    {
+      "program": "convolutionSeparable",
+      "suite": "CUDA Samples",
+      "input_digest": "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+      "variant": "PHYS1024_TAG64x8",
+      "cohort": "E2-DTCPF28-4114a3dc0d06b55b-DH-PHYS1024-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 825151,
+      "DH_P0_cycles": 800572,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-4114a3dc0d06b55b-CH-P0-V1.RESULT.json",
+            "sha256": "e02e394e333973f4f5d936d45148c7a18a7183433badce0863a70fb220b9528f"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-4114a3dc0d06b55b-CH-P0-V1.RESULT.json",
+            "sha256": "e02e394e333973f4f5d936d45148c7a18a7183433badce0863a70fb220b9528f"
+          },
+          "source_uuid": "a1bac64e-24d8-4c30-97e5-4a5f87245f79",
+          "legal_prior_P0_alias": null
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-4114a3dc0d06b55b-DH-P0-V1.RESULT.json",
+            "sha256": "3216b129cb5d9914410cc0610d783c3883910b70e85265a057ce8a0ee5c9cbc4"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-4114a3dc0d06b55b-DH-P0-V1.RESULT.json",
+            "sha256": "3216b129cb5d9914410cc0610d783c3883910b70e85265a057ce8a0ee5c9cbc4"
+          },
+          "source_uuid": "9807b16e-bf2e-47b3-bc12-c0ca4e75b901",
+          "legal_prior_P0_alias": null
+        }
+      }
+    },
+    {
+      "program": "convolutionSeparable",
+      "suite": "CUDA Samples",
+      "input_digest": "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+      "variant": "OO_PIB192",
+      "cohort": "E2-DTCPF28-4114a3dc0d06b55b-DH-PIB192-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 825151,
+      "DH_P0_cycles": 800572,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-4114a3dc0d06b55b-CH-P0-V1.RESULT.json",
+            "sha256": "e02e394e333973f4f5d936d45148c7a18a7183433badce0863a70fb220b9528f"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-4114a3dc0d06b55b-CH-P0-V1.RESULT.json",
+            "sha256": "e02e394e333973f4f5d936d45148c7a18a7183433badce0863a70fb220b9528f"
+          },
+          "source_uuid": "a1bac64e-24d8-4c30-97e5-4a5f87245f79",
+          "legal_prior_P0_alias": null
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-4114a3dc0d06b55b-DH-P0-V1.RESULT.json",
+            "sha256": "3216b129cb5d9914410cc0610d783c3883910b70e85265a057ce8a0ee5c9cbc4"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-4114a3dc0d06b55b-DH-P0-V1.RESULT.json",
+            "sha256": "3216b129cb5d9914410cc0610d783c3883910b70e85265a057ce8a0ee5c9cbc4"
+          },
+          "source_uuid": "9807b16e-bf2e-47b3-bc12-c0ca4e75b901",
+          "legal_prior_P0_alias": null
+        }
+      }
+    },
+    {
+      "program": "convolutionSeparable",
+      "suite": "CUDA Samples",
+      "input_digest": "4114a3dc0d06b55bc11aac0d0e4e209d5b640e8ec90fd84d8b4615871033f449",
+      "variant": "TAG4BANK_PERBANK2_TOTAL8",
+      "cohort": "E2-DTCPF28-4114a3dc0d06b55b-DH-TAGSVC8-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 825151,
+      "DH_P0_cycles": 800572,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-4114a3dc0d06b55b-CH-P0-V1.RESULT.json",
+            "sha256": "e02e394e333973f4f5d936d45148c7a18a7183433badce0863a70fb220b9528f"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-4114a3dc0d06b55b-CH-P0-V1.RESULT.json",
+            "sha256": "e02e394e333973f4f5d936d45148c7a18a7183433badce0863a70fb220b9528f"
+          },
+          "source_uuid": "a1bac64e-24d8-4c30-97e5-4a5f87245f79",
+          "legal_prior_P0_alias": null
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-4114a3dc0d06b55b-DH-P0-V1.RESULT.json",
+            "sha256": "3216b129cb5d9914410cc0610d783c3883910b70e85265a057ce8a0ee5c9cbc4"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-4114a3dc0d06b55b-DH-P0-V1.RESULT.json",
+            "sha256": "3216b129cb5d9914410cc0610d783c3883910b70e85265a057ce8a0ee5c9cbc4"
+          },
+          "source_uuid": "9807b16e-bf2e-47b3-bc12-c0ca4e75b901",
+          "legal_prior_P0_alias": null
+        }
+      }
+    },
+    {
+      "program": "scan",
+      "suite": "CUDA Samples",
+      "input_digest": "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+      "variant": "PHYS768_TAG64x8",
+      "cohort": "E2-DTCPF28-6df3a84b612086e8-DH-PHYS768-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 6710840,
+      "DH_P0_cycles": 6648993,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-6df3a84b612086e8-CH-P0-V1.RESULT.json",
+            "sha256": "2c196ebc1dfcdf41b4cc99600a7afcdda4605c6a9bcc513b3f3e0b587e1cc1de"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-6df3a84b612086e8-CH-P0-V1.RESULT.json",
+            "sha256": "2c196ebc1dfcdf41b4cc99600a7afcdda4605c6a9bcc513b3f3e0b587e1cc1de"
+          },
+          "source_uuid": "6933bc7b-97f3-445b-8bd4-913d57cda378",
+          "legal_prior_P0_alias": null
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-6df3a84b612086e8-DH-P0-V1.RESULT.json",
+            "sha256": "9c4cd8f63cd76198b3f14ca6de444218fe445bf2b3bed0eddfb80a113e28ee85"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-6df3a84b612086e8-DH-P0-V1.RESULT.json",
+            "sha256": "9c4cd8f63cd76198b3f14ca6de444218fe445bf2b3bed0eddfb80a113e28ee85"
+          },
+          "source_uuid": "9c9cd180-3f9a-4099-b202-47bcca18135f",
+          "legal_prior_P0_alias": null
+        }
+      }
+    },
+    {
+      "program": "scan",
+      "suite": "CUDA Samples",
+      "input_digest": "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+      "variant": "PHYS1024_TAG64x8",
+      "cohort": "E2-DTCPF28-6df3a84b612086e8-DH-PHYS1024-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 6710840,
+      "DH_P0_cycles": 6648993,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-6df3a84b612086e8-CH-P0-V1.RESULT.json",
+            "sha256": "2c196ebc1dfcdf41b4cc99600a7afcdda4605c6a9bcc513b3f3e0b587e1cc1de"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-6df3a84b612086e8-CH-P0-V1.RESULT.json",
+            "sha256": "2c196ebc1dfcdf41b4cc99600a7afcdda4605c6a9bcc513b3f3e0b587e1cc1de"
+          },
+          "source_uuid": "6933bc7b-97f3-445b-8bd4-913d57cda378",
+          "legal_prior_P0_alias": null
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-6df3a84b612086e8-DH-P0-V1.RESULT.json",
+            "sha256": "9c4cd8f63cd76198b3f14ca6de444218fe445bf2b3bed0eddfb80a113e28ee85"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-6df3a84b612086e8-DH-P0-V1.RESULT.json",
+            "sha256": "9c4cd8f63cd76198b3f14ca6de444218fe445bf2b3bed0eddfb80a113e28ee85"
+          },
+          "source_uuid": "9c9cd180-3f9a-4099-b202-47bcca18135f",
+          "legal_prior_P0_alias": null
+        }
+      }
+    },
+    {
+      "program": "scan",
+      "suite": "CUDA Samples",
+      "input_digest": "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+      "variant": "OO_PIB192",
+      "cohort": "E2-DTCPF28-6df3a84b612086e8-DH-PIB192-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 6710840,
+      "DH_P0_cycles": 6648993,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-6df3a84b612086e8-CH-P0-V1.RESULT.json",
+            "sha256": "2c196ebc1dfcdf41b4cc99600a7afcdda4605c6a9bcc513b3f3e0b587e1cc1de"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-6df3a84b612086e8-CH-P0-V1.RESULT.json",
+            "sha256": "2c196ebc1dfcdf41b4cc99600a7afcdda4605c6a9bcc513b3f3e0b587e1cc1de"
+          },
+          "source_uuid": "6933bc7b-97f3-445b-8bd4-913d57cda378",
+          "legal_prior_P0_alias": null
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-6df3a84b612086e8-DH-P0-V1.RESULT.json",
+            "sha256": "9c4cd8f63cd76198b3f14ca6de444218fe445bf2b3bed0eddfb80a113e28ee85"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-6df3a84b612086e8-DH-P0-V1.RESULT.json",
+            "sha256": "9c4cd8f63cd76198b3f14ca6de444218fe445bf2b3bed0eddfb80a113e28ee85"
+          },
+          "source_uuid": "9c9cd180-3f9a-4099-b202-47bcca18135f",
+          "legal_prior_P0_alias": null
+        }
+      }
+    },
+    {
+      "program": "scan",
+      "suite": "CUDA Samples",
+      "input_digest": "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+      "variant": "TAG4BANK_PERBANK2_TOTAL8",
+      "cohort": "E2-DTCPF28-6df3a84b612086e8-DH-TAGSVC8-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 6710840,
+      "DH_P0_cycles": 6648993,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-6df3a84b612086e8-CH-P0-V1.RESULT.json",
+            "sha256": "2c196ebc1dfcdf41b4cc99600a7afcdda4605c6a9bcc513b3f3e0b587e1cc1de"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-6df3a84b612086e8-CH-P0-V1.RESULT.json",
+            "sha256": "2c196ebc1dfcdf41b4cc99600a7afcdda4605c6a9bcc513b3f3e0b587e1cc1de"
+          },
+          "source_uuid": "6933bc7b-97f3-445b-8bd4-913d57cda378",
+          "legal_prior_P0_alias": null
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-6df3a84b612086e8-DH-P0-V1.RESULT.json",
+            "sha256": "9c4cd8f63cd76198b3f14ca6de444218fe445bf2b3bed0eddfb80a113e28ee85"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-6df3a84b612086e8-DH-P0-V1.RESULT.json",
+            "sha256": "9c4cd8f63cd76198b3f14ca6de444218fe445bf2b3bed0eddfb80a113e28ee85"
+          },
+          "source_uuid": "9c9cd180-3f9a-4099-b202-47bcca18135f",
+          "legal_prior_P0_alias": null
+        }
+      }
+    },
+    {
+      "program": "ATAX",
+      "suite": "PolyBench/GPU",
+      "input_digest": "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+      "variant": "PHYS768_TAG64x8",
+      "cohort": "E2-DTCPF28-eededb785179fc04-DH-PHYS768-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 28428842,
+      "DH_P0_cycles": 31880220,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-eededb785179fc04-CH-P0-V1.RESULT.json",
+            "sha256": "5364ea570de11a9929d5107c259a2cdbd9d440ea0b71ed178a75b34a04944be2"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-eededb785179fc04-CH-P0-V1.RESULT.json",
+            "sha256": "40b865fb1503bbfca32e6039770114b21ce9a6e90453f47fd3aefad3643c8368"
+          },
+          "source_uuid": "681b81cd-4add-4802-a5f0-1994b9156847",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-eededb785179fc04-CH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-eededb785179fc04-CH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "40b865fb1503bbfca32e6039770114b21ce9a6e90453f47fd3aefad3643c8368",
+            "underlying_execution_uuid": "681b81cd-4add-4802-a5f0-1994b9156847"
+          }
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-eededb785179fc04-DH-P0-V1.RESULT.json",
+            "sha256": "7a0df4d27305dab8ae9da64a2cbfe51c0c01d6d0c8cf2e91243a7ce471ef3ab2"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-eededb785179fc04-DH-P0-V1.RESULT.json",
+            "sha256": "17a232228baa3d39e4a939fabfc58627db1441b476f247f0378716ff35718f9d"
+          },
+          "source_uuid": "37325f35-2eb7-4a2b-bba9-5dc5d00e497f",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-eededb785179fc04-DH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-eededb785179fc04-DH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "17a232228baa3d39e4a939fabfc58627db1441b476f247f0378716ff35718f9d",
+            "underlying_execution_uuid": "37325f35-2eb7-4a2b-bba9-5dc5d00e497f"
+          }
+        }
+      }
+    },
+    {
+      "program": "ATAX",
+      "suite": "PolyBench/GPU",
+      "input_digest": "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+      "variant": "PHYS1024_TAG64x8",
+      "cohort": "E2-DTCPF28-eededb785179fc04-DH-PHYS1024-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 28428842,
+      "DH_P0_cycles": 31880220,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-eededb785179fc04-CH-P0-V1.RESULT.json",
+            "sha256": "5364ea570de11a9929d5107c259a2cdbd9d440ea0b71ed178a75b34a04944be2"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-eededb785179fc04-CH-P0-V1.RESULT.json",
+            "sha256": "40b865fb1503bbfca32e6039770114b21ce9a6e90453f47fd3aefad3643c8368"
+          },
+          "source_uuid": "681b81cd-4add-4802-a5f0-1994b9156847",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-eededb785179fc04-CH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-eededb785179fc04-CH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "40b865fb1503bbfca32e6039770114b21ce9a6e90453f47fd3aefad3643c8368",
+            "underlying_execution_uuid": "681b81cd-4add-4802-a5f0-1994b9156847"
+          }
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-eededb785179fc04-DH-P0-V1.RESULT.json",
+            "sha256": "7a0df4d27305dab8ae9da64a2cbfe51c0c01d6d0c8cf2e91243a7ce471ef3ab2"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-eededb785179fc04-DH-P0-V1.RESULT.json",
+            "sha256": "17a232228baa3d39e4a939fabfc58627db1441b476f247f0378716ff35718f9d"
+          },
+          "source_uuid": "37325f35-2eb7-4a2b-bba9-5dc5d00e497f",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-eededb785179fc04-DH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-eededb785179fc04-DH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "17a232228baa3d39e4a939fabfc58627db1441b476f247f0378716ff35718f9d",
+            "underlying_execution_uuid": "37325f35-2eb7-4a2b-bba9-5dc5d00e497f"
+          }
+        }
+      }
+    },
+    {
+      "program": "ATAX",
+      "suite": "PolyBench/GPU",
+      "input_digest": "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+      "variant": "OO_PIB192",
+      "cohort": "E2-DTCPF28-eededb785179fc04-DH-PIB192-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 28428842,
+      "DH_P0_cycles": 31880220,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-eededb785179fc04-CH-P0-V1.RESULT.json",
+            "sha256": "5364ea570de11a9929d5107c259a2cdbd9d440ea0b71ed178a75b34a04944be2"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-eededb785179fc04-CH-P0-V1.RESULT.json",
+            "sha256": "40b865fb1503bbfca32e6039770114b21ce9a6e90453f47fd3aefad3643c8368"
+          },
+          "source_uuid": "681b81cd-4add-4802-a5f0-1994b9156847",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-eededb785179fc04-CH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-eededb785179fc04-CH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "40b865fb1503bbfca32e6039770114b21ce9a6e90453f47fd3aefad3643c8368",
+            "underlying_execution_uuid": "681b81cd-4add-4802-a5f0-1994b9156847"
+          }
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-eededb785179fc04-DH-P0-V1.RESULT.json",
+            "sha256": "7a0df4d27305dab8ae9da64a2cbfe51c0c01d6d0c8cf2e91243a7ce471ef3ab2"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-eededb785179fc04-DH-P0-V1.RESULT.json",
+            "sha256": "17a232228baa3d39e4a939fabfc58627db1441b476f247f0378716ff35718f9d"
+          },
+          "source_uuid": "37325f35-2eb7-4a2b-bba9-5dc5d00e497f",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-eededb785179fc04-DH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-eededb785179fc04-DH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "17a232228baa3d39e4a939fabfc58627db1441b476f247f0378716ff35718f9d",
+            "underlying_execution_uuid": "37325f35-2eb7-4a2b-bba9-5dc5d00e497f"
+          }
+        }
+      }
+    },
+    {
+      "program": "ATAX",
+      "suite": "PolyBench/GPU",
+      "input_digest": "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+      "variant": "TAG4BANK_PERBANK2_TOTAL8",
+      "cohort": "E2-DTCPF28-eededb785179fc04-DH-TAGSVC8-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 28428842,
+      "DH_P0_cycles": 31880220,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-eededb785179fc04-CH-P0-V1.RESULT.json",
+            "sha256": "5364ea570de11a9929d5107c259a2cdbd9d440ea0b71ed178a75b34a04944be2"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-eededb785179fc04-CH-P0-V1.RESULT.json",
+            "sha256": "40b865fb1503bbfca32e6039770114b21ce9a6e90453f47fd3aefad3643c8368"
+          },
+          "source_uuid": "681b81cd-4add-4802-a5f0-1994b9156847",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-eededb785179fc04-CH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-eededb785179fc04-CH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "40b865fb1503bbfca32e6039770114b21ce9a6e90453f47fd3aefad3643c8368",
+            "underlying_execution_uuid": "681b81cd-4add-4802-a5f0-1994b9156847"
+          }
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-eededb785179fc04-DH-P0-V1.RESULT.json",
+            "sha256": "7a0df4d27305dab8ae9da64a2cbfe51c0c01d6d0c8cf2e91243a7ce471ef3ab2"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-eededb785179fc04-DH-P0-V1.RESULT.json",
+            "sha256": "17a232228baa3d39e4a939fabfc58627db1441b476f247f0378716ff35718f9d"
+          },
+          "source_uuid": "37325f35-2eb7-4a2b-bba9-5dc5d00e497f",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-eededb785179fc04-DH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-eededb785179fc04-DH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "17a232228baa3d39e4a939fabfc58627db1441b476f247f0378716ff35718f9d",
+            "underlying_execution_uuid": "37325f35-2eb7-4a2b-bba9-5dc5d00e497f"
+          }
+        }
+      }
+    },
+    {
+      "program": "MVT",
+      "suite": "PolyBench/GPU",
+      "input_digest": "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+      "variant": "PHYS768_TAG64x8",
+      "cohort": "E2-DTCPF4-f437190767aaed49-DH-PHYS768-V1",
+      "uuid": null,
+      "status": "AWAIT_CLOSED_RESULT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 26581175,
+      "DH_P0_cycles": 34687540,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-f437190767aaed49-CH-P0-V1.RESULT.json",
+            "sha256": "12718f4e83f007d846e10bcb0778b29f62cbe5af2797b932024945601f3860a8"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-f437190767aaed49-CH-P0-V1.RESULT.json",
+            "sha256": "63b775b7e0b978db717adafde92f6fe38184dfcb875b8d08485d3bb245abfccd"
+          },
+          "source_uuid": "bde2fff3-0d42-4920-a97c-1ed7a5be1df1",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-f437190767aaed49-CH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-f437190767aaed49-CH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "63b775b7e0b978db717adafde92f6fe38184dfcb875b8d08485d3bb245abfccd",
+            "underlying_execution_uuid": "bde2fff3-0d42-4920-a97c-1ed7a5be1df1"
+          }
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-f437190767aaed49-DH-P0-V1.RESULT.json",
+            "sha256": "198efde39a9f29222f80e6bda521aa1a28dd281a6e649999505af60cbe06d162"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-f437190767aaed49-DH-P0-V1.RESULT.json",
+            "sha256": "1f163f6f73c5f8d3414abed2d40043347de8e2cfc3465261f0b7005ea6c43f22"
+          },
+          "source_uuid": "93cd6c4f-02cf-4e47-9a73-cba755167f47",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-f437190767aaed49-DH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-f437190767aaed49-DH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "1f163f6f73c5f8d3414abed2d40043347de8e2cfc3465261f0b7005ea6c43f22",
+            "underlying_execution_uuid": "93cd6c4f-02cf-4e47-9a73-cba755167f47"
+          }
+        }
+      }
+    },
+    {
+      "program": "MVT",
+      "suite": "PolyBench/GPU",
+      "input_digest": "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+      "variant": "PHYS1024_TAG64x8",
+      "cohort": "E2-DTCPF28-f437190767aaed49-DH-PHYS1024-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 26581175,
+      "DH_P0_cycles": 34687540,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-f437190767aaed49-CH-P0-V1.RESULT.json",
+            "sha256": "12718f4e83f007d846e10bcb0778b29f62cbe5af2797b932024945601f3860a8"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-f437190767aaed49-CH-P0-V1.RESULT.json",
+            "sha256": "63b775b7e0b978db717adafde92f6fe38184dfcb875b8d08485d3bb245abfccd"
+          },
+          "source_uuid": "bde2fff3-0d42-4920-a97c-1ed7a5be1df1",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-f437190767aaed49-CH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-f437190767aaed49-CH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "63b775b7e0b978db717adafde92f6fe38184dfcb875b8d08485d3bb245abfccd",
+            "underlying_execution_uuid": "bde2fff3-0d42-4920-a97c-1ed7a5be1df1"
+          }
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-f437190767aaed49-DH-P0-V1.RESULT.json",
+            "sha256": "198efde39a9f29222f80e6bda521aa1a28dd281a6e649999505af60cbe06d162"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-f437190767aaed49-DH-P0-V1.RESULT.json",
+            "sha256": "1f163f6f73c5f8d3414abed2d40043347de8e2cfc3465261f0b7005ea6c43f22"
+          },
+          "source_uuid": "93cd6c4f-02cf-4e47-9a73-cba755167f47",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-f437190767aaed49-DH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-f437190767aaed49-DH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "1f163f6f73c5f8d3414abed2d40043347de8e2cfc3465261f0b7005ea6c43f22",
+            "underlying_execution_uuid": "93cd6c4f-02cf-4e47-9a73-cba755167f47"
+          }
+        }
+      }
+    },
+    {
+      "program": "MVT",
+      "suite": "PolyBench/GPU",
+      "input_digest": "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+      "variant": "OO_PIB192",
+      "cohort": "E2-DTCPF28-f437190767aaed49-DH-PIB192-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 26581175,
+      "DH_P0_cycles": 34687540,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-f437190767aaed49-CH-P0-V1.RESULT.json",
+            "sha256": "12718f4e83f007d846e10bcb0778b29f62cbe5af2797b932024945601f3860a8"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-f437190767aaed49-CH-P0-V1.RESULT.json",
+            "sha256": "63b775b7e0b978db717adafde92f6fe38184dfcb875b8d08485d3bb245abfccd"
+          },
+          "source_uuid": "bde2fff3-0d42-4920-a97c-1ed7a5be1df1",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-f437190767aaed49-CH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-f437190767aaed49-CH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "63b775b7e0b978db717adafde92f6fe38184dfcb875b8d08485d3bb245abfccd",
+            "underlying_execution_uuid": "bde2fff3-0d42-4920-a97c-1ed7a5be1df1"
+          }
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-f437190767aaed49-DH-P0-V1.RESULT.json",
+            "sha256": "198efde39a9f29222f80e6bda521aa1a28dd281a6e649999505af60cbe06d162"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-f437190767aaed49-DH-P0-V1.RESULT.json",
+            "sha256": "1f163f6f73c5f8d3414abed2d40043347de8e2cfc3465261f0b7005ea6c43f22"
+          },
+          "source_uuid": "93cd6c4f-02cf-4e47-9a73-cba755167f47",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-f437190767aaed49-DH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-f437190767aaed49-DH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "1f163f6f73c5f8d3414abed2d40043347de8e2cfc3465261f0b7005ea6c43f22",
+            "underlying_execution_uuid": "93cd6c4f-02cf-4e47-9a73-cba755167f47"
+          }
+        }
+      }
+    },
+    {
+      "program": "MVT",
+      "suite": "PolyBench/GPU",
+      "input_digest": "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+      "variant": "TAG4BANK_PERBANK2_TOTAL8",
+      "cohort": "E2-DTCPF28-f437190767aaed49-DH-TAGSVC8-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 26581175,
+      "DH_P0_cycles": 34687540,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-f437190767aaed49-CH-P0-V1.RESULT.json",
+            "sha256": "12718f4e83f007d846e10bcb0778b29f62cbe5af2797b932024945601f3860a8"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-f437190767aaed49-CH-P0-V1.RESULT.json",
+            "sha256": "63b775b7e0b978db717adafde92f6fe38184dfcb875b8d08485d3bb245abfccd"
+          },
+          "source_uuid": "bde2fff3-0d42-4920-a97c-1ed7a5be1df1",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-f437190767aaed49-CH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-f437190767aaed49-CH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "63b775b7e0b978db717adafde92f6fe38184dfcb875b8d08485d3bb245abfccd",
+            "underlying_execution_uuid": "bde2fff3-0d42-4920-a97c-1ed7a5be1df1"
+          }
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-f437190767aaed49-DH-P0-V1.RESULT.json",
+            "sha256": "198efde39a9f29222f80e6bda521aa1a28dd281a6e649999505af60cbe06d162"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-f437190767aaed49-DH-P0-V1.RESULT.json",
+            "sha256": "1f163f6f73c5f8d3414abed2d40043347de8e2cfc3465261f0b7005ea6c43f22"
+          },
+          "source_uuid": "93cd6c4f-02cf-4e47-9a73-cba755167f47",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-f437190767aaed49-DH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-f437190767aaed49-DH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "1f163f6f73c5f8d3414abed2d40043347de8e2cfc3465261f0b7005ea6c43f22",
+            "underlying_execution_uuid": "93cd6c4f-02cf-4e47-9a73-cba755167f47"
+          }
+        }
+      }
+    },
+    {
+      "program": "BICG",
+      "suite": "PolyBench/GPU",
+      "input_digest": "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+      "variant": "PHYS768_TAG64x8",
+      "cohort": "E2-DTCPF4-ae34174fbbdf83b2-DH-PHYS768-V1",
+      "uuid": null,
+      "status": "AWAIT_CLOSED_RESULT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 26298698,
+      "DH_P0_cycles": 28685812,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-ae34174fbbdf83b2-CH-P0-V1.RESULT.json",
+            "sha256": "dded01863187729a3a7d98f74418f2602eedd0490c11c3faeeef9adfaa8f47a8"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1.RESULT.json",
+            "sha256": "3ab976791376abcc62bbb11c5eec2943bf106a253829af86842a0036175faaaf"
+          },
+          "source_uuid": "f93c0c73-fc16-496b-9021-87ba236f60c2",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "3ab976791376abcc62bbb11c5eec2943bf106a253829af86842a0036175faaaf",
+            "underlying_execution_uuid": "f93c0c73-fc16-496b-9021-87ba236f60c2"
+          }
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-ae34174fbbdf83b2-DH-P0-V1.RESULT.json",
+            "sha256": "78f79fa1898c45e4769ee10e0043bf2840507023da46882bd168d914b6584216"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-ae34174fbbdf83b2-DH-P0-V1.RESULT.json",
+            "sha256": "d1491ab76abcff497ed0b6186117a6bed81ef154e714af2331500c0be7d307b6"
+          },
+          "source_uuid": "fbb45ea4-716d-46f5-abfb-2842f03a8e99",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-ae34174fbbdf83b2-DH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-ae34174fbbdf83b2-DH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "d1491ab76abcff497ed0b6186117a6bed81ef154e714af2331500c0be7d307b6",
+            "underlying_execution_uuid": "fbb45ea4-716d-46f5-abfb-2842f03a8e99"
+          }
+        }
+      }
+    },
+    {
+      "program": "BICG",
+      "suite": "PolyBench/GPU",
+      "input_digest": "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+      "variant": "PHYS1024_TAG64x8",
+      "cohort": "E2-DTCPF28-ae34174fbbdf83b2-DH-PHYS1024-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 26298698,
+      "DH_P0_cycles": 28685812,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-ae34174fbbdf83b2-CH-P0-V1.RESULT.json",
+            "sha256": "dded01863187729a3a7d98f74418f2602eedd0490c11c3faeeef9adfaa8f47a8"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1.RESULT.json",
+            "sha256": "3ab976791376abcc62bbb11c5eec2943bf106a253829af86842a0036175faaaf"
+          },
+          "source_uuid": "f93c0c73-fc16-496b-9021-87ba236f60c2",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "3ab976791376abcc62bbb11c5eec2943bf106a253829af86842a0036175faaaf",
+            "underlying_execution_uuid": "f93c0c73-fc16-496b-9021-87ba236f60c2"
+          }
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-ae34174fbbdf83b2-DH-P0-V1.RESULT.json",
+            "sha256": "78f79fa1898c45e4769ee10e0043bf2840507023da46882bd168d914b6584216"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-ae34174fbbdf83b2-DH-P0-V1.RESULT.json",
+            "sha256": "d1491ab76abcff497ed0b6186117a6bed81ef154e714af2331500c0be7d307b6"
+          },
+          "source_uuid": "fbb45ea4-716d-46f5-abfb-2842f03a8e99",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-ae34174fbbdf83b2-DH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-ae34174fbbdf83b2-DH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "d1491ab76abcff497ed0b6186117a6bed81ef154e714af2331500c0be7d307b6",
+            "underlying_execution_uuid": "fbb45ea4-716d-46f5-abfb-2842f03a8e99"
+          }
+        }
+      }
+    },
+    {
+      "program": "BICG",
+      "suite": "PolyBench/GPU",
+      "input_digest": "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+      "variant": "OO_PIB192",
+      "cohort": "E2-DTCPF28-ae34174fbbdf83b2-DH-PIB192-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 26298698,
+      "DH_P0_cycles": 28685812,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-ae34174fbbdf83b2-CH-P0-V1.RESULT.json",
+            "sha256": "dded01863187729a3a7d98f74418f2602eedd0490c11c3faeeef9adfaa8f47a8"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1.RESULT.json",
+            "sha256": "3ab976791376abcc62bbb11c5eec2943bf106a253829af86842a0036175faaaf"
+          },
+          "source_uuid": "f93c0c73-fc16-496b-9021-87ba236f60c2",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "3ab976791376abcc62bbb11c5eec2943bf106a253829af86842a0036175faaaf",
+            "underlying_execution_uuid": "f93c0c73-fc16-496b-9021-87ba236f60c2"
+          }
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-ae34174fbbdf83b2-DH-P0-V1.RESULT.json",
+            "sha256": "78f79fa1898c45e4769ee10e0043bf2840507023da46882bd168d914b6584216"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-ae34174fbbdf83b2-DH-P0-V1.RESULT.json",
+            "sha256": "d1491ab76abcff497ed0b6186117a6bed81ef154e714af2331500c0be7d307b6"
+          },
+          "source_uuid": "fbb45ea4-716d-46f5-abfb-2842f03a8e99",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-ae34174fbbdf83b2-DH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-ae34174fbbdf83b2-DH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "d1491ab76abcff497ed0b6186117a6bed81ef154e714af2331500c0be7d307b6",
+            "underlying_execution_uuid": "fbb45ea4-716d-46f5-abfb-2842f03a8e99"
+          }
+        }
+      }
+    },
+    {
+      "program": "BICG",
+      "suite": "PolyBench/GPU",
+      "input_digest": "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+      "variant": "TAG4BANK_PERBANK2_TOTAL8",
+      "cohort": "E2-DTCPF28-ae34174fbbdf83b2-DH-TAGSVC8-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 26298698,
+      "DH_P0_cycles": 28685812,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-ae34174fbbdf83b2-CH-P0-V1.RESULT.json",
+            "sha256": "dded01863187729a3a7d98f74418f2602eedd0490c11c3faeeef9adfaa8f47a8"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1.RESULT.json",
+            "sha256": "3ab976791376abcc62bbb11c5eec2943bf106a253829af86842a0036175faaaf"
+          },
+          "source_uuid": "f93c0c73-fc16-496b-9021-87ba236f60c2",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-ae34174fbbdf83b2-CH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "3ab976791376abcc62bbb11c5eec2943bf106a253829af86842a0036175faaaf",
+            "underlying_execution_uuid": "f93c0c73-fc16-496b-9021-87ba236f60c2"
+          }
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-ae34174fbbdf83b2-DH-P0-V1.RESULT.json",
+            "sha256": "78f79fa1898c45e4769ee10e0043bf2840507023da46882bd168d914b6584216"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-ae34174fbbdf83b2-DH-P0-V1.RESULT.json",
+            "sha256": "d1491ab76abcff497ed0b6186117a6bed81ef154e714af2331500c0be7d307b6"
+          },
+          "source_uuid": "fbb45ea4-716d-46f5-abfb-2842f03a8e99",
+          "legal_prior_P0_alias": {
+            "reuse_identity_unchanged": true,
+            "underlying_RESULT_declared_cohort": "E2-DTCHASH18-ae34174fbbdf83b2-DH-P0-V1",
+            "underlying_RESULT_path": "/root/data/dtc_hash_downstream18_20261027_v1/analysis/E2-DTCHASH18-ae34174fbbdf83b2-DH-P0-V1.RESULT.json",
+            "underlying_RESULT_sha256": "d1491ab76abcff497ed0b6186117a6bed81ef154e714af2331500c0be7d307b6",
+            "underlying_execution_uuid": "fbb45ea4-716d-46f5-abfb-2842f03a8e99"
+          }
+        }
+      }
+    },
+    {
+      "program": "vectorAdd",
+      "suite": "CUDA Samples",
+      "input_digest": "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+      "variant": "PHYS768_TAG64x8",
+      "cohort": "E2-DTCPF28-e7bb67e63e3c3847-DH-PHYS768-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 220803,
+      "DH_P0_cycles": 217305,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-e7bb67e63e3c3847-CH-P0-V1.RESULT.json",
+            "sha256": "6e715695589e952eb9ae13c81ddefa0c31877fe29fbffa1ec780d397a3d98851"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-e7bb67e63e3c3847-CH-P0-V1.RESULT.json",
+            "sha256": "6e715695589e952eb9ae13c81ddefa0c31877fe29fbffa1ec780d397a3d98851"
+          },
+          "source_uuid": "d5cf2efe-f92d-4134-8369-9082dca173c5",
+          "legal_prior_P0_alias": null
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-e7bb67e63e3c3847-DH-P0-V1.RESULT.json",
+            "sha256": "72b2d9257ae45e2d369a5583fd669d4b50e8f38d978be86bbc79e9a75278a8c9"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-e7bb67e63e3c3847-DH-P0-V1.RESULT.json",
+            "sha256": "72b2d9257ae45e2d369a5583fd669d4b50e8f38d978be86bbc79e9a75278a8c9"
+          },
+          "source_uuid": "16e5f3a0-4323-4715-a8bf-2716ab52d3ed",
+          "legal_prior_P0_alias": null
+        }
+      }
+    },
+    {
+      "program": "vectorAdd",
+      "suite": "CUDA Samples",
+      "input_digest": "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+      "variant": "PHYS1024_TAG64x8",
+      "cohort": "E2-DTCPF28-e7bb67e63e3c3847-DH-PHYS1024-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 220803,
+      "DH_P0_cycles": 217305,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-e7bb67e63e3c3847-CH-P0-V1.RESULT.json",
+            "sha256": "6e715695589e952eb9ae13c81ddefa0c31877fe29fbffa1ec780d397a3d98851"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-e7bb67e63e3c3847-CH-P0-V1.RESULT.json",
+            "sha256": "6e715695589e952eb9ae13c81ddefa0c31877fe29fbffa1ec780d397a3d98851"
+          },
+          "source_uuid": "d5cf2efe-f92d-4134-8369-9082dca173c5",
+          "legal_prior_P0_alias": null
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-e7bb67e63e3c3847-DH-P0-V1.RESULT.json",
+            "sha256": "72b2d9257ae45e2d369a5583fd669d4b50e8f38d978be86bbc79e9a75278a8c9"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-e7bb67e63e3c3847-DH-P0-V1.RESULT.json",
+            "sha256": "72b2d9257ae45e2d369a5583fd669d4b50e8f38d978be86bbc79e9a75278a8c9"
+          },
+          "source_uuid": "16e5f3a0-4323-4715-a8bf-2716ab52d3ed",
+          "legal_prior_P0_alias": null
+        }
+      }
+    },
+    {
+      "program": "vectorAdd",
+      "suite": "CUDA Samples",
+      "input_digest": "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+      "variant": "OO_PIB192",
+      "cohort": "E2-DTCPF28-e7bb67e63e3c3847-DH-PIB192-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 220803,
+      "DH_P0_cycles": 217305,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-e7bb67e63e3c3847-CH-P0-V1.RESULT.json",
+            "sha256": "6e715695589e952eb9ae13c81ddefa0c31877fe29fbffa1ec780d397a3d98851"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-e7bb67e63e3c3847-CH-P0-V1.RESULT.json",
+            "sha256": "6e715695589e952eb9ae13c81ddefa0c31877fe29fbffa1ec780d397a3d98851"
+          },
+          "source_uuid": "d5cf2efe-f92d-4134-8369-9082dca173c5",
+          "legal_prior_P0_alias": null
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-e7bb67e63e3c3847-DH-P0-V1.RESULT.json",
+            "sha256": "72b2d9257ae45e2d369a5583fd669d4b50e8f38d978be86bbc79e9a75278a8c9"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-e7bb67e63e3c3847-DH-P0-V1.RESULT.json",
+            "sha256": "72b2d9257ae45e2d369a5583fd669d4b50e8f38d978be86bbc79e9a75278a8c9"
+          },
+          "source_uuid": "16e5f3a0-4323-4715-a8bf-2716ab52d3ed",
+          "legal_prior_P0_alias": null
+        }
+      }
+    },
+    {
+      "program": "vectorAdd",
+      "suite": "CUDA Samples",
+      "input_digest": "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+      "variant": "TAG4BANK_PERBANK2_TOTAL8",
+      "cohort": "E2-DTCPF28-e7bb67e63e3c3847-DH-TAGSVC8-V1",
+      "uuid": null,
+      "status": "AWAIT_ACTUAL_REGISTRY_GRANT",
+      "display_state": "PENDING",
+      "reason": null,
+      "accepted": false,
+      "cycles": null,
+      "CH_P0_cycles": 220803,
+      "DH_P0_cycles": 217305,
+      "S_DH": null,
+      "Rnew": null,
+      "S_DH_direction": null,
+      "Rnew_direction": null,
+      "source_references": {},
+      "baseline_references": {
+        "CH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-e7bb67e63e3c3847-CH-P0-V1.RESULT.json",
+            "sha256": "6e715695589e952eb9ae13c81ddefa0c31877fe29fbffa1ec780d397a3d98851"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-e7bb67e63e3c3847-CH-P0-V1.RESULT.json",
+            "sha256": "6e715695589e952eb9ae13c81ddefa0c31877fe29fbffa1ec780d397a3d98851"
+          },
+          "source_uuid": "d5cf2efe-f92d-4134-8369-9082dca173c5",
+          "legal_prior_P0_alias": null
+        },
+        "DH": {
+          "canonical_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-e7bb67e63e3c3847-DH-P0-V1.RESULT.json",
+            "sha256": "72b2d9257ae45e2d369a5583fd669d4b50e8f38d978be86bbc79e9a75278a8c9"
+          },
+          "actual_bottom_RESULT": {
+            "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-e7bb67e63e3c3847-DH-P0-V1.RESULT.json",
+            "sha256": "72b2d9257ae45e2d369a5583fd669d4b50e8f38d978be86bbc79e9a75278a8c9"
+          },
+          "source_uuid": "16e5f3a0-4323-4715-a8bf-2716ab52d3ed",
+          "legal_prior_P0_alias": null
+        }
+      }
+    }
+  ],
+  "Tag_safety_HOLD_excluded": 16,
+  "Tag_HOLD_not_performance_negative": true,
+  "common_accepted_intersection": {
+    "n": 0,
+    "input_digests": [],
+    "GM": {
+      "PHYS768_TAG64x8": {
+        "S_DH": null,
+        "Rnew": null
+      },
+      "PHYS1024_TAG64x8": {
+        "S_DH": null,
+        "Rnew": null
+      },
+      "OO_PIB192": {
+        "S_DH": null,
+        "Rnew": null
+      },
+      "TAG4BANK_PERBANK2_TOTAL8": {
+        "S_DH": null,
+        "Rnew": null
+      }
+    }
+  },
+  "accepted_counts": {
+    "PHYS768_TAG64x8": 2,
+    "PHYS1024_TAG64x8": 0,
+    "OO_PIB192": 0,
+    "TAG4BANK_PERBANK2_TOTAL8": 0
+  },
+  "no_imputation": true,
+  "no_best_per_program": true,
+  "exact_zero_from_integer_cycles": true,
+  "hardware_boundary": "Pool labels count128B-address/dependency slots; actualpayload/PPA unknown. Tag512fixed; PIB192 also lowercreate192; Taggrant quotas are not datasRAMports; CH/DH not equalarea/timing."
+}
