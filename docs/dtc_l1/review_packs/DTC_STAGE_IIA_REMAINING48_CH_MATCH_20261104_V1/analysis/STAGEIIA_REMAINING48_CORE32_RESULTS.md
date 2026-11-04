@@ -1,17 +1,17 @@
 # Remaining48 CH matching / fixed CORE32 readonly results
 
-As of 2026-11-04T02:54:45.786979+00:00; source_qualified=True. New48 accepted 35/48, archived negative 0, verification HOLD 0, pending 13. Complete both-F population 24/32. Source slots accepted 179/192.
+As of 2026-11-04T03:19:06.418648+00:00; source_qualified=True. New48 accepted 37/48, archived negative 0, verification HOLD 0, pending 11. Complete both-F population 25/32. Source slots accepted 181/192.
 
 All32 fixed inputs remain listed. Interim available-subset GM is descriptive, not the full32suite result. Direct F comparison uses the same accepted six-cell intersection; negatives/HOLD/pending never become cycles. Original128, first16newCH and remaining48newCH keep distinct source roles; source_profile is actual configuration, not a comparison-context alias.
 
 | Suite | Common n | Profile | GM S_CH | GM S_DH | GM CH/DH | GM I |
 | --- | --- | --- | --- | --- | --- | --- |
-| ALL_CORE32 | 24 | F128 | 1.017436 | 1.014914 | 1.076355 | 0.997521 |
-| ALL_CORE32 | 24 | F256 | 1.025636 | 1.025138 | 1.078506 | 0.999514 |
+| ALL_CORE32 | 25 | F128 | 1.017347 | 1.014845 | 1.071395 | 0.997541 |
+| ALL_CORE32 | 25 | F256 | 1.025578 | 1.025069 | 1.073502 | 0.999503 |
 | CUDA Samples | 9 | F128 | 1.040091 | 1.037979 | 1.018892 | 0.997970 |
 | CUDA Samples | 9 | F256 | 1.062320 | 1.059559 | 1.018311 | 0.997401 |
-| Parboil | 4 | F128 | 1.000000 | 1.000222 | 1.033261 | 1.000222 |
-| Parboil | 4 | F256 | 1.000000 | 1.000222 | 1.033261 | 1.000222 |
+| Parboil | 5 | F128 | 1.003023 | 1.002804 | 1.017956 | 0.999782 |
+| Parboil | 5 | F256 | 1.004791 | 1.004818 | 1.018205 | 1.000027 |
 | PolyBench/GPU | 5 | F128 | 1.012293 | 1.003791 | 1.276964 | 0.991601 |
 | PolyBench/GPU | 5 | F256 | 1.012764 | 1.014968 | 1.290583 | 1.002176 |
 | Rodinia | 6 | F128 | 1.000000 | 1.000000 | 1.041536 | 1.000000 |
@@ -29,8 +29,8 @@ All32 fixed inputs remain listed. Interim available-subset GM is descriptive, no
 | transpose | 65151d2c661f88f3b463dba9a3ce49d98848affabe19a36ccf23295f3b1e8fdc | 241346 | 241346 | 241346 | 237820 | 237820 | 237820 | 1.000000 | 1.000000 | True |
 | vectorAdd | e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799 | 220803 | 214503 | 223020 | 217305 | 213053 | 236217 | 0.990856 | 0.929175 | True |
 | bfs | 1df9d5479504d9c7c5f5ef176e9604ce1b43421c7b6be440597259607d3971c0 | 4330430 | 4330430 | 4330430 | 4170294 | 4170294 | 4170294 | 1.000000 | 1.000000 | True |
-| cutcp | af7320f9d9dc662971b1856cac87f29f9b8e4b2a65a7f9d4223bb7a74803fef8 | 4502965 | MISSING | MISSING | 4490473 | 4490473 | 4490473 | MISSING | MISSING | False |
-| histo | 2c506bf13c81ff5dd4c286fa2f6d7a9edea513a5c8f38c60cfc746e36e9c5f64 | 5636037 | MISSING | 5502955 | 5865589 | 5789155 | 5731388 | MISSING | 0.999250 | False |
+| cutcp | af7320f9d9dc662971b1856cac87f29f9b8e4b2a65a7f9d4223bb7a74803fef8 | 4502965 | 4502965 | MISSING | 4490473 | 4490473 | 4490473 | 1.000000 | MISSING | False |
+| histo | 2c506bf13c81ff5dd4c286fa2f6d7a9edea513a5c8f38c60cfc746e36e9c5f64 | 5636037 | 5551616 | 5502955 | 5865589 | 5789155 | 5731388 | 0.998026 | 0.999250 | True |
 | mri-q | dc7a91531846c1134c197a6e83509c91b2768151692a7b1286f6be9c431cabd4 | 362244 | 362244 | 362244 | 360174 | 359855 | 359855 | 1.000886 | 1.000886 | True |
 | sad | db89be14146b916373c1adb28803767aa725a592119901ffd78d9c223e1611a9 | 114310 | 114310 | 114310 | 114870 | 114870 | 114870 | 1.000000 | 1.000000 | True |
 | sgemm | ffc8a89493c8a21151320d1cfdaccbfca2706eb1c395fcb58e94a1b01e6ea453 | 448633 | 448633 | 448633 | 409417 | 409417 | 409417 | 1.000000 | 1.000000 | True |

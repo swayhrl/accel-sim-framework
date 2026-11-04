@@ -1,0 +1,1 @@
+Five completed short programs only. Read REPORT.md, PROGRAM_FACT_MATRIX.json and SOURCE_SNAPSHOT_RECEIPT.json. All30 sources are accepted and closed; this subset does not relax final24 all48terminal gate. Publish MANIFEST-listed members, each below8MiB. Parent Root remains sole publisher.

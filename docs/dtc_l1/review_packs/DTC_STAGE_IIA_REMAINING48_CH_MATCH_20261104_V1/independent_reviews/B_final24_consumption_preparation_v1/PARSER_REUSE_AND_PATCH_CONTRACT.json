@@ -1,0 +1,34 @@
+{
+  "original_V1_manifest": {
+    "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_remaining48_execution_20261104_v1/agents/B_closed_samples_analysis_v1/MANIFEST.json",
+    "sha256": "8eb4e15853937db5d44ad3ead9a498079b51498f159849b263c6064b06862fd7"
+  },
+  "original_parser": {
+    "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_remaining48_execution_20261104_v1/agents/B_closed_samples_analysis_v1/analyze_closed_snapshot.py",
+    "sha256": "82ec551f4be9fc7e075a4e8ed6438fc747d4779e2c2fc20343e50ccb49e92935"
+  },
+  "new_parser": {
+    "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_remaining48_execution_20261104_v1/agents/B_final24_consumption_preparation_v1/final24_derived_parser.py",
+    "sha256": "5d2829b0eb22d2732ce2ee5a06284d53b7d86c49c62e7a3f7b9d62bc3401fffa"
+  },
+  "patches": [
+    {
+      "old": "programs=[x for x in core['all_programs']if x['population_origin']=='AUTHORIZED_REMAINING24'and any(x['six_source_cells']['CH_'+p]['accepted']for p in['F128','F256'])]",
+      "new": "programs=[x for x in core['all_programs']if x['population_origin']=='AUTHORIZED_REMAINING24']"
+    },
+    {
+      "old": "specp=next(R/'control/specs'/(program['six_source_cells']['CH_'+pf]['source_registered_slot_cohort']+'.json')for pf in['F128','F256']if program['six_source_cells']['CH_'+pf]['accepted'])",
+      "new": "specp=R/'control/specs'/(program['six_source_cells']['CH_F128']['source_registered_slot_cohort']+'.json')"
+    },
+    {
+      "old": "and summary['accepted_CH']>=1",
+      "new": "and summary['accepted_CH']+summary['archived_negative_CH']==48 and summary['verification_hold']==summary['await_result']==0 and summary['registered_consumed']==48 and summary['registered_remaining']==0 and summary['all_registered48_terminal_verified']is True"
+    },
+    {
+      "old": "n=b.pop('numeric');b['stream']",
+      "new": "n=b.pop('numeric');b['gauge_snapshot_no_differencing']={k:n[k]for k in ['DTC_L1_pib_occupancy','DTC_L1_lower_outstanding','DTC_L1_oo_inflight_current','DTC_L1_oo_pib_occupancy','DTC_L1_oo_active_refs','DTC_L1_oo_physical_allocated']if k in n};b['running_peak_snapshot_no_differencing']={k:v for k,v in n.items()if k.startswith('DTC_')and'peak'in k};b['stream']"
+    }
+  ],
+  "scientific_parser_algorithm_rewritten": false,
+  "boundary": "Same line-streamed raw parser and original accepted-source/ROI/SHA/counter rules. Only final48 gate, all24 including negative coverage, canonical declared spec for no-new-accepted cases, and non-differenced gauge/peak preservation added. Intermediate gzipJSON is private, final detail emitted as chunked JSONL."
+}

@@ -1,0 +1,3 @@
+# Forward evidence boundary
+
+V1 remains byte-preserved. Later reports use read-active print interval, not cold-start/cold-miss or a compulsory/capacity/conflict classification: no such classification counter was collected, and memcpy prefill is active. Completed-kernel print intervals also do not establish request-origin attribution. This scalarProd package keeps these boundaries and consumes only four closedP0/F256sources. Captured provider context retains uncompleted CH-F128 as pending and an old legitimate DH-F128 reference, but neither is analyzed or used to fabricate a six-cell comparison.

@@ -1,0 +1,80 @@
+[
+  {
+    "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+    "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/dram.cc",
+    "sha256": "de8a8eca8c79549193d019a510a33ca77a9c9c41e719ec29c6e59c66871cae4f",
+    "excerpts": [
+      {
+        "start": 197,
+        "end": 245,
+        "text": "197: dram_req_t::dram_req_t(class mem_fetch *mf, unsigned banks,\n198:                        unsigned dram_bnk_indexing_policy,\n199:                        class gpgpu_sim *gpu) {\n200:   txbytes = 0;\n201:   dqbytes = 0;\n202:   data = mf;\n203:   m_gpu = gpu;\n204: \n205:   const addrdec_t &tlx = mf->get_tlx_addr();\n206: \n207:   switch (dram_bnk_indexing_policy) {\n208:     case LINEAR_BK_INDEX: {\n209:       bk = tlx.bk;\n210:       break;\n211:     }\n212:     case BITWISE_XORING_BK_INDEX: {\n213:       // xoring bank bits with lower bits of the page\n214:       bk = bitwise_hash_function(tlx.row, tlx.bk, banks);\n215:       assert(bk < banks);\n216:       break;\n217:     }\n218:     case IPOLY_BK_INDEX: {\n219:       /*IPOLY for bank indexing function from \"Pseudo-randomly interleaved\n220:        * memory.\" Rau, B. R et al. ISCA 1991\n221:        * http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=348DEA37A3E440473B3C075EAABC63B6?doi=10.1.1.12.7149&rep=rep1&type=pdf\n222:        */\n223:       // xoring bank bits with lower bits of the page\n224:       bk = ipoly_hash_function(tlx.row, tlx.bk, banks);\n225:       assert(bk < banks);\n226:       break;\n227:     }\n228:     case CUSTOM_BK_INDEX:\n229:       /* No custom set function implemented */\n230:       // Do you custom index here\n231:       break;\n232:     default:\n233:       assert(\"\\nUndefined bank index function.\\n\" && 0);\n234:       break;\n235:   }\n236: \n237:   row = tlx.row;\n238:   col = tlx.col;\n239:   nbytes = mf->get_data_size();\n240: \n241:   timestamp = m_gpu->gpu_tot_sim_cycle + m_gpu->gpu_sim_cycle;\n242:   addr = mf->get_addr();\n243:   insertion_time = (unsigned)m_gpu->gpu_sim_cycle;\n244:   rw = data->get_is_write() ? WRITE : READ;\n245: }"
+      },
+      {
+        "start": 323,
+        "end": 347,
+        "text": "323:   switch (m_config->scheduler_type) {\n324:     case DRAM_FIFO:\n325:       scheduler_fifo();\n326:       break;\n327:     case DRAM_FRFCFS:\n328:       scheduler_frfcfs();\n329:       break;\n330:     default:\n331:       printf(\"Error: Unknown DRAM scheduler type\\n\");\n332:       assert(0);\n333:   }\n334:   if (m_config->scheduler_type == DRAM_FRFCFS) {\n335:     unsigned nreqs = m_frfcfs_scheduler->num_pending();\n336:     if (nreqs > max_mrqs) {\n337:       max_mrqs = nreqs;\n338:     }\n339:     ave_mrqs += nreqs;\n340:     ave_mrqs_partial += nreqs;\n341:   } else {\n342:     if (mrqq->get_length() > max_mrqs) {\n343:       max_mrqs = mrqq->get_length();\n344:     }\n345:     ave_mrqs += mrqq->get_length();\n346:     ave_mrqs_partial += mrqq->get_length();\n347:   }"
+      },
+      {
+        "start": 459,
+        "end": 464,
+        "text": "459:   if (k) {\n460:     n_activity++;\n461:     n_activity_partial++;\n462:   }\n463:   n_cmd++;\n464:   n_cmd_partial++;"
+      },
+      {
+        "start": 570,
+        "end": 584,
+        "text": "570:       bk[j]->mrq->txbytes += m_config->dram_atom_size;\n571:       CCDc = m_config->tCCD;\n572:       bkgrp[grp]->CCDLc = m_config->tCCDL;\n573:       RTWc = m_config->tRTW;\n574:       bk[j]->RTPc = m_config->BL / m_config->data_command_freq_ratio;\n575:       bkgrp[grp]->RTPLc = m_config->tRTPL;\n576:       issued = true;\n577:       if (bk[j]->mrq->data->get_access_type() == L2_WR_ALLOC_R)\n578:         n_rd_L2_A++;\n579:       else\n580:         n_rd++;\n581: \n582:       bwutil += m_config->BL / m_config->data_command_freq_ratio;\n583:       bwutil_partial += m_config->BL / m_config->data_command_freq_ratio;\n584:       bk[j]->n_access++;"
+      },
+      {
+        "start": 695,
+        "end": 708,
+        "text": "695:   fprintf(simFile, \"tRRD=%d tCCD=%d, tRCD=%d tRAS=%d tRP=%d tRC=%d\\n\",\n696:           m_config->tRRD, m_config->tCCD, m_config->tRCD, m_config->tRAS,\n697:           m_config->tRP, m_config->tRC);\n698:   fprintf(\n699:       simFile,\n700:       \"n_cmd=%llu n_nop=%llu n_act=%llu n_pre=%llu n_ref_event=%llu n_req=%llu \"\n701:       \"n_rd=%llu n_rd_L2_A=%llu n_write=%llu n_wr_bk=%llu bw_util=%.4g\\n\",\n702:       n_cmd, n_nop, n_act, n_pre, n_ref, n_req, n_rd, n_rd_L2_A, n_wr, n_wr_WB,\n703:       (float)bwutil / n_cmd);\n704:   fprintf(simFile, \"n_activity=%llu dram_eff=%.4g\\n\", n_activity,\n705:           (float)bwutil / n_activity);\n706:   for (i = 0; i < m_config->nbk; i++) {\n707:     fprintf(simFile, \"bk%d: %da %di \", i, bk[i]->n_access, bk[i]->n_idle);\n708:   }"
+      },
+      {
+        "start": 761,
+        "end": 779,
+        "text": "761:   printf(\"\\nDual Bus Interface Util: \\n\");\n762:   printf(\"issued_total_row = %llu \\n\", issued_total_row);\n763:   printf(\"issued_total_col = %llu \\n\", issued_total_col);\n764:   printf(\"Row_Bus_Util =  %.6f \\n\", (float)issued_total_row / n_cmd);\n765:   printf(\"CoL_Bus_Util = %.6f \\n\", (float)issued_total_col / n_cmd);\n766:   printf(\"Either_Row_CoL_Bus_Util = %.6f \\n\", (float)issued_total / n_cmd);\n767:   printf(\"Issued_on_Two_Bus_Simul_Util = %.6f \\n\", (float)issued_two / n_cmd);\n768:   printf(\"issued_two_Eff = %.6f \\n\", (float)issued_two / issued_total);\n769:   printf(\"queue_avg = %.6f \\n\\n\", (float)ave_mrqs / n_cmd);\n770: \n771:   fprintf(simFile, \"\\n\");\n772:   fprintf(simFile, \"dram_util_bins:\");\n773:   for (i = 0; i < 10; i++) fprintf(simFile, \" %d\", dram_util_bins[i]);\n774:   fprintf(simFile, \"\\ndram_eff_bins:\");\n775:   for (i = 0; i < 10; i++) fprintf(simFile, \" %d\", dram_eff_bins[i]);\n776:   fprintf(simFile, \"\\n\");\n777:   if (m_config->scheduler_type == DRAM_FRFCFS)\n778:     fprintf(simFile, \"mrqq: max=%d avg=%g\\n\", max_mrqs,\n779:             (float)ave_mrqs / n_cmd);"
+      }
+    ]
+  },
+  {
+    "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+    "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/dram_sched.cc",
+    "sha256": "2a0280247c5558541dc3896f86bc596549dd83b71630717cc40756248fee3e73",
+    "excerpts": [
+      {
+        "start": 231,
+        "end": 251,
+        "text": "231:   for (i = 0; i < m_config->nbk; i++) {\n232:     unsigned b = (i + prio) % m_config->nbk;\n233:     if (!bk[b]->mrq) {\n234:       req = sched->schedule(b, bk[b]->curr_row);\n235: \n236:       if (req) {\n237:         req->data->set_status(IN_PARTITION_MC_BANK_ARB_QUEUE,\n238:                               m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);\n239:         prio = (prio + 1) % m_config->nbk;\n240:         bk[b]->mrq = req;\n241:         if (m_config->gpgpu_memlatency_stat) {\n242:           mrq_latency = m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle -\n243:                         bk[b]->mrq->timestamp;\n244:           m_stats->tot_mrq_latency += mrq_latency;\n245:           m_stats->tot_mrq_num++;\n246:           bk[b]->mrq->timestamp =\n247:               m_gpu->gpu_tot_sim_cycle + m_gpu->gpu_sim_cycle;\n248:           m_stats->mrq_lat_table[LOGB2(mrq_latency)]++;\n249:           if (mrq_latency > m_stats->max_mrq_latency) {\n250:             m_stats->max_mrq_latency = mrq_latency;\n251:           }"
+      }
+    ]
+  },
+  {
+    "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+    "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/mem_latency_stat.cc",
+    "sha256": "bd04d9b1aa377457f512d52e414a54e0208573cb13df4be97a32e70781a29045",
+    "excerpts": [
+      {
+        "start": 325,
+        "end": 338,
+        "text": "325:     icnt2mem_lat_table[LOGB2(icnt2mem_latency)]++;\n326:     if (icnt2mem_latency > max_icnt2mem_latency)\n327:       max_icnt2mem_latency = icnt2mem_latency;\n328:   }\n329: }\n330: \n331: void memory_stats_t::memlatstat_lat_pw() {\n332:   if (mf_num_lat_pw && m_memory_config->gpgpu_memlatency_stat) {\n333:     assert(mf_tot_lat_pw);\n334:     mf_total_lat += mf_tot_lat_pw;\n335:     num_mfs += mf_num_lat_pw;\n336:     mf_lat_pw_table[LOGB2(mf_tot_lat_pw / mf_num_lat_pw)]++;\n337:     mf_tot_lat_pw = 0;\n338:     mf_num_lat_pw = 0;"
+      },
+      {
+        "start": 352,
+        "end": 369,
+        "text": "352:   } else if (m_memory_config->gpgpu_memlatency_stat) {\n353:     printf(\"maxmflatency = %d \\n\", max_mf_latency);\n354:     printf(\"max_icnt2mem_latency = %d \\n\", max_icnt2mem_latency);\n355:     printf(\"maxmrqlatency = %d \\n\", max_mrq_latency);\n356:     // printf(\"maxdqlatency = %d \\n\", max_dq_latency);\n357:     printf(\"max_icnt2sh_latency = %d \\n\", max_icnt2sh_latency);\n358:     if (num_mfs) {\n359:       printf(\"averagemflatency = %lld \\n\", mf_total_lat / num_mfs);\n360:       printf(\"avg_icnt2mem_latency = %lld \\n\", tot_icnt2mem_latency / num_mfs);\n361:       if (tot_mrq_num)\n362:         printf(\"avg_mrq_latency = %lld \\n\", tot_mrq_latency / tot_mrq_num);\n363: \n364:       printf(\"avg_icnt2sh_latency = %lld \\n\", tot_icnt2sh_latency / num_mfs);\n365:     }\n366:     printf(\"mrq_lat_table:\");\n367:     for (i = 0; i < 32; i++) {\n368:       printf(\"%d \\t\", mrq_lat_table[i]);\n369:     }"
+      }
+    ]
+  },
+  {
+    "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+    "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-misc.cc",
+    "sha256": "3f564552ff05bba4846e6371ac84d353600bcd554cfb95bcf1dcc4af94870e6f",
+    "excerpts": [
+      {
+        "start": 31,
+        "end": 54,
+        "text": "31: unsigned int LOGB2(unsigned int v) {\n32:   unsigned int shift;\n33:   unsigned int r;\n34: \n35:   r = 0;\n36: \n37:   shift = ((v & 0xFFFF0000) != 0) << 4;\n38:   v >>= shift;\n39:   r |= shift;\n40:   shift = ((v & 0xFF00) != 0) << 3;\n41:   v >>= shift;\n42:   r |= shift;\n43:   shift = ((v & 0xF0) != 0) << 2;\n44:   v >>= shift;\n45:   r |= shift;\n46:   shift = ((v & 0xC) != 0) << 1;\n47:   v >>= shift;\n48:   r |= shift;\n49:   shift = ((v & 0x2) != 0) << 0;\n50:   v >>= shift;\n51:   r |= shift;\n52: \n53:   return r;\n54: }"
+      }
+    ]
+  }
+]
