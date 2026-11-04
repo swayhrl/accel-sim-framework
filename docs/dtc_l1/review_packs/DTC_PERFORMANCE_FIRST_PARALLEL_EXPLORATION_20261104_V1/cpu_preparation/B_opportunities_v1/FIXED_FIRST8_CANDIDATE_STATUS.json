@@ -1,0 +1,145 @@
+{
+  "schema": "DTC_FIRST_BATCH_EXACT8_STATUS_V1",
+  "cells": [
+    {
+      "program": "2DCONV",
+      "input_digest": "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+      "variant": "TAG64x16_PHYS640",
+      "status": "CPU_PROGRESS_NEGATIVE_HOLD",
+      "priority_investigation_only": "P2_IF_LAWFUL",
+      "fixed_first_batch": true,
+      "context": {
+        "focus": "Single neighborhood kernel with many measured OO pending hits, near128 global-average PIB and finite collection/WB work.",
+        "positive": "Additional physical identities or admitted overlap may help only if live-reference retention/admission is critical; more Tag retention is conditional on legal progress.",
+        "zero_or_negative": "Completion/collection bandwidth or downstream contention may remain dominant; extra admission may add backlog."
+      },
+      "family_prediction_ref": "SIX_CANDIDATE_TESTABLE_PREDICTIONS.json#TAG64x16_PHYS640",
+      "baseline_features_ref": "BASELINE_OPPORTUNITY_FEATURES.json#2DCONV",
+      "no_predictive_speedup_number": true,
+      "no_workload_reselection": true
+    },
+    {
+      "program": "2DCONV",
+      "input_digest": "d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0",
+      "variant": "PHYS768_TAG64x8",
+      "status": "CANDIDATE_A_CPU_GATE_ROOT_EXECUTION_REQUIRED",
+      "priority_investigation_only": "P1_FIXED_FIRST_BATCH",
+      "fixed_first_batch": true,
+      "context": {
+        "focus": "Single neighborhood kernel with many measured OO pending hits, near128 global-average PIB and finite collection/WB work.",
+        "positive": "Additional physical identities or admitted overlap may help only if live-reference retention/admission is critical; more Tag retention is conditional on legal progress.",
+        "zero_or_negative": "Completion/collection bandwidth or downstream contention may remain dominant; extra admission may add backlog."
+      },
+      "family_prediction_ref": "SIX_CANDIDATE_TESTABLE_PREDICTIONS.json#PHYS768_TAG64x8",
+      "baseline_features_ref": "BASELINE_OPPORTUNITY_FEATURES.json#2DCONV",
+      "no_predictive_speedup_number": true,
+      "no_workload_reselection": true
+    },
+    {
+      "program": "GEMM",
+      "input_digest": "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318",
+      "variant": "TAG64x16_PHYS640",
+      "status": "CPU_PROGRESS_NEGATIVE_HOLD",
+      "priority_investigation_only": "P1_IF_LAWFUL",
+      "fixed_first_batch": true,
+      "context": {
+        "focus": "Single reusable matrix kernel; millions of valid/pending OO hits; DRAM issued reads/writes0 in this replay; ready-to-collect/retire service delays already substantial.",
+        "positive": "If Tag retention or physical lifetimes constrain otherwise reusable L2-hit work, demand/overlap may improve.",
+        "zero_or_negative": "No DRAM-window pressure to remove; fixed collection/wakeup/retire service can cap gains and extra work can worsen backlog."
+      },
+      "family_prediction_ref": "SIX_CANDIDATE_TESTABLE_PREDICTIONS.json#TAG64x16_PHYS640",
+      "baseline_features_ref": "BASELINE_OPPORTUNITY_FEATURES.json#GEMM",
+      "no_predictive_speedup_number": true,
+      "no_workload_reselection": true
+    },
+    {
+      "program": "GEMM",
+      "input_digest": "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318",
+      "variant": "PHYS768_TAG64x8",
+      "status": "CANDIDATE_A_CPU_GATE_ROOT_EXECUTION_REQUIRED",
+      "priority_investigation_only": "P1_FIXED_FIRST_BATCH_SERVICE_LIMIT_CONTROL",
+      "fixed_first_batch": true,
+      "context": {
+        "focus": "Single reusable matrix kernel; millions of valid/pending OO hits; DRAM issued reads/writes0 in this replay; ready-to-collect/retire service delays already substantial.",
+        "positive": "If Tag retention or physical lifetimes constrain otherwise reusable L2-hit work, demand/overlap may improve.",
+        "zero_or_negative": "No DRAM-window pressure to remove; fixed collection/wakeup/retire service can cap gains and extra work can worsen backlog."
+      },
+      "family_prediction_ref": "SIX_CANDIDATE_TESTABLE_PREDICTIONS.json#PHYS768_TAG64x8",
+      "baseline_features_ref": "BASELINE_OPPORTUNITY_FEATURES.json#GEMM",
+      "no_predictive_speedup_number": true,
+      "no_workload_reselection": true
+    },
+    {
+      "program": "MVT",
+      "input_digest": "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+      "variant": "TAG64x16_PHYS640",
+      "status": "CPU_PROGRESS_NEGATIVE_HOLD",
+      "priority_investigation_only": "P1_IF_LAWFUL",
+      "fixed_first_batch": true,
+      "context": {
+        "focus": "K1 dominates cycles and has16CTAs; whole64SM occupancy averages dilute local and retained-line state. Strong Tag eviction/new-miss volume with delayed reclaim.",
+        "positive": "Legal retention or larger pool may reduce per-set turnover/ref-held allocation stalls in K1.",
+        "zero_or_negative": "Small global PIB mean is not proof of spare local pool; downstream/system or phase-specific dependencies may dominate. No guaranteed recovery above CH."
+      },
+      "family_prediction_ref": "SIX_CANDIDATE_TESTABLE_PREDICTIONS.json#TAG64x16_PHYS640",
+      "baseline_features_ref": "BASELINE_OPPORTUNITY_FEATURES.json#MVT",
+      "no_predictive_speedup_number": true,
+      "no_workload_reselection": true
+    },
+    {
+      "program": "MVT",
+      "input_digest": "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+      "variant": "PHYS768_TAG64x8",
+      "status": "CANDIDATE_A_CPU_GATE_ROOT_EXECUTION_REQUIRED",
+      "priority_investigation_only": "P1_FIXED_FIRST_BATCH",
+      "fixed_first_batch": true,
+      "context": {
+        "focus": "K1 dominates cycles and has16CTAs; whole64SM occupancy averages dilute local and retained-line state. Strong Tag eviction/new-miss volume with delayed reclaim.",
+        "positive": "Legal retention or larger pool may reduce per-set turnover/ref-held allocation stalls in K1.",
+        "zero_or_negative": "Small global PIB mean is not proof of spare local pool; downstream/system or phase-specific dependencies may dominate. No guaranteed recovery above CH."
+      },
+      "family_prediction_ref": "SIX_CANDIDATE_TESTABLE_PREDICTIONS.json#PHYS768_TAG64x8",
+      "baseline_features_ref": "BASELINE_OPPORTUNITY_FEATURES.json#MVT",
+      "no_predictive_speedup_number": true,
+      "no_workload_reselection": true
+    },
+    {
+      "program": "BICG",
+      "input_digest": "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+      "variant": "TAG64x16_PHYS640",
+      "status": "CPU_PROGRESS_NEGATIVE_HOLD",
+      "priority_investigation_only": "P1_IF_LAWFUL",
+      "fixed_first_batch": true,
+      "context": {
+        "focus": "K2 dominates cycles and exhibits many mapping evictions/new misses and long map-loss-to-free history; K1/K2 have different access directions.",
+        "positive": "Extra physical identities may decouple liveRef lifetime from new mapping allocations; legal larger Tag may retain reusable rows/columns.",
+        "zero_or_negative": "Evictions may reflect streaming/capacity-independent demand, and physical or service extension may only shift retry composition."
+      },
+      "family_prediction_ref": "SIX_CANDIDATE_TESTABLE_PREDICTIONS.json#TAG64x16_PHYS640",
+      "baseline_features_ref": "BASELINE_OPPORTUNITY_FEATURES.json#BICG",
+      "no_predictive_speedup_number": true,
+      "no_workload_reselection": true
+    },
+    {
+      "program": "BICG",
+      "input_digest": "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+      "variant": "PHYS768_TAG64x8",
+      "status": "CANDIDATE_A_CPU_GATE_ROOT_EXECUTION_REQUIRED",
+      "priority_investigation_only": "P1_FIXED_FIRST_BATCH",
+      "fixed_first_batch": true,
+      "context": {
+        "focus": "K2 dominates cycles and exhibits many mapping evictions/new misses and long map-loss-to-free history; K1/K2 have different access directions.",
+        "positive": "Extra physical identities may decouple liveRef lifetime from new mapping allocations; legal larger Tag may retain reusable rows/columns.",
+        "zero_or_negative": "Evictions may reflect streaming/capacity-independent demand, and physical or service extension may only shift retry composition."
+      },
+      "family_prediction_ref": "SIX_CANDIDATE_TESTABLE_PREDICTIONS.json#PHYS768_TAG64x8",
+      "baseline_features_ref": "BASELINE_OPPORTUNITY_FEATURES.json#BICG",
+      "no_predictive_speedup_number": true,
+      "no_workload_reselection": true
+    }
+  ],
+  "HOLD_candidates_not_substituted": true,
+  "scientific_registrations": 0,
+  "new_model_starts": 0,
+  "other48minus8_is_plan_not_grant": true
+}

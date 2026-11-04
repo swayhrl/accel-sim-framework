@@ -1,0 +1,142 @@
+{
+  "schema": "DTC_PERFORMANCE_FIRST_SIX_STRUCTURAL_CANDIDATES_V1",
+  "variants": [
+    {
+      "id": "TAG64x16_PHYS640",
+      "family": "TAG_GEOMETRY",
+      "status": "CPU_PROGRESS_NEGATIVE_HOLD",
+      "target": {
+        "logical_sets": 64,
+        "logical_ways": 16,
+        "physical_lines": 640
+      },
+      "resource_delta": "512 ->1024 Tag mappings; physical remains80KiB/SM, no free-data-capacity claim.",
+      "declared_coupling": "Increases ways/comparisons at fixed sets/hash family/banks/service; timing/area must not be called free.",
+      "positive_condition": "Only a separately lawful progressing Tag geometry whose extra mappings preserve reuse before data/PIB/service limits bind could reduce OO new misses and lower requests. Current exact candidate is HOLD.",
+      "expected_if_retention_helps": [
+        "OO_tag_evictions/new_misses and lower_created decrease together",
+        "GLOBAL accepted L2 sectors decrease with request conservation",
+        "OO valid or pending hits increase; cycle improvement is still conditional on critical path"
+      ],
+      "falsifiers": [
+        "Current CPU no-inflight/no-progress counterexample rejects launch qualification, regardless prospective speedup",
+        "If a lawful future run changes cycles without reduced miss/lower demand, the retention-mediated explanation is unsupported"
+      ],
+      "missing_direct_measurements": [
+        "OO Tag-bank conflict attempts are unprinted, distinct from mapping evictions"
+      ]
+    },
+    {
+      "id": "TAG128x8_PHYS640",
+      "family": "TAG_GEOMETRY",
+      "status": "CPU_PROGRESS_NEGATIVE_HOLD",
+      "target": {
+        "logical_sets": 128,
+        "logical_ways": 8,
+        "physical_lines": 640
+      },
+      "resource_delta": "Same1024 total mappings as64x16; physical stays640.",
+      "declared_coupling": "Both capacity and address-to-set/bank-row geometry change under the same Hash algorithm family; cannot describe as isolated capacity.",
+      "positive_condition": "As above, plus redistribution may reduce set-conflict eviction for fixed address strides. Current exact candidate remains HOLD.",
+      "expected_if_retention_helps": [
+        "Fewer premature mapping evictions/new misses/lower requests on reusable phases",
+        "Fewer GLOBAL L2 accepted sectors if new misses decline"
+      ],
+      "falsifiers": [
+        "CPU progress counterexample disqualifies this exact candidate",
+        "Comparing128x8 with64x16, equal capacity does not imply equal mapping behavior; no monotone performance prediction"
+      ]
+    },
+    {
+      "id": "PHYS768_TAG64x8",
+      "family": "PHYSICAL_POOL",
+      "status": "CANDIDATE_A_CPU_GATE_ROOT_EXECUTION_REQUIRED",
+      "target": {
+        "logical_sets": 64,
+        "logical_ways": 8,
+        "physical_lines": 768
+      },
+      "resource_delta": "80 ->96KiB modeled128B-line pool/SM (+16KiB,+20%); across64SM +1MiB. Metadata/ports/physical area additional and unpriced.",
+      "declared_coupling": "More physical identities/free-list search/state; Tag capacity unchanged. Not a Tag-retention capacity increase.",
+      "positive_condition": "Evicted mappings retain liveRefs/service waiters, transiently exhausting640 physical entries before their last consumers retire. Extra identities may avoid allocation backpressure.",
+      "expected_if_allocation_pressure_helps": [
+        "If exposed, no-free-physical attempts decrease; currently unprinted so cannot be proved directly",
+        "Mean/peak allocation and map-loss-to-free statistics may change; neither monotone nor proof alone",
+        "Kernel cycles fall at the same fixed input/Hash/downstream; traffic may remain constant if only overlap changes"
+      ],
+      "falsifiers": [
+        "Exact cycle/selected-counter equality in a qualified run is zero response for that input",
+        "High mapping evictions without direct allocation stalls do not prove physical exhaustion",
+        "Improved cycles without changed admissible proxies is performance evidence with mechanism still unresolved"
+      ]
+    },
+    {
+      "id": "PHYS1024_TAG64x8",
+      "family": "PHYSICAL_POOL",
+      "status": "CANDIDATE_A_CPU_GATE_ROOT_EXECUTION_REQUIRED",
+      "target": {
+        "logical_sets": 64,
+        "logical_ways": 8,
+        "physical_lines": 1024
+      },
+      "resource_delta": "80 ->128KiB modeled line pool/SM (+48KiB,+60%);64SM +3MiB. Not equal area.",
+      "declared_coupling": "Same physical-only interpretation as768, larger metadata/free-list search footprint.",
+      "positive_condition": "Residual physical allocation pressure persists at768 and more entries overcome it without merely feeding fixed completion/downstream bottlenecks.",
+      "expected_if_allocation_pressure_helps": [
+        "Further qualified cycle benefit beyond768 on same program intersection",
+        "Higher capacity may show saturation/zero or timing-induced regression; retain all outcomes"
+      ],
+      "falsifiers": [
+        "No further benefit from768 refutes a need for1024 in that case, not a global area/performance conclusion",
+        "Cannot infer1024 speedup by scaling768 or occupancy means"
+      ]
+    },
+    {
+      "id": "OO_PIB192",
+      "family": "OO_ADMISSION_AND_LOWER_CANDIDATE_QUEUE",
+      "status": "CANDIDATE_A_CPU_GATE_ROOT_EXECUTION_REQUIRED",
+      "target": {
+        "oo_pib_entries": 192
+      },
+      "resource_delta": "128 ->192 active OO slots (+50%) AND128 ->192 bounded lower-create candidates (+50%); physical640/Tag512 unchanged.",
+      "declared_coupling": "shader.cc3384-3386/3438-3441 uses oo_pib_entries for lower-candidate queue bound. Finite create/inject/retire quotas remain1; genericPIB8 is inactive.",
+      "positive_condition": "OO admission occupancy/finite dependency stalls block independent work and additional entries overlap requests better; physical pool and completion service still have usable throughput.",
+      "expected_if_admission_helps": [
+        "More occupied/admitted overlap before completion with cycles falling",
+        "PIB_integral/samples may rise even when cycles fall; compare window/activeSM caveat",
+        "Existing lower_create_queue_full_stalls=0 means no measured baseline queue-full benefit; direct OO PIB-full event absent"
+      ],
+      "falsifiers": [
+        "New upper capacity with zero cycle/overlap effect is a valid zero response",
+        "Extra pending work with higher WB/collection backlog and worse cycles is retained regression",
+        "Do not claim slot-only causality because lower-candidate bound also changed"
+      ]
+    },
+    {
+      "id": "TAG4BANK_PERBANK2_TOTAL8",
+      "family": "TAG_SERVICE_QUOTAS",
+      "status": "CANDIDATE_A_CPU_GATE_ROOT_EXECUTION_REQUIRED",
+      "target": {
+        "tag_banks": 4,
+        "tag_req_per_bank": 2,
+        "tag_req_per_cycle": 8
+      },
+      "resource_delta": "Same4 banks/mapping/data; doubles nominal per-bank and total service quota. Physical port/arbitration/timing cost unknown.",
+      "declared_coupling": "Two quota fields change together. CPU try_serve_tag can allow8; shader integrated memory_cycle processes one next_reference per invocation and fixed Tag+1 edge remains. No observed8/cycle throughput claim.",
+      "positive_condition": "Multiple same-cycle integrated tag attempts actually hit the existing1/bank or4/SM quota and completion/admission paths can consume extra accepted service.",
+      "expected_if_service_helps": [
+        "If exposed OO_tag_conflicts decline while useful tag accepts rise; currently absent so service mechanism remains incompletely observable",
+        "Cycles may decline with little traffic-volume change if service delay was critical",
+        "New miss/hit counts can shift with timing and are not guaranteed invariant"
+      ],
+      "falsifiers": [
+        "Integrated single-reference/finite service bottleneck can make this exact no-op despite an isolated CPU8-grant fixture",
+        "CH tag-conflict values cannot be used to prove DH OO quota pressure",
+        "A faster cycle result alone does not establish measured8grants/cycle"
+      ]
+    }
+  ],
+  "all_follow_DH_P0_downstream": true,
+  "Tag_HOLD_never_replaced_or_silently_repaired": true,
+  "new_models_or_registration_in_B": 0
+}

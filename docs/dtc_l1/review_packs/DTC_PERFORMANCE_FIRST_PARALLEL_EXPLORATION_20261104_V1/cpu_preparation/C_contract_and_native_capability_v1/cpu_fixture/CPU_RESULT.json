@@ -1,0 +1,92 @@
+{
+  "schema": "C_INDEPENDENT_ORIGINAL_HEADER_TAG_POOL_PROGRESS_CPU_FIXTURE_V1",
+  "created_utc": "2026-11-04T10:10:03.037895+00:00",
+  "status": "PASS_COUNTEREXAMPLE_REPRODUCED_AND_CONTROLS_PROGRESS",
+  "compile_argv": [
+    "g++",
+    "-std=c++17",
+    "-O0",
+    "-g0",
+    "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_parallel_exploration_20261104_v1/C_contract_and_native_capability_v1/cpu_fixture/c_oo_tag_pool_independent.cpp",
+    "-o",
+    "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_parallel_exploration_20261104_v1/C_contract_and_native_capability_v1/cpu_fixture/c_oo_tag_pool_independent"
+  ],
+  "source_sha256": "1e82f3c6cb12368333e8d4e60e94eaa86c3ccaeb8ab23f21cc80225da1fb2af8",
+  "header_sha256": "dab2df3ec8e1fd1c8953ac146eba3c93906c84af8cce66051e5728afe9963fa1",
+  "binary_sha256": "085fb340c1d627ea0b5675b44924375fbbb85bfae9d3e20e3870cca77e840ccc",
+  "binary_not_for_Git": true,
+  "exit_code": 0,
+  "cases": [
+    {
+      "case": "tag64x16_pool640",
+      "sets": 64,
+      "ways": 16,
+      "physical_lines": 640,
+      "retired_before_probe": 640,
+      "allocated_before_probe": 640,
+      "active_refs_before_probe": 0,
+      "tag_evictions_before_probe": 0,
+      "set_observed_min": 10,
+      "set_observed_max": 10,
+      "blocked_retry_cycles": 32,
+      "progressed": false
+    },
+    {
+      "case": "tag128x8_pool640",
+      "sets": 128,
+      "ways": 8,
+      "physical_lines": 640,
+      "retired_before_probe": 640,
+      "allocated_before_probe": 640,
+      "active_refs_before_probe": 0,
+      "tag_evictions_before_probe": 0,
+      "set_observed_min": 5,
+      "set_observed_max": 5,
+      "blocked_retry_cycles": 32,
+      "progressed": false
+    },
+    {
+      "case": "baseline64x8_pool640",
+      "sets": 64,
+      "ways": 8,
+      "physical_lines": 640,
+      "retired_before_probe": 640,
+      "allocated_before_probe": 512,
+      "active_refs_before_probe": 0,
+      "tag_evictions_before_probe": 128,
+      "set_observed_min": 10,
+      "set_observed_max": 10,
+      "blocked_retry_cycles": 0,
+      "progressed": true
+    },
+    {
+      "case": "physical768_tag64x8",
+      "sets": 64,
+      "ways": 8,
+      "physical_lines": 768,
+      "retired_before_probe": 640,
+      "allocated_before_probe": 512,
+      "active_refs_before_probe": 0,
+      "tag_evictions_before_probe": 128,
+      "set_observed_min": 10,
+      "set_observed_max": 10,
+      "blocked_retry_cycles": 0,
+      "progressed": true
+    },
+    {
+      "case": "physical1024_tag64x8",
+      "sets": 64,
+      "ways": 8,
+      "physical_lines": 1024,
+      "retired_before_probe": 640,
+      "allocated_before_probe": 512,
+      "active_refs_before_probe": 0,
+      "tag_evictions_before_probe": 128,
+      "set_observed_min": 10,
+      "set_observed_max": 10,
+      "blocked_retry_cycles": 0,
+      "progressed": true
+    }
+  ],
+  "no_simulator_trace_or_GPU_invoked": true
+}

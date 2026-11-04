@@ -1,0 +1,1 @@
+Read REPORT.md, SIX_CANDIDATE_TESTABLE_PREDICTIONS.json and PROGRAM_OPPORTUNITY_MATRIX.json. Fixed8 inputs x6=48 proposal rows; exactfirst8 fourprogramsx2 retained with4TagHOLD. No registration/model/service/Git action. Rootauthority0b9cd6 and16baselineSHA pinned.

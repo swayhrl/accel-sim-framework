@@ -1,0 +1,91 @@
+{
+  "schema": "C_PERF_FIRST_NATIVE_DUAL_REQUEST_CPU_CAPABILITY_REVIEW_V1",
+  "created_utc": "2026-11-04T10:22:08.979164+00:00",
+  "status": "SUPPORTED_CONDITIONAL_NEW_PRIVATE_CONTRACT_ONLY_NOT_EXECUTION_QUALIFICATION",
+  "checks": [
+    {
+      "check": "actual epoch2 registry pair SHA-consistent under shared lock",
+      "pass": true
+    },
+    {
+      "check": "extract exact five old-final predicates for baseline and UUID namespace",
+      "pass": true
+    },
+    {
+      "check": "current actual old-final baseline and UUID predicates pass",
+      "pass": true
+    },
+    {
+      "check": "extra request key allowed by exact old-final predicates",
+      "pass": true
+    },
+    {
+      "check": "fresh UUID of another active request allowed by old final",
+      "pass": true
+    },
+    {
+      "check": "UUID reused from old48 rejected",
+      "pass": true
+    },
+    {
+      "check": "old recorded budget mutation rejected",
+      "pass": true
+    },
+    {
+      "check": "isolated production update can append one distinct request and preserve all peers",
+      "pass": true
+    },
+    {
+      "check": "isolated aggregate credit sum is bookkeeping not old-credit reassignment",
+      "pass": true
+    },
+    {
+      "check": "production peer mutation rejected before commit",
+      "pass": true
+    },
+    {
+      "check": "registration closure refuses duplicate request reset/re-add",
+      "pass": true
+    },
+    {
+      "check": "actual sole owner generation and FD3/FD4 lock identities",
+      "pass": true
+    },
+    {
+      "check": "old122 pin namespace does not pin global mutable registry lease route",
+      "pass": true
+    }
+  ],
+  "check_count": 13,
+  "actual_registry_snapshot_sha256": "5c2eab0548773c3aaf2863b97f0f5c8b269928985d85aefe2071e24a4e8cbb9c",
+  "actual_epoch_snapshot_sha256": "e98d858249d571d9e0e5cb34128a2d149a3bb1c905eb3224208271a330d361bb",
+  "actual_owner": {
+    "pid": 1498278,
+    "start_ticks": 977758783,
+    "primary_request": "DTC_AE_V100_FULL_SWEEP_20261025_V1",
+    "controller_sha256": "de715b527c6194a65b30d0b921c34a26bc8af4433eddd78c957d98c123723c81",
+    "lease_fd": 4,
+    "FD3_FD4": {
+      "3": {
+        "target": "/root/data/dtc_main_v100_sweep_20261025_v1/control/FINITE_CONTROLLER.lock",
+        "fdinfo": "pos:\t0\nflags:\t02102002\nmnt_id:\t3179\nino:\t61758282\nlock:\t1: FLOCK  ADVISORY  WRITE 1498278 08:50:61758282 0 EOF\n"
+      },
+      "4": {
+        "target": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/NATIVE_QUALIFICATION.lock",
+        "fdinfo": "pos:\t0\nflags:\t02100000\nmnt_id:\t3179\nino:\t61622661\nlock:\t1: FLOCK  ADVISORY  WRITE 1498278 08:50:61622661 0 EOF\n"
+      }
+    }
+  },
+  "old48_accounting": {
+    "budget": 48,
+    "remaining": 0,
+    "consumed": 48
+  },
+  "C_final_validator_sha256": "69fc696dd05e05c33be3560021b1fa5f479246d075ac93a846e4fafbcdd44bf8",
+  "production_update_source_sha256": "e84e6ff62f8783170b75b822a221c863fd3eef47c83ed35359b5696c1fcecdce",
+  "isolated_registration_fixture_never_wrote_real_authority": true,
+  "new_scientific_requests_registered": 0,
+  "actual_owner_callbacks": 0,
+  "actual_model_starts": 0,
+  "old_source_or_budget_changes": 0
+}
