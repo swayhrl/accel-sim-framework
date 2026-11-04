@@ -1,0 +1,92 @@
+--- old_cb6/cpu_shared.py
++++ Stage2_bad182/cpu_shared.py
+@@ -7,6 +7,11 @@
+ ID='CPU_SHARED_TIMESLICE_FUTURE_MEMORY_095_V1';MODE='CPU_SHARED_TIMESLICE_PER_COHORT'
+ FIELD='additional_cpu_shared_timeslice_binding';PROOF='additional_cpu_shared_timeslice_proof';SNAP='CPU_SHARED_TIMESLICE_SNAPSHOT.json'
+ INITIAL='E2-DTCL2MLP-731af5428c4b8155-DH-P0-OBSCTRL-V1'
++ORIGINAL_FOUR=(INITIAL,'E2-DTCL2MLP-731af5428c4b8155-DH-P0-OBSBPF-V1','E2-DTCL2MLP-16f4c42373e4961e-DH-P0-OBSCTRL-V1','E2-DTCL2MLP-16f4c42373e4961e-DH-P0-OBSBPF-V1')
++FIRST_UUID='2d24a1be-db7b-4100-9752-42b16ea46035'
++FIRST_RESULT_SHA='5395654775d9760cc777732ff7565f861b840388c3561b7df1dfd88db763b42e'
++FIRST_REPLAY_SHA='144ebf9fb1a2b81a93aa4056e3a9846df89673ac365b8fb2a9942765f129b9da'
++STAGE2_CERT_SHA='30bd502f7fe6653907b3e835c2b7aee78c780c65ecde758df473942158d1b895'
+ DESIGN=P('/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/coordinator/CPU_SHARED_TIMESLICE_V1/DESIGN_CONTRACT.json')
+ DESIGN_SHA='02e9050b76f695c21d72a73bff636a415f8fe45c6a7f543874108241ae22905d'
+ ROLES=['library','owner','frontend','extra_strict','consumer']
+@@ -22,15 +27,47 @@
+ RES=R/'tools/l2_resources.py';RPOLICY=R/'control/RESOURCE_POLICY.json'
+ def atomic(p,v):return _OLD.atomic(p,v)
+ def budget(base):return _OLD.budget(base)
++def validate_scope_certificate(cfg,q=None,certificate_utf8=None,source_artifacts_utf8=None):
++ """Authenticate the real first-canary evidence, not a boolean quorum.
++
++ Fresh admission reads immutable artifacts; offline replay consumes captured
++ UTF8. No raw/strict/archive work is rerun and no authority is mutated.
++ """
++ text=P(cfg['scope_extension_approval_path']).read_text()if certificate_utf8 is None else certificate_utf8
++ need(hashlib.sha256(text.encode()).hexdigest()==cfg['scope_extension_approval_sha256']==STAGE2_CERT_SHA,'Stage2 certificate SHA')
++ cert=json.loads(text);allowed=cfg['allowed_cohorts']
++ need(cert['schema']=='CPU_SHARED_ACTUAL_CANARY_ENGINEERING4_SCOPE_APPROVAL_V1'and cert['max_shared_running']==1 and cert['IR_rollout_eligible']is False and cert['primary_statistics_excluded']is True and cert['new_grants']==0,'wrong Stage2 finite engineering authorization')
++ need(len(allowed)==4 and set(allowed)==set(ORIGINAL_FOUR)and len(cert['allowed_cohorts'])==4 and set(cert['allowed_cohorts'])==set(allowed),'Stage2 exact original4 only')
++ need(cert['status']=='PASS_CPU_SHARED_NATURAL_STRICT_ARCHIVE_NATIVE_RESTORE'and cert['cohort']==INITIAL and cert['uuid']==FIRST_UUID and cert['cycles']==8551,'Stage2 actual canary identity')
++ need(cert['Main_scope_extension_approved']is True and cert['production_release_eligible']is True and cert['production_primary_rollout_eligible']is False and cert['validated_union_authorized']is False and not cert.get('qualification_only',False),'Stage2 approval/union boundary')
++ need(cert['counts']==dict(CTA=51,instructions=6900708,kernel_count=1)and cert['first_RESULT_sha256']==FIRST_RESULT_SHA and cert['no_rerun_of_consumed_firstC']is True,'wrong actual initial evidence/counts')
++ need(cert['original_engineering_contract']['sha256']=='4d7e1d1990771d8dc8bc1a9afe6ea85b9dae0f8752e951332742664a28dd0aa7'and cert['modes']=={c:'BPF_REQUIRED'if'-OBSBPF-'in c else'DEFAULT_CONTROL'for c in ORIGINAL_FOUR},'wrong engineering4 contract/modes')
++ references=cert['source_artifacts'];need(set(references)>={'RESULT','DONE','FULL_REPLAY'},'actual canary artifact chain absent')
++ texts={};documents={}
++ for name in ['RESULT','DONE','FULL_REPLAY']:
++  ref=references[name];body=P(ref['path']).read_text()if source_artifacts_utf8 is None else source_artifacts_utf8[name]
++  need(hashlib.sha256(body.encode()).hexdigest()==ref['sha256'],'Stage2 source artifact SHA '+name);texts[name]=body;documents[name]=json.loads(body)
++ need(references['RESULT']['sha256']==FIRST_RESULT_SHA and references['FULL_REPLAY']['sha256']==FIRST_REPLAY_SHA,'not the actual first full-replay evidence')
++ result=documents['RESULT'];done=documents['DONE'];replay=documents['FULL_REPLAY'];proof=result['proof']
++ need(result['state']=='PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE'and result['cohort']==proof['cohort']==INITIAL and result['uuid']==proof['uuid']==done['uuid']==replay['uuid']==FIRST_UUID,'actual closed canary UUID join')
++ need(result['cycles']==proof['cycles']==replay['cycles']==replay['reference_cycles']==8551 and proof['performance_accepted']is True,'actual accepted reference cycles')
++ need(proof['CTA']==replay['counts']['CTA']==51 and proof['instructions']==replay['counts']['instructions']==6900708 and proof['kernel_count']==replay['counts']['kernel_count']==1,'actual full counts')
++ need(done['cohort']==INITIAL and done['stop_reason']is None and done['launcher_wait_returncode']==0,'actual natural DONE')
++ need(replay['status']=='PASS_CPU_SHARED_NATURAL_STRICT_ARCHIVE_NATIVE_RESTORE'and replay['cohort']==INITIAL and replay['actual_new_resource_generation']==ID and replay['full_pristine_physics_replayed']is True and replay['real_IO_shared_observation_replayed']is True and replay['true_full_archive_and_native_device2128_replayed']is True,'full actual chain not replayed')
++ need(result['primary_statistics_excluded']is True and result['validated_union_authorized']is False and replay['production_primary_rollout_eligible']is False,'actual evidence is not primary rollout')
++ shared=proof['additional_cpu_shared_timeslice_strict'];need(shared['schema']==ID and shared['status']=='PASS_CPU_SHARED_TIMESLICE_IO_AND_ORIGINAL_PERFORMANCE'and shared['library_source_sha256']=='cb6f6d4c6d49e1ad944fead5fd02034ec8b159c59793540dcd9ae16ebc6394e7'and shared['old_CPU2_PASS_claimed']is False,'initial source/resource lineage')
++ ar=result['archive'];rr=replay['archive'];need(ar['receipt']==rr['receipt']and ar['receipt']['status']=='ARCHIVE_VERIFIED_AND_RESTORE_VERIFIED_NATIVE_TARGET'and ar['receipt']['cohort']==INITIAL and ar['independently_verified_entries']==rr['independently_verified_entries']>=1,'actual archive identity join')
++ need(cert['first_actual_archive_manifest_sha256']==ar['receipt']['manifest_sha256']and cert['first_actual_archive_sha256']==ar['receipt']['archive_sha256'],'certificate/archive SHA mismatch')
++ if q is not None:
++  row=q['consumed'].get(INITIAL,{});need(row.get('uuid')==FIRST_UUID and row.get('execution_receipt')==done,'current authority first canary closure mismatch')
++ return dict(status='PASS_STAGE2_EXACT4_FROM_REAL_FIRST_CANARY',certificate_sha256=cfg['scope_extension_approval_sha256'],certificate_utf8=text,source_artifacts_utf8=texts,first_cohort=INITIAL,first_uuid=FIRST_UUID,allowed_cohorts=copy.deepcopy(allowed),already_consumed_first_not_retryable=True,primary_rollout_eligible=False)
+ def _scope(cfg,q):
+  need(cfg['scope_mode']=='FINITE_ALLOWED_ADMITTED_UNSPENT','unapproved scope mode')
+  allowed=cfg['allowed_cohorts'];need(allowed and len(set(allowed))==len(allowed)and set(allowed)<=set(q['admitted_specs']),'unknown/duplicate/unadmitted scope')
+  if cfg['qualification_stage']=='INITIAL_EXACT_ONE':need(allowed==[INITIAL],'initial qualification must be exact1')
+  else:
+   need(cfg['qualification_stage']=='AFTER_NATURAL_SHARED_CANARY','unknown rollout stage')
+-  a=read(cfg['scope_extension_approval_path']);need(sha(cfg['scope_extension_approval_path'])==cfg['scope_extension_approval_sha256'],'scope approval SHA')
+-  need(a['status']=='PASS_CPU_SHARED_NATURAL_STRICT_ARCHIVE_NATIVE_RESTORE'and a['cohort']==INITIAL and a['production_release_eligible']is True and a['Main_scope_extension_approved']is True and a['allowed_cohorts']==allowed,'actual Main scope expansion not approved')
+-  need(not a.get('qualification_only',False),'fixture cannot approve extension')
++  validate_scope_certificate(cfg,q)
+  return allowed
+ def record(cfg):
+  keys=['request','overlay_id','scope_mode','qualification_stage','allowed_cohorts','max_shared_running','memory_utilization_fraction','host_floor_bytes','cgroup_floor_bytes','cpu_shared_policy','source_paths','qualified_sources','expected_pins','QA_sha256','readback_sha256','io_active_sha256','design_contract_sha256']
+@@ -158,7 +195,8 @@
+  now=time.monotonic();raw=copy.deepcopy(_CPU2._raw(base));need(evidence['raw_cpu2_evidence']['second']['boot_id']==raw['boot_id'],'CPU/memory boot mismatch')
+  for stamp in[evidence['raw_cpu2_evidence']['second']['completed_monotonic'],slot_evidence['created_monotonic'],legal_cpu_evidence['sample']['monotonic'],raw['monotonic']]:need(0<=now-stamp<=2.,'fresh admission evidence expired')
+  old95=_OLD.project(raw);reasons=old95['admission_decision']['pressure_reasons'];effective=[r for r in reasons if r!='cpu_pressure_full'];total=old95['total_projected_additional_RAM_bytes'];decision=dict(old95['admission_decision'],pressure_reasons=effective,pressure_pause_new=bool(effective),pass_admission=not effective and total<=budget(old95))
+- proof=dict(schema=ID,mode=MODE,config=copy.deepcopy(cfg),context=dict(kind=kind,cohort=cohort,selected_cpu=selected_cpu),base_resource_snapshot=raw,old95_resource_snapshot=old95,cpu_evidence=copy.deepcopy(evidence),cpu_assessment=cpu,slot_evidence=copy.deepcopy(slot_evidence),legal_cpu_evidence=copy.deepcopy(legal_cpu_evidence),canonical_spec_utf8=canonical_utf8,canonical_spec_sha256=h,raw_pressure_reasons=copy.deepcopy(reasons),effective_pressure_reasons=effective,effective_decision=decision,growth_unchanged_bytes=total,created_monotonic=now,CPU2_spare_PASS_claimed=False,shared_CPU_is_idle_spare=False,design_contract_utf8=P(cfg['design_contract_path']).read_text(),scope_extension_approval_utf8=None if cfg['qualification_stage']=='INITIAL_EXACT_ONE'else P(cfg['scope_extension_approval_path']).read_text())
++ certificate=None if cfg['qualification_stage']=='INITIAL_EXACT_ONE'else validate_scope_certificate(cfg)
++ proof=dict(schema=ID,mode=MODE,config=copy.deepcopy(cfg),context=dict(kind=kind,cohort=cohort,selected_cpu=selected_cpu),base_resource_snapshot=raw,old95_resource_snapshot=old95,cpu_evidence=copy.deepcopy(evidence),cpu_assessment=cpu,slot_evidence=copy.deepcopy(slot_evidence),legal_cpu_evidence=copy.deepcopy(legal_cpu_evidence),canonical_spec_utf8=canonical_utf8,canonical_spec_sha256=h,raw_pressure_reasons=copy.deepcopy(reasons),effective_pressure_reasons=effective,effective_decision=decision,growth_unchanged_bytes=total,created_monotonic=now,CPU2_spare_PASS_claimed=False,shared_CPU_is_idle_spare=False,design_contract_utf8=P(cfg['design_contract_path']).read_text(),scope_extension_approval_utf8=None if certificate is None else certificate['certificate_utf8'],scope_extension_source_artifacts_utf8=None if certificate is None else certificate['source_artifacts_utf8'])
+  verify_proof(proof,require_native=False);return dict(old95,physical_RAM_pass=decision['pass_admission'],admission_decision=decision,**{PROOF:proof})
+ def verify_proof(p,require_native=False):
+  need(p['schema']==ID and p['mode']==MODE and p['CPU2_spare_PASS_claimed']is False and p['shared_CPU_is_idle_spare']is False,'wrong shared proof')
+@@ -166,7 +204,7 @@
+  need(cfg['schema']==cfg['overlay_id']==ID and cfg['request']==REQ and cfg['scope_mode']=='FINITE_ALLOWED_ADMITTED_UNSPENT'and cfg['memory_utilization_fraction']==.95 and cfg['host_floor_bytes']==cfg['cgroup_floor_bytes']==10*G,'proof generation/RAM policy drift')
+  if cfg['qualification_stage']=='INITIAL_EXACT_ONE':need(cfg['allowed_cohorts']==[INITIAL]and p.get('scope_extension_approval_utf8')is None,'initial proof scope must remain exact1')
+  else:
+-  need(cfg['qualification_stage']=='AFTER_NATURAL_SHARED_CANARY','unknown proof scope stage');text=p['scope_extension_approval_utf8'];need(hashlib.sha256(text.encode()).hexdigest()==cfg['scope_extension_approval_sha256'],'scope approval snapshot SHA');approval=json.loads(text);need(approval['status']=='PASS_CPU_SHARED_NATURAL_STRICT_ARCHIVE_NATIVE_RESTORE'and approval['cohort']==INITIAL and approval['production_release_eligible']is True and approval['Main_scope_extension_approved']is True and approval['allowed_cohorts']==cfg['allowed_cohorts']and not approval.get('qualification_only',False),'nonactual/unapproved scope proof')
++  need(cfg['qualification_stage']=='AFTER_NATURAL_SHARED_CANARY','unknown proof scope stage');validate_scope_certificate(cfg,None,p['scope_extension_approval_utf8'],p['scope_extension_source_artifacts_utf8'])
+  need(c['cohort']in cfg['allowed_cohorts']and c['kind']in['OWNER_FRAME','OWNER_CHOOSE','NATIVE'],'proof scope/context');spec=json.loads(p['canonical_spec_utf8']);need(hashlib.sha256(p['canonical_spec_utf8'].encode()).hexdigest()==p['canonical_spec_sha256']==p['slot_evidence']['current_admitted_spec_sha256']and spec['cohort']==c['cohort']and spec['host_cpu']is None,'proof canonical identity')
+  raw=p['base_resource_snapshot'];need(raw['source_module_sha256']==cfg['expected_pins'][str(RES)]and raw['policy_sha256']==cfg['expected_pins'][str(RPOLICY)],'raw source/policy mismatch');need('additional_padding_admission_proof'not in raw,'shared mode requires NOFLAG full cost')
+  rows=raw['RAM_reservation_entries']+raw['own_ram_forecasts'];need(all(type(x['additional_reserved_bytes'])is int and x['additional_reserved_bytes']>=0 for x in rows)and sum(x['additional_reserved_bytes']for x in rows)==raw['total_projected_additional_RAM_bytes'],'full peer/own/claim growth sum')
+@@ -208,6 +246,7 @@
+    if path.name.endswith('.INTENT.json'):
+     validate(cfg,native.registered()[2]);need(obj['cohort']==cohort and native.assert_parent_lease()==parent,'intent/lease changed');resources(native.spec_for(cohort),True);[verify_proof(p,True)for p in proofs];final=proofs[-1];out=P(obj['output']);cp=native.R/'control/specs'/(cohort+'.json');db=native.R/'control/dispatch_bindings'/(cohort+'.json');row=copy.deepcopy(native.registered()[2]['additional_operational_overlays'][ID])
+     snapshot=dict(schema=ID,mode=MODE,padding_optin=False,config=copy.deepcopy(cfg),record=row,overlay_record=copy.deepcopy(row),fresh_preflights=proofs,full_forecast_preflights=forecasts,invocation=dict(argv=argv,cohort=cohort,selected_cpu=final['context']['selected_cpu'],parent_lease=parent,native_source_path=str(native.__file__),native_source_sha256=sha(native.__file__)),canonical_spec_utf8=cp.read_text(),canonical_spec_sha256=sha(cp),dispatch_binding_utf8=db.read_text(),dispatch_binding_sha256=sha(db),source_snapshots={r:dict(path=cfg['source_paths'][r],sha256=cfg['qualified_sources'][r],utf8=P(cfg['source_paths'][r]).read_text())for r in ROLES},QA_utf8=P(cfg['QA_path']).read_text(),readback_utf8=P(cfg['readback_path']).read_text(),io_active_utf8=P(cfg['io_active_path']).read_text(),design_contract_utf8=P(cfg['design_contract_path']).read_text(),CPU2_spare_PASS_claimed=False)
++    snapshot['scope_extension_approval_utf8']=final.get('scope_extension_approval_utf8');snapshot['scope_extension_source_artifacts_utf8']=copy.deepcopy(final.get('scope_extension_source_artifacts_utf8'))
+     atomic(out/SNAP,snapshot);binding.update(snapshot_sha256=sha(out/SNAP),selected_cpu=final['context']['selected_cpu'],final_cpu_evidence_sha256=objsha(final['cpu_evidence']),final_slot_evidence_sha256=objsha(final['slot_evidence']))
+    if path.name.endswith('.INTENT.json')or path.name in['NATIVE_LAUNCH.json','NATIVE_SIMULATOR_PID_AND_MAPS.json']:
+     need(binding['snapshot_sha256'],'shared INTENT snapshot absent');obj=dict(obj,**{FIELD:copy.deepcopy(binding)})
