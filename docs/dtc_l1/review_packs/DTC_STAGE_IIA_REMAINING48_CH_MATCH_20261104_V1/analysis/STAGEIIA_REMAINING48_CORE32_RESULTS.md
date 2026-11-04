@@ -1,19 +1,19 @@
 # Remaining48 CH matching / fixed CORE32 readonly results
 
-As of 2026-11-04T03:19:06.418648+00:00; source_qualified=True. New48 accepted 37/48, archived negative 0, verification HOLD 0, pending 11. Complete both-F population 25/32. Source slots accepted 181/192.
+As of 2026-11-04T03:45:27.084254+00:00; source_qualified=True. New48 accepted 40/48, archived negative 0, verification HOLD 0, pending 8. Complete both-F population 28/32. Source slots accepted 184/192.
 
 All32 fixed inputs remain listed. Interim available-subset GM is descriptive, not the full32suite result. Direct F comparison uses the same accepted six-cell intersection; negatives/HOLD/pending never become cycles. Original128, first16newCH and remaining48newCH keep distinct source roles; source_profile is actual configuration, not a comparison-context alias.
 
 | Suite | Common n | Profile | GM S_CH | GM S_DH | GM CH/DH | GM I |
 | --- | --- | --- | --- | --- | --- | --- |
-| ALL_CORE32 | 25 | F128 | 1.017347 | 1.014845 | 1.071395 | 0.997541 |
-| ALL_CORE32 | 25 | F256 | 1.025578 | 1.025069 | 1.073502 | 0.999503 |
+| ALL_CORE32 | 28 | F128 | 1.015488 | 1.013157 | 1.077227 | 0.997705 |
+| ALL_CORE32 | 28 | F256 | 1.022801 | 1.022166 | 1.079035 | 0.999379 |
 | CUDA Samples | 9 | F128 | 1.040091 | 1.037979 | 1.018892 | 0.997970 |
 | CUDA Samples | 9 | F256 | 1.062320 | 1.059559 | 1.018311 | 0.997401 |
-| Parboil | 5 | F128 | 1.003023 | 1.002804 | 1.017956 | 0.999782 |
-| Parboil | 5 | F256 | 1.004791 | 1.004818 | 1.018205 | 1.000027 |
-| PolyBench/GPU | 5 | F128 | 1.012293 | 1.003791 | 1.276964 | 0.991601 |
-| PolyBench/GPU | 5 | F256 | 1.012764 | 1.014968 | 1.290583 | 1.002176 |
+| Parboil | 7 | F128 | 1.002158 | 1.002002 | 1.022350 | 0.999844 |
+| Parboil | 7 | F256 | 1.003420 | 1.003439 | 1.022529 | 1.000019 |
+| PolyBench/GPU | 6 | F128 | 1.010296 | 1.002756 | 1.287365 | 0.992537 |
+| PolyBench/GPU | 6 | F256 | 1.010599 | 1.011594 | 1.298322 | 1.000984 |
 | Rodinia | 6 | F128 | 1.000000 | 1.000000 | 1.041536 | 1.000000 |
 | Rodinia | 6 | F256 | 1.000000 | 1.000000 | 1.041536 | 1.000000 |
 
@@ -29,14 +29,14 @@ All32 fixed inputs remain listed. Interim available-subset GM is descriptive, no
 | transpose | 65151d2c661f88f3b463dba9a3ce49d98848affabe19a36ccf23295f3b1e8fdc | 241346 | 241346 | 241346 | 237820 | 237820 | 237820 | 1.000000 | 1.000000 | True |
 | vectorAdd | e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799 | 220803 | 214503 | 223020 | 217305 | 213053 | 236217 | 0.990856 | 0.929175 | True |
 | bfs | 1df9d5479504d9c7c5f5ef176e9604ce1b43421c7b6be440597259607d3971c0 | 4330430 | 4330430 | 4330430 | 4170294 | 4170294 | 4170294 | 1.000000 | 1.000000 | True |
-| cutcp | af7320f9d9dc662971b1856cac87f29f9b8e4b2a65a7f9d4223bb7a74803fef8 | 4502965 | 4502965 | MISSING | 4490473 | 4490473 | 4490473 | 1.000000 | MISSING | False |
+| cutcp | af7320f9d9dc662971b1856cac87f29f9b8e4b2a65a7f9d4223bb7a74803fef8 | 4502965 | 4502965 | 4502965 | 4490473 | 4490473 | 4490473 | 1.000000 | 1.000000 | True |
 | histo | 2c506bf13c81ff5dd4c286fa2f6d7a9edea513a5c8f38c60cfc746e36e9c5f64 | 5636037 | 5551616 | 5502955 | 5865589 | 5789155 | 5731388 | 0.998026 | 0.999250 | True |
 | mri-q | dc7a91531846c1134c197a6e83509c91b2768151692a7b1286f6be9c431cabd4 | 362244 | 362244 | 362244 | 360174 | 359855 | 359855 | 1.000886 | 1.000886 | True |
 | sad | db89be14146b916373c1adb28803767aa725a592119901ffd78d9c223e1611a9 | 114310 | 114310 | 114310 | 114870 | 114870 | 114870 | 1.000000 | 1.000000 | True |
 | sgemm | ffc8a89493c8a21151320d1cfdaccbfca2706eb1c395fcb58e94a1b01e6ea453 | 448633 | 448633 | 448633 | 409417 | 409417 | 409417 | 1.000000 | 1.000000 | True |
-| stencil | c885293ad99e21ee6f270647dc47f1e6b214c71856b189cd011266ce4ae21266 | 4965921 | MISSING | 4965921 | 4662889 | 4662889 | 4662889 | MISSING | 1.000000 | False |
+| stencil | c885293ad99e21ee6f270647dc47f1e6b214c71856b189cd011266ce4ae21266 | 4965921 | 4965921 | 4965921 | 4662889 | 4662889 | 4662889 | 1.000000 | 1.000000 | True |
 | 2DCONV | d984ea5475a581ad8ffa8181eaf1bb91e524de3889d30243278c285ed707c7a0 | 1548909 | 1548909 | 1548909 | 462740 | 437573 | 429253 | 1.057515 | 1.078012 | True |
-| 3DCONV | 79f8ab6241faeed64b49d05deecb1ad239fac5f123c4ceec75f7e0f6a9c5166d | 2958083 | 2956986 | MISSING | 2200332 | 2205628 | 2211632 | 0.997229 | MISSING | False |
+| 3DCONV | 79f8ab6241faeed64b49d05deecb1ad239fac5f123c4ceec75f7e0f6a9c5166d | 2958083 | 2956986 | 2958542 | 2200332 | 2205628 | 2211632 | 0.997229 | 0.995045 | True |
 | 3MM | 977a2f7007cb1f9673fe3a5c17cdbb469335c619c172a0a882eb18410049eb3d | 4191465 | MISSING | MISSING | 2402871 | 2402871 | 2402871 | MISSING | MISSING | False |
 | ATAX | eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950 | 28428842 | 29882110 | 31081550 | 31880220 | 31894637 | 31321955 | 1.050644 | 1.112797 | True |
 | BICG | ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef | 26298698 | 24464891 | 24651923 | 28685812 | 29210480 | 28883488 | 0.913561 | 0.930967 | True |
