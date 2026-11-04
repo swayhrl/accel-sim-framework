@@ -1,0 +1,23 @@
+{
+  "entry_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/bin/native_recovery_20261104_v1",
+    "sha256": "d3859da9993c62296aacabfdbbbcafac3a1deab87db0339a6506ac1e8b167037"
+  },
+  "frontend_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/activation_20261104_v1/recovery_20261104_v1/agent_b_native/runtimes/highclock/ep_perf_frontend.py",
+    "sha256": "1b036eebdc4c523ab4f9cd94815cdc149358edf3fba5b5907a30c6f40f83d957"
+  },
+  "global_native_ref": {
+    "path": "/root/data/ep_l2_dtc_l1_native_v2/bin/native",
+    "sha256": "2f5b5905b59d20f1e0028b57a1fd0fc098f0026833cf25e0303710e4c7c82ce2"
+  },
+  "global_native_unchanged": true,
+  "goal": "EP_L2_CC_CAM_REPAIRED_VECTOR4M_850_1275_1700_V1",
+  "own_prelude": "#!/bin/sh\nset -eu\n# Main exact approved PFV2 family only. Preserved global suffix is unreachable.\nif [ \"$#\" -ge 3 ] && [ \"$1\" = experiment ]; then\n case \"$3\" in\n  EP_PERF_CC_CAM_VECTOR4M_F_1275_V1|EP_PERF_CC_CAM_VECTOR4M_F_1700_V1|EP_PERF_CC_CAM_VECTOR4M_S_1275_V1|EP_PERF_CC_CAM_VECTOR4M_S_1700_V1|EP_PERF_CC_CAM_VECTOR4M_S_850_V1)\n   if [ \"$#\" -ne 5 ] || [ \"$4\" != --project ] || [ \"$5\" != EP_L2 ]; then\n    printf '%s\n' '{\"status\":\"HOLD\",\"reason\":\"EXACT5_EP_PROJECT_REQUIRED\",\"scientific_starts\":0}' >&2; exit 2\n   fi\n   case \"$2\" in prepare|inspect|run-native|accept) ;;\n    *) printf '%s\n' '{\"status\":\"HOLD\",\"reason\":\"UNSUPPORTED_OPERATION\",\"scientific_starts\":0}' >&2; exit 2;;\n   esac\n   export EP_FULL_PERF_NATIVE_ENTRY=1\n   exec /usr/bin/python3 -B /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/activation_20261104_v1/recovery_20261104_v1/agent_b_native/runtimes/highclock/ep_perf_frontend.py \"$@\"\n   ;;\n esac\nfi\nprintf '%s\n' '{\"status\":\"HOLD\",\"reason\":\"OUTSIDE_EXACT_APPROVED_PFV2_SCOPE\",\"scientific_starts\":0}' >&2\nexit 2\n# Original global-native preimage, preserved byte-for-byte and unreachable.\n",
+  "prior_entry_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/activation_20261104_v1/recovery_20261104_v1/agent_b_native/APPROVED_CURRENT_GLOBAL_2f5b59.bytes",
+    "sha256": "2f5b5905b59d20f1e0028b57a1fd0fc098f0026833cf25e0303710e4c7c82ce2"
+  },
+  "scientific_starts": 0,
+  "status": "MAIN_INSTALLED_ADDITIVE_NATIVE_EP_PERF_ROUTE"
+}
