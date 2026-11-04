@@ -1,0 +1,92 @@
+{
+  "B12_qualification_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/B/adaptive_next_stage_preparation_v1/PURE_TEMPLATE_QUALIFICATION.json",
+  "B12_qualification_sha256": "b1bf738e1688525c2b1f0df911760e797f377aa9f17621b8ee00c64468061d06",
+  "actual_parser_or_native_source_generation_qualified": false,
+  "builder_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/adaptive_ch_ad1_candidates_v1/candidate_builder.py",
+  "builder_sha256": "4db7169abbedb6bf8d65cc552497a10e699258388fdcc94db59b81fd18e32cc9",
+  "checks": [
+    {
+      "count": 70,
+      "name": "exact_two_uniform_batches_35_each_frozen_input_identity",
+      "status": "PASS"
+    },
+    {
+      "cases": [
+        {
+          "after_sha256": [
+            "4218893da117d9a0eb4a8676e4a4c7b8d111095adea0061f8a8515bafcfd56a6",
+            "e86d9ac278c389e5d641368624e4a7322263edad46f999d1bfeac45e2c08ac6a",
+            "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+            "2b4a72a90686237ba547d9a51a38f55988397944d8c0627ea1105d14b072726f"
+          ],
+          "cell": "CH",
+          "logical_resources": {
+            "credit_coupling": "shared=FRFCFS+DRAMreturn-(subpartitions-1); write split disabled",
+            "frfcfs_request_slots_total": 2560,
+            "l2_banks": 40,
+            "l2_data_bytes": 10485760,
+            "miss_queue_request_slots_total": 1280,
+            "mshr_address_entries_total": 7680,
+            "mshr_request_references_upper_bound": 30720,
+            "physical_area_or_bytes": "UNKNOWN: request metadata, pointer/list/map overhead and hardware encoding not modeled",
+            "private_credits_per_controller": 2,
+            "shared_credit_limit_per_controller": 319
+          },
+          "profile": "F128",
+          "reused_B12_transform": true
+        },
+        {
+          "after_sha256": [
+            "c808ac5d4f3055a55364bec1f4e72ca4fd632e86b0989666a75cd31c2cc99ba8",
+            "e86d9ac278c389e5d641368624e4a7322263edad46f999d1bfeac45e2c08ac6a",
+            "19dd14b3a4b6c1a1cb2833bd091f0dbd485ad79336ef7d4b0c9db1f7c46f504e",
+            "2b4a72a90686237ba547d9a51a38f55988397944d8c0627ea1105d14b072726f"
+          ],
+          "cell": "CH",
+          "logical_resources": {
+            "credit_coupling": "shared=FRFCFS+DRAMreturn-(subpartitions-1); write split disabled",
+            "frfcfs_request_slots_total": 5120,
+            "l2_banks": 40,
+            "l2_data_bytes": 10485760,
+            "miss_queue_request_slots_total": 1280,
+            "mshr_address_entries_total": 7680,
+            "mshr_request_references_upper_bound": 30720,
+            "physical_area_or_bytes": "UNKNOWN: request metadata, pointer/list/map overhead and hardware encoding not modeled",
+            "private_credits_per_controller": 2,
+            "shared_credit_limit_per_controller": 447
+          },
+          "profile": "F256",
+          "reused_B12_transform": true
+        }
+      ],
+      "name": "CH_F128_F256_transform_exact_B12_byte_SHA_reuse",
+      "status": "PASS"
+    },
+    {
+      "name": "all70_full270_options_only_FRFCFS_changed_input_runtime_build_fixed",
+      "status": "PASS"
+    },
+    {
+      "name": "candidate_role_input_clock_and_derived_baseline_negative_guards",
+      "rejected": [
+        "role_masquerade",
+        "input_change",
+        "clock_change",
+        "baseline_promotion"
+      ],
+      "status": "PASS"
+    },
+    {
+      "name": "parent_canonical_config_source_bytes_unchanged_after_construction",
+      "production_actions": 0,
+      "status": "PASS"
+    }
+  ],
+  "count": 5,
+  "models_started": 0,
+  "new_grants": 0,
+  "old_B12_or_39_suites_rerun": false,
+  "production_mutations": 0,
+  "schema": "AD1_CH70_CANDIDATE_CONSTRUCTION_FOCUSED_CPU_QUALIFICATION_V1",
+  "status": "PASS_CPU_CANDIDATE_CONSTRUCTION_NOT_NATIVE_GENERATION_QUALIFICATION"
+}
