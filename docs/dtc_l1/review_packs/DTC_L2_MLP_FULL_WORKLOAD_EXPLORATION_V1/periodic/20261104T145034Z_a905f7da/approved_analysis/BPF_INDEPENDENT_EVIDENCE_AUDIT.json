@@ -1,0 +1,204 @@
+{
+  "schema": "E_BPF_SEALED_EVIDENCE_AND_SOURCE_AUDIT_V1",
+  "sealed_manifest_sha256": "ec64865abefac5c36956b7be9059bb6ce4199655d202cd168407eb59eb3bd2a6",
+  "sealed_report_sha256": "dc0bb098e42a2f3247086bf48eb6580515a674df0292c9ff93a361c035b3b8a1",
+  "manifest_entries_verified": 79,
+  "verified_paths": [
+    "CPU_RESULTS.json",
+    "MANUAL_FETCH_ERROR.txt",
+    "NESTED_FALLBACK.json",
+    "REPORT.json",
+    "REPORT.txt",
+    "STRACE_HELP.txt",
+    "STRACE_VERSION.txt",
+    "UPSTREAM_V5_16_MANUAL.1.in",
+    "baseline_0/child.fixture",
+    "baseline_0/main.fixture",
+    "baseline_0/stderr.txt",
+    "baseline_0/stdout.txt",
+    "baseline_0/thread.fixture",
+    "baseline_1/child.fixture",
+    "baseline_1/main.fixture",
+    "baseline_1/stderr.txt",
+    "baseline_1/stdout.txt",
+    "baseline_1/thread.fixture",
+    "baseline_2/child.fixture",
+    "baseline_2/main.fixture",
+    "baseline_2/stderr.txt",
+    "baseline_2/stdout.txt",
+    "baseline_2/thread.fixture",
+    "default_0/child.fixture",
+    "default_0/main.fixture",
+    "default_0/stderr.txt",
+    "default_0/stdout.txt",
+    "default_0/thread.fixture",
+    "default_0/trace.log",
+    "default_1/child.fixture",
+    "default_1/main.fixture",
+    "default_1/stderr.txt",
+    "default_1/stdout.txt",
+    "default_1/thread.fixture",
+    "default_1/trace.log",
+    "default_2/child.fixture",
+    "default_2/main.fixture",
+    "default_2/stderr.txt",
+    "default_2/stdout.txt",
+    "default_2/thread.fixture",
+    "default_2/trace.log",
+    "finish_report.py",
+    "fixture",
+    "fixture.c",
+    "nested_fallback/inner.log",
+    "nested_fallback/outer.log",
+    "nested_fallback/stderr.txt",
+    "nested_fallback/stdout.txt",
+    "qualify.py",
+    "seccomp_0/child.fixture",
+    "seccomp_0/main.fixture",
+    "seccomp_0/stderr.txt",
+    "seccomp_0/stdout.txt",
+    "seccomp_0/thread.fixture",
+    "seccomp_0/trace.log",
+    "seccomp_1/child.fixture",
+    "seccomp_1/main.fixture",
+    "seccomp_1/stderr.txt",
+    "seccomp_1/stdout.txt",
+    "seccomp_1/thread.fixture",
+    "seccomp_1/trace.log",
+    "seccomp_2/child.fixture",
+    "seccomp_2/main.fixture",
+    "seccomp_2/stderr.txt",
+    "seccomp_2/stdout.txt",
+    "seccomp_2/thread.fixture",
+    "seccomp_2/trace.log",
+    "seccomp_debug_0/child.fixture",
+    "seccomp_debug_0/main.fixture",
+    "seccomp_debug_0/stderr.txt",
+    "seccomp_debug_0/stdout.txt",
+    "seccomp_debug_0/thread.fixture",
+    "seccomp_debug_0/trace.log",
+    "seccomp_no_follow_0/child.fixture",
+    "seccomp_no_follow_0/main.fixture",
+    "seccomp_no_follow_0/stderr.txt",
+    "seccomp_no_follow_0/stdout.txt",
+    "seccomp_no_follow_0/thread.fixture",
+    "seccomp_no_follow_0/trace.log"
+  ],
+  "production_pins_now_match_A": {
+    "native_path": {
+      "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_native_cap1m.py",
+      "sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d"
+    },
+    "strace_path": {
+      "path": "/root/data/ep_l2_dtc_l1_native_v2/tools/bin/strace",
+      "sha256": "38a5c75cb29dd85ddd7780d54f5bf595554d7a1b5c42524b23065f5dc4c4b01d"
+    },
+    "binary_path": {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+      "sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d"
+    },
+    "core_path": {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core-build/libcudart.so",
+      "sha256": "694f05ce97fe3e1552d94803c2202d8d037769c61624cde5f6a832622ed60c56"
+    },
+    "fw_progress_path": {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/ag7_policyb_progress.h",
+      "sha256": "9b5b8767e7c1db2b729a6eaae91a50f56d8c6189aa415a5c36ff760f5a213201"
+    }
+  },
+  "source_pattern": "\\b(time|srand|srandom|random_device|gettimeofday|clock_gettime|signal|sigaction|alarm|setitimer)\\s*\\(|g_simulation_starttime",
+  "source_matches": [
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpusim_entrypoint.h:37:// extern time_t g_simulation_starttime;",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpusim_entrypoint.h:61:  time_t g_simulation_starttime;",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/stream_manager.cc:217:      time_t wallclock = time((time_t *)NULL);",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpusim_entrypoint.cc:330:  srand(1);",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpusim_entrypoint.cc:364:  the_gpgpusim->g_simulation_starttime = time((time_t *)NULL);",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpusim_entrypoint.cc:393:  current_time = time((time_t *)NULL);",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpusim_entrypoint.cc:394:  difference = MAX(current_time - the_gpgpusim->g_simulation_starttime, 1);",
+    "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/accel-sim.cc:239:  srand(1);",
+    "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/accel-sim.cc:271:  m_gpgpu_context->the_gpgpusim->g_simulation_starttime = time((time_t *)NULL);",
+    "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/ag7_policyb_progress.h:80:    if (clock_gettime(CLOCK_MONOTONIC, &ts) != 0 || ts.tv_sec < 0) {",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/cuda-sim/cuda-sim.cc:2586:  // g_simulation_starttime g_simulation_starttime is initilized by",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/cuda-sim/cuda-sim.cc:2589:  end_time = time((time_t *)NULL);",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/cuda-sim/cuda-sim.cc:2591:      MAX(end_time - gpgpu_ctx->the_gpgpusim->g_simulation_starttime, 1);",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/accelwattch/gpgpu_sim_wrapper.cc:168:  time(&curr_time);",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/intersim2/main.cpp:145:  gettimeofday(&start_time, NULL);",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/intersim2/main.cpp:150:  gettimeofday(&end_time, NULL);",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/addrdec.cc:527:  if (memory_partition_indexing == RANDOM) srand(1);",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.h:144:    time(&curr_time);",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.h:460:    time(&curr_time);",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc:1117:    signal(SIGSEGV, crash_handler);",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc:1118:    signal(SIGABRT, crash_handler);",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc:1905:  time(&curr_time);",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc:1907:      MAX(curr_time - gpgpu_ctx->the_gpgpusim->g_simulation_starttime, 1);",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc:2587:      time(&curr_time);",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc:2589:          MAX(curr_time - gpgpu_ctx->the_gpgpusim->g_simulation_starttime, 1);",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc:2900:    time(&curr_time);",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc:2902:        MAX(curr_time - gpgpu_ctx->the_gpgpusim->g_simulation_starttime, 1);",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/accelwattch/cacti/io.cc:1474:      file << \"Access time (ns), \";",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/accelwattch/cacti/io.cc:1475:      file << \"Random cycle time (ns), \";",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/accelwattch/cacti/io.cc:1476://      file << \"Multisubbank interleave cycle time (ns), \";",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/accelwattch/cacti/io.cc:1481://      file << \"Tag array access time (ns), \";",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/accelwattch/cacti/io.cc:1482://      file << \"Data array access time (ns), \";",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/accelwattch/cacti/io.cc:1703:  cout << \"    Access time (ns): \" << fr->access_time*1e9 << endl;",
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/accelwattch/cacti/io.cc:1704:  cout << \"    Cycle time (ns):  \" << fr->cycle_time*1e9 << endl;"
+  ],
+  "source_files": {
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpusim_entrypoint.h": {
+      "sha256": "dc6c98cd30e89158fbfac3061c82a88f98bbf5e59704e8d5320eb2cdb59e72f1",
+      "bytes": 2710
+    },
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/stream_manager.cc": {
+      "sha256": "8da554474328170a12af2d1a4c91cd0908e806eda70009104472bb5b32a767bb",
+      "bytes": 18599
+    },
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpusim_entrypoint.cc": {
+      "sha256": "7c9a4f040a38887d45a68b3c56ce5c775daa2c251e352d64d31c90e9585965fa",
+      "bytes": 16020
+    },
+    "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/accel-sim.cc": {
+      "sha256": "36e11eb6aa8975b208d3f5e65f2a389bc93809483c17a15d3743c8fe272a37d8",
+      "bytes": 10792
+    },
+    "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/ag7_policyb_progress.h": {
+      "sha256": "9b5b8767e7c1db2b729a6eaae91a50f56d8c6189aa415a5c36ff760f5a213201",
+      "bytes": 8867
+    },
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/cuda-sim/cuda-sim.cc": {
+      "sha256": "f28f1d825fd570a03796af8378cde31a170a1979a9b73723e123f0432556d1b2",
+      "bytes": 98724
+    },
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/accelwattch/gpgpu_sim_wrapper.cc": {
+      "sha256": "de4e07474453b2b66eb88e670884dff7ceeaa37e559b1b50ac80f4f2971cc3d5",
+      "bytes": 51097
+    },
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/intersim2/main.cpp": {
+      "sha256": "2abbbe631f88610e4ace90e3e77af751e4a378d2d125c27382e5d4e8e7a06e43",
+      "bytes": 5243
+    },
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/addrdec.cc": {
+      "sha256": "de15bbe5c7a6e18827da26d743cfa5bce6a002d9a8a4342d23794b9104cedb8e",
+      "bytes": 24628
+    },
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.h": {
+      "sha256": "132f291114bde93102c347765c25d877e69a21867a6142a0e98ef9a6f6619f4c",
+      "bytes": 31930
+    },
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc": {
+      "sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+      "bytes": 127016
+    },
+    "/root/data/dtc_failure_repair_20261025_v1/core/src/accelwattch/cacti/io.cc": {
+      "sha256": "8d4986aac7f26c3136c565779b8d0fc9a974b3587b8f173111f4581d24030fb3",
+      "bytes": 84000
+    }
+  },
+  "tests_rerun": false,
+  "models_started": 0,
+  "Git_accessed": false,
+  "limitations": [
+    "Manifest/hash verification and read-only source review only, not rerun of11 CPU cases.",
+    "Scoped source matches cannot prove all libraries or signal/interleaving semantics equivalent.",
+    "Microbenchmark ratio is CPU fixture only, not simulator-cycle performance."
+  ]
+}
