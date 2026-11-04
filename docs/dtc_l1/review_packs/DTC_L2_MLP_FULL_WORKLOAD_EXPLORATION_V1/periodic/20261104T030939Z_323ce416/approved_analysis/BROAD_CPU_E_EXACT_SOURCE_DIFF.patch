@@ -1,0 +1,417 @@
+--- frozen_preimage/resource_extra_strict.py
++++ broad/resource_extra_strict.py
+@@ -2,12 +2,12 @@
+ import pathlib,json,hashlib,importlib.util,os,uuid
+ P=pathlib.Path
+ R=P('/root/data/dtc_l2_mlp_exploration_20261027_v1');SOURCE_R=R
+-ID='CPU_SHARED_TIMESLICE_FUTURE_MEMORY_095_V1'
++ID='CPU_SHARED_DYNAMIC_FUTURE_MEMORY_095_V1'
+ FIELD='additional_cpu_shared_timeslice_binding'
+ KEY='additional_cpu_shared_timeslice_strict'
+ SNAP='CPU_SHARED_TIMESLICE_SNAPSHOT.json'
+-STATUS='PASS_CPU_SHARED_TIMESLICE_IO_AND_ORIGINAL_PERFORMANCE'
+-DESIGN_SHA='02e9050b76f695c21d72a73bff636a415f8fe45c6a7f543874108241ae22905d'
++STATUS='PASS_CPU_SHARED_DYNAMIC_IO_AND_ORIGINAL_PERFORMANCE'
++DESIGN_SHA='a8c7446a0edaeb166402400f6a8efbf558e54aac690d26dccfda5bbc63a3edc9'
+ def read(p):return json.loads(P(p).read_bytes())
+ def sha(p):return hashlib.sha256(P(p).read_bytes()).hexdigest()
+ def rawsha(b):return hashlib.sha256(b).hexdigest()
+@@ -36,20 +36,21 @@
+  b=intent[FIELD];assert all(doc[FIELD]==b for doc in docs),'Three shared bindings differ'
+  snapshot_path=out/SNAP;assert sha(snapshot_path)==b['snapshot_sha256'];snap=read(snapshot_path);cfg=snap['config']
+  assert snap['schema']==b['schema']==ID and b['request']==cfg['request']and b['cohort']==c
+- assert b['mode']==snap['mode']=='CPU_SHARED_TIMESLICE_PER_COHORT'and cfg['max_shared_running']==1,'Explicit single shared slot'
++ assert b['mode']==snap['mode']=='CPU_SHARED_DYNAMIC_PER_COHORT'and cfg['max_shared_running']is None,'Explicit dynamic shared reservation generation'
+  assert b['padding_optin']is False and snap['padding_optin']is False and b['CPU2_spare_PASS_claimed']is False and snap['CPU2_spare_PASS_claimed']is False,'Shared NOFLAG and honest CPU generation'
+  assert cfg['source_paths']['extra_strict']==str(P(__file__).resolve())and cfg['qualified_sources']['extra_strict']==sha(__file__),'Shared extra source mismatch'
+  lib=load('exact_shared_resource_library',cfg['source_paths']['library']);assert sha(lib.__file__)==cfg['qualified_sources']['library']and lib.ID==ID
+  assert lib.objsha(cfg)==b['config_sha256']
+  assert rawsha(snap['design_contract_utf8'].encode())==DESIGN_SHA,'Shared Main contract snapshot'
+- design=json.loads(snap['design_contract_utf8']);assert design['resource_overlay_id']==ID and design['resource_binding_field']==FIELD
+- assert cfg['qualification_stage']=='AFTER_NATURAL_SHARED_CANARY'and cfg['max_shared_running']==1,'Stage2 exact engineering scope only'
++ design=json.loads(snap['design_contract_utf8']);assert design['resource_id']==ID and design['schema']=='CPU_SHARED_DYNAMIC_RESOURCE_CONTRACT_V1'
++ assert cfg['qualification_stage']=='AFTER_REAL_ENGINEERING4_GATE'and cfg['max_shared_running']is None,'Broad dynamic scope only'
+  first=snap['fresh_preflights'][0]
+- assert snap['scope_extension_approval_utf8']==first['scope_extension_approval_utf8']and snap['scope_extension_source_artifacts_utf8']==first['scope_extension_source_artifacts_utf8'],'Resource top/captured proof certificate mismatch'
+- extension=lib.validate_scope_certificate(cfg,authority,first['scope_extension_approval_utf8'],first['scope_extension_source_artifacts_utf8'])
+- assert c in extension['allowed_cohorts']and set(cfg['allowed_cohorts'])==set(extension['allowed_cohorts']),'Real Stage2 certificate scope'
++ fields=['broad_approval_utf8','broad_gate_utf8','broad_source_artifacts_utf8','scope_contract_utf8']
++ for field in fields:assert snap[field]==first[field],'Resource top/proof broad prerequisite mismatch'
++ certificate=lib.validate_broad_approval(cfg,authority,first['broad_approval_utf8'],first['broad_gate_utf8'],first['broad_source_artifacts_utf8'],first['scope_contract_utf8'])
++ assert c in cfg['allowed_cohorts']
+  for p in snap['fresh_preflights']:
+-  assert p['scope_extension_approval_utf8']==first['scope_extension_approval_utf8']and p['scope_extension_source_artifacts_utf8']==first['scope_extension_source_artifacts_utf8'],'Stage2 certificate witnesses differ'
++  for field in fields:assert p[field]==first[field],'Broad prerequisite witnesses differ'
+  canonical_path=root/'control/specs'/(c+'.json');alias=root/'control'/(c+'_SPEC.json');canonical=read(canonical_path)
+  assert canonical['host_cpu']is None and sha(canonical_path)==sha(alias),'Canonical identity/alias drift'
+  assert rawsha(snap['canonical_spec_utf8'].encode())==snap['canonical_spec_sha256']==sha(canonical_path)and json.loads(snap['canonical_spec_utf8'])==canonical,'Captured canonical source'
+@@ -73,7 +74,7 @@
+  assert rawsha(snap['QA_utf8'].encode())==cfg['QA_sha256']==b['QA_sha256']
+  assert rawsha(snap['readback_utf8'].encode())==cfg['readback_sha256']==b['readback_sha256']
+  qa=json.loads(snap['QA_utf8']);back=json.loads(snap['readback_utf8'])
+- assert qa['status']=='PASS'and all(qa[k]is True for k in ['cpu_shared_resource_qualified','native_binding_qualified','single_slot_qualified'])and back['verified']
++ assert qa['status']=='PASS'and all(qa[k]is True for k in ['cpu_shared_resource_qualified','native_binding_qualified','dynamic_concurrency_qualified'])and back['verified']
+  assert qa['qualified_sources']==back['qualified_sources']==qualified and qa['expected_pins']==back['expected_pins']==cfg['expected_pins']
+  assert snap['overlay_record']['status']=='ACTIVE'and all(snap['overlay_record'][k]==v for k,v in lib.record(cfg).items())
+  assert snap['full_forecast_preflights']==[p['native_full_forecast']for p in snap['fresh_preflights']]and snap['fresh_preflights']
+--- frozen_preimage/bpf_extra_strict.py
++++ broad/bpf_extra_strict.py
+@@ -1,7 +1,7 @@
+ """Observation-only strict AND the existing original/CPU2/IO proof. No install."""
+ import copy,hashlib,importlib.util,json,pathlib,re
+ P=pathlib.Path
+-ID='DTC_STRACE_FUTURE_ENTRY_V3'
++ID='DTC_STRACE_BROAD_SHARED_CPU_V1'
+ REQ='DTC_L2_MLP_FULL_WORKLOAD_EXPLORATION_20261027_V1'
+ FIELD='additional_strace_bpf_observation_binding'
+ KEY='additional_strace_bpf_observation_strict'
+@@ -45,7 +45,7 @@
+  return dict(status,pid=value['pid'],start_ticks=value['start_ticks'],mnt_namespace=value['mnt_namespace'])
+ def record(cfg):
+  return dict(request=cfg['request'],overlay_id=cfg['overlay_id'],configuration_sha256=objsha(cfg),qualified_sources=cfg['qualified_sources'],
+- expected_pins=cfg['expected_pins'],QA_sha256=cfg['QA_sha256'],readback_sha256=cfg['readback_sha256'],future_primary_policy=cfg['future_primary_policy'],future_ir_policy=cfg['future_ir_policy'],policy_source_sha256=cfg['policy_source_sha256'],canary4_prerequisite_sha256=cfg['canary4_prerequisite_sha256'])
++ expected_pins=cfg['expected_pins'],QA_sha256=cfg['QA_sha256'],readback_sha256=cfg['readback_sha256'],future_primary_policy=cfg['future_primary_policy'],future_ir_policy=cfg['future_ir_policy'],policy_source_sha256=cfg['policy_source_sha256'],canary4_prerequisite_sha256=cfg['canary4_prerequisite_sha256'],resource_configuration_sha256=cfg['resource_configuration_sha256'])
+ def verify_activation(activation,snapshot,fork,launch,pid):
+  mode=snapshot['mode'];baseline1=proc(snapshot['baseline_preINTENT']);baseline2=proc(fork['baseline_prePopen'])
+  require(activation['baseline_preINTENT']==snapshot['baseline_preINTENT']and activation['baseline_prePopen']==fork['baseline_prePopen'],'Baseline binding drift')
+@@ -59,7 +59,8 @@
+  require(model['mnt_namespace']==tracer['mnt_namespace']==baseline1['mnt_namespace']==baseline2['mnt_namespace']==pid['mnt_namespace'],'Namespace mismatch')
+  expected=(2,1)if mode=='BPF_REQUIRED'else(0,0)if mode=='DEFAULT_CONTROL'else None
+  require(expected is not None and(model['Seccomp'],model['Seccomp_filters'])==expected,'Silent fallback or unknown activation')
+- expected_status='PASS_BPF_REQUIRED_ACTIVE'if mode=='BPF_REQUIRED'else'PASS_DEFAULT_CONTROL_NO_BPF'
++ require(mode=='BPF_REQUIRED','Broad scope is BPF only')
++ expected_status='PASS_BROAD_SHARED_BPF_REQUIRED_ACTIVE'
+  require(activation['verdict']['status']==expected_status,'Producer did not prove requested mode')
+  return dict(status=expected_status,model_pid=model['pid'],model_start_ticks=model['start_ticks'],tracer_pid=tracer['pid'],tracer_start_ticks=tracer['start_ticks'],
+   baseline_Seccomp=0,baseline_filters=0,model_Seccomp=expected[0],model_filters=expected[1],fallback_accepted=False)
+@@ -74,7 +75,7 @@
+  require(snap['schema']==cfg['schema']==cfg['overlay_id']==ID and cfg['status']=='ACTIVE_FUTURE_SCOPED','Snapshot configuration schema/status')
+  require(cfg['root']==str(root)and cfg['request']==REQ and objsha(cfg)==binding['config_sha256'],'Configuration identity')
+  require(cfg['future_primary_policy']=='MATRIX_REGISTERED_UNSPENT_BPF_REQUIRED'and cfg['future_ir_policy']=='EXACT_REGISTERED_IR11_BPF_REQUIRED','Unqualified future policy')
+- verify_release_prerequisite(cfg,authority)
++ verify_release_prerequisite(cfg,authority,resource_configuration_utf8=snap['resource_configuration_utf8'],resource_snapshot=read(out/'CPU_SHARED_TIMESLICE_SNAPSHOT.json'))
+  require(not cfg['qualification_only']or authority.get('qualification_only')is True,'CPU fixture cannot release production')
+  require(snap['mode']==binding['mode']=='BPF_REQUIRED','PRIMARY/IR require proven BPF; no fallback mode')
+  require(snap['overlay_record']['status']=='ACTIVE'and all(snap['overlay_record'].get(k)==v for k,v in record(cfg).items()),'Historical overlay record mismatch')
+@@ -110,9 +111,10 @@
+  route=producer.read_route_claim(cfg,c,spec);rp=producer.route_claim_path(cfg,c)
+  require(sha(rp)==snap['route_claim_sha256']==binding['route_claim_sha256']==utfsha(snap['route_claim_utf8']),'Persistent V3 route claim binding')
+  require(json.loads(snap['route_claim_utf8'])==route and route['scientific_role']==rule['scientific_role']and route['primary_statistics_excluded']==rule['primary_statistics_excluded'],'Route claim role/science mismatch')
+- memory=json.loads(snap['memory_configuration_utf8']);captured_memory=read(out/'CPU_SPARE_MEMORY_ADMISSION_SNAPSHOT.json')['config']
+- require(c in memory['allowed_cohorts']and set(memory['allowed_cohorts'])<=set(captured_memory['allowed_cohorts']),'Official memory scope capture mismatch')
+- require({k:v for k,v in memory.items()if k!='allowed_cohorts'}=={k:v for k,v in captured_memory.items()if k!='allowed_cohorts'},'Memory generation changed outside official allow append')
++ memory=json.loads(snap['memory_configuration_utf8']);captured_memory=read(out/'CPU_SHARED_TIMESLICE_SNAPSHOT.json')['config']
++ require(snap['memory_configuration_utf8']==snap['resource_configuration_utf8'],'Broad typed memory/resource scope differs')
++ require(memory==captured_memory and c in memory['allowed_cohorts'],'Captured broad resource generation differs')
++ require(utfsha(snap['resource_configuration_utf8'])==cfg['resource_configuration_sha256'],'Broad resource configuration binding')
+  if rule['scientific_role']=='INCIDENT_RECOVERY_PERFORMANCE_TRIAL':
+   plan=json.loads(snap['ir_plan_utf8']);rows=[r for r in plan['rows']if r['new_cohort']==c];require(len(rows)==1,'IR one-to-one plan identity')
+   row=rows[0];require(sha(row['draft_spec']['path'])==row['draft_spec']['sha256'],'Frozen IR draft spec changed')
+@@ -151,7 +153,8 @@
+  return dict(intent=intent,out=out,docs=docs,binding=binding,snapshot=snap,verdict=verdict,scientific_identity=si,scope_policy=rule,spec=spec)
+ def terminal(c,base_proof,root,contract,authority,readonly=False):
+  require(base_proof.get('performance_accepted')is True,'Original performance strict mandatory')
+- require(base_proof.get('additional_cpu_spare_memory_admission_strict',{}).get('status')=='PASS_CPU_SPARE_MEMORY_IO_AND_ORIGINAL_PERFORMANCE','CPU2 strict mandatory')
++ require('additional_cpu_spare_memory_admission_strict'not in base_proof,'Broad Shared cannot claim CPU2 PASS')
++ require(base_proof.get('additional_cpu_shared_timeslice_strict',{}).get('schema')=='CPU_SHARED_DYNAMIC_FUTURE_MEMORY_095_V1'and base_proof['additional_cpu_shared_timeslice_strict'].get('status')=='PASS_CPU_SHARED_DYNAMIC_IO_AND_ORIGINAL_PERFORMANCE','Dynamic Shared strict mandatory')
+  require('additional_shared_json_io_strict'in base_proof or'additional_future_memory_io_strict'in base_proof,'IO strict mandatory')
+  v=verified_files(c,root,contract,authority);out=v['out']
+  for k in ['cohort','uuid','input_digest','core_commit','framework_commit','binary_sha256']:
+@@ -168,9 +171,9 @@
+  require(type(base_proof['cycles'])is int and base_proof['cycles']>0,'Positive actual cycles required')
+  if rule['scientific_role']=='INCIDENT_RECOVERY_PERFORMANCE_TRIAL':
+   require(v['intent']['uuid']!=spec['incident_recovery_trial_lineage']['original_uuid'],'Original failed UUID reused')
+- result=dict(schema=ID,status='PASS_STRACE_V3_AND_ORIGINAL_CPU2_IO',cohort=c,uuid=v['intent']['uuid'],mode=v['binding']['mode'],
++ result=dict(schema=ID,status='PASS_BROAD_SHARED_BPF_AND_ORIGINAL_IO',cohort=c,uuid=v['intent']['uuid'],mode=v['binding']['mode'],
+   snapshot_sha256=sha(out/SNAP),activation_sha256=sha(out/ACT),fork_plan_sha256=sha(out/FORK),extra_strict_source_sha256=sha(__file__),
+-  scientific_identity=v['scientific_identity'],activation=v['verdict'],original_strict_required=True,CPU2_strict_required=True,IO_strict_required=True,
++  scientific_identity=v['scientific_identity'],activation=v['verdict'],original_strict_required=True,CPU2_strict_required=False,old_CPU2_PASS_claimed=False,dynamic_shared_strict_required=True,IO_strict_required=True,
+   scientific_role=rule['scientific_role'],science_projection_sha256=rule['science_projection_sha256'],
+   primary_statistics_excluded=rule['primary_statistics_excluded'],validated_union_authorized=False,
+   cross_profile_or_failed_cycles_equality_required=False,actual_cycles=base_proof['cycles'])
+@@ -196,7 +199,7 @@
+  if not contract.get('qualification_only',False):
+   require(root==PRODUCTION_ROOT and restore.stat().st_dev==root.stat().st_dev==2128,'Restore is not actual native device2128')
+   require(bundle.resolve().is_relative_to(P('/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/results')),'Wrong true164 archive namespace')
+- keys=[SNAP,ACT,FORK,SIDE,'NATIVE_LAUNCH.json','NATIVE_SIMULATOR_PID_AND_MAPS.json','NATIVE_EXIT.json','L2_STRICT.json']
++ keys=[SNAP,ACT,FORK,SIDE,'NATIVE_LAUNCH.json','NATIVE_SIMULATOR_PID_AND_MAPS.json','NATIVE_EXIT.json','L2_STRICT.json','CPU_SHARED_TIMESLICE_SNAPSHOT.json','CPU_SHARED_TIMESLICE_EXTRA_STRICT.json','SHARED_JSON_IO_SNAPSHOT.json','SHARED_JSON_IO_EXTRA_STRICT.json']
+  proofs=[]
+  for name in keys:
+   entry=entries.get(name);require(entry is not None and entry['type']=='file','Missing archived key '+name)
+@@ -207,98 +210,38 @@
+  return dict(schema=ID,status='PASS_NEW_OBSERVATION_ARCHIVED_AND_NATIVE_RESTORED',cohort=c,uuid=intent['uuid'],manifest_sha256=receipt['manifest_sha256'],
+   archive_sha256=receipt['archive_sha256'],native_restore=str(restore),required_files=proofs,original_full_archive_verifier_required=True)
+ 
+-# Included verbatim into new bpf_extra_strict.py; never changes V2 sources.
+-GATE_SCHEMA='DTC_BPF_FUTURE_V3_REAL_CANARY4_GATE_V1'
+-V2_EXTRA=P('/root/data/dtc_l2_mlp_exploration_20261027_v1/control/operational_amendments/strace_bpf_future_entry_v2/bpf_extra_strict.py')
+-V2_EXTRA_SHA='cbbddba1fe954a1e7dd411c89f9feff2480d5314781204b75fc8364159586711'
+-V2_BRIDGE_SHA='5c4ded4df0dee860015208b0af46d967e91a0bb2a2fc98e6830ed7b54db6ae9f'
+-CPU_OWNER=P('/root/data/dtc_l2_mlp_exploration_20261027_v1/control/operational_amendments/cpu_spare_memory_v2/cpu_owner.py')
+-CPU_OWNER_SHA='4945156fe11db69f75a6f1dc39e08a0f5c7b28ef43244525f570bebbf33cf080'
+-OLD_STRICT_SHA='f889b248adca6f466f8ee19fb2dc17986e355196132c716b7b6fc50ced333b59'
+-OLD_OUTBOX_SHA='d4b58b362a39c9d198a40e5c252f6eb07ba780e4707ffd79f6724569e349c4a5'
++
++# Included in the separate broad observation strict source.
++ACTUAL_FOUR_GATE_SHA='2a5422d1097c2e6578ff3ba4b2769a64918378bd120c35a305c7ab90c8e990b9'
++ACTUAL_FOUR_SOURCE_SHA='4d511441316523a833009d1e354e750d5cb60432fea4a39f8cec9771eeef1c1e'
+ def load_pinned(path,expected,name):
+  require(sha(path)==expected,'Pinned helper/source drift '+str(path))
+- sp=importlib.util.spec_from_file_location(name,path);module=importlib.util.module_from_spec(sp);sp.loader.exec_module(module);return module
+-def _require_existing_sidecars(result,out):
+- proof=result['proof']
+- for key in ['additional_cpu_spare_memory_admission_strict','additional_strace_bpf_observation_strict']:
+-  side=proof[key];path=P(side['sidecar_path']);require(path.parent==out and path.exists()and sha(path)==side['sidecar_sha256'],'Readonly prerequisite sidecar '+key)
+- io=proof.get('additional_shared_json_io_strict')or proof.get('additional_future_memory_io_strict')
+- require(io is not None and P(io['sidecar_path']).parent==out and sha(io['sidecar_path'])==io['sidecar_sha256'],'Readonly prerequisite IO sidecar')
+-def replay_v2_canary(cohort,authority):
+- """Actual standalone readonly replay of the same old physics+CPU2+IO+V2 chain.
++ s=importlib.util.spec_from_file_location(name,path);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
++def verify_release_prerequisite(cfg,authority,resource_configuration_utf8=None,resource_snapshot=None):
++ """Use actual Main capture plus separate actual Main operational approval.
+ 
+- Existing sidecars are mandatory before terminal helpers execute, so replay
+- cannot mint missing strict evidence. No authority writer may call this.
++ This performs no raw archive replay and no authority call, and never grants.
++ Historical replay may supply the INTENT-captured resource config.
+  """
+- require(sha(MAIN_EXCLUSION_PATH)==MAIN_EXCLUSION_SHA,'Main exact4 contract drift')
+- exclusion=read(MAIN_EXCLUSION_PATH);require(cohort in exclusion['scope_cohorts'],'Not exact engineering4')
+- rp=PRODUCTION_ROOT/'analysis'/(cohort+'.RESULT.json');value=read(rp)
+- require(value['state']=='PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE'and value['scientific_role']=='ENGINEERING_OBSERVATION_CANARY'and value['primary_statistics_excluded']is True and value['validated_union_authorized']is False,'Not a real accepted engineering RESULT')
+- require(read(PRODUCTION_ROOT/'analysis/engineering_results'/(cohort+'.RESULT.json'))==value,'Engineering mirror changed')
+- intent=read(PRODUCTION_ROOT/'control/qualification_ledger'/(cohort+'.INTENT.json'));out=P(intent['output'])
+- _require_existing_sidecars(value,out)
+- original=load_pinned(PRODUCTION_ROOT/'tools/l2_strict.py',OLD_STRICT_SHA,'v3_gate_original_strict')
+- base=original.terminal(cohort)
+- owner=load_pinned(CPU_OWNER,CPU_OWNER_SHA,'v3_gate_historical_CPU2_owner')
+- historical=owner.historical_extra(intent,out)
+- proof=historical.terminal(cohort,base)
+- v2=load_pinned(V2_EXTRA,V2_EXTRA_SHA,'v3_gate_V2_strict')
+- contract=v2.normalize_contract(exclusion,PRODUCTION_ROOT,MAIN_EXCLUSION_SHA,False)
+- observed=v2.terminal(cohort,proof,PRODUCTION_ROOT,contract,authority,readonly=True)
+- require(observed==value['proof'],'Readonly original/CPU2/IO/V2 strict changed')
+- outbox=load_pinned(PRODUCTION_ROOT/'tools/l2_outbox.py',OLD_OUTBOX_SHA,'v3_gate_original_outbox')
+- archive=outbox.verify(cohort)
+- require(archive=={k:v for k,v in value['archive'].items()if k!='additional_strace_bpf_archive_verification'},'Readonly original full archive changed')
+- require(v2.verify_archive(cohort,archive,PRODUCTION_ROOT,contract)==value['archive']['additional_strace_bpf_archive_verification'],'Readonly observation/native restore changed')
+- return value
+-def _gate_row(cohort,value):
+- proof=value['proof'];extra=proof[KEY]
+- return dict(cohort=cohort,RESULT_sha256=sha(PRODUCTION_ROOT/'analysis'/(cohort+'.RESULT.json')),
+-  uuid=proof['uuid'],cycles=proof['cycles'],mode=extra['mode'],
+-  counts={k:proof[k]for k in ['CTA','instructions','kernel_count']},
+-  archive_manifest_sha256=value['archive']['additional_strace_bpf_archive_verification']['manifest_sha256'],
+-  archive_sha256=value['archive']['additional_strace_bpf_archive_verification']['archive_sha256'])
+-def capture_release_prerequisite(frame,main,path):
+- """Explicit same-Main-owner receipt writer, not invoked on import/installation.
+-
+- It requires the actual current V2 bridge, never an injected fake callback.
+- Actual model experiments and grant writes are not performed by this method.
+- """
+- import os,threading,datetime
+- require(threading.current_thread()is threading.main_thread()and os.getpid()==1498278,'Actual Main owner required')
+- require(int(P('/proc/self/stat').read_text().rsplit(')',1)[1].split()[19])==977758783,'Main PID generation changed')
+- marker=main.DTC_STRACE_BPF_PRIVATE_CONSUMER_V2
+- require(marker['frame']is frame and marker['consumer']is frame.f_locals['consumer']and marker['consumer'].safe_finish is marker['wrapper'],'Actual V2 bridge route required')
+- require(marker['source_sha256']==V2_BRIDGE_SHA and not marker['cfg']['qualification_only'],'Production V2 generation only')
+- require(sha(marker['bridge']['readonly_replay'].__code__.co_filename)==V2_BRIDGE_SHA,'V2 replay source drift')
+- engine=frame.f_locals['engine'];engine.assert_parent_lease()
+- q=engine.registered()[2];rows=[]
+- for cohort in sorted(read(MAIN_EXCLUSION_PATH)['scope_cohorts']):
+-  actual=marker['bridge']['readonly_replay'](cohort)
+-  require(actual==replay_v2_canary(cohort,q),'Actual bridge and standalone readonly replay differ')
+-  rows.append(_gate_row(cohort,actual))
+- result=dict(schema=GATE_SCHEMA,kind='ACTUAL_SAME_OWNER_V2_FULL_READONLY_REPLAY',qualification_only=False,
+-  capture_source_sha256=sha(__file__),V2_bridge_sha256=V2_BRIDGE_SHA,V2_extra_sha256=V2_EXTRA_SHA,
+-  exclusion_contract_sha256=MAIN_EXCLUSION_SHA,canaries=rows,
+-  UTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),actual_owner_pid=os.getpid(),actual_owner_start_ticks=977758783)
+- path=P(path);require(not path.exists(),'Prerequisite receipt immutable; do not overwrite')
+- producer_path=marker['cfg']['source_paths']['producer'];producer=load_pinned(producer_path,marker['cfg']['qualified_sources']['producer'],'v3_gate_atomic_writer')
+- producer.atomic_exclusive(path,result)
+- return dict(path=str(path),sha256=sha(path),receipt=result)
+-def verify_release_prerequisite(cfg,authority):
+- """Full replay before any V3 selected INTENT; never call under authority EX."""
+- path=P(cfg['canary4_prerequisite_path']);require(sha(path)==cfg['canary4_prerequisite_sha256'],'Canary4 prerequisite SHA')
+- gate=read(path);require(gate['schema']==GATE_SCHEMA,'Wrong prerequisite generation')
+- qualification=cfg.get('qualification_only')is True and authority.get('qualification_only')is True and P(cfg['root']).resolve()!=PRODUCTION_ROOT.resolve()
+- if qualification:
+-  require(gate['kind']=='CPU_ONLY_PREREQUISITE_STANDIN_NOT_ACTUAL_CANARY'and gate['qualification_only']is True,'Explicit CPU-only quorum fixture required')
+-  return dict(status='CPU_ONLY_GATE_QUALIFIED_NOT_PRODUCTION_RELEASE',production_release_eligible=False,prerequisite_sha256=sha(path))
+- require(P(cfg['root'])==PRODUCTION_ROOT and cfg.get('qualification_only')is False and gate['qualification_only']is False,'CPU gate cannot release production')
+- require(gate['kind']=='ACTUAL_SAME_OWNER_V2_FULL_READONLY_REPLAY'and gate['capture_source_sha256']==sha(__file__),'Real full-replay source-bound prerequisite required')
+- require(gate['V2_bridge_sha256']==V2_BRIDGE_SHA and gate['V2_extra_sha256']==V2_EXTRA_SHA and gate['exclusion_contract_sha256']==MAIN_EXCLUSION_SHA,'Prerequisite old-source chain')
+- require(gate['actual_owner_pid']==1498278 and gate['actual_owner_start_ticks']==977758783,'Prerequisite owner generation')
+- rows={r['cohort']:r for r in gate['canaries']};required=set(read(MAIN_EXCLUSION_PATH)['scope_cohorts'])
+- require(len(rows)==len(gate['canaries'])==4 and set(rows)==required,'Exact four actual accepted prerequisites')
+- for cohort in sorted(required):require(rows[cohort]==_gate_row(cohort,replay_v2_canary(cohort,authority)),'Real prerequisite replay changed '+cohort)
+- return dict(status='ACTUAL_CANARY4_GATE_VERIFIED',production_release_eligible=True,prerequisite_sha256=sha(path),actual_canary_cohorts=sorted(required))
++ resource_text=P(cfg['resource_configuration_path']).read_text()if resource_configuration_utf8 is None else resource_configuration_utf8
++ require(utfsha(resource_text)==cfg['resource_configuration_sha256'],'Broad captured resource config SHA')
++ rcfg=json.loads(resource_text)
++ require(cfg['memory_configuration_path']==cfg['resource_configuration_path'],'Typed memory must refer to new broad resource')
++ lib=load_pinned(rcfg['source_paths']['library'],rcfg['qualified_sources']['library'],'broad_release_actual_resource_library')
++ require(lib.ID=='CPU_SHARED_DYNAMIC_FUTURE_MEMORY_095_V1','Wrong broad resource generation')
++ if resource_snapshot is None:evidence=lib.validate_broad_approval(rcfg,authority)
++ else:
++  require(resource_snapshot['config']==rcfg,'Historical resource snapshot generation differs')
++  evidence=lib.validate_broad_approval(rcfg,authority,resource_snapshot['broad_approval_utf8'],resource_snapshot['broad_gate_utf8'],resource_snapshot['broad_source_artifacts_utf8'],resource_snapshot['scope_contract_utf8'])
++ app=json.loads(evidence['certificate_utf8']);gate=json.loads(evidence['gate_utf8'])
++ gr=app['actual_gate']
++ require(gr['path']==cfg['canary4_prerequisite_path']and gr['sha256']==cfg['canary4_prerequisite_sha256']==ACTUAL_FOUR_GATE_SHA,'Actual Main mixed-four prerequisite identity')
++ require(gr['source_sha256']==gate['gate_source_sha256']==ACTUAL_FOUR_SOURCE_SHA and sha(gr['source_path'])==ACTUAL_FOUR_SOURCE_SHA,'Actual mixed-four replay source bytes')
++ require(utfsha(evidence['gate_utf8'])==ACTUAL_FOUR_GATE_SHA and gate['actual_owner_pid']==1498278 and gate['actual_owner_start_ticks']==977758783,'Actual same-owner gate generation')
++ for row in gate['rows']:
++  require(authority['consumed'][row['cohort']]['uuid']==row['uuid'],'Actual four consumed UUID changed')
++  result=json.loads(evidence['source_artifacts_utf8'][row['cohort']+'.RESULT'])
++  require(result['proof']['performance_accepted']is True and result['proof']['uuid']==row['uuid'],'Four original performance proof identity')
++  require({k:result['proof'][k]for k in ['CTA','instructions','kernel_count']}==row['counts'],'Actual four counts changed')
++  require(result['primary_statistics_excluded']is True and result['validated_union_authorized']is False,'Engineering four statistics isolation changed')
++ return dict(status='PASS_ACTUAL_MAIN_MIXED_FOUR_AND_EXPLICIT_BROAD_SCOPE',production_release_eligible=not cfg['qualification_only']and not authority.get('qualification_only',False),prerequisite_sha256=ACTUAL_FOUR_GATE_SHA,broad_approval_sha256=rcfg['broad_approval_sha256'],scope_contract_sha256=rcfg['scope_contract_sha256'])
+--- frozen_preimage/consumer_bridge.py
++++ broad/consumer_bridge.py
+@@ -6,10 +6,10 @@
+ PRODUCTION_ROOT=P('/root/data/dtc_l2_mlp_exploration_20261027_v1')
+ ORIGINAL_CONSUMER_SHA='6cc6cc30a71740df951327414d094953effb73a406e7036358ad0b702ebb0403'
+ CPU2_OWNER_SHA='4945156fe11db69f75a6f1dc39e08a0f5c7b28ef43244525f570bebbf33cf080'
+-V2_CONSUMER_SHA='5c4ded4df0dee860015208b0af46d967e91a0bb2a2fc98e6830ed7b54db6ae9f'
+-ID='DTC_STRACE_FUTURE_ENTRY_V3'
++V2_CONSUMER_SHA='2e548a181f28535043bdd5ed885ab2d554ca6462a2e8e690f6e400a36d8fc1c7'
++ID='DTC_STRACE_BROAD_SHARED_CPU_V1'
+ FIELD='additional_strace_bpf_observation_binding';EXTRA='additional_strace_bpf_observation_strict'
+-MARKER='DTC_STRACE_BPF_PRIVATE_CONSUMER_V3';B_OWNER_MARKER='DTC_STRACE_FUTURE_DISPATCH_V3'
++MARKER='DTC_STRACE_BROAD_SHARED_PRIVATE_CONSUMER_V1';B_OWNER_MARKER='DTC_STRACE_BROAD_SHARED_DISPATCH_V1'
+ class ObservationHold(RuntimeError):pass
+ def sha(p):return hashlib.sha256(P(p).read_bytes()).hexdigest()
+ def read(p):return json.loads(P(p).read_bytes())
+@@ -19,7 +19,8 @@
+  sp=importlib.util.spec_from_file_location(n,path);m=importlib.util.module_from_spec(sp);sp.loader.exec_module(m);return m
+ def mandatory_old(proof):
+  require(proof.get('performance_accepted')is True and type(proof.get('cycles'))is int and proof['cycles']>0,'Original full performance strict')
+- require(proof.get('additional_cpu_spare_memory_admission_strict',{}).get('status')=='PASS_CPU_SPARE_MEMORY_IO_AND_ORIGINAL_PERFORMANCE','CPU2 strict mandatory')
++ require('additional_cpu_spare_memory_admission_strict'not in proof,'Dynamic Shared cannot claim CPU2 strict PASS')
++ require(proof.get('additional_cpu_shared_timeslice_strict',{}).get('schema')=='CPU_SHARED_DYNAMIC_FUTURE_MEMORY_095_V1'and proof['additional_cpu_shared_timeslice_strict'].get('status')=='PASS_CPU_SHARED_DYNAMIC_IO_AND_ORIGINAL_PERFORMANCE','Dynamic Shared strict mandatory')
+  require('additional_shared_json_io_strict'in proof or'additional_future_memory_io_strict'in proof,'IO strict mandatory')
+  return proof
+ def make_private_consumer(consumer,scope_contract,observation,authority_provider):
+@@ -31,28 +32,39 @@
+  require(root==PRODUCTION_ROOT or qualification,'Private root needs both qualification flags')
+  loader_sha=sha(oldload.__code__.co_filename)
+  require(loader_sha==CPU2_OWNER_SHA or(qualification and loader_sha==contract.get('qualification_loader_sha256')),'Historical CPU2 loader required')
+- if not qualification:require(sha(oldsafe.__code__.co_filename)==V2_CONSUMER_SHA,'Current V2 outer safe route must be preserved')
++ if not qualification:require(sha(oldsafe.__code__.co_filename)==V2_CONSUMER_SHA,'Current Stage2 outer safe route must be preserved')
++ if qualification:physics_load=oldload
++ else:
++  pristine=load('broad_pristine_original_consumer',consumer.__file__);require(sha(pristine.__file__)==ORIGINAL_CONSUMER_SHA,'Original physics source');physics_load=pristine.load
++ def whole_proof(c,readonly=False):
++  base=physics_load('broad_original_whole_physics','l2_strict.py').terminal(c)
++  require(base.get('performance_accepted')is True,'Original physics mandatory')
++  intent=read(root/'control/qualification_ledger'/(c+'.INTENT.json'));out=P(intent['output']);binding=intent['additional_cpu_shared_timeslice_binding'];snapshot=out/'CPU_SHARED_TIMESLICE_SNAPSHOT.json'
++  require(binding['schema']=='CPU_SHARED_DYNAMIC_FUTURE_MEMORY_095_V1'and sha(snapshot)==binding['snapshot_sha256'],'Dynamic resource snapshot binding')
++  captured=read(snapshot)['config'];source=captured['source_paths']['extra_strict']
++  require(captured['qualified_sources']['consumer']==sha(__file__)and sha(source)==captured['qualified_sources']['extra_strict'],'Captured broad resource source')
++  return mandatory_old(load('broad_INTENT_bound_resource_extra',source).terminal(c,base,root=root,authority=authority_provider(),readonly=readonly))
+  def result_path(c):return root/'analysis'/(c+'.RESULT.json')
+  def recovery_path(c):return root/'analysis/incident_recovery_results'/(c+'.RESULT.json')
+- def route_claim(c):return root/'control/strace_bpf_v3_route_claims'/(c+'.json')
++ def route_claim(c):return root/'control/broad_shared_cpu_route_claims'/(c+'.json')
+  def selected(c):
+   # Binding belongs to INTENT history, never today's cfg role alone. Exact V2
+   # engineer4 and all jobs born before V3 continue through saved current safe.
+   ip=root/'control/qualification_ledger'/(c+'.INTENT.json')
+   if route_claim(c).exists():
+-   claim=read(route_claim(c));require(claim['cohort']==c and claim['schema']=='STRACE_BPF_V3_FUTURE_ROUTE_CLAIM_V1'and claim['overlay_id']==ID,'Wrong V3 route claim')
++   claim=read(route_claim(c));require(claim['cohort']==c and claim['schema']=='BROAD_SHARED_CPU_FUTURE_ROUTE_CLAIM_V1'and claim['overlay_id']==ID,'Wrong V3 route claim')
+    return True
+   if not ip.exists():return False
+   intent=read(ip);binding=intent.get(FIELD)
+   if binding is not None:
+    if binding.get('schema')==ID:return True
+-   if binding.get('schema')=='DTC_STRACE_FUTURE_ENTRY_V2':return False
++   if binding.get('schema')in ['DTC_STRACE_FUTURE_ENTRY_V2','DTC_STRACE_FUTURE_ENTRY_V3','DTC_STRACE_SHARED_CPU_OBSERVATION_V1']:return False
+    raise ObservationHold('Unknown observation generation; never fall back')
+   snap=P(intent['output'])/'STRACE_BPF_OBSERVATION_SNAPSHOT.json'
+   if snap.exists():
+    snapshot=read(snap)
+    if snapshot.get('schema')==ID:return True
+-   if snapshot.get('schema')!='DTC_STRACE_FUTURE_ENTRY_V2':raise ObservationHold('Unknown snapshot generation')
++   if snapshot.get('schema')not in ['DTC_STRACE_FUTURE_ENTRY_V2','DTC_STRACE_FUTURE_ENTRY_V3','DTC_STRACE_SHARED_CPU_OBSERVATION_V1']:raise ObservationHold('Unknown snapshot generation')
+   return False
+  def history(c):
+   intent=read(root/'control/qualification_ledger'/(c+'.INTENT.json'));out=P(intent['output'])
+@@ -70,11 +82,11 @@
+   rule=snap['scope_policy']
+   require(value['scientific_role']==rule['scientific_role']and value['primary_statistics_excluded']==rule['primary_statistics_excluded']and value['validated_union_authorized']is False,'Result role/union drift')
+   if rule['primary_statistics_excluded']:require(read(recovery_path(c))==value,'IR mirror missing/changed')
+-  for key in ['additional_cpu_spare_memory_admission_strict',EXTRA]:
++  for key in ['additional_cpu_shared_timeslice_strict',EXTRA]:
+    side=value['proof'][key];p=P(side['sidecar_path']);require(p.parent==out and p.exists()and sha(p)==side['sidecar_sha256'],'Readonly strict sidecar')
+   io=value['proof'].get('additional_shared_json_io_strict')or value['proof'].get('additional_future_memory_io_strict')
+   require(io is not None and P(io['sidecar_path']).parent==out and sha(io['sidecar_path'])==io['sidecar_sha256'],'Readonly IO sidecar')
+-  proof=mandatory_old(oldload('v3_original_readonly_strict','l2_strict.py').terminal(c))
++  proof=whole_proof(c,readonly=True)
+   observed=observation.terminal(c,proof,root,historical,authority_provider(),readonly=True)
+   require(observed==value['proof'],'Readonly complete strict changed')
+   archived=oldload('v3_original_readonly_outbox','l2_outbox.py').verify(c)
+@@ -87,12 +99,12 @@
+   if result_path(c).exists():return replay(c)
+   rule=snap['scope_policy'];state={'strict':False,'archive':False}
+   def newload(name,file):
+-   module=oldload(name,file)
++   module=physics_load(name,file)if P(file).name=='l2_strict.py'else oldload(name,file)
+    if P(file).name=='l2_strict.py':
+     previous=module.terminal
+     def terminal(candidate):
+      require(candidate==c,'Cross-cohort strict')
+-     value=observation.terminal(c,mandatory_old(previous(c)),root,historical,authority_provider(),readonly=False)
++     value=observation.terminal(c,whole_proof(c,readonly=False),root,historical,authority_provider(),readonly=False)
+      require(value[EXTRA]['schema']==ID,'V3 strict missing');state['strict']=True;return value
+     module.terminal=terminal
+    return module
+@@ -121,8 +133,8 @@
+    if not selected(c):return oldsafe(c)
+    return finish(c)
+   except Exception as error:
+-   value=dict(state='STRACE_V3_OBSERVATION_HOLD_PRESERVE',cohort=c,error=repr(error),accepted_cycles=None,model_retries=0,validated_union_authorized=False)
+-   try:oldput(root/'analysis/observation_v3_holds'/(c+'.'+str(time.time_ns())+'.json'),value,True)
++   value=dict(state='BROAD_SHARED_OBSERVATION_HOLD_PRESERVE',cohort=c,error=repr(error),accepted_cycles=None,model_retries=0,validated_union_authorized=False)
++   try:oldput(root/'analysis/broad_shared_observation_holds'/(c+'.'+str(time.time_ns())+'.json'),value,True)
+    except Exception as evidence_error:value['HOLD_evidence_write_error']=repr(evidence_error)
+    return value
+  return dict(safe_finish=safe_finish,finish_evidence=finish,readonly_replay=replay,selected=selected,
+@@ -149,7 +161,7 @@
+   consumer.safe_finish=bridge['safe_finish']
+   require(before==(consumer.load,consumer.finish_evidence,consumer.put,consumer.archive_closed),'Old callback changed')
+   setattr(main,MARKER,dict(frame=frame,consumer=consumer,engine=engine,aging=aging,bridge=bridge,cfg=cfg,cfg_path=str(cfg_path),cfg_sha256=sha(cfg_path),wrapper=bridge['safe_finish'],original_refs=before,source_sha256=sha(__file__),gate=gate))
+- return dict(status='V3_PRIVATE_CONSUMER_SAFE_ROUTE_INSTALLED',models_started=0,new_grants=0,gate=gate)
++ return dict(status='BROAD_SHARED_PRIVATE_CONSUMER_SAFE_ROUTE_INSTALLED',models_started=0,new_grants=0,gate=gate)
+ def consumer_check(frame,cfg):
+  m=getattr(sys.modules['__main__'],MARKER)
+  require(m['frame']is frame and frame.f_locals['consumer']is m['consumer']and m['consumer'].safe_finish is m['wrapper'],'Actual scheduler post path not V3 routed')
+@@ -164,14 +176,22 @@
+   require(not hasattr(main,B_OWNER_MARKER),'Restore V3 dispatcher first; keep V2 underneath')
+   require(m['consumer'].safe_finish is m['wrapper'],'Newer outer route present')
+   q=m['engine'].registered()[2]
+-  for path in (P(m['cfg']['root'])/'control/strace_bpf_v3_route_claims').glob('*.json'):
++  for path in (P(m['cfg']['root'])/'control/broad_shared_cpu_route_claims').glob('*.json'):
+    c=path.stem
+    if c in q.get('admitted_specs',{}):
+-    claim=read(path);require(claim['schema']=='STRACE_BPF_V3_FUTURE_ROUTE_CLAIM_V1'and claim['overlay_id']==ID and claim['cohort']==c,'Unknown registered route claim')
++    claim=read(path);require(claim['schema']=='BROAD_SHARED_CPU_FUTURE_ROUTE_CLAIM_V1'and claim['overlay_id']==ID and claim['cohort']==c,'Unknown registered route claim')
+     rp=m['bridge']['result_path'](c)
+     require(c in q['consumed']and rp.exists()and m['consumer'].accepted(read(rp))and read(rp)['proof'].get(EXTRA,{}).get('schema')==ID,'Preserve mandatory V3 route for admitted unused/unresolved claim; Main disposition required')
+   for c in q['consumed']:
+-   rp=m['bridge']['result_path'](c)
+-   require(not m['bridge']['selected'](c)or(rp.exists()and m['consumer'].accepted(read(rp))and read(rp)['proof'].get(EXTRA,{}).get('schema')==ID),'Cannot remove mandatory route from unresolved spent identity')
++   if not m['bridge']['selected'](c):continue
++   rp=m['bridge']['result_path'](c);require(rp.exists(),'Preserve mandatory broad route from unresolved spent identity')
++   value=read(rp);proof=value['proof'];intent=read(P(m['cfg']['root'])/'control/qualification_ledger'/(c+'.INTENT.json'));out=P(intent['output'])
++   require(m['consumer'].accepted(value)and value['uuid']==proof['uuid']==intent['uuid']==q['consumed'][c]['uuid'],'Restore requires accepted same-UUID performance')
++   require(proof.get(EXTRA,{}).get('schema')==ID and proof[EXTRA]['status']=='PASS_BROAD_SHARED_BPF_AND_ORIGINAL_IO','Restore observation generation')
++   require(proof.get('additional_cpu_shared_timeslice_strict',{}).get('schema')=='CPU_SHARED_DYNAMIC_FUTURE_MEMORY_095_V1','Restore resource generation')
++   require(intent[FIELD]['qualified_sources']==m['cfg']['qualified_sources'],'Restore captured source generation differs')
++   for key in [EXTRA,'additional_cpu_shared_timeslice_strict']:
++    side=proof[key];require(P(side['sidecar_path']).parent==out and sha(side['sidecar_path'])==side['sidecar_sha256'],'Restore strict sidecar missing/changed')
++   require(value['archive'].get('additional_strace_bpf_archive_verification',{}).get('status')=='PASS_NEW_OBSERVATION_ARCHIVED_AND_NATIVE_RESTORED','Restore full archive/native closure')
+   m['consumer'].safe_finish=m['bridge']['original_safe'];delattr(main,MARKER)
+  return dict(status='EXACT_PREVIOUS_V2_OUTER_SAFE_RESTORED',models_started=0,new_grants=0)
