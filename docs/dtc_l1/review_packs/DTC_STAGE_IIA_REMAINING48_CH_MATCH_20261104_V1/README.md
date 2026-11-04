@@ -1,5 +1,13 @@
 # DTC-L1 Stage II-A Remaining48 CH fair matching
 
+## Completed28 consolidated scientific review
+
+Read [the completed28 report](independent_reviews/root_completed28_consolidation_v1/CURRENT_SCIENTIFIC_REPORT_40_OF_48.md), its [independent review](independent_reviews/C_completed28_consolidation_review_v1/README.md), and the current execution table below. The frozen report covers40 accepted new CH points and the same28/32 complete six-cell inputs for both F profiles; it is not the final CORE32 result. Independent review passed911 checks, including raw RESULT identities/cycles, legal P0 aliases, exact signs and independently recomputed geometric means. The machine-readable report member is `CONSOLIDATION.json.gz`; the frozen prose's uncompressed filename is a location shorthand only.
+
+On this identical completed28 set, F128 has GM S_CH=1.015488, S_DH=1.013157, CH/DH=1.077227 and I=0.997705. F256 has GM S_CH=1.022801, S_DH=1.022166, CH/DH=1.079035 and I=0.999379. DH remains faster in this aggregate, while neither F setting improves the aggregate relative DH advantage over P0 on this partial set. Completion-order bias and all four pending programs remain explicit. No uniform F candidate is selected before final matched data.
+
+The source Root audit rechecked184 accepted RESULT slots and40 new raw terminal-cycle endpoints. Existing per-program/per-kernel studies, zero responses, regressions, cost disclosures and independent companion reviews remain in this package. Longtail simulations, final full48 lifecycle/recovery audit, final32 narrative and final visual approval remain pending. This publication starts no model, changes no owner/registry/source and does not complete the Goal.
+
 This is the new user-authorized exact48 execution, based on first16 final authority `5f67b4d6b94568a9f1acc80c3e56736bd81e4753`, preparation `5001c3f35052f7f91f1ad41eeff83f2947a0878d` and Stage I final `361fa6fa0700825bb9cda43e25b9fd1f60e0b262`. Historical proposal files retain pre-approval labels; the new user authorization and new registered epoch2 request control this execution. Completed first16 and all previous requests/UUIDs/budgets remain unchanged.
 
 The frozen proposal is 24 programs x CH-F128/F256 = 48, with no input or best-speedup selection. R1/R2/R3 are reporting milestones and may overlap. The sole scientific owner remains native PID1498278/start977758783 with its existing lease and lock handles; this report publisher is not a dispatcher. New request budget is exactly48; every actual start has a new one-use identity. Source/configuration files are frozen under122 SHA pins.
