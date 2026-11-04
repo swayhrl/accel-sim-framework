@@ -1,14 +1,14 @@
 # Latest Performance-First results
 
-Updated 2026-11-04T16:06:26.972258+00:00. Fixed48 planned cells: Tag safety HOLD=16; non-Tag accepted=12, archived negative=0, unused-family-HOLD=0, pending=20. Fixed exploratory inputs=8. These are not the core32 population.
+Updated 2026-11-04T16:34:49.023561+00:00. Fixed48 planned cells: Tag safety HOLD=16; non-Tag accepted=13, archived negative=0, unused-family-HOLD=0, pending=19. Fixed exploratory inputs=8. These are not the core32 population.
 
-Immutable complete table, source identities, CSV and missingness: [snapshot](progress_snapshots/20261104T160624_72555f7c/README.md). See LATEST_RESULTS_SUMMARY.json and the matching JSON/CSV in that snapshot.
+Immutable complete table, source identities, CSV and missingness: [snapshot](progress_snapshots/20261104T163446_31340a8a/README.md). See LATEST_RESULTS_SUMMARY.json and the matching JSON/CSV in that snapshot.
 
 All curves and GM use one fixed variant at a time. Direct variant comparison requires the common accepted input intersection; no best-per-program stitching. Tag HOLD cells have no simulated cycles and are not performance negatives. Missing counters are unavailable, not zero.
 
 | Variant | Accepted / planned | GM DH-P0 / candidate (available set) |
 | --- | ---: | ---: |
-| OO_PIB192 | 1 / 8 | 1.000000 |
+| OO_PIB192 | 2 / 8 | 1.007253 |
 | PHYS1024_TAG64x8 | 3 / 8 | 1.000000 |
 | PHYS768_TAG64x8 | 5 / 8 | 1.010239 |
 | TAG4BANK_PERBANK2_TOTAL8 | 3 / 8 | 1.000000 |
