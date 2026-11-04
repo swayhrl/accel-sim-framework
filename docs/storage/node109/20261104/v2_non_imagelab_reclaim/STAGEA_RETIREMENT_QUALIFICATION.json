@@ -1,0 +1,122 @@
+{
+  "schema": "NODE109_STAGEA_RETIREMENT_QUALIFICATION_V2",
+  "goal": "NODE109_NON_IMAGELAB_COLD_ASSET_RECLAIM_V2",
+  "input_v1_head": "21f026126203b1b221b0275125485bd27d2b402f",
+  "source_snapshot_utc": "2026-11-04T02:54:56Z",
+  "target_sha_utc": "2026-11-04T02:57:25Z",
+  "private_evidence_sha256": {
+    "nonimage109_private.json": "1e0558d6f89f1dc3751b81e139c2d0c33edb75784cba305512c19bf4088c5124",
+    "dependencies109_private.json": "21b4504699ad8c0faa16c4111e539f9ac71306fe151be1648c334f09a1675902",
+    "science_controls109_private.json": "46fee0a968ce51d0766ec37af0c08573e4863c1502468974492bef8d91bd1fb7",
+    "stagea_target_verify_private.log": "bf5366647dfb4d3d8898566816c1b97fefd0e01a85590eba21522f5d067940f1",
+    "stagea_source_weights_private.log": "8911eb9268aab75260a529c165a652cb252b6d39d02a82daa1a092d1b4ddf772",
+    "stagea_comparison_private.json": "e9853380578709d7e3bd42b292829509b20ff81fe0433e01a67f41d9b3856b36",
+    "stagea_restore_private.json": "858a70d5990335108fb6296b18528fe0cb38e4c3467b8609f2acefcd649e0e7d"
+  },
+  "true164_mount_identity": "/root/share/mnt164 <ARCHIVE_SERVICE_ACCOUNT>@<TRUE164_PRIVATE_IP>:/home/shared fuse.sshfs",
+  "archive_proof": {
+    "status": "FULL_SHA_VERIFIED_WITH_HISTORICAL_SOURCE_IDENTITY_BINDING",
+    "files": 24,
+    "three_weight_current_source_and_target_full_sha": 3,
+    "other_small_source_historical_sha_and_unchanged_identity": 21,
+    "all_current_target_full_sha_match": true,
+    "all_source_identities_unchanged_since_oct28": true,
+    "no_hardlink_or_symlink_in_source_revision": true,
+    "no_inbound_symlinks_found_in_94243_c16_directories": true
+  },
+  "restore_proof": {
+    "status": "READ_AND_LAYOUT_CLOSURE_PASS",
+    "native_restore_test": "NOT_REQUIRED_NOT_RUN",
+    "details": "True164 config/tokenizer_config parse; BF16 index references both present shards; AWQ single safetensors file; 24-file target fully readable and hashed; restore to exact source revision path with manifest SHA before replay",
+    "observed": [
+      {
+        "relative_root": "qwen2.5-3b-instruct/aa8e72537993ba99e69dfaafa59ed015b17504d1",
+        "receipt_sha256": "cb61edb07b5129e3ec099540034b5eb2c8c2dd2454387f9f22f78b7751806b2d",
+        "receipt_keys": [
+          "config_sha256",
+          "file_count",
+          "files",
+          "model_inference_executed",
+          "model_key",
+          "repository",
+          "revision",
+          "schema",
+          "tokenizer_revision",
+          "total_bytes",
+          "weights_downloaded"
+        ],
+        "receipt_file_count": 12,
+        "config_parses": true,
+        "tokenizer_config_parses": true,
+        "index_closure": [
+          {
+            "index": "model.safetensors.index.json",
+            "shards": [
+              "model-00001-of-00002.safetensors",
+              "model-00002-of-00002.safetensors"
+            ],
+            "all_exist": true,
+            "tensors": 434
+          }
+        ],
+        "weight_files": [
+          "model-00002-of-00002.safetensors",
+          "model-00001-of-00002.safetensors"
+        ]
+      },
+      {
+        "relative_root": "qwen2.5-3b-instruct-awq/3559b226e8ce77211e2c1bd7ddfb7686fec4d6dd",
+        "receipt_sha256": "f6b29d64e5e9b6afbfa9827cef125502d572be9258be161987d8761ddafcc98b",
+        "receipt_keys": [
+          "config_sha256",
+          "file_count",
+          "files",
+          "model_inference_executed",
+          "model_key",
+          "repository",
+          "revision",
+          "schema",
+          "tokenizer_revision",
+          "total_bytes",
+          "weights_downloaded"
+        ],
+        "receipt_file_count": 10,
+        "config_parses": true,
+        "tokenizer_config_parses": true,
+        "index_closure": [],
+        "weight_files": [
+          "model.safetensors"
+        ]
+      }
+    ]
+  },
+  "source_allocated_unique_file_bytes": 8881737728,
+  "source_logical_bytes": 8881676869,
+  "scientific_dependency": {
+    "status": "HOLD_SCIENTIFIC_OWNER",
+    "stagea_control_status": "RUNTIME_QUALIFICATION_PARTIAL",
+    "automatic_next_goal": false,
+    "scientific_performance_use": "NONE",
+    "historical_local_path_copyback_references": 4,
+    "live_exact_process_hits": 0,
+    "fd_permission_or_race_count": 419,
+    "maps_permission_or_race_count": 107,
+    "all_user_idle_proven": false,
+    "owner_confirmation_required": "Will StageA partial runtime qualification or C16/AWMA/E1 replay need the 109 local revisions before restore?"
+  },
+  "qualification_status": "HOLD_SCIENTIFIC_OWNER",
+  "intent_draft": {
+    "mode": "DRAFT_ONLY_NO_UNLINK",
+    "proposed_literal_source_root": "/data/c16/stagea_runtime_qualification_v1/assets",
+    "proposed_file_count": 24,
+    "exact_files_in": "NEXT_EXACT_RETIREMENT_WHITELIST.csv",
+    "expected_file_block_reclaim_bytes": 8881737728,
+    "preconditions": [
+      "scientific owner confirms no planned local reader and accepts restore latency",
+      "all-user active/queued reader boundary closes or owner accepts documented blind zone",
+      "repeat exact file identity, nlink, source/target availability immediately before any separately authorized action",
+      "no extra files, symlinks, or changed source identities",
+      "do not remove parent assets or StageA control/receipts outside the 24 listed files"
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+# Node109 non-ImageLab cold-asset reclaim qualification V2
+
+Goal: `NODE109_NON_IMAGELAB_COLD_ASSET_RECLAIM_V2`. Built from V1 frozen HEAD `21f026126203b1b221b0275125485bd27d2b402f` on an independent V2 branch. V1 report, 112-row inventory/matrix, candidate table, retirement closure, four historical public reports and source provenance ledger were read. This stage touched only scoped non-ImageLab source metadata/content and true164 proof. It did **not** delete/move Source, copy large assets, pause tasks, rerun experiments, modify scientific ledgers or operate on original 174 assets. ImageLab is excluded from execution and from reclaim sums; its V1 archive-gap risk remains in V1.
+
+## Qualification outcome
+
+StageA two revisions contain **24 files**, 8881676869 B logical and 8881737728 B (8.27 GiB) unique single-link file blocks. All current 109 dev/inode/size/mtime identities match Oct28. The three weight files missing historical full source SHA were now fully read on 109 and true164 and matched; the 21 small files retain Oct28 source SHA with unchanged source identity and were fully read on true164. All 24 target reads were stable and matched. The independent true164 SSHFS mount identity was verified before reading; config/tokenizer JSON and BF16 shard index closure passed. No full native restore or GPU inference was required.
+
+**StageA retirement status: `HOLD_SCIENTIFIC_OWNER`.** Its control receipt says `RUNTIME_QUALIFICATION_PARTIAL`; four copyback records reference the local models. Neither an empty current FD hit nor an old mtime settles a future C16/AWMA/E1 reader. The 24-file intent draft is precise but cannot run until the science owner confirms no planned local-path replay and the all-user reader boundary is addressed.
+
+Three AWMA private pip HTTP caches remain 8.49 GiB and are the next low-risk class, but their package rebuild/offline availability is unproven: `HOLD_RESTORE_PROOF`. Qwen3-30B remains 56.89 GiB locally and is referenced by runnable AWMA/C16 scripts: `HOLD_ACTIVE_OR_PLANNED_READER`. R26/R27 publication manifests and exact target paths support focused future validation of specific checkpoint copies, not whole-tree retirement. R27 B0 raw tensors and E1/A26/A61/NequIP scientific evidence remain protected. Previously cleared OLMoE/Llama have zero current reclaim and are `ALREADY_RETIRED`.
+
+The bounded process scan found no exact-path current hit; 419 FD and 107 maps views were inaccessible or raced, so no global idle proof is claimed. A 94,243-directory local symlink scan found no inbound links to selected roots; StageA and Qwen file `nlink=1`. Resource use was targeted: one 8.88 GB true164 read and one 8.86 GB 109 weight read at throttled low I/O priority, with no 361.8 GiB tree hash or GPU work.
+
+The disjoint A/B/C estimates and conditions are in `SSD_RECLAIM_OPPORTUNITY_SUMMARY.md`. **No candidate is currently `READY_FOR_USER_RETIREMENT_APPROVAL`; no deletion white list is executable yet.** `NEXT_EXACT_RETIREMENT_WHITELIST.csv` is an INTENT draft with per-file identities and HOLD gates. STOP for ChatGPT review and a separately authorized retirement scope.
+
+Public review files replace private account/host identifiers with placeholders. The SHA256 of each local private audit proof is retained in the StageA JSON; the literal true164 owner segment can be resolved from the controlled private evidence before any later operation. No model/data payload or credentials are published.
