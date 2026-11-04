@@ -1,19 +1,19 @@
 # Remaining48 CH matching / fixed CORE32 readonly results
 
-As of 2026-11-04T10:43:07.902280+00:00; source_qualified=True. New48 accepted 47/48, archived negative 0, verification HOLD 0, pending 1. Complete both-F population 31/32. Source slots accepted 191/192.
+As of 2026-11-04T10:51:13.953010+00:00; source_qualified=True. New48 accepted 48/48, archived negative 0, verification HOLD 0, pending 0. Complete both-F population 32/32. Source slots accepted 192/192.
 
 All32 fixed inputs remain listed. Interim available-subset GM is descriptive, not the full32suite result. Direct F comparison uses the same accepted six-cell intersection; negatives/HOLD/pending never become cycles. Original128, first16newCH and remaining48newCH keep distinct source roles; source_profile is actual configuration, not a comparison-context alias.
 
 | Suite | Common n | Profile | GM S_CH | GM S_DH | GM CH/DH | GM I |
 | --- | --- | --- | --- | --- | --- | --- |
-| ALL_CORE32 | 31 | F128 | 1.013978 | 1.011876 | 1.092349 | 0.997927 |
-| ALL_CORE32 | 31 | F256 | 1.020572 | 1.020000 | 1.094004 | 0.999439 |
+| ALL_CORE32 | 32 | F128 | 1.015816 | 1.012595 | 1.096584 | 0.996830 |
+| ALL_CORE32 | 32 | F256 | 1.020645 | 1.019138 | 1.098448 | 0.998523 |
 | CUDA Samples | 9 | F128 | 1.040091 | 1.037979 | 1.018892 | 0.997970 |
 | CUDA Samples | 9 | F256 | 1.062320 | 1.059559 | 1.018311 | 0.997401 |
 | Parboil | 7 | F128 | 1.002158 | 1.002002 | 1.022350 | 0.999844 |
 | Parboil | 7 | F256 | 1.003420 | 1.003439 | 1.022529 | 1.000019 |
-| PolyBench/GPU | 7 | F128 | 1.008819 | 1.002362 | 1.344465 | 0.993600 |
-| PolyBench/GPU | 7 | F256 | 1.009078 | 1.009929 | 1.354267 | 1.000843 |
+| PolyBench/GPU | 8 | F128 | 1.016799 | 1.006401 | 1.330451 | 0.989773 |
+| PolyBench/GPU | 8 | F256 | 1.010799 | 1.007772 | 1.340171 | 0.997005 |
 | Rodinia | 8 | F128 | 1.000000 | 1.000000 | 1.043821 | 1.000000 |
 | Rodinia | 8 | F256 | 1.000000 | 1.000000 | 1.043821 | 1.000000 |
 
@@ -41,7 +41,7 @@ All32 fixed inputs remain listed. Interim available-subset GM is descriptive, no
 | ATAX | eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950 | 28428842 | 29882110 | 31081550 | 31880220 | 31894637 | 31321955 | 1.050644 | 1.112797 | True |
 | BICG | ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef | 26298698 | 24464891 | 24651923 | 28685812 | 29210480 | 28883488 | 0.913561 | 0.930967 | True |
 | GEMM | fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318 | 1395216 | 1395216 | 1395216 | 826089 | 826089 | 826089 | 1.000000 | 1.000000 | True |
-| GESUMMV | 769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4 | 114860845 | 106901261 | MISSING | 89502220 | 86464623 | 90151547 | 0.963399 | MISSING | False |
+| GESUMMV | 769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4 | 114860845 | 106901261 | 112286106 | 89502220 | 86464623 | 90151547 | 0.963399 | 0.970543 | True |
 | MVT | f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079 | 26581175 | 25573002 | 24342928 | 34687540 | 35332620 | 35093446 | 0.944507 | 0.905203 | True |
 | dwt2d | e5638b94095098acf5186be97210cb371bb3f88dcc8ceefb7609b454ef5ce008 | 73691 | 73691 | 73691 | 73071 | 73071 | 73071 | 1.000000 | 1.000000 | True |
 | gaussian | 16f4c42373e4961eac6b16178237f1de2bbdf21d5e08bf669c4b6102bab2c6b3 | 763932 | 763932 | 763932 | 740717 | 740717 | 740717 | 1.000000 | 1.000000 | True |
