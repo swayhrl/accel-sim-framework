@@ -1,0 +1,111 @@
+{
+  "historical_packages": [
+    {
+      "allocated_bytes": 15358529536,
+      "decision": "HOLD_NO_TRUSTED_INDEPENDENT_ARCHIVE_PROOF",
+      "exists": true,
+      "label": "rodina-3.1.tgz",
+      "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/rodina-3.1.tgz"
+    },
+    {
+      "allocated_bytes": 9305739264,
+      "decision": "HOLD_NO_TRUSTED_INDEPENDENT_ARCHIVE_PROOF",
+      "exists": true,
+      "label": "parboil.tgz",
+      "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/parboil.tgz"
+    },
+    {
+      "allocated_bytes": 39660093440,
+      "decision": "HOLD_NO_TRUSTED_INDEPENDENT_ARCHIVE_PROOF",
+      "exists": true,
+      "label": "accelwattch artifact",
+      "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/accelwattch-artifact-appendix.tar"
+    },
+    {
+      "allocated_bytes": 3804356608,
+      "decision": "HOLD_NO_TRUSTED_INDEPENDENT_ARCHIVE_PROOF",
+      "exists": true,
+      "label": "M5 SYR2K",
+      "path": "/workspace/m5-trace-immutable/syr2k/syr2k.tar.zst"
+    },
+    {
+      "allocated_bytes": 3416637440,
+      "decision": "HOLD_NO_TRUSTED_INDEPENDENT_ARCHIVE_PROOF",
+      "exists": true,
+      "label": "M5 2MM",
+      "path": "/workspace/m5-trace-immutable/2mm/2mm.tar.zst"
+    }
+  ],
+  "no_deletion_performed": true,
+  "project_resource_action": "DTC registry owners should reconcile 70.25 GiB active DTC reservations and 7.75 GiB closed/complete stale reservations.",
+  "ranked_candidates": [
+    {
+      "asset_ids": [
+        "TRACE_9d6ff92257d20b4b",
+        "TRACE_d6c21d018154d3b5",
+        "TRACE_5e9aefe64e214679",
+        "TRACE_9ad2f284f8c2a318",
+        "TRACE_777ae84f37927c4e",
+        "TRACE_cf75342164f0b212",
+        "TRACE_694a568c425385d3"
+      ],
+      "decision": "READY_FOR_SEPARATE_FAST_RETIREMENT",
+      "estimated_physical_reclaim_bytes": 30823653376,
+      "label": "Second batch seven assets",
+      "rank": 1,
+      "reason": "All Source identities unchanged; no current or planned exact-path reader; exact upper-layer allocation; true164 Manifest/COMMIT/member-size and restore checks pass.",
+      "risk": "LOWEST_AVAILABLE"
+    },
+    {
+      "asset_id": "TRACE_e05d004e4fdbfc1d",
+      "current_reader_writer_refs": [],
+      "decision": "READY_AFTER_SEPARATE_USER_AUTHORIZATION",
+      "estimated_physical_reclaim_bytes": 5008650240,
+      "exact_overlay_upper": true,
+      "label": "atomic_add_bw",
+      "rank": 2,
+      "reason": "Both raw .trace and processed .traceg are in the frozen archive. No exact current or planned reader was found; owner should still confirm no alias-based atomic experiment dependency.",
+      "registry_exact_path_matches": 0,
+      "restore_entry_exists": true,
+      "risk": "LOW_TO_MEDIUM",
+      "source_root": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/ubench/9.1/atomic_add_bw/NO_ARGS/traces",
+      "true164_manifest_matches_frozen": true,
+      "true164_member_set_and_sizes_match": true
+    },
+    {
+      "asset_id": "TRACE_ffa286b1549088e6",
+      "current_reader_writer_refs": [],
+      "decision": "HOLD_PLANNED_READER",
+      "estimated_physical_reclaim_bytes": 8939724800,
+      "exact_overlay_upper": true,
+      "label": "Bank Diagnosis",
+      "rank": 3,
+      "reason": "run_decoupled_l2_selected_bank_gate.sh defaults to this Source root. Retire only after the EP-L2 owner accepts restore-before-reuse or changes the dependency.",
+      "registry_exact_path_matches": 0,
+      "restore_entry_exists": true,
+      "risk": "MEDIUM",
+      "source_root": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-bank-diagnosis/20260825-b07c0ad-full/traces",
+      "true164_manifest_matches_frozen": true,
+      "true164_member_set_and_sizes_match": true
+    },
+    {
+      "archive_verified": true,
+      "asset_ids": [
+        "TRACE_6a972ad51c80d79c",
+        "TRACE_0997bf1fccd3524d"
+      ],
+      "current_reader_writer_refs": [],
+      "decision": "HOLD_IMMUTABLE_OWNER_REVIEW",
+      "estimated_physical_reclaim_bytes": 11584139264,
+      "exact_overlay_upper": true,
+      "label": "M5 ATAX/MVT",
+      "rank": 4,
+      "reason": "Complete raw and processed content is archived, but m5-trace-immutable and prior contract require a dedicated owner decision and conservative requalification.",
+      "registry_exact_path_matches": 0,
+      "risk": "HIGH"
+    }
+  ],
+  "recommended_next_action": "Authorize an exact fast-retirement batch for the seven unexecuted second-batch assets, preferably cutcp first if staged. Then consider atomic_add_bw separately. Do not retire Bank Diagnosis or M5 immutable content without owner-specific authorization.",
+  "schema": "ORIGINAL174_NEXT_RECLAIM_CANDIDATES_V1",
+  "status": "READ_ONLY_RECOMMENDATION"
+}
