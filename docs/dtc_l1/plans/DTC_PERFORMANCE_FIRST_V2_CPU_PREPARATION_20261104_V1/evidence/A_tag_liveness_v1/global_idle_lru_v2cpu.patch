@@ -1,0 +1,51 @@
+--- original/dtc-l1-common.h
++++ global_idle_lru_v2cpu/dtc-l1-common.h
+@@ -657,6 +657,11 @@
+     int free_id = find_free_physical();
+     const bool can_reclaim_victim =
+         victim->valid && m_phys[victim->physical.id].ref_count == 0;
++    if (free_id < 0 && !can_reclaim_victim) {
++      // V2 CPU research prototype only: one idle cross-set reclaim per cycle.
++      // No source-event invalidation, no capacity increase, no live ref discard.
++      if (reclaim_one_idle_tag(cycle)) free_id = find_free_physical();
++    }
+     if (free_id < 0 && !can_reclaim_victim) {
+       ++m_no_free_physical_events;
+       return {io_access_kind::NO_FREE_LINE, {}};
+@@ -1111,6 +1116,36 @@
+     }
+     return victim;
+   }
++  bool reclaim_one_idle_tag(uint64_t cycle) {
++    if (m_cross_reclaim_cycle == cycle) return false;
++    tag_entry *chosen = nullptr;
++    for (tag_entry &tag : m_tags) {
++      if (!tag.valid || tag.physical.id >= m_phys.size()) continue;
++      const physical_line &physical = m_phys[tag.physical.id];
++      if (!physical.allocated || !physical.ready || !physical.tag_valid ||
++          physical.ref_count || !physical.waiters.empty() ||
++          physical.generation != tag.physical.generation) continue;
++      bool pending_return = false;
++      for (const auto &pending : m_service_returns)
++        pending_return |= pending.physical.id == tag.physical.id &&
++                          pending.physical.generation == tag.physical.generation;
++      if (pending_return) continue;
++      if (!chosen || tag.lru < chosen->lru) chosen = &tag;
++    }
++    if (!chosen) return false;
++    const physical_identity identity = chosen->physical;
++    m_phys[identity.id].tag_valid = false;
++    chosen->valid = false;
++    if (m_cfg.finite_service) m_service_map_loss[identity.id] = cycle;
++    ++m_tag_evictions;
++    ++m_immediate_reclaims;
++    release(identity, cycle);
++    m_cross_reclaim_cycle = cycle;
++    ++m_cross_reclaims;
++    return true;
++  }
++  uint64_t m_cross_reclaim_cycle = UINT64_MAX;
++  uint64_t m_cross_reclaims = 0;
+   int find_free_physical() {
+     for (unsigned offset = 0; offset < m_phys.size(); ++offset) {
+       const unsigned id = (m_rr_next + offset) % m_phys.size();

@@ -1,0 +1,14 @@
+import pathlib,json,hashlib,subprocess
+V=pathlib.Path('/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_v2_cpu_preparation_20261105_v1');D=V/'agents/D_independent_review_v1';F=D/'INDEPENDENT_FIXED8_REFERENCE_BOUND_REVIEW.json';R=pathlib.Path('/root/data/dtc_main_v100_sweep_20261025_v1/tools');CORE=pathlib.Path('/root/data/dtc_failure_repair_20261025_v1/core')
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+sources=[];checks=[]
+def ck(n,v):checks.append({'check':n,'pass':bool(v)});assert v,n
+for name in ['body_audit_ratebound.py','original_body_audit.py']:
+ p=R/name;t=p.read_text();ck(name+' captures start and last byte endpoint','lines={base//128 for addr in addresses for base in [addr,addr+parsed_width-1]}' in t);sources.append({'path':str(p),'sha256':sha(p),'counter_definition':'Distinct128B lines containing start and end byte for each active memory address, not start-only.'})
+known={z['sha256'] for z in sources};boundrows=json.loads(F.read_text())['rows'];bs=[]
+for row in boundrows:
+ p=pathlib.Path(row['input_binding']['path']);b=json.loads(p.read_text());ck(row['program']+' input binding parser known bytes',b['body_parser_sha256'] in known)
+ widths=sorted({w['parser_width'] for kr in b['qualification']['rows'] for w in kr['width_counts'] if w['opcode'].startswith('LDG')});ck(row['program']+' global width<=128 endpoint span bound',widths and max(widths)<=128)
+ bs.append({'program':row['program'],'binding_sha256':sha(p),'body_parser_sha256':b['body_parser_sha256'],'global_load_widths':widths,'max_sparse_mask_base_stride_records':max(x['sparse_mask_base_stride_records'] for x in b['qualification']['rows'])})
+rel='src/abstract_hardware_model.cc';p=CORE/rel;blob=subprocess.run(['git','-C',str(CORE),'show','9eedb3131937748f0492fa83aad37d3691118d70:'+rel],capture_output=True,check=True).stdout;ck('Frozen Core coalescer bytes',p.read_bytes()==blob);lines=p.read_text().splitlines();snippet='\n'.join(f'{i+1}: {lines[i]}' for i in range(488-1,606));ck('Native global coalescer covers end byte cross-segment','addr + data_size_coales - 1, segment_size' in snippet);sources.append({'path':str(p),'sha256':sha(p),'git_commit':'9eedb3131937748f0492fa83aad37d3691118d70','first_line':488,'last_line':606,'excerpt':snippet})
+o={'checks':checks,'sources':sources,'bindings':bs,'scope':'Source bridge supports recorded maxN covering start+end128B lines (global width<=128); no new full trace rescan, no native runtime per-instruction replay or numerical equivalence certification. Retain unchanged single-partial integration/fairness premises and declared-trace qualification boundary.','new_models':0};p=D/'REFERENCE_BOUND_SOURCE_BRIDGE_REVIEW.json';assert not p.exists();p.write_text(json.dumps(o,indent=2)+'\n');print(json.dumps({'checks':len(checks),'PASS':True,'sha256':sha(p),'bindings':bs}))

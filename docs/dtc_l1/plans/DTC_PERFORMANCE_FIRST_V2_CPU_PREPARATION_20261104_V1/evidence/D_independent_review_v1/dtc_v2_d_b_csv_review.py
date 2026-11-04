@@ -1,0 +1,25 @@
+import pathlib,json,hashlib,gzip,csv,io,math
+V=pathlib.Path('/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_v2_cpu_preparation_20261105_v1');B=V/'agents/B_mechanisms_v1';D=V/'agents/D_independent_review_v1'
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+checks=[]
+def ck(n,v):checks.append({'check':n,'pass':bool(v)});assert v,n
+mp=B/'MANIFEST.json';ck('B final manifest',sha(mp)=='2e95b5d430ce9d3d0c012a60dc7043c82f5081e89fa622b3ac0141eb4cf7adb1')
+for x in json.loads(mp.read_text())['files']:
+ p=B/x['name'];ck('B public member '+x['name'],sha(p)==x['sha256'])
+records=json.loads((B/'CLOSED_CSV_RESOURCE_EVIDENCE.json').read_text());ck('Exactly4 closed CSV sources',len(records)==4);summ=[]
+for rec in records:
+ ident=rec['program']+rec['profile'];r=json.loads(pathlib.Path(rec['RESULT']['path']).read_text());ck('Prioraccepted proof '+ident,r['proof']['performance_accepted'] is True and sha(pathlib.Path(rec['RESULT']['path']))==rec['RESULT']['sha256'])
+ ev=json.loads(pathlib.Path(rec['native_exit']['path']).read_text());ck('Natural EXIT0 '+ident,ev['launcher_wait_returncode']==0 and ev['stop_reason'] is None)
+ for witness in [rec['CSV_source'],rec['resource_summary']['source']]:
+  native=pathlib.Path(witness['native']['path']);mf=pathlib.Path(witness['archive_manifest']['path']);ck('Closed file SHA '+native.name+ident,sha(native)==witness['native']['sha256']==witness['archive_member_sha256']);ck('SOURCE_MANIFEST SHA '+ident+native.name,sha(mf)==witness['archive_manifest']['sha256']);member=next(z for z in json.loads(mf.read_text())['entries'] if z['path']==witness['archive_member']);ck('Archive member '+ident+native.name,member['sha256']==witness['archive_member_sha256'] and member['size']==native.stat().st_size)
+ data=gzip.decompress(pathlib.Path(rec['CSV_source']['native']['path']).read_bytes()).decode();rd=csv.DictReader(io.StringIO(data));ck('CSV complete unique columns '+ident,len(set(rd.fieldnames))==len(rd.fieldnames)==rec['csv_columns']);rows=list(rd);ck('CSV rowcount '+ident,len(rows)==rec['csv_rows'])
+ prevcounts={};prevbanks=[0]*40;prevcycle=0
+ for endpoint in rec['kernel_endpoints']:
+  ee=[z for z in rows if int(z['gpu_tot_sim_cycle'])+int(z['gpu_sim_cycle'])==endpoint['cycle'] and int(z['gpu_sim_cycle'])==endpoint['current_kernel_cycles']];ck('Exact one kernel endpoint '+ident+str(endpoint['ordinal']),len(ee)==1);row=ee[0]
+  got={status:sum(int(row[f'L2_bank_{i:03d}_GLOBAL_ACC_R_{status}']) for i in range(40)) for status in endpoint['explicit_all40_bank_cumulative']}
+  ck('Explicit40 bank cumulative includingzeros '+ident+str(endpoint['ordinal']),got==endpoint['explicit_all40_bank_cumulative'])
+  delta={k:v-prevcounts.get(k,0) for k,v in got.items()};ck('Cumulative difference '+ident+str(endpoint['ordinal']),delta==endpoint['explicit_all40_bank_interval'])
+  bm=[int(row[f'L2_bank_{i:03d}_GLOBAL_ACC_R_MISS'])+int(row[f'L2_bank_{i:03d}_GLOBAL_ACC_R_SECTOR_MISS']) for i in range(40)];diff=[v-p for v,p in zip(bm,prevbanks)];ck('Miss40 interval array '+ident+str(endpoint['ordinal']),diff==endpoint['interval_miss_atoms32B_per_L2bank']);mu=sum(diff)/40;cv=(sum((z-mu)**2 for z in diff)/40)**0.5/mu if mu else None;ck('Miss40 CV population '+ident+str(endpoint['ordinal']),cv==endpoint['L2_bank_miss_count_CV_population'] or math.isclose(cv,endpoint['L2_bank_miss_count_CV_population'],rel_tol=1e-14));ck('Cycles cumulative difference '+ident+str(endpoint['ordinal']),endpoint['cycle']-prevcycle==endpoint['current_kernel_cycles']);prevcycle=endpoint['cycle'];prevcounts=got;prevbanks=bm
+ rs=rec['resource_summary'];observations=[json.loads(z) for z in gzip.decompress(pathlib.Path(rs['source']['native']['path']).read_bytes()).decode().splitlines()];ck('Resource count '+ident,len(observations)==rs['total_records']);ck('Observed RSS peak '+ident,max(z.get('process_tree_observed_rss_bytes',0) for z in observations)==rs['peak_process_tree_observed_rss_bytes']);ck('RSS scope not area '+ident,'not hardware area' in rs['scope'])
+ summ.append({'program':rec['program'],'profile':rec['profile'],'kernel_endpoints_verified':2,'CSV_rows':len(rows),'RSS_peak_observed_bytes':rs['peak_process_tree_observed_rss_bytes'],'K2_retry_events':rec['kernel_endpoints'][1]['explicit_all40_bank_interval'],'L2subpartition40_K2_miss_CV':rec['kernel_endpoints'][1]['L2_bank_miss_count_CV_population']})
+p=D/'INDEPENDENT_B_CSV_RESOURCE_REVIEW.json';assert not p.exists();p.write_text(json.dumps({'checks':checks,'summary':summ,'B_manifest':str(mp),'B_manifest_sha256':sha(mp),'scope':'Frozen B37 files; independent four already-closed CSV and resource SHA/member/endpoints/explicitzero/cumulative delta/CV/RSS verification. Cumulative sampling intervals are not request-origin attribution, MSHR retries are not blocking cycles, L2subpartition CV is not DRAMbank critical-path proof.','new_models':0,'active_raw_reads':0,'native_writes':0},indent=2)+'\n');print(json.dumps({'checks':len(checks),'PASS':True,'sha256':sha(p),'summary':summ}))

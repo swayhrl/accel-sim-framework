@@ -1,0 +1,62 @@
+{
+  "schema": "V2_A2_TAG_PHYSICAL_LIVENESS_CPU_DESIGN_CONTRACT_V1",
+  "versions": {
+    "global_idle_lru_v2cpu": "isolatedheadernewreclaim/replacementmechanism, notV1config/productionfix",
+    "reservation_plus_global_idle_v2cpu": "fixtureprotocolknownreferencebudget perUID, notproductionLDSTintegrated"
+  },
+  "global_eligibility": [
+    "validTag owner",
+    "physical allocated",
+    "physical ready (allnotificationscompleted)",
+    "physical tag_valid",
+    "physical Ref0",
+    "waiters empty",
+    "Tag physical generation matches",
+    "no queued return for same physical generation"
+  ],
+  "replacement": "globalLRU among eligibleidle mappings only iforiginalfree0 and localvictimnotreclaimable; clear exactlychosenmapping thenreleaseviaexistinglifetimehelper",
+  "rate": "atmostoneglobalreclaim/corecycle; scan/readports/arbitration latencyNOTmodeled; doesnotestablishsinglecyclehardwaresearch",
+  "unchanged": [
+    "physicalpool640",
+    "allocationwidth4",
+    "refcountbits13",
+    "finitecompletionservice",
+    "fill_generation_check",
+    "allliveRefs",
+    "allpendingwaiters",
+    "LaneXsource-eventinvalidationuntouched"
+  ],
+  "reservation": {
+    "known_N": "actual complete grouped-reference count N=1..32 per cacheable load, known before header admission; never clamp/drop unsupported N",
+    "conservation": "sum full initial per-instruction N reservations <=P; tokens retained until every reference registered, dependencies done, and legal retirement; not decremented as references register",
+    "idempotence": "repeatedUIDadmitdoesnotdoublecharge",
+    "worstcase_effect": "P640/allN32 permits20liveinstructions ratherthanrawPIB128; could materiallyreduceMLP",
+    "resource_relationship": "references may sharephysicalstate, so worst-case reservations conservative; not freeoptimization",
+    "without_global_reclaim": "reservation alone still blocked by1024Tag/640idle retainedmappedcache; tested"
+  },
+  "invariants": [
+    "allocated<=physicalP",
+    "validTags<=T",
+    "RefCount matches shadow held reference identities",
+    "release onlytag_invalid&&Ref0",
+    "no reclaim pending/notready/live/waiters",
+    "return generation andPIBslotgeneration exact",
+    "no doubled return/release",
+    "integrated retirement requiresnext_reference==references.size",
+    "reservation neveroverchargesduplicateUID orunderreservesunsupportedN"
+  ],
+  "conditional_progress": {
+    "A1_parameter_only": "singleLDST/currentdispatchatmost1partialcacheableload; allfullregisteredolderentriesfairreturn/collect/WB/retire; thenallocated<=Tag512+partial31=543<640 ->freephysicalexists forpartialcontinuation. This is a conditionalallocationargument, not proof ofGPUapplicationtermination.",
+    "A2_global_idle": "under healthy state invariants and boundedpartiallyregisteredrefs<P, fairpending/fullinstructionretirement eventually yields free or idleRef0mappedstate; finiteglobalquota andfairsearch canprogress. FullLDST/arbiterintegrationnotdone.",
+    "A2_reservation": "registered livephysical references<=reservedfulldemands<=P; with anunregisteredreservedreference, allocatedlivephysical<P, so fullpool impliesidleeligibleorfree underhealthyK0invariants. globalidle recycling+fairreturn/retire supportsprogress; prove integration/cost beforeanyscience.",
+    "A1_fixed_input_scope": "Recorded frozen-eight qualification receipts bound full grouped 128B references N<=32, including width-endpoint crossing. Applies only to declared trace bodies, not complete-application capture or numerical correctness. Source bridge is separately SHA indexed."
+  },
+  "HOLD": [
+    "1024Tag/pool640 unchanged originalV1 variants remainSAFETY_HOLD",
+    "all128partial API-only state stalls bothoriginal/global;notassertedproductionreachable",
+    "A2 production/scientific execution until independentCoreversion,fullLDSTintegration,finitevictimsearch/Tagwritearbitration,return/fence/atomic/coherenceverification",
+    "LaneX fullinvalidate is not reclaimedresourcefix",
+    "no numeric/synthesis/PPA certification"
+  ],
+  "scientific_execution_authorized": false
+}

@@ -1,0 +1,74 @@
+[
+  {
+    "id": "H1",
+    "claim": "More physical lines increase Tag lookup capacity or permit address hits on unmapped retained physical generations.",
+    "status": "REFUTED_BY_FIXED_SOURCE",
+    "evidence": "m_tags=logical_sets*logical_ways=512 unchanged; find_tag searches this table only. m_phys protects generations/Refs; an unmapped retained line is not searched by address.",
+    "counterexample_or_limit": "Both programs gain valid-hit events while retaining512 lookup entries; event increase does not identify a larger address namespace.",
+    "discriminating_observation": "No new observation needed to reject capacity equivalence. New Tag geometry/reclaim semantics would be a separate mechanism/identity and remain CPU-only design here.",
+    "authorization": "READ_ONLY_SOURCE_CONCLUSION"
+  },
+  {
+    "id": "H2",
+    "claim": "The physical768 response is caused specifically by removal of physical-full critical stalls.",
+    "status": "PLAUSIBLE_NOT_IDENTIFIED",
+    "evidence": "Only physical640->768 changes. MVT and BICG replace fewer Tags and have fewer deferred/final-Ref reclamations. Source physical-full access returns NO_FREE_LINE without freeing protected generations.",
+    "counterexample_or_limit": "OO no_free_physical_events getter exists but is not exported by consumed OO stdout/CSV. Terminal gauge and all64SM mean cannot measure full episodes or critical stall duration. BICG regresses despite fewer lower requests.",
+    "discriminating_observation": "Versioned per-SM physical availability/Refcount/Tag mapping histograms and per-instruction failed-allocation reason/time, retaining generation/PIB identity.",
+    "authorization": "NEW_INSTRUMENTATION_AND_ANY_SIMULATION_REQUIRE_SEPARATE_EXECUTION_AUTHORITY"
+  },
+  {
+    "id": "H3",
+    "claim": "Lower OO misses or fewer Tag evictions necessarily reduce cycles and DRAM demand.",
+    "status": "MEASURED_COUNTEREXAMPLE",
+    "evidence": "MVT lower requests-43.9817%,DRAM reads-2.82558%,cycles-11.7555%; BICG lower requests-37.0988%,DRAM reads+16.4386%,cycles+7.6938%.",
+    "counterexample_or_limit": "Read miss fraction is conditional on filtered lower demand: its rise alone may be denominator filtering. BICG absolute read growth is real; current counters do not identify lower address subset, ordering, cache history or critical latency.",
+    "discriminating_observation": "Read-only accepted family endpoint comparisons now; future origin-linked lower address/arrival/response records and L2 hit/miss classification to separate filtering/order/history.",
+    "authorization": "EXISTING_CLOSED_RESULTS_READ_ONLY; NEW_REQUEST_ORIGIN_OBSERVATION_REQUIRES_APPROVAL"
+  },
+  {
+    "id": "H4",
+    "claim": "BICG regression reflects a general increase in overall L2 bank-count imbalance.",
+    "status": "SIMPLE_GLOBAL_CV_FORM_REFUTED; LOCAL_OR_DRAM_HOTSPOTS_UNRESOLVED",
+    "evidence": "BICG K2 explicit40-L2-bank miss32B interval CV decreases0.9462922098->0.9249760944, although absolute DRAM and retry counts rise.",
+    "counterexample_or_limit": "Population CV is relative across full-phase counts, includes zero banks, and is not DRAM-bank mapping or short-time queue pressure. Lower CV cannot rule out larger absolute busiest-bank load or local hotspots.",
+    "discriminating_observation": "Read-only compact CSV temporal counts at exact cycle/instruction snapshots; if unresolved, per-bank queue/service time and origin-linked critical dependencies in separately approved instrumentation.",
+    "authorization": "READ_ONLY_EXISTING_CSV; NEW_WAIT_OBSERVATION_OR_REPLAY_NEEDS_AUTHORITY"
+  },
+  {
+    "id": "H5",
+    "claim": "The response is explained by uniform improvement/worsening of post-ready completion or writeback.",
+    "status": "SIMPLE_AGGREGATE_FORM_NOT_SUPPORTED",
+    "evidence": "MVT K1 postready sum grows while cycles fall; BICG K2 WB-wait sum falls while cycles rise. App postready+0.0160%/+0.7303%,app WB sum-54.6747%/-48.1387%. Source finite create/inject/retire widths do not change.",
+    "counterexample_or_limit": "Service sums overlap SMs/instructions and use retired-item windows. They do not bound critical-path contributions, and a minority critical instruction could behave differently.",
+    "discriminating_observation": "Read-only retired/sample denominators and exact phase deltas; future readiness-to-collect-to-WB-to-dependent-use timestamps linked by UID/generation.",
+    "authorization": "READ_ONLY_CURRENT_SUMS; DEPENDENT_USE_OR_CRITICAL_PATH_INSTRUMENTATION_NEEDS_NEW_APPROVAL"
+  },
+  {
+    "id": "H6",
+    "claim": "Higher mean PIB occupancy proves PIB-full stalls or predicts Physical?PIB combination speedup.",
+    "status": "UNCONFIRMED_NO_COMBINATION_PREDICTION",
+    "evidence": "All64SM mean PIB rises in MVT K1 and BICG K2. Actual OO PIB128 and lower-create queue128 remain fixed for physical-only runs. PIB192 changes both bounds, not isolated PIB depth.",
+    "counterexample_or_limit": "Both have0 explicitly printed lower-create-queue-full and lower-cap-full events; OO PIB-full event/time and active-SM peaks are unavailable. Mean occupancy is not saturation; both signs of cycle response exist.",
+    "discriminating_observation": "Consume existing authorized PIB192 and physical1024 strictly closed results without reselecting workloads; real combination J remains null until all same-input terms are accepted under separate execution authority.",
+    "authorization": "READ_ONLY_V1_CLOSED_AS_AVAILABLE; V2_COMBINATION_SIMULATION_NOT_AUTHORIZED"
+  },
+  {
+    "id": "H7",
+    "claim": "Candidate row-strided reuse pattern or phase order uniquely explains opposite MVT/BICG responses.",
+    "status": "TESTABLE_SOURCE_DERIVED_HYPOTHESIS_NOT_CAPTURE_CAUSE",
+    "evidence": "Inspected dad09c source has MVT row-strided first and BICG row-strided second; actual slow kernels share71380992instructions but are distinct inputSHA/programs.",
+    "counterexample_or_limit": "Capture-source/ELF binding and numeric/coherence remain unresolved; initial states/addresses and interleavings are not controlled as a single phase-order intervention. Static sequential-address reuse is not cache hit/MSHR merge.",
+    "discriminating_observation": "Read-only exact trace/source binding evidence if already available; future matched phase-state or address-origin observation only under an independent, explicit contract.",
+    "authorization": "SOURCE_CONTEXT_ONLY; NO_REORDERING/NEW_CAPTURE/REPLAY_IN_CPU_GOAL"
+  },
+  {
+    "id": "H8",
+    "claim": "Physical expansion or greater resources must improve all programs; zeros prove no pressure or compute-bound behavior.",
+    "status": "MEASURED_NONUNIVERSAL_RESPONSE",
+    "evidence": "2DCONV/GEMM physical768/1024 exact-cycle and known-additive zeros; vectorAdd all4families exact zero with0 OO valid/pending hits. GEMM0DRAM under this capture,2DCONV nonzeroDRAM.",
+    "counterexample_or_limit": "No universal positive effect; nonzero evictions/deferred lifetimes/finite-service sums can coexist with zero response. L2 HtoD prefill and limited observation scope prohibit a compute-bound or real-GPU claim.",
+    "discriminating_observation": "Keep these fixed negative/zero controls in all lawful comparisons; no best-case workload selection.",
+    "authorization": "EXISTING_CLOSED_RESULTS_READ_ONLY"
+  }
+]

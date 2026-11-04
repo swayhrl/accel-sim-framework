@@ -1,0 +1,107 @@
+{
+  "atlas_commit": "47a097aad4406893a07f8d230e1e0a850609bf39",
+  "source_matrix_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_preparation_20261103_v1/agents/B/KERNEL_HYPOTHESIS_MATRIX.json",
+  "source_matrix_sha256": "6b5ab45fed4a32aacfaca5ebd12338e04f4cb6f23af01d6b6862af80548e1092",
+  "rows": [
+    {
+      "program_id": "P42-26",
+      "program": "MVT",
+      "suite": "PolyBench/GPU",
+      "selection_state": "IDENTITY_FROZEN",
+      "phase_id": "P42-26-K01",
+      "source_kernel_symbol_or_name": "_Z11mvt_kernel1PfS_S_",
+      "source_stage": "x1+=A*y1",
+      "source_global_access_facts": "A lane stride16384B; loop stride4B; uniform vector",
+      "source_reuse_opportunity_not_measured": "32-line aligned warp per t, later intra-row sequential access",
+      "source_dependency_or_barrier": "Per-thread accumulation; independent of x2 output",
+      "host_cpu_gpu_and_capture_scope": "16 CTAs; MVT explicitly initializes vectors",
+      "program_registered_launch_count": "2",
+      "phase_capture_scope": "REGISTERED_PROGRAM_SOURCE_KERNEL_CANDIDATE_NOT_CAPTURE_ELF_CERTIFIED",
+      "candidate_source_level": "INSPECTED_FIXED_CANDIDATE_SOURCE_ONLY_NOT_CAPTURE_SOURCE_OR_ELF",
+      "runtime_measurement_in_this_audit": "NONE",
+      "fixed_candidate_report": "programs/polybench_gpu/MVT.md \u00a7\u00a73-7",
+      "source_line_reference": "MVT/mvt.cu:109-121;launch149-177",
+      "inspected_candidate_commit": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+      "atlas_report": {
+        "commit": "47a097aad4406893a07f8d230e1e0a850609bf39",
+        "path": "docs/workload_atlas/programs/polybench_gpu/MVT.md",
+        "sha256": "a6a70c8913e818d71027a43aa895f8e27613f9c081dc96d548d698cb7ae42ae9",
+        "local_snapshot": "atlas/programs/polybench_gpu/MVT.md"
+      },
+      "trace_header_kernel_occurrence_ordinal_1_based": [
+        1
+      ],
+      "trace_evidence_level": "T_HEADER_SEQUENCE_FROM_EXISTING_ATLAS; instruction bodies not newly scanned",
+      "address_and_geometry_source_derived": "A4*(q*4096+t):lane16384B,loop4B; y1 uniform; x1 output.",
+      "dependency_and_potential_concurrency_source_derived": "16 CTAs; serial4096 accumulation; first phase no software shared tiling.",
+      "testable_hypothesis_not_cause": "Test phase1 row-line retention against limited work supply; no whole-suite diagnosis from geometry alone.",
+      "needed_observation_design_only": "Perkernel live-miss/request lifetime, tag failures, queues and activeCTA/SM.",
+      "runtime_program_record_reference": "PROGRAM_EVIDENCE.json#MVT",
+      "per_kernel_cycles": null,
+      "per_kernel_L2_queue_wait": null,
+      "per_kernel_MSHR_merge": null,
+      "runtime_gap": "NOT_AVAILABLE_IN_CONSUMED_WHOLE_INPUT_PROJECTION; cannot assign program speedup or counters to this phase",
+      "capture_source_link": "UNRESOLVED",
+      "capture_elf_link": "UNRESOLVED",
+      "new_runtime_measurement": false
+    },
+    {
+      "program_id": "P42-26",
+      "program": "MVT",
+      "suite": "PolyBench/GPU",
+      "selection_state": "IDENTITY_FROZEN",
+      "phase_id": "P42-26-K02",
+      "source_kernel_symbol_or_name": "_Z11mvt_kernel2PfS_S_",
+      "source_stage": "x2+=A^T*y2",
+      "source_global_access_facts": "A lane stride4B; loop stride16384B",
+      "source_reuse_opportunity_not_measured": "Coalesced aligned warp read; second A traversal",
+      "source_dependency_or_barrier": "Independent mathematical product; host launches serially",
+      "host_cpu_gpu_and_capture_scope": "16 CTAs; reverse of strided phase",
+      "program_registered_launch_count": "2",
+      "phase_capture_scope": "REGISTERED_PROGRAM_SOURCE_KERNEL_CANDIDATE_NOT_CAPTURE_ELF_CERTIFIED",
+      "candidate_source_level": "INSPECTED_FIXED_CANDIDATE_SOURCE_ONLY_NOT_CAPTURE_SOURCE_OR_ELF",
+      "runtime_measurement_in_this_audit": "NONE",
+      "fixed_candidate_report": "programs/polybench_gpu/MVT.md \u00a7\u00a73-7",
+      "source_line_reference": "MVT/mvt.cu:124-136;launch149-177",
+      "inspected_candidate_commit": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+      "atlas_report": {
+        "commit": "47a097aad4406893a07f8d230e1e0a850609bf39",
+        "path": "docs/workload_atlas/programs/polybench_gpu/MVT.md",
+        "sha256": "a6a70c8913e818d71027a43aa895f8e27613f9c081dc96d548d698cb7ae42ae9",
+        "local_snapshot": "atlas/programs/polybench_gpu/MVT.md"
+      },
+      "trace_header_kernel_occurrence_ordinal_1_based": [
+        2
+      ],
+      "trace_evidence_level": "T_HEADER_SEQUENCE_FROM_EXISTING_ATLAS; instruction bodies not newly scanned",
+      "address_and_geometry_source_derived": "A4*(t*4096+q):lane4B,loop16384B; y2 uniform; x2 output.",
+      "dependency_and_potential_concurrency_source_derived": "16 CTAs; algebraically independent of x1 yet default-stream serialized.",
+      "testable_hypothesis_not_cause": "Order/carryover of64MiB A may affect cache state but is not measured persistence.",
+      "needed_observation_design_only": "Separate phase2 cycles and sector/hit/miss deltas; source-to-emitted accumulator traffic.",
+      "runtime_program_record_reference": "PROGRAM_EVIDENCE.json#MVT",
+      "per_kernel_cycles": null,
+      "per_kernel_L2_queue_wait": null,
+      "per_kernel_MSHR_merge": null,
+      "runtime_gap": "NOT_AVAILABLE_IN_CONSUMED_WHOLE_INPUT_PROJECTION; cannot assign program speedup or counters to this phase",
+      "capture_source_link": "UNRESOLVED",
+      "capture_elf_link": "UNRESOLVED",
+      "new_runtime_measurement": false
+    }
+  ],
+  "candidate_source_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_preparation_20261103_v1/agents/B/atlas/contributions/polybench/source_snapshot/MVT/mvt.cu",
+  "candidate_source_sha256": "83764e6633f3a0976423e0ba7ab351ac42b0eeb249bf59a9e3531c639d4923d6",
+  "candidate_source_commit": "dad09cb0487845edc7524ded814c6cde9f0ef6a1",
+  "capture_ELF_bound": false,
+  "excerpts": [
+    {
+      "start": 109,
+      "end": 136,
+      "text": "109: __global__ void mvt_kernel1(DATA_TYPE *a, DATA_TYPE *x1, DATA_TYPE *y_1)\n110: {\n111: \tint i = blockIdx.x * blockDim.x + threadIdx.x;\n112: \n113: \tif (i < N)\n114: \t{\n115: \t\tint j;\n116: \t\tfor(j=0; j < N; j++)\n117: \t\t{\n118: \t\t\tx1[i] += a[i * N + j] * y_1[j];\n119: \t\t}\n120: \t}\n121: }\n122: \n123: \n124: __global__ void mvt_kernel2(DATA_TYPE *a, DATA_TYPE *x2, DATA_TYPE *y_2)\n125: {\n126: \tint i = blockIdx.x * blockDim.x + threadIdx.x;\n127: \n128: \tif (i < N)\n129: \t{\n130: \t\tint j;\n131: \t\tfor(j=0; j < N; j++)\n132: \t\t{\n133: \t\t\tx2[i] += a[j * N + i] * y_2[j];\t\n134: \t\t}\n135: \t}\n136: }"
+    },
+    {
+      "start": 149,
+      "end": 177,
+      "text": "149: \tcudaMalloc((void **)&a_gpu, sizeof(DATA_TYPE) * N * N);\n150: \tcudaMalloc((void **)&x1_gpu, sizeof(DATA_TYPE) * N);\n151: \tcudaMalloc((void **)&x2_gpu, sizeof(DATA_TYPE) * N);\n152: \tcudaMalloc((void **)&y_1_gpu, sizeof(DATA_TYPE) * N);\n153: \tcudaMalloc((void **)&y_2_gpu, sizeof(DATA_TYPE) * N);\n154: \tcudaMemcpy(a_gpu, a, sizeof(DATA_TYPE) * N * N, cudaMemcpyHostToDevice);\n155: \tcudaMemcpy(x1_gpu, x1, sizeof(DATA_TYPE) * N, cudaMemcpyHostToDevice);\n156: \tcudaMemcpy(x2_gpu, x2, sizeof(DATA_TYPE) * N, cudaMemcpyHostToDevice);\n157: \tcudaMemcpy(y_1_gpu, y_1, sizeof(DATA_TYPE) * N, cudaMemcpyHostToDevice);\n158: \tcudaMemcpy(y_2_gpu, y_2, sizeof(DATA_TYPE) * N, cudaMemcpyHostToDevice);\n159: \t\n160: \tdim3 block(DIM_THREAD_BLOCK_X, DIM_THREAD_BLOCK_Y);\n161: \tdim3 grid((size_t)ceil((float)N/ ((float)DIM_THREAD_BLOCK_X)), 1);\n162: \t\n163: \tt_start = rtclock();\n164: \tmvt_kernel1<<<grid,block>>>(a_gpu,x1_gpu,y_1_gpu);\n165: \tmvt_kernel2<<<grid,block>>>(a_gpu,x2_gpu,y_2_gpu);\n166: \tcudaThreadSynchronize();\n167: \tt_end = rtclock();\n168: \tfprintf(stdout, \"GPU Runtime: %0.6lfs\\n\", t_end - t_start);\n169: \n170: \tcudaMemcpy(x1_outputFromGpu, x1_gpu, sizeof(DATA_TYPE) * N, cudaMemcpyDeviceToHost);\n171: \tcudaMemcpy(x2_outputFromGpu, x2_gpu, sizeof(DATA_TYPE) * N, cudaMemcpyDeviceToHost);    \n172: \t\n173: \tcudaFree(a_gpu);\n174: \tcudaFree(x1_gpu);\n175: \tcudaFree(x2_gpu);\n176: \tcudaFree(y_1_gpu);\n177: \tcudaFree(y_2_gpu);"
+    }
+  ]
+}
