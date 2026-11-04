@@ -1,0 +1,72 @@
+{
+  "pool_table": [
+    {
+      "physical_line_slots_per_SM": 640,
+      "source_evidence_grade": "VERIFIED_CODE_CONFIG",
+      "address_alignment_and_wholeline_request_bytes": 128,
+      "declared_128B_line_accounting_bytes_per_SM": 81920,
+      "declared_128B_line_accounting_KiB_per_SM": 80.0,
+      "declared_accounting_grade": "DOCUMENTED_MODEL_SPEC_PLUS_ARITHMETIC_NOT_MEASURED_PAYLOAD",
+      "Tag_entries_per_SM": 512,
+      "nominal_max_Tag_lookup_addressline_bytes": 65536,
+      "excess_slot_count_over_max_Tag_entries": 128,
+      "excess_slot_meaning": "arithmetic extra lifetime slots, not guaranteed utilization or new Tag-visible cache coverage",
+      "functional_data_payload_bytes_per_slot": "UNKNOWN_NOT_STORED_AS_BYTE_ARRAY_IN_OO_PHYSICAL_LINE_STRUCT",
+      "physical_SRAM_bits_area_power_latency": "UNKNOWN_NO_RTL_OR_SYNTHESIS",
+      "unique_resident_address_bytes": "NOT_INFERABLE_FROM_SLOT_COUNT;evicted retained generations/duplicate logicaladdresses may consume slots",
+      "lookup_capacity_increase_from_pool_alone": false
+    },
+    {
+      "physical_line_slots_per_SM": 768,
+      "source_evidence_grade": "VERIFIED_CODE_CONFIG",
+      "address_alignment_and_wholeline_request_bytes": 128,
+      "declared_128B_line_accounting_bytes_per_SM": 98304,
+      "declared_128B_line_accounting_KiB_per_SM": 96.0,
+      "declared_accounting_grade": "DOCUMENTED_MODEL_SPEC_PLUS_ARITHMETIC_NOT_MEASURED_PAYLOAD",
+      "Tag_entries_per_SM": 512,
+      "nominal_max_Tag_lookup_addressline_bytes": 65536,
+      "excess_slot_count_over_max_Tag_entries": 256,
+      "excess_slot_meaning": "arithmetic extra lifetime slots, not guaranteed utilization or new Tag-visible cache coverage",
+      "functional_data_payload_bytes_per_slot": "UNKNOWN_NOT_STORED_AS_BYTE_ARRAY_IN_OO_PHYSICAL_LINE_STRUCT",
+      "physical_SRAM_bits_area_power_latency": "UNKNOWN_NO_RTL_OR_SYNTHESIS",
+      "unique_resident_address_bytes": "NOT_INFERABLE_FROM_SLOT_COUNT;evicted retained generations/duplicate logicaladdresses may consume slots",
+      "lookup_capacity_increase_from_pool_alone": false
+    },
+    {
+      "physical_line_slots_per_SM": 1024,
+      "source_evidence_grade": "VERIFIED_CODE_CONFIG",
+      "address_alignment_and_wholeline_request_bytes": 128,
+      "declared_128B_line_accounting_bytes_per_SM": 131072,
+      "declared_128B_line_accounting_KiB_per_SM": 128.0,
+      "declared_accounting_grade": "DOCUMENTED_MODEL_SPEC_PLUS_ARITHMETIC_NOT_MEASURED_PAYLOAD",
+      "Tag_entries_per_SM": 512,
+      "nominal_max_Tag_lookup_addressline_bytes": 65536,
+      "excess_slot_count_over_max_Tag_entries": 512,
+      "excess_slot_meaning": "arithmetic extra lifetime slots, not guaranteed utilization or new Tag-visible cache coverage",
+      "functional_data_payload_bytes_per_slot": "UNKNOWN_NOT_STORED_AS_BYTE_ARRAY_IN_OO_PHYSICAL_LINE_STRUCT",
+      "physical_SRAM_bits_area_power_latency": "UNKNOWN_NO_RTL_OR_SYNTHESIS",
+      "unique_resident_address_bytes": "NOT_INFERABLE_FROM_SLOT_COUNT;evicted retained generations/duplicate logicaladdresses may consume slots",
+      "lookup_capacity_increase_from_pool_alone": false
+    }
+  ],
+  "known_model_meaning": "128B address-aligned renaming/dependency/readiness/lifetime slots; lower wholeline read size128B in PAPER_OO mode3",
+  "payload_boundary": "OO physical_line contains only allocated/ready/data_ready/generation/refcount/waiter/timestamp metadata. No128B/16B value buffer is instantiated there. This is a timing/state model, not a proven functional data-array implementation. Do not generalize this narrow struct finding to all simulator memory.",
+  "current_spec": "DTC_L1_SPEC.md81-84 explicitly declares80KB/128B/640;80KiB is valid declared model accounting, not proven SRAM or functional stored-byte payload",
+  "M5_16B_claim": "NO_SUPPORT_FOUND_IN_THIS_FIXED_CORE/SPEC_FOR16B_PHYSICAL_PAYLOAD_ACCOUNTING;older branch or RTL origin remains UNKNOWN and is not applied. Current AGENTS16KiB refers old logicalTag/conventionalL1 defaults, not a16Bpayload formula.",
+  "Tag512_boundary": "find_tag searches only512 logical Tag entries; physical pool expansion does not expand that lookup namespace. Replaced old physical generations remain untilrefcount0, and may retain duplicate logicaladdresses.",
+  "A4001_forward_clarification": {
+    "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_parallel_exploration_20261104_v1/agents/A_structure_config_v1/CONFIG_VARIANTS.json",
+    "sha256": "2358d6e72659ceba18e48277f43355c01640c616bd357864716b04dcb5f39b75",
+    "old_field": "variants[].physical_bytes_per_SM",
+    "precise_reading": "declared_128B_line_accounting_bytes_per_SM",
+    "old_bytes_unchanged": true
+  },
+  "forbidden_inferences": [
+    "slotcount*128 proves implemented functional data payload",
+    "640*16 inferred from unrelated old default",
+    "physical pool1024 provides128KiB Taglookup cache",
+    "80KiB OOplus16KiBcompat is unified96KiB selectedloadcache",
+    "sizeof C++ metadata/process RSS equals hardwarearea",
+    "no numeric payload buffer proves conventional or DTC numeric coherence"
+  ]
+}

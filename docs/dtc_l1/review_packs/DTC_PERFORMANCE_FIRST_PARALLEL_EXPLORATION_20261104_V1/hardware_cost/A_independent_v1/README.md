@@ -1,0 +1,25 @@
+# Hardware cost and physical-slot semantics: fixed9eed/frozen8
+
+Current Core9eed uses **128B address-aligned whole-line renaming/dependency slots**. The currentDTC_L1_SPEC.md81–84 explicitly declares80KB,128B,640lines. Thus640×128=80KiB is defensible as **declared model line accounting**. It is not proof of80KiB implemented functional data payload or SRAM. The OO physical_line structure (common.h1013–1024) holds allocated/ready/tagvisibility/refcount/generation/waiter/timestamp metadata and no128B or16B value buffer. Lower requests are sized128B (shader.cc3474–3493), and complete()/retirement manipulate readiness/dependencies. This narrow source finding neither proves a16B hardwarepayload nor says every other simulator memory subsystem lacks values.
+
+| Physical slots/SM | Declared128B line accounting | Tag mappings | Max nominal Tag-lookup addressspan | Slots above512Tag maximum |
+|---|---:|---:|---:|---:|
+|640|80KiB|512|64KiB|128|
+|768|96KiB|512|64KiB|256|
+|1024|128KiB|512|64KiB|512|
+
+The finalcolumn is a count difference, not measured utilization. find_tag searches only64×8 logicalTags; evicted mappings can retain physical allocations until referencecount reacheszero. Larger pools add lifecycle headroom, not more lookupTags. Multiple retained generations can refer to the same128B logical address, so physicalslots×128 is not established unique resident addresscoverage. Actual workload occupancy/usefulness requires counters and cannot be inferred from these costs.
+
+The currentfixed source/spec does not support replacing128 with an old16Bpayload formula. CurrentCore AGENTS101–103 speaks about old16KiB logicalTag/conventionalcache defaults and80KiB physical-array declaration, not16Bpayload. A historical16Baccounting origin outside these fixed anchors remainsUNKNOWN and is not applied. This task does not reopen M5 or reinterpret old scientific runs.
+
+Forward semantic clarification: A4001 CONFIG_VARIANTS.json variants[].physical_bytes_per_SM should be read as **declared_128B_line_accounting_bytes_per_SM**, not measured functionalpayload/PPA. OriginalA4001 bytes and all accepted identities remain unchanged. Both CH andDH capacity numbers here are model geometry/accounting, not measured silicon arrays; numerical values/coherence remain unproven.
+
+`ACTUAL16_P0_OPTIONS_AND_IDENTITIES.json` independently rechecks all eightprograms×CH/DH P0 RESULT/proofSHA, retaining six legalP0 aliases. Every relevant option is uniform within each design. CH is ordinaryN32×128×24=96KiB nominalgeometry,768Tag entries, active commonPIB256, MSHR512/maxmerge8, missQ16,4L1banks,20cycleL1latency and32B configured data-port width. Its Bcacheindex uses the same bank-preserving XOR helper family, with32set geometry. The rawDTC logical64×8/physical640/OOPIB128 fields do not create a CHOOarray.
+
+DH selected cacheable non-atomic loads use OO Tag64×8=512 and physicalpool640baseline, activeOOPIB128. RawcommonPIB8 is not the activeOOdepth; rawdtc_mshr32 does not cap selectedOOmerges. The separate S32×128×4=16KiB ordinarycompatcache remains constructed, with A512:8 for its source-selected fallback routes. Stores/atomics/bypass preserve their source behavior; the compatcache is not globallyinactive, and it cannot simply be added as a unified96KiB selectedloadcache. Ordinary20cycle latency is not the selectedOOhit timing.
+
+PIB192 changes activeinstruction slots128→192 **and** lower-create queue bound128→192 (+64each). Tagservice8 keepsfourTagbanks but changes perbank1→2 plus total4→8. These are metadata grant limits, not an achieved8requests/cycle or a new128B dataSRAMport count. Allocation remains4/cycle; finite create/inject/refill/retire remain1, waiter notification4, collection4 referenced32Bsector-accounting units/cycle, plusTag/metadata/collection edges and shared operand-writeback constraints. No explicit physicalData-bank conflict model is established by Tagbank count. Current specification explicitly allows a globalRR allocation abstraction without physicalData-bank conflicts.
+
+Bigger physical/PIB arrays do not automatically incur a new simulated access/selection delay; the same service widths and clocks remain. C++ scans/containers measure host implementation work, not hardware arbitration latency. Actual buffer-entry bit widths, fullpayload storage implementation, tags/ref/generation/waiter representation, extra bank/port/wiring costs, clock closure, SRAM area and power areUNKNOWN. No sizeof(C++) or RSS-to-area conversion is used. The configuration is64SM/10MiBL2/850MHzDRAM, not stockV100; CH/DH are not equalarea or equalL1timing. The full raw/active comparison table and exact fixedGit source excerpts provide the reproducible boundaries.
+
+Files: PHYSICAL_POOL_SEMANTICS.json is the main classification; CH_DH_ACTIVE_RESOURCE_TIMING_TABLE.json separates raw options from serving paths; SOURCE_EVIDENCE.json has fixedGit equality/SHA and numbered excerpts. This is CPU read-only source/config work: no new model, trace, service, source edit, result rewrite, ledger change or v0.23 manuscript edit.

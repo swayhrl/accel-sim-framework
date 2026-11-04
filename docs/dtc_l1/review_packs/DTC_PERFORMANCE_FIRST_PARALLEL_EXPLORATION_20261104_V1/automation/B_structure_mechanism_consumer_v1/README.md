@@ -1,0 +1,15 @@
+# Read-only fixed-eight structural mechanism consumer V1
+
+Use `python3 -B analyze.py --provider <fixed V3 provider JSON> --output-dir <this-directory>/snapshots/<new-name>`.
+
+This is CPU-only source plus qualification. No service, model, registration, controller, Git action or native writes was started. Root alone decides when to call it. Each call captures provider bytes once, validates all source member SHA and closed-result metadata, then streams only strictly accepted closed raw logs. Provider qualification remains the upstream authority; this is not another full archive/chunk restore audit.
+
+Outputs preserve all32 planned nonTag states and the independent16 Tag safety HOLD. FullSHA input matching, exact ordered kernel symbols/instructions/commandlist/cycles, raw compressed/plain SHA and actual build are checked. CH/DH P0 aliases retain canonical and bottom source identity. No per-program best-configuration GM or oldCORE32 population claim. Kernel cycle CSV and gzip detailed additive endpoints/gauges/peaks/diagnostic latency tokens are emitted. Missing values are JSON null, explicitly UNAVAILABLE, never0.
+
+Scope comes from unchanged Core9eed/Framework02775 source and previously reviewed first8 catalogue. gpu_sim_cycle/insn reset each kernel; L2, DRAM and OO lifecycle/service counters persist. Only whitelisted additive fields have explicit-endpoint differences; missing and decreasing endpoints remain unavailable. Peak/gauge/latency means never get differenced. Service integral/sample describes all64 SM clock samples;16 active CTAs cannot identify active-SM mean or peak. Positive-only reason omission is unavailable. Entry-vs-merge retries are distinct and neither is queue time/occupancy. CH common frontend is not relabeled OO.
+
+Physical expansion retains512 Tag lookup entries.128B slot arithmetic is nominal accounting, not stored payload/PPA or proven lookup capacity. PIB192 also increases lower-create queue bound. Tag service quotas2/8 do not prove integrated8/cycle grants. Existing source/candidate ELF, numerical/full-application capture and OO host-upload coherence limitations remain. Prefilled L2/zeroDRAM requests do not prove compute-bound behavior.
+
+Actual CPU qualification: two newly accepted PHYS768 points, six closed source raw logs (2DCONV/GEMM and CH/DH P0) reconciled; both exact-cycle zero response. Four additional ATAX/scan CH/DH closed P0 sources cover aliases,2 and33 kernels, and finite-service all64SM sample windows.19 boundary/actual checks pass. This proves parser readiness for this fixed8, not future performance or all32 completion. No live raw was read.
+
+Production output must use a fresh path below this directory's snapshots; immutable results are never overwritten. Root may call only when providerSHA changes or at final; no built-in daemon. Published members are required<=8MiB. qualification_final is the current final CPU snapshot; earlier internal qualification directories are retained and excluded from the release manifest.

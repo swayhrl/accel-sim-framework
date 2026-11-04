@@ -1,0 +1,68 @@
+{
+  "rows": [
+    {
+      "resource": "L1 nominal geometry/modeladdresscapacity",
+      "CH": "N32sets*24ways*128B=96KiB;768 cacheTags",
+      "DH": "OO64sets*8ways=512 Tag mappings (64KiB nominallookup addressspan);pool640/768/1024 lifetime slots with80/96/128KiB declared128Baccounting",
+      "boundary": "both modelgeometries/accounting, not measured silicondata arrays; DHslot count is not unique Taglookup coverage"
+    },
+    {
+      "resource": "ordinary L1D object",
+      "CH": "constructed and used by conventional loads/stores/atomics path",
+      "DH": "constructed S32sets*4ways*128B=16KiB sector-cache active geometry,128 active conventionalTag mappings; selected cacheable non-atomic OOloads bypass it; eligible cacheable store/atomic source routes may use it, while explicit bypass routes bypassL1D",
+      "boundary": "not globallyinactive; do not remove area or add as unified selectedloadcache"
+    },
+    {
+      "resource": "raw unified_l1d_size",
+      "CH": "96",
+      "DH": "128",
+      "boundary": "rawconfiguration labels; active geometry/path above determines modelmeaning, not an equality of active data capacity"
+    },
+    {
+      "resource": "active instruction admission",
+      "CH": "PAPER_BASE commonPIB256",
+      "DH": "PAPER_OO activeOOPIB128 baseline,192 variant; raw commonPIB8 configured but commonfrontend isLEGACY for selectedOOadmission",
+      "boundary": "do not call CHPIB256 inactive; do not use rawDHPIB8 as activeOOdepth"
+    },
+    {
+      "resource": "traditional MSHR",
+      "CH": "512entries/maxmerge8; modePAPER_BASE appliesdtc_mshr_entries512 override",
+      "DH": "selectedOOloads use physicalidentity/pendingmerge/ref/waiter state, no traditionalDTCMSHR capacity; rawdtc_mshr_entries32 does not overrideOO; ordinarycompatcache still declaresA512:8",
+      "boundary": "no fictitious active32-entry DTCMSHR and no elimination of fallback cache structures"
+    },
+    {
+      "resource": "Tag/index paths",
+      "CH": "actual conventional768Tags,cacheindexB; sharedTag admission4banks*1=4 grants; rawDTC64x8 does not instantiate aCHOOtagarray",
+      "DH": "OO512Tags,bankrowHashenabled1,4banks; baseline1/bank,total4; servicevariant2/bank,total8; same64set mapping",
+      "boundary": "same hashfamily comparison does not mean identical geometry/mapping; grant limit is not measured throughput/dataSRAM portcount"
+    },
+    {
+      "resource": "hit/completion timing",
+      "CH": "ordinary L1latency20,4L1banks,data_port_width32 configuration,mem_unit_ports1; finiteOOservice0",
+      "DH": "selectedOO path uses finiteTag+1edge,allocation4,create1/inject1/refill1/retire1,notification4,collection4sector-accounting units/cycle andoperandwriteback blocking; ordinary20 applies compatpath",
+      "boundary": "not matched latency pipelines; cannot simply assign selectedOOload L1hit20 or infer 8 integrated requests/cycle"
+    },
+    {
+      "resource": "PIB192 coupling",
+      "CH": "no CHparameter change",
+      "DH": "active instruction slots128->192 AND lowercreate candidate queue bound128->192 (+64/+50% each)",
+      "boundary": "not an isolated bufferdepth; finiteservice widths stayfixed; no deeper queue/arbitration added-delay orPPA characterization"
+    },
+    {
+      "resource": "data-bank/physicalarray implementation",
+      "CH": "configuration geometry andordinary cache timing model",
+      "DH": "globalRR free-line allocator,allocation4; current spec permits no explicitData-bank mapping/conflict penalty; Tagbanks are not physically mapped data banks",
+      "boundary": "no SRAM port/wiring/bank synthesis, no physicalclockclosure/equalarea claim"
+    },
+    {
+      "resource": "common downstream/platform",
+      "CH": "64SM,10MiBL2,S128:128:16 per40subpart,MSHR192merge4missQ32,FR64return192,850MHzDRAM",
+      "DH": "identical fixed downstream/platform",
+      "boundary": "V100/SM70-derived64SM model,not stockV100; new structuralcosts are upstream andnot freehardware"
+    }
+  ],
+  "active_path_evidence": "shader.cc4414-4474; common.h1992-2055/516-556/637-698; shader.h2433-2435; actual16P0options",
+  "sizeof_or_RSS_used_for_area": false,
+  "Tag_or_PIB_metadata_bitwidth_implementation_unknown": true,
+  "functional_data_values_and_coherence_certified": false
+}
