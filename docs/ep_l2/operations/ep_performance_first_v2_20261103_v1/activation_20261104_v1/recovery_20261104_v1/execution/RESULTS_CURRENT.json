@@ -1,15 +1,15 @@
 {
   "Source_keep": true,
-  "active_native_frontends": 2,
+  "active_native_frontends": 0,
   "budgets": {
     "highclock": {
       "budget": 6,
-      "remaining": 4,
+      "remaining": 3,
       "state": "RUNNING"
     },
     "system": {
       "budget": 12,
-      "remaining": 10,
+      "remaining": 9,
       "state": "RUNNING"
     }
   },
@@ -28,25 +28,48 @@
   },
   "points": [
     {
-      "accepted_point_ref": null,
-      "archive_receipt_ref": null,
+      "CTA": 7040,
+      "accepted_point_ref": {
+        "bytes": 2633,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system/cases/EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_V1/run/e708bf90-0109-4307-8adc-125e97b1faa5/ACCEPTED_POINT.json",
+        "sha256": "513972bd4b3ca764e24d62a78abe878cc872e70e24020452b7da82e6b2bdac6f"
+      },
+      "archive_receipt_ref": {
+        "bytes": 1947,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system/cases/EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "a70f655dd7ae52f015fdbbbfee43480fe6f1ebc370bbbc7d0d62ce09844d5f7a"
+      },
       "cohort": "EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_V1",
       "consumed": true,
       "controller_state": {
-        "cpu": 1,
-        "native_frontend_pid": 3563985,
-        "status": "NATIVE_IN_PROGRESS",
-        "utc": "2026-11-04T00:30:29.867098+00:00"
+        "accept_returncode": 0,
+        "status": "CLOSED_ACCEPTED",
+        "utc": "2026-11-04T00:39:59.787865+00:00"
       },
-      "done_ref": null,
+      "cycles": 170266,
+      "done_ref": {
+        "bytes": 9344,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_V1.DONE.json",
+        "sha256": "4a1a51331682c365e6654acddfeeeb96df356220febda1bb60c6c83114ac2a29"
+      },
+      "elapsed_seconds": 560.5200520586222,
       "family_decision": {
         "group": "system",
         "reason": "INITIAL_SINGLE_FAMILY; FWT_TERMINAL_ARCHIVED_BEFORE_GEMM",
         "status": "RELEASE"
       },
       "group": "system",
+      "hardware_drained": true,
       "input_identity_sha256": "fc3a90622744ba1f63bec264284983747a372e3a34543249c3977d4bd285fe2e",
+      "instructions": 180944896,
+      "kernel_count": 16,
+      "mechanism_metrics_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/activation_20261104_v1/recovery_20261104_v1/control/MECHANISM_METRICS/EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_V1.json",
+        "sha256": "c580b39efa071e13ec9a86f797225f217f16dced384976b6bc77d088622cda03"
+      },
       "mode": "S",
+      "peak_hot_bytes": 2801664,
+      "peak_process_tree_RSS_bytes": 730648576,
       "source_identity": {
         "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
         "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
@@ -58,8 +81,12 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system/cases/EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_V1/control/FROZEN_SPEC.json",
         "sha256": "749f165bc1b61a1f418f7903a58c8104b9fd5ed820d96da23797142d95d2049a"
       },
-      "state": "CONSUMED_BEFORE_FORK",
-      "validation_ref": null
+      "state": "CLOSED_ACCEPTED",
+      "stop_reason": null,
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system/cases/EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_V1/run/e708bf90-0109-4307-8adc-125e97b1faa5/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "a30ea5ab9d645324fabd040e35b828cde760713539d5da017ee3cf75ccd10f79"
+      }
     },
     {
       "CTA": 7040,
@@ -123,12 +150,17 @@
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_FRFCFS256_V1",
       "consumed": false,
-      "controller_state": null,
+      "controller_state": {
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
+        "terminal_hold": true,
+        "utc": "2026-11-04T00:49:40.284851+00:00"
+      },
       "done_ref": null,
       "family_decision": {
         "group": "system",
-        "reason": "PRECURSOR_NOT_COMPLETE",
-        "status": "WAIT"
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "HOLD"
       },
       "group": "system",
       "input_identity_sha256": "fc3a90622744ba1f63bec264284983747a372e3a34543249c3977d4bd285fe2e",
@@ -144,7 +176,7 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system/cases/EP_PERF_PFV2_SYSTEM850_FWT_S_G64W16_FRFCFS256_V1/control/FROZEN_SPEC.json",
         "sha256": "808a97df2946bb09f668e8114028ae4c6cf1cda8847a80b719e962be47800d22"
       },
-      "state": "NOT_STARTED",
+      "state": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
       "validation_ref": null
     },
     {
@@ -152,12 +184,17 @@
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_V1",
       "consumed": false,
-      "controller_state": null,
+      "controller_state": {
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
+        "terminal_hold": true,
+        "utc": "2026-11-04T00:49:40.284868+00:00"
+      },
       "done_ref": null,
       "family_decision": {
         "group": "system",
-        "reason": "INITIAL_SINGLE_FAMILY; FWT_TERMINAL_ARCHIVED_BEFORE_GEMM",
-        "status": "RELEASE"
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "HOLD"
       },
       "group": "system",
       "input_identity_sha256": "fc3a90622744ba1f63bec264284983747a372e3a34543249c3977d4bd285fe2e",
@@ -173,24 +210,52 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system/cases/EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_V1/control/FROZEN_SPEC.json",
         "sha256": "2f1127d6f2b37301fa59e81f52a12f13013685e23af7c7d181204ce81d7fd882"
       },
-      "state": "NOT_STARTED",
+      "state": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
       "validation_ref": null
     },
     {
-      "accepted_point_ref": null,
-      "archive_receipt_ref": null,
+      "CTA": 7040,
+      "accepted_point_ref": {
+        "bytes": 2704,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system/cases/EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_FRFCFS256_V1/run/4e807d79-e1fc-411d-b8d1-4e912cea59e5/ACCEPTED_POINT.json",
+        "sha256": "d9d812c61da8ccc5cd7dafee86c0416765ef0055a6e98cfa56724756fdab68d0"
+      },
+      "archive_receipt_ref": {
+        "bytes": 2007,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system/cases/EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_FRFCFS256_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "8cfed65d571fa48e165ea96accb47c1942beefed58ea74edc1030b40d567bc97"
+      },
       "cohort": "EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_FRFCFS256_V1",
-      "consumed": false,
-      "controller_state": null,
-      "done_ref": null,
+      "consumed": true,
+      "controller_state": {
+        "accept_returncode": 0,
+        "status": "CLOSED_ACCEPTED",
+        "utc": "2026-11-04T00:49:40.269342+00:00"
+      },
+      "cycles": 178769,
+      "done_ref": {
+        "bytes": 9438,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_FRFCFS256_V1.DONE.json",
+        "sha256": "5dd23925da804097ac00d977bdc124e23795d2bee10261b4354cb36c5e00c345"
+      },
+      "elapsed_seconds": 573.276594363153,
       "family_decision": {
         "group": "system",
         "reason": "INITIAL_SINGLE_FAMILY; FWT_TERMINAL_ARCHIVED_BEFORE_GEMM",
         "status": "RELEASE"
       },
       "group": "system",
+      "hardware_drained": true,
       "input_identity_sha256": "fc3a90622744ba1f63bec264284983747a372e3a34543249c3977d4bd285fe2e",
+      "instructions": 180944896,
+      "kernel_count": 16,
+      "mechanism_metrics_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/activation_20261104_v1/recovery_20261104_v1/control/MECHANISM_METRICS/EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_FRFCFS256_V1.json",
+        "sha256": "c462f1bd1bb07977339d98d0fdfca7d42c97ef130df2d4ad30a5e18d4d4cbf23"
+      },
       "mode": "WV_ZERO_RO",
+      "peak_hot_bytes": 3764224,
+      "peak_process_tree_RSS_bytes": 707297280,
       "source_identity": {
         "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
         "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
@@ -202,20 +267,29 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system/cases/EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_FRFCFS256_V1/control/FROZEN_SPEC.json",
         "sha256": "ee13e2f8084af700394e6491ce42d9c0143aadc968d9ed09f0408ff4f90c7da0"
       },
-      "state": "NOT_STARTED",
-      "validation_ref": null
+      "state": "CLOSED_ACCEPTED",
+      "stop_reason": null,
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system/cases/EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_FRFCFS256_V1/run/4e807d79-e1fc-411d-b8d1-4e912cea59e5/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "d192b009c7a69ea08c77df32ff99e01c1eebcd5e967883664680cc6cfcec5493"
+      }
     },
     {
       "accepted_point_ref": null,
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_FRFCFS256_V1",
       "consumed": false,
-      "controller_state": null,
+      "controller_state": {
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
+        "terminal_hold": true,
+        "utc": "2026-11-04T00:49:40.284865+00:00"
+      },
       "done_ref": null,
       "family_decision": {
         "group": "system",
-        "reason": "PRECURSOR_NOT_COMPLETE",
-        "status": "WAIT"
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "HOLD"
       },
       "group": "system",
       "input_identity_sha256": "fc3a90622744ba1f63bec264284983747a372e3a34543249c3977d4bd285fe2e",
@@ -231,7 +305,7 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system/cases/EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_G64W16_FRFCFS256_V1/control/FROZEN_SPEC.json",
         "sha256": "e46b00efd5f4c3f34db0e926cb7445abe2431ca80d5569cc167b277c67ae3590"
       },
-      "state": "NOT_STARTED",
+      "state": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
       "validation_ref": null
     },
     {
@@ -239,12 +313,17 @@
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_V1",
       "consumed": false,
-      "controller_state": null,
+      "controller_state": {
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
+        "terminal_hold": true,
+        "utc": "2026-11-04T00:49:40.284882+00:00"
+      },
       "done_ref": null,
       "family_decision": {
         "group": "system",
-        "reason": "PRECURSOR_NOT_COMPLETE",
-        "status": "WAIT"
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "HOLD"
       },
       "group": "system",
       "input_identity_sha256": "140f6ed3a5cdb1d7183cd4d2acc37b086224a054893ef12d990fdb2d5ea3659b",
@@ -260,7 +339,7 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system/cases/EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_V1/control/FROZEN_SPEC.json",
         "sha256": "349291efea4b200215edd666b517bae81f9fa0474131700a8d6e9c1182999c91"
       },
-      "state": "NOT_STARTED",
+      "state": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
       "validation_ref": null
     },
     {
@@ -268,12 +347,17 @@
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_PFV2_SYSTEM850_GEMM_S_FRFCFS256_V1",
       "consumed": false,
-      "controller_state": null,
+      "controller_state": {
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
+        "terminal_hold": true,
+        "utc": "2026-11-04T00:49:40.284878+00:00"
+      },
       "done_ref": null,
       "family_decision": {
         "group": "system",
-        "reason": "PRECURSOR_NOT_COMPLETE",
-        "status": "WAIT"
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "HOLD"
       },
       "group": "system",
       "input_identity_sha256": "140f6ed3a5cdb1d7183cd4d2acc37b086224a054893ef12d990fdb2d5ea3659b",
@@ -289,7 +373,7 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system/cases/EP_PERF_PFV2_SYSTEM850_GEMM_S_FRFCFS256_V1/control/FROZEN_SPEC.json",
         "sha256": "440ce0d000600507998c07584f732cb77c79c559f68e13cb51a3ed2c0e148ef9"
       },
-      "state": "NOT_STARTED",
+      "state": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
       "validation_ref": null
     },
     {
@@ -297,12 +381,17 @@
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_FRFCFS256_V1",
       "consumed": false,
-      "controller_state": null,
+      "controller_state": {
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
+        "terminal_hold": true,
+        "utc": "2026-11-04T00:49:40.284880+00:00"
+      },
       "done_ref": null,
       "family_decision": {
         "group": "system",
-        "reason": "PRECURSOR_NOT_COMPLETE",
-        "status": "WAIT"
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "HOLD"
       },
       "group": "system",
       "input_identity_sha256": "140f6ed3a5cdb1d7183cd4d2acc37b086224a054893ef12d990fdb2d5ea3659b",
@@ -318,7 +407,7 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system/cases/EP_PERF_PFV2_SYSTEM850_GEMM_S_G64W16_FRFCFS256_V1/control/FROZEN_SPEC.json",
         "sha256": "621899bffea6bb3256acc04e8d3ff9fca8dd2f5815331114b634b375b2b06205"
       },
-      "state": "NOT_STARTED",
+      "state": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
       "validation_ref": null
     },
     {
@@ -326,12 +415,17 @@
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_V1",
       "consumed": false,
-      "controller_state": null,
+      "controller_state": {
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
+        "terminal_hold": true,
+        "utc": "2026-11-04T00:49:40.284889+00:00"
+      },
       "done_ref": null,
       "family_decision": {
         "group": "system",
-        "reason": "PRECURSOR_NOT_COMPLETE",
-        "status": "WAIT"
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "HOLD"
       },
       "group": "system",
       "input_identity_sha256": "140f6ed3a5cdb1d7183cd4d2acc37b086224a054893ef12d990fdb2d5ea3659b",
@@ -347,7 +441,7 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system/cases/EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_V1/control/FROZEN_SPEC.json",
         "sha256": "f7c6d1836c13a6427ab1a4a092e647358905cfd04c93a55e0f232cc09a2dbffb"
       },
-      "state": "NOT_STARTED",
+      "state": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
       "validation_ref": null
     },
     {
@@ -355,12 +449,17 @@
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_FRFCFS256_V1",
       "consumed": false,
-      "controller_state": null,
+      "controller_state": {
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
+        "terminal_hold": true,
+        "utc": "2026-11-04T00:49:40.284884+00:00"
+      },
       "done_ref": null,
       "family_decision": {
         "group": "system",
-        "reason": "PRECURSOR_NOT_COMPLETE",
-        "status": "WAIT"
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "HOLD"
       },
       "group": "system",
       "input_identity_sha256": "140f6ed3a5cdb1d7183cd4d2acc37b086224a054893ef12d990fdb2d5ea3659b",
@@ -376,7 +475,7 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system/cases/EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_FRFCFS256_V1/control/FROZEN_SPEC.json",
         "sha256": "d80ee32131a05fc4299821e1bda14fb17f017d35f04b45c9b590b032be96c970"
       },
-      "state": "NOT_STARTED",
+      "state": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
       "validation_ref": null
     },
     {
@@ -384,12 +483,17 @@
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_FRFCFS256_V1",
       "consumed": false,
-      "controller_state": null,
+      "controller_state": {
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
+        "terminal_hold": true,
+        "utc": "2026-11-04T00:49:40.284886+00:00"
+      },
       "done_ref": null,
       "family_decision": {
         "group": "system",
-        "reason": "PRECURSOR_NOT_COMPLETE",
-        "status": "WAIT"
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "HOLD"
       },
       "group": "system",
       "input_identity_sha256": "140f6ed3a5cdb1d7183cd4d2acc37b086224a054893ef12d990fdb2d5ea3659b",
@@ -405,29 +509,52 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_system850_v2_20261104_v1/system/cases/EP_PERF_PFV2_SYSTEM850_GEMM_WV_ZERO_RO_G64W16_FRFCFS256_V1/control/FROZEN_SPEC.json",
         "sha256": "741722e428168fb67bb90a746e174b1ce6d8d21feb2e0da24c82df08a236977e"
       },
-      "state": "NOT_STARTED",
+      "state": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
       "validation_ref": null
     },
     {
-      "accepted_point_ref": null,
-      "archive_receipt_ref": null,
+      "CTA": 15625,
+      "accepted_point_ref": {
+        "bytes": 2619,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/highclock/cases/EP_PERF_CC_CAM_VECTOR4M_S_850_V1/run/8441330f-f669-43f5-a6fe-18bfc8582173/ACCEPTED_POINT.json",
+        "sha256": "2c38d6c7a1c061139af685d20b546313ac2c15e9fdf6f07fa16b42617052cb07"
+      },
+      "archive_receipt_ref": {
+        "bytes": 1921,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/highclock/cases/EP_PERF_CC_CAM_VECTOR4M_S_850_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "390adad5d3f9051c681bbec457fb4e943960e606d9d70a23e6aef29fd4cd7cfa"
+      },
       "cohort": "EP_PERF_CC_CAM_VECTOR4M_S_850_V1",
       "consumed": true,
       "controller_state": {
-        "cpu": 0,
-        "native_frontend_pid": 3563906,
-        "status": "NATIVE_IN_PROGRESS",
-        "utc": "2026-11-04T00:30:29.263592+00:00"
+        "accept_returncode": 0,
+        "status": "CLOSED_ACCEPTED",
+        "utc": "2026-11-04T00:39:14.887594+00:00"
       },
-      "done_ref": null,
+      "cycles": 77184,
+      "done_ref": {
+        "bytes": 4316,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_CC_CAM_VECTOR4M_S_850_V1.DONE.json",
+        "sha256": "68806ea24a2e6cb75ffa0dca9500c16d938403176112599a7c28dfc115b45a15"
+      },
+      "elapsed_seconds": 521.9146569836885,
       "family_decision": {
         "group": "highclock",
         "reason": "NEW_SOURCE_850_FRESH_REFERENCE",
         "status": "RELEASE"
       },
       "group": "highclock",
+      "hardware_drained": true,
       "input_identity_sha256": "ddf26d4f6b4b672de3c5f6d1ab633cc44d3d9ef8023b87ae9a10760f3f4057dc",
+      "instructions": 56000000,
+      "kernel_count": 1,
+      "mechanism_metrics_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/activation_20261104_v1/recovery_20261104_v1/control/MECHANISM_METRICS/EP_PERF_CC_CAM_VECTOR4M_S_850_V1.json",
+        "sha256": "bef07e94add315885ad2207222daeaee35c358f73a738e9cf7fc53b13b40303e"
+      },
       "mode": "S",
+      "peak_hot_bytes": 2224128,
+      "peak_process_tree_RSS_bytes": 524288000,
       "source_identity": {
         "archive_sha256": "5901a821fc0a9556b52a4107be1decf650a04e2091c31f4460938924d750d6cb",
         "binary_sha256": "083aa0d72173e8f27b298a76b88898bf117f44d119379b3e3ef9edd1b7ffa52b",
@@ -439,8 +566,12 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/highclock/cases/EP_PERF_CC_CAM_VECTOR4M_S_850_V1/control/FROZEN_SPEC.json",
         "sha256": "b9df419488345a1d7130d1a2d1ae68d438577de71089f9934c89fd38610fbc72"
       },
-      "state": "CONSUMED_BEFORE_FORK",
-      "validation_ref": null
+      "state": "CLOSED_ACCEPTED",
+      "stop_reason": null,
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/highclock/cases/EP_PERF_CC_CAM_VECTOR4M_S_850_V1/run/8441330f-f669-43f5-a6fe-18bfc8582173/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "d18a7300eaee44a540a674a71643009c2ff47b8a98810ed69ea7a80ebe8a360b"
+      }
     },
     {
       "CTA": 15625,
@@ -504,12 +635,17 @@
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_CC_CAM_VECTOR4M_S_1275_V1",
       "consumed": false,
-      "controller_state": null,
+      "controller_state": {
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
+        "terminal_hold": true,
+        "utc": "2026-11-04T00:49:40.284873+00:00"
+      },
       "done_ref": null,
       "family_decision": {
         "group": "highclock",
-        "reason": "PRECURSOR_NOT_COMPLETE",
-        "status": "WAIT"
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "HOLD"
       },
       "group": "highclock",
       "input_identity_sha256": "ddf26d4f6b4b672de3c5f6d1ab633cc44d3d9ef8023b87ae9a10760f3f4057dc",
@@ -525,24 +661,52 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/highclock/cases/EP_PERF_CC_CAM_VECTOR4M_S_1275_V1/control/FROZEN_SPEC.json",
         "sha256": "2a9205a074243f22a5e357d8fdea33b7bf653066a7489b8617e1859904c1bb24"
       },
-      "state": "NOT_STARTED",
+      "state": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
       "validation_ref": null
     },
     {
-      "accepted_point_ref": null,
-      "archive_receipt_ref": null,
+      "CTA": 15625,
+      "accepted_point_ref": {
+        "bytes": 2624,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/highclock/cases/EP_PERF_CC_CAM_VECTOR4M_F_1275_V1/run/007542cc-3f31-4cf0-8aa2-1a1760c9f8d9/ACCEPTED_POINT.json",
+        "sha256": "42889464d017bd109ab34d6aecdd8d9e635aa5a8b4281d9a8cf528f03ca95661"
+      },
+      "archive_receipt_ref": {
+        "bytes": 1926,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/highclock/cases/EP_PERF_CC_CAM_VECTOR4M_F_1275_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "7f517ab2b942c6a3e634dd7a363e2b8ccfc0537d95a1e72b345a13e321d21910"
+      },
       "cohort": "EP_PERF_CC_CAM_VECTOR4M_F_1275_V1",
-      "consumed": false,
-      "controller_state": null,
-      "done_ref": null,
+      "consumed": true,
+      "controller_state": {
+        "accept_returncode": 0,
+        "status": "CLOSED_ACCEPTED",
+        "utc": "2026-11-04T00:45:54.544899+00:00"
+      },
+      "cycles": 56038,
+      "done_ref": {
+        "bytes": 4325,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_CC_CAM_VECTOR4M_F_1275_V1.DONE.json",
+        "sha256": "8c9e31fa280f5b99dbe25fcb09b950ee24d7bccc5e10aa3a0ca9ddc8f91b5c45"
+      },
+      "elapsed_seconds": 395.90171075984836,
       "family_decision": {
         "group": "highclock",
-        "reason": "PRECURSOR_NOT_COMPLETE",
-        "status": "WAIT"
+        "reason": "NEW850_BOTH_ACCEPTED_AND_ARCHIVED",
+        "status": "RELEASE"
       },
       "group": "highclock",
+      "hardware_drained": true,
       "input_identity_sha256": "ddf26d4f6b4b672de3c5f6d1ab633cc44d3d9ef8023b87ae9a10760f3f4057dc",
+      "instructions": 56000000,
+      "kernel_count": 1,
+      "mechanism_metrics_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/activation_20261104_v1/recovery_20261104_v1/control/MECHANISM_METRICS/EP_PERF_CC_CAM_VECTOR4M_F_1275_V1.json",
+        "sha256": "a4c03f379a0daa7ea45307c7e0e7e4bf574829061c6ab2b142ef0c3841a76f52"
+      },
       "mode": "F",
+      "peak_hot_bytes": 2088960,
+      "peak_process_tree_RSS_bytes": 528482304,
       "source_identity": {
         "archive_sha256": "5901a821fc0a9556b52a4107be1decf650a04e2091c31f4460938924d750d6cb",
         "binary_sha256": "083aa0d72173e8f27b298a76b88898bf117f44d119379b3e3ef9edd1b7ffa52b",
@@ -554,20 +718,29 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/highclock/cases/EP_PERF_CC_CAM_VECTOR4M_F_1275_V1/control/FROZEN_SPEC.json",
         "sha256": "5a7aff7d8bf169fd1457796237f79d1e03d0f18a7c96485cef708b2977eb126f"
       },
-      "state": "NOT_STARTED",
-      "validation_ref": null
+      "state": "CLOSED_ACCEPTED",
+      "stop_reason": null,
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/highclock/cases/EP_PERF_CC_CAM_VECTOR4M_F_1275_V1/run/007542cc-3f31-4cf0-8aa2-1a1760c9f8d9/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "ae604287b6b6760782420e10cda89a6f637d80827af55c36735a693152bbe6d3"
+      }
     },
     {
       "accepted_point_ref": null,
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_CC_CAM_VECTOR4M_S_1700_V1",
       "consumed": false,
-      "controller_state": null,
+      "controller_state": {
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
+        "terminal_hold": true,
+        "utc": "2026-11-04T00:49:40.284875+00:00"
+      },
       "done_ref": null,
       "family_decision": {
         "group": "highclock",
-        "reason": "PRECURSOR_NOT_COMPLETE",
-        "status": "WAIT"
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "HOLD"
       },
       "group": "highclock",
       "input_identity_sha256": "ddf26d4f6b4b672de3c5f6d1ab633cc44d3d9ef8023b87ae9a10760f3f4057dc",
@@ -583,7 +756,7 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/highclock/cases/EP_PERF_CC_CAM_VECTOR4M_S_1700_V1/control/FROZEN_SPEC.json",
         "sha256": "10d0c4abc621f1dbdaaf7caf7a4964a2a11e2a7abaa10c4b9b0903d99afa5aee"
       },
-      "state": "NOT_STARTED",
+      "state": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
       "validation_ref": null
     },
     {
@@ -591,12 +764,17 @@
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_CC_CAM_VECTOR4M_F_1700_V1",
       "consumed": false,
-      "controller_state": null,
+      "controller_state": {
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
+        "terminal_hold": true,
+        "utc": "2026-11-04T00:49:40.284871+00:00"
+      },
       "done_ref": null,
       "family_decision": {
         "group": "highclock",
-        "reason": "PRECURSOR_NOT_COMPLETE",
-        "status": "WAIT"
+        "reason": "MAIN_EXPLICIT_TECHNICAL_QUALIFICATION_HOLD",
+        "status": "HOLD"
       },
       "group": "highclock",
       "input_identity_sha256": "ddf26d4f6b4b672de3c5f6d1ab633cc44d3d9ef8023b87ae9a10760f3f4057dc",
@@ -612,7 +790,7 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_cc_cam_highclock_20261104_v1/highclock/cases/EP_PERF_CC_CAM_VECTOR4M_F_1700_V1/control/FROZEN_SPEC.json",
         "sha256": "915b9294a325f86df497ca22d1ef5ed4f395a6e28846ec9ada535df77fbe1a96"
       },
-      "state": "NOT_STARTED",
+      "state": "LOCAL_FAMILY_HOLD_NOT_CONSUMED",
       "validation_ref": null
     }
   ],
@@ -621,9 +799,22 @@
     "EP_PERF_PFV2_SYSTEM850_FWT_S_FRFCFS256_V1"
   ],
   "raw_polling": false,
-  "same_background_pairs": [],
+  "same_background_pairs": [
+    {
+      "EP": "EP_PERF_PFV2_SYSTEM850_FWT_WV_ZERO_RO_FRFCFS256_V1",
+      "EP_cycle_reduction": 0.01667216721672171,
+      "S": "EP_PERF_PFV2_SYSTEM850_FWT_S_FRFCFS256_V1",
+      "same_background_S_over_EP": 1.0169548411637364
+    },
+    {
+      "EP": "EP_PERF_CC_CAM_VECTOR4M_F_850_V1",
+      "EP_cycle_reduction": -0.0006866708126036514,
+      "S": "EP_PERF_CC_CAM_VECTOR4M_S_850_V1",
+      "same_background_S_over_EP": 0.9993138003806465
+    }
+  ],
   "same_owner_handoff": true,
   "schema": "EP_MAIN_V2_AUTHORIZED18_FINITE_RESULTS_V1",
   "session": "4ac1ceac-1ea0-4400-8f4c-af02eff4f4af",
-  "utc": "2026-11-04T00:32:30.547852+00:00"
+  "utc": "2026-11-04T00:49:40.336542+00:00"
 }
