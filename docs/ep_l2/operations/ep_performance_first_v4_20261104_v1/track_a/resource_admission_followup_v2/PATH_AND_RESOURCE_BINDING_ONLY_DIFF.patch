@@ -1,0 +1,154 @@
+--- /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/private_main_integration/A1/runtime/ep_perf_common_v2.py
++++ /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A1/runtime/ep_perf_common_v2.py
+@@ -2,7 +2,7 @@
+ import contextlib, copy, datetime, fcntl, hashlib, importlib.util, json, os, pathlib, uuid
+ 
+ P = pathlib.Path
+-ROOT = P('/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/private_main_integration/A1/execution')
++ROOT = P('/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A1/execution')
+ NATIVE = P('/root/data/ep_l2_dtc_l1_native_v2')
+ REG = NATIVE / 'control/science_authority/NATIVE_SCIENCE_REGISTRY.json'
+ EPOCH = NATIVE / 'control/CURRENT_SCIENCE_EPOCH.json'
+--- /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/private_main_integration/A1/runtime/ep_perf_native_wv_modes_draft.py
++++ /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A1/runtime/ep_perf_native_wv_modes_draft.py
+@@ -43,9 +43,9 @@
+     return s['mode']
+ 
+ LEDGER = NATIVE / 'control/qualification_ledger'
+-NATIVE_ROUTE_GUARD_REF={'path': '/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/private_main_integration/A1/runtime/native_route_guard_v3.py', 'sha256': '815bb163a98b8a38aafb3d071e8b70e7fb87ab1bb39078ed9c9064a06f68b584'}
+-MODE_CONTRACT_SHA='14dd50e76a8fb25c3b8539feab47e3d6a4f714f9c6278ab7c4fd5dec00258ffd'
+-NEW_VALIDATOR_SHA='3b39d7155659a8780bb25863f8356ea78ddfc86845025e47e5b5a3c420927cb9'
++NATIVE_ROUTE_GUARD_REF={'path': '/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A1/runtime/native_route_guard_v3.py', 'sha256': '815bb163a98b8a38aafb3d071e8b70e7fb87ab1bb39078ed9c9064a06f68b584'}
++MODE_CONTRACT_SHA='d09cbc3f0c3bd3af50f5e0e9345c1127e4622bea8faba107f1ec1a49e017bc42'
++NEW_VALIDATOR_SHA='8db372ee1be53a9df7c0070de3963b01adf4331a28d09fa82be1be746817f110'
+ def formal_mode_contract(s):
+     need(s['mode_contract_ref']['sha256']==MODE_CONTRACT_SHA and s['validation_module_ref']['sha256']==NEW_VALIDATOR_SHA,'unreviewed formal mapper/parser version')
+     return module(s['mode_contract_ref'],'private_formal_mode_contract').validate_static(s)
+--- /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/private_main_integration/A1/runtime/mode_contract.py
++++ /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A1/runtime/mode_contract.py
+@@ -4,7 +4,7 @@
+ GOAL='EP_L2_FULL_WORKLOAD_PERFORMANCE_POTENTIAL_EXPLORATION_V1'
+ SYSTEM_REQUEST_ID='EP_L2_PFV4_A1_STENCIL_SOURCE78_850_L100_V1';SERVICE_REQUEST_ID=SYSTEM_REQUEST_ID
+ MODES={'S':(1,0,0,0,0,'S'),'WV_ZERO_RO':(2,1,1,0,0,'F_MINUS_R')}
+-FAMILY_SCOPE_SHA='71b2436a7b89e6d68baf8e85b4d633a8d71e776cc174acccf57c6d7f2f66f5c1'
++FAMILY_SCOPE_SHA='ad5fc7067f2e4d13e037ff62169bbd48af04658ddaf14bb7359975e750b53556'
+ GEOMETRY_SHA='a9d11c3f1e04ceb26849a8f083e2725ef0a4aa648916776d2d6ee353752000b9'
+ def need(x,m):
+  if not x:raise ValueError(m)
+--- /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/private_main_integration/A1/runtime/mode_aware_terminal.py
++++ /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A1/runtime/mode_aware_terminal.py
+@@ -1,7 +1,7 @@
+ """DRAFT pure five-mode adapter. No actors or application-acceptance writes."""
+ import pathlib,hashlib,importlib.util,json
+ P=pathlib.Path;ROOT=P(__file__).resolve().parent
+-PINS={'deps/host_scaling/dynamic_observation_scaled.py': '4db737bf5bdc09532480e401001e39bc0de414c0b692c666542e8665a011ab25', 'deps/host_scaling/lowcost_terminal_scaled.py': 'fdcaab0aef93363148a81257e548dd1cc58cc1369986cbfc809366ff83cd1df1', 'deps/host_scaling/rolling_structure_core.py': 'b8f09af83cf2eb50933b46216f825593eb218c2a304a61ec7a624fc22f3f2066', 'deps/host_scaling/PACKAGE_MANIFEST.json': '83a0ac96f6f26f0788a46cde210277e22222476157e74352d9ed41f0ae1be2c1', 'deps/host_scaling/frozen_math/parse_main_terminal.py': 'f518aed003f2f70a4d84afc95c215773da2c14761315349b7600655a1e549c8e', 'deps/host_scaling/frozen_math/lowcost_terminal_v2.py': 'cba193d8ec810219f58bbe55870814b70604082f4f6683a236a418e80b9da35c', 'deps/host_scaling/frozen_math/ft_lane5/validate.py': '08a7396a6e11893dbbcb982725765a6c9b12194b1e01e3f0dc70d337f85dd500', 'deps/host_scaling/frozen_math/ft_lane5/parse_unified_terminal.py': '536d1a8d55452b7aee5b84168648b228eb35cc5e82b523e81b59634c51db352b', 'mode_contract.py': '14dd50e76a8fb25c3b8539feab47e3d6a4f714f9c6278ab7c4fd5dec00258ffd', 'REF_282_S.json': '65474df0a47f5e16ce0314004b160cbd0a8da4d83473a1f3351e4bf5cc574062'}
++PINS={'deps/host_scaling/dynamic_observation_scaled.py': '4db737bf5bdc09532480e401001e39bc0de414c0b692c666542e8665a011ab25', 'deps/host_scaling/lowcost_terminal_scaled.py': 'fdcaab0aef93363148a81257e548dd1cc58cc1369986cbfc809366ff83cd1df1', 'deps/host_scaling/rolling_structure_core.py': 'b8f09af83cf2eb50933b46216f825593eb218c2a304a61ec7a624fc22f3f2066', 'deps/host_scaling/PACKAGE_MANIFEST.json': '83a0ac96f6f26f0788a46cde210277e22222476157e74352d9ed41f0ae1be2c1', 'deps/host_scaling/frozen_math/parse_main_terminal.py': 'f518aed003f2f70a4d84afc95c215773da2c14761315349b7600655a1e549c8e', 'deps/host_scaling/frozen_math/lowcost_terminal_v2.py': 'cba193d8ec810219f58bbe55870814b70604082f4f6683a236a418e80b9da35c', 'deps/host_scaling/frozen_math/ft_lane5/validate.py': '08a7396a6e11893dbbcb982725765a6c9b12194b1e01e3f0dc70d337f85dd500', 'deps/host_scaling/frozen_math/ft_lane5/parse_unified_terminal.py': '536d1a8d55452b7aee5b84168648b228eb35cc5e82b523e81b59634c51db352b', 'mode_contract.py': 'd09cbc3f0c3bd3af50f5e0e9345c1127e4622bea8faba107f1ec1a49e017bc42', 'REF_282_S.json': '65474df0a47f5e16ce0314004b160cbd0a8da4d83473a1f3351e4bf5cc574062'}
+ BODY_SHA='7cc347a6c62974eedf9e1e39b007c2716fa886d26057f005c938c820b48e1817'
+ SUFFIX_SHA='bf91f534869a1ec59aea92ee2de961d50e16e68a28eed636448ca83122339432'
+ def need(x,m):
+--- /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/private_main_integration/A1/runtime/resources_request2.py
++++ /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A1/runtime/resources_request2.py
+@@ -1,10 +1,11 @@
++# Exact Source78 request2 resource wiring; Main-owned additive helper, read-only API.
+ import pathlib,hashlib,importlib.util
+-PATH=pathlib.Path('/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_c_resources/resources_v3.py');SHA='ebaacc5efecf4e2162532b0722822763df55fb5cab05dbec0e0eaa161e6465bd';REQUEST='EP_L2_PFV4_A1_STENCIL_SOURCE78_850_L100_V1'
++PATH=pathlib.Path('/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/main/qualified_resources_v4/resources_v4.py');SHA='ee5cc3ba4c49ed95a1ac110e52dc0123d8f90c4a166da4f3ca00bc0e01b73303';REQUEST='EP_L2_PFV4_A1_STENCIL_SOURCE78_850_L100_V1'
+ def shared():
+- if hashlib.sha256(PATH.read_bytes()).hexdigest()!=SHA:raise ValueError('V3 resource adapter drift')
+- s=importlib.util.spec_from_file_location('readonly_V3_scoped_resources',PATH);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
++    if hashlib.sha256(PATH.read_bytes()).hexdigest()!=SHA:raise ValueError('Main V4 resource dependency drift')
++    sp=importlib.util.spec_from_file_location('Main_v4_exact_resources',PATH);m=importlib.util.module_from_spec(sp);sp.loader.exec_module(m);return m
+ def snapshot():return shared().snapshot(REQUEST)
+ def admit(s,own_pending_additional_RAM,own_remaining_writes,policy=None):
+- if s.get('current_request')!=REQUEST:raise ValueError('cross-family resource snapshot')
+- return shared().admit(s,own_pending_additional_RAM,own_remaining_writes,policy=policy)
++    if s.get('current_request')!=REQUEST:raise ValueError('cross-family resource snapshot')
++    return shared().admit(s,own_pending_additional_RAM,own_remaining_writes,policy=policy)
+ def forecast(input_id,history,policy=None):return shared().forecast(input_id,history,policy=policy)
+--- /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/private_main_integration/A1/runtime/native_request2
++++ /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A1/runtime/native_request2
+@@ -1,6 +1,6 @@
+ #!/usr/bin/python3
+ import os,sys,json
+-sys.path.insert(0,'/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/private_main_integration/A1/runtime')
++sys.path.insert(0,'/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A1/runtime')
+ os.environ['EP_FULL_PERF_NATIVE_ENTRY']='1'
+ from ep_perf_frontend import main
+ try:print(json.dumps(main(sys.argv[1:])))
+--- /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/private_main_integration/A3/runtime/ep_perf_common_v2.py
++++ /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A3/runtime/ep_perf_common_v2.py
+@@ -2,7 +2,7 @@
+ import contextlib, copy, datetime, fcntl, hashlib, importlib.util, json, os, pathlib, uuid
+ 
+ P = pathlib.Path
+-ROOT = P('/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/private_main_integration/A3/execution')
++ROOT = P('/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A3/execution')
+ NATIVE = P('/root/data/ep_l2_dtc_l1_native_v2')
+ REG = NATIVE / 'control/science_authority/NATIVE_SCIENCE_REGISTRY.json'
+ EPOCH = NATIVE / 'control/CURRENT_SCIENCE_EPOCH.json'
+--- /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/private_main_integration/A3/runtime/ep_perf_native_wv_modes_draft.py
++++ /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A3/runtime/ep_perf_native_wv_modes_draft.py
+@@ -43,9 +43,9 @@
+     return s['mode']
+ 
+ LEDGER = NATIVE / 'control/qualification_ledger'
+-NATIVE_ROUTE_GUARD_REF={'path': '/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/private_main_integration/A3/runtime/native_route_guard_v3.py', 'sha256': '35e0969cab20e767b441fa4f3980a809572356d90cba12cc72879c7209fbfdbc'}
+-MODE_CONTRACT_SHA='490ec8d355ecc962b080efda9a5395bc5d5dc2b8e1e9b6ec93534acd4f93db0a'
+-NEW_VALIDATOR_SHA='9feabeca4818942d4eeab24f6f38f68c362906e0a892c3bf46c09fb793858f17'
++NATIVE_ROUTE_GUARD_REF={'path': '/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A3/runtime/native_route_guard_v3.py', 'sha256': '35e0969cab20e767b441fa4f3980a809572356d90cba12cc72879c7209fbfdbc'}
++MODE_CONTRACT_SHA='2f412e50c367ab8d7d55bd4597a4f0350bc15e534b3127b85f59501ccbfeb667'
++NEW_VALIDATOR_SHA='a07e793ae9bca082ab9cab07d42fb6f45581da4b510d62b81edb5a7f2383e096'
+ def formal_mode_contract(s):
+     need(s['mode_contract_ref']['sha256']==MODE_CONTRACT_SHA and s['validation_module_ref']['sha256']==NEW_VALIDATOR_SHA,'unreviewed formal mapper/parser version')
+     return module(s['mode_contract_ref'],'private_formal_mode_contract').validate_static(s)
+--- /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/private_main_integration/A3/runtime/mode_contract.py
++++ /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A3/runtime/mode_contract.py
+@@ -4,7 +4,7 @@
+ GOAL='EP_L2_FULL_WORKLOAD_PERFORMANCE_POTENTIAL_EXPLORATION_V1'
+ SYSTEM_REQUEST_ID='EP_L2_PFV4_A3_TRANSPOSE_SOURCE78_850_L100_V1';SERVICE_REQUEST_ID=SYSTEM_REQUEST_ID
+ MODES={'S':(1,0,0,0,0,'S'),'WV_ZERO_RO':(2,1,1,0,0,'F_MINUS_R')}
+-FAMILY_SCOPE_SHA='a9bbf5cc0bcd3a9d2134ff0676d1f85dfea9342e1b8cc8f1f90742b16a87a734'
++FAMILY_SCOPE_SHA='c4716a22ff129914620cfecee6e3b522fc61309f3e00a5a6cef07ce10625473e'
+ GEOMETRY_SHA='a9d11c3f1e04ceb26849a8f083e2725ef0a4aa648916776d2d6ee353752000b9'
+ def need(x,m):
+  if not x:raise ValueError(m)
+--- /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/private_main_integration/A3/runtime/mode_aware_terminal.py
++++ /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A3/runtime/mode_aware_terminal.py
+@@ -1,7 +1,7 @@
+ """DRAFT pure five-mode adapter. No actors or application-acceptance writes."""
+ import pathlib,hashlib,importlib.util,json
+ P=pathlib.Path;ROOT=P(__file__).resolve().parent
+-PINS={'deps/host_scaling/dynamic_observation_scaled.py': '4db737bf5bdc09532480e401001e39bc0de414c0b692c666542e8665a011ab25', 'deps/host_scaling/lowcost_terminal_scaled.py': 'fdcaab0aef93363148a81257e548dd1cc58cc1369986cbfc809366ff83cd1df1', 'deps/host_scaling/rolling_structure_core.py': 'b8f09af83cf2eb50933b46216f825593eb218c2a304a61ec7a624fc22f3f2066', 'deps/host_scaling/PACKAGE_MANIFEST.json': '83a0ac96f6f26f0788a46cde210277e22222476157e74352d9ed41f0ae1be2c1', 'deps/host_scaling/frozen_math/parse_main_terminal.py': 'f518aed003f2f70a4d84afc95c215773da2c14761315349b7600655a1e549c8e', 'deps/host_scaling/frozen_math/lowcost_terminal_v2.py': 'cba193d8ec810219f58bbe55870814b70604082f4f6683a236a418e80b9da35c', 'deps/host_scaling/frozen_math/ft_lane5/validate.py': '08a7396a6e11893dbbcb982725765a6c9b12194b1e01e3f0dc70d337f85dd500', 'deps/host_scaling/frozen_math/ft_lane5/parse_unified_terminal.py': '536d1a8d55452b7aee5b84168648b228eb35cc5e82b523e81b59634c51db352b', 'mode_contract.py': '490ec8d355ecc962b080efda9a5395bc5d5dc2b8e1e9b6ec93534acd4f93db0a', 'REF_282_S.json': '65474df0a47f5e16ce0314004b160cbd0a8da4d83473a1f3351e4bf5cc574062'}
++PINS={'deps/host_scaling/dynamic_observation_scaled.py': '4db737bf5bdc09532480e401001e39bc0de414c0b692c666542e8665a011ab25', 'deps/host_scaling/lowcost_terminal_scaled.py': 'fdcaab0aef93363148a81257e548dd1cc58cc1369986cbfc809366ff83cd1df1', 'deps/host_scaling/rolling_structure_core.py': 'b8f09af83cf2eb50933b46216f825593eb218c2a304a61ec7a624fc22f3f2066', 'deps/host_scaling/PACKAGE_MANIFEST.json': '83a0ac96f6f26f0788a46cde210277e22222476157e74352d9ed41f0ae1be2c1', 'deps/host_scaling/frozen_math/parse_main_terminal.py': 'f518aed003f2f70a4d84afc95c215773da2c14761315349b7600655a1e549c8e', 'deps/host_scaling/frozen_math/lowcost_terminal_v2.py': 'cba193d8ec810219f58bbe55870814b70604082f4f6683a236a418e80b9da35c', 'deps/host_scaling/frozen_math/ft_lane5/validate.py': '08a7396a6e11893dbbcb982725765a6c9b12194b1e01e3f0dc70d337f85dd500', 'deps/host_scaling/frozen_math/ft_lane5/parse_unified_terminal.py': '536d1a8d55452b7aee5b84168648b228eb35cc5e82b523e81b59634c51db352b', 'mode_contract.py': '2f412e50c367ab8d7d55bd4597a4f0350bc15e534b3127b85f59501ccbfeb667', 'REF_282_S.json': '65474df0a47f5e16ce0314004b160cbd0a8da4d83473a1f3351e4bf5cc574062'}
+ BODY_SHA='7cc347a6c62974eedf9e1e39b007c2716fa886d26057f005c938c820b48e1817'
+ SUFFIX_SHA='bf91f534869a1ec59aea92ee2de961d50e16e68a28eed636448ca83122339432'
+ def need(x,m):
+--- /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/private_main_integration/A3/runtime/resources_request2.py
++++ /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A3/runtime/resources_request2.py
+@@ -1,10 +1,11 @@
++# Exact Source78 request2 resource wiring; Main-owned additive helper, read-only API.
+ import pathlib,hashlib,importlib.util
+-PATH=pathlib.Path('/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_c_resources/resources_v3.py');SHA='ebaacc5efecf4e2162532b0722822763df55fb5cab05dbec0e0eaa161e6465bd';REQUEST='EP_L2_PFV4_A3_TRANSPOSE_SOURCE78_850_L100_V1'
++PATH=pathlib.Path('/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/main/qualified_resources_v4/resources_v4.py');SHA='ee5cc3ba4c49ed95a1ac110e52dc0123d8f90c4a166da4f3ca00bc0e01b73303';REQUEST='EP_L2_PFV4_A3_TRANSPOSE_SOURCE78_850_L100_V1'
+ def shared():
+- if hashlib.sha256(PATH.read_bytes()).hexdigest()!=SHA:raise ValueError('V3 resource adapter drift')
+- s=importlib.util.spec_from_file_location('readonly_V3_scoped_resources',PATH);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
++    if hashlib.sha256(PATH.read_bytes()).hexdigest()!=SHA:raise ValueError('Main V4 resource dependency drift')
++    sp=importlib.util.spec_from_file_location('Main_v4_exact_resources',PATH);m=importlib.util.module_from_spec(sp);sp.loader.exec_module(m);return m
+ def snapshot():return shared().snapshot(REQUEST)
+ def admit(s,own_pending_additional_RAM,own_remaining_writes,policy=None):
+- if s.get('current_request')!=REQUEST:raise ValueError('cross-family resource snapshot')
+- return shared().admit(s,own_pending_additional_RAM,own_remaining_writes,policy=policy)
++    if s.get('current_request')!=REQUEST:raise ValueError('cross-family resource snapshot')
++    return shared().admit(s,own_pending_additional_RAM,own_remaining_writes,policy=policy)
+ def forecast(input_id,history,policy=None):return shared().forecast(input_id,history,policy=policy)
+--- /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/private_main_integration/A3/runtime/native_request2
++++ /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A3/runtime/native_request2
+@@ -1,6 +1,6 @@
+ #!/usr/bin/python3
+ import os,sys,json
+-sys.path.insert(0,'/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/private_main_integration/A3/runtime')
++sys.path.insert(0,'/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A3/runtime')
+ os.environ['EP_FULL_PERF_NATIVE_ENTRY']='1'
+ from ep_perf_frontend import main
+ try:print(json.dumps(main(sys.argv[1:])))

@@ -1,0 +1,167 @@
+--- /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_b_formal/runtime/ep_perf_native_wv_modes_draft.py
++++ /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_b/private_runtime/ep_perf_native_wv_modes_draft.py
+@@ -2,8 +2,15 @@
+ import gzip, hashlib, json, os, pathlib, resource, selectors, shutil, signal
+ import subprocess, sys, time, uuid
+ from ep_perf_common_v2 import *
+-
+-SCOPED_MODES = {'EP_PERF_PFV3_VECTOR4M_W_ONLY_1700_V1': 'W_ONLY', 'EP_PERF_PFV3_VECTOR4M_WV_ZERO_RO_1700_V1': 'WV_ZERO_RO'}
++from runtime_monitor_schema_v4_strict import validate_spec_contract as _validate_spec_contract
++_SCHEMA_ROOT=P(__file__).resolve().parent
++_SCHEMA_REFS={'contract_ref': {'path': '/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_b/private_runtime/RUNTIME_FULL_43_CONTRACT_V4.json', 'sha256': '29cb1d6a3a70917e2ce478b3ab38b11532c1072d8f05151ae71c619dfe9ea6f0'}, 'closure_ref': {'path': '/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_b/private_runtime/SOURCE862_NATIVE_RUNTIME_CLOSURE.json', 'sha256': '18a528abb180f697ae55fbfe212b93cbf4abae6fe0ca83818043cf2c438ae7a2'}, 'extra_dependencies_ref': {'path': '/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_b/private_runtime/TRACE_CHILD_HOST_DEPENDENCIES.json', 'sha256': '70c96ea6474206992a63a8b454ce80f6d08fdaaa9e7411e6cba711911e255196'}}
++def validate_spec_contract(s,require_bound_cpu=False,check_current_domain=True):
++    need(sha(_SCHEMA_ROOT/'runtime_monitor_schema_v4_strict.py')=='540feb2cd00044dd9d62b8a0858181a2c026cb82ac63cb0be1e9bdb65ab8126b','schema implementation drift')
++    return _validate_spec_contract(s,**_SCHEMA_REFS,require_bound_cpu=require_bound_cpu,check_current_domain=check_current_domain,check_current_dependencies=True)
++
++
++SCOPED_MODES = {'EP_PERF_PFV4_VECTOR4M_W_ONLY_1700_V1': 'W_ONLY', 'EP_PERF_PFV4_VECTOR4M_WV_ZERO_RO_1700_V1': 'WV_ZERO_RO'}
+ ALLOWED_COHORTS=frozenset(SCOPED_MODES)
+ def authorized_scope_mode(s):
+     need(s.get('cohort')in SCOPED_MODES and s.get('mode')==SCOPED_MODES[s['cohort']],'outside exact16 DRAM scope/mode')
+@@ -11,7 +18,7 @@
+     return s['mode']
+ 
+ LEDGER = NATIVE / 'control/qualification_ledger'
+-MODE_CONTRACT_SHA='9e43b1f218124e5b4a83f385482b7bef15754f0ef12539ac4f452a326b2d52d0'
++MODE_CONTRACT_SHA='6a129f4c8682b4a5174ee29a9142979b506e18873491d0d6ff213bc7788a857f'
+ NEW_VALIDATOR_SHA='dc454107fd80ef2966abfed9d95c7bf0fc6ed23cad76ca26b79653ff0ee3fba1'
+ def formal_mode_contract(s):
+     need(s['mode_contract_ref']['sha256']==MODE_CONTRACT_SHA and s['validation_module_ref']['sha256']==NEW_VALIDATOR_SHA,'unreviewed formal mapper/parser version')
+@@ -80,6 +87,7 @@
+     need(s['host_engine_ref']['sha256'] in q['runtime_versions'], 'unregistered runtime version')
+     need(q['runtime_versions'][s['host_engine_ref']['sha256']] ==
+          dict(engine_ref=s['host_engine_ref'], common_ref=s['host_common_ref']), 'runtime version binding')
++    validate_spec_contract(s,check_current_domain=True)
+     return s
+ 
+ 
+@@ -97,13 +105,26 @@
+     need(len(native)==2 and all(x.get('status')=='INDEPENDENT_NATIVE_TARGET_COMPLETE_SHA_RESTORE_PASS'and x.get('archive_sha256')==receipt.get('archive_ref',{}).get('sha256') for x in native) and {x.get('restore_label')for x in native}=={'FIRST','INDEPENDENT'} and receipt.get('archive_ref',{}).get('path','').startswith('/root/share/mnt164/'),'two independent genuine164 native restores required')
+     return point,row
+ 
++def staged_w_only_archive_release(s,q):
++    point,row=accepted_cell('EP_PERF_PFV4_VECTOR4M_W_ONLY_1700_V1',s,q)
++    receipt=exact(row['archive_receipt_ref'])
++    archive_sha=receipt.get('archive_ref',{}).get('sha256')
++    need(isinstance(archive_sha,str) and len(archive_sha)==64 and all(c in '0123456789abcdef' for c in archive_sha),'W_ONLY full archive SHA256 required before WV release')
++    restores=receipt['native_restores']
++    targets=[x.get('target') for x in restores]
++    need(all(isinstance(x,str) and x.startswith('/root/data/') for x in targets) and len(set(targets))==2,'W_ONLY two distinct independent native restore targets required')
++    return point,row
++
++
+ def enforce_stage_gates(s,q,registry):
+     authorization=exact(q['authorization_ref'])
+     parent=exact(authorization['parent_authorization_ref'])
+-    need(authorization.get('schema')=='EP_MAIN_PFV3_SCOPED_USER_AUTHORIZATION_V1' and authorization.get('explicit_user_approval')is True,'fresh Vector user authorization')
++    need(authorization.get('schema')=='EP_MAIN_PFV4_SCOPED_USER_AUTHORIZATION_V1' and authorization.get('explicit_user_approval')is True,'fresh Vector user authorization')
+     need(authorization.get('approved_launches')==2 and authorization.get('allowed_cohorts')==sorted(SCOPED_MODES) and authorization.get('Source5')==s['source_identity'],'exact two point Source/scope')
+     need(parent.get('explicit_user_approval')is True and parent.get('old_budgets_reusable')is False and parent.get('additional_NI')==0,'parent authorization scope')
+     need(s['Main_scientific_launch_authorization']==q['authorization_ref'] and s['approved_launches']==1,'exact per-point authorization binding')
++    if s['mode']=='WV_ZERO_RO':
++        staged_w_only_archive_release(s,q)
+     return dict(status='EXACT_APPROVED_VECTOR1700_TWO_MODE_SCOPE_NO_OLD_BUDGET_REUSE')
+ 
+ 
+@@ -228,6 +249,7 @@
+     s = spec_for(case)
+     binding = dispatch_binding(case)
+     s = dict(s, host_cpu=binding['host_cpu'])
++    validate_spec_contract(s,require_bound_cpu=True,check_current_domain=True)
+     h = module(s['helpers_ref'], 'ep_perf_helpers')
+     output_module = module(s['output_module_ref'], 'ep_perf_output')
+     out = ROOT / 'cases' / case / 'run' / str(uuid.uuid4())
+
+--- /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_b_formal/runtime/ep_perf_common_v2.py
++++ /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_b/private_runtime/ep_perf_common_v2.py
+@@ -2,12 +2,12 @@
+ import contextlib, copy, datetime, fcntl, hashlib, importlib.util, json, os, pathlib, uuid
+ 
+ P = pathlib.Path
+-ROOT = P('/root/data/ep_l2_full_workload_performance_20261027_v1/execution_vector1700_decomposition_v3_20261104_v1/vector1700')
++ROOT = P('/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_b/private_execution/vector1700')
+ NATIVE = P('/root/data/ep_l2_dtc_l1_native_v2')
+ REG = NATIVE / 'control/science_authority/NATIVE_SCIENCE_REGISTRY.json'
+ EPOCH = NATIVE / 'control/CURRENT_SCIENCE_EPOCH.json'
+ FRONTEND_GOAL = 'EP_L2_FULL_WORKLOAD_PERFORMANCE_POTENTIAL_EXPLORATION_V1'
+-GOAL = 'EP_L2_VECTOR1700_WV_DECOMPOSITION_V1_20261104'
++GOAL = 'EP_L2_VECTOR1700_WV_DECOMPOSITION_FRESH_V4_20261104'
+ G = 1024**3
+ M = 1024**2
+ 
+
+--- /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_b_formal/runtime/mode_contract.py
++++ /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_b/private_runtime/mode_contract.py
+@@ -57,7 +57,7 @@
+  modeq=reviewed(s['mode_cpu_review_ref'],'EP_MAIN_VECTOR1700_W_WV_MODE_CPU_REVIEW_V1','MAIN_REVIEWED_VECTOR1700_W_WV_MODE_CPU_PASS_NOT_APPLICATION',s)
+  need(modeq['cpu_evidence_ref']==s['mode_cpu_qualification_ref'] and modeq['modes_qualified']==sorted(MODES),'Main modeCPU exact evidence/scope')
+  hostq=reviewed(s['host_qualification_ref'],'EP_MAIN_VECTOR1700_W_WV_HOST_QUALIFICATION_V1','HOST_CPU_ENGINEERING_QUALIFIED_NOT_APPLICATION_ACCEPTED',s)
+- need(hostq['modes_qualified']==sorted(MODES) and hostq['cohorts_qualified']==sorted('EP_PERF_PFV3_VECTOR4M_'+m+'_1700_V1'for m in MODES),'Host exact two modes/cohorts')
++ need(hostq['modes_qualified']==sorted(MODES) and hostq['cohorts_qualified']==sorted('EP_PERF_PFV4_VECTOR4M_'+m+'_1700_V1'for m in MODES),'Host exact two modes/cohorts')
+  for r in hostq['modules']:need(sha(r['path'])==r['sha256'],'Host module pin drift')
+  need(all(s[k]in hostq['modules']for k in ['host_engine_ref','host_common_ref','mode_contract_ref','validation_module_ref','postprocess_module_ref','archive_module_ref']),'Host module binding absent')
+  reuse=reviewed(s['matched_controls_review_ref'],'EP_MAIN_VECTOR1700_S_F_REFERENCE_REUSE_V1','MAIN_REVIEWED_EXACT_SOURCE862_S_F1700_REUSE_PASS',s)
+
+--- /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_b_formal/runtime/ep_perf_frontend.py
++++ /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_b/private_runtime/ep_perf_frontend.py
+@@ -8,7 +8,7 @@
+     need(len(args) == 5 and args[0] == 'experiment' and args[3:] == ['--project','EP_L2'], 'exact native EP command')
+     need(args[1] in ['prepare','inspect','run-native','accept'], 'unsupported operation')
+     case = args[2]
+-    need(case in ('EP_PERF_PFV3_VECTOR4M_W_ONLY_1700_V1', 'EP_PERF_PFV3_VECTOR4M_WV_ZERO_RO_1700_V1'), 'outside exact unspent recovery scope; consumed cases postrun-only original entry')
++    need(case in ('EP_PERF_PFV4_VECTOR4M_W_ONLY_1700_V1', 'EP_PERF_PFV4_VECTOR4M_WV_ZERO_RO_1700_V1'), 'outside exact unspent recovery scope; consumed cases postrun-only original entry')
+     registry, unused = authority()
+     q = registry['registered_future_requests'][GOAL]
+     need(case in q['admitted_specs'], 'case not exactly registered for this Goal')
+
+--- /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_b_formal/runtime/ep_perf_archive.py
++++ /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_b/private_runtime/ep_perf_archive.py
+@@ -2,7 +2,7 @@
+ import argparse, hashlib, json, os, pathlib, stat, subprocess, sys, tarfile, tempfile, uuid
+ from ep_perf_common_v2 import *
+ 
+-ARCHIVE_ROOT = P('/root/share/mnt164/huangrulin/host174_storage_recovery/ep_l2_vector1700_decomposition_v3_20261104_v1')
++ARCHIVE_ROOT = P('/root/share/mnt164/huangrulin/host174_storage_recovery/ep_l2_vector1700_decomposition_fresh_v4_20261104_v1')
+ 
+ 
+ def inventory(root):
+
+--- /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_d_execution/native_route_guard_v3.py
++++ /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_b/private_runtime/native_route_guard_v3.py
+@@ -12,7 +12,7 @@
+  c.need(r["status"]=="MAIN_INSTALLED_ADDITIVE_NATIVE_EP_PERF_ROUTE"and
+         r["approved_by"]=="EP-MAIN"and r["scientific_scope_activated"] is True,"unactivated Main route")
+  c.need(isinstance(r["exact_cohorts"],list)and len(r["exact_cohorts"])==len(set(r["exact_cohorts"])),"exact finite EP route list")
+- c.need(all(x.startswith("EP_PERF_PFV3_")for x in r["exact_cohorts"]),"wrong V3 cohort namespace")
++ c.need(all(x.startswith("EP_PERF_PFV4_")for x in r["exact_cohorts"]),"wrong V3 cohort namespace")
+  contract=json.loads(c.pin(r["shared_route_contract_ref"])[0])
+  c.need(contract["schema"]=="EP_MAIN_V3_SHARED_ROUTE_CONTRACT_V1","shared route contract schema")
+  base=c.pin(contract["installed_baseline_ref"])[0]
+
+--- /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/native/native_v3.py
++++ /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_b/private_runtime/native_v4.py
+@@ -3,10 +3,10 @@
+ No budget consumption here: the immutable scoped engine is the sole consumer."""
+ import hashlib,importlib.util,json,os,subprocess,sys
+ from pathlib import Path
+-GUARD='/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_d_execution/native_route_guard_v3.py'
+-GUARD_SHA='9df2bab0058b571466998f71bfa487a929b6718a0d7e56d347746e98d6208ca9'
+-ROOTS={'midtag': '/root/data/ep_l2_full_workload_performance_20261027_v1/execution_midtag_v3_20261104_v1/midtag', 'vector1700': '/root/data/ep_l2_full_workload_performance_20261027_v1/execution_vector1700_decomposition_v3_20261104_v1/vector1700'}
+-COHORT_GROUP={'EP_PERF_PFV3_MIDTAG_FWT_S_G32W16_V1': 'midtag', 'EP_PERF_PFV3_MIDTAG_FWT_S_G64W8_V1': 'midtag', 'EP_PERF_PFV3_MIDTAG_FWT_WV_ZERO_RO_G32W16_V1': 'midtag', 'EP_PERF_PFV3_MIDTAG_FWT_WV_ZERO_RO_G64W8_V1': 'midtag', 'EP_PERF_PFV3_MIDTAG_GEMM_S_G32W16_V1': 'midtag', 'EP_PERF_PFV3_MIDTAG_GEMM_S_G64W8_V1': 'midtag', 'EP_PERF_PFV3_MIDTAG_GEMM_WV_ZERO_RO_G32W16_V1': 'midtag', 'EP_PERF_PFV3_MIDTAG_GEMM_WV_ZERO_RO_G64W8_V1': 'midtag', 'EP_PERF_PFV3_VECTOR4M_WV_ZERO_RO_1700_V1': 'vector1700', 'EP_PERF_PFV3_VECTOR4M_W_ONLY_1700_V1': 'vector1700'}
++GUARD='/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_b/private_runtime/native_route_guard_v3.py'
++GUARD_SHA='1669bb15b594d3eb616de760d7e469486db22f36a44ec46e301f2a55353f5765'
++ROOTS={'vector1700': '/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_b/private_execution/vector1700'}
++COHORT_GROUP={'EP_PERF_PFV4_VECTOR4M_W_ONLY_1700_V1': 'vector1700', 'EP_PERF_PFV4_VECTOR4M_WV_ZERO_RO_1700_V1': 'vector1700'}
+ def need(v,m):
+  if not v:raise ValueError(m)
+ def sealed_command(fd,argv):
+
+--- /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_c_resources/resources_vector1700.py
++++ /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_b/private_runtime/resources_vector1700_v4.py
+@@ -1,5 +1,5 @@
+ import pathlib,hashlib,importlib.util
+-PATH=pathlib.Path('/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_c_resources/resources_v3.py');SHA='ebaacc5efecf4e2162532b0722822763df55fb5cab05dbec0e0eaa161e6465bd';REQUEST='EP_L2_VECTOR1700_WV_DECOMPOSITION_V1_20261104'
++PATH=pathlib.Path('/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_c_resources/resources_v3.py');SHA='ebaacc5efecf4e2162532b0722822763df55fb5cab05dbec0e0eaa161e6465bd';REQUEST='EP_L2_VECTOR1700_WV_DECOMPOSITION_FRESH_V4_20261104'
+ def shared():
+  if hashlib.sha256(PATH.read_bytes()).hexdigest()!=SHA:raise ValueError('V3 resource adapter drift')
+  s=importlib.util.spec_from_file_location('readonly_V3_scoped_resources',PATH);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m

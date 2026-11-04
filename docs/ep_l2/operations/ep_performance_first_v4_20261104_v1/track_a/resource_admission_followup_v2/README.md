@@ -1,0 +1,8 @@
+# Final Source78 resource and consumer ROOT follow-up
+Earlier A1/A3 wrappers really failed snapshot with unknown V3 scope. The earlier qualification was limited to schema/monitor/parser; this actual resource-wiring defect is disclosed in OLD_RESOURCE_DEFECT_AND_FROZEN_PREIMAGE.json.
+
+These final selected A1/A3 graphs each clone the prior runtime+execution into this directory. common ROOT, native entry path, guard reference, mode scope/preview, parser pin, HostQ, owned pins and all four conditional exact Spec chains are rebound to the new execution ROOT. The actual new Specs consume the pinned Main V4 resource adapter. Real read-only snapshot calls for both requests succeeded; four full43/currentdomain/dependency/source/input/mode schema paths passed and real private Native prepare commands held specifically for absent fresh request2 scientific authorization. New candidate sidecars are not being mistaken for old hardbound Specs.
+
+No old32-negative suite, actual eventloop, Source/geometry tests or application NI was rerun. Original60/111 frozen file bytes and old execution candidates remain unchanged. Shared route, registry, budget and models were not changed. Snapshot success establishes resource wiring, not scientific permission or a guarantee of current resource admission.
+
+Main must use FINAL_CONSUMER_GRAPH_INDEX.json as the selected runtime/execution root, preserve candidate snapshots when materializing fresh approval Spec revisions, and install/register only the separately approved exact request2. A1 is priority; A3 remains independently optional; A2 retains its real WV eligibility gap. Dynamic admission still preserves foreign commitments and cap10 through Main's unchanged resource math.

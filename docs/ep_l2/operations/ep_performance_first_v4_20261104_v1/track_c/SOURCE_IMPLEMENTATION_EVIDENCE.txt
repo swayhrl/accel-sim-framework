@@ -1,0 +1,576 @@
+FILE /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/src/gpgpu-sim/ep-l2-tvd-directory.h SHA256 c0a3584f757eecda8604aa515f164ae227ada283aa8d37d4c1995b970b75adb7
+114: 
+115:   explicit ep_l2_tvd_directory(unsigned capacity = 128, bool clean = false,
+116:                                bool dirty = false,
+117:                                 unsigned clean_limit = std::numeric_limits<unsigned>::max())
+118:       : m_capacity(capacity),
+119:         m_clean_limit(clean_limit==std::numeric_limits<unsigned>::max()?capacity:clean_limit),
+120:         m_clean_count(0), m_clean(clean), m_dirty(dirty), m_revision(0),
+121:         m_clock(0), m_age(0) {
+122:     if (!capacity || capacity > 128 || m_clean_limit > capacity) throw std::invalid_argument("WAD/TVD capacity");
+123:   }
+124:   ep_l2_tvd_directory(const ep_l2_tvd_directory &) = delete;
+125:   ep_l2_tvd_directory &operator=(const ep_l2_tvd_directory &) = delete;
+126:   unsigned capacity() const { return m_capacity; }
+127:   unsigned clean_limit() const { return m_clean_limit; }
+128:   unsigned clean_occupancy() const { return m_clean_count; }
+129:   unsigned occupied() const {
+130:     unsigned n = 0;
+149:            m_entries[t.index].incarnation == t.incarnation;
+150:   }
+151:   // Non-mutating preview. Mandatory WB may reclaim clean/WB-complete entries;
+152:   // opportunistic clean retention never preempts pending/inflight WB.
+153:   install_plan preview_install(address_type line, bool dirty,
+154:                                 bool native_owner_proven_unique = false) const {
+155:     install_plan p; p.revision = m_revision; p.line = line; p.writeback = dirty;
+156:     p.native_owner_proven_unique = native_owner_proven_unique;
+157:     if (line & 127) { p.status = INVALID_INPUT; return p; }
+158:     if (native_owner_proven_unique) {
+159:       // Native selected resident owner is disjoint from directory owners.
+160:       // This assertion checks that protocol invariant in software; it is not
+161:       // another functional CAM lookup or an extra modeled query port.
+162:       assert(!live(find(line)));
+163:     } else if (live(find(line))) { p.status = INVALID_INPUT; return p; }
+164:     if (!dirty && !m_clean) { p.status = DISABLED; return p; }
+165:     if (!dirty && !m_clean_limit) { p.status = DISABLED; return p; }
+166:     const bool clean_limited = !dirty && m_clean_count >= m_clean_limit;
+167:     for (unsigned i = 0; i < m_capacity; ++i)
+168:       if (!clean_limited && m_entries[i].status == EMPTY) {
+169:         p.status = OK; p.index = i; return p;
+170:       }
+171:     for (unsigned i = 0; i < m_capacity; ++i) {
+172:       if (!m_entries[i].reclaimable() ||
+173:           (clean_limited && m_entries[i].status != CLEAN)) continue;
+174:       if (p.index == 128 ||
+175:           (dirty && m_entries[i].status == CLEAN && m_entries[p.index].status != CLEAN) ||
+176:           ((!dirty || m_entries[i].status == m_entries[p.index].status) &&
+177:            m_entries[i].age < m_entries[p.index].age))
+178:         p.index = i;
+179:     }
+180:     if (p.index != 128) { p.status = OK; p.displaced = m_entries[p.index].payload; }
+181:     return p;
+182:   }
+183:   // Caller pre-reserves landing/control/lower credit and releases displaced
+184:   // payload only when this commit succeeds. On failure nothing changes.
+185:   result commit_install(const install_plan &p, address_type line, Handle handle,
+186:                         unsigned valid, unsigned dirty, unsigned pending,
+187:                         bool writeback, cycle_type now, ticket &installed) {
+188:     if (p.status != OK) return p.status;
+189:     if (p.revision != m_revision || p.index >= m_capacity) return STALE;
+190:     if (p.line != line || p.writeback != writeback) return INVALID_INPUT;
+191:     if ((line & 127) || (valid & ~15u) ||
+192:         (dirty & ~valid) || pending || (!writeback && (!valid || dirty)) ||
+193:         (!writeback && !handle.valid()) || (writeback && !dirty))
+194:       return INVALID_INPUT;
+195:     if (p.native_owner_proven_unique) assert(!live(find(line)));
+196:     else if (live(find(line))) return INVALID_INPUT;
+197:     if ((!writeback && !m_clean) || (writeback && handle.valid() && !m_dirty))
+198:       return DISABLED;
+199:     for (unsigned i = 0; i < m_capacity; ++i) {
+200:       const bool duplicate = m_entries[i].status != EMPTY && handle.valid() &&
+201:           same(m_entries[i].payload, handle);
+202:       if (p.native_owner_proven_unique) assert(!duplicate);
+203:       else if (duplicate) return INVALID_INPUT;
+204:     }
+205:     advance(now);
+206:     entry &e = m_entries[p.index];
+207:     assert(e.status == EMPTY || e.reclaimable());
+208:     if (e.status != EMPTY) ++m_stats.reclaimed;
+209:     bump(e.incarnation);
+210:     if (e.status == CLEAN) { assert(m_clean_count); --m_clean_count; }
+211:     e.status = writeback ? WB_STAGED : CLEAN;
+212:     if (e.status == CLEAN) ++m_clean_count;
+213:     assert(m_clean_count <= m_clean_limit);
+214:     e.line = line; e.payload = handle;
+215:     e.valid_sectors = valid; e.dirty_sectors = dirty; e.readers = 0;
+216:     e.wb_request_uid = 0; e.wb_uid_bound = false;
+217:     e.age = ++m_age; e.born = now; e.lower_accepted = 0;
+218:     installed = ticket(p.index, e.incarnation);
+219:     ++m_revision;
+220:     if (writeback) ++m_stats.dirty_installs; else ++m_stats.clean_installs;
+288:     if (e.readers) return PINNED;
+289:     advance(now); transferred = e.payload; erase(e); ++m_stats.promotions;
+290:     return OK;
+291:   }
+292:   // Promotion can displace a dirty resident while all 128 address slots are
+293:   // occupied. Reuse the PROMOTED entry's address slot in one commit, rather
+294:   // than requiring a transient 129th slot or losing mandatory WAD state.
+295:   // Caller must pre-reserve the real WB/lower resources without mutation.
+296:   promotion_plan preview_dirty_promotion(ticket source, address_type victim_line,
+297:                                          Handle victim, unsigned valid,
+298:                                          unsigned dirty, unsigned pending, bool retain = true,
+299:                                          bool native_owner_proven_unique = false) const {
+300:     promotion_plan p;
+301:     if (!m_clean && !m_dirty) { p.status = DISABLED; return p; }
+302:     if (!live(source)) { p.status = STALE; return p; }
+303:     const entry &e = m_entries[source.index];
+304:     if (e.mandatory()) { p.status = WAIT_WRITEBACK; return p; }
+305:     if (e.readers) { p.status = PINNED; return p; }
+306:     if ((victim_line & 127) || !victim.valid() || !dirty || (valid & ~15u) ||
+307:         (dirty & ~valid) || pending) return p;
+308:     if (native_owner_proven_unique) assert(!live(find(victim_line)));
+309:     else if (live(find(victim_line))) return p;
+310:     for (unsigned i = 0; i < m_capacity; ++i) {
+311:       const bool duplicate = m_entries[i].status != EMPTY && same(m_entries[i].payload, victim);
+312:       if (native_owner_proven_unique) assert(!duplicate);
+313:       else if (duplicate) return p;
+314:     }
+315:     p.status = OK; p.source = source; p.revision = m_revision;
+316:     p.victim_line = victim_line; p.victim = victim; p.valid = valid; p.dirty = dirty;
+317:     p.retain_payload = m_dirty && retain;
+318:     return p;
+319:   }
+320:   result commit_dirty_promotion(const promotion_plan &p, cycle_type now,
+321:                                 Handle &promoted, ticket &writeback) {
+322:     if (p.status != OK) return p.status;
+323:     if (p.revision != m_revision || !live(p.source)) return STALE;
+324:     entry &e = m_entries[p.source.index];
+325:     assert(!e.mandatory() && !e.readers);
+326:     advance(now); promoted = e.payload;
+327:     if (e.status == CLEAN) { assert(m_clean_count); --m_clean_count; }
+328:     bump(e.incarnation); e.status = WB_STAGED; e.line = p.victim_line;
+329:     e.payload = p.retain_payload ? p.victim : Handle(); e.valid_sectors = p.valid; e.dirty_sectors = p.dirty;
+330:     e.wb_request_uid = 0; e.wb_uid_bound = false;
+331:     e.age = ++m_age; e.born = now; e.lower_accepted = 0;
+332:     writeback = ticket(p.source.index, e.incarnation);
+333:     ++m_revision; ++m_stats.promotions; ++m_stats.dirty_installs;
+334:     return OK;
+335:   }
+336:   // Clean missing-sector fallback/reclaim drops the old directory visibility
+337:   // before an ordinary miss is issued. Dirty entries must first complete WB.
+338:   result reclaim(ticket t, Handle &released, cycle_type now) {
+339:     if (!live(t)) return STALE;
+340:     entry &e = m_entries[t.index];
+341:     if (e.mandatory()) return WAIT_WRITEBACK;
+342:     if (e.readers) return PINNED;
+346:   result rollback_staged(ticket t, cycle_type now) {
+347:     if (!live(t) || m_entries[t.index].status != WB_STAGED) return STALE;
+348:     if (m_entries[t.index].readers) return PINNED;
+349:     advance(now); erase(m_entries[t.index]); return OK;
+350:   }
+351:   result bind_writeback(ticket t, unsigned request_uid) {
+352:     if (!live(t) || m_entries[t.index].status != WB_STAGED) return STALE;
+353:     entry &e = m_entries[t.index];
+354:     if (e.wb_uid_bound) return INVALID_INPUT;
+355:     e.wb_request_uid = request_uid; e.wb_uid_bound = true; ++m_revision;
+356:     return OK;
+357:   }
+358:   bool writeback_matches(ticket t, address_type line, unsigned request_uid) const {
+359:     return live(t) && m_entries[t.index].line == line &&
+360:         m_entries[t.index].wb_uid_bound && m_entries[t.index].wb_request_uid == request_uid;
+361:   }
+362:   result lower_accept(ticket t, bool lower_has_independent_data, cycle_type now) {
+363:     if (!live(t) || m_entries[t.index].status != WB_STAGED) return STALE;
+364:     if (!lower_has_independent_data) return DATA_TRANSFER_UNPROVEN;
+365:     advance(now); entry &e = m_entries[t.index];
+366:     e.status = WB_INFLIGHT; e.lower_accepted = now;
+367:     ++m_revision; ++m_stats.lower_accepts; return OK;
+368:   }
+369:   result set_done(ticket t, cycle_type now) {
+370:     if (!live(t) || m_entries[t.index].status != WB_INFLIGHT) return STALE;
+371:     advance(now); entry &e = m_entries[t.index];
+372:     if (e.payload.valid()) {
+373:       e.status = WB_COMPLETE; e.dirty_sectors = 0; e.age = ++m_age; ++m_revision;
+374:     } else { assert(!e.readers); erase(e); }
+375:     ++m_stats.wb_completions; return OK;
+376:   }
+377:   // Epoch cleanup refuses to discard mandatory WB or an uncommitted response.
+378:   // Reclaim each clean handle through the allocator before declaring drained.
+379:   bool epoch_ready() const {
+380:     for (unsigned i = 0; i < m_capacity; ++i)
+381:       if (m_entries[i].mandatory() || m_entries[i].readers) return false;
+382:     return true;
+383:   }
+384:   void advance(cycle_type now) {
+385:     if (now < m_clock) throw std::logic_error("nonmonotonic TVD cycle");
+386:     const cycle_type delta = now - m_clock;
+387:     for (unsigned i = 0; i < m_capacity; ++i) {
+388:       const entry &e = m_entries[i];
+389:       if (!e.payload.valid()) continue;
+390:       if (e.status == WB_STAGED) m_stats.wb_staging_slot_cycles += delta;
+391:       if (e.status == CLEAN) m_stats.clean_retention_slot_cycles += delta;
+392:       if (e.status == WB_INFLIGHT || e.status == WB_COMPLETE)
+393:         m_stats.tvd_extra_retention_slot_cycles += delta;
+394:     }
+395:     m_clock = now;
+396:   }
+397: 
+398:  private:
+399:   static bool same(Handle a, Handle b) {
+400:     return a.payload_id == b.payload_id && a.generation == b.generation;
+401:   }
+402:   static void bump(std::uint64_t &v) {
+403:     if (v == std::numeric_limits<std::uint64_t>::max())
+404:       throw std::overflow_error("TVD generation exhausted: drain epoch");
+405:     ++v;
+406:   }
+407:   void erase(entry &e) {
+408:     assert(!e.readers);
+409:     if (e.status == CLEAN) { assert(m_clean_count); --m_clean_count; }
+410:     bump(e.incarnation); e.status = EMPTY;
+411:     e.payload = Handle(); e.valid_sectors = e.dirty_sectors = 0; ++m_revision;
+412:     e.wb_uid_bound = false;
+413:   }
+414:   unsigned m_capacity, m_clean_limit, m_clean_count;
+FILE /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/src/gpgpu-sim/ep-l2-tvd-cache.inc SHA256 0cfd9e24d2473e84a650287a98e330be4fd0b4123622eacf457ffc9979add57e
+7: bool l2_cache::tvd_install_victim(new_addr_type address, ep_l2::PayloadHandle h,
+8:     unsigned valid, unsigned dirty, bool wb, unsigned long long now,
+9:     tvd_directory::ticket *installed) {
+10:   auto plan = m_tvd->preview_install(address, wb, true);
+11:   if (plan.status != tvd_directory::OK) return false;
+12:   tvd_directory::ticket ticket;
+13:   if (m_tvd->commit_install(plan, address, h, valid, dirty, 0, wb, now, ticket) != tvd_directory::OK)
+14:     return false;
+15:   ++m_tvd_native_installs;
+16:   if (installed) *installed = ticket;
+17:   if (plan.displaced.valid()) {
+18:     assert(m_ep_l2_payload.inspect(plan.displaced).pins == 0);
+19:     m_ep_l2_payload.release(plan.displaced);
+20:   }
+21:   return true;
+22: }
+38: 
+39: bool l2_cache::tvd_reclaim_one(unsigned bank, unsigned long long now) {
+40:   // Mandatory space first reclaims optional clean, then completed WB data.
+41:   // Pinned reads and pending/inflight WB are never eligible victims.
+42:   for (auto state : {tvd_directory::CLEAN, tvd_directory::WB_COMPLETE}) {
+43:     unsigned best=m_tvd->capacity();
+44:     for (unsigned i=0;i<m_tvd->capacity();++i) {
+45:       const auto &e=m_tvd->at(i);
+46:       if (e.status!=state || !e.reclaimable() || !e.payload.valid() ||
+47:           (bank!=(unsigned)-1 && e.payload.payload_id%4!=bank)) continue;
+48:       if (best==m_tvd->capacity() || e.age<m_tvd->at(best).age) best=i;
+49:     }
+50:     if (best==m_tvd->capacity()) continue;
+51:     const auto token=tvd_directory::ticket(best,m_tvd->at(best).incarnation);
+52:     ep_l2::PayloadHandle h;
+53:     assert(m_tvd->reclaim(token,h,now)==tvd_directory::OK);
+54:     assert(m_ep_l2_payload.inspect(h).pins==0);
+55:     m_ep_l2_payload.release(h);return true;
+56:   }
+57:   return false;
+58: }
+59: 
+80:   };
+81:   if (m_tvd_lookup != mf) {
+82:     assert(!m_tvd_read);
+83:     m_tvd_lookup = mf; m_tvd_lookup_cycle = now;
+84:     m_tvd_lookup_done = false;
+85:     ++m_tvd_lookup_wait; return wait(M::VICTIM_LOOKUP);
+86:   }
+87:   if (now <= m_tvd_lookup_cycle) return wait(M::VICTIM_LOOKUP);
+88:   if (!m_tvd_lookup_done) {
+89:     if (m_tvd_query_cycle == now) return wait(M::VICTIM_LOOKUP);
+90:     m_tvd_query_cycle = now; ++m_tvd_lookup_queries;
+91:     m_tvd_lookup_ticket = m_tvd->find(address);
+92:     m_tvd_lookup_done = true;
+93:   }
+94:   const auto ticket = m_tvd_lookup_ticket;
+95:   if (!m_tvd->live(ticket)) return TVD_NORMAL;
+96:   // Dirty pending/inflight reads use a distinct client+UID+generation key
+97:   // in the existing bank scoreboard. The public r2 adapter delays WB->TVD
+98:   // role transitions while the reader is pinned. CLEAN_ONLY WAD records have
+99:   // no retained handle and still return WAIT_WRITEBACK below.
+100:   auto op = mf->isatomic() ? tvd_directory::ATOMIC_OP :
+101:             mf->get_is_write() ? tvd_directory::WRITE_OP : tvd_directory::READ_OP;
+102:   auto observation = m_tvd->preview_ticket(ticket, mf->get_access_sector_mask().to_ulong(), op);
+103:   known |= 1ULL << M::SAME_ADDRESS_WB;
+104:   if (observation.status == tvd_directory::WAIT_WRITEBACK) {
+105:     ++m_tvd_wb_wait; return wait(M::SAME_ADDRESS_WB);
+106:   }
+107:   // A mandatory-WB refusal above can mask the later reader/pin predicate.
+108:   known |= 1ULL << M::PINNED_PAYLOAD;
+109:   if (observation.status == tvd_directory::PINNED) {
+110:     ++m_tvd_wb_wait; return wait(M::PINNED_PAYLOAD);
+111:   }
+112:   if (op != tvd_directory::READ_OP) return TVD_NORMAL; // ft_access commits promotion
+113:   if (observation.status == tvd_directory::MISSING_SECTOR) {
+114:     ep_l2::PayloadHandle released;
+115:     if (m_tvd->reclaim(ticket, released, now) == tvd_directory::PINNED)
+116:       return wait(M::PINNED_PAYLOAD);
+117:     m_ep_l2_payload.release(released); return TVD_NORMAL;
+118:   }
+119:   if (observation.status != tvd_directory::READ_READY) return TVD_NORMAL;
+120:   known |= 1ULL << M::RESPONSE_QUEUE_FULL;
+121:   if (!response_space) { ++m_tvd_resp_wait; return wait(M::RESPONSE_QUEUE_FULL); }
+122:   if (!m_tvd_read) {
+123:     assert(m_ep_l2_payload.handle_owner_matches(observation.payload, address));
+124:     m_tvd_read.reset(new tvd_directory::read_lease());
+125:     assert(m_tvd->begin_read(observation, mf->get_access_sector_mask().to_ulong(), *m_tvd_read) == tvd_directory::OK);
+126:     m_ep_l2_payload.pin(observation.payload);
+127:   }
+128:   const auto h = m_tvd_read->handle();
+129:   if (m_ep_l2_payload.request(h, false, now, (unsigned long long)-1,
+130:       ep_l2_payload_store::TVD_READ, ep_l2_payload_store::FRONTEND, mf->get_request_uid()) != ep_l2_payload_store::GRANTED) {
+131:     ++m_tvd_bank_wait; return wait(M::DATA_SERVICE);
+132:   }
+133:   mf->set_ep_l2_payload_identity(h.payload_id, h.generation);
+134:   mf->set_ft_wb_data(m_ep_l2_payload.inspect(h).versions);
+135:   return TVD_RESPONSE;
+136: }
+137: 
+138: void l2_cache::tvd_response_commit(mem_fetch *mf, unsigned long long now) {
+139:   assert(m_tvd_read && mf == m_tvd_lookup);
+140:   const auto h = m_tvd_read->handle();
+141:   assert(m_tvd->response_commit(*m_tvd_read, now) == tvd_directory::OK);
+142:   m_ep_l2_payload.unpin(h);
+143:   const auto ticket=m_tvd_lookup_ticket;
+144:   assert(m_tvd->live(ticket) && m_tvd->at(ticket.index).payload==h);
+145:   const auto &e=m_tvd->at(ticket.index);
+146:   const auto &slot=m_ep_l2_payload.inspect(h);
+196:     if (!miss_queue_has_slots(1)) return false;
+197:     // This first adapter rejects local-WB-cap combinations at construction;
+198:     // do not bypass the parent quota for an unqualified combined mode.
+199:     assert(!m_config.m_ep_l2_wb_local_cap);
+200:     assert(live);
+201:     const auto saved = m_ep_l2_payload.inspect(victim);
+202:     const unsigned dirty_mask = block->get_dirty_sector_mask().to_ulong();
+203:     const unsigned ready_mask = saved.ready_sector_mask.to_ulong();
+204:     const bool retain = m_config.m_ep_l2_tvd_dirty && (dirty_mask & ~ready_mask) == 0;
+205:     auto plan = m_tvd->preview_dirty_promotion(t, block->m_block_addr, victim,
+206:         retain ? ready_mask : dirty_mask, dirty_mask,
+207:         saved.pending_sector_mask.to_ulong(), retain, true);
+208:     if (plan.status != tvd_directory::OK) return false;
+209:     evicted_block_info evicted;
+210:     evicted.set_info(block->m_block_addr, block->get_modified_size(),
+211:         block->get_dirty_byte_mask(), block->get_dirty_sector_mask());
+212:     assert(m_tvd->commit_dirty_promotion(plan, physical_cycle, promoted, wb_ticket) == tvd_directory::OK);
+213:     ++m_tvd_native_promotions;
+214:     assert(m_ep_l2_wad_birth_cycle.insert(std::make_pair(evicted.m_block_addr, physical_cycle)).second);
+215:     m_ep_l2_payload.transfer(victim, ep_l2_payload_store::WB, ep_l2_payload_store::WB_STAGED);
+216:     auto &p = m_ft_pending; p.request = mf; p.dirty = p.wad = true;
+217:     p.tag_index = index; p.victim = p.staging = victim;
+218:     p.victim_address = evicted.m_block_addr; p.born = physical_cycle;
+219:     p.wad_ticket = wb_ticket;
+220:     mem_fetch *packet = m_memfetch_creator->alloc(evicted.m_block_addr, L2_WRBK_ACC,
+221:         mf->get_access_warp_mask(), evicted.m_byte_mask, evicted.m_sector_mask,
+222:         evicted.m_modified_size, true, time, -1, -1, -1, NULL, mf->get_streamID());
+223:     packet->set_chip(mf->get_tlx_addr().chip); packet->set_partition(mf->get_tlx_addr().sub_partition);
+224:     send_write_request(packet, cache_event(WRITE_BACK_REQUEST_SENT, evicted), time, events);
+225:     assert(p.bound); p = ft_replacement();
+226:   } else {
+227:     assert(m_tvd->promote(t, promoted, physical_cycle) == tvd_directory::OK);
+228:     ++m_tvd_native_promotions;
+229:     if (live) m_ep_l2_payload.release(victim);
+230:   }
+231:   m_ep_l2_payload.transfer(promoted, ep_l2_payload_store::RESIDENT, ep_l2_payload_store::RESIDENT_VALID);
+232:   m_tag_array->tvd_bind(index, address, time, old.valid_sectors);
+233:   set_tag_payload_handle(index, promoted);
+234:   assert(m_ep_l2_payload.ownership_consistent());
+235:   return true;
+236: }
+237: 
+238: void l2_cache::tvd_epoch_cleanup(unsigned long long now) {
+239:   if (!m_tvd) return;
+250:       m_tvd->clean_limit(),m_tvd->clean_occupancy());
+251:   fprintf(fp, "EPL2TVDV2|SUMMARY|slice=%u|clean_installs=%llu|dirty_installs=%llu|"
+252:       "read_responses=%llu|dirty_forward_responses=%llu|served_sectors=%llu|served_sector_bytes=%llu|"
+253:       "promotions=%llu|live=%u|mandatory=%u|role_tvd=%u|retention_slot_cycles=%llu|"
+254:       "clean_retention_slot_cycles=%llu|total_retention_slot_cycles=%llu|"
+255:       "lookup_wait_cycles=%llu|wb_wait_cycles=%llu|bank_wait_cycles=%llu|icnt_wait_cycles=%llu|directory_queries=%llu\n", slice,
+256:       (unsigned long long)s.clean_installs, (unsigned long long)s.dirty_installs,
+257:       (unsigned long long)s.read_responses, (unsigned long long)s.dirty_forward_responses,
+258:       (unsigned long long)s.served_sectors, (unsigned long long)s.served_sector_bytes,
+259:       (unsigned long long)s.promotions, m_tvd->occupied(), m_tvd->mandatory(),
+260:       m_ep_l2_payload.tvd_used(), (unsigned long long)s.tvd_extra_retention_slot_cycles,
+261:       (unsigned long long)s.clean_retention_slot_cycles,
+262:       (unsigned long long)(s.clean_retention_slot_cycles + s.tvd_extra_retention_slot_cycles),
+263:       m_tvd_lookup_wait, m_tvd_wb_wait, m_tvd_bank_wait, m_tvd_resp_wait, m_tvd_lookup_queries);
+264: }
+FILE /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/src/gpgpu-sim/ep-l2-ft-cache.inc SHA256 e27b7624732f3b1c30f0803caef9b3da8cb1a7b84ea82193cd3d24e667e603cc
+91:   // Commit starts here: every resource and refusal has been previewed above.
+92:   if (has_alias) {
+93:     ep_l2::PayloadHandle released;
+94:     assert(m_tvd->reclaim(alias, released, ft_physical_cycle()) == tvd_directory::OK);
+95:     assert(released == alias_payload);
+96:     m_ep_l2_payload.release(released);
+97:   }
+98:   if (status == MISS) {
+99:     if (live) m_ep_l2_payload.release(handle);
+100:     handle = m_ep_l2_payload.reserve(landing, ep_l2_payload_store::RESIDENT,
+101:         owner, ep_l2_payload_store::RESIDENT_VALID);
+271: void l2_cache::ft_rollback() {
+272:   ft_replacement &p = m_ft_pending;
+273:   assert(p.request && !p.bound);
+274:   m_ep_l2_payload.cancel_transaction(p.request->get_request_uid());
+275:   if (p.quota_reserved) {
+276:     assert(m_ft_quota.reserved == 1); --m_ft_quota.reserved;
+277:     p.quota_reserved = false; ++m_ft_quota.rollbacks;
+278:   }
+279:   if (p.wad) {
+280:     if (m_tvd) {
+281:       assert(m_tvd->rollback_staged(p.wad_ticket, ft_physical_cycle())==tvd_directory::OK);
+282:       ++m_tvd_indexed_rollbacks;
+283:     }
+284:     else assert(m_ep_l2_wad_entries_live.erase(p.victim_address)==1);
+285:     assert(m_ep_l2_wad_birth_cycle.erase(p.victim_address) == 1);
+395:     bool retain_clean = false;
+396:     if (m_tvd && m_config.m_ep_l2_tvd_clean && live && !dirty &&
+397:         m_ep_l2_payload.inspect(victim).ready_sector_mask.any() &&
+398:         m_tvd->preview_install(m_ep_l2_payload.inspect(victim).owner,false,true).status==tvd_directory::OK) {
+399:       bool reserved=true;
+400:       if(m_ep_l2_payload.fixed_victim_entries()) {
+401:         reserved=m_ep_l2_payload.reserve_fixed_retention(victim);
+402:         if(!reserved && tvd_reclaim_one(index%4,physical_cycle))
+403:           reserved=m_ep_l2_payload.reserve_fixed_retention(victim);
+404:       }
+405:       if(reserved) {
+406:         landing=m_ep_l2_payload.preview_free(ep_l2_payload_store::RESIDENT,index%4);
+407:         retain_clean=landing.valid();
+408:         if(!retain_clean && m_ep_l2_payload.fixed_victim_entries())
+409:           m_ep_l2_payload.cancel_fixed_retention(victim);
+410:       }
+411:     }
+412:     if (m_config.m_ep_l2_ft_mode == 2 && (dirty || !live)) {
+413:       landing = m_ep_l2_payload.preview_free(ep_l2_payload_store::RESIDENT, index % 4);
+414:       if (!landing.valid() && m_tvd && tvd_reclaim_one(index%4,physical_cycle))
+415:         landing=m_ep_l2_payload.preview_free(ep_l2_payload_store::RESIDENT,index%4);
+416:       if (!landing.valid()) { ++m_ft_stats.pool_full; return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_landing)); }
+417:       if (dirty) staging = victim;
+418:     }
+434:     if (dirty) {
+435:       if (m_config.m_ep_l2_wb_local_cap) {
+436:         assert(!m_ft_quota.reserved); ++m_ft_quota.reserved; p.quota_reserved = true;
+437:         m_ft_quota.reserved_peak = std::max(m_ft_quota.reserved_peak, m_ft_quota.reserved);
+438:         m_ft_quota.total_peak = std::max(m_ft_quota.total_peak, m_ft_quota.reserved + m_ft_quota.live);
+439:       }
+440:       p.victim_address = m_tag_array->get_block(index)->m_block_addr;
+441:       if (m_tvd) {
+442:         const auto dirty_mask=m_tag_array->get_block(index)->get_dirty_sector_mask().to_ulong();
+443:         const auto ready_mask=p.saved.ready_sector_mask.to_ulong();
+444:         const bool retain=m_config.m_ep_l2_tvd_dirty && (dirty_mask & ~ready_mask)==0;
+445:         assert(tvd_install_victim(p.victim_address,retain?victim:ep_l2::PayloadHandle(),
+446:             retain?ready_mask:dirty_mask,dirty_mask,true,physical_cycle,&p.wad_ticket));
+447:       } else assert(m_ep_l2_wad_entries_live.insert(p.victim_address).second);
+647:   // The physical lower FIFO now carries this packet's dirty sector bytes;
+648:   // all subsequent queues must retain data until actual set_done. No original
+649:   // payload pointer is needed with TVD disabled. These FIFO bytes are ledgered.
+650:   if (m_tvd) {
+651:     const auto t=it->second.wad_ticket;
+652:     assert(m_tvd->live(t) && m_tvd->at(t.index).line==m_config.block_addr(mf->get_addr()));
+653:     assert(m_tvd->writeback_matches(t,m_config.block_addr(mf->get_addr()),mf->get_request_uid()));
+654:     assert(m_tvd->lower_accept(t,true,cycle)==tvd_directory::OK);
+655:     ++m_tvd_indexed_accepts;
+656:     if (m_tvd->at(t.index).payload.valid()) {
+657:       if (!m_ep_l2_payload.inspect(it->second.handle).pins)
+658:         m_ep_l2_payload.transfer(it->second.handle,ep_l2_payload_store::TVD,ep_l2_payload_store::TVD_INFLIGHT);
+659:       // Else retain WB role while a paid reader pin protects its retry key.
+660:     }
+661:     else m_ep_l2_payload.release(it->second.handle);
+FILE /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/src/gpgpu-sim/gpu-cache.h SHA256 4f9d9268d1024be37b808f7588e6a772ecac03310c124bdad7339c088726312b
+3339:   void validate_ep_l2_mode_config() const {
+3340:     if (m_config.m_ep_l2_tvd_clean_limit > 128 ||
+3341:         (m_config.m_ep_l2_tvd_clean_limit != 128 &&
+3342:          (!m_config.m_ep_l2_tvd_clean || !m_config.m_ep_l2_tvd_dirty || m_config.ro_requested()))) {
+3343:       fprintf(stderr,"CLEAN optional cap requires finite W+V both classes, RO disabled, limit0..128; default128 preserves other modes\n"); abort();
+3344:     }
+3345:     if ((m_config.m_ep_l2_tvd_clean || m_config.m_ep_l2_tvd_dirty) &&
+3346:         (m_config.m_ep_l2_diag_copy_free || m_config.m_ep_l2_payload_mode != 2 ||
+3347:          m_config.m_ep_l2_descriptor_pool_size != 512 || m_config.m_mshr_entries != 128 ||
+3348:          m_config.get_num_lines() > 1024 || m_config.m_cache_type != SECTOR ||
+3349:          m_config.m_write_policy != WRITE_BACK ||
+3350:          m_config.m_write_alloc_policy != LAZY_FETCH_ON_READ)) {
+3351:       fprintf(stderr,"TVD requires finite native cache policy; COPY_FREE is static-only\n");
+3352:       abort();
+3353:     }
+3354:     if(m_config.ro_requested() && (m_config.m_ep_l2_ft_mode!=2 || m_config.m_ep_l2_wbuf_entries!=16 || m_config.m_ep_l2_payload_mode!=2 || m_config.m_ep_l2_descriptor_pool_size!=512 || m_config.m_ep_l2_descriptor_per_line_cap!=32 || m_config.m_mshr_entries!=128 || m_config.m_ep_l2_wad_entries!=128 || m_config.m_ep_l2_bank_ops!=1 || m_config.m_ep_l2_static_s64 || m_config.m_ep_l2_wb_local_cap || m_config.m_ep_l2_mq2 || m_config.m_ep_l2_rg1 || m_config.m_ep_l2_ideal_wb || m_config.m_ep_l2_ideal_meta || m_config.m_ep_l2_ideal_read_hit || m_config.m_ep_l2_diag_copy_free)) {fprintf(stderr,"RO requires finite U16 P1 D512/line128/WAD128; COPY_FREE is static-only\n");abort();}
+3355: 
+3356:     const bool local_diag = m_config.m_ep_l2_diag_copy_free || m_config.m_ep_l2_diag_l2_data_free;
+3357:     if ((m_config.m_ep_l2_diag_copy_free && m_config.m_ep_l2_diag_l2_data_free) ||
+3358:         ((local_diag || m_config.m_ep_l2_ms_observer) &&
+3359:          (!ft_enabled() || m_config.m_ep_l2_wbuf_entries != 16 ||
+3360:           m_config.m_ep_l2_payload_mode != 2 || m_config.m_ep_l2_wad_entries != 128 ||
+3361:           m_config.m_ep_l2_descriptor_pool_size != 512 ||
+3362:           m_config.m_mshr_entries != 128 || m_config.get_num_lines() > 1024 ||
+3363:           m_config.m_write_policy != WRITE_BACK ||
+3364:           m_config.m_write_alloc_policy != LAZY_FETCH_ON_READ ||
+3365:           m_config.m_cache_type != SECTOR || m_config.m_ep_l2_bank_ops != 1 ||
+3366:           m_config.m_ep_l2_static_s64 || m_config.m_ep_l2_wb_local_cap ||
+3367:           m_config.m_ep_l2_mq2 || m_config.m_ep_l2_rg1 ||
+3368:           m_config.m_ep_l2_ideal_meta || m_config.m_ep_l2_ideal_read_hit ||
+3369:           m_config.m_ep_l2_ideal_wb)) ||
+3370:         (m_config.m_ep_l2_diag_copy_free && m_config.m_ep_l2_ft_mode != 1)) {
+3371:       fprintf(stderr, "EP-L2 mechanism study supports finite P1 S/U, isolated local diagnostics and observer only; COPY_FREE requires S\n");
+FILE /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/src/gpgpu-sim/gpu-sim.cc SHA256 1c70be79651efc2f5e776fbf8967afb49ff9981729cc1e8873707fa61a54bb84
+343:   option_parser_register(opp,"-gpgpu_ep_l2_tvd_fixed_entries",OPT_UINT32,
+344:       &m_L2_config.m_ep_l2_tvd_fixed_entries,"Fixed victim/non-victim bank quotas:0 dynamic,64 fixed (1168 total)","0");
+345:   option_parser_register(opp,"-gpgpu_ep_l2_tvd_clean_limit",OPT_UINT32,
+346:       &m_L2_config.m_ep_l2_tvd_clean_limit,"Optional CLEAN directory admission cap0..128 (default128 legacy); mandatory WB remains128", "128");
+347:   option_parser_register(opp,"-gpgpu_ep_l2_tvd_clean",OPT_BOOL,&m_L2_config.m_ep_l2_tvd_clean,"study CLEAN_ONLY", "0");
+348:   option_parser_register(opp,"-gpgpu_ep_l2_tvd_dirty",OPT_BOOL,&m_L2_config.m_ep_l2_tvd_dirty,"study DIRTY_PENDING_INFLIGHT (new source, native qualification required)", "0");
+FILE /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/src/gpgpu-sim/gpu-cache.cc SHA256 9c516c0a81f591fedf1f043d0b10662ad9219fbd69aa8b43a70bdcf9d31b6b76
+2743:   m_ep_l2_wad_lifetime_max = std::max(m_ep_l2_wad_lifetime_max, lifetime);
+2744:   ++m_ep_l2_wad_lifetime_hist[lifetime];
+2745:   m_ep_l2_wad_birth_cycle.erase(birth);
+2746:   if (m_tvd) {
+2747:     const tvd_directory::ticket t=completion;
+2748:     assert(m_tvd->live(t) && m_tvd->at(t.index).line==normalized);
+2749:     const auto h=m_tvd->at(t.index).payload;
+2750:     assert(m_tvd->set_done(t,cycle)==tvd_directory::OK);
+2751:     ++m_tvd_indexed_completions;
+2752:     if (h.valid() && !m_ep_l2_payload.inspect(h).pins)
+2753:       m_ep_l2_payload.transfer(h,ep_l2_payload_store::TVD,ep_l2_payload_store::TVD_VALID);
+2754:     // A pinned read completes independently; response commit finishes the role
+2755:     // transition. Its payload generation and queued logical identity stay live.
+2756:   } else {
+FILE /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/src/gpgpu-sim/l2cache.cc SHA256 629ae76b38e339d71b47f6c93f55c0fb249e8afea77df04ef1c025a9b1fba903
+1290:       if (fill_ready) {
+1291:         mf->set_status(IN_PARTITION_L2_FILL_QUEUE,
+1292:                        m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);
+1293:         m_L2cache->fill(mf, m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle +
+1294:                                 m_memcpy_cycle_offset);
+1295:         m_dram_L2_queue->pop();
+1296:       }
+1297:     } else if (!m_L2_icnt_queue->full()) {
+1298:       if (mf->is_write() && mf->get_type() == WRITE_ACK)
+1299:         mf->set_status(IN_PARTITION_L2_TO_ICNT_QUEUE,
+1300:                        m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);
+1301:       ep_l2_m0a_record_response_enqueue();
+1302:       ft_record_response(mf);
+1303:       m_L2_icnt_queue->push(mf);
+1304:       m_dram_L2_queue->pop();
+1305:     }
+1306:   }
+1307: 
+1308:   // prior L2 misses inserted into m_L2_dram_queue here
+1309:   if (!m_config->m_L2_config.disabled()) {
+1310:     if (m_l2_char_collector) {
+1311:       const bool lower_eligible = !m_L2cache->miss_queue_empty();
+1312:       m_l2_char_collector->record_lower_drain(
+1313:           lower_eligible, lower_eligible && m_L2_dram_queue->full());
+1314:     }
+1315:     if(!m_L2cache->miss_queue_empty() && m_L2_dram_queue->full()) {
+1316:       ep_l2_life::stage_record(m_id,ep_l2_life::LOWER_QUEUE_BLOCK);
+1317:       ep_et::emit(ep_et::LOWER_REJECT,ep_et::L2_DOMAIN,m_id);
+1318:     }
+1319:     m_L2cache->cycle();
+1320:   }
+1321: 
+1322:   // This is the frozen sampling point: prior-cycle drains and fills have
+1323:   // completed, but the current frontend head has not been admitted yet.
+1324:   l2_char_sample(m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);
+1325:   if (!m_config->m_L2_config.disabled() && m_config->m_L2_config.m_ep_l2_ms_observer)
+1326:     m_L2cache->ms_sample();
+1327: 
+1328:   bool tvd_frontend_handled=false;
+1329:   if (!m_config->m_L2_config.disabled() && m_L2cache->tvd_enabled() && !m_icnt_L2_queue->empty()) {
+1330:     auto mf=m_icnt_L2_queue->top(); const auto now=m_gpu->gpu_sim_cycle+m_gpu->gpu_tot_sim_cycle;
+1331:     const bool eligible=!m_config->m_L2_texure_only || mf->istexture();
+1332:     const auto result=eligible?m_L2cache->tvd_frontend(mf,now,!m_L2_icnt_queue->full()):l2_cache::TVD_NORMAL;
+1333:     tvd_frontend_handled=result!=l2_cache::TVD_NORMAL;
+1334:     if(tvd_frontend_handled){
+1335:       m_L2cache->detach_diag_skip(mf,now,1);
+1336:       ep_l2_life::stage_record(m_id,ep_l2_life::TVD_EARLY);
+1337:     }
+1338:     if (result==l2_cache::TVD_RESPONSE) {
+1339:       mf->set_reply(); mf->set_status(IN_PARTITION_L2_TO_ICNT_QUEUE,now);
+1340:       ft_record_admission(mf); ep_l2_m0a_record_response_enqueue(); ft_record_response(mf);
+1341:       m_L2_icnt_queue->push(mf); m_L2cache->tvd_response_commit(mf,now); m_icnt_L2_queue->pop();
+1342:     }
+2755: void memory_sub_partition::set_done(mem_fetch *mf) {
+2756:   if (mf->get_access_type() == L2_WRBK_ACC) {
+2757:     assert(!m_L2cache->ft_enabled() || mf->has_ft_wb_data());
+2758:     m_L2cache->ep_l2_wad_complete(
+2759:         mf->get_addr(), m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle,
+2760:         mf->get_request_uid());
+2761:   }

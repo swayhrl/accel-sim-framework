@@ -1,0 +1,115 @@
+{
+  "PPA": "NOT_MEASURED",
+  "clock_closure": "NOT_MEASURED",
+  "counter_definition": "Number of rows in state CLEAN, not all nonmandatory/retained victims; WB_COMPLETE excluded.",
+  "cycle_competition": {
+    "certified_exact_per_cycle_peak": "NOT_ESTABLISHED_BY_EXISTING_CPU_TESTS_OR_RUNS",
+    "concrete_pairs": [
+      "CLEAN replacement performs decrement and increment inside one commit; joint net0 is a hardware design choice, not modeled two port grants.",
+      "Missing-sector reclaim in tvd_frontend then ordinary ft_access in same cache_cycle can cause another count event if victim retention/landing reclaim occurs. Static code permits conditions; reachability/frequency unmeasured.",
+      "Lower acceptance/completion and response metadata may share cache cycle with frontend even though they do not alter clean_count; they still compete for row read/write ports."
+    ],
+    "conservative_count_event_envelope": "Frontend missing-sector erase(-1), optional dynamic landing reclaim(-1), victim install(old CLEAN -1,new CLEAN +1). This is a source-site envelope, NOT a proved simultaneously reachable maximum: landing reclaim creates EMPTY so later install generally consumes EMPTY; CLEAN replacement net0 can be fused.",
+    "normal_path": "One frontend head, but no rule that restricts all directory mutators to one call per cycle. TVD frontend missing-sector reclaim can fall through into ft_access; dynamic landing reclaim and later install/promotion can also mutate metadata at same physical_cycle.",
+    "reported_existing_metadata_lanes": "tvd_print emits indexed_control_read_views=3 and update_lanes=3 as descriptive contract; no quota-specific arbiter/credit binding proves spare capacity."
+  },
+  "evidence_ref": {
+    "bytes": 35400,
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_c/SOURCE_IMPLEMENTATION_EVIDENCE.txt",
+    "sha256": "82172c35eef0f6c66ad0260377ed607c824222b47527e36eb4c662b603999ab6"
+  },
+  "modeled": {
+    "existing_lookup": "one extra serialized lookup cycle and one frontend query/cycle; cached ticket avoids hidden repeat CAM lookup",
+    "existing_payload": "four banks/P1 + bank grant and response/lower waits retained",
+    "existing_scans": "Replacement selection, occupancy/stat and advance loops remain software scans; no claim of zero existing selection cost.",
+    "new_CAM_queries_required_by_quota": 0,
+    "new_counter_backpressure": false,
+    "new_counter_update_lane_grant": false,
+    "new_counter_update_service_cycles": 0,
+    "new_data_bank_ops_required_by_quota": 0,
+    "new_full_occupancy_count_scan": false,
+    "new_payload_slots": 0,
+    "new_quota_lookup_cycles": 0
+  },
+  "no_free_port_claim": true,
+  "rows": [
+    {
+      "counter_read": 1,
+      "counter_write": 0,
+      "delta": "0",
+      "latency": "No quota-specific cycle, port reservation or backpressure",
+      "operation": "CLEAN preview",
+      "ordering": "Read count >= limit after cap0 refusal; then select EMPTY or unpinned CLEAN reclaim candidate",
+      "path": "ep-l2-tvd-directory.h:149-181"
+    },
+    {
+      "counter_read": "old/new state and count",
+      "counter_write": "0,1,or2 source operations",
+      "delta": "CLEAN->CLEAN 0 via -- then ++; other->CLEAN +1; CLEAN->WB_STAGED -1; other->WB_STAGED 0",
+      "latency": "Synchronous at caller now; no counter lane scheduler",
+      "operation": "commit_install",
+      "ordering": "Reject stale revision/invalid input before mutation; advance old occupancy; bump incarnation; decrement old CLEAN; change row state; increment new CLEAN; assert <=limit; update payload/age; revision++",
+      "path": "ep-l2-tvd-directory.h:185-220"
+    },
+    {
+      "counter_read": "old CLEAN state",
+      "counter_write": "at most1",
+      "delta": "-1 only when source CLEAN, 0 for WB_COMPLETE",
+      "latency": "No quota-specific cycles; retains existing tag/payload/WB readiness",
+      "operation": "promote/dirty promotion",
+      "ordering": "Ticket incarnation, mandatory WB and reader guards; dirty plan additionally revision guard; pre-reserve resources; same handle transfer; source row erased or reused WB_STAGED; generation bumps",
+      "path": "ep-l2-tvd-directory.h:288-294,321-337"
+    },
+    {
+      "counter_read": "old CLEAN state",
+      "counter_write": "at most1",
+      "delta": "-1 only when CLEAN",
+      "latency": "Direct mutation, no count-update queue",
+      "operation": "reclaim / erase",
+      "ordering": "Live incarnation and no mandatoryWB/readers; decrement before erase; bump row incarnation; clear payload; revision++",
+      "path": "ep-l2-tvd-directory.h:341-355,407-413"
+    },
+    {
+      "counter_read": 0,
+      "counter_write": 0,
+      "delta": "0",
+      "latency": "Existing WB/data-transfer/generation checks; no added quota cycle",
+      "operation": "lower_accept / set_done",
+      "ordering": "WB_STAGED->WB_INFLIGHT->WB_COMPLETE; completion with no payload erases non-CLEAN; retained WB_COMPLETE remains outside clean count",
+      "path": "ep-l2-tvd-directory.h:370-384"
+    },
+    {
+      "counter_read": 0,
+      "counter_write": 0,
+      "delta": "0",
+      "latency": "Existing bank and response backpressure modeled, not quota-count cost",
+      "operation": "begin_read / response / cancel",
+      "ordering": "Reader pin/lease + revision protect lifetime; response requires real bank service and enqueue",
+      "path": "ep-l2-tvd-directory.h:250-286"
+    },
+    {
+      "counter_read": "per reclaim",
+      "counter_write": "up to128 decrements across while loop",
+      "delta": "-N CLEAN entries",
+      "latency": "Software drain loop has no per-row/update modeled cycle; do not use as normal-cycle one-port proof",
+      "operation": "epoch cleanup",
+      "ordering": "Requires epoch_ready and no outstanding lease; allocator release each handle; same now allowed repeatedly",
+      "path": "ep-l2-tvd-cache.inc:38-57,238-242"
+    }
+  ],
+  "schema": "EP_PFV4_QUOTA_STATIC_COST_EVIDENCE_V1",
+  "source_identity": {
+    "archive_sha256": "ffe77ffc39d805b0c5d044f9cd3782d983ce8b17d2056b9ec67d11aa5193b579",
+    "binary_sha256": "bab27c440a58426b05d4d10312feeaa55cd28319d52e9396009738e036667553",
+    "core_source_commit": "bf4e48447136b990bd2db15e2972a4394e37d21f",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "status": "ALGORITHMIC_CONTRACT_KNOWN_PHYSICAL_PORT_TIMING_UNQUALIFIED",
+  "storage": {
+    "logical_minimum_cap_bits": 8,
+    "logical_minimum_count_bits": 8,
+    "scope": "per slice; values0..128",
+    "software_declaration": "unsigned m_capacity, m_clean_limit, m_clean_count; no bitpacked RTL inferred"
+  }
+}
