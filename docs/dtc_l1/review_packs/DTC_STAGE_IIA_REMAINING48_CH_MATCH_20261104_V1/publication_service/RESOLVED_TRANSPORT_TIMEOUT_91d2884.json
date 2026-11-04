@@ -1,0 +1,89 @@
+{
+  "error": {
+    "UTC": "2026-11-04T07:05:24.926285+00:00",
+    "models_retried": 0,
+    "retry_same_commit": true,
+    "traceback": "Traceback (most recent call last):\n  File \"/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_remaining48_execution_20261104_v1/publication_service_v1/report_only_publisher.py\", line 179, in main\n    v=publish();last=time.monotonic();put(D/'STATUS.json',dict(UTC=utc(),last_publication=v,scientific_completion_claim=False,automatic_next_phase=False))\n  File \"/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_remaining48_execution_20261104_v1/publication_service_v1/report_only_publisher.py\", line 133, in publish\n    git('push','origin',v['commit']+':refs/heads/'+BRANCH,timeout=90)\n  File \"/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_remaining48_execution_20261104_v1/publication_service_v1/report_only_publisher.py\", line 62, in git\n    x=subprocess.run(cmd,capture_output=True,text=True,timeout=timeout,env=ENV)\n  File \"/usr/lib/python3.10/subprocess.py\", line 505, in run\n    stdout, stderr = process.communicate(input, timeout=timeout)\n  File \"/usr/lib/python3.10/subprocess.py\", line 1154, in communicate\n    stdout, stderr = self._communicate(input, endtime, timeout)\n  File \"/usr/lib/python3.10/subprocess.py\", line 2022, in _communicate\n    self._check_timeout(endtime, orig_timeout, stdout, stderr)\n  File \"/usr/lib/python3.10/subprocess.py\", line 1198, in _check_timeout\n    raise TimeoutExpired(\nsubprocess.TimeoutExpired: Command '['git', '-c', 'safe.directory=/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_remaining48_execution_20261104_v1/execution-worktree', '-c', 'http.version=HTTP/1.1', '-c', 'user.name=swayhrl', '-c', 'user.email=56393103+swayhrl@users.noreply.github.com', '-C', '/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_remaining48_execution_20261104_v1/execution-worktree', 'push', 'origin', '91d288465801124d681650ab7ba04ec3530ba289:refs/heads/hrl/dtc-stage-iia-remaining48-execution-20261104-v1']' timed out after 90 seconds\n"
+  },
+  "interpretation": "Same Git commit transport retried after90s timeout and subsequently verified; not a model failure.",
+  "models_retried": 0,
+  "resolution": {
+    "HTTPS_readbacks": {
+      "LATEST_STATUS.json": {
+        "sha256": "273e3bb08978abec38497e431f3936a135f109e76e51fe1e0f0e227dad389868",
+        "url": "https://raw.githubusercontent.com/swayhrl/accel-sim-framework/91d288465801124d681650ab7ba04ec3530ba289/docs/dtc_l1/review_packs/DTC_STAGE_IIA_REMAINING48_CH_MATCH_20261104_V1/LATEST_STATUS.json"
+      },
+      "MANIFEST.json": {
+        "sha256": "b346d2c22ab66b962b0ed8d550d8feda2dfa4e5ca02e5f34a9b8343ab343e1a4",
+        "url": "https://raw.githubusercontent.com/swayhrl/accel-sim-framework/91d288465801124d681650ab7ba04ec3530ba289/docs/dtc_l1/review_packs/DTC_STAGE_IIA_REMAINING48_CH_MATCH_20261104_V1/MANIFEST.json"
+      },
+      "analysis/STAGEIIA_REMAINING48_CORE32_RESULTS.md": {
+        "sha256": "9d4e42ee6976af9f61c28b9ae215600d663ae5486cc1f0826e5df6c442fd8690",
+        "url": "https://raw.githubusercontent.com/swayhrl/accel-sim-framework/91d288465801124d681650ab7ba04ec3530ba289/docs/dtc_l1/review_packs/DTC_STAGE_IIA_REMAINING48_CH_MATCH_20261104_V1/analysis/STAGEIIA_REMAINING48_CORE32_RESULTS.md"
+      },
+      "analysis/STAGEIIA_REMAINING48_SUMMARY.json.gz": {
+        "sha256": "09307c97b67ecdf26650e87efe1c382c8f677d68b6c0f7e7014f7b9c443aa544",
+        "url": "https://raw.githubusercontent.com/swayhrl/accel-sim-framework/91d288465801124d681650ab7ba04ec3530ba289/docs/dtc_l1/review_packs/DTC_STAGE_IIA_REMAINING48_CH_MATCH_20261104_V1/analysis/STAGEIIA_REMAINING48_SUMMARY.json.gz"
+      }
+    },
+    "UTC": "2026-11-04T07:03:48.387981+00:00",
+    "all48_terminal_verified": false,
+    "branch": "hrl/dtc-stage-iia-remaining48-execution-20261104-v1",
+    "commit": "91d288465801124d681650ab7ba04ec3530ba289",
+    "final_scientific_closure": false,
+    "manifest_sha256": "b346d2c22ab66b962b0ed8d550d8feda2dfa4e5ca02e5f34a9b8343ab343e1a4",
+    "new_mechanism_packages": [
+      {
+        "public_directory": "independent_reviews/B_completed_3mm_v1",
+        "sha256": "ad4898379cf92922f72026f5b507a9d6e3b47584dc64c9edde756dbfdc71ec4a",
+        "source_manifest": "agents/B_completed_3mm_v1/MANIFEST.json"
+      },
+      {
+        "public_directory": "independent_reviews/C_completed_3mm_review_v1",
+        "sha256": "4d1b892eea5a3af681f1d26535d9fa77917ddd7cccf3016e923cd8b38d5c0251",
+        "source_manifest": "agents/C_completed_3mm_review_v1/MANIFEST.json"
+      },
+      {
+        "public_directory": "independent_reviews/B_completed_myocyte_v1",
+        "sha256": "77ba3712318a44e4061997fa564d0f6bcd78196eca04da3c528241616ae82db3",
+        "source_manifest": "agents/B_completed_myocyte_v1/MANIFEST.json"
+      },
+      {
+        "public_directory": "independent_reviews/C_completed_myocyte_review_v1",
+        "sha256": "e060ab9d4e89cadf40b2172a98e0adead5b6c17f72d777475c493b12f211aa64",
+        "source_manifest": "agents/C_completed_myocyte_review_v1/MANIFEST.json"
+      },
+      {
+        "public_directory": "independent_reviews/B_myocyte_cpu_capacity_observation_v1",
+        "sha256": "cb8fc48a3bcdd63a4d22b7e39ae567c4819411bf82954aeaa834420fb7d94ad2",
+        "source_manifest": "agents/B_myocyte_cpu_capacity_observation_v1/MANIFEST.json"
+      }
+    ],
+    "status": "PUSH_LSREMOTE_HTTPS_VERIFIED",
+    "summary": {
+      "accepted_CH": 46,
+      "accepted_six_source_slots": 190,
+      "all_registered48_terminal_verified": false,
+      "archived_negative_CH": 0,
+      "await_result": 2,
+      "core32_common_both_F_n": 31,
+      "core32_fixed_input_n": 32,
+      "expected_CH": 48,
+      "expected_six_source_slots": 192,
+      "frozen_reference_RESULT_SHA_rechecked": 144,
+      "full_CORE32_complete_sixcell_accepted": false,
+      "native_scientific_writes": 0,
+      "new_model_starts": 0,
+      "observed_utc": "2026-11-04T07:02:04.003962+00:00",
+      "original128_and_first16_separate_source_roles": true,
+      "registered_consumed": 48,
+      "registered_remaining": 0,
+      "request": "DTC_STAGE_IIA_REMAINING48_CH_MATCH_20261104_V1",
+      "schema": "DTC_REMAINING48_ANALYSIS_SUMMARY_V1",
+      "source_qualified": true,
+      "verification_hold": 0
+    },
+    "verified_UTC": "2026-11-04T07:06:16.598968+00:00"
+  },
+  "scientific_identities_changed": 0
+}

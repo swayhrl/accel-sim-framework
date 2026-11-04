@@ -1,0 +1,1 @@
+srad_v1 six-source/502kernel-per-source current-contract zero-F-response supplement. Read REPORT.md and authoritative sevenphase mappings; reduce450CTA and1CTA are separate despite sharing a symbol. All publicmembers<8MiB; no live data or final-chain change.

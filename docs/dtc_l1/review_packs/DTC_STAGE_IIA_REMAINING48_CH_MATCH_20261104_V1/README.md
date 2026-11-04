@@ -1,5 +1,19 @@
 # DTC-L1 Stage II-A Remaining48 CH fair matching
 
+## Completed31 review: final GES pair pending
+
+Start with the [completed31 scientific report](independent_reviews/root_completed31_consolidation_v1/REPORT.md) and its [independent review](independent_reviews/C_completed31_consolidation_review_v1/README.md). This frozen source has46 accepted new CH identities and the same31 complete six-cell inputs for both F profiles. GESUMMV-F128/F256 remain absent. The current execution table has an independent timestamp; no31-program result is promoted to final32 coverage.
+
+On this matched31 set, F128 has GM S_CH=1.013978406,S_DH=1.011876444,CH/DH=1.092348845,I=0.997927015. F256 has GM S_CH=1.020571838,S_DH=1.019999506,CH/DH=1.094004114,I=0.999439204. Common P0 CH/DH GM is1.094617971. Both designs gain from downstream expansion in this subset; the aggregate incremental relative DH advantage is slightly below its P0 value. Absolute DH advantage and incremental I are different statements. No bestF or equal-area conclusion is selected here.
+
+Two forward wording clarifications preserve the original report SHA: R always means CH_cycles/DH_cycles, equivalently the DH/CH performance ratio; it is not the inverse cycle ratio. The requirement for new approval concerns validation that starts new scientific execution,capture,GPU work,instrumentation or simulation. Already authorized CPU-only read-only/source/static numeric checks remain authorized without another approval.
+
+The [srad supplement](independent_reviews/B_completed_srad_v1/REPORT.md) and [independent review](independent_reviews/C_completed_srad_review_v1/README.md) complete the naturally closed cases. Six sources cover3012 records and seven actual phase selectors, including450CTA and1CTA reduce phases with the same symbol. BothF settings are exact own-design zero responses; the22cycle absolute DH extract regression and13 DRAM-read atoms remain explicit. Write misses,small bank populations,unavailable counters and full-application/numeric limits remain distinct.
+
+The Root cycle audit independently checks190 RESULT source slots and46 accepted new raw terminal-cycle endpoints, with exact signs,suites,distributions and directF values. Original128 plusfirst16 source roles and six legal P0 aliases are retained. This audit does not replace final48 lifecycle/archive/native recovery review. New myocyte source-event invalidation/coherence and3MM candidate-source correctness limits remain explicit in their companion reviews and the31 report. Accepted model outcomes are retained under the frozen contract; numerical-correctness certification remains separate.
+
+Final GES outcomes,the original one-shot final analysis chain,final48 measured-resource consumption,full32 narrative,independent end review,final visual approval and final immutable Git/SHA closure are pending. No additional experiment or manuscript change is released.
+
 ## Naturally closed myocyte and3MM: independent mechanism supplements
 
 Read [myocyte](independent_reviews/B_completed_myocyte_v1/REPORT.md) and [3MM](independent_reviews/B_completed_3mm_v1/REPORT.md), with their companion [myocyte review](independent_reviews/C_completed_myocyte_review_v1/README.md) and [3MM review](independent_reviews/C_completed_3mm_review_v1/README.md). These are six-source matched, dated supplements; the current execution table retains its own timestamp. Neither supplement is the final CORE32 aggregate or the final48 lifecycle audit.
