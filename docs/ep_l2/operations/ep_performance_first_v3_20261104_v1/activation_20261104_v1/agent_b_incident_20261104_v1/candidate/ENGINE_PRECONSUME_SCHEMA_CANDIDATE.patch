@@ -1,0 +1,26 @@
+--- /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/agent_b_formal/runtime/ep_perf_native_wv_modes_draft.py
++++ INDEPENDENT_CANDIDATE/ep_perf_native_wv_modes_draft.py
+@@ -2,6 +2,7 @@
+ import gzip, hashlib, json, os, pathlib, resource, selectors, shutil, signal
+ import subprocess, sys, time, uuid
+ from ep_perf_common_v2 import *
++from runtime_monitor_schema import validate_spec_contract
+ 
+ SCOPED_MODES = {'EP_PERF_PFV3_VECTOR4M_W_ONLY_1700_V1': 'W_ONLY', 'EP_PERF_PFV3_VECTOR4M_WV_ZERO_RO_1700_V1': 'WV_ZERO_RO'}
+ ALLOWED_COHORTS=frozenset(SCOPED_MODES)
+@@ -80,6 +81,7 @@
+     need(s['host_engine_ref']['sha256'] in q['runtime_versions'], 'unregistered runtime version')
+     need(q['runtime_versions'][s['host_engine_ref']['sha256']] ==
+          dict(engine_ref=s['host_engine_ref'], common_ref=s['host_common_ref']), 'runtime version binding')
++    validate_spec_contract(s,check_current_domain=True)
+     return s
+ 
+ 
+@@ -228,6 +230,7 @@
+     s = spec_for(case)
+     binding = dispatch_binding(case)
+     s = dict(s, host_cpu=binding['host_cpu'])
++    validate_spec_contract(s,require_bound_cpu=True,check_current_domain=True)
+     h = module(s['helpers_ref'], 'ep_perf_helpers')
+     output_module = module(s['output_module_ref'], 'ep_perf_output')
+     out = ROOT / 'cases' / case / 'run' / str(uuid.uuid4())
