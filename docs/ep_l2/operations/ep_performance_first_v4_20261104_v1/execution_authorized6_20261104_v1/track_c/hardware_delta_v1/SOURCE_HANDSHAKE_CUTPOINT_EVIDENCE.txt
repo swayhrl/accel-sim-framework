@@ -1,0 +1,258 @@
+FILE /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/src/gpgpu-sim/gpu-cache.cc SHA256 9c516c0a81f591fedf1f043d0b10662ad9219fbd69aa8b43a70bdcf9d31b6b76
+1624:             lower_mq2_safe(mf, *second)) {
+1625:           selected = second; mf = *second; ready = true;
+1626:         }
+1627:       }
+1628:     } else if(m_miss_queue_status==IN_L1D_MISS_QUEUE) {
+1629:       ep_l2_life::stage_record(mf->get_sub_partition_id(),ep_l2_life::ICNT_INJECT_DENY);
+1630:       ep_et::packet(ep_et::L1_SEND_DENY,ep_et::CORE_DOMAIN,mf);
+1631:     }
+1632:     if (ready) {
+1633:       m_miss_queue.erase(selected);
+1634:       if(m_miss_queue_status==IN_L1D_MISS_QUEUE)
+1635:         ep_l2_life::stage_record(mf->get_sub_partition_id(),ep_l2_life::L1_SEND);
+1636:       if(m_miss_queue_status==IN_L1D_MISS_QUEUE)ep_et::packet(ep_et::L1_SEND,ep_et::CORE_DOMAIN,mf,mf->get_sid());
+1637:       if(m_miss_queue_status==IN_PARTITION_L2_MISS_QUEUE)ep_et::packet(ep_et::MISSQ_DEQUEUE,ep_et::L2_DOMAIN,mf);
+1638:       m_memport->push(mf);
+1639:       lower_accepted(mf, m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);
+1640:     }
+2716: void l2_cache::ep_l2_wad_complete(new_addr_type block_addr,
+2717:                                    unsigned long long cycle, unsigned completing_request_uid) {
+2718:   if (!ep_l2_wad_enabled()) return;
+2719:   const new_addr_type normalized = m_config.block_addr(block_addr);
+2720:   tvd_directory::ticket completion;
+2721:   if (m_tvd) {
+2722:     // One explicitly costed completion-address CAM path, separate from the
+2723:     // one-cycle frontend victim CAM. Never invent extra ICNT header bits.
+2724:     assert(m_tvd_completion_cam_cycle!=cycle && "one completion CAM query per physical cycle");
+2725:     m_tvd_completion_cam_cycle=cycle;
+2726:     completion=m_tvd->find(normalized);
+2727:     // Existing packet UID plus selected row state reject a late/different WB
+2728:     // before timestamp, directory or payload mutation. Original UID wrap
+2729:     // limitations are inherited; no generation field is narrowed here.
+2730:     assert(m_tvd->writeback_matches(completion,normalized,completing_request_uid) &&
+2731:            m_tvd->at(completion.index).status==tvd_directory::WB_INFLIGHT);
+2732:   }
+2733:   std::map<new_addr_type, unsigned long long>::iterator birth =
+2734:       m_ep_l2_wad_birth_cycle.find(normalized);
+2735:   assert(birth != m_ep_l2_wad_birth_cycle.end());
+2736:   // CUDA memcpy traffic can carry a local dispatch offset whereas set_done()
+2737:   // uses the global cycle.  Saturate that instrumentation-only corner rather
+2738:   // than allowing an unsigned underflow to corrupt the lifetime histogram.
+2739:   const unsigned long long lifetime =
+2740:       cycle >= birth->second ? cycle - birth->second : 0;
+2741:   m_ep_l2_wad_lifetime_sum += lifetime;
+2742:   ++m_ep_l2_wad_lifetime_count;
+2743:   m_ep_l2_wad_lifetime_max = std::max(m_ep_l2_wad_lifetime_max, lifetime);
+2744:   ++m_ep_l2_wad_lifetime_hist[lifetime];
+2745:   m_ep_l2_wad_birth_cycle.erase(birth);
+2746:   if (m_tvd) {
+2747:     const tvd_directory::ticket t=completion;
+2748:     assert(m_tvd->live(t) && m_tvd->at(t.index).line==normalized);
+2749:     const auto h=m_tvd->at(t.index).payload;
+2750:     assert(m_tvd->set_done(t,cycle)==tvd_directory::OK);
+2751:     ++m_tvd_indexed_completions;
+2752:     if (h.valid() && !m_ep_l2_payload.inspect(h).pins)
+2753:       m_ep_l2_payload.transfer(h,ep_l2_payload_store::TVD,ep_l2_payload_store::TVD_VALID);
+2754:     // A pinned read completes independently; response commit finishes the role
+2755:     // transition. Its payload generation and queued logical identity stay live.
+FILE /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/src/gpgpu-sim/l2cache.cc SHA256 629ae76b38e339d71b47f6c93f55c0fb249e8afea77df04ef1c025a9b1fba903
+658:       int dest_spid = global_sub_partition_id_to_local_id(dest_global_spid);
+659:       assert(m_sub_partition[dest_spid]->get_id() == dest_global_spid);
+660:       m_sub_partition[dest_spid]->l2_char_record_dram_return(
+661:           true, m_sub_partition[dest_spid]->dram_L2_queue_full());
+662:       if (!m_sub_partition[dest_spid]->dram_L2_queue_full()) {
+663:         if (mf_return->get_access_type() == L1_WRBK_ACC) {
+664:           m_sub_partition[dest_spid]->set_done(mf_return);
+665:           delete mf_return;
+666:         } else {
+667:           m_sub_partition[dest_spid]->dram_L2_queue_push(mf_return);
+668:           mf_return->set_status(
+669:               IN_PARTITION_DRAM_TO_L2_QUEUE,
+670:               m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);
+671:           m_arbitration_metadata.return_credit(dest_spid, mf_return);
+672:           MEMPART_DPRINTF(
+673:               "mem_fetch request %p return from dram to sub partition %d\n",
+674:               mf_return, dest_spid);
+675:         }
+676:         m_dram_latency_queue.pop_front();
+677:       }
+678: 
+679:     } else {
+680:       this->set_done(mf_return);
+681:       delete mf_return;
+682:       m_dram_latency_queue.pop_front();
+683:     }
+858: void memory_partition_unit::set_done(mem_fetch *mf) {
+859:   unsigned global_spid = mf->get_sub_partition_id();
+860:   int spid = global_sub_partition_id_to_local_id(global_spid);
+861:   assert(m_sub_partition[spid]->get_id() == global_spid);
+862:   if (mf->get_access_type() == L1_WRBK_ACC ||
+863:       mf->get_access_type() == L2_WRBK_ACC) {
+864:     m_arbitration_metadata.return_credit(spid, mf);
+865:     MEMPART_DPRINTF(
+866:         "mem_fetch request %p return from dram to sub partition %d\n", mf,
+867:         spid);
+868:   }
+869:   m_sub_partition[spid]->set_done(mf);
+870: }
+2755: void memory_sub_partition::set_done(mem_fetch *mf) {
+2756:   if (mf->get_access_type() == L2_WRBK_ACC) {
+2757:     assert(!m_L2cache->ft_enabled() || mf->has_ft_wb_data());
+2758:     m_L2cache->ep_l2_wad_complete(
+2759:         mf->get_addr(), m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle,
+2760:         mf->get_request_uid());
+2761:   }
+2762:   m_request_tracker.erase(mf);
+2763:   m_ideal_arrivals.erase(mf);
+2764: }
+FILE /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/src/gpgpu-sim/ep-l2-ft-cache.inc SHA256 e27b7624732f3b1c30f0803caef9b3da8cb1a7b84ea82193cd3d24e667e603cc
+395:     bool retain_clean = false;
+396:     if (m_tvd && m_config.m_ep_l2_tvd_clean && live && !dirty &&
+397:         m_ep_l2_payload.inspect(victim).ready_sector_mask.any() &&
+398:         m_tvd->preview_install(m_ep_l2_payload.inspect(victim).owner,false,true).status==tvd_directory::OK) {
+399:       bool reserved=true;
+400:       if(m_ep_l2_payload.fixed_victim_entries()) {
+401:         reserved=m_ep_l2_payload.reserve_fixed_retention(victim);
+402:         if(!reserved && tvd_reclaim_one(index%4,physical_cycle))
+403:           reserved=m_ep_l2_payload.reserve_fixed_retention(victim);
+404:       }
+405:       if(reserved) {
+406:         landing=m_ep_l2_payload.preview_free(ep_l2_payload_store::RESIDENT,index%4);
+407:         retain_clean=landing.valid();
+408:         if(!retain_clean && m_ep_l2_payload.fixed_victim_entries())
+409:           m_ep_l2_payload.cancel_fixed_retention(victim);
+410:       }
+411:     }
+412:     if (m_config.m_ep_l2_ft_mode == 2 && (dirty || !live)) {
+413:       landing = m_ep_l2_payload.preview_free(ep_l2_payload_store::RESIDENT, index % 4);
+414:       if (!landing.valid() && m_tvd && tvd_reclaim_one(index%4,physical_cycle))
+415:         landing=m_ep_l2_payload.preview_free(ep_l2_payload_store::RESIDENT,index%4);
+416:       if (!landing.valid()) { ++m_ft_stats.pool_full; return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_landing)); }
+417:       if (dirty) staging = victim;
+418:     }
+434:     if (dirty) {
+435:       if (m_config.m_ep_l2_wb_local_cap) {
+436:         assert(!m_ft_quota.reserved); ++m_ft_quota.reserved; p.quota_reserved = true;
+437:         m_ft_quota.reserved_peak = std::max(m_ft_quota.reserved_peak, m_ft_quota.reserved);
+438:         m_ft_quota.total_peak = std::max(m_ft_quota.total_peak, m_ft_quota.reserved + m_ft_quota.live);
+439:       }
+440:       p.victim_address = m_tag_array->get_block(index)->m_block_addr;
+441:       if (m_tvd) {
+442:         const auto dirty_mask=m_tag_array->get_block(index)->get_dirty_sector_mask().to_ulong();
+443:         const auto ready_mask=p.saved.ready_sector_mask.to_ulong();
+444:         const bool retain=m_config.m_ep_l2_tvd_dirty && (dirty_mask & ~ready_mask)==0;
+445:         assert(tvd_install_victim(p.victim_address,retain?victim:ep_l2::PayloadHandle(),
+446:             retain?ready_mask:dirty_mask,dirty_mask,true,physical_cycle,&p.wad_ticket));
+447:       } else assert(m_ep_l2_wad_entries_live.insert(p.victim_address).second);
+541:   }
+542:   if (replacement && m_ft_pending.dirty) assert(m_ft_pending.bound);
+543:   if (replacement && m_ft_pending.retain_clean) {
+544:     auto &p=m_ft_pending;
+545:     if (tvd_install_victim(p.saved.owner,p.victim,p.saved.ready_sector_mask.to_ulong(),0,false,physical_cycle))
+546:       m_ep_l2_payload.transfer(p.victim,ep_l2_payload_store::TVD,ep_l2_payload_store::TVD_VALID);
+547:     else m_ep_l2_payload.release(p.victim);
+548:   }
+636: void l2_cache::lower_accepted(mem_fetch *mf, unsigned long long cycle) {
+637:   if (ft_enabled()) m_ms_observer.lower_accept(mf->get_is_write(),
+638:       mf->get_access_type() == L2_WRBK_ACC, mf->get_data_size());
+639:   if (ft_enabled() && !mf->get_is_write()) {
+640:     ++m_ft_stats.lower_read_packets; m_ft_stats.lower_read_bytes+=mf->get_data_size();
+641:   }
+642:   if(mf->ro_lower_packet()) {if(!m_ro)throw std::logic_error("RO packet without runtime");m_ro->tx->lower_accepted(ep_l2::PayloadHandle(mf->get_ep_l2_payload_id(),mf->get_ep_l2_payload_generation()),mf->get_access_sector_mask().to_ulong());return;}
+643:   if (!ft_enabled() || mf->get_access_type() != L2_WRBK_ACC) return;
+644:   std::map<mem_fetch *,ft_wb_record>::iterator it = m_ft_wb.find(mf);
+645:   assert(it != m_ft_wb.end());
+646:   assert(mf->has_ft_wb_data() && mf->get_ft_wb_data() == it->second.expected);
+647:   // The physical lower FIFO now carries this packet's dirty sector bytes;
+648:   // all subsequent queues must retain data until actual set_done. No original
+649:   // payload pointer is needed with TVD disabled. These FIFO bytes are ledgered.
+650:   if (m_tvd) {
+651:     const auto t=it->second.wad_ticket;
+652:     assert(m_tvd->live(t) && m_tvd->at(t.index).line==m_config.block_addr(mf->get_addr()));
+653:     assert(m_tvd->writeback_matches(t,m_config.block_addr(mf->get_addr()),mf->get_request_uid()));
+654:     assert(m_tvd->lower_accept(t,true,cycle)==tvd_directory::OK);
+655:     ++m_tvd_indexed_accepts;
+656:     if (m_tvd->at(t.index).payload.valid()) {
+657:       if (!m_ep_l2_payload.inspect(it->second.handle).pins)
+658:         m_ep_l2_payload.transfer(it->second.handle,ep_l2_payload_store::TVD,ep_l2_payload_store::TVD_INFLIGHT);
+659:       // Else retain WB role while a paid reader pin protects its retry key.
+660:     }
+661:     else m_ep_l2_payload.release(it->second.handle);
+FILE /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v2_20261103_v1/agent_a/core_candidate/src/gpgpu-sim/ep-l2-tvd-cache.inc SHA256 0cfd9e24d2473e84a650287a98e330be4fd0b4123622eacf457ffc9979add57e
+7: bool l2_cache::tvd_install_victim(new_addr_type address, ep_l2::PayloadHandle h,
+8:     unsigned valid, unsigned dirty, bool wb, unsigned long long now,
+9:     tvd_directory::ticket *installed) {
+10:   auto plan = m_tvd->preview_install(address, wb, true);
+11:   if (plan.status != tvd_directory::OK) return false;
+12:   tvd_directory::ticket ticket;
+13:   if (m_tvd->commit_install(plan, address, h, valid, dirty, 0, wb, now, ticket) != tvd_directory::OK)
+14:     return false;
+15:   ++m_tvd_native_installs;
+16:   if (installed) *installed = ticket;
+17:   if (plan.displaced.valid()) {
+18:     assert(m_ep_l2_payload.inspect(plan.displaced).pins == 0);
+19:     m_ep_l2_payload.release(plan.displaced);
+20:   }
+21:   return true;
+22: }
+100:   auto op = mf->isatomic() ? tvd_directory::ATOMIC_OP :
+101:             mf->get_is_write() ? tvd_directory::WRITE_OP : tvd_directory::READ_OP;
+102:   auto observation = m_tvd->preview_ticket(ticket, mf->get_access_sector_mask().to_ulong(), op);
+103:   known |= 1ULL << M::SAME_ADDRESS_WB;
+104:   if (observation.status == tvd_directory::WAIT_WRITEBACK) {
+105:     ++m_tvd_wb_wait; return wait(M::SAME_ADDRESS_WB);
+106:   }
+107:   // A mandatory-WB refusal above can mask the later reader/pin predicate.
+108:   known |= 1ULL << M::PINNED_PAYLOAD;
+109:   if (observation.status == tvd_directory::PINNED) {
+110:     ++m_tvd_wb_wait; return wait(M::PINNED_PAYLOAD);
+111:   }
+112:   if (op != tvd_directory::READ_OP) return TVD_NORMAL; // ft_access commits promotion
+113:   if (observation.status == tvd_directory::MISSING_SECTOR) {
+114:     ep_l2::PayloadHandle released;
+115:     if (m_tvd->reclaim(ticket, released, now) == tvd_directory::PINNED)
+116:       return wait(M::PINNED_PAYLOAD);
+117:     m_ep_l2_payload.release(released); return TVD_NORMAL;
+118:   }
+119:   if (observation.status != tvd_directory::READ_READY) return TVD_NORMAL;
+120:   known |= 1ULL << M::RESPONSE_QUEUE_FULL;
+121:   if (!response_space) { ++m_tvd_resp_wait; return wait(M::RESPONSE_QUEUE_FULL); }
+122:   if (!m_tvd_read) {
+123:     assert(m_ep_l2_payload.handle_owner_matches(observation.payload, address));
+124:     m_tvd_read.reset(new tvd_directory::read_lease());
+125:     assert(m_tvd->begin_read(observation, mf->get_access_sector_mask().to_ulong(), *m_tvd_read) == tvd_directory::OK);
+126:     m_ep_l2_payload.pin(observation.payload);
+127:   }
+128:   const auto h = m_tvd_read->handle();
+129:   if (m_ep_l2_payload.request(h, false, now, (unsigned long long)-1,
+130:       ep_l2_payload_store::TVD_READ, ep_l2_payload_store::FRONTEND, mf->get_request_uid()) != ep_l2_payload_store::GRANTED) {
+131:     ++m_tvd_bank_wait; return wait(M::DATA_SERVICE);
+132:   }
+133:   mf->set_ep_l2_payload_identity(h.payload_id, h.generation);
+134:   mf->set_ft_wb_data(m_ep_l2_payload.inspect(h).versions);
+135:   return TVD_RESPONSE;
+136: }
+137: 
+138: void l2_cache::tvd_response_commit(mem_fetch *mf, unsigned long long now) {
+139:   assert(m_tvd_read && mf == m_tvd_lookup);
+140:   const auto h = m_tvd_read->handle();
+141:   assert(m_tvd->response_commit(*m_tvd_read, now) == tvd_directory::OK);
+142:   m_ep_l2_payload.unpin(h);
+143:   const auto ticket=m_tvd_lookup_ticket;
+144:   assert(m_tvd->live(ticket) && m_tvd->at(ticket.index).payload==h);
+145:   const auto &e=m_tvd->at(ticket.index);
+238: void l2_cache::tvd_epoch_cleanup(unsigned long long now) {
+239:   if (!m_tvd) return;
+240:   assert(m_tvd->epoch_ready() && !m_tvd_read);
+241:   while (tvd_reclaim_one((unsigned)-1, now)) {}
+242:   assert(m_tvd->occupied() == 0); m_tvd_lookup = NULL;
+243: }
+244: 
+245: void l2_cache::tvd_print(FILE *fp, unsigned slice) {
+246:   m_tvd->advance(m_gpu_cycle_for_tvd()); const auto &s = m_tvd->stats();
+247:   fprintf(fp,"EPL2TVDV3|METADATA_COST|slice=%u|frontend_cam_queries=%llu|frontend_cam_ports=1|completion_cam_queries=%llu|completion_cam_ports=1|indexed_wb_accept=%llu|indexed_rollback=%llu|native_install_commits=%llu|native_promotion_commits=%llu|extra_packet_identity_bits=0|directory_bound_wb_uid_bits=32|indexed_control_read_views=3|indexed_control_update_lanes=3|clean_limit=%u|clean_live=%u|clean_limit_counter_bits=8|metadata_PPA=UNKNOWN|metadata_clock_closure=UNKNOWN\n",
+248:       slice,m_tvd_lookup_queries,m_tvd_indexed_completions,m_tvd_indexed_accepts,
+249:       m_tvd_indexed_rollbacks,m_tvd_native_installs,m_tvd_native_promotions,
+250:       m_tvd->clean_limit(),m_tvd->clean_occupancy());
+251:   fprintf(fp, "EPL2TVDV2|SUMMARY|slice=%u|clean_installs=%llu|dirty_installs=%llu|"

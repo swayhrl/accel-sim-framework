@@ -1,0 +1,8 @@
+# Finite exact6 Main dispatcher candidate
+finite_main_exact6_candidate.py is passive by default: --manifest FILE --prepare validates only. --run additionally requires control/MAIN_EXECUTOR_ACTIVATION.json bound to the exact manifest+controller and obtains the existing global Main successor ownership lock. Only Main may select/install/activate it.
+
+Groups are exactly A1/B/A3 with budgets2/2/2 and six parent-authorized cohorts. Initial policy releases five points continuously; only B WV waits for B W CLOSED_ACCEPTED, full true164 archive and two distinct native restores. A1/A3 have no stage gates. Per-Spec route guards provide sealed entries (A V4 carrier, B V3). CPU and resource snapshots use each Spec's resource module; fresh actual occupied CPUs plus own pending frontends prevent same-core reuse. Full schema/current CPU validation precedes inherited claim writes.
+
+The predecessor claim/poll/closed-view mechanisms are pinned and reused. Its expected running keys process/log/log_path/cpu match the new records. Accept/archive is asynchronous with one parent-held CLOEXEC outer accept lock; the child independently takes the original restore/admission locks. Scheduling never waits for acceptance/archive and tries ready initial starts before launching the archive worker. No publisher, Git push or new attribution/metrics is included.
+
+SMALL_DELTA_CHECKS.json records AST/import and policy/mock checks only: no real Native, science registration, claims or models were called. Main supplies the authoritative exact manifest after activation materialization; MANIFEST_FIELDS_DRAFT.json and ACTIVATION_FIELDS_DRAFT.json describe the binding fields. The controller is a candidate and has not been started by this lane.

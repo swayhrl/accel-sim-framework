@@ -1,0 +1,48 @@
+{
+  "Main_apply_command": "python3 -B /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_b/closed_consumer_pin_addendum_v5/main_consumer_readjudicate.py --cohort <exact W_ONLY or WV cohort> --amendment <Main signed amendment JSON> --apply",
+  "Main_sign_fields": {
+    "approved_by": "EP-MAIN",
+    "status": "MAIN_APPROVED_CONSUMER_ONLY_COMPATIBILITY_AMENDMENT"
+  },
+  "Main_sign_template_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_b/closed_consumer_pin_addendum_v5/CONSUMER_AMENDMENT_DRAFT.json",
+    "sha256": "915c2666b99f1045b079c25c1ec44ac2ad39407936fb1ab62cfdc4d2aee82540"
+  },
+  "actual_default_result": {
+    "archive_performed": false,
+    "cohort": "EP_PERF_PFV4_VECTOR4M_W_ONLY_1700_V1",
+    "consumer_amendment_ref": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_b/closed_consumer_pin_addendum_v5/CONSUMER_AMENDMENT_DRAFT.json",
+      "sha256": "915c2666b99f1045b079c25c1ec44ac2ad39407936fb1ab62cfdc4d2aee82540"
+    },
+    "mode": "CPU_ONLY_PRIVATE_REVIEW",
+    "model_starts": 0,
+    "next_Main_operation": "original native experiment accept EP_PERF_PFV4_VECTOR4M_W_ONLY_1700_V1 --project EP_L2",
+    "original_postprocess_ref": {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_b/private_runtime/ep_perf_postprocess.py",
+      "sha256": "0641c1467d005b0f18a53f7657002c624bb31dffa00d08ae3c2585f3a19c9db8"
+    },
+    "original_row_state": "PARSE_HOLD",
+    "original_validation_hold_ref": {
+      "bytes": 274,
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_b/private_execution/vector1700/cases/EP_PERF_PFV4_VECTOR4M_W_ONLY_1700_V1/run/4e5ad120-48a8-4484-8450-252d52b7eeb1/VALIDATION_HOLD.json",
+      "sha256": "ec3b07cd1fd1bc8e95ac2a8b0cd1127f8a63ee97b03f6e7fce41824cbd9de7c5"
+    },
+    "refund_or_retry": false,
+    "status": "PRIVATE_FULL_POSTPROCESS_REVIEW_PASS_NO_AUTHORITY_WRITE",
+    "transaction_events": [
+      {
+        "budget_refund": false,
+        "from_state": "PARSE_HOLD",
+        "model_starts": 0,
+        "operation": "RECORD_VALIDATED_POINT_PENDING_ARCHIVE_NO_RETRY",
+        "real_authority_write": false,
+        "to_state": "ACCEPTED_PENDING_ARCHIVE"
+      }
+    ]
+  },
+  "model_or_dispatcher_starts": 0,
+  "original_parser_and_Spec_raw_HOLD_untouched": true,
+  "status": "FULL_ORIGINAL_POSTPROCESS_CPU_REVIEW_PASS_NO_REAL_AUTHORITY_WRITE",
+  "then_archive": "Original native experiment accept <case> --project EP_L2; W must CLOSED_ACCEPTED with true164 fullSHA and two independent restores before WV release"
+}

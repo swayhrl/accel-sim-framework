@@ -1,0 +1,46 @@
+{
+  "evidence_ref": {
+    "bytes": 16016,
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_c/hardware_delta_v1/SOURCE_HANDSHAKE_CUTPOINT_EVIDENCE.txt",
+    "sha256": "b11492507c03fa464cb2128b21522c0501bc21cde19926f4f463d5551ddf67c0"
+  },
+  "production_files_changed": false,
+  "rows": [
+    {
+      "actual": "m_memport->push happens before lower_accepted mutates row WB_STAGED->WB_INFLIGHT.",
+      "producer": "Lower WB acceptance",
+      "remaining": "No production ready/valid integration or old/new cycle equivalence proof.",
+      "required": "Reserve row/count commit service BEFORE pop/push. Commit row transition atomically with actual lower enqueue/data ownership transfer. If no grant, keep original packet/head and data; no push then rollback.",
+      "source": "gpu-cache.cc:1638-1639; ep-l2-ft-cache.inc:636-661"
+    },
+    {
+      "actual": "set_done is void; partition returns arbitration credit before subpartition row completion; caller may delete packet after callback.",
+      "producer": "WB completion",
+      "remaining": "Upstream DRAM callback/backpressure and clock-domain handshake, ingress depth, credit conservation not implemented.",
+      "required": "Completion must be retained at real origin or bounded ingress until accepted. Delay return_credit, tracker erase and deletion until COMMIT ack. Preserve request UID + row incarnation/payload generation; completion CAM remains separately charged.",
+      "source": "l2cache.cc:858-869,2755-2764; caller deletion around680-682; gpu-cache.cc:2716-2753"
+    },
+    {
+      "actual": "Synchronous reclaim may release payload before later frontend operation; missing-sector path can fall through; retain_clean happens after native access progress.",
+      "producer": "Frontend reclaim/retention/promotion",
+      "remaining": "Actual reachable max row intents per request and rollback cutpoints not certified; new interface integration needed.",
+      "required": "Collect bounded row intents and pre-reserve all affected allocator/tag/MSHR/lower resources before any destructive visibility. >2 rows must refuse/hold unless a separately qualified multi-beat atomic group exists.",
+      "source": "ep-l2-ft-cache.inc:395-418,434-447,541-548; ep-l2-tvd-cache.inc:7-22,100-117"
+    },
+    {
+      "actual": "begin_read and payload pin precede bank request; response_commit follows actual response enqueue.",
+      "producer": "Read pin/response retirement",
+      "remaining": "CPU contract represents row readers, not actual payload pins/bank scoreboard/ICNT atomics or full sector data.",
+      "required": "Pay row service for begin and retirement; no bank access without committed lifetime protection. Couple enqueue and retirement ack exactly once; downstream hold must preserve lease and UID/generation.",
+      "source": "ep-l2-tvd-cache.inc:120-145"
+    },
+    {
+      "actual": "while reclaim loop uses one now, no per-row modeled cycle.",
+      "producer": "Epoch cleanup",
+      "remaining": "Production end-of-kernel timing and accepted drain semantics need new Source qualification.",
+      "required": "Issue bounded cleanup row intents and acknowledge drain only after all scheduled commits and allocator releases, charging cycles.",
+      "source": "ep-l2-tvd-cache.inc:238-242"
+    }
+  ],
+  "schema": "EP_PFV4_PRIVATE_QUOTA_HANDSHAKE_CUTPOINT_TABLE_V1"
+}

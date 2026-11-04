@@ -1,0 +1,41 @@
+{
+  "accept_serial_lock": "a distinct Main outer accept lock path, neither ADMISSION nor RESTORE",
+  "admission_wait_and_execution_wall_seconds": "optional; default7days, never kills healthy models",
+  "authorized_max_concurrent_models": 10,
+  "automatic_retry": false,
+  "control_root": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/activation_20261104_v1/control",
+  "global_admission_lock": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_performance_first_20261103_v1/control/ADMISSION.lock",
+  "groups": {
+    "A1": {
+      "budget": 2,
+      "data_root": "exact final execution ROOT",
+      "native_entry_ref": "exact selected scoped Native entry ref",
+      "request_id": "exact approved family request",
+      "route_file": "NATIVE_ENTRY_ROUTE_V4.json",
+      "runtime_root": "directory containing selected ep_perf_common_v2.py and engine"
+    },
+    "A3": {
+      "budget": 2,
+      "data_root": "exact final execution ROOT",
+      "native_entry_ref": "exact selected scoped Native entry ref",
+      "request_id": "exact approved family request",
+      "route_file": "NATIVE_ENTRY_ROUTE_V4.json",
+      "runtime_root": "directory containing selected ep_perf_common_v2.py and engine"
+    },
+    "B": {
+      "budget": 2,
+      "data_root": "exact final execution ROOT",
+      "native_entry_ref": "exact selected scoped Native entry ref",
+      "request_id": "exact approved family request",
+      "route_file": "NATIVE_ENTRY_ROUTE_V3.json",
+      "runtime_root": "directory containing selected ep_perf_common_v2.py and engine"
+    }
+  },
+  "host_cpu_candidates": "optional exact int list intersected with current affinity and fresh occupied CPU snapshot",
+  "new_model_start_ceiling": 6,
+  "points": "six entries: {group,cohort,spec_ref,host_limits:exact Spec.limits,estimated_peak_RAM_bytes:exact Spec value,priority:optional}; modes derived from each Spec",
+  "refund": false,
+  "runtime_global_restore_lock": "/root/data/ep_l2_full_workload_performance_20261027_v1/execution_performance_first_20261103_v1/control/ARCHIVE_SHARED_WINDOW.lock",
+  "schema": "EP_MAIN_PFV4_AUTHORIZED6_EXECUTION_MANIFEST_V1",
+  "user_authorization_ref": "exact ref to control/USER_AUTHORIZATION.json; approved_total_launches=6"
+}

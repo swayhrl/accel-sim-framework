@@ -1,0 +1,134 @@
+{
+  "ELF_executed": false,
+  "directed_case_groups": 12,
+  "exhaustive_cases": 3185,
+  "models_started": 0,
+  "physical_timing_or_PPA_measured": false,
+  "production_CPU_parser_reruns": 0,
+  "production_integration_qualified": false,
+  "production_source_changed": false,
+  "results": [
+    {
+      "detail": {
+        "charged_contract_cycles": 2,
+        "count": 64,
+        "grants": 1
+      },
+      "name": "cap64_two_competing_increments",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "count_writes": 1,
+        "net_delta": 0,
+        "row_writes": 1
+      },
+      "name": "clean_replacement_folded_net0",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "charged_contract_cycles": 2,
+        "commits": 2,
+        "delta_terms": [
+          -1,
+          1
+        ],
+        "net_delta": 0
+      },
+      "name": "reclaim_then_install_atomic_signed_sum",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "charged_contract_cycles": 4,
+        "no_later_decrement_lookahead": true
+      },
+      "name": "prefix_order_bubble_is_charged",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "minimum_signed_delta_bits": 3,
+        "net_delta": -2
+      },
+      "name": "two_decrements_need_signed_reducer",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "count_delta": -1,
+        "row_writes": 2
+      },
+      "name": "zero_delta_wb_completion_competes_for_real_row_port",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "clean_count": 0,
+        "wb_complete_rows": 2
+      },
+      "name": "cap0_mandatory_wb_and_completed_retention_preserved",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "charged_contract_cycles": 5,
+        "held_commit_beats": 3
+      },
+      "name": "downstream_hold_has_no_partial_visibility_or_ack",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "checks": 3
+      },
+      "name": "pins_incarnation_and_commit_revision_refuse_before_mutation",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "max_row_lanes": 2,
+        "no_oversubscription": true
+      },
+      "name": "port_bound_and_same_row_collision_explicit",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "all6_heads_attempted_in_3_read_beats": true,
+        "reservation_refusal_no_mutation": true,
+        "unbounded_downstream_progress_not_claimed": true
+      },
+      "name": "reservation_and_round_robin_attempt_fairness",
+      "status": "PASS"
+    },
+    {
+      "detail": [
+        {
+          "charged_contract_cycles": 256,
+          "lanes": 1,
+          "rows": 128
+        },
+        {
+          "charged_contract_cycles": 128,
+          "lanes": 2,
+          "rows": 128
+        }
+      ],
+      "name": "cleanup_charged_per_read_commit_batch",
+      "status": "PASS"
+    },
+    {
+      "detail": {
+        "cases": 3185,
+        "oracle": "count equals cardinality, cap bounded, READ no mutation, exact commit acks/revision, lane bounds"
+      },
+      "name": "exhaustive_two_row_state_operation_pairs",
+      "status": "PASS"
+    }
+  ],
+  "schema": "EP_PFV4_NEW_PRIVATE_QUOTA_HARDWARE_CONTRACT_CPU_RECEIPT_V1",
+  "science_budget_registered": 0,
+  "status": "PASS_NEW_PRIVATE_CONTRACT_ONLY"
+}

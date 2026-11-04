@@ -1,0 +1,105 @@
+{
+  "bf4_source_identity": {
+    "archive_sha256": "ffe77ffc39d805b0c5d044f9cd3782d983ce8b17d2056b9ec67d11aa5193b579",
+    "binary_sha256": "bab27c440a58426b05d4d10312feeaa55cd28319d52e9396009738e036667553",
+    "core_source_commit": "bf4e48447136b990bd2db15e2972a4394e37d21f",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+  },
+  "implementation_ref": {
+    "bytes": 7533,
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_c/hardware_delta_v1/quota_commit_contract.py",
+    "sha256": "6e941b2df5c7b1258f9d1e1e210159b0211f319416c7963fdae9809b64c0f5d2"
+  },
+  "not_claimed": [
+    "synthesis",
+    "PPA",
+    "physical timing",
+    "free spare ports",
+    "unchanged bf4 cycles",
+    "formal native eligibility",
+    "complete payload/sector/version correctness",
+    "CDC qualification",
+    "global model absence"
+  ],
+  "physical_costs": [
+    {
+      "cost": "two explicitly provisioned row read/write lanes, used for READ then COMMIT; zero-delta WB/lease mutations also occupy lanes",
+      "qualification": "No mapping to existing printed3 update lanes established",
+      "resource": "directory row service"
+    },
+    {
+      "cost": "one per-slice count/cap pair, signed two-input delta reduction, prefix bounds comparisons, one count write, forwarding only within ordered prepared batch",
+      "qualification": "Logical arithmetic proved in bounded CPU cases; gate delay/area/power unmeasured",
+      "resource": "quota count datapath"
+    },
+    {
+      "cost": "up to2 operation records plus selected old/new row snapshots, base global revision, projected count, net delta and handshake flags",
+      "qualification": "Explicit new metadata holding storage; exact RTL packing/flops unknown, not free",
+      "resource": "pending transaction holding state"
+    },
+    {
+      "cost": "proposal requires bounded ready/valid completion holding, initially depth2 per slice subject to proof; IDs/UID/generation plus event control, no new victim payload array claimed",
+      "qualification": "Depth2 is a proposal, not a capacity or CDC proof; existing packet/credit ownership must be retained until commit",
+      "resource": "ingress completion transport"
+    },
+    {
+      "cost": "8 count bits +8 cap bits per slice;64 slices gives1024 logical bits",
+      "qualification": "Not physical PPA or complete metadata cost",
+      "resource": "counter logical state lower bound"
+    },
+    {
+      "cost": "two nonoverlapped contract beats per batch plus explicit stalls; leases may need separate begin and retirement commits",
+      "qualification": "Existing lookup and bank service costs remain additional; performance impact not measured",
+      "resource": "service latency"
+    }
+  ],
+  "producer_contract": {
+    "logical_heads": 6,
+    "mandatory_progress": "Dirty/WB operations have no quota-count veto at cap0. Row-port/downstream waits remain possible. End-to-end liveness requires finite downstream progress and ingress-ready integration; not proved here.",
+    "names": [
+      "WB completion",
+      "lower WB accept",
+      "frontend install/reclaim/promotion",
+      "read-lease begin",
+      "read-response/cancel retirement",
+      "epoch cleanup"
+    ],
+    "selection": "Round robin attempts up toK heads per READ beat, cursor advances even if selected head later stalls. All six continuously presented heads receive an attempt in at most3 READ beats for K2, excluding pending transaction/downstream waits.",
+    "storage": "HEAD references only in CPU arbiter; production queue ownership is unimplemented. Do not claim existing queues can hold every source event."
+  },
+  "production_source_KEEP": true,
+  "receipt_ref": {
+    "bytes": 3252,
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_c/hardware_delta_v1/NEW_CONTRACT_CPU_RECEIPT.json",
+    "sha256": "92bec966ed0f71089c7883370f011cd0b802781cedeab23d380fad9461a83f9f"
+  },
+  "schema": "EP_PFV4_PRIVATE_QUOTA_ATOMIC_DELTA_HARDWARE_PROPOSAL_V1",
+  "selected_design": {
+    "admission_order": "Input order, checked prefix count. Earlier quota-blocked +1 is not rescued by later -1; retry later explicitly costs another READ/COMMIT batch.",
+    "atomic_commit": "Exact shared base revision and row incarnation/payload-generation guarded before visibility. All accepted distinct row transitions, count target, revision+=N and request acks publish together once. CLEAN replacement folds --/++ into one net0 event.",
+    "backpressure": "At most2 selected row candidates. >2 candidates, pending batch, duplicate row, quota, pin, reservation or stale-identity failures cause no visible row/count/ack mutation. Accepted pending transactions hold until downstream ready; no speculative payload ownership mutation.",
+    "cleanup": "128 unpinned CLEAN rows: K2 gives64 READ+COMMIT batches=128 contract cycles; K1 gives128 batches=256 cycles. These are design-scheduled counts verified by CPU contract, not measured hardware or bf4 timing.",
+    "clock_domain": "Proposed L2 clock; ingress crossing/phase order is not implemented or qualified",
+    "count_commit_lanes": 1,
+    "counter_arithmetic": "delta_i=isCLEAN(new)-isCLEAN(old), signed in {-1,0,+1}; K2 sum in [-2,+2] requires3 signed bits; count/cap0..128 each8 logical bits, signed projected intermediate9 bits covers -2..130",
+    "cycle_contract": "Nonoverlapped READ beat then COMMIT beat; no new batch while pending. Full two-row batch at best2 transitions/2 contract cycles; independent of actual physical clock closure.",
+    "latency": "Every row transition waits for a later COMMIT beat. Downstream-not-ready adds one charged contract cycle per attempted wait beat. Same-row conflict defers second operation. No free zero-delta row mutation.",
+    "max_candidate_attempts_per_READ": 2,
+    "max_count_writes_per_COMMIT": 1,
+    "max_row_writes_per_COMMIT": 2,
+    "revision_scope": "New batch interface checks one base global revision. Production bf4 has single-plan revision checks; grouped snapshot equivalence and external callback ordering still need proof and new source integration.",
+    "row_lanes": 2
+  },
+  "source_cutpoints_ref": {
+    "bytes": 16016,
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_c/hardware_delta_v1/SOURCE_HANDSHAKE_CUTPOINT_EVIDENCE.txt",
+    "sha256": "b11492507c03fa464cb2128b21522c0501bc21cde19926f4f463d5551ddf67c0"
+  },
+  "status": "FUNCTIONAL_CONTRACT_IMPLEMENTED_CPU_ONLY_PRODUCTION_INTEGRATION_UNQUALIFIED",
+  "test_ref": {
+    "bytes": 6870,
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_c/hardware_delta_v1/test_new_quota_commit_contract.py",
+    "sha256": "9a4c7d16800bb46dfa58816bbea52a04d61bfd1f4d7dad4154dc2ef6ecea680d"
+  }
+}
