@@ -1,0 +1,75 @@
+{
+  "Root_manifest": {
+    "bytes": 548,
+    "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_remaining48_execution_20261104_v1/root_hardware_resource_cost_v1/MANIFEST.json",
+    "sha256": "1ffc08f7ff786c11453d91dc67fbdc197f0370c617d2f91d32d43ad78220da49"
+  },
+  "credit_and_FR_cannot_be_summed_as_independent_SRAM": true,
+  "logical_resources": [
+    {
+      "FR_pending_requests_chip": 1280,
+      "FR_pending_requests_per_controller": 64,
+      "L2_MSHR_keys_chip": 7680,
+      "L2_MSHR_keys_per_subpartition": 192,
+      "L2_MSHR_request_reference_bound_including_first": 4,
+      "L2_MSHR_request_references_chip_upper": 30720,
+      "L2_data_bytes": 10485760,
+      "L2_miss_queue_entries_chip": 1280,
+      "L2_miss_queue_entries_per_subpartition": 32,
+      "L2_subpartitions": 40,
+      "extra_FR_pending_requests_chip": 0,
+      "extra_shared_credit_allowance_chip": 0,
+      "private_credit_per_L2_subpartition": 1,
+      "private_credits_per_memory_partition": 2,
+      "profile": "P0",
+      "shared_credit_allowance_chip": 5100,
+      "shared_credit_per_memory_partition": 255
+    },
+    {
+      "FR_pending_requests_chip": 2560,
+      "FR_pending_requests_per_controller": 128,
+      "L2_MSHR_keys_chip": 7680,
+      "L2_MSHR_keys_per_subpartition": 192,
+      "L2_MSHR_request_reference_bound_including_first": 4,
+      "L2_MSHR_request_references_chip_upper": 30720,
+      "L2_data_bytes": 10485760,
+      "L2_miss_queue_entries_chip": 1280,
+      "L2_miss_queue_entries_per_subpartition": 32,
+      "L2_subpartitions": 40,
+      "extra_FR_pending_requests_chip": 1280,
+      "extra_shared_credit_allowance_chip": 1280,
+      "private_credit_per_L2_subpartition": 1,
+      "private_credits_per_memory_partition": 2,
+      "profile": "F128",
+      "shared_credit_allowance_chip": 6380,
+      "shared_credit_per_memory_partition": 319
+    },
+    {
+      "FR_pending_requests_chip": 5120,
+      "FR_pending_requests_per_controller": 256,
+      "L2_MSHR_keys_chip": 7680,
+      "L2_MSHR_keys_per_subpartition": 192,
+      "L2_MSHR_request_reference_bound_including_first": 4,
+      "L2_MSHR_request_references_chip_upper": 30720,
+      "L2_data_bytes": 10485760,
+      "L2_miss_queue_entries_chip": 1280,
+      "L2_miss_queue_entries_per_subpartition": 32,
+      "L2_subpartitions": 40,
+      "extra_FR_pending_requests_chip": 3840,
+      "extra_shared_credit_allowance_chip": 3840,
+      "private_credit_per_L2_subpartition": 1,
+      "private_credits_per_memory_partition": 2,
+      "profile": "F256",
+      "shared_credit_allowance_chip": 8940,
+      "shared_credit_per_memory_partition": 447
+    }
+  ],
+  "physical_bytes_area_energy_delay_not_estimated": true,
+  "separate_write_queue_branch_checked": true,
+  "status": "PASS",
+  "units": {
+    "FR": "pending dram_req_t request slots/controller, shared read/write because separate_write_queue0",
+    "L2": "bytes and sector-cache MSHR keys, not all128B line identities",
+    "shared_credit": "arbitration permission for memory-partition traffic, not independently stored payload entries"
+  }
+}

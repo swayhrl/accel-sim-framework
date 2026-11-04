@@ -1,0 +1,82 @@
+{
+  "schema": "ROOT_GENERATED_SVG_ATTRIBUTE_ACTUAL_GIT_QUALIFICATION_V1",
+  "UTC": "2026-11-04T02:58:07.143493+00:00",
+  "status": "PASS",
+  "checks": 3,
+  "fixture_root": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_remaining48_execution_20261104_v1/publication_service_v1/svg_attribute_CPU_1qkgojtd",
+  "cases": [
+    {
+      "args": [
+        "init",
+        "-q"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "add",
+        "--",
+        "figures/x.svg",
+        "code.py"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "rc": 2,
+      "stdout": "figures/x.svg:1: trailing whitespace.\n+<svg> \n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "add",
+        "--",
+        ".gitattributes"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "add",
+        "--",
+        "code.py"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "rc": 2,
+      "stdout": "code.py:1: trailing whitespace.\n+print(1) \n",
+      "stderr": ""
+    }
+  ],
+  "scope": "Only generated figures/*.svg whitespace diagnostics ignored; normal code remains checked; no actual science/worktree mutation in this qualification.",
+  "models_started": 0,
+  "native_writes": 0
+}

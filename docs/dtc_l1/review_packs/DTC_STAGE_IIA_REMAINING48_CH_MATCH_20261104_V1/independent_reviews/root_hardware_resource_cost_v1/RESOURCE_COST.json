@@ -1,0 +1,217 @@
+{
+  "schema": "DTC_STAGEIIA_FIXED_DOWNSTREAM_LOGICAL_RESOURCE_COST_V1",
+  "UTC": "2026-11-04T02:44:43.552816+00:00",
+  "status": "FIXED_CONFIGURATION_AND_SOURCE_VERIFIED",
+  "source_references": [
+    {
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/l2cache.cc",
+      "relative_path": "src/gpgpu-sim/l2cache.cc",
+      "sha256": "1b2b0ebca49a2f5943c9350a637d849961da96159a147a70b887434bd7f37ff5",
+      "excerpts": [
+        {
+          "start": 131,
+          "end": 175,
+          "text": "131: memory_partition_unit::arbitration_metadata::arbitration_metadata(\n132:     const memory_config *config)\n133:     : m_last_borrower(config->m_n_sub_partition_per_memory_channel - 1),\n134:       m_private_credit(config->m_n_sub_partition_per_memory_channel, 0),\n135:       m_shared_credit(0) {\n136:   // each sub partition get at least 1 credit for forward progress\n137:   // the rest is shared among with other partitions\n138:   m_private_credit_limit = 1;\n139:   m_shared_credit_limit = config->gpgpu_frfcfs_dram_sched_queue_size +\n140:                           config->gpgpu_dram_return_queue_size -\n141:                           (config->m_n_sub_partition_per_memory_channel - 1);\n142:   if (config->seperate_write_queue_enabled)\n143:     m_shared_credit_limit += config->gpgpu_frfcfs_dram_write_queue_size;\n144:   if (config->gpgpu_frfcfs_dram_sched_queue_size == 0 or\n145:       config->gpgpu_dram_return_queue_size == 0) {\n146:     m_shared_credit_limit =\n147:         0;  // no limit if either of the queue has no limit in size\n148:   }\n149:   assert(m_shared_credit_limit >= 0);\n150: }\n151: \n152: bool memory_partition_unit::arbitration_metadata::has_credits(\n153:     int inner_sub_partition_id) const {\n154:   int spid = inner_sub_partition_id;\n155:   if (m_private_credit[spid] < m_private_credit_limit) {\n156:     return true;\n157:   } else if (m_shared_credit_limit == 0 ||\n158:              m_shared_credit < m_shared_credit_limit) {\n159:     return true;\n160:   } else {\n161:     return false;\n162:   }\n163: }\n164: \n165: void memory_partition_unit::arbitration_metadata::borrow_credit(\n166:     int inner_sub_partition_id) {\n167:   int spid = inner_sub_partition_id;\n168:   if (m_private_credit[spid] < m_private_credit_limit) {\n169:     m_private_credit[spid] += 1;\n170:   } else if (m_shared_credit_limit == 0 ||\n171:              m_shared_credit < m_shared_credit_limit) {\n172:     m_shared_credit += 1;\n173:   } else {\n174:     assert(0 && \"DRAM arbitration error: Borrowing from depleted credit!\");\n175:   }"
+        }
+      ]
+    },
+    {
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/dram.cc",
+      "relative_path": "src/gpgpu-sim/dram.cc",
+      "sha256": "de8a8eca8c79549193d019a510a33ca77a9c9c41e719ec29c6e59c66871cae4f",
+      "excerpts": [
+        {
+          "start": 113,
+          "end": 125,
+          "text": "113:     bk[i]->state = BANK_IDLE;\n114:     bk[i]->bkgrpindex = i / (m_config->nbk / m_config->nbkgrp);\n115:   }\n116:   prio = 0;\n117: \n118:   rwq = new fifo_pipeline<dram_req_t>(\"rwq\", m_config->CL, m_config->CL + 1);\n119:   mrqq = new fifo_pipeline<dram_req_t>(\"mrqq\", 0, 2);\n120:   returnq = new fifo_pipeline<mem_fetch>(\n121:       \"dramreturnq\", 0,\n122:       m_config->gpgpu_dram_return_queue_size == 0\n123:           ? 1024\n124:           : m_config->gpgpu_dram_return_queue_size);\n125:   m_frfcfs_scheduler = NULL;"
+        },
+        {
+          "start": 164,
+          "end": 196,
+          "text": "164: bool dram_t::full(bool is_write) const {\n165:   if (m_config->scheduler_type == DRAM_FRFCFS) {\n166:     if (m_config->gpgpu_frfcfs_dram_sched_queue_size == 0) return false;\n167:     if (m_config->seperate_write_queue_enabled) {\n168:       if (is_write)\n169:         return m_frfcfs_scheduler->num_write_pending() >=\n170:                m_config->gpgpu_frfcfs_dram_write_queue_size;\n171:       else\n172:         return m_frfcfs_scheduler->num_pending() >=\n173:                m_config->gpgpu_frfcfs_dram_sched_queue_size;\n174:     } else\n175:       return m_frfcfs_scheduler->num_pending() >=\n176:              m_config->gpgpu_frfcfs_dram_sched_queue_size;\n177:   } else\n178:     return mrqq->full();\n179: }\n180: \n181: unsigned dram_t::que_length() const {\n182:   unsigned nreqs = 0;\n183:   if (m_config->scheduler_type == DRAM_FRFCFS) {\n184:     nreqs = m_frfcfs_scheduler->num_pending();\n185:   } else {\n186:     nreqs = mrqq->get_length();\n187:   }\n188:   return nreqs;\n189: }\n190: \n191: bool dram_t::returnq_full() const { return returnq->full(); }\n192: \n193: unsigned int dram_t::queue_limit() const {\n194:   return m_config->gpgpu_frfcfs_dram_sched_queue_size;\n195: }\n196: "
+        }
+      ]
+    },
+    {
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/dram_sched.cc",
+      "relative_path": "src/gpgpu-sim/dram_sched.cc",
+      "sha256": "2a0280247c5558541dc3896f86bc596549dd83b71630717cc40756248fee3e73",
+      "excerpts": [
+        {
+          "start": 64,
+          "end": 88,
+          "text": "64:       m_write_queue[i].clear();\n65:       m_write_bins[i].clear();\n66:       m_last_write_row[i] = NULL;\n67:     }\n68:   }\n69:   m_mode = READ_MODE;\n70: }\n71: \n72: void frfcfs_scheduler::add_req(dram_req_t *req) {\n73:   if (m_config->seperate_write_queue_enabled && req->data->is_write()) {\n74:     assert(m_num_write_pending < m_config->gpgpu_frfcfs_dram_write_queue_size);\n75:     m_num_write_pending++;\n76:     m_write_queue[req->bk].push_front(req);\n77:     std::list<dram_req_t *>::iterator ptr = m_write_queue[req->bk].begin();\n78:     m_write_bins[req->bk][req->row].push_front(ptr);  // newest reqs to the\n79:                                                       // front\n80:   } else {\n81:     assert(m_num_pending < m_config->gpgpu_frfcfs_dram_sched_queue_size);\n82:     m_num_pending++;\n83:     m_queue[req->bk].push_front(req);\n84:     std::list<dram_req_t *>::iterator ptr = m_queue[req->bk].begin();\n85:     m_bins[req->bk][req->row].push_front(ptr);  // newest reqs to the front\n86:   }\n87: }\n88: "
+        }
+      ]
+    },
+    {
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/gpu-sim.cc",
+      "relative_path": "src/gpgpu-sim/gpu-sim.cc",
+      "sha256": "8e159a05a385e2d29799363d5786dcabff6aff770675b8b4221864e6c4f0355c",
+      "excerpts": [
+        {
+          "start": 287,
+          "end": 300,
+          "text": "287: \n288:   option_parser_register(opp, \"-gpgpu_memlatency_stat\", OPT_INT32,\n289:                          &gpgpu_memlatency_stat,\n290:                          \"track and display latency statistics 0x2 enables MC, \"\n291:                          \"0x4 enables queue logs\",\n292:                          \"0\");\n293:   option_parser_register(opp, \"-gpgpu_frfcfs_dram_sched_queue_size\", OPT_INT32,\n294:                          &gpgpu_frfcfs_dram_sched_queue_size,\n295:                          \"0 = unlimited (default); # entries per chip\", \"0\");\n296:   option_parser_register(opp, \"-gpgpu_dram_return_queue_size\", OPT_INT32,\n297:                          &gpgpu_dram_return_queue_size,\n298:                          \"0 = unlimited (default); # entries per chip\", \"0\");\n299:   option_parser_register(opp, \"-gpgpu_dram_buswidth\", OPT_UINT32, &busW,\n300:                          \"default = 4 bytes (8 bytes per cycle at DDR)\", \"4\");"
+        }
+      ]
+    }
+  ],
+  "configuration_sources": [
+    {
+      "program": "BlackScholes",
+      "input_digest": "b31a85e4eb8d32ef5d706c2a84c999f6e3af598b1df43c85e149d03fa1568ac0",
+      "source_cell": "CH",
+      "source_profile": "P0",
+      "source_RESULT_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-b31a85e4eb8d32ef-CH-P0-V1.RESULT.json",
+      "source_RESULT_sha256": "9a274b35567d9fe5f6835ae9d2f71742b47b32ec35763cf2162b7a745cdb9492"
+    },
+    {
+      "program": "BlackScholes",
+      "input_digest": "b31a85e4eb8d32ef5d706c2a84c999f6e3af598b1df43c85e149d03fa1568ac0",
+      "source_cell": "DH",
+      "source_profile": "P0",
+      "source_RESULT_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-b31a85e4eb8d32ef-DH-P0-V1.RESULT.json",
+      "source_RESULT_sha256": "81ccd85d831c67931d22f939897247d66b805cf7dcd67050bb6093adafb8ffb0"
+    }
+  ],
+  "logical_resources": [
+    {
+      "profile": "P0",
+      "FR_pending_request_limit_per_controller": 64,
+      "controller_count": 20,
+      "nominal_FR_entries_all_controllers": 1280,
+      "extra_FR_entries_vs_P0": 0,
+      "shared_credit_limit_per_partition": 255,
+      "sum_shared_credit_allowance_all_partitions": 5100,
+      "extra_shared_credit_allowance_vs_P0": 0,
+      "return_queue_per_controller": 192,
+      "separate_write_queue_enabled": false,
+      "L2_data_bytes": 10485760,
+      "L2_subpartition_count": 40,
+      "L2_MSHR_entries_per_subpartition": 192,
+      "L2_MSHR_entries_total": 7680,
+      "L2_max_merge_per_entry": 4,
+      "L2_miss_queue_per_subpartition": 32,
+      "L2_miss_queue_entries_total": 1280
+    },
+    {
+      "profile": "F128",
+      "FR_pending_request_limit_per_controller": 128,
+      "controller_count": 20,
+      "nominal_FR_entries_all_controllers": 2560,
+      "extra_FR_entries_vs_P0": 1280,
+      "shared_credit_limit_per_partition": 319,
+      "sum_shared_credit_allowance_all_partitions": 6380,
+      "extra_shared_credit_allowance_vs_P0": 1280,
+      "return_queue_per_controller": 192,
+      "separate_write_queue_enabled": false,
+      "L2_data_bytes": 10485760,
+      "L2_subpartition_count": 40,
+      "L2_MSHR_entries_per_subpartition": 192,
+      "L2_MSHR_entries_total": 7680,
+      "L2_max_merge_per_entry": 4,
+      "L2_miss_queue_per_subpartition": 32,
+      "L2_miss_queue_entries_total": 1280
+    },
+    {
+      "profile": "F256",
+      "FR_pending_request_limit_per_controller": 256,
+      "controller_count": 20,
+      "nominal_FR_entries_all_controllers": 5120,
+      "extra_FR_entries_vs_P0": 3840,
+      "shared_credit_limit_per_partition": 447,
+      "sum_shared_credit_allowance_all_partitions": 8940,
+      "extra_shared_credit_allowance_vs_P0": 3840,
+      "return_queue_per_controller": 192,
+      "separate_write_queue_enabled": false,
+      "L2_data_bytes": 10485760,
+      "L2_subpartition_count": 40,
+      "L2_MSHR_entries_per_subpartition": 192,
+      "L2_MSHR_entries_total": 7680,
+      "L2_max_merge_per_entry": 4,
+      "L2_miss_queue_per_subpartition": 32,
+      "L2_miss_queue_entries_total": 1280
+    }
+  ],
+  "CH_L1_config": [
+    "N:32:128:24,L:T:m:L:B,A:512:8,16:0,32"
+  ],
+  "DH_L1_compatibility_config": [
+    "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32"
+  ],
+  "CH_DH_DTC_options_differences": {
+    "-gpgpu_cache:dl1": [
+      [
+        "N:32:128:24,L:T:m:L:B,A:512:8,16:0,32"
+      ],
+      [
+        "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32"
+      ]
+    ],
+    "-gpgpu_dtc_l1_finite_service": [
+      [
+        "0"
+      ],
+      [
+        "1"
+      ]
+    ],
+    "-gpgpu_dtc_l1_mode": [
+      [
+        "1"
+      ],
+      [
+        "3"
+      ]
+    ],
+    "-gpgpu_dtc_l1_mshr_entries": [
+      [
+        "512"
+      ],
+      [
+        "32"
+      ]
+    ],
+    "-gpgpu_dtc_l1_pib_entries": [
+      [
+        "256"
+      ],
+      [
+        "8"
+      ]
+    ],
+    "-gpgpu_dtc_l1_tag_hash_bankrow": [
+      [
+        "0"
+      ],
+      [
+        "1"
+      ]
+    ],
+    "-gpgpu_unified_l1d_size": [
+      [
+        "96"
+      ],
+      [
+        "128"
+      ]
+    ]
+  },
+  "hardware_bytes_not_estimated": true,
+  "scientific_limits": [
+    "FR queue and shared-credit allowance are coupled by actual Core formula; this is not isolated queue capacity.",
+    "Credit is an arbitration accounting allowance, not an extra physical buffer; do not add FR entries and credit counts into independent SRAM storage.",
+    "L2 data calculation excludes tag/sector status and other metadata. Nominal MSHR/miss queue capacities do not establish occupancy or actual hardware layout.",
+    "Host RSS and C++ queue/list/pointer size do not measure chip SRAM area or energy.",
+    "CH/DH L1 data, Tag, physical pool, PIB and timing differ; matching downstream settings does not imply equal area.",
+    "This file establishes configuration cost, not performance or a chosen optimal F profile."
+  ],
+  "new_models": 0,
+  "native_writes": 0,
+  "old_source_changes": 0
+}

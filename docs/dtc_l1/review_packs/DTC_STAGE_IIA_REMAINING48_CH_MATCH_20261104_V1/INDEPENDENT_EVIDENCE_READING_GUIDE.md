@@ -11,3 +11,9 @@ The current six-cell table has its own provider timestamp. Every analysis below 
 Zero DRAM traffic does not prove compute-bound execution. All-L2 misses include writes; fixedWB/lazy-fetch-on-read and memcpy prefill can produce explicit write misses without DRAM reads. Falling retries do not prove lower critical-path latency. Missing late reason counters/means remain unavailable, not zero. Static source reuse is not a measured dynamic cache hit or MSHR merge.
 
 Next-stage structure/combination choices remain pending complete matched data and a new separate authorization. This publication launches no experiment, changes no v0.23 manuscript and does not close the active Goal.
+
+## Completed preparation for the remaining long tail
+
+`A_longtail_kernel_mapping_v1` freezes7 programs/6844 registered kernel instances and source/trace phase selectors without reading live results. `C_final48_review_preparation_v1` is a CPU-qualified verifier and actual closed-subset qualification, not a final48 PASS. Call its final mode only after the exact48 legal terminal matrix is ready. `A_final_hardware_cost_review_v1` independently checks the fixed FR/credit cost and effective L1/Tag/pool/PIB/completion paths.
+
+The DH16KiB compatibility cache is not used by the selected loads taken over by OO, but eligible fallback routes (such as some stores/atomics) remain. Do not treat it as universally inactive, remove it from area cost, or call80KiB pool plus16KiB compatibility a unified96KiB effective cache. Actual dynamic routing/hits and physical area/timing remain unproven by geometry alone. The old source/result bytes and v0.23 remain unchanged.

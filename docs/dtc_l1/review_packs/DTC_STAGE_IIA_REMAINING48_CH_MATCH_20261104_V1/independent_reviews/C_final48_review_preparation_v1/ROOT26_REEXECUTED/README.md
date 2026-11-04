@@ -1,0 +1,5 @@
+# Independent integer-cycle scientific audit
+
+PASS. Accepted source slots 170/192; new48 raw terminal cycle endpoints 26/48; common bothF 18/32. Interim subset; no full32 conclusion.
+
+All32 frozen identities remain listed. Fractions and exact integer signs are independently recomputed from each SHA-verified raw RESULT. Available-subset and common-set suite GMs, distributions and directF values match the B report. Accepted CH/DH variants differ from their own P0 effective options only in the authorized FR queue setting; shared-credit coupling is still present. This verifies cycles/statistics, not a substitute for full lifecycle/archive/recovery review. No simulation/native mutation.

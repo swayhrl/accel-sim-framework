@@ -1,0 +1,227 @@
+{
+  "actual_7_option_differences": {
+    "-gpgpu_cache:dl1": {
+      "CH": [
+        "N:32:128:24,L:T:m:L:B,A:512:8,16:0,32"
+      ],
+      "DH": [
+        "S:32:128:4,L:T:m:L:L,A:512:8,16:0,32"
+      ]
+    },
+    "-gpgpu_dtc_l1_finite_service": {
+      "CH": [
+        "0"
+      ],
+      "DH": [
+        "1"
+      ]
+    },
+    "-gpgpu_dtc_l1_mode": {
+      "CH": [
+        "1"
+      ],
+      "DH": [
+        "3"
+      ]
+    },
+    "-gpgpu_dtc_l1_mshr_entries": {
+      "CH": [
+        "512"
+      ],
+      "DH": [
+        "32"
+      ]
+    },
+    "-gpgpu_dtc_l1_pib_entries": {
+      "CH": [
+        "256"
+      ],
+      "DH": [
+        "8"
+      ]
+    },
+    "-gpgpu_dtc_l1_tag_hash_bankrow": {
+      "CH": [
+        "0"
+      ],
+      "DH": [
+        "1"
+      ]
+    },
+    "-gpgpu_unified_l1d_size": {
+      "CH": [
+        "96"
+      ],
+      "DH": [
+        "128"
+      ]
+    }
+  },
+  "actual_options_file": "ACCEPTED_EFFECTIVE_OPTIONS.json",
+  "base_authority": "5001c3f35052f7f91f1ad41eeff83f2947a0878d",
+  "cannot_infer_equal_area": true,
+  "evidence_levels": [
+    "accepted raw options",
+    "fixed source active branch",
+    "declared logical capacity/timing bounds",
+    "unquantified physical implementation"
+  ],
+  "numeric_geometry_per_SM": {
+    "CH_active_common_PIB_entries": 256,
+    "CH_ordinary_data_bytes": 98304,
+    "CH_ordinary_line_tags": 768,
+    "DH_OO_payload_capacity_model_bytes": 81920,
+    "DH_OO_physical_line_identities": 640,
+    "DH_active_OO_PIB_entries": 128,
+    "DH_nominal_logical_tag_coverage_bytes": 65536,
+    "DH_ordinary_compatibility_geometry_bytes": 16384,
+    "DH_ordinary_compatibility_line_tags_geometry": 128,
+    "DH_searchable_logical_tags": 512
+  },
+  "remaining48_authority": "5f67b4d6b94568a9f1acc80c3e56736bd81e4753",
+  "resource_rows": [
+    {
+      "CH": "mode1=PAPER_BASE: ordinary L1D plus common admission/Tag scheduling",
+      "DH": "PAPER_OO mode3 handles selected cacheable non-atomic nonbypass loads through OO. Ordinary L1D is constructed and remains eligible for other nonbypass accesses (e.g. applicable stores/atomics); bypass traffic uses ICNT.",
+      "resource": "Mode and active cache path",
+      "source": [
+        "mode_and_units",
+        "active_mode_checks",
+        "both_ordinary_cache_and_OO_object",
+        "ordinary_and_OO_eligibility",
+        "ordinary_fallback"
+      ]
+    },
+    {
+      "CH": "N:32:128:24 =>768 normal128B lines,96KiB data geometry",
+      "DH": "S:32:128:4 =>128 sector-cache128B lines =16KiB ordinary compatibility geometry. It does not serve OO-intercepted loads; other eligible nonbypass operations retain its route. Not globally inactive and not the80KiB OO pool.",
+      "resource": "Ordinary L1D declared geometry",
+      "source": [
+        "cache_parser",
+        "both_ordinary_cache_and_OO_object",
+        "ordinary_cache_constructed",
+        "ordinary_fallback"
+      ]
+    },
+    {
+      "CH": "No oo_frontend constructed;640 raw physical_lines option is not a CH OO data pool",
+      "DH": "640 whole128B physical-line identities =>80KiB payload capacity model; tagless referenced lines can outlive tag mapping",
+      "resource": "OO physical-line capacity model",
+      "source": [
+        "mode_and_units",
+        "OO_dimensions_and_PIB",
+        "OO_reference_metadata"
+      ]
+    },
+    {
+      "CH": "No512-entry OO Tag array; ordinary cache has768 line tags from32x24 geometry",
+      "DH": "64sets x8ways=512 OO logical Tag entries, nominal64KiB address-line coverage; separate from640-line pool and128-line compatibility tags",
+      "resource": "OO searchable logical Tag array",
+      "source": [
+        "OO_dimensions_and_PIB",
+        "both_ordinary_cache_and_OO_object"
+      ]
+    },
+    {
+      "CH": "common paper_frontend pib_entries256 is ACTIVE; live-instruction set stops admission at256",
+      "DH": "OO frontend oo_pib_entries128 is ACTIVE. common pib_entries8 is a raw option for inactive PAPER_BASE admission under mode3; it is not OO PIB capacity",
+      "resource": "Actual instruction admission/PIB",
+      "source": [
+        "CH_shared_frontend",
+        "CH_admit_tag_retire",
+        "OO_dimensions_and_PIB",
+        "active_mode_checks"
+      ]
+    },
+    {
+      "CH": "dtc_l1_mshr_entries512 overrides ordinary L1D MSHR in PAPER_BASE; cache DSL A:512:8",
+      "DH": "Raw dtc_l1_mshr_entries32 does not override ordinary cache in mode3 and is not an OO MSHR count. OO references/merge/lifetimes use its own frontend. The constructed compatibility cache retains DSL A:512:8 for its eligible route.",
+      "resource": "MSHR interpretation",
+      "source": [
+        "normal_cache_MSHR_override_only_base",
+        "OO_dimensions_and_PIB"
+      ]
+    },
+    {
+      "CH": "common Tag scheduling4banks x1request/bank/cycle,4total; ordinary cache B row index uses shared bank-preserving XOR helper with32sets",
+      "DH": "OO Tag scheduling4banks x1request/bank/cycle,4total; tag_hash_bankrow1 calls same helper with64sets. Same family, different row geometry",
+      "resource": "Tag service and index",
+      "source": [
+        "CH_shared_frontend",
+        "CH_hash_calls_same_DTC_helper",
+        "bankrow_hash_formula"
+      ]
+    },
+    {
+      "CH": "No OO physical allocator/refcount resources; ordinary cache allocation remains its cache policy",
+      "DH": "OO allocation_width4 is a structural new-physical-line allocation bound;640 physical lifetime identities;ref_count_bits13 semantic limit8191;slot generations/waiter/reference dependencies tracked. Finite-service create/inject quotas remain separate1-grant constraints. Concrete bit layout/ports/area are not specified.",
+      "resource": "Allocation and reference tracking",
+      "source": [
+        "mode_and_units",
+        "OO_reference_metadata"
+      ]
+    },
+    {
+      "CH": "finite_service0: no DH finite-service pipeline. Conventional cache/LDST plus common admission/Tag timing still apply; this does not mean zero latency",
+      "DH": "finite_service1: per-SM absolute core-cycle refill/create/inject/retire quotas default1 grant each;collection4sectors/cycle;returned metadata+1 edge;wakeup4waiters/cycle;OO instruction retirement\u22641/cycle. progressive_wakeup0 retains whole-line notification gate. These are distinct service event units, not4 physical SRAM ports or4 extra queue capacities.",
+      "resource": "Finite return/completion service",
+      "source": [
+        "LDST_service_quota",
+        "service_default_and_collection",
+        "OO_finite_return",
+        "OO_retire_limit",
+        "finite_service_scope",
+        "actual_OO_retire_service"
+      ]
+    },
+    {
+      "CH": "32768, active for PAPER_BASE",
+      "DH": "32768, active for PAPER_OO; not a claim of same achieved concurrency",
+      "resource": "Global lower outstanding cap",
+      "source": [
+        "same_lower_credit_cap"
+      ]
+    },
+    {
+      "CH": "96KB configuration parameter",
+      "DH": "128KB configuration parameter; neither value is the measured OO data storage or physical area",
+      "resource": "Unified-cache declaration",
+      "source": [
+        "unified_declaration",
+        "unified_max_multiplier",
+        "adaptive_cache_only"
+      ]
+    },
+    {
+      "CH": "L1 latency20,mem_unit_ports1,adaptive_cache_config0;same values across P0/F128/F256",
+      "DH": "L1_latency20 and ordinary l1_banks4/mem_unit_ports1 remain raw configured knobs; selected OO load route bypasses the ordinary cache callsite and has its own Tag/finite completion timing. Do not infer the same20-cycle hit path or timing equivalence.",
+      "resource": "Shared unchanged timing knobs",
+      "source": [
+        "finite_service_scope",
+        "ordinary_and_OO_eligibility",
+        "ordinary_fallback"
+      ]
+    },
+    {
+      "CH": "Common PAPER_BASE PIB256 and Tag scheduling are active;96KiB data geometry alone does not cost this entire baseline.",
+      "DH": "The16KiB compatibility geometry is not globally inactive. Qualified trace classes include ordinary stores and ATOMIC_L2, but per-operation conventional/OO route activity/hit/occupancy was not measured in this review.80+16=96KiB is not a single unified effective cache or equal area.",
+      "resource": "Operation-route activity versus area",
+      "source": [
+        "ordinary_and_OO_eligibility",
+        "ordinary_fallback",
+        "ordinary_cache_constructed"
+      ]
+    }
+  ],
+  "schema": "DTC_FINAL_FIXED_L1_HARDWARE_COST_ACTIVE_ROUTE_REVIEW_V1",
+  "source_anchor_file": "SOURCE_EVIDENCE_RECHECK.json",
+  "unknown_physical_cost_items": [
+    "Actual Tag/address/state bit widths and ECC",
+    "Data-array implementation/partition/sharing/duplication of OO pool and compatibility cache",
+    "PIB/reference/waiter/dependency and generation encoding",
+    "Read/write/Tag/collection ports, banks, arbitration and wire/fanout topology",
+    "FR-FCFS request metadata/bank-row ordering/search state and physical payload storage",
+    "Frequency/timing closure when search window and control allowance expand",
+    "Physical area, dynamic/leakage energy and PPA; hostRSS/C++sizeof are not proxies"
+  ]
+}

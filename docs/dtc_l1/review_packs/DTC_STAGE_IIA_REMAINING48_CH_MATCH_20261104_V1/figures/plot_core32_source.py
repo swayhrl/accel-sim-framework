@@ -59,6 +59,10 @@ def load_provider(path):
  report=payload['CORE32_RESULTS.json.gz'];summary=payload['SUMMARY.json.gz'];assert summary==provider['summary'];assert summary['observed_utc']==provider['observed_utc'];entries,common,stats,counts=validate_report(report,summary)
  return raw,provider,report,summary,entries,common,stats,counts,sources
 
+def cohort_status(n):
+ assert type(n)is int and 0<=n<=32
+ return 'Complete matched data for fixed CORE32'if n==32 else'Partial matched cohort; not a full32-suite conclusion'
+
 def render(out,data):
  import matplotlib;matplotlib.use('Agg');import matplotlib.pyplot as plt
  matplotlib.rcParams.update({'font.family':'DejaVu Sans','font.size':9,'axes.spines.top':False,'axes.spines.right':False,'svg.hashsalt':'DTC_STAGEIIA_CORE32_FIGURES_V1','savefig.facecolor':'white'})
@@ -96,7 +100,7 @@ def render(out,data):
  for k in ['P0',*F]:axes[0,0].plot([],[],MARKERS[k],color=COLORS[k],label=k+(' reference'if k=='P0'else''),ms=6)
  axes[0,0].legend(loc='upper right',ncol=3,frameon=False,fontsize=8)
  fig.suptitle('Stage II-A fixed CORE32: CH / DH performance with own P0 = 1',fontsize=17,weight='bold',y=.98)
- fig.text(.055,.945,gmline(['S_CH','S_DH']),fontsize=11);fig.text(.055,.925,'Snapshot '+ts+' | Remaining48 accepted '+str(data['summary']['accepted_CH'])+'/48 | Interim common subset; not a full-suite conclusion',fontsize=10,color='#525C65')
+ fig.text(.055,.945,gmline(['S_CH','S_DH']),fontsize=11);fig.text(.055,.925,'Snapshot '+ts+' | Remaining48 accepted '+str(data['summary']['accepted_CH'])+'/48 | '+cohort_status(n),fontsize=10,color='#525C65')
  fig.text(.055,.032,'>1 faster; <1 slower. F shown only after complete matched CH/DH P0/F acceptance. Pending / negative / HOLD are labels, never values.\nSuffix + / - / = is exact integer-cycle classification; a displayed 1.000+ or 1.000- is not exact zero. Same common set for both F GMs; no per-program best choice.',fontsize=10,color='#525C65',linespacing=1.5)
  save(fig,'CH_DH_own_P0_normalized_CORE32')
  for metric,name,title,ylabel,explain in [('I','relative_change_I_CORE32','Relative change I = S_DH / S_CH','I = S_DH / S_CH','I > 1 favours DH relative to P0; I < 1 favours CH. This does not itself establish DH faster than CH.'),('R','absolute_CH_over_DH_R_CORE32','Absolute performance R = CH cycles / DH cycles','CH cycles / DH cycles','R > 1 means DH is faster than CH. Matched downstream options do not imply equal L1 resources, area or cost.')]:
@@ -105,7 +109,7 @@ def render(out,data):
    ax=axes[ri];frame(ax,group,metric);points(ax,group,metric,metric=='R');ax.set_ylabel(ylabel);ax.set_title('Fixed inputs '+str(ri*8+1)+'–'+str(ri*8+len(group)),loc='left',fontsize=10,weight='bold')
   for k in (['P0']if metric=='R'else[])+list(F):axes[0].plot([],[],MARKERS[k],color=COLORS[k],label=k,ms=6)
   axes[0].legend(loc='upper right',ncol=3,frameon=False)
-  fig.suptitle('Stage II-A fixed CORE32: '+title,fontsize=16,weight='bold',y=.98);fig.text(.075,.945,gmline([metric]),fontsize=11);fig.text(.075,.925,'Snapshot '+ts+' | All signs retained; missing matches remain explicit | Interim common subset',fontsize=10,color='#525C65')
+  fig.suptitle('Stage II-A fixed CORE32: '+title,fontsize=16,weight='bold',y=.98);fig.text(.075,.945,gmline([metric]),fontsize=11);fig.text(.075,.925,'Snapshot '+ts+' | All signs retained; missing matches remain explicit | '+cohort_status(n),fontsize=10,color='#525C65')
   fig.text(.075,.032,explain+'\nExact + / - / = classification uses integer cycle cross-products; pending is never imputed. F128/F256 GM uses the same n/32 intersection.',fontsize=10,color='#525C65',linespacing=1.5);save(fig,name)
  return dict(python_executable=sys.executable,python=sys.version,matplotlib=matplotlib.__version__,numpy=importlib.metadata.version('numpy'),platform=platform.platform(),MPLCONFIGDIR=os.environ['MPLCONFIGDIR'],TMPDIR=os.environ['TMPDIR'])
 
