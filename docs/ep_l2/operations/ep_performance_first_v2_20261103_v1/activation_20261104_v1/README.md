@@ -1,3 +1,5 @@
+[Latest status review: two naturally complete, acceptance/admission HOLD](status_review_20261104_v1/STATUS_REPORT.md)
+
 # Authorized Performance-First V2 activation
 
 User approved exact18 at review14b2eead: fresh SYSTEM850 budget12 and repairedSource highclock budget6. No oldHOLD budget reused; no extraNI.
