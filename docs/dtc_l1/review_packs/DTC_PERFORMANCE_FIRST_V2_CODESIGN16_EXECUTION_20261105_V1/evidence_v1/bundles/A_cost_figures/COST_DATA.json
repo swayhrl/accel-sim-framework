@@ -1,0 +1,121 @@
+{
+  "schema": "DTC_PERFV2_PHYSICAL_PIB_COST_ACCOUNTING_V1",
+  "core": "9eedb3131937748f0492fa83aad37d3691118d70",
+  "matrix": {
+    "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_v2_codesign16_execution_20261105_v1/agents/B_results_v1/forward_v2/C_RESOURCE_CODESIGN_MATRIX.fixed.json",
+    "sha256": "1b2994cd2be327182d4db9f956e99400c3597be3bb2ee59fbb18d6c281cf4c20"
+  },
+  "verified_declared_combo_rows": 16,
+  "cost_rows": [
+    {
+      "profile": "DH_P0",
+      "physical_lifetime_slots_per_SM": 640,
+      "declared_address_granularity_bytes": 128,
+      "declared_128B_line_accounting_bytes_per_SM": 81920,
+      "declared_128B_line_accounting_KiB_per_SM": 80.0,
+      "physical_slot_increase_vs_DH_P0": 0.0,
+      "active_OO_PIB_entries": 128,
+      "lower_create_candidate_bound": 128,
+      "PIB_and_lower_create_increase_vs_DH_P0": 0,
+      "lookup_Tag_entries": 512,
+      "nominal_lookup_line_accounting_KiB": 64,
+      "allocation_width_per_cycle": 4,
+      "Tag_banks": 4,
+      "Tag_request_quota_per_bank_per_cycle": 1,
+      "total_Tag_request_quota_per_cycle": 4,
+      "finite_create_width": 1,
+      "finite_inject_width": 1,
+      "finite_retire_width": 1,
+      "physical_payload_bytes": "UNKNOWN_NOT_CERTIFIED",
+      "RTL_or_PPA": "UNKNOWN_NOT_MEASURED"
+    },
+    {
+      "profile": "PHYS768_OOPIB192_TAG64x8",
+      "physical_lifetime_slots_per_SM": 768,
+      "declared_address_granularity_bytes": 128,
+      "declared_128B_line_accounting_bytes_per_SM": 98304,
+      "declared_128B_line_accounting_KiB_per_SM": 96.0,
+      "physical_slot_increase_vs_DH_P0": 0.19999999999999996,
+      "active_OO_PIB_entries": 192,
+      "lower_create_candidate_bound": 192,
+      "PIB_and_lower_create_increase_vs_DH_P0": 0.5,
+      "lookup_Tag_entries": 512,
+      "nominal_lookup_line_accounting_KiB": 64,
+      "allocation_width_per_cycle": 4,
+      "Tag_banks": 4,
+      "Tag_request_quota_per_bank_per_cycle": 1,
+      "total_Tag_request_quota_per_cycle": 4,
+      "finite_create_width": 1,
+      "finite_inject_width": 1,
+      "finite_retire_width": 1,
+      "physical_payload_bytes": "UNKNOWN_NOT_CERTIFIED",
+      "RTL_or_PPA": "UNKNOWN_NOT_MEASURED"
+    },
+    {
+      "profile": "PHYS1024_OOPIB192_TAG64x8",
+      "physical_lifetime_slots_per_SM": 1024,
+      "declared_address_granularity_bytes": 128,
+      "declared_128B_line_accounting_bytes_per_SM": 131072,
+      "declared_128B_line_accounting_KiB_per_SM": 128.0,
+      "physical_slot_increase_vs_DH_P0": 0.6000000000000001,
+      "active_OO_PIB_entries": 192,
+      "lower_create_candidate_bound": 192,
+      "PIB_and_lower_create_increase_vs_DH_P0": 0.5,
+      "lookup_Tag_entries": 512,
+      "nominal_lookup_line_accounting_KiB": 64,
+      "allocation_width_per_cycle": 4,
+      "Tag_banks": 4,
+      "Tag_request_quota_per_bank_per_cycle": 1,
+      "total_Tag_request_quota_per_cycle": 4,
+      "finite_create_width": 1,
+      "finite_inject_width": 1,
+      "finite_retire_width": 1,
+      "physical_payload_bytes": "UNKNOWN_NOT_CERTIFIED",
+      "RTL_or_PPA": "UNKNOWN_NOT_MEASURED"
+    }
+  ],
+  "fixed_options_verified_all16": {
+    "-gpgpu_dtc_l1_logical_sets": [
+      "64"
+    ],
+    "-gpgpu_dtc_l1_logical_ways": [
+      "8"
+    ],
+    "-gpgpu_dtc_l1_allocation_width": [
+      "4"
+    ],
+    "-gpgpu_dtc_l1_tag_banks": [
+      "4"
+    ],
+    "-gpgpu_dtc_l1_tag_req_per_bank": [
+      "1"
+    ],
+    "-gpgpu_dtc_l1_tag_req_per_cycle": [
+      "4"
+    ],
+    "-gpgpu_dtc_l1_finite_service": [
+      "1"
+    ],
+    "-gpgpu_clock_domains": [
+      "1410.0:1410.0:1410.0:850.0"
+    ],
+    "-gpgpu_n_clusters": [
+      "64"
+    ],
+    "-gpgpu_n_cores_per_cluster": [
+      "1"
+    ]
+  },
+  "prior_cost_review": {
+    "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_parallel_exploration_20261104_v1/agents/A_hardware_cost_v1/MANIFEST.json",
+    "sha256": "a554120cbc7c68153c4f557233cf05b0e2df7b994da4b0b3f0c6958b3bf93812"
+  },
+  "boundaries": [
+    "128B-line address/dependency accounting is not verified functional data payload or SRAM/PPA",
+    "physical expansion does not expand Tag512 lookup mappings",
+    "PIB192 raises both instruction admission slots and lower-create candidate bound",
+    "metadata bitwidth, banking, wiring, synthesis, timing and area are not quantified",
+    "no per-program best, no hardware equal-area claim; actual runtime options remain checked by strict"
+  ],
+  "scientific_model_starts": 0
+}

@@ -1,0 +1,175 @@
+{
+  "schema": "DTC_CODESIGN16_SAMEPID_FLOCK_COUNTEREXAMPLE_AND_FIX_CPU_V1",
+  "status": "PASS_CPU_ONLY",
+  "old_source_sha256": "635149a0085f9bb4c12228c50615ad7a3b82868192cc36bd6cabab8561cf4b8c",
+  "new_source_sha256": "5ef37b56961101681c61d4e849381e1395d7e8017efba0e240367622e78e42db",
+  "resource_helper_sha256": "f5d396caabf45c924343fd06ef834f406d9c5f633ac5bdb9eae5776c207cfbf6",
+  "rows": [
+    {
+      "physical": 768,
+      "old": true,
+      "state": "EXPECTED_OLD_SAME_PID_FLOCK_SELF_DEADLOCK",
+      "timeout_seconds": 0.75,
+      "samePID_distinctFD_sameinode": true,
+      "signal_scope": "only_own_private_CPU_fixture_child"
+    },
+    {
+      "physical": 768,
+      "old": false,
+      "typed_HOLD": false,
+      "result": {
+        "state": "ALLOWED",
+        "calls": 1,
+        "registry_unchanged": true,
+        "second_fd_attempts": 0,
+        "reason": null
+      }
+    },
+    {
+      "physical": 768,
+      "old": false,
+      "typed_HOLD": true,
+      "result": {
+        "state": "REFUSED",
+        "calls": 0,
+        "registry_unchanged": true,
+        "second_fd_attempts": 0,
+        "reason": "TYPED_SAFETY_ADMISSION_HOLD_NO_CONSUME"
+      }
+    },
+    {
+      "physical": 1024,
+      "old": true,
+      "state": "EXPECTED_OLD_SAME_PID_FLOCK_SELF_DEADLOCK",
+      "timeout_seconds": 0.75,
+      "samePID_distinctFD_sameinode": true,
+      "signal_scope": "only_own_private_CPU_fixture_child"
+    },
+    {
+      "physical": 1024,
+      "old": false,
+      "typed_HOLD": false,
+      "result": {
+        "state": "ALLOWED",
+        "calls": 1,
+        "registry_unchanged": true,
+        "second_fd_attempts": 0,
+        "reason": null
+      }
+    },
+    {
+      "physical": 1024,
+      "old": false,
+      "typed_HOLD": true,
+      "result": {
+        "state": "REFUSED",
+        "calls": 0,
+        "registry_unchanged": true,
+        "second_fd_attempts": 0,
+        "reason": "TYPED_SAFETY_ADMISSION_HOLD_NO_CONSUME"
+      }
+    }
+  ],
+  "checks": [
+    {
+      "check": "768(True, False)_real_exclusive_lock",
+      "PASS": true
+    },
+    {
+      "check": "768_old_reentry_real_secondFD_samePID_sameinode",
+      "PASS": true
+    },
+    {
+      "check": "768_old_deadlock_bounded_timeout",
+      "PASS": true
+    },
+    {
+      "check": "768_private_fixture_child_terminated_and_reaped",
+      "PASS": true
+    },
+    {
+      "check": "768(False, False)_real_exclusive_lock",
+      "PASS": true
+    },
+    {
+      "check": "768False_new_exits_no_lock_reentry",
+      "PASS": true
+    },
+    {
+      "check": "768False_wholemock_registry_unchanged",
+      "PASS": true
+    },
+    {
+      "check": "768False_correct_mutator_hold_path",
+      "PASS": true
+    },
+    {
+      "check": "768(False, True)_real_exclusive_lock",
+      "PASS": true
+    },
+    {
+      "check": "768True_new_exits_no_lock_reentry",
+      "PASS": true
+    },
+    {
+      "check": "768True_wholemock_registry_unchanged",
+      "PASS": true
+    },
+    {
+      "check": "768True_correct_mutator_hold_path",
+      "PASS": true
+    },
+    {
+      "check": "1024(True, False)_real_exclusive_lock",
+      "PASS": true
+    },
+    {
+      "check": "1024_old_reentry_real_secondFD_samePID_sameinode",
+      "PASS": true
+    },
+    {
+      "check": "1024_old_deadlock_bounded_timeout",
+      "PASS": true
+    },
+    {
+      "check": "1024_private_fixture_child_terminated_and_reaped",
+      "PASS": true
+    },
+    {
+      "check": "1024(False, False)_real_exclusive_lock",
+      "PASS": true
+    },
+    {
+      "check": "1024False_new_exits_no_lock_reentry",
+      "PASS": true
+    },
+    {
+      "check": "1024False_wholemock_registry_unchanged",
+      "PASS": true
+    },
+    {
+      "check": "1024False_correct_mutator_hold_path",
+      "PASS": true
+    },
+    {
+      "check": "1024(False, True)_real_exclusive_lock",
+      "PASS": true
+    },
+    {
+      "check": "1024True_new_exits_no_lock_reentry",
+      "PASS": true
+    },
+    {
+      "check": "1024True_wholemock_registry_unchanged",
+      "PASS": true
+    },
+    {
+      "check": "1024True_correct_mutator_hold_path",
+      "PASS": true
+    }
+  ],
+  "count": 24,
+  "native_registry_or_owner_or_model_operations": 0,
+  "only_signals_sent": "two_bounded_expected_deadlock_private_CPU_fixture_children",
+  "old_source_modified": false
+}

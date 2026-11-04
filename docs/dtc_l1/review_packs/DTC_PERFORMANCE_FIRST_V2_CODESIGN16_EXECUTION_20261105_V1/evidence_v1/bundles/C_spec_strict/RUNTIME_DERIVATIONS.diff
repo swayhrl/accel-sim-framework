@@ -1,0 +1,339 @@
+--- /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_v2_cpu_preparation_20261105_v1/agents/C_codesign_v1/combo_shape_and_capacity_strict.py
++++ /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_v2_codesign16_execution_20261105_v1/agents/C_spec_strict_v1/runtime/perf16_capacity_strict.py
+@@ -66,5 +66,8 @@
+  validate_spec(spec);assert sha(POPULATION_PATH)==POPULATION_SHA
+  original=types.ModuleType('DTC_V2_COMBO_PRIVATE_EXISTING_POPULATION_COMPARATOR');original.__file__=str(POPULATION_PATH);exec(compile(POPULATION_PATH.read_bytes(),str(POPULATION_PATH),'exec'),original.__dict__)
+  legacy,binding=load_for(spec);expected=spec['expected_options']if'expected_options'in spec else spec['expected_effective_options'];canonical=dict(spec,expected_options=expected);result=original.population(raw_text,canonical,input_domain,legacy)
+- assert result['effective_options']==expected
++ # The unchanged pure population reader verifies all270 actual echo values
++ # before returning, but its result schema omits this field. Add the already
++ # validated vector here; do not pretend the old reader returned it.
++ result=dict(result,effective_options=expected)
+  return result,binding
+--- /root/data/dtc_perf_first_remaining28_20261104_v1/tools/perf28_frontend.py
++++ /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_v2_codesign16_execution_20261105_v1/agents/C_spec_strict_v1/runtime/perf16_frontend.py
+@@ -1,9 +1,10 @@
++import types
+ import sys,pathlib,importlib.util,json,os
+-R=pathlib.Path('/root/data/dtc_perf_first_remaining28_20261104_v1')
++R=pathlib.Path('/root/data/dtc_perf_first_v2_codesign16_20261105_v1')
+ def main(a):
+- assert len(a)==5 and a[0]in['experiment','result']and a[2]in{x['cohort']for x in json.loads((R/'control/MATRIX.json').read_bytes())['points']}and a[3:]==['--project','DTC_L1']
+- assert os.environ.get('DTC_PERFFIRST_REMAINING28_NATIVE_ENTRY')=='1'
+- name='perf28_outbox.py'if a[:2]==['result','archive']else'perf28_native.py';s=importlib.util.spec_from_file_location('perf28_frontend_impl',R/'tools'/name);m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
++ assert len(a)==5 and a[0]in['experiment','result']and a[2]in{x['cohort']for x in json.loads((R/'control/MATRIX.fixed.json').read_bytes())['points']}and a[3:]==['--project','DTC_L1']
++ assert os.environ.get('DTC_PERFV2_CODESIGN16_NATIVE_ENTRY')=='1'
++ name='perf16_outbox.py'if a[:2]==['result','archive']else'perf16_native.py';p=R/'tools'/name;m=types.ModuleType('perf16_frontend_impl');m.__file__=str(p);exec(compile(p.read_bytes(),str(p),'exec'),m.__dict__)
+  if a[:2]==['result','archive']:return m.archive(a[2])
+  if a[:2]in[['experiment','prepare'],['experiment','inspect']]:return m.prepare(a[2])
+  if a[:2]==['experiment','run-native']:return m.run_native(a[2])
+--- /root/data/dtc_perf_first_remaining28_20261104_v1/tools/perf28_guard.py
++++ /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_v2_codesign16_execution_20261105_v1/agents/C_spec_strict_v1/runtime/perf16_guard.py
+@@ -1,17 +1,18 @@
++import types
+ """New request only: original authenticated telemetry, explicit pressure-admission policy."""
+ from pathlib import Path
+ import importlib.util,hashlib,sys,time
+-R=Path('/root/data/dtc_perf_first_remaining28_20261104_v1');T=Path('/root/data/dtc_main_v100_sweep_20261025_v1')
++R=Path('/root/data/dtc_perf_first_v2_codesign16_20261105_v1');T=Path('/root/data/dtc_main_v100_sweep_20261025_v1')
+ sys.path.insert(0,'/root/data/ep_l2_dtc_l1_native_v2/tools')
+ import native_dtc_guard as original
+ 
+ def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+ def load(n,p,h):
+  assert sha(p)==h
+- s=importlib.util.spec_from_file_location(n,p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
+-receiver=load('perf28_original_cap1m_receiver',T/'telemetry_v2/telemetry_receiver_cap1m.py','f523975b9780b498b988e2b3145ba5b4aebdef4d0e9b0146392d3a31a99a4ec1')
+-POLICY_SHA='5035eb996c144a403e1998093d2a87ed4d21270991711ccdf3b553dfcf84d454'
+-policy=load('perf28_independent_runtime_policy',R/'tools/perf28_guard_policy.py',POLICY_SHA)
++ m=types.ModuleType(n);m.__file__=str(p);exec(compile(Path(p).read_bytes(),str(p),'exec'),m.__dict__);return m
++receiver=load('perf16_original_cap1m_receiver',T/'telemetry_v2/telemetry_receiver_cap1m.py','f523975b9780b498b988e2b3145ba5b4aebdef4d0e9b0146392d3a31a99a4ec1')
++POLICY_SHA='81dfdd70d3bf65056c952a88f0730f5aa4b3d3935fd656485ecc9dc136fc57a4'
++policy=load('perf16_independent_runtime_policy',R/'tools/perf16_guard_policy.py',POLICY_SHA)
+ class NativeDTCGuard:
+  def __init__(self,channel,binding,output,started_ns):
+   self.receiver=receiver.TelemetryReceiver(channel,binding,started_ns=started_ns,opt_in=True)
+@@ -20,5 +21,5 @@
+  def drain(self):return self.receiver.drain(time.monotonic_ns)
+  def sample(self,output,safety_checks,io_impact,own_major_faults):
+   current=original.snapshot(output);decision=self.policy.observe(current,own_major_faults,self.last_faults,progress=self.receiver.last_semantic,safety_checks=safety_checks,io_impact=io_impact);self.last_faults=own_major_faults;self.last_full=current['monotonic_ns']
+-  return dict(sample=current,decision=decision,runtime_policy_binding=dict(schema='DTC_PERFFIRST_REMAINING28_ADMISSION_PRESSURE_ONLY_RUNTIME_V1',policy_sha256=POLICY_SHA,guard_sha256=sha(__file__),original_pressure_STOPs_not_inherited=True,telemetry_receiver_sha256=sha(receiver.__file__)))
++  return dict(sample=current,decision=decision,runtime_policy_binding=dict(schema='DTC_PERFV2_CODESIGN16_ADMISSION_PRESSURE_ONLY_RUNTIME_V1',policy_sha256=POLICY_SHA,guard_sha256=sha(__file__),original_pressure_STOPs_not_inherited=True,telemetry_receiver_sha256=sha(receiver.__file__)))
+  def quick_stop(self):return self.policy.quick_stop()
+--- /root/data/dtc_perf_first_remaining28_20261104_v1/tools/perf28_guard_policy.py
++++ /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_v2_codesign16_execution_20261105_v1/agents/C_spec_strict_v1/runtime/perf16_guard_policy.py
+@@ -1,4 +1,4 @@
+-"""Stage II-A new-request resource policy, not the legacy BA resource policy.
++"""Physical x OO-PIB16 new-request resource policy, not the legacy BA resource policy.
+ Authenticated telemetry/cadence/progress/identity/output/hard bounds are retained.
+ Shared memory/swap/OOM/PSI observations never kill a healthy consumed model;
+ the independent fresh scheduler resource policy controls new admissions.
+--- /root/data/dtc_perf_first_remaining28_20261104_v1/tools/perf28_native.py
++++ /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_v2_codesign16_execution_20261105_v1/agents/C_spec_strict_v1/runtime/perf16_native.py
+@@ -1,29 +1,30 @@
++import types
+ """Independent epoch2 request, original qualified model loop and explicit resource overlays."""
+ import pathlib,json,hashlib,importlib.util,os,fcntl,copy,datetime,subprocess,sys,types,resource
+-P=pathlib.Path;R=P('/root/data/dtc_perf_first_remaining28_20261104_v1');T=P('/root/data/dtc_main_v100_sweep_20261025_v1');N=P('/root/data/ep_l2_dtc_l1_native_v2');REQ='DTC_PERF_FIRST_NON_TAG_REMAINING28_20261104_V1'
++P=pathlib.Path;R=P('/root/data/dtc_perf_first_v2_codesign16_20261105_v1');T=P('/root/data/dtc_main_v100_sweep_20261025_v1');N=P('/root/data/ep_l2_dtc_l1_native_v2');REQ='DTC_PERF_FIRST_V2_PHYSICAL_PIB16_20261105_V1'
+ def read(p):return json.loads(P(p).read_bytes())
+ def sha(p):return hashlib.sha256(P(p).read_bytes()).hexdigest()
+ def jsonsha(v):return hashlib.sha256((json.dumps(v,sort_keys=True,indent=2)+'\n').encode()).hexdigest()
+ def load(n,p):
+- s=importlib.util.spec_from_file_location(n,p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
++ m=types.ModuleType(n);m.__file__=str(p);exec(compile(P(p).read_bytes(),str(p),'exec'),m.__dict__);return m
+ def base():return load('l2_original_native',T/'tools/sweep_native_cap1m.py')
+ def authority():return base().read_current_authority()
+ def registered():
+  reg,ep=authority();q=reg['registered_future_requests'][REQ];plan=read(R/'control/EXECUTION_PLAN.json')
+  assert q['request']==REQ and q['engine_sha256']==sha(__file__)and q['execution_plan_sha256']==sha(R/'control/EXECUTION_PLAN.json')
+  assert q['spec_request_sha256']==sha(R/'control/SINGLE_SCIENTIFIC_APPROVAL_REQUEST.json')and q['model_automatic_retries']==0
+- assert q['budget']==len(q['admitted_specs'])==28and q['remaining']==q['budget']-len(q['consumed'])
++ assert q['budget']==len(q['admitted_specs'])==16and q['remaining']==q['budget']-len(q['consumed'])
+  for x in plan['source_pins']:assert sha(x['path'])==x['sha256'],x['path']
+- assert set(q['admitted_specs'])=={p['cohort']for p in read(R/'control/MATRIX.json')['points']}
+- receipt=load('perf28_registered_first4_full_closure',R/'tools/perf28_terminal_gate_receipt.py');receipt.verify(plan,reg,q['runtime_release_evidence'])
++ assert set(q['admitted_specs'])=={p['cohort']for p in read(R/'control/MATRIX.fixed.json')['points']}
++ verify_direction_release(plan,q)
+  return reg,ep,q,plan
+ def canonical(c):
+- reg,ep,q,plan=registered();p=R/'control/specs'/(c+'.json');s=read(p)
++ reg,ep,q,plan=registered();assert c in q['admitted_specs'],'EXACT16_COHORT_REQUIRED';p=R/'control/specs'/(c+'.json');s=read(p)
+  assert q['admitted_specs'][c]==sha(p)==sha(R/'control'/(c+'_SPEC.json'))and s['cohort']==c and s['request']==REQ
+- capacity=load('perf28_canonical_structure_contract',R/'tools/perf28_capacity_strict.py');shape=capacity.validate_spec(s)
+- assert c.startswith('E2-DTCPF28-')and s['cell']=='DH'and s['downstream_profile']=='P0'and s['host_cpu']is None
+- assert c=='E2-DTCPF28-'+s['input_digest'][:16]+'-DH-'+shape['cohort_token']+'-V1'
+- assert s['profile']!='PHYS768_TAG64x8'or s['program']not in ['2DCONV','GEMM','MVT','BICG']
++ capacity=load('perf16_canonical_structure_contract',R/'tools/perf16_capacity_strict.py');shape=capacity.validate_spec(s)
++ assert c.startswith('E2-DTCPFV2-')and s['cell']=='DH'and s['downstream_profile']=='P0'and s['host_cpu']is None
++ assert c=='E2-DTCPFV2-'+s['input_digest'][:16]+'-DH-PHYS'+str(shape['physical_lines_per_SM'])+'-OOPIB192-V1'
++ row=next(x for x in read(R/'control/MATRIX.fixed.json')['points']if x['cohort']==c);assert row['program']==s['program']and row['input_digest']==s['input_digest']and row['profile']==s['profile']
+  assert s['input_digest']in read(R/'control/SINGLE_SCIENTIFIC_APPROVAL_REQUEST.json')['input_digests']
+  assert s['core_commit']==read(R/'control/BUILD_PROFILE.json')['core_commit']and s['framework_commit']==read(R/'control/BUILD_PROFILE.json')['framework_commit']
+  return s
+@@ -47,25 +48,36 @@
+   fn(reg);assert all(reg['registered_future_requests'][k]==v for k,v in peers.items())and hist==(reg['old_source_history'],reg['qualification_history'])
+   reg['new_scientific_budget_remaining']=sum(v.get('remaining',max(0,v.get('budget',0)-(v.get('consumed',0)if isinstance(v.get('consumed',0),int)else len(v.get('consumed',{})))))for v in reg['registered_future_requests'].values())
+   def save(p,v):
+-   tmp=p.with_name('.'+p.name+'.PERFFIRST28writing')
++   tmp=p.with_name('.'+p.name+'.PERFV2_CODESIGN16writing')
+    with tmp.open('w')as h:json.dump(v,h,sort_keys=True,indent=2);h.write('\n');h.flush();os.fsync(h.fileno())
+    tmp.replace(p)
+-  save(rp,reg);epoch['native_registry_sha256']=sha(rp);epoch['new_budget_remaining']=reg['new_scientific_budget_remaining'];epoch['request_revision']=dict(request_id=REQ,operation='AUTHORIZED_PERFFIRST_REMAINING28_STATE_UPDATE',utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),prior_registry_sha256=old[0],prior_current_epoch_sha256=old[1]);save(ep,epoch)
++  save(rp,reg);epoch['native_registry_sha256']=sha(rp);epoch['new_budget_remaining']=reg['new_scientific_budget_remaining'];epoch['request_revision']=dict(request_id=REQ,operation='AUTHORIZED_PERFV2_CODESIGN16_STATE_UPDATE',utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),prior_registry_sha256=old[0],prior_current_epoch_sha256=old[1]);save(ep,epoch)
+   for d in [rp.parent,ep.parent]:fd=os.open(d,os.O_RDONLY);os.fsync(fd);os.close(fd)
+ def output_cap(s):return s['limits']['max_result_directory_bytes']
+ def check_input(s):
+  n=base();n.ROOT=R;return n.check_input(s)
+ _RESOURCES_MODULE=None
+-def resources(s,fresh_source=False):
++def resource_module():
+  global _RESOURCES_MODULE
+- if _RESOURCES_MODULE is None:_RESOURCES_MODULE=load('perf28_resources_private_process',R/'tools/perf28_resources.py')
+- return _RESOURCES_MODULE.resources(s,fresh_source)
++ if _RESOURCES_MODULE is None:_RESOURCES_MODULE=load('perf16_resources_private_process',R/'tools/perf16_resources.py')
++ return _RESOURCES_MODULE
++def resources(s,fresh_source=False):return resource_module().resources(s,fresh_source)
++def admission_hold(q,s):return resource_module().admission_hold(q,s)
++def verify_direction_release(plan,q):
++ ref=plan['direction_release'];assert sha(ref['path'])==ref['sha256'];v=read(ref['path'])
++ assert v['approved']is True and v['request']==REQ and v['authority_commit']=='320b1365902a72502fa61ba114cb4a4a28b934bb'and v['exact_candidate_count']==16
++ assert set(v['candidate_cohorts'])=={x['cohort']for x in read(R/'control/MATRIX.fixed.json')['points']}
++ for x in v['source_references']:assert sha(x['path'])==x['sha256']
++ evidence=dict(direction_release_path=ref['path'],direction_release_sha256=ref['sha256'],authority_commit=v['authority_commit'],exact_candidate_count=16)
++ assert q['runtime_release_evidence']==evidence
++ return evidence
++
+ def binding():
+- reg,ep=authority();q=reg['registered_future_requests'][REQ];plan=read(R/'control/EXECUTION_PLAN.json');receipt=load('perf28_binding_first4_full_closure',R/'tools/perf28_terminal_gate_receipt.py');release=receipt.verify(plan,reg,q['runtime_release_evidence'])
+- return dict(runtime_release_evidence=release,request=REQ,engine_sha256=sha(__file__),plan_sha256=sha(R/'control/EXECUTION_PLAN.json'),profile_sha256=sha(R/'control/BUILD_PROFILE.json'),resource_source_sha256=sha(R/'tools/perf28_resources.py'),original_native_source_sha256=sha(T/'tools/sweep_native_cap1m.py'),performance_scope='PERFFIRST_REMAINING28_DH_ONLY_NEVER_ORIGINAL_OR_IR_R2',approved_contract_commit=read(R/'control/PROJECT_AUTHORITY.fixed.json')['preparation_commit'],gate_amendment_authorization_sha256=read(R/'control/PROJECT_AUTHORITY.fixed.json')['gate_amendment_authorization_sha256'],project_authority_sha256=sha(R/'control/PROJECT_AUTHORITY.fixed.json'),runtime_guard_sha256=sha(R/'tools/perf28_guard.py'),runtime_guard_policy_sha256=sha(R/'tools/perf28_guard_policy.py'),resource_contract='dynamic CPU dispatch,RSS and AS separated;pressure pauses only admission',authorization_contract='exact prior-plan28 nonTag identities after full first4 closure and independent qualification; Tag16 safetyHOLD never simulated; no reset or model retry')
++ reg,ep,q,plan=registered();release=verify_direction_release(plan,q)
++ return dict(runtime_release_evidence=release,request=REQ,engine_sha256=sha(__file__),plan_sha256=sha(R/'control/EXECUTION_PLAN.json'),profile_sha256=sha(R/'control/BUILD_PROFILE.json'),resource_source_sha256=sha(R/'tools/perf16_resources.py'),original_native_source_sha256=sha(T/'tools/sweep_native_cap1m.py'),performance_scope='PERFV2_CODESIGN16_DH_ONLY_NEVER_ORIGINAL_OR_IR_R2',approved_contract_commit='320b1365902a72502fa61ba114cb4a4a28b934bb',project_authority_sha256=sha(R/'control/PROJECT_AUTHORITY.fixed.json'),runtime_guard_sha256=sha(R/'tools/perf16_guard.py'),runtime_guard_policy_sha256=sha(R/'tools/perf16_guard_policy.py'),resource_contract='dynamic CPU dispatch,RSS and AS separated;pressure pauses only admission',authorization_contract='exact16 approved fixed-Core Physical x OO-PIB combinations; no Tag; no baseline rerun; no reset or model retry')
+ def prepare(c):
+- reg,ep,q,plan=registered();assert os.environ.get('DTC_PERFFIRST_REMAINING28_NATIVE_ENTRY')=='1','NATIVE_EPOCH2_EXACT_ROUTE_REQUIRED';assert ep['epoch']==2 and ep['state']=='NATIVE_SCIENCE_ACTIVE'and ep['holder']==os.uname().nodename
+- assert q['state']in['ARMED','RUNNING']and q['remaining']>0 and c not in q['consumed'];assert c not in q.get('admission_holds',{}),'FAMILY_ADMISSION_HOLD_NO_START';assert_parent_lease();s=spec_for(c)
++ reg,ep,q,plan=registered();assert os.environ.get('DTC_PERFV2_CODESIGN16_NATIVE_ENTRY')=='1','NATIVE_EPOCH2_EXACT_ROUTE_REQUIRED';assert ep['epoch']==2 and ep['state']=='NATIVE_SCIENCE_ACTIVE'and ep['holder']==os.uname().nodename
++ assert q['state']in['ARMED','RUNNING']and q['remaining']>0 and c not in q['consumed'];assert_parent_lease();s=spec_for(c);assert admission_hold(q,s)is None,'TYPED_SAFETY_ADMISSION_HOLD_NO_START'
+  assert R.stat().st_dev==2128 and not(R/'control/ABORT').exists()and not(R/'control/qualification_ledger'/(c+'.INTENT.json')).exists()
+  claims=read(R/'control/POOL_DISPATCH_RESERVATIONS.json')['claims'];assert c in claims and claims[c]['host_cpu']==s['host_cpu']and len({v['host_cpu']for v in claims.values()})==len(claims)
+  assert s['host_cpu']in os.sched_getaffinity(0)and s['limits']['max_process_tree_vms_bytes']>=s['limits']['max_process_tree_rss_bytes']
+@@ -74,14 +86,14 @@
+  for k in ['core','framework']:
+   repo=s['source_worktrees'][k];assert subprocess.check_output(['git','-C',repo,'rev-parse','HEAD'],text=True).strip()==s[k+'_commit'];assert not subprocess.check_output(['git','-C',repo,'status','--porcelain'],text=True).strip()
+  asset=check_input(s);sample=resources(s,True)
+- if not(sample['physical_RAM_pass']and sample['physical_disk_pass']and sample.get('admission_disk_pass',False)):raise RuntimeError('RESOURCE_HOLD_NO_START')
+- return dict(status='PERFFIRST_REMAINING28_PREPARE_PASS_NO_START',cohort=c,request=REQ,selected_host_cpu=s['host_cpu'],identity=base().identity(),asset=asset,resources=sample,operational_resource_profile=binding(),scientific_starts=0)
++ if not(sample['physical_RAM_pass']and sample['physical_disk_pass']and sample.get('admission_disk_pass',False)and sample.get('admission_pressure_pass',False)):raise RuntimeError('RESOURCE_HOLD_NO_START')
++ return dict(status='PERFV2_CODESIGN16_PREPARE_PASS_NO_START',cohort=c,request=REQ,selected_host_cpu=s['host_cpu'],identity=base().identity(),asset=asset,resources=sample,operational_resource_profile=binding(),scientific_starts=0)
+ def guard_model_mutation(current,cohort,mutator):
+  # The registry lock is already held by update_authority. Check before the old
+  # consume mutator writes INTENT, closing the prepare-to-consume HOLD race.
+  own=current['registered_future_requests'][REQ]
+  if cohort not in own['consumed']:
+-  assert own['state']in['ARMED','RUNNING']and cohort not in own.get('admission_holds',{}),'FAMILY_ADMISSION_HOLD_NO_CONSUME'
++  assert own['state']in['ARMED','RUNNING']and admission_hold(own,spec_for(cohort))is None,'TYPED_SAFETY_ADMISSION_HOLD_NO_CONSUME'
+  return mutator(current)
+ class ResourceOverlay:
+  """A per-module proxy: never changes Python's shared resource module."""
+@@ -98,13 +110,13 @@
+  def native_admission(path):
+   assert P(path).resolve()==(R/'DTC/run').resolve();b=base().identity();assert b['native_device']==2128
+   v=resources(spec_for(c),True)
+-  return dict(status='PASS'if v['physical_RAM_pass']and v['physical_disk_pass']and v.get('admission_disk_pass',False)else'HOLD',resource_contract=binding(),resources=v,old_namespace_guard_preserved=True)
++  return dict(status='PASS'if v['physical_RAM_pass']and v['physical_disk_pass']and v.get('admission_disk_pass',False)and v.get('admission_pressure_pass',False)else'HOLD',resource_contract=binding(),resources=v,old_namespace_guard_preserved=True)
+  proxy.native_admission=native_admission;sys.modules['sweep_storage_guard']=proxy
+  original_read=n.read
+  def qualified_read(path):
+   v=original_read(path)
+   if P(path)==R/'control/SCIENCE_AUTHORIZATION.json':
+-   current=registered()[2];assert len(v['budgets'])==28 and set(v['budgets'])==set(current['admitted_specs'])and all(x==1 for x in v['budgets'].values()),'EXACT28_AUTHORIZATION_ONLY'
++   current=registered()[2];assert len(v['budgets'])==16 and set(v['budgets'])==set(current['admitted_specs'])and all(x==1 for x in v['budgets'].values()),'EXACT16_AUTHORIZATION_ONLY'
+   return v
+  n.read=qualified_read
+  oldchild=n.child_info
+@@ -125,5 +137,5 @@
+     for name,src in [('DOWNSTREAM_FROZEN_SPEC.json',R/'control/specs'/(c+'.json')),('DISPATCH_BINDING.json',db),('DOWNSTREAM_INTENT.json',R/'control/qualification_ledger'/(c+'.INTENT.json')),('DOWNSTREAM_PLAN.json',R/'control/EXECUTION_PLAN.json'),('DOWNSTREAM_REQUEST.json',R/'control/SINGLE_SCIENTIFIC_APPROVAL_REQUEST.json'),('DOWNSTREAM_PROFILE.json',R/'control/BUILD_PROFILE.json')]:
+      with(path.parent/name).open('xb')as h:h.write(src.read_bytes());h.flush();os.fsync(h.fileno())
+   return old(path,obj)
+- n.exclusive=exclusive;guard=R/'tools/perf28_guard.py';assert sha(guard)==plan['runtime_guard']['sha256'];sys.modules['sweep_guard_cap1m']=load('perf28_exact_guard_private',guard);obs=plan['observer_overlay'];assert sha(obs['path'])==obs['sha256'];return load('l2_qualified_exit_observer',obs['path']).install(n)
++ n.exclusive=exclusive;guard=R/'tools/perf16_guard.py';assert sha(guard)==plan['runtime_guard']['sha256'];sys.modules['sweep_guard_cap1m']=load('perf16_exact_guard_private',guard);obs=plan['observer_overlay'];assert sha(obs['path'])==obs['sha256'];return load('l2_qualified_exit_observer',obs['path']).install(n)
+ def run_native(c):return engine(c).finish_cell(c)
+--- /root/data/dtc_perf_first_remaining28_20261104_v1/tools/perf28_outbox.py
++++ /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_v2_codesign16_execution_20261105_v1/agents/C_spec_strict_v1/runtime/perf16_outbox.py
+@@ -1,12 +1,13 @@
++import types
+ """Private exact namespace; original COPY/restore primitives and source kept."""
+ import pathlib,json,hashlib,importlib.util,os,subprocess
+-P=pathlib.Path;R=P('/root/data/dtc_perf_first_remaining28_20261104_v1');T=P('/root/data/dtc_main_v100_sweep_20261025_v1');NAS=P('/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_parallel_exploration_20261104_v1/remaining28/results');G=1024**3;M=1024**2
++P=pathlib.Path;R=P('/root/data/dtc_perf_first_v2_codesign16_20261105_v1');T=P('/root/data/dtc_main_v100_sweep_20261025_v1');NAS=P('/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_v2_codesign16_execution_20261105_v1/results');G=1024**3;M=1024**2
+ def read(p):return json.loads(P(p).read_bytes())
+ def sha(p):return hashlib.sha256(P(p).read_bytes()).hexdigest()
+ def load(n,p):
+- s=importlib.util.spec_from_file_location(n,p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
++ m=types.ModuleType(n);m.__file__=str(p);exec(compile(P(p).read_bytes(),str(p),'exec'),m.__dict__);return m
+ def adapted(c):
+- e=load('ds18_archive_engine',R/'tools/perf28_native.py');reg,ep,q,p=e.registered();assert q['outbox_sha256']==sha(__file__)and c in q['consumed'];row=q['consumed'][c];out=R/'DTC/run/results'/row['uuid'];ip=R/'control/qualification_ledger'/(c+'.INTENT.json');dp=ip.with_name(c+'.DONE.json');assert row['intent_sha256']==sha(ip)and read(dp)==row['execution_receipt']==read(out/'NATIVE_EXIT.json')
++ e=load('ds18_archive_engine',R/'tools/perf16_native.py');reg,ep,q,p=e.registered();assert q['outbox_sha256']==sha(__file__)and c in q['consumed'];row=q['consumed'][c];out=R/'DTC/run/results'/row['uuid'];ip=R/'control/qualification_ledger'/(c+'.INTENT.json');dp=ip.with_name(c+'.DONE.json');assert row['intent_sha256']==sha(ip)and read(dp)==row['execution_receipt']==read(out/'NATIVE_EXIT.json')
+  assert not load('ds18_archive_r20_resource',p['six_scope_resource_source']['path']).rss(R,row)[1];base=load('ds18_unchanged_outbox',T/'tools/sweep_outbox.py');assert sha(base.__file__)==read(R/'control/SINGLE_SCIENTIFIC_APPROVAL_REQUEST.json')['outbox_sha256'];base.ROOT=R;base.NAS=NAS;base.COHORTS={c:'DTC'for c in q['admitted_specs']}
+  def gate(reservation=0,other_reservation=None):
+   assert other_reservation is None and type(reservation)is int and 0<=reservation<=sum(x.stat().st_size for x in out.rglob('*')if x.is_file())+16*M
+--- /root/data/dtc_perf_first_remaining28_20261104_v1/tools/perf28_results.py
++++ /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_v2_codesign16_execution_20261105_v1/agents/C_spec_strict_v1/runtime/perf16_results.py
+@@ -1,13 +1,14 @@
++import types
+ """Closed-result consumer and matched-population summaries; never starts a model."""
+ import pathlib,json,hashlib,importlib.util,os,time,math,statistics,datetime
+-P=pathlib.Path;R=P('/root/data/dtc_perf_first_remaining28_20261104_v1')
+-PASS='PASS_PERFFIRST28_DH_STRICT_ARCHIVE_NATIVE_RESTORE'
++P=pathlib.Path;R=P('/root/data/dtc_perf_first_v2_codesign16_20261105_v1')
++PASS='PASS_PERFV2_CODESIGN16_DH_STRICT_ARCHIVE_NATIVE_RESTORE'
+ REUSE='REFERENCE_ACCEPTED_NO_NEW_START'
+ 
+ def read(p):return json.loads(P(p).read_bytes())
+ def sha(p):return hashlib.sha256(P(p).read_bytes()).hexdigest()
+ def load(n,f):
+- s=importlib.util.spec_from_file_location(n,R/'tools'/f);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
++ p=R/'tools'/f;m=types.ModuleType(n);m.__file__=str(p);exec(compile(p.read_bytes(),str(p),'exec'),m.__dict__);return m
+ def put(p,x,exclusive=False):
+  p=P(p);p.parent.mkdir(parents=True,exist_ok=True)
+  if exclusive:
+@@ -17,7 +18,7 @@
+   tmp.write_text(json.dumps(x,indent=2,sort_keys=True)+'\n');tmp.replace(p)
+ 
+ def archive_closed(c):
+- o=load('l2_results_archive','perf28_outbox.py');began=time.monotonic()
++ o=load('l2_results_archive','perf16_outbox.py');began=time.monotonic()
+  while True:
+   if(R/'control'/(c+'_ARCHIVE_RECEIPT.json')).exists():return o.verify(c)
+   try:o.archive(c)
+@@ -31,23 +32,23 @@
+  """Postprocess one DONE, preserving raw failures and never resubmitting it."""
+  rp=R/'analysis'/(c+'.RESULT.json')
+  if rp.exists():return read(rp)
+- e=load('l2_finish_engine','perf28_native.py');q=e.registered()[2]
++ e=load('l2_finish_engine','perf16_native.py');q=e.registered()[2]
+  ip=R/'control/qualification_ledger'/(c+'.INTENT.json');i=read(ip);d=read(ip.with_name(c+'.DONE.json'));out=P(i['output'])
+  assert d==q['consumed'][c]['execution_receipt']==read(out/'NATIVE_EXIT.json') and i['uuid']==d['uuid']
+  assert q['consumed'][c]['intent_sha256']==sha(ip) and sha(out/'raw.log.gz')==d['raw_sha256']
+  failed=bool(d['stop_reason']or d['launcher_wait_returncode'])
+  if failed:
+-  proof=dict(status='PERFFIRST28_NATIVE_NEGATIVE_UNACCEPTED',stop_reason=d['stop_reason'],returncode=d['launcher_wait_returncode'],accepted_cycles=None,raw_sha256=d['raw_sha256'],performance_accepted=False)
++  proof=dict(status='PERFV2_CODESIGN16_NATIVE_NEGATIVE_UNACCEPTED',stop_reason=d['stop_reason'],returncode=d['launcher_wait_returncode'],accepted_cycles=None,raw_sha256=d['raw_sha256'],performance_accepted=False)
+  else:
+-  proof=load('l2_whole_input_strict','perf28_strict.py').terminal(c);p=out/'L2_STRICT.json'
++  proof=load('l2_whole_input_strict','perf16_strict.py').terminal(c);p=out/'L2_STRICT.json'
+   if p.exists():assert read(p)==proof
+   else:put(p,proof,True)
+-  qual=dict(status='PERFFIRST_REMAINING28_NATIVE_TRACE_PERFORMANCE_QUALIFIED',cohort=c,uuid=d['uuid'],strict_sha256=sha(p),performance_scope='PERFFIRST_REMAINING28_DH_ONLY_NEVER_ORIGINAL',SOURCE_KEEP=True)
++  qual=dict(status='PERFV2_CODESIGN16_NATIVE_TRACE_PERFORMANCE_QUALIFIED',cohort=c,uuid=d['uuid'],strict_sha256=sha(p),performance_scope='PERFV2_CODESIGN16_DH_ONLY_NEVER_ORIGINAL',SOURCE_KEEP=True)
+   p=R/'DTC/control'/('SCIENCE_QUALIFICATION_'+c+'.json')
+   if p.exists():assert read(p)==qual
+   else:put(p,qual,True)
+  a=archive_closed(c)
+- v=dict(state='FAIL_PERFFIRST28_DH_ARCHIVED_NO_RETRY'if failed else PASS,cohort=c,uuid=d['uuid'],cycles=None if failed else proof['cycles'],proof=proof,archive=a,new_contract_only=True,original_or_repair_results_replaced=False,scientific_role='PERFFIRST_REMAINING28_AUTHORIZED_DH',validated_union_authorized=False,union_scope='EXPLORATORY_FIXED4_PHYS768_ONLY_NOT_CORE32',input_digest=e.spec_for(c)['input_digest'],cell='DH',profile=e.spec_for(c)['profile'],structure_variant=e.spec_for(c)['structure_variant'],downstream_profile='P0')
++ v=dict(state='FAIL_PERFV2_CODESIGN16_DH_ARCHIVED_NO_RETRY'if failed else PASS,cohort=c,uuid=d['uuid'],cycles=None if failed else proof['cycles'],proof=proof,archive=a,new_contract_only=True,original_or_repair_results_replaced=False,scientific_role='PERFV2_CODESIGN16_AUTHORIZED_DH',validated_union_authorized=False,union_scope='EXPLORATORY_FIXED8_TWO_UNIFORM_COMBINATIONS_16_NOT_CORE32',input_digest=e.spec_for(c)['input_digest'],cell='DH',profile=e.spec_for(c)['profile'],structure_variant=e.spec_for(c)['structure_variant'],downstream_profile='P0')
+  if rp.exists():assert read(rp)==v
+  else:put(rp,v,True)
+  return v
+--- /root/data/dtc_perf_first_remaining28_20261104_v1/tools/perf28_strict.py
++++ /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_v2_codesign16_execution_20261105_v1/agents/C_spec_strict_v1/runtime/perf16_strict.py
+@@ -1,18 +1,19 @@
+-"""Whole-trace terminal acceptance for the separate L2-MLP contract.
++import types
++"""Whole-trace terminal acceptance for exact fixed-Core Physical x OO-PIB16.
+ 
+ Only closed raw files are read. Population/NATURAL/resource/observer checks are
+ the original downstream18 checks; the dispatch binding handles dynamic CPU IDs.
+ """
+ import pathlib,json,gzip,hashlib,importlib.util,re
+ P=pathlib.Path
+-R=P('/root/data/dtc_perf_first_remaining28_20261104_v1')
++R=P('/root/data/dtc_perf_first_v2_codesign16_20261105_v1')
+ T=P('/root/data/dtc_main_v100_sweep_20261025_v1')
+ 
+ def read(p):return json.loads(P(p).read_bytes())
+ def sha(p):return hashlib.sha256(P(p).read_bytes()).hexdigest()
+ def jsonsha(v):return hashlib.sha256((json.dumps(v,sort_keys=True,indent=2)+'\n').encode()).hexdigest()
+ def load(n,p):
+- s=importlib.util.spec_from_file_location(n,p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
++ m=types.ModuleType(n);m.__file__=str(p);exec(compile(P(p).read_bytes(),str(p),'exec'),m.__dict__);return m
+ 
+ def dispatch_binding(c,s,out,i):
+  """Immutable canonical specification plus separately frozen execution CPU."""
+@@ -29,9 +30,9 @@
+  return b
+ 
+ def terminal(c):
+- e=load('l2_strict_engine',R/'tools/perf28_native.py');reg,ep,q,plan=e.registered()
++ e=load('l2_strict_engine',R/'tools/perf16_native.py');reg,ep,q,plan=e.registered()
+  assert q['strict_sha256']==sha(__file__)
+- s=e.spec_for(c);capacity_adapter=load('perf28_capacity_bound_adapter',R/'tools/perf28_capacity_strict.py');shape=capacity_adapter.validate_spec(s);assert s['cell']=='DH';ip=R/'control/qualification_ledger'/(c+'.INTENT.json');i=read(ip)
++ s=e.spec_for(c);capacity_adapter=load('perf16_capacity_bound_adapter',R/'tools/perf16_capacity_strict.py');shape=capacity_adapter.validate_spec(s);assert s['cell']=='DH';ip=R/'control/qualification_ledger'/(c+'.INTENT.json');i=read(ip)
+  d=read(ip.with_name(c+'.DONE.json'));row=q['consumed'][c];out=P(i['output'])
+  assert out==R/'DTC/run/results'/row['uuid'] and row['uuid']==i['uuid']==d['uuid']
+  assert row['intent_sha256']==sha(ip) and d==row['execution_receipt']==read(out/'NATIVE_EXIT.json')
+@@ -65,9 +66,8 @@
+  for name,src in [('DOWNSTREAM_INTENT.json',ip),('DOWNSTREAM_PLAN.json',R/'control/EXECUTION_PLAN.json'),('DOWNSTREAM_REQUEST.json',R/'control/SINGLE_SCIENTIFIC_APPROVAL_REQUEST.json'),('DOWNSTREAM_PROFILE.json',R/'control/BUILD_PROFILE.json')]:
+   assert sha(out/name)==sha(src)
+  for x in s['runtime_files']:assert sha(x['actual_realpath'])==x['sha256']
+- old=load('l2_existing_population_comparator',T/'tools/sweep_strict_cap1m.py')
+- capacity_adapter=load('perf28_capacity_bound_adapter',R/'tools/perf28_capacity_strict.py');legacy,capacity_binding=capacity_adapter.load_for(s)
+- result=old.population(raw,s,domain,legacy);seq=0;last=None
++ # Exact CPU-qualified pure population adapter; historical AG6 main is never called.
++ result,capacity_binding=capacity_adapter.population_from_verified_closed_text(raw,s,domain);seq=0;last=None
+  with gzip.open(out/'progress.jsonl.gz','rt')as h:
+   for line in h:
+    v=json.loads(line);seq+=1
+@@ -82,10 +82,10 @@
+    v=json.loads(line)
+    if 'DTC_exact_original_policy'in v:
+     assert v['DTC_exact_original_policy']['decision']['decision']!='STOP'
+-    guardbind=v['DTC_exact_original_policy']['runtime_policy_binding'];assert guardbind['schema']=='DTC_PERFFIRST_REMAINING28_ADMISSION_PRESSURE_ONLY_RUNTIME_V1'and guardbind['policy_sha256']==e.binding()['runtime_guard_policy_sha256']and guardbind['guard_sha256']==e.binding()['runtime_guard_sha256'];ba+=1
++    guardbind=v['DTC_exact_original_policy']['runtime_policy_binding'];assert guardbind['schema']=='DTC_PERFV2_CODESIGN16_ADMISSION_PRESSURE_ONLY_RUNTIME_V1'and guardbind['policy_sha256']==e.binding()['runtime_guard_policy_sha256']and guardbind['guard_sha256']==e.binding()['runtime_guard_sha256'];ba+=1
+    if 'physical_RAM_pass'in v:
+     assert v['physical_RAM_pass'] and v['physical_disk_pass']
+     assert v['process_tree_observed_rss_bytes']<=s['limits']['max_process_tree_rss_bytes'];rs+=1
+  assert ba and rs
+  extra={k:int(v)for k,v in re.findall(r'^\s*(avg_mrq_latency|averagemflatency|avg_icnt2mem_latency|avg_icnt2sh_latency)\s*=\s*(\d+)\s*$',raw,re.M)}
+- return dict(result,schema='DTC_PERFFIRST_REMAINING28_STRICT_V1',status='PERFFIRST_REMAINING28_NATIVE_TRACE_PERFORMANCE_QUALIFIED',cohort=c,uuid=d['uuid'],input_digest=s['input_digest'],program=s['program'],suite=s['suite'],cell=s['cell'],profile=s['profile'],structure_variant=s['structure_variant'],downstream_profile=s['downstream_profile'],performance_accepted=True,performance_scope='PERFFIRST_REMAINING28_DH_ONLY',never_merge_original288=True,core_commit=s['core_commit'],framework_commit=s['framework_commit'],binary_sha256=s['binary_sha256'],effective_options=s['expected_options'],latency_counters=extra,progress_records=seq,BA_decisions=ba,resource_samples=rs,raw_gzip_sha256=d['raw_sha256'],raw_uncompressed_sha256=d['raw_uncompressed_sha256'],dispatch_binding_sha256=sha(out/'DISPATCH_BINDING.json'),full_application_numerical_values='UNPROVEN',physical_capacity_parser_binding=capacity_binding,SOURCE_KEEP=True)
++ return dict(result,schema='DTC_PERFV2_CODESIGN16_STRICT_V1',status='PERFV2_CODESIGN16_NATIVE_TRACE_PERFORMANCE_QUALIFIED',cohort=c,uuid=d['uuid'],input_digest=s['input_digest'],program=s['program'],suite=s['suite'],cell=s['cell'],profile=s['profile'],structure_variant=s['structure_variant'],downstream_profile=s['downstream_profile'],performance_accepted=True,performance_scope='PERFV2_CODESIGN16_DH_ONLY',never_merge_original288=True,core_commit=s['core_commit'],framework_commit=s['framework_commit'],binary_sha256=s['binary_sha256'],effective_options=s['expected_options'],latency_counters=extra,progress_records=seq,BA_decisions=ba,resource_samples=rs,raw_gzip_sha256=d['raw_sha256'],raw_uncompressed_sha256=d['raw_uncompressed_sha256'],dispatch_binding_sha256=sha(out/'DISPATCH_BINDING.json'),full_application_numerical_values='UNPROVEN',physical_capacity_parser_binding=capacity_binding,SOURCE_KEEP=True)

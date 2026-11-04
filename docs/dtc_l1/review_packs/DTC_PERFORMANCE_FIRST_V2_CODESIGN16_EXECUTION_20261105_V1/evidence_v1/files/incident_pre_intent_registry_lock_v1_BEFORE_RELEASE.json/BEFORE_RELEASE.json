@@ -1,0 +1,38 @@
+{
+  "UTC": "2026-11-04T18:31:47.683767+00:00",
+  "V1_models_signaled": 0,
+  "budget": 16,
+  "classification": "ZERO_MODEL_PRE_INTENT_ENGINEERING_SELF_DEADLOCK",
+  "cmdline": [
+    "/usr/bin/python3",
+    "-B",
+    "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/perf16_frontend.py",
+    "experiment",
+    "run-native",
+    "E2-DTCPFV2-e7bb67e63e3c3847-DH-PHYS1024-OOPIB192-V1",
+    "--project",
+    "DTC_L1"
+  ],
+  "consumed": 0,
+  "held_registry_lock": [
+    {
+      "fd": "4",
+      "fdinfo": "pos:\t0\nflags:\t02102002\nmnt_id:\t3179\nino:\t61632580\nlock:\t1: FLOCK  ADVISORY  WRITE 3895400 08:50:61632580 0 EOF\n"
+    },
+    {
+      "fd": "5",
+      "fdinfo": "pos:\t0\nflags:\t02100000\nmnt_id:\t3179\nino:\t61632580\n"
+    }
+  ],
+  "models_started": 0,
+  "owner_signaled": 0,
+  "pid": 3895400,
+  "pre_INTENT_UUID_must_not_be_reused": true,
+  "pre_INTENT_output_paths_preserved": [
+    "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/2a6e4b2a-a060-4817-8c44-fa3577e5ef37"
+  ],
+  "reason": "New guard_model_mutation calls spec_for/registered/read_current_authority shared read inside already-held exclusive registry flock",
+  "remaining": 16,
+  "scope": "Terminate only new blocked frontend with no children/no INTENT/no charged identity/no actual model to release shared registry for V1; do not signal owner or healthy model",
+  "start_ticks": 1056864093
+}

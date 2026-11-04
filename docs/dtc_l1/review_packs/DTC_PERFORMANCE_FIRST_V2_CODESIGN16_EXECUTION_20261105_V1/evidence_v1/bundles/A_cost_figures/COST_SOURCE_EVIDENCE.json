@@ -1,0 +1,98 @@
+{
+  "core": "9eedb3131937748f0492fa83aad37d3691118d70",
+  "sources": [
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/dtc-l1-common.h",
+      "git_path": "src/gpgpu-sim/dtc-l1-common.h",
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "sha256": "dab2df3ec8e1fd1c8953ac146eba3c93906c84af8cce66051e5728afe9963fa1",
+      "bytes_equal_fixed_Git": true,
+      "excerpts": [
+        {
+          "first_line": 24,
+          "last_line": 76,
+          "text": "24: namespace dtc_l1 {\n25: \n26: constexpr uint64_t kLogicalLineBytes = 128;\n27: constexpr unsigned kSectorsPerLogicalLine = 4;\n28: \n29: enum class mode { LEGACY, PAPER_BASE, PAPER_IO, PAPER_OO, MODERN_OO_SECTOR };\n30: \n31: struct config {\n32:   bool finite_service = false;\n33:   bool progressive_wakeup = false;\n34:   mode selected_mode = mode::LEGACY;\n35:   unsigned pib_entries = 8;\n36:   unsigned tag_banks = 4;\n37:   unsigned tag_requests_per_bank_per_cycle = 1;\n38:   unsigned tag_requests_per_cycle = 4;\n39:   unsigned coalescer_threads_per_cycle = 32;\n40:   unsigned logical_sets = 32;\n41:   unsigned logical_ways = 4;\n42:   unsigned physical_lines = 640;\n43:   unsigned allocation_width = 4;\n44:   unsigned io_pib_entries = 256;\n45:   unsigned oo_pib_entries = 128;\n46:   unsigned ref_count_bits = 13;\n47:   bool tag_hash_bankrow = false;\n48: };\n49: \n50: // AD is an opt-in timing optimization of the finite whole-line OO model only.\n51: inline void check_progressive_wakeup_mode(bool enabled, unsigned selected,\n52:                                           bool finite) {\n53:   if (enabled && (!finite || selected != static_cast<unsigned>(mode::PAPER_OO))) {\n54:     std::fprintf(stderr, \"DTC_PROGRESSIVE_WAKE_UNSUPPORTED_MODE_STOP\\n\");\n55:     std::abort();\n56:   }\n57: }\n58: \n59: // Absolute core-cycle quota; checking availability never consumes a grant.\n60: // Commit only after the owning operation actually succeeds.\n61: class service_quota {\n62:  public:\n63:   explicit service_quota(unsigned width = 1) : m_width(width) { assert(width); }\n64:   bool available(uint64_t cycle) const {\n65:     return cycle != m_cycle || m_used < m_width;\n66:   }\n67:   void commit(uint64_t cycle) {\n68:     assert(available(cycle));\n69:     if (cycle != m_cycle) { m_cycle = cycle; m_used = 0; }\n70:     ++m_used;\n71:   }\n72:  private:\n73:   unsigned m_width;\n74:   unsigned m_used = 0;\n75:   uint64_t m_cycle = UINT64_MAX;\n76: };"
+        },
+        {
+          "first_line": 516,
+          "last_line": 556,
+          "text": "516: // Whole-line OO-DTC model.  Unlike io_frontend, physical-line lifetime is\n517: // protected by one Ref per live coalesced 128B reference, and any oldest-ready\n518: // PIB entry may retire.  It has no dependency on conventional L1D MSHRs.\n519: class oo_frontend {\n520:  public:\n521:   explicit oo_frontend(config cfg)\n522:       : m_cfg(cfg),\n523:         m_tags(cfg.logical_sets * cfg.logical_ways),\n524:         m_phys(cfg.physical_lines),\n525:         m_slots(cfg.oo_pib_entries) {\n526:     check_tag_hash_bankrow(cfg.tag_hash_bankrow,\n527:                            cfg.selected_mode == mode::PAPER_OO,\n528:                            cfg.finite_service, cfg.logical_sets, cfg.tag_banks);\n529:     check_progressive_wakeup_mode(cfg.progressive_wakeup,\n530:         static_cast<unsigned>(cfg.selected_mode), cfg.finite_service);\n531:     assert(cfg.logical_sets && cfg.logical_ways && cfg.physical_lines);\n532:     assert(cfg.allocation_width && cfg.oo_pib_entries);\n533:     assert(cfg.ref_count_bits && cfg.ref_count_bits < 32);\n534:     assert(cfg.tag_banks && cfg.tag_requests_per_bank_per_cycle &&\n535:            cfg.tag_requests_per_cycle);\n536:   }\n537: \n538:   void begin_cycle(uint64_t cycle) {\n539:     if (cycle == m_cycle) return;\n540:     m_cycle = cycle;\n541:     m_allocations_this_cycle = 0;\n542:   }\n543: \n544:   bool admit(uint64_t uid) {\n545:     if (find_entry(uid)) return true;\n546:     if (m_entries.size() >= m_cfg.oo_pib_entries) return false;\n547:     unsigned slot = 0;\n548:     for (; slot < m_slots.size(); ++slot)\n549:       if (!m_slots[slot].active) break;\n550:     assert(slot < m_slots.size());\n551:     slot_state &state = m_slots[slot];\n552:     state.active = true;\n553:     state.uid = uid;\n554:     ++state.generation;\n555:     m_entries.push_back({uid, slot, state.generation, {}, 0});\n556:     assert_shadow_refs();"
+        },
+        {
+          "first_line": 571,
+          "last_line": 589,
+          "text": "571:   bool try_serve_tag(uint64_t cycle, uint64_t address) {\n572:     if (cycle != m_tag_cycle) {\n573:       m_tag_cycle = cycle;\n574:       std::fill(m_tag_requests_this_cycle.begin(),\n575:                 m_tag_requests_this_cycle.end(), 0);\n576:       m_total_tag_requests_this_cycle = 0;\n577:     }\n578:     const unsigned set = tag_set(address);\n579:     const unsigned bank = set % m_cfg.tag_banks;\n580:     if (m_total_tag_requests_this_cycle >= m_cfg.tag_requests_per_cycle ||\n581:         m_tag_requests_this_cycle[bank] >=\n582:             m_cfg.tag_requests_per_bank_per_cycle) {\n583:       ++m_tag_conflicts;\n584:       return false;\n585:     }\n586:     ++m_total_tag_requests_this_cycle;\n587:     ++m_tag_requests_this_cycle[bank];\n588:     ++m_tag_requests;\n589:     return true;"
+        },
+        {
+          "first_line": 637,
+          "last_line": 663,
+          "text": "637:   io_access_result access(uint64_t cycle, uint64_t uid, uint64_t address) {\n638:     begin_cycle(cycle);\n639:     entry *owner = find_entry(uid);\n640:     assert(owner);\n641:     const uint64_t line = address & ~(kLogicalLineBytes - 1);\n642:     tag_entry *tag = find_tag(line);\n643:     if (tag) {\n644:       attach_reference(*owner, tag->physical);\n645:       ++(m_phys[tag->physical.id].ready ? m_valid_hits : m_pending_hits);\n646:       assert_shadow_refs();\n647:       return {m_phys[tag->physical.id].ready ? io_access_kind::VALID_HIT\n648:                                               : io_access_kind::PENDING_HIT,\n649:               tag->physical};\n650:     }\n651:     if (m_allocations_this_cycle >= m_cfg.allocation_width) {\n652:       ++m_allocation_width_limited_events;\n653:       return {io_access_kind::NO_FREE_LINE, {}};\n654:     }\n655: \n656:     tag_entry *victim = select_victim(line);\n657:     int free_id = find_free_physical();\n658:     const bool can_reclaim_victim =\n659:         victim->valid && m_phys[victim->physical.id].ref_count == 0;\n660:     if (free_id < 0 && !can_reclaim_victim) {\n661:       ++m_no_free_physical_events;\n662:       return {io_access_kind::NO_FREE_LINE, {}};\n663:     }"
+        },
+        {
+          "first_line": 1013,
+          "last_line": 1040,
+          "text": "1013:   struct physical_line {\n1014:     bool allocated = false;\n1015:     bool ready = false; // all waiter notifications done (X2 meaning)\n1016:     bool data_ready = false; // AD only: real full return + metadata edge\n1017:     uint64_t return_cycle = UINT64_MAX;\n1018:     uint64_t first_notify_cycle = UINT64_MAX, last_notify_cycle = UINT64_MAX;\n1019:     uint64_t notified = 0, late_merges = 0;\n1020:     bool tag_valid = false;\n1021:     uint64_t generation = 0;\n1022:     uint64_t ref_count = 0;\n1023:     std::vector<waiter> waiters;\n1024:   };\n1025:   struct tag_entry {\n1026:     bool valid = false;\n1027:     uint64_t line = 0;\n1028:     physical_identity physical;\n1029:     uint64_t lru = 0;\n1030:   };\n1031:   struct entry {\n1032:     uint64_t uid;\n1033:     unsigned slot;\n1034:     uint64_t slot_generation;\n1035:     std::vector<physical_identity> references;\n1036:     unsigned pending_dependencies;\n1037:     unsigned external_dependencies = 0;\n1038:     bool ready_observed = false;\n1039:   };\n1040:   struct slot_state { bool active = false; uint64_t uid = 0; uint64_t generation = 0; };"
+        }
+      ]
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/shader.cc",
+      "git_path": "src/gpgpu-sim/shader.cc",
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "sha256": "e67a486ef18abf2b8515bc5bb887812c058d29fe9fed8544320cc008e3b4ca11",
+      "bytes_equal_fixed_Git": true,
+      "excerpts": [
+        {
+          "first_line": 3374,
+          "last_line": 3390,
+          "text": "3374:     // Modern sector mode can enqueue up to four candidates for one logical\n3375:     // reference.  Reserve that maximum before frontend mutation so its\n3376:     // bounded candidate queue cannot overflow after allocation.\n3377:     const size_t lower_candidate_reservation =\n3378:         dtc_l1_sector_oo_active()\n3379:             ? m_dtc_l1_sector_frontend->prospective_new_requests(\n3380:                   reference.line_address, reference.sector_mask)\n3381:             : (m_dtc_l1_oo_frontend->will_new_miss(reference.line_address)\n3382:                    ? 1\n3383:                    : 0);\n3384:     if (m_dtc_l1_oo_lower_create_queue.size() +\n3385:             lower_candidate_reservation >\n3386:         m_config->dtc_l1_oo_pib_entries) {\n3387:       ++m_dtc_l1_oo_lower_create_queue_full_stalls;\n3388:       stall_reason = BK_CONF;\n3389:       access_type = G_MEM_LD;\n3390:       return false;"
+        },
+        {
+          "first_line": 3430,
+          "last_line": 3445,
+          "text": "3430:       const dtc_l1::io_access_result result =\n3431:           m_dtc_l1_oo_frontend->access(cycle, uid, reference.line_address);\n3432:       if (result.kind == dtc_l1::io_access_kind::NO_FREE_LINE) {\n3433:         stall_reason = BK_CONF;\n3434:         access_type = G_MEM_LD;\n3435:         return false;\n3436:       }\n3437:       if (result.kind == dtc_l1::io_access_kind::NEW_MISS) {\n3438:         assert(m_dtc_l1_oo_lower_create_queue.size() <\n3439:                m_config->dtc_l1_oo_pib_entries);\n3440:         m_dtc_l1_oo_lower_create_queue.push_back(\n3441:             {uid, result.physical, reference.line_address, 0xF});\n3442:       }\n3443:     }\n3444:     ++entry->next_reference;\n3445:     if (dtc_l1_finite_service_active()) {"
+        },
+        {
+          "first_line": 3460,
+          "last_line": 3519,
+          "text": "3460: void ldst_unit::dtc_l1_oo_issue_lower_requests() {\n3461:   if (!dtc_l1_paper_oo_active()) return;\n3462:   const unsigned long long cycle =\n3463:       m_core->get_gpu()->gpu_sim_cycle + m_core->get_gpu()->gpu_tot_sim_cycle;\n3464:   if (!m_dtc_l1_oo_lower_create_queue.empty() &&\n3465:       (!dtc_l1_finite_service_active() || m_dtc_service_create.available(cycle)) &&\n3466:       m_core->get_gpu()->dtc_l1_try_acquire_lower_request()) {\n3467:     if (dtc_l1_finite_service_active()) m_dtc_service_create.commit(cycle);\n3468:     const dtc_l1_oo_lower_candidate candidate =\n3469:         m_dtc_l1_oo_lower_create_queue.front();\n3470:     dtc_l1_oo_pib_entry *entry = dtc_l1_oo_find_entry(candidate.inst_uid);\n3471:     assert(entry);\n3472:     mem_access_byte_mask_t byte_mask;\n3473:     mem_access_sector_mask_t sector_mask;\n3474:     uint64_t request_address = candidate.line_address;\n3475:     unsigned request_size = dtc_l1::kLogicalLineBytes;\n3476:     if (dtc_l1_sector_oo_active()) {\n3477:       assert(candidate.sector_mask && !(candidate.sector_mask &\n3478:                                          (candidate.sector_mask - 1)) &&\n3479:              !(candidate.sector_mask & ~0xFU));\n3480:       unsigned sector = 0;\n3481:       while (!(candidate.sector_mask & (1U << sector))) ++sector;\n3482:       request_address += sector * 32;\n3483:       request_size = 32;\n3484:       sector_mask.set(sector);\n3485:       for (unsigned byte = sector * 32; byte < (sector + 1) * 32; ++byte)\n3486:         byte_mask.set(byte);\n3487:     } else {\n3488:       byte_mask.set();\n3489:       sector_mask.set();\n3490:     }\n3491:     mem_access_t lower_read(GLOBAL_ACC_R, request_address, request_size, false,\n3492:                             entry->inst.get_warp_active_mask(), byte_mask,\n3493:                             sector_mask, m_memory_config->gpgpu_ctx);\n3494:     mem_fetch *mf = m_mf_allocator->alloc(entry->inst, lower_read, cycle);\n3495:     const bool inserted = m_dtc_l1_oo_inflight\n3496:                               .emplace(mf->get_request_uid(),\n3497:                                        dtc_l1_oo_inflight{candidate.physical,\n3498:                                                            candidate.line_address,\n3499:                                                            candidate.inst_uid,\n3500:                                                            candidate.sector_mask})\n3501:                               .second;\n3502:     assert(inserted && \"OO request UID must remain unique while live\");\n3503:     m_dtc_l1_oo_lower_issue_queue.push_back(mf);\n3504:     m_dtc_l1_oo_lower_create_queue.pop_front();\n3505:     ++m_dtc_l1_oo_lower_created;\n3506:   }\n3507:   // Frozen lower issue width: one request per SM/cycle.\n3508:   if (!m_dtc_l1_oo_lower_issue_queue.empty()) {\n3509:     mem_fetch *mf = m_dtc_l1_oo_lower_issue_queue.front();\n3510:     if ((!dtc_l1_finite_service_active() || m_dtc_service_inject.available(cycle)) &&\n3511:         !m_icnt->full(mf->size(), false)) {\n3512:       if (dtc_l1_finite_service_active()) m_dtc_service_inject.commit(cycle);\n3513:       mf->set_status(IN_ICNT_TO_MEM, cycle);\n3514:       m_icnt->push(mf);\n3515:       m_dtc_l1_oo_lower_issue_queue.pop_front();\n3516:       ++m_dtc_l1_oo_lower_issued;\n3517:     }\n3518:   }\n3519: }"
+        },
+        {
+          "first_line": 3593,
+          "last_line": 3616,
+          "text": "3593: bool ldst_unit::dtc_l1_oo_writeback_ready() {\n3594:   const uint64_t service_cycle = m_core->get_gpu()->global_cycle();\n3595:   if (dtc_l1_finite_service_active() &&\n3596:       !m_dtc_service_retire.available(service_cycle)) return false;\n3597:   if (!dtc_l1_paper_oo_active()) return false;\n3598:   uint64_t uid = 0;\n3599:   const bool ready = dtc_l1_oo_select_ready(&uid);\n3600:   if (!ready) return false;\n3601:   dtc_l1_oo_pib_entry *entry = dtc_l1_oo_find_entry(static_cast<unsigned>(uid));\n3602:   assert(entry);\n3603:   const unsigned long long cycle =\n3604:       m_core->get_gpu()->gpu_sim_cycle + m_core->get_gpu()->gpu_tot_sim_cycle;\n3605:   if (entry->operation != dtc_l1_m4_operation::CACHEABLE_LOAD) {\n3606:     assert(entry->source_completed && entry->references.empty());\n3607:     const bool retired_ok = dtc_l1_sector_oo_active()\n3608:                                 ? m_dtc_l1_sector_frontend->retire_ready_uid(\n3609:                                       cycle, uid)\n3610:                                 : m_dtc_l1_oo_frontend->retire_ready_uid(cycle,\n3611:                                                                          uid);\n3612:     assert(retired_ok);\n3613:     if (dtc_l1_finite_service_active()) m_dtc_service_retire.commit(service_cycle);\n3614:     for (auto it = m_dtc_l1_oo_pib.begin(); it != m_dtc_l1_oo_pib.end(); ++it)\n3615:       if (it->inst.get_uid() == uid) {\n3616:         m_dtc_l1_oo_pib.erase(it);"
+        }
+      ]
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/shader.h",
+      "git_path": "src/gpgpu-sim/shader.h",
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "sha256": "e3315f55d3d9ca5e23430d602b8afa2b9842aba20ca901e781461b1396853476",
+      "bytes_equal_fixed_Git": true,
+      "excerpts": [
+        {
+          "first_line": 2151,
+          "last_line": 2161,
+          "text": "2151:   std::deque<mem_fetch *> m_response_fifo;\n2152:   opndcoll_base_t *m_operand_collector;\n2153:   Scoreboard *m_scoreboard;\n2154: \n2155:   std::deque<mem_fetch *> m_next_global;\n2156:   dtc_l1::service_quota m_dtc_service_refill;\n2157:   dtc_l1::service_quota m_dtc_service_create;\n2158:   dtc_l1::service_quota m_dtc_service_inject;\n2159:   dtc_l1::service_quota m_dtc_service_retire;\n2160:   dtc_l1::service_quota m_dtc_service_collect{4};\n2161:   uint64_t m_dtc_service_sample_cycle = UINT64_MAX;"
+        }
+      ]
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/core/docs/dtc_l1/DTC_L1_SPEC.md",
+      "git_path": "docs/dtc_l1/DTC_L1_SPEC.md",
+      "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "sha256": "9492dba2adc86a04e1d8498da1fb7ae9fde931ac9701e4729a7dbfdf8b157d0a",
+      "bytes_equal_fixed_Git": true,
+      "excerpts": [
+        {
+          "first_line": 75,
+          "last_line": 90,
+          "text": "75: - replacement/LRU metadata.\n76: \n77: OO may require additional Tag/physical-lifetime metadata as specified below.\n78: \n79: ### 3.3 Physical Cacheline Array\n80: \n81: - physical capacity: **80KB**;\n82: - line size: **128B**;\n83: - physical lines: **640**;\n84: - the full 80KB belongs to L1; it is **not partitioned with shared memory** in the paper-mode model.\n85: \n86: The logical Tag location does **not** constrain the physical-line location. Do not bind Tag bank N to a corresponding Data bank N.\n87: \n88: ### 3.4 Physical allocation model\n89: \n90: Frozen mechanism-level abstraction:"
+        }
+      ]
+    }
+  ],
+  "live_raw_reads": 0,
+  "source_modifications": 0
+}

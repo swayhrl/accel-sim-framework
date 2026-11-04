@@ -1,0 +1,18 @@
+--- /root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/perf16_native.py:635149
++++ /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_v2_codesign16_execution_20261105_v1/engineering_incidents/pre_intent_registry_lock_v1/forward_runtime_v1/perf16_native.py
+@@ -93,7 +93,14 @@
+  # consume mutator writes INTENT, closing the prepare-to-consume HOLD race.
+  own=current['registered_future_requests'][REQ]
+  if cohort not in own['consumed']:
+-  assert own['state']in['ARMED','RUNNING']and admission_hold(own,spec_for(cohort))is None,'TYPED_SAFETY_ADMISSION_HOLD_NO_CONSUME'
++  assert own['state']in['ARMED','RUNNING']and cohort in own['admitted_specs'],'EXACT16_UNCONSUMED_COHORT_REQUIRED'
++  # Already under REGISTRY_UPDATE LOCK_EX: do not call registered/spec_for or
++  # any authority reader here. Bind the immutable canonical spec to this exact
++  # in-memory locked request snapshot, then apply the pure typed-HOLD helper.
++  canonical=R/'control/specs'/(cohort+'.json')
++  assert sha(canonical)==own['admitted_specs'][cohort]==sha(R/'control'/(cohort+'_SPEC.json')),'LOCKED_CANONICAL_SPEC_SHA_REQUIRED'
++  spec=read(canonical);assert spec['request']==REQ and spec['cohort']==cohort and spec['host_cpu']is None,'LOCKED_CANONICAL_IDENTITY_REQUIRED'
++  assert admission_hold(own,spec)is None,'TYPED_SAFETY_ADMISSION_HOLD_NO_CONSUME'
+  return mutator(current)
+ class ResourceOverlay:
+  """A per-module proxy: never changes Python's shared resource module."""

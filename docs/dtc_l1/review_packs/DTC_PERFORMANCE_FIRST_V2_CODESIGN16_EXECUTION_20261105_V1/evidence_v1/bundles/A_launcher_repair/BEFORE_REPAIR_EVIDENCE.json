@@ -1,0 +1,1001 @@
+{
+  "UTC": "2026-11-04T19:05:23.402509+00:00",
+  "classification": "CHARGED_LAUNCHER_START_FAILURE_MODEL_NOT_OBSERVED",
+  "rootcause": "new root omitted tools/bin and tools/lib; spec runtime_files and prepare checked model dependencies but not launcher dependency closure",
+  "launcher_source": {
+    "path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_native_cap1m.py",
+    "sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d",
+    "first_line": 162,
+    "last_line": 179,
+    "text": "162:  ident=str(uuid.uuid4());out=ROOT/s['project']/'run/results'/ident;out.mkdir();(out/'tmp').mkdir();(out/'cache').mkdir()\n163:  exclusive(intent,{'cohort':cohort,'uuid':ident,'utc':now(),'spec_sha256':sha(ROOT/'control'/(cohort+'_SPEC.json')),'authorization_sha256':sha(auth),'consumed_before_launcher_fork':1,'automatic_retry':False,'old_ledger_mutations':0,'operational_resource_profile':prepared['operational_resource_profile'],'output':str(out)})\n164:  env={'PATH':'/usr/bin:/bin','LANG':'C','LC_ALL':'C','CUDA_VISIBLE_DEVICES':'','LD_LIBRARY_PATH':str(ROOT/s['project']/'env/lib'),'OMP_NUM_THREADS':'1','OPENBLAS_NUM_THREADS':'1','MKL_NUM_THREADS':'1','TMPDIR':str(out/'tmp'),'XDG_CACHE_HOME':str(out/'cache')}\n165:  progress=compressed_stream(out/'progress.jsonl.gz');passed=();channel=None;sender=None;dtc_guard=None;began_ns=time.monotonic_ns()\n166:  if s['project']=='DTC':\n167:   channel,sender=socket.socketpair(socket.AF_UNIX,socket.SOCK_DGRAM);channel.setblocking(False);sender.setblocking(False);channel.setsockopt(socket.SOL_SOCKET,socket.SO_PASSCRED,1)\n168:   for key in ['DTC_AG7_POLICY_B_PROGRESS','DTC_AG7_INPUT_SHA','DTC_AG7_ROI_SHA']:env[key]=s['original_environment'][key]\n169:   env['DTC_AG7_GENERATION']=ident;env['DTC_AG7_PROGRESS_FD']=str(sender.fileno());passed=(sender.fileno(),)\n170:  loader=str(ROOT/'common-lib/ld-linux-x86-64.so.2');argv=[loader,'--library-path',str(ROOT/'tools/lib')+':'+str(ROOT/'common-lib'),str(ROOT/'tools/bin/strace'),'-f','-e','trace=%file,process,network','-o',str(out/'actual_file_process_network.log'),'--',loader,'--inhibit-cache','--library-path',str(ROOT/s['project']/'env/lib'),*s['native_simulator_argv']]\n171:  def limits():\n172:   os.setsid();os.sched_setaffinity(0,{s['host_cpu']});resource.setrlimit(resource.RLIMIT_CORE,(0,0));resource.setrlimit(resource.RLIMIT_AS,(s['limits']['max_process_tree_rss_bytes'],s['limits']['max_process_tree_rss_bytes']))\n173:  from sweep_read_cache import Adviser\n174:  read_cache_adviser=Adviser()\n175:  from sweep_io import RawCapture\n176:  raw=RawCapture(out/'raw.log.gz');samples=compressed_stream(out/'RESOURCE_SAMPLES.jsonl.gz');start=time.monotonic();p=None;reason=None;observations=[];peak=0;last_full=start-10;peak_rss=0\n177:  try:\n178:   p=subprocess.Popen(argv,cwd=out,env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,pass_fds=passed,preexec_fn=limits);raw.start(p.stdout)\n179:   exclusive(out/'NATIVE_LAUNCH.json',{'utc':now(),'launcher_pid':p.pid,'argv':argv,'environment':env,'host':identity(),'prepared':prepared,'resources':res,'effective_result_cap_bytes':output_cap(s),'frozen_upper_result_cap_bytes':s['limits']['max_result_directory_bytes'],'native_DTC_original_rebound_admission':admission,'scientific_qualification_uuid':ident,'old174_SSH_invocation':False,'finite_native_launcher_sha256':sha(__file__),'operational_resource_profile':prepared['operational_resource_profile']})"
+  },
+  "actual_closed_done": [
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/qualification_ledger/E2-DTCPFV2-4114a3dc0d06b55b-DH-PHYS1024-OOPIB192-V1.DONE.json",
+      "sha256": "cb841e74cf8b41fcd1248b34b59683e648cefe4354f9dd74d44fc6247c422d37",
+      "cohort": "E2-DTCPFV2-4114a3dc0d06b55b-DH-PHYS1024-OOPIB192-V1",
+      "uuid": "28d4ad04-f45d-46d9-99ff-956b6255f668",
+      "native_simulator_observed": false,
+      "launcher_wait_returncode": 127,
+      "stop_reason": null
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/qualification_ledger/E2-DTCPFV2-4114a3dc0d06b55b-DH-PHYS768-OOPIB192-V1.DONE.json",
+      "sha256": "e2f89faf62a90d8b477126ee5759041d6f6f6c3395a817a29d6fc526b36df8c3",
+      "cohort": "E2-DTCPFV2-4114a3dc0d06b55b-DH-PHYS768-OOPIB192-V1",
+      "uuid": "0f74b67c-7d17-4dce-9a8b-d62ef4d14368",
+      "native_simulator_observed": false,
+      "launcher_wait_returncode": 127,
+      "stop_reason": null
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/qualification_ledger/E2-DTCPFV2-6df3a84b612086e8-DH-PHYS1024-OOPIB192-V1.DONE.json",
+      "sha256": "7a257096e7196f728b2c27a87d70867b399ee3848481e3db2bc56acd21243dd8",
+      "cohort": "E2-DTCPFV2-6df3a84b612086e8-DH-PHYS1024-OOPIB192-V1",
+      "uuid": "411cba1c-1cf9-4049-9cbc-9d79c066427c",
+      "native_simulator_observed": false,
+      "launcher_wait_returncode": 127,
+      "stop_reason": null
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/qualification_ledger/E2-DTCPFV2-6df3a84b612086e8-DH-PHYS768-OOPIB192-V1.DONE.json",
+      "sha256": "f11f8578aaa75be5bb20449afa049f28bcd5390dc3314cca625317195882a9de",
+      "cohort": "E2-DTCPFV2-6df3a84b612086e8-DH-PHYS768-OOPIB192-V1",
+      "uuid": "16888831-5e3c-4a27-91d3-c27fa188a7b9",
+      "native_simulator_observed": false,
+      "launcher_wait_returncode": 127,
+      "stop_reason": null
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/qualification_ledger/E2-DTCPFV2-ae34174fbbdf83b2-DH-PHYS1024-OOPIB192-V1.DONE.json",
+      "sha256": "fb0bae1a7d8e9562e13be6b0a325825153a02127cd691748b5aaebd07b549e62",
+      "cohort": "E2-DTCPFV2-ae34174fbbdf83b2-DH-PHYS1024-OOPIB192-V1",
+      "uuid": "062eeb6b-ac3c-470d-8d1a-b93ba46f27af",
+      "native_simulator_observed": false,
+      "launcher_wait_returncode": 127,
+      "stop_reason": null
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/qualification_ledger/E2-DTCPFV2-ae34174fbbdf83b2-DH-PHYS768-OOPIB192-V1.DONE.json",
+      "sha256": "334f13cfaccd3936a5650a219afe30d2bd2da3c9baccff04a40f9f9944811c83",
+      "cohort": "E2-DTCPFV2-ae34174fbbdf83b2-DH-PHYS768-OOPIB192-V1",
+      "uuid": "b0ec6e7f-80e8-4496-9825-e8df09f9e451",
+      "native_simulator_observed": false,
+      "launcher_wait_returncode": 127,
+      "stop_reason": null
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/qualification_ledger/E2-DTCPFV2-d984ea5475a581ad-DH-PHYS1024-OOPIB192-V1.DONE.json",
+      "sha256": "d05a0100d3610c95a63cd2973487fd124e10cbc3358450ddca0017bc4fca4052",
+      "cohort": "E2-DTCPFV2-d984ea5475a581ad-DH-PHYS1024-OOPIB192-V1",
+      "uuid": "2f92cca4-a546-4694-aa09-f8e84d32322f",
+      "native_simulator_observed": false,
+      "launcher_wait_returncode": 127,
+      "stop_reason": null
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/qualification_ledger/E2-DTCPFV2-d984ea5475a581ad-DH-PHYS768-OOPIB192-V1.DONE.json",
+      "sha256": "16b5fb6cf6d3806b6d19cefa794511bf0cb2e530b74addc2f55a5d2f539b9507",
+      "cohort": "E2-DTCPFV2-d984ea5475a581ad-DH-PHYS768-OOPIB192-V1",
+      "uuid": "59214af3-5b5c-4e12-b93e-b5c90bfa435f",
+      "native_simulator_observed": false,
+      "launcher_wait_returncode": 127,
+      "stop_reason": null
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/qualification_ledger/E2-DTCPFV2-e7bb67e63e3c3847-DH-PHYS1024-OOPIB192-V1.DONE.json",
+      "sha256": "71f63c556ca6f30ea448fb35e59a10e3eeb4f50625f7b18338b405e70c189bae",
+      "cohort": "E2-DTCPFV2-e7bb67e63e3c3847-DH-PHYS1024-OOPIB192-V1",
+      "uuid": "5ac3bb86-ae15-4b6b-98fc-9e1b32e4ab47",
+      "native_simulator_observed": false,
+      "launcher_wait_returncode": 127,
+      "stop_reason": null
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/qualification_ledger/E2-DTCPFV2-e7bb67e63e3c3847-DH-PHYS768-OOPIB192-V1.DONE.json",
+      "sha256": "d8493d073ed304b38ba88edaca608523bf09f41e7ba20da1779e8ad719d250f8",
+      "cohort": "E2-DTCPFV2-e7bb67e63e3c3847-DH-PHYS768-OOPIB192-V1",
+      "uuid": "6a69d090-9696-4197-ae6f-4ab681a6fefc",
+      "native_simulator_observed": false,
+      "launcher_wait_returncode": 127,
+      "stop_reason": null
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/qualification_ledger/E2-DTCPFV2-eededb785179fc04-DH-PHYS1024-OOPIB192-V1.DONE.json",
+      "sha256": "244d3e2867bee396268a354b2a62e0ec44edea1a1a806b49219830c30f7a89bd",
+      "cohort": "E2-DTCPFV2-eededb785179fc04-DH-PHYS1024-OOPIB192-V1",
+      "uuid": "75550dc5-774b-4310-b73e-5b73759079b0",
+      "native_simulator_observed": false,
+      "launcher_wait_returncode": 127,
+      "stop_reason": null
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/qualification_ledger/E2-DTCPFV2-eededb785179fc04-DH-PHYS768-OOPIB192-V1.DONE.json",
+      "sha256": "bc62a2d60ba36c9d244a96aa14b10bca33967065f2d6ba9a8cdec90cbd27c6fc",
+      "cohort": "E2-DTCPFV2-eededb785179fc04-DH-PHYS768-OOPIB192-V1",
+      "uuid": "9cef4a94-9962-440b-9ee7-804aeaecbe9d",
+      "native_simulator_observed": false,
+      "launcher_wait_returncode": 127,
+      "stop_reason": null
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/qualification_ledger/E2-DTCPFV2-f437190767aaed49-DH-PHYS1024-OOPIB192-V1.DONE.json",
+      "sha256": "0ba8a40c9ee812e8812a8e10986971f4c7127eddad5c4b22832054f4bd6622a3",
+      "cohort": "E2-DTCPFV2-f437190767aaed49-DH-PHYS1024-OOPIB192-V1",
+      "uuid": "80f80822-6e39-44b2-a1ad-1e1183533192",
+      "native_simulator_observed": false,
+      "launcher_wait_returncode": 127,
+      "stop_reason": null
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/qualification_ledger/E2-DTCPFV2-f437190767aaed49-DH-PHYS768-OOPIB192-V1.DONE.json",
+      "sha256": "77236ff9f9b5c4fe6140c12643468ec6f469d055559387c30082a42d5f60577e",
+      "cohort": "E2-DTCPFV2-f437190767aaed49-DH-PHYS768-OOPIB192-V1",
+      "uuid": "1b02841f-875e-4c05-bb75-a86a5bae0b84",
+      "native_simulator_observed": false,
+      "launcher_wait_returncode": 127,
+      "stop_reason": null
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/qualification_ledger/E2-DTCPFV2-fc0705ae3721e999-DH-PHYS1024-OOPIB192-V1.DONE.json",
+      "sha256": "a83b3668c6418c4b65c706e68639566d02ded2e90f48a2ffacd19032adfd73ad",
+      "cohort": "E2-DTCPFV2-fc0705ae3721e999-DH-PHYS1024-OOPIB192-V1",
+      "uuid": "b6c2c3e3-bc7a-4317-b74f-63ab9348ff62",
+      "native_simulator_observed": false,
+      "launcher_wait_returncode": 127,
+      "stop_reason": null
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/qualification_ledger/E2-DTCPFV2-fc0705ae3721e999-DH-PHYS768-OOPIB192-V1.DONE.json",
+      "sha256": "f60251c4f7c98165db15dd11ec09fd1dbead481cfb79a526e04afcabc034bfbe",
+      "cohort": "E2-DTCPFV2-fc0705ae3721e999-DH-PHYS768-OOPIB192-V1",
+      "uuid": "3dfefa01-5c96-4fc5-b9fd-2b5e6f37bc3e",
+      "native_simulator_observed": false,
+      "launcher_wait_returncode": 127,
+      "stop_reason": null
+    }
+  ],
+  "actual_launches": [
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/28d4ad04-f45d-46d9-99ff-956b6255f668/NATIVE_LAUNCH.json",
+      "sha256": "75b3c09f5f58e1c96ccdbb1836c317227380b8750be5a7c5a41d3494c7d85dd3",
+      "argv": [
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/lib:/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace",
+        "-f",
+        "-e",
+        "trace=%file,process,network",
+        "-o",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/28d4ad04-f45d-46d9-99ff-956b6255f668/actual_file_process_network.log",
+        "--",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--inhibit-cache",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/lib",
+        "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+        "-trace",
+        "/root/workspace/assets/traces/bundles/869cdb7901fded18d39e37189b70a1d1eac3dcc6f3551f5bde2b583dfb36c474/tree/kernelslist.g",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-0.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-1.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-2.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-3.config"
+      ],
+      "cohort": "E2-DTCPFV2-4114a3dc0d06b55b-DH-PHYS1024-OOPIB192-V1",
+      "uuid": "28d4ad04-f45d-46d9-99ff-956b6255f668"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/0f74b67c-7d17-4dce-9a8b-d62ef4d14368/NATIVE_LAUNCH.json",
+      "sha256": "5ad20bfe4829c1af954d5bb0c2b13ea3cf667c8459837b188e5cfee439f1aa63",
+      "argv": [
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/lib:/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace",
+        "-f",
+        "-e",
+        "trace=%file,process,network",
+        "-o",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/0f74b67c-7d17-4dce-9a8b-d62ef4d14368/actual_file_process_network.log",
+        "--",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--inhibit-cache",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/lib",
+        "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+        "-trace",
+        "/root/workspace/assets/traces/bundles/869cdb7901fded18d39e37189b70a1d1eac3dcc6f3551f5bde2b583dfb36c474/tree/kernelslist.g",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-0.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-1.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-2.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-3.config"
+      ],
+      "cohort": "E2-DTCPFV2-4114a3dc0d06b55b-DH-PHYS768-OOPIB192-V1",
+      "uuid": "0f74b67c-7d17-4dce-9a8b-d62ef4d14368"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/411cba1c-1cf9-4049-9cbc-9d79c066427c/NATIVE_LAUNCH.json",
+      "sha256": "c1e14522ba56aa61726de57d3170b5a2079c689f82334c539381508453d141d5",
+      "argv": [
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/lib:/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace",
+        "-f",
+        "-e",
+        "trace=%file,process,network",
+        "-o",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/411cba1c-1cf9-4049-9cbc-9d79c066427c/actual_file_process_network.log",
+        "--",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--inhibit-cache",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/lib",
+        "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+        "-trace",
+        "/root/workspace/assets/traces/bundles/9dafd3ce91a942b189a896845862f4e5baa57ea845d0688852065d757a342fe8/tree/kernelslist.g",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-0.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-1.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-2.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-3.config"
+      ],
+      "cohort": "E2-DTCPFV2-6df3a84b612086e8-DH-PHYS1024-OOPIB192-V1",
+      "uuid": "411cba1c-1cf9-4049-9cbc-9d79c066427c"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/16888831-5e3c-4a27-91d3-c27fa188a7b9/NATIVE_LAUNCH.json",
+      "sha256": "91b1edd9c3796e2092793380823145c6528c11895bd6687e4231524de0b4858a",
+      "argv": [
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/lib:/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace",
+        "-f",
+        "-e",
+        "trace=%file,process,network",
+        "-o",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/16888831-5e3c-4a27-91d3-c27fa188a7b9/actual_file_process_network.log",
+        "--",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--inhibit-cache",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/lib",
+        "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+        "-trace",
+        "/root/workspace/assets/traces/bundles/9dafd3ce91a942b189a896845862f4e5baa57ea845d0688852065d757a342fe8/tree/kernelslist.g",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-0.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-1.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-2.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-3.config"
+      ],
+      "cohort": "E2-DTCPFV2-6df3a84b612086e8-DH-PHYS768-OOPIB192-V1",
+      "uuid": "16888831-5e3c-4a27-91d3-c27fa188a7b9"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/062eeb6b-ac3c-470d-8d1a-b93ba46f27af/NATIVE_LAUNCH.json",
+      "sha256": "fe9afa2fbd931c821e76780798b28887cfc70ef01ef1c481f2359f7ce4a1f552",
+      "argv": [
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/lib:/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace",
+        "-f",
+        "-e",
+        "trace=%file,process,network",
+        "-o",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/062eeb6b-ac3c-470d-8d1a-b93ba46f27af/actual_file_process_network.log",
+        "--",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--inhibit-cache",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/lib",
+        "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+        "-trace",
+        "/root/workspace/assets/traces/bundles/780d5828627b7e8f35f3da81572346940932deb01c9409b8ce9f272df6f752d1/tree/kernelslist.g",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-0.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-1.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-2.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-3.config"
+      ],
+      "cohort": "E2-DTCPFV2-ae34174fbbdf83b2-DH-PHYS1024-OOPIB192-V1",
+      "uuid": "062eeb6b-ac3c-470d-8d1a-b93ba46f27af"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/b0ec6e7f-80e8-4496-9825-e8df09f9e451/NATIVE_LAUNCH.json",
+      "sha256": "dd5e19a8aee2b5e8225909c2dff8d3479b4f5626c70690eac4309f6df3abe3fa",
+      "argv": [
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/lib:/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace",
+        "-f",
+        "-e",
+        "trace=%file,process,network",
+        "-o",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/b0ec6e7f-80e8-4496-9825-e8df09f9e451/actual_file_process_network.log",
+        "--",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--inhibit-cache",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/lib",
+        "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+        "-trace",
+        "/root/workspace/assets/traces/bundles/780d5828627b7e8f35f3da81572346940932deb01c9409b8ce9f272df6f752d1/tree/kernelslist.g",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-0.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-1.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-2.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-3.config"
+      ],
+      "cohort": "E2-DTCPFV2-ae34174fbbdf83b2-DH-PHYS768-OOPIB192-V1",
+      "uuid": "b0ec6e7f-80e8-4496-9825-e8df09f9e451"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/2f92cca4-a546-4694-aa09-f8e84d32322f/NATIVE_LAUNCH.json",
+      "sha256": "db2da4b04ab17e9725cf1ec083b6ac8c5ab8de7ba8264c65508b0f70738b7259",
+      "argv": [
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/lib:/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace",
+        "-f",
+        "-e",
+        "trace=%file,process,network",
+        "-o",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/2f92cca4-a546-4694-aa09-f8e84d32322f/actual_file_process_network.log",
+        "--",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--inhibit-cache",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/lib",
+        "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+        "-trace",
+        "/root/workspace/assets/traces/bundles/e230789ec7addca421101b60a1c9fdcb60d700a8a75478fdd5faab21574aa5ac/tree/kernelslist.g",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-0.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-1.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-2.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-3.config"
+      ],
+      "cohort": "E2-DTCPFV2-d984ea5475a581ad-DH-PHYS1024-OOPIB192-V1",
+      "uuid": "2f92cca4-a546-4694-aa09-f8e84d32322f"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/59214af3-5b5c-4e12-b93e-b5c90bfa435f/NATIVE_LAUNCH.json",
+      "sha256": "e004e6d6b8f5f53ea0094b684309d391ec324a1d148cb60be5cca82e34e891d4",
+      "argv": [
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/lib:/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace",
+        "-f",
+        "-e",
+        "trace=%file,process,network",
+        "-o",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/59214af3-5b5c-4e12-b93e-b5c90bfa435f/actual_file_process_network.log",
+        "--",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--inhibit-cache",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/lib",
+        "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+        "-trace",
+        "/root/workspace/assets/traces/bundles/e230789ec7addca421101b60a1c9fdcb60d700a8a75478fdd5faab21574aa5ac/tree/kernelslist.g",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-0.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-1.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-2.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-3.config"
+      ],
+      "cohort": "E2-DTCPFV2-d984ea5475a581ad-DH-PHYS768-OOPIB192-V1",
+      "uuid": "59214af3-5b5c-4e12-b93e-b5c90bfa435f"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/5ac3bb86-ae15-4b6b-98fc-9e1b32e4ab47/NATIVE_LAUNCH.json",
+      "sha256": "e0bd215b71937036a23aafd20d6a315de04c5a591806e85905f3fbbd571f6981",
+      "argv": [
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/lib:/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace",
+        "-f",
+        "-e",
+        "trace=%file,process,network",
+        "-o",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/5ac3bb86-ae15-4b6b-98fc-9e1b32e4ab47/actual_file_process_network.log",
+        "--",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--inhibit-cache",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/lib",
+        "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+        "-trace",
+        "/root/workspace/assets/traces/bundles/d57ff01eded73f7a62a3d71b5c8e8a1b16e003d4217acaa337d591f401312326/tree/kernelslist.g",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-0.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-1.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-2.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-3.config"
+      ],
+      "cohort": "E2-DTCPFV2-e7bb67e63e3c3847-DH-PHYS1024-OOPIB192-V1",
+      "uuid": "5ac3bb86-ae15-4b6b-98fc-9e1b32e4ab47"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/6a69d090-9696-4197-ae6f-4ab681a6fefc/NATIVE_LAUNCH.json",
+      "sha256": "70029b81a9726a44e40232f8a59e435f1d8f9b8cd6dda1280575aee942917302",
+      "argv": [
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/lib:/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace",
+        "-f",
+        "-e",
+        "trace=%file,process,network",
+        "-o",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/6a69d090-9696-4197-ae6f-4ab681a6fefc/actual_file_process_network.log",
+        "--",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--inhibit-cache",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/lib",
+        "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+        "-trace",
+        "/root/workspace/assets/traces/bundles/d57ff01eded73f7a62a3d71b5c8e8a1b16e003d4217acaa337d591f401312326/tree/kernelslist.g",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-0.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-1.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-2.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-3.config"
+      ],
+      "cohort": "E2-DTCPFV2-e7bb67e63e3c3847-DH-PHYS768-OOPIB192-V1",
+      "uuid": "6a69d090-9696-4197-ae6f-4ab681a6fefc"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/75550dc5-774b-4310-b73e-5b73759079b0/NATIVE_LAUNCH.json",
+      "sha256": "6924d704ba00c26247216e4a84b29004ef8251eaef8794aff127e7b97ec465fe",
+      "argv": [
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/lib:/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace",
+        "-f",
+        "-e",
+        "trace=%file,process,network",
+        "-o",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/75550dc5-774b-4310-b73e-5b73759079b0/actual_file_process_network.log",
+        "--",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--inhibit-cache",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/lib",
+        "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+        "-trace",
+        "/root/workspace/assets/traces/bundles/2d610fb9d5b893ee16a8af0e178214d8a19715efb7709949ff6c89a57ce60561/tree/kernelslist.g",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-0.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-1.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-2.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-3.config"
+      ],
+      "cohort": "E2-DTCPFV2-eededb785179fc04-DH-PHYS1024-OOPIB192-V1",
+      "uuid": "75550dc5-774b-4310-b73e-5b73759079b0"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/9cef4a94-9962-440b-9ee7-804aeaecbe9d/NATIVE_LAUNCH.json",
+      "sha256": "698f677cd2e391c9b7f971e3ac3343b20c09d60c0d9a4686141cb3637ecf6a90",
+      "argv": [
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/lib:/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace",
+        "-f",
+        "-e",
+        "trace=%file,process,network",
+        "-o",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/9cef4a94-9962-440b-9ee7-804aeaecbe9d/actual_file_process_network.log",
+        "--",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--inhibit-cache",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/lib",
+        "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+        "-trace",
+        "/root/workspace/assets/traces/bundles/2d610fb9d5b893ee16a8af0e178214d8a19715efb7709949ff6c89a57ce60561/tree/kernelslist.g",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-0.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-1.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-2.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-3.config"
+      ],
+      "cohort": "E2-DTCPFV2-eededb785179fc04-DH-PHYS768-OOPIB192-V1",
+      "uuid": "9cef4a94-9962-440b-9ee7-804aeaecbe9d"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/80f80822-6e39-44b2-a1ad-1e1183533192/NATIVE_LAUNCH.json",
+      "sha256": "297ee581ac0e287d21df62d4fb1b02541e0929318c64ac907ec455d0135973f1",
+      "argv": [
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/lib:/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace",
+        "-f",
+        "-e",
+        "trace=%file,process,network",
+        "-o",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/80f80822-6e39-44b2-a1ad-1e1183533192/actual_file_process_network.log",
+        "--",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--inhibit-cache",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/lib",
+        "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+        "-trace",
+        "/root/workspace/assets/traces/bundles/460901d4173352b272caa6876db2119b88a9e0471c6f6fa2f8f8477edef9c5a0/tree/kernelslist.g",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-0.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-1.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-2.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-3.config"
+      ],
+      "cohort": "E2-DTCPFV2-f437190767aaed49-DH-PHYS1024-OOPIB192-V1",
+      "uuid": "80f80822-6e39-44b2-a1ad-1e1183533192"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/1b02841f-875e-4c05-bb75-a86a5bae0b84/NATIVE_LAUNCH.json",
+      "sha256": "8f079b1c00af6242714ac0055c6d1c71951d719eda9fa78f134b50f9fc11b149",
+      "argv": [
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/lib:/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace",
+        "-f",
+        "-e",
+        "trace=%file,process,network",
+        "-o",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/1b02841f-875e-4c05-bb75-a86a5bae0b84/actual_file_process_network.log",
+        "--",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--inhibit-cache",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/lib",
+        "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+        "-trace",
+        "/root/workspace/assets/traces/bundles/460901d4173352b272caa6876db2119b88a9e0471c6f6fa2f8f8477edef9c5a0/tree/kernelslist.g",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-0.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-1.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-2.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-3.config"
+      ],
+      "cohort": "E2-DTCPFV2-f437190767aaed49-DH-PHYS768-OOPIB192-V1",
+      "uuid": "1b02841f-875e-4c05-bb75-a86a5bae0b84"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/b6c2c3e3-bc7a-4317-b74f-63ab9348ff62/NATIVE_LAUNCH.json",
+      "sha256": "bd327baf5e568b8c65dd7f5d6e6e788b5fd31a40589520236a861eb465b17bbb",
+      "argv": [
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/lib:/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace",
+        "-f",
+        "-e",
+        "trace=%file,process,network",
+        "-o",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/b6c2c3e3-bc7a-4317-b74f-63ab9348ff62/actual_file_process_network.log",
+        "--",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--inhibit-cache",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/lib",
+        "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+        "-trace",
+        "/root/workspace/assets/traces/bundles/22bf4bd8147c1fe7c4b3aef0119ee319e7c334455bc2e01ef495ecbadbf791f5/tree/kernelslist.g",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-0.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-1.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-2.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS1024_OOPIB192_TAG64x8/config-3.config"
+      ],
+      "cohort": "E2-DTCPFV2-fc0705ae3721e999-DH-PHYS1024-OOPIB192-V1",
+      "uuid": "b6c2c3e3-bc7a-4317-b74f-63ab9348ff62"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/3dfefa01-5c96-4fc5-b9fd-2b5e6f37bc3e/NATIVE_LAUNCH.json",
+      "sha256": "1327f4f5f12ccf86b5d72a9b9816bb1b5de8ddc478f78a2d24179cb430537aba",
+      "argv": [
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/lib:/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace",
+        "-f",
+        "-e",
+        "trace=%file,process,network",
+        "-o",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/3dfefa01-5c96-4fc5-b9fd-2b5e6f37bc3e/actual_file_process_network.log",
+        "--",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/common-lib/ld-linux-x86-64.so.2",
+        "--inhibit-cache",
+        "--library-path",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/lib",
+        "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+        "-trace",
+        "/root/workspace/assets/traces/bundles/22bf4bd8147c1fe7c4b3aef0119ee319e7c334455bc2e01ef495ecbadbf791f5/tree/kernelslist.g",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-0.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-1.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-2.config",
+        "-config",
+        "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/env/DH_PHYS768_OOPIB192_TAG64x8/config-3.config"
+      ],
+      "cohort": "E2-DTCPFV2-fc0705ae3721e999-DH-PHYS768-OOPIB192-V1",
+      "uuid": "3dfefa01-5c96-4fc5-b9fd-2b5e6f37bc3e"
+    }
+  ],
+  "closed_small_raw": [
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/28d4ad04-f45d-46d9-99ff-956b6255f668/raw.log.gz",
+      "sha256": "5eddce3f25cb9625a334315769f8f8326a3283b05a2b17a5053bd3211af5a4ea",
+      "text": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: error while loading shared libraries: /root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: cannot open shared object file: No such file or directory\n",
+      "native_PID_MAP_exists": false,
+      "cohort": "E2-DTCPFV2-4114a3dc0d06b55b-DH-PHYS1024-OOPIB192-V1"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/0f74b67c-7d17-4dce-9a8b-d62ef4d14368/raw.log.gz",
+      "sha256": "5eddce3f25cb9625a334315769f8f8326a3283b05a2b17a5053bd3211af5a4ea",
+      "text": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: error while loading shared libraries: /root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: cannot open shared object file: No such file or directory\n",
+      "native_PID_MAP_exists": false,
+      "cohort": "E2-DTCPFV2-4114a3dc0d06b55b-DH-PHYS768-OOPIB192-V1"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/411cba1c-1cf9-4049-9cbc-9d79c066427c/raw.log.gz",
+      "sha256": "5eddce3f25cb9625a334315769f8f8326a3283b05a2b17a5053bd3211af5a4ea",
+      "text": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: error while loading shared libraries: /root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: cannot open shared object file: No such file or directory\n",
+      "native_PID_MAP_exists": false,
+      "cohort": "E2-DTCPFV2-6df3a84b612086e8-DH-PHYS1024-OOPIB192-V1"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/16888831-5e3c-4a27-91d3-c27fa188a7b9/raw.log.gz",
+      "sha256": "5eddce3f25cb9625a334315769f8f8326a3283b05a2b17a5053bd3211af5a4ea",
+      "text": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: error while loading shared libraries: /root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: cannot open shared object file: No such file or directory\n",
+      "native_PID_MAP_exists": false,
+      "cohort": "E2-DTCPFV2-6df3a84b612086e8-DH-PHYS768-OOPIB192-V1"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/062eeb6b-ac3c-470d-8d1a-b93ba46f27af/raw.log.gz",
+      "sha256": "5eddce3f25cb9625a334315769f8f8326a3283b05a2b17a5053bd3211af5a4ea",
+      "text": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: error while loading shared libraries: /root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: cannot open shared object file: No such file or directory\n",
+      "native_PID_MAP_exists": false,
+      "cohort": "E2-DTCPFV2-ae34174fbbdf83b2-DH-PHYS1024-OOPIB192-V1"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/b0ec6e7f-80e8-4496-9825-e8df09f9e451/raw.log.gz",
+      "sha256": "5eddce3f25cb9625a334315769f8f8326a3283b05a2b17a5053bd3211af5a4ea",
+      "text": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: error while loading shared libraries: /root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: cannot open shared object file: No such file or directory\n",
+      "native_PID_MAP_exists": false,
+      "cohort": "E2-DTCPFV2-ae34174fbbdf83b2-DH-PHYS768-OOPIB192-V1"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/2f92cca4-a546-4694-aa09-f8e84d32322f/raw.log.gz",
+      "sha256": "5eddce3f25cb9625a334315769f8f8326a3283b05a2b17a5053bd3211af5a4ea",
+      "text": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: error while loading shared libraries: /root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: cannot open shared object file: No such file or directory\n",
+      "native_PID_MAP_exists": false,
+      "cohort": "E2-DTCPFV2-d984ea5475a581ad-DH-PHYS1024-OOPIB192-V1"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/59214af3-5b5c-4e12-b93e-b5c90bfa435f/raw.log.gz",
+      "sha256": "5eddce3f25cb9625a334315769f8f8326a3283b05a2b17a5053bd3211af5a4ea",
+      "text": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: error while loading shared libraries: /root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: cannot open shared object file: No such file or directory\n",
+      "native_PID_MAP_exists": false,
+      "cohort": "E2-DTCPFV2-d984ea5475a581ad-DH-PHYS768-OOPIB192-V1"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/5ac3bb86-ae15-4b6b-98fc-9e1b32e4ab47/raw.log.gz",
+      "sha256": "5eddce3f25cb9625a334315769f8f8326a3283b05a2b17a5053bd3211af5a4ea",
+      "text": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: error while loading shared libraries: /root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: cannot open shared object file: No such file or directory\n",
+      "native_PID_MAP_exists": false,
+      "cohort": "E2-DTCPFV2-e7bb67e63e3c3847-DH-PHYS1024-OOPIB192-V1"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/6a69d090-9696-4197-ae6f-4ab681a6fefc/raw.log.gz",
+      "sha256": "5eddce3f25cb9625a334315769f8f8326a3283b05a2b17a5053bd3211af5a4ea",
+      "text": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: error while loading shared libraries: /root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: cannot open shared object file: No such file or directory\n",
+      "native_PID_MAP_exists": false,
+      "cohort": "E2-DTCPFV2-e7bb67e63e3c3847-DH-PHYS768-OOPIB192-V1"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/75550dc5-774b-4310-b73e-5b73759079b0/raw.log.gz",
+      "sha256": "5eddce3f25cb9625a334315769f8f8326a3283b05a2b17a5053bd3211af5a4ea",
+      "text": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: error while loading shared libraries: /root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: cannot open shared object file: No such file or directory\n",
+      "native_PID_MAP_exists": false,
+      "cohort": "E2-DTCPFV2-eededb785179fc04-DH-PHYS1024-OOPIB192-V1"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/9cef4a94-9962-440b-9ee7-804aeaecbe9d/raw.log.gz",
+      "sha256": "5eddce3f25cb9625a334315769f8f8326a3283b05a2b17a5053bd3211af5a4ea",
+      "text": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: error while loading shared libraries: /root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: cannot open shared object file: No such file or directory\n",
+      "native_PID_MAP_exists": false,
+      "cohort": "E2-DTCPFV2-eededb785179fc04-DH-PHYS768-OOPIB192-V1"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/80f80822-6e39-44b2-a1ad-1e1183533192/raw.log.gz",
+      "sha256": "5eddce3f25cb9625a334315769f8f8326a3283b05a2b17a5053bd3211af5a4ea",
+      "text": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: error while loading shared libraries: /root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: cannot open shared object file: No such file or directory\n",
+      "native_PID_MAP_exists": false,
+      "cohort": "E2-DTCPFV2-f437190767aaed49-DH-PHYS1024-OOPIB192-V1"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/1b02841f-875e-4c05-bb75-a86a5bae0b84/raw.log.gz",
+      "sha256": "5eddce3f25cb9625a334315769f8f8326a3283b05a2b17a5053bd3211af5a4ea",
+      "text": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: error while loading shared libraries: /root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: cannot open shared object file: No such file or directory\n",
+      "native_PID_MAP_exists": false,
+      "cohort": "E2-DTCPFV2-f437190767aaed49-DH-PHYS768-OOPIB192-V1"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/b6c2c3e3-bc7a-4317-b74f-63ab9348ff62/raw.log.gz",
+      "sha256": "5eddce3f25cb9625a334315769f8f8326a3283b05a2b17a5053bd3211af5a4ea",
+      "text": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: error while loading shared libraries: /root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: cannot open shared object file: No such file or directory\n",
+      "native_PID_MAP_exists": false,
+      "cohort": "E2-DTCPFV2-fc0705ae3721e999-DH-PHYS1024-OOPIB192-V1"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/DTC/run/results/3dfefa01-5c96-4fc5-b9fd-2b5e6f37bc3e/raw.log.gz",
+      "sha256": "5eddce3f25cb9625a334315769f8f8326a3283b05a2b17a5053bd3211af5a4ea",
+      "text": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: error while loading shared libraries: /root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin/strace: cannot open shared object file: No such file or directory\n",
+      "native_PID_MAP_exists": false,
+      "cohort": "E2-DTCPFV2-fc0705ae3721e999-DH-PHYS768-OOPIB192-V1"
+    }
+  ],
+  "missing_layout": [
+    {
+      "destination": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin",
+      "before": {
+        "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/bin",
+        "lexists": false,
+        "exists": false,
+        "symlink": false
+      },
+      "reference": {
+        "path": "/root/data/dtc_perf_first_remaining28_20261104_v1/tools/bin",
+        "lexists": true,
+        "exists": true,
+        "symlink": true,
+        "link_target": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/bin",
+        "actual_realpath": "/root/data/ep_l2_dtc_l1_native_v2/tools/bin",
+        "device": 2128,
+        "mode": "0o755",
+        "bytes": 4096,
+        "sha256": null
+      },
+      "intended_link_target": "/root/data/ep_l2_dtc_l1_native_v2/tools/bin"
+    },
+    {
+      "destination": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/lib",
+      "before": {
+        "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/lib",
+        "lexists": false,
+        "exists": false,
+        "symlink": false
+      },
+      "reference": {
+        "path": "/root/data/dtc_perf_first_remaining28_20261104_v1/tools/lib",
+        "lexists": true,
+        "exists": true,
+        "symlink": true,
+        "link_target": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/lib",
+        "actual_realpath": "/root/data/ep_l2_dtc_l1_native_v2/tools/lib",
+        "device": 2128,
+        "mode": "0o755",
+        "bytes": 4096,
+        "sha256": null
+      },
+      "intended_link_target": "/root/data/ep_l2_dtc_l1_native_v2/tools/lib"
+    }
+  ],
+  "reference_strace": {
+    "path": "/root/data/dtc_perf_first_remaining28_20261104_v1/tools/bin/strace",
+    "lexists": true,
+    "exists": true,
+    "symlink": false,
+    "actual_realpath": "/root/data/ep_l2_dtc_l1_native_v2/tools/bin/strace",
+    "device": 2128,
+    "mode": "0o755",
+    "bytes": 1972848,
+    "sha256": "38a5c75cb29dd85ddd7780d54f5bf595554d7a1b5c42524b23065f5dc4c4b01d"
+  },
+  "reference_tracer_libs": [
+    {
+      "path": "/root/data/dtc_perf_first_remaining28_20261104_v1/tools/lib/liblzma.so.5",
+      "lexists": true,
+      "exists": true,
+      "symlink": false,
+      "actual_realpath": "/root/data/ep_l2_dtc_l1_native_v2/tools/lib/liblzma.so.5",
+      "device": 2128,
+      "mode": "0o644",
+      "bytes": 170456,
+      "sha256": "493cb401ab4aa3bba611ca464d12996afb3b327940d29476f535f999e167439b"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_remaining28_20261104_v1/tools/lib/libunwind-ptrace.so.0",
+      "lexists": true,
+      "exists": true,
+      "symlink": false,
+      "actual_realpath": "/root/data/ep_l2_dtc_l1_native_v2/tools/lib/libunwind-ptrace.so.0",
+      "device": 2128,
+      "mode": "0o644",
+      "bytes": 18840,
+      "sha256": "f791a9b0b01faa13a65ee066d2351d2e38a23d6c3752f75eebeaf0fc5c7d56f4"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_remaining28_20261104_v1/tools/lib/libunwind-x86_64.so.8",
+      "lexists": true,
+      "exists": true,
+      "symlink": false,
+      "actual_realpath": "/root/data/ep_l2_dtc_l1_native_v2/tools/lib/libunwind-x86_64.so.8",
+      "device": 2128,
+      "mode": "0o644",
+      "bytes": 71920,
+      "sha256": "1077e265bdd76ed4f2d628ea29150eb98f5c7c8f5a30004a561e6e93a2a6f097"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_remaining28_20261104_v1/tools/lib/libunwind.so.8",
+      "lexists": true,
+      "exists": true,
+      "symlink": false,
+      "actual_realpath": "/root/data/ep_l2_dtc_l1_native_v2/tools/lib/libunwind.so.8",
+      "device": 2128,
+      "mode": "0o644",
+      "bytes": 63744,
+      "sha256": "5d1f6f104f79698e137c9f17c4b0317dfd96816c0eb6a87c50619a41472ca382"
+    }
+  ],
+  "fixed_assets_to_preserve": [
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/specs/E2-DTCPFV2-4114a3dc0d06b55b-DH-PHYS1024-OOPIB192-V1.json",
+      "sha256": "4f29fc0050a3a6bf2f91393e6d843922149070a4c26032e6389a8e6e8626f60a"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/specs/E2-DTCPFV2-4114a3dc0d06b55b-DH-PHYS768-OOPIB192-V1.json",
+      "sha256": "8b9af386248e573cc434f1017d72179cd7e94745764683121bdb42febf01f9a7"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/specs/E2-DTCPFV2-6df3a84b612086e8-DH-PHYS1024-OOPIB192-V1.json",
+      "sha256": "ae015bfdceeaa9bb49faece73f7990448d27ae26deda035cb3296630643ead53"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/specs/E2-DTCPFV2-6df3a84b612086e8-DH-PHYS768-OOPIB192-V1.json",
+      "sha256": "aadde9511c711b6f9e07998775b2e0d504820bd0e106a2941e7fbbe1e7d9c1d5"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/specs/E2-DTCPFV2-ae34174fbbdf83b2-DH-PHYS1024-OOPIB192-V1.json",
+      "sha256": "f1610da1b6d97048c87e389ae330f8cabffa2267e4fffb69c92e6488ad50c7ad"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/specs/E2-DTCPFV2-ae34174fbbdf83b2-DH-PHYS768-OOPIB192-V1.json",
+      "sha256": "96d2c09b73d5a0a05742c430688144a8a8f5314cec166073913589b06d22fd09"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/specs/E2-DTCPFV2-d984ea5475a581ad-DH-PHYS1024-OOPIB192-V1.json",
+      "sha256": "feb55ad0f5c53274ef467accf2bdb13c0176b50262f0f77ff623729b18ff41b1"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/specs/E2-DTCPFV2-d984ea5475a581ad-DH-PHYS768-OOPIB192-V1.json",
+      "sha256": "bb3df0f6756c003843292300172bbff76d20802f3e72aac42e4d2a0e702a0a57"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/specs/E2-DTCPFV2-e7bb67e63e3c3847-DH-PHYS1024-OOPIB192-V1.json",
+      "sha256": "88102826079929eebd4e1a526aa074b1b49e4bf03049660f0e042a487567a7ee"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/specs/E2-DTCPFV2-e7bb67e63e3c3847-DH-PHYS768-OOPIB192-V1.json",
+      "sha256": "e3cebcbc705d0b851506272873691a4edcca2e950103a1bda6f2e65a249658eb"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/specs/E2-DTCPFV2-eededb785179fc04-DH-PHYS1024-OOPIB192-V1.json",
+      "sha256": "58ba0f4c178b2cb0b561f8516f896d5e2b4cf851ac24a7d841af66fa986df8da"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/specs/E2-DTCPFV2-eededb785179fc04-DH-PHYS768-OOPIB192-V1.json",
+      "sha256": "87639460fb9a1c37be498d7aa3ea801b5225eeae4476660b3c5ed5c63880bb2e"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/specs/E2-DTCPFV2-f437190767aaed49-DH-PHYS1024-OOPIB192-V1.json",
+      "sha256": "fb7fe337909cc0ca4b5702ec7d5369f219073d5828e77a25d8c5de16d8eb69a4"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/specs/E2-DTCPFV2-f437190767aaed49-DH-PHYS768-OOPIB192-V1.json",
+      "sha256": "45932f0c0fdbbc7e065d76680249df0f43363cf93b46005dbd5ee58f4e69f18f"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/specs/E2-DTCPFV2-fc0705ae3721e999-DH-PHYS1024-OOPIB192-V1.json",
+      "sha256": "6fcbd27f41a0b9c821e279e99d3ab40edd4b3c0a578a05314521a5afaa20afcf"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/specs/E2-DTCPFV2-fc0705ae3721e999-DH-PHYS768-OOPIB192-V1.json",
+      "sha256": "e6d082bf886a0ab22cec7231fbf33412afda93bac2e15a22d4f10cb2f7f51853"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/perf16_native.py",
+      "sha256": "5ef37b56961101681c61d4e849381e1395d7e8017efba0e240367622e78e42db"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/perf16_ops.py",
+      "sha256": "5ceb606b84c435457f3a6c8841525c8018d52d7e0ba8cc7e7962bb9a11dd0d86"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/EXECUTION_PLAN.json",
+      "sha256": "f336334774e5603ba6f97e19259470043fd3fc17ca0d043c144f8de01b254439"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/BUILD_PROFILE.json",
+      "sha256": "bf055b33368f8ed9b635e037838b42ce351f6240c37a6c003436880078456d1a"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/SINGLE_SCIENTIFIC_APPROVAL_REQUEST.json",
+      "sha256": "3ae2a0a9972e91c3afa0dacbb9bc6c4fab26254404212b42ccb0a3aed75a2aac"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/control/SCIENCE_AUTHORIZATION.json",
+      "sha256": "2722bd203611918398b106005251abd13f8d3c3434f89ce415e23ea5f04d640f"
+    },
+    {
+      "path": "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+      "sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d"
+    }
+  ],
+  "all16_consumed_not_refundable": true,
+  "no_same_identity_retry": true
+}

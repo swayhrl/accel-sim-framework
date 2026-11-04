@@ -1,0 +1,43 @@
+{
+  "schema": "DTC_CODESIGN16_NEGATIVE_ARCHIVE_POSTPROCESS_LOCK_CLARIFICATION_V1",
+  "UTC": "2026-11-04T19:22:19.650720+00:00",
+  "status": "PASS_READONLY_SMALLER_NO_CALLBACK_RECONCILIATION",
+  "Root_selected_plan": "preserve pause+ABORT/rem0; run serialized standalone closed-negative archiver; let unchanged private scheduler read sixteen exclusive FAIL results and exit naturally",
+  "checks": {
+    "actual_results_source_unchanged": true,
+    "actual_registered_outbox_source_unchanged": true,
+    "actual_native_source_retains_qualified_lock_fix": true,
+    "finish_reads_existing_RESULT_before_engine_or_archive": true,
+    "new_result_exclusive_no_overwrite": true,
+    "archive_uses_same_CLOSED_COPY_lock": true,
+    "global_receiver_lock_identical": true,
+    "adapter_immutable_primitive_is_unchanged_archive_lock_function": true,
+    "private_ops_will_not_resubmit_postprocess_once_RESULT_exists": true,
+    "private_ops_accepts_exact_negative_state_for_terminal": true,
+    "private_ops_TERMINAL_requires_all16_no_running_or_post": true,
+    "no_stop_module_or_callback_by_C": true
+  },
+  "count": 12,
+  "source_pins": [
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/perf16_native.py",
+      "sha256": "5ef37b56961101681c61d4e849381e1395d7e8017efba0e240367622e78e42db"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/perf16_results.py",
+      "sha256": "8772e5e248753be5cd0b572e29b8b31e4621ce840d9d8bcaa9f05de863a717fd"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/perf16_outbox.py",
+      "sha256": "2b55983c9b3f974e97d6deaac573a0ef0a27fbced28d75eccdfa96465088df20"
+    },
+    {
+      "path": "/root/data/dtc_perf_first_v2_codesign16_20261105_v1/tools/perf16_ops.py",
+      "sha256": "5ceb606b84c435457f3a6c8841525c8018d52d7e0ba8cc7e7962bb9a11dd0d86"
+    }
+  ],
+  "C_real_owner_dynamic_module_changes": 0,
+  "C_callbacks_or_stop_modules_created": 0,
+  "C_model_registry_or_budget_actions": 0,
+  "scope_note": "C made no in-memory owner mutation. Source semantics and exact disk SHA are verified here; Root retains its own callback/owner history. No claim of separate live-owner memory introspection."
+}
