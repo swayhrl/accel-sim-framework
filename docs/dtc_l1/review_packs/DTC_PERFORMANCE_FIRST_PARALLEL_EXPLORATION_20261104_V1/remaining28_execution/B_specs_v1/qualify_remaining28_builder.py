@@ -1,0 +1,19 @@
+"""Exact28 sandbox data qualification; no native API, grant or dispatch action."""
+from pathlib import Path
+import json,hashlib,ast
+D=Path(__file__).resolve().parent;O=D/'sandbox'
+read=lambda p:json.loads(Path(p).read_bytes());sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()
+checks=[]
+def ck(n,v):assert v,n;checks.append({'check':n,'pass':True})
+dep=read(D/'DEPENDENCY_PINS.json');res=read(dep['resource_fields_path']);vs={v['variant']:v for v in read(dep['variant_path'])['variants']};m=read(O/'control/MATRIX.json');ck('exact28counts_noTag_noFirst4dup',len(m['points'])==28 and m['variant_counts']=={'PHYS768_TAG64x8':4,'PHYS1024_TAG64x8':8,'OO_PIB192':8,'TAG4BANK_PERBANK2_TOTAL8':8}and m['Tag_HOLD_or_first4_duplicated']is False);ck('8frozen_inputSHAs',len({p['input_digest']for p in m['points']})==8);ck('sixteenP0refsnotmodels',len(read(O/'control/P0_REFERENCE_INDEX.json')['references'])==16)
+for x in dep['files']:ck('pin_'+x['path'],sha(x['path'])==x['sha256'])
+for p in m['points']:
+ s=read(O/'control/specs'/(p['cohort']+'.json'));b=read(next(x['baseline_spec_path']for x in dep['selected']if x['program']==s['program']));v=vs[s['structure_variant']];r=next(x for x in res['points']if x['cohort']==s['cohort']);opts=dict(b['expected_options'])
+ for k,x in v['delta'].items():ck(s['cohort']+'_from_'+k,opts[k]==x['from']);opts[k]=x['to']
+ ck(s['cohort']+'_exact270_onlyApprovedDelta',len(s['expected_options'])==270 and s['expected_options']==opts);ck(s['cohort']+'_onlyDH_P0_structural_dynamicCPU',s['cell']=='DH'and s['downstream_profile']=='P0'and s['profile']==s['structure_variant']and s['host_cpu']is None);ck(s['cohort']+'_expected_binary_environment_runtime_preserved',s['expected']==b['expected']and s['original_environment']==b['original_environment']and s['runtime_files']==b['runtime_files']and s['native_simulator_argv'][0]==b['native_simulator_argv'][0]);ck(s['cohort']+'_resource_exact',s['limits']==r['limits']and s['estimated_peak_model_RAM_bytes']==r['estimated_peak_model_RAM_bytes']);ck(s['cohort']+'_source_gate_forward_only',s['execution_gate_contract_sha256']==dep['user_gate_sha256']);ck(s['cohort']+'_binding_byteSHA',sha(O/'control/input_bindings'/(s['input_digest']+'.json'))==s['input_binding_sha256']==b['input_binding_sha256']);ck(s['cohort']+'_spec_aliasSHA',sha(O/'control/specs'/(s['cohort']+'.json'))==sha(O/'control'/(s['cohort']+'_SPEC.json'))==p['spec_sha256'])
+ for i,x in enumerate(s['configs']):ck(s['cohort']+'_config4_'+str(i),x['sha256']==v['configs'][i]['sha256']==sha(O/'DTC/env'/('DH_'+s['structure_variant'])/('config-'+str(i)+'.config')))
+ for x in s['runtime_files']:ck(s['cohort']+'_runtime_'+x['target'],(O/x['target']).resolve()==Path(x['actual_realpath']).resolve()and sha(O/x['target'])==x['sha256'])
+ck('no_grant_or_native_ledger_materialized',not(O/'control/qualification_ledger').exists()and not(O/'control/SCIENCE_AUTHORIZATION.json').exists());ck('Root_and_first4_not_builder_outputs',str(O).startswith(str(D))and '/root/data/'not in str(O))
+api=Path(dep['logical_root'])/'tools/perf28_native.py';ref={'actual_API_exists_asof':api.exists(),'actual_canonical_or_prepare_called':False,'requires_Root_C_actualconditional_qualification_before_registration':True}
+if api.exists():ref['path']=str(api);ref['sha256']=sha(api);ast.parse(api.read_text())
+(D/'CPU_QUALIFICATION.json').write_text(json.dumps({'schema':'DTC_REMAINING28_SPEC_BUILDER_CPU_QUALIFICATION_V1','checks':checks,'count':len(checks),'all_pass':True,'spec_n':28,'options_n':270,'configs_n_per_variant':4,'new_models':0,'registrations':0,'native_R28_writes_by_B':0,'first4frozenpins_modified':False,'actual_gate_satisfaction_claimed':False,'API_scope':ref},indent=2)+'\n');print(json.dumps({'status':'REMAINING28_CPU_PASS_NO_START','checks':len(checks),'specs':28,'API_exists':api.exists()}))

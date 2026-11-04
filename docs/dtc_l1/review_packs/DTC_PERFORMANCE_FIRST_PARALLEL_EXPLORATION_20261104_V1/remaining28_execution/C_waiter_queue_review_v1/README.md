@@ -1,0 +1,9 @@
+# Remaining28 CPU release waiter and single-owner queue review
+
+PASS:38 source/CPU checks. Waiter5631bd36b2671e58888fb31c82a660e93edfe4f64b11abf8dfa6fa8ccaa63527, queuee254f316c6bd78dcee1aa0d33d24c4e0c1b39cd24f2162c1999f8bac153b666d and actual fixedcontract7d17b658f95eb4fd84ccaad8be419ac3eb5e2972353660e74d37f16ab3817ac1 are bound. Actual production invariants were evaluated read-only against that contract; run()/queuer/GDB/Caudit were never invoked. Private marker fixtures exercise exclusive audit/queue once behavior and rejection of plan/candidate/qualification/actual-used path/source drift.
+
+The conditionally qualified CPU report cannot itself release models. Source-pinned metadata readiness first requires all4 natural/strict/archived/nonlive; only then one C069 fullaudit may run. The strong receipt is verified before the sole helper is called. Both helper and owner reverify actual proof; only the existing owner registers exact28 and dispatches. The waiter is a CPU orchestration process and has no direct model/registry/affinity/signal path or second model dispatcher.
+
+O_EXCL audit/queue markers are written before calls; incomplete/error states preserve HOLD and prohibit blind retries. Existing registered request or actual queue marker switches to observation-only; completed ACK ends the waiter. Root must pin this review manifest, code and fixedcontract at its single explicit startup, retain PID/start ticks and an exclusive start receipt, and must not auto-restart a failed/exited instance. An engineering failure requires observed forward reconciliation; no reset/refund/model retry is authorized.
+
+This review certifies source behavior and CPU invariants, not actual fullfirst4gate, waiter startup, callback execution or new performance. Existing four models are not signaled. Original102 model-sourcepins/plan/candidate remain unchanged.
