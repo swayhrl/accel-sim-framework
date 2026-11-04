@@ -1,0 +1,193 @@
+--- frozen_stage1/strace_entry.py
++++ candidate_stage2/strace_entry.py
+@@ -7,6 +7,11 @@
+ FLAG='--seccomp-bpf';FILTER='trace=%file,process,network';FIELD='additional_strace_bpf_observation_binding'
+ OLD_NATIVE_SHA='fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d'
+ INITIAL='E2-DTCL2MLP-731af5428c4b8155-DH-P0-OBSCTRL-V1'
++SCOPE_MODES={
++ 'E2-DTCL2MLP-731af5428c4b8155-DH-P0-OBSCTRL-V1':'DEFAULT_CONTROL',
++ 'E2-DTCL2MLP-731af5428c4b8155-DH-P0-OBSBPF-V1':'BPF_REQUIRED',
++ 'E2-DTCL2MLP-16f4c42373e4961e-DH-P0-OBSCTRL-V1':'DEFAULT_CONTROL',
++ 'E2-DTCL2MLP-16f4c42373e4961e-DH-P0-OBSBPF-V1':'BPF_REQUIRED'}
+ DESIGN_SHA='02e9050b76f695c21d72a73bff636a415f8fe45c6a7f543874108241ae22905d'
+ def read(p):return json.loads(P(p).read_bytes())
+ def sha(p):return hashlib.sha256(P(p).read_bytes()).hexdigest()
+@@ -22,10 +27,10 @@
+   finally:os.close(fd)
+  finally:
+   if tmp.exists():tmp.unlink()
+-def record(cfg):return dict(request=REQ,overlay_id=ID,configuration_sha256=objsha(cfg),qualified_sources=cfg['qualified_sources'],expected_pins=cfg['expected_pins'],QA_sha256=cfg['QA_sha256'],readback_sha256=cfg['readback_sha256'],modes=cfg['modes'],future_primary_policy=cfg['future_primary_policy'],resource_configuration_sha256=cfg['resource_configuration_sha256'],design_contract_sha256=cfg['design_contract_sha256'])
++def record(cfg):return dict(request=REQ,overlay_id=ID,configuration_sha256=objsha(cfg),qualified_sources=cfg['qualified_sources'],expected_pins=cfg['expected_pins'],QA_sha256=cfg['QA_sha256'],readback_sha256=cfg['readback_sha256'],modes=cfg['modes'],future_primary_policy=cfg['future_primary_policy'],resource_configuration_sha256=cfg['resource_configuration_sha256'],design_contract_sha256=cfg['design_contract_sha256'],scope_extension_approval_sha256=cfg['scope_extension_approval_sha256'])
+ def validate(cfg,q):
+  assert cfg['schema']==cfg['overlay_id']==ID and cfg['request']==REQ and cfg['status']=='ACTIVE_FUTURE_ONLY'
+- assert cfg['future_primary_policy']=='NONE'and cfg['modes']=={INITIAL:'DEFAULT_CONTROL'},'EXACT_ONE_SHARED_CONTROL_ONLY'
++ assert cfg['future_primary_policy']=='NONE'and cfg['modes']==SCOPE_MODES,'ORIGINAL_FOUR_SHARED_STAGE2_ONLY'
+  if cfg['qualification_only']:
+   assert q.get('qualification_only')is True and P(cfg['root']).resolve()!=R
+  else:assert not q.get('qualification_only',False)and P(cfg['root']).resolve()==R
+@@ -36,9 +41,10 @@
+  assert sha(cfg['memory_frontend_path'])==cfg['memory_frontend_sha256']
+  assert sha(cfg['design_contract_path'])==cfg['design_contract_sha256']==DESIGN_SHA
+  assert sha(cfg['resource_configuration_path'])==cfg['resource_configuration_sha256'];resource=read(cfg['resource_configuration_path'])
+- assert resource['allowed_cohorts']==[INITIAL]and resource['max_shared_running']==1 and resource['qualification_stage']=='INITIAL_EXACT_ONE'
++ assert set(resource['allowed_cohorts'])==set(SCOPE_MODES)and len(resource['allowed_cohorts'])==4 and resource['max_shared_running']==1 and resource['qualification_stage']=='AFTER_NATURAL_SHARED_CANARY'
+  assert resource['root']==cfg['root']and resource['source_paths']['owner']==cfg['source_paths']['producer']and resource['source_paths']['frontend']==cfg['source_paths']['frontend']and resource['source_paths']['consumer']==cfg['source_paths']['consumer']
+  assert resource['source_paths']['extra_strict']!=cfg['source_paths']['extra_strict'],'RESOURCE_AND_OBSERVATION_STRICT_ARE_DISTINCT'
++ assert cfg['scope_extension_approval_path']==resource['scope_extension_approval_path']and cfg['scope_extension_approval_sha256']==resource['scope_extension_approval_sha256']==sha(cfg['scope_extension_approval_path'])
+  lib=load('shared_independent_resource_contract',resource['library_path']);assert sha(lib.__file__)==resource['qualified_sources']['library'];lib.validate(resource,q)
+  assert cfg['default_native_entry']=='/root/data/ep_l2_dtc_l1_native_v2/bin/native'and cfg['expected_pins'][cfg['default_native_entry']]=='46c69a74154e0690afd82324a348da236baf90189d9a7e474b4b14eb01ab4f0e'
+  assert sha(cfg['exclusion_contract_path'])==cfg['exclusion_contract_sha256'];contract=read(cfg['exclusion_contract_path']);assert contract['schema']=='DTC_ENGINEERING_OBSERVATION_EXCLUSION_CONTRACT_V1'and contract['status']=='EXCLUSION_RULES_ONLY_NOT_ADMISSION_AUTHORITY'
+@@ -128,7 +134,7 @@
+     out=P(obj['output']);before=expected_argv(root,out,s);after=mode_argv(before,mode);preintent=proc_reader(os.getpid());baseline(preintent);lease=copy.deepcopy(native.assert_parent_lease());science=scientific_identity(s)
+     verify_engineering_spec(cfg,cohort,mode,canonical)
+     snap=dict(schema=ID,request=REQ,cohort=cohort,uuid=obj['uuid'],mode=mode,config=copy.deepcopy(cfg),overlay_record=copy.deepcopy(rec),source_snapshots={r:dict(path=cfg['source_paths'][r],sha256=cfg['qualified_sources'][r],utf8=P(cfg['source_paths'][r]).read_bytes().decode('utf-8'))for r in ROLES},QA_utf8=P(cfg['QA_path']).read_bytes().decode('utf-8'),readback_utf8=P(cfg['readback_path']).read_bytes().decode('utf-8'),canonical_spec_utf8=raw.decode(),canonical_spec_sha256=sha(sp),resolved_spec=s,resolved_spec_sha256=objsha(s),dispatch_binding_utf8=dbr.decode(),dispatch_binding_sha256=sha(db),scientific_identity=science,baseline_preINTENT=preintent,expected_argv_before=before,expected_argv_after=after,parent_lease=lease,exclusion_contract_utf8=P(cfg['exclusion_contract_path']).read_bytes().decode('utf-8'))
+-    snap.update(resource_configuration_utf8=P(cfg['resource_configuration_path']).read_bytes().decode(),design_contract_utf8=P(cfg['design_contract_path']).read_bytes().decode())
++    snap.update(resource_configuration_utf8=P(cfg['resource_configuration_path']).read_bytes().decode(),design_contract_utf8=P(cfg['design_contract_path']).read_bytes().decode(),scope_extension_approval_utf8=P(cfg['scope_extension_approval_path']).read_bytes().decode())
+     atomic_exclusive(out/'STRACE_BPF_OBSERVATION_SNAPSHOT.json',snap)
+     binding.update(schema=ID,request=REQ,overlay_id=ID,cohort=cohort,uuid=obj['uuid'],mode=mode,snapshot_sha256=sha(out/'STRACE_BPF_OBSERVATION_SNAPSHOT.json'),config_sha256=objsha(cfg),qualified_sources=cfg['qualified_sources'],QA_sha256=cfg['QA_sha256'],readback_sha256=cfg['readback_sha256'],canonical_spec_sha256=sha(sp),resolved_spec_sha256=objsha(s),dispatch_binding_sha256=sha(db),expected_argv_before_sha256=objsha(before),expected_argv_after_sha256=objsha(after),scientific_identity=science)
+     birth.update(binding,output=str(out),expected_before=before,expected_after=after,baseline_preINTENT=preintent,parent_lease=lease,binding=copy.deepcopy(binding))
+@@ -155,80 +161,85 @@
+  assert clone.__code__ is raw_worker.__code__ and all(clone.__globals__[k] is raw_worker.__globals__[k] for k in raw_worker.__globals__ if k!='N')
+  return clone
+ def install_owner_dispatch(frame,cfg_path,consumer_check,main=None,armed=False,hooks=None):
+- """Main-only reversible future routing; never called by qualification runner."""
++ """Main-only Stage2 routing, preserving all old sources and consumed births."""
+  assert threading.current_thread()is threading.main_thread();main=main or sys.modules['__main__'];assert not hasattr(main,OWNER_MARKER)
+  engine=frame.f_locals['engine'];engine.assert_parent_lease();q=engine.registered()[2];cfg=read(cfg_path);validate(cfg,q)
+  if hooks is not None:assert cfg['qualification_only']and q.get('qualification_only')is True and P(cfg['root']).resolve()!=R
+- hooks=hooks or{}
++ hooks=hooks or{};scope=tuple(c for c in SCOPE_MODES if unused(q,c));assert scope,'NO_UNUSED_STAGE2_IDENTITIES'
+  assert not any(c not in q['consumed']for c in frame.f_locals['claims']),'DRAIN_PREEXEC_CLAIMS_FIRST'
+  assert P(inspect.getsourcefile(consumer_check))==P(cfg['source_paths']['consumer'])and sha(inspect.getsourcefile(consumer_check))==cfg['qualified_sources']['consumer']
+- assert consumer_check(frame,cfg) is True,'NEW_STRICT_CONSUMER_NOT_INSTALLED'
+- assert armed is False,'INSTALL_CLOSED_THEN_EXPLICIT_ARM'
+- assert INITIAL not in frame.f_locals['claims']and INITIAL not in read(P(cfg['root'])/'control/POOL_DISPATCH_RESERVATIONS.json')['claims']and not(P(cfg['root'])/'control/qualification_ledger'/(INITIAL+'.INTENT.json')).exists()and unused(q,INITIAL)
++ assert consumer_check(frame,cfg)is True and armed is False,'INSTALL_CLOSED_WITH_NEW_CONSUMER'
++ def no_birth(cc,currentq):
++  assert unused(currentq,cc)and cc not in frame.f_locals['claims']and cc not in read(P(cfg['root'])/'control/POOL_DISPATCH_RESERVATIONS.json')['claims']
++  assert not(P(cfg['root'])/'control/qualification_ledger'/(cc+'.INTENT.json')).exists()
++ for c in scope:no_birth(c,q)
+  old=frame.f_globals['worker'];raw=getattr(main,'DTC_L2_MLP_PADDING_ONLY_OWNER_V1')['worker'];clone=make_worker_clone(raw,P(cfg['source_paths']['entry']).parents[1]);res=frame.f_locals['res'];aging=res.DTC_LARGE_JOB_AGING_INSTALLED;oldchoose=res.choose_dispatch
+- state=dict(frame=frame,previous=old,clone=clone,aging=aging,res=res,cfg_path=str(cfg_path),armed=False,ever_armed=False,previous_choose=oldchoose,last_hold=None,last_proof=None,consumer_check=consumer_check)
++ state=dict(frame=frame,previous=old,clone=clone,aging=aging,res=res,cfg_path=str(cfg_path),armed=False,ever_armed=False,install_scope=scope,previous_choose=oldchoose,last_hold=None,last_proof=None,consumer_check=consumer_check,no_birth=no_birth)
+  def worker(c):
+-  if c!=INITIAL:return old(c)
++  if c not in scope:return old(c)
+   try:
+    currentq=engine.registered()[2]
+    if not unused(currentq,c):return dict(state='SPENT_ENGINEERING_PRESERVE',cohort=c,model_retries=0,error='SHARED_IDENTITY_NOT_UNUSED')
+-   if not state['armed']:return dict(state='ZERO_START_DEFERRED',cohort=c,model_starts=0,error='RESOURCE_HOLD_SHARED_EXACT1_NOT_ARMED')
+-   current=read(cfg_path);currentq=engine.registered()[2];validate(current,currentq);mode=select_mode(current,c,currentq)
+-   if mode is None:return old(c)
+-   if not unused(currentq,c):return dict(state='SPENT_ENGINEERING_PRESERVE',cohort=c,model_retries=0,error='BPF_IDENTITY_NOT_UNUSED')
+-   assert consumer_check(frame,current)is True
++   if not state['armed']:return dict(state='ZERO_START_DEFERRED',cohort=c,model_starts=0,error='RESOURCE_HOLD_SHARED_STAGE2_NOT_ARMED')
++   current=read(cfg_path);validate(current,currentq);assert select_mode(current,c,currentq)==SCOPE_MODES[c]and consumer_check(frame,current)is True
+    return clone(c)
+   except Exception as error:
+    try:
+     spent=c in engine.registered()[2]['consumed']or(P(cfg['root'])/'control/qualification_ledger'/(c+'.INTENT.json')).exists()
+-    if spent:return dict(state='SPENT_ENGINEERING_PRESERVE',cohort=c,model_retries=0,error='STRACE_ENTRY_SPENT_PRESERVE '+repr(error))
+-    return dict(state='ZERO_START_ENGINEERING',cohort=c,model_starts=0,error='STRACE_ENTRY_HOLD '+repr(error))
+-   except Exception:return dict(state='ENGINEERING_PRESERVE',cohort=c,model_retries=0,error='STRACE_ENTRY_IDENTITY_UNKNOWN '+repr(error))
++    return dict(state='SPENT_ENGINEERING_PRESERVE'if spent else'ZERO_START_ENGINEERING',cohort=c,model_retries=0,error='SHARED_STAGE2_HOLD '+repr(error))
++   except Exception:return dict(state='ENGINEERING_PRESERVE',cohort=c,model_retries=0,error='SHARED_STAGE2_IDENTITY_UNKNOWN '+repr(error))
+  def choose(pending,sample,claims,history,previous=None,policy=None,dispatch_index=0):
+   ordinary=oldchoose(pending,sample,claims,history,previous,policy,dispatch_index)
+   if ordinary is not None or not state['armed']:return ordinary
+   try:
+    with aging.lock:
+-    current=read(cfg_path);q=engine.registered()[2];validate(current,q);spec=next((s for s in pending if s['cohort']==INITIAL),None)
+-    if spec is None or not unused(q,INITIAL)or INITIAL in claims:return None
+-    rcfg=read(current['resource_configuration_path']);lib=load('shared_owner_exact1_resource',rcfg['library_path']);lib.validate(rcfg,q)
++    current=read(cfg_path);q=engine.registered()[2];validate(current,q)
++    candidates=[x for x in pending if x['cohort']in scope and unused(q,x['cohort'])and x['cohort']not in claims]
++    if not candidates:return None
++    rcfg=read(current['resource_configuration_path']);lib=load('shared_owner_stage2_resource',rcfg['library_path']);lib.validate(rcfg,q)
+     if hooks.get('memory_lib'):hooks['memory_lib'](lib)
+-    canonical=engine.canonical(INITIAL);forecast=res.forecast(canonical,history,policy or read(P(current['root'])/'control/RESOURCE_POLICY.json'))
+-    assert forecast['predicted_peak_RAM_bytes']<=canonical['estimated_peak_model_RAM_bytes'],'OFFICIAL_FORECAST_REFRESH_REQUIRED'
+-    legal=lib.capture_legal_cpu_evidence(rcfg,claims,INITIAL);cpus=legal['legal_cpu_candidates'];assert cpus,'NO_ORIGINAL_LEGAL_CPU'
+-    db=P(current['root'])/'control/dispatch_bindings'/(INITIAL+'.json');selected=read(db)['host_cpu']if db.exists()and read(db)['host_cpu']in cpus else cpus[0]
+-    legal=lib.capture_legal_cpu_evidence(rcfg,claims,INITIAL,selected);cpu=lib.sample_cpu_evidence(selected);slot=lib.capture_slot_evidence(rcfg,q,INITIAL,selected,root=engine.R)
+-    base=res.resources(dict(canonical,host_cpu=selected),True);projected=lib.project_for_candidate(base,rcfg,INITIAL,selected,cpu,slot,{'kind':'OWNER_CHOOSE'},legal)
+-    reserve=max(0,int(aging.state.protected));slack=lib.budget(projected)-projected['total_projected_additional_RAM_bytes'];assert slack>=reserve,'PROTECTED_R_NOT_AVAILABLE'
+-    assert projected['physical_RAM_pass']and projected['physical_disk_pass']and projected['own_write_ceiling_pass']
+-    result=dict(cohort=INITIAL,host_cpu=selected,forecast=forecast,admission=projected['admission_decision'],cpu_shared_timeslice_overlay_id=lib.ID)
+-    # Reuse the already-qualified zero-start CPU-binding repair, never alter
+-    # a consumed/claimed identity or a scientific spec.
+-    helper=P('/root/data/dtc_l2_mlp_exploration_20261027_v1/control/operational_amendments/zero_start_cpu_rebind_v1/zero_start_cpu_rebind.py');assert sha(helper)=='b0db8a54400bd456aa404aa9b033badefc59231f8dd04534bc34bcf56937bcf8'
+-    rebound=load('shared_existing_zero_start_cpu_rebind',helper).maybe_rebind(engine.R,engine,res,result,legal['sample'],claims,None)
+-    assert rebound is not None,'ZERO_START_BINDING_HOLD';state['last_proof']=projected[lib.PROOF];state['last_hold']=None;return rebound
++    for candidate in candidates:
++     try:
++      c=candidate['cohort'];canonical=engine.canonical(c);forecast=res.forecast(canonical,history,policy or read(P(current['root'])/'control/RESOURCE_POLICY.json'))
++      assert forecast['predicted_peak_RAM_bytes']<=canonical['estimated_peak_model_RAM_bytes'],'OFFICIAL_FORECAST_REFRESH_REQUIRED'
++      legal=lib.capture_legal_cpu_evidence(rcfg,claims,c);cpus=legal['legal_cpu_candidates'];assert cpus,'NO_ORIGINAL_LEGAL_CPU'
++      db=P(current['root'])/'control/dispatch_bindings'/(c+'.json');selected=read(db)['host_cpu']if db.exists()and read(db)['host_cpu']in cpus else cpus[0]
++      legal=lib.capture_legal_cpu_evidence(rcfg,claims,c,selected);cpu=lib.sample_cpu_evidence(selected);slot=lib.capture_slot_evidence(rcfg,q,c,selected,root=engine.R)
++      base=res.resources(dict(canonical,host_cpu=selected),True);projected=lib.project_for_candidate(base,rcfg,c,selected,cpu,slot,{'kind':'OWNER_CHOOSE'},legal)
++      reserve=max(0,int(aging.state.protected));slack=lib.budget(projected)-projected['total_projected_additional_RAM_bytes'];assert slack>=reserve,'PROTECTED_R_NOT_AVAILABLE'
++      assert projected['physical_RAM_pass']and projected['physical_disk_pass']and projected['own_write_ceiling_pass']
++      result=dict(cohort=c,host_cpu=selected,forecast=forecast,admission=projected['admission_decision'],cpu_shared_timeslice_overlay_id=lib.ID)
++      helper=P('/root/data/dtc_l2_mlp_exploration_20261027_v1/control/operational_amendments/zero_start_cpu_rebind_v1/zero_start_cpu_rebind.py');assert sha(helper)=='b0db8a54400bd456aa404aa9b033badefc59231f8dd04534bc34bcf56937bcf8'
++      rebound=load('shared_existing_zero_start_cpu_rebind',helper).maybe_rebind(engine.R,engine,res,result,legal['sample'],claims,None)
++      assert rebound is not None,'ZERO_START_BINDING_HOLD';state['last_proof']=projected[lib.PROOF];state['last_hold']=None;return rebound
++     except Exception as error:state['last_hold']=repr(error)
++    return None
+   except Exception as error:state['last_hold']=repr(error);return None
+  with aging.lock:
+   assert frame.f_globals['worker']is old and res.choose_dispatch is oldchoose
+   state.update(wrapper=worker,chooser=choose,ever_exposed=True);setattr(main,OWNER_MARKER,state);frame.f_globals['worker']=worker;res.choose_dispatch=choose
+- return dict(status='SHARED_EXACT1_CLOSED_DISPATCH_INSTALLED',armed=False,new_grants=0,model_starts=0)
++ return dict(status='SHARED_STAGE2_CLOSED_DISPATCH_INSTALLED',armed=False,install_scope=list(scope),new_grants=0,model_starts=0)
+ 
+ def arm_owner_dispatch(main=None):
+  assert threading.current_thread()is threading.main_thread();main=main or sys.modules['__main__'];v=getattr(main,OWNER_MARKER);frame=v['frame'];engine=frame.f_locals['engine'];engine.assert_parent_lease()
+  with v['aging'].lock:
+   cfg=read(v['cfg_path']);q=engine.registered()[2];validate(cfg,q);assert frame.f_globals['worker']is v['wrapper']and v['res'].choose_dispatch is v['chooser']and v['consumer_check'](frame,cfg)is True
+-  assert unused(q,INITIAL)and INITIAL not in frame.f_locals['claims']and INITIAL not in read(P(cfg['root'])/'control/POOL_DISPATCH_RESERVATIONS.json')['claims']and not(P(cfg['root'])/'control/qualification_ledger'/(INITIAL+'.INTENT.json')).exists()
++  for c in v['install_scope']:v['no_birth'](c,q)
+   v['armed']=True;v['ever_armed']=True
+- return dict(status='SHARED_EXACT1_DISPATCH_ARMED',cohort=INITIAL,new_grants=0,model_starts=0)
++ return dict(status='SHARED_STAGE2_DISPATCH_ARMED',scope=list(v['install_scope']),new_grants=0,model_starts=0)
++
+ def restore_owner_dispatch(main=None):
+  assert threading.current_thread()is threading.main_thread();main=main or sys.modules['__main__'];v=getattr(main,OWNER_MARKER);v['frame'].f_locals['engine'].assert_parent_lease()
+  with v['aging'].lock:
+   frame=v['frame'];engine=frame.f_locals['engine'];q=engine.registered()[2];root=P(engine.R)
+-  if v['ever_armed']:
+-   value=read(root/'analysis'/(INITIAL+'.RESULT.json'));proof=value['proof'];resource=proof['additional_cpu_shared_timeslice_strict'];obs=proof['additional_strace_bpf_observation_strict']
+-   assert value['state']=='PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE'and proof['performance_accepted']is True and value['uuid']==proof['uuid']==q['consumed'][INITIAL]['uuid']and value['archive']
+-   assert resource['status']=='PASS_CPU_SHARED_TIMESLICE_IO_AND_ORIGINAL_PERFORMANCE'and obs['schema']==ID
+-   for p in [resource,obs]:assert sha(p['sidecar_path'])==p['sidecar_sha256']
+-  else:assert INITIAL not in frame.f_locals['claims']and INITIAL not in q['consumed']and not(root/'control/qualification_ledger'/(INITIAL+'.INTENT.json')).exists()
++  for c in v['install_scope']:
++   if v['ever_armed']:
++    value=read(root/'analysis'/(c+'.RESULT.json'));proof=value['proof'];resource=proof['additional_cpu_shared_timeslice_strict'];obs=proof['additional_strace_bpf_observation_strict']
++    assert value['state']=='PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE'and proof['performance_accepted']is True and value['uuid']==proof['uuid']==q['consumed'][c]['uuid']and value['archive']
++    assert resource['status']=='PASS_CPU_SHARED_TIMESLICE_IO_AND_ORIGINAL_PERFORMANCE'and obs['schema']==ID
++    out=P(read(root/'control/qualification_ledger'/(c+'.INTENT.json'))['output']);binding=read(root/'control/qualification_ledger'/(c+'.INTENT.json'))[FIELD]
++    assert binding['qualified_sources']==read(v['cfg_path'])['qualified_sources'],'WRONG_ACCEPTED_SOURCE_GENERATION'
++    for p in [resource,obs]:assert sha(p['sidecar_path'])==p['sidecar_sha256']
++   else:v['no_birth'](c,q)
+   assert frame.f_globals['worker']is v['wrapper']and v['res'].choose_dispatch is v['chooser'];frame.f_globals['worker']=v['previous'];v['res'].choose_dispatch=v['previous_choose'];delattr(main,OWNER_MARKER)
+  return dict(status='EXACT_PREVIOUS_FUTURE_WORKER_RESTORED',retained_new_generation_consumer_required=True,new_grants=0,model_starts=0)
+--- frozen_stage1/bpf_frontend.py
++++ candidate_stage2/bpf_frontend.py
+@@ -1,7 +1,7 @@
+ """Registered alternate native entry. Old native46/fa3/IO/CPU2 bytes unchanged."""
+ import pathlib,json,hashlib,importlib.util,sys,os
+ P=pathlib.Path
+-D=P('/root/data/dtc_l2_mlp_exploration_20261027_v1/control/operational_amendments/cpu_shared_timeslice_entry_v1')
++D=P('/root/data/dtc_l2_mlp_exploration_20261027_v1/control/operational_amendments/cpu_shared_timeslice_stage2_v1')
+ CFG=D/'ACTIVE_ENTRY.json'
+ def read(p):return json.loads(P(p).read_bytes())
+ def sha(p):return hashlib.sha256(P(p).read_bytes()).hexdigest()
+--- frozen_stage1/native-entry/bin/experiment
++++ candidate_stage2/native-entry/bin/experiment
+@@ -1,3 +1,3 @@
+ #!/bin/sh
+ set -eu
+-exec /usr/bin/python3 -B /root/data/dtc_l2_mlp_exploration_20261027_v1/control/operational_amendments/cpu_shared_timeslice_entry_v1/bpf_frontend.py --config /root/data/dtc_l2_mlp_exploration_20261027_v1/control/operational_amendments/cpu_shared_timeslice_entry_v1/ACTIVE_ENTRY.json experiment "$@"
++exec /usr/bin/python3 -B /root/data/dtc_l2_mlp_exploration_20261027_v1/control/operational_amendments/cpu_shared_timeslice_stage2_v1/bpf_frontend.py --config /root/data/dtc_l2_mlp_exploration_20261027_v1/control/operational_amendments/cpu_shared_timeslice_stage2_v1/ACTIVE_ENTRY.json experiment "$@"
