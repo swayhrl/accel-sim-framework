@@ -69,3 +69,5 @@ The remaining condition is concrete:an approved window in which the external ord
 Own NVML use was0MiB in both actual snapshots;sampled supervisor-tree RSS peaked37,961,728bytes. CPU tests record child high-water RSS;entire-Goal process-tree RSS was not continuously sampled,so no full-Goal measuredpeakPASS is claimed. Monitoring scope and disk counts are in receipts.
 
 Downloads,dependency changes,164 access,old assets/caches writes,Profiler/NCU/NSYS/NVBit,simulator/RTL and intervention in otherGPUtasks are0. Publication includes exact commit/tree/blob fetch-back and clean verification,thenSTOP.
+
+Publication engineering note: SSH public-key authentication was unavailable. Existing gh credentials were reused with a per-command HTTPS transport override; no keys,dependencies or persistent Git configuration changed. One GitHub500 receive error was resolved by one nonforce retry after checking remote state. This affected only publication,not the single GPU attempt or scientific result. PUBLICATION_TRANSPORT_RECOVERY.json records the bounded recovery.
