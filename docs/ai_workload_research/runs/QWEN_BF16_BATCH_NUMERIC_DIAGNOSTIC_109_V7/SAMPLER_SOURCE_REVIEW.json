@@ -1,0 +1,396 @@
+[
+  {
+    "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/v1/sample/sampler.py",
+    "sha256": "f95805b2c6d06218c724826aa5f881a606e8d0a534a566aee7c85948520dd216",
+    "excerpts": [
+      {
+        "line": 27,
+        "context": "    with the following steps in order:\n\n    1. If logprobs are requested:\n        a) If `logprobs_mode` is `raw_logprobs`, compute logprobs\n           as the final logprobs to return.\n        b) If `logprobs_mode` is `raw_logits`, clone the logits\n           as the final logprobs to return.\n    2. Convert logits to float32."
+      },
+      {
+        "line": 29,
+        "context": "    1. If logprobs are requested:\n        a) If `logprobs_mode` is `raw_logprobs`, compute logprobs\n           as the final logprobs to return.\n        b) If `logprobs_mode` is `raw_logits`, clone the logits\n           as the final logprobs to return.\n    2. Convert logits to float32.\n    3. Apply allowed token ids whitelist.\n    4. Apply bad words exclusion."
+      },
+      {
+        "line": 31,
+        "context": "           as the final logprobs to return.\n        b) If `logprobs_mode` is `raw_logits`, clone the logits\n           as the final logprobs to return.\n    2. Convert logits to float32.\n    3. Apply allowed token ids whitelist.\n    4. Apply bad words exclusion.\n    5. Apply logit processors which are not argmax-invariant,\n       i.e. that can impact greedy sampling."
+      },
+      {
+        "line": 64,
+        "context": "\n    def __init__(\n        self,\n        logprobs_mode: LogprobsMode = \"raw_logprobs\",\n        use_fp64_gumbel: bool = False,\n    ):\n        super().__init__()\n        self.topk_topp_sampler = TopKTopPSampler(logprobs_mode, use_fp64_gumbel)"
+      },
+      {
+        "line": 68,
+        "context": "        use_fp64_gumbel: bool = False,\n    ):\n        super().__init__()\n        self.topk_topp_sampler = TopKTopPSampler(logprobs_mode, use_fp64_gumbel)\n        self.pin_memory = PIN_MEMORY\n        self.logprobs_mode = logprobs_mode\n        self.use_fp64_gumbel = use_fp64_gumbel\n"
+      },
+      {
+        "line": 70,
+        "context": "        super().__init__()\n        self.topk_topp_sampler = TopKTopPSampler(logprobs_mode, use_fp64_gumbel)\n        self.pin_memory = PIN_MEMORY\n        self.logprobs_mode = logprobs_mode\n        self.use_fp64_gumbel = use_fp64_gumbel\n\n    def forward(\n        self,"
+      },
+      {
+        "line": 78,
+        "context": "        logits: torch.Tensor,\n        sampling_metadata: SamplingMetadata,\n        predict_bonus_token: bool = False,\n        logprobs_mode_override: LogprobsMode | None = None,\n    ) -> SamplerOutput:\n        logprobs_mode = logprobs_mode_override or self.logprobs_mode\n        # NOTE(woosuk): Use the original logits (before any penalties or\n        # temperature scaling) for the top-k logprobs."
+      },
+      {
+        "line": 80,
+        "context": "        predict_bonus_token: bool = False,\n        logprobs_mode_override: LogprobsMode | None = None,\n    ) -> SamplerOutput:\n        logprobs_mode = logprobs_mode_override or self.logprobs_mode\n        # NOTE(woosuk): Use the original logits (before any penalties or\n        # temperature scaling) for the top-k logprobs.\n        # This is different from the V0 sampler, which uses the logits that\n        # is used for sampling (after penalties and temperature scaling)."
+      },
+      {
+        "line": 86,
+        "context": "        # This is different from the V0 sampler, which uses the logits that\n        # is used for sampling (after penalties and temperature scaling).\n        num_logprobs = sampling_metadata.max_num_logprobs\n        raw_logprobs: torch.Tensor | None = None\n        if num_logprobs is not None or sampling_metadata.logprob_token_ids:\n            if logprobs_mode == \"raw_logprobs\":\n                raw_logprobs = self.compute_logprobs(logits)\n            elif logprobs_mode == \"raw_logits\":"
+      },
+      {
+        "line": 88,
+        "context": "        num_logprobs = sampling_metadata.max_num_logprobs\n        raw_logprobs: torch.Tensor | None = None\n        if num_logprobs is not None or sampling_metadata.logprob_token_ids:\n            if logprobs_mode == \"raw_logprobs\":\n                raw_logprobs = self.compute_logprobs(logits)\n            elif logprobs_mode == \"raw_logits\":\n                if logits.dtype == torch.float32:\n                    raw_logprobs = logits.clone()"
+      },
+      {
+        "line": 89,
+        "context": "        raw_logprobs: torch.Tensor | None = None\n        if num_logprobs is not None or sampling_metadata.logprob_token_ids:\n            if logprobs_mode == \"raw_logprobs\":\n                raw_logprobs = self.compute_logprobs(logits)\n            elif logprobs_mode == \"raw_logits\":\n                if logits.dtype == torch.float32:\n                    raw_logprobs = logits.clone()\n                else:"
+      },
+      {
+        "line": 90,
+        "context": "        if num_logprobs is not None or sampling_metadata.logprob_token_ids:\n            if logprobs_mode == \"raw_logprobs\":\n                raw_logprobs = self.compute_logprobs(logits)\n            elif logprobs_mode == \"raw_logits\":\n                if logits.dtype == torch.float32:\n                    raw_logprobs = logits.clone()\n                else:\n                    raw_logprobs = logits.to(torch.float32)"
+      },
+      {
+        "line": 91,
+        "context": "            if logprobs_mode == \"raw_logprobs\":\n                raw_logprobs = self.compute_logprobs(logits)\n            elif logprobs_mode == \"raw_logits\":\n                if logits.dtype == torch.float32:\n                    raw_logprobs = logits.clone()\n                else:\n                    raw_logprobs = logits.to(torch.float32)\n"
+      },
+      {
+        "line": 92,
+        "context": "                raw_logprobs = self.compute_logprobs(logits)\n            elif logprobs_mode == \"raw_logits\":\n                if logits.dtype == torch.float32:\n                    raw_logprobs = logits.clone()\n                else:\n                    raw_logprobs = logits.to(torch.float32)\n\n        # Use float32 for the logits."
+      },
+      {
+        "line": 94,
+        "context": "                if logits.dtype == torch.float32:\n                    raw_logprobs = logits.clone()\n                else:\n                    raw_logprobs = logits.to(torch.float32)\n\n        # Use float32 for the logits.\n        logits = logits.to(torch.float32)\n"
+      },
+      {
+        "line": 96,
+        "context": "                else:\n                    raw_logprobs = logits.to(torch.float32)\n\n        # Use float32 for the logits.\n        logits = logits.to(torch.float32)\n\n        logits = self.apply_logits_processors(\n            logits, sampling_metadata, predict_bonus_token"
+      },
+      {
+        "line": 97,
+        "context": "                    raw_logprobs = logits.to(torch.float32)\n\n        # Use float32 for the logits.\n        logits = logits.to(torch.float32)\n\n        logits = self.apply_logits_processors(\n            logits, sampling_metadata, predict_bonus_token\n        )"
+      },
+      {
+        "line": 99,
+        "context": "        # Use float32 for the logits.\n        logits = logits.to(torch.float32)\n\n        logits = self.apply_logits_processors(\n            logits, sampling_metadata, predict_bonus_token\n        )\n        # Sample the next token.\n        sampled, processed_logprobs = self.sample(logits, sampling_metadata)"
+      },
+      {
+        "line": 105,
+        "context": "        # Sample the next token.\n        sampled, processed_logprobs = self.sample(logits, sampling_metadata)\n        if processed_logprobs is not None:\n            raw_logprobs = processed_logprobs\n        # Convert sampled token ids to int64 (long) type to ensure compatibility\n        # with subsequent operations that may use these values as indices.\n        # This conversion is necessary because FlashInfer sampling operations\n        # return int32 (while PyTorch argmax and topk return int64)."
+      },
+      {
+        "line": 116,
+        "context": "        # This is used by generative_scoring API to get logprobs for specific tokens\n        logprob_token_ids_tensors = None\n        if sampling_metadata.logprob_token_ids:\n            assert raw_logprobs is not None\n            logprob_token_ids_tensors = self.gather_specific_token_logprobs(\n                raw_logprobs, sampling_metadata.logprob_token_ids, sampled\n            )\n"
+      },
+      {
+        "line": 118,
+        "context": "        if sampling_metadata.logprob_token_ids:\n            assert raw_logprobs is not None\n            logprob_token_ids_tensors = self.gather_specific_token_logprobs(\n                raw_logprobs, sampling_metadata.logprob_token_ids, sampled\n            )\n\n        if num_logprobs is None:\n            logprobs_tensors = logprob_token_ids_tensors"
+      },
+      {
+        "line": 126,
+        "context": "        elif num_logprobs == -1:\n            # Return the full unsorted and unranked logprobs.\n            logprobs_tensors = LogprobsTensors(\n                torch.empty(0), raw_logprobs, torch.empty(0)\n            )\n        else:\n            # Gather the logprobs and ranks of the topk and sampled token.\n            logprobs_tensors = self.gather_logprobs("
+      },
+      {
+        "line": 130,
+        "context": "            )\n        else:\n            # Gather the logprobs and ranks of the topk and sampled token.\n            logprobs_tensors = self.gather_logprobs(\n                raw_logprobs, num_logprobs, token_ids=sampled\n            )\n\n        # If we have both num_logprobs and logprob_token_ids, prefer"
+      },
+      {
+        "line": 131,
+        "context": "        else:\n            # Gather the logprobs and ranks of the topk and sampled token.\n            logprobs_tensors = self.gather_logprobs(\n                raw_logprobs, num_logprobs, token_ids=sampled\n            )\n\n        # If we have both num_logprobs and logprob_token_ids, prefer\n        # logprob_token_ids as it's more specific"
+      },
+      {
+        "line": 213,
+        "context": "        # Mask invalid (padded) positions with -inf\n        gathered_logprobs = gathered_logprobs.masked_fill(~valid_mask, float(\"-inf\"))\n\n        # Compute ranks for the sampled token. log_softmax is monotonic w.r.t.\n        # the original logits, so ranks computed from logprobs are equivalent.\n        sampled_logprobs = logprobs.gather(-1, sampled.unsqueeze(-1))\n        # Avoid 0/1 specialization recompile on the batch dimension of the\n        # compiled batched_count_greater_than. See gather_logprobs for context."
+      },
+      {
+        "line": 217,
+        "context": "        # the original logits, so ranks computed from logprobs are equivalent.\n        sampled_logprobs = logprobs.gather(-1, sampled.unsqueeze(-1))\n        # Avoid 0/1 specialization recompile on the batch dimension of the\n        # compiled batched_count_greater_than. See gather_logprobs for context.\n        torch._dynamo.decorators.mark_unbacked(logprobs, 0)\n        torch._dynamo.decorators.mark_unbacked(sampled_logprobs, 0)\n        token_ranks = batched_count_greater_than(logprobs, sampled_logprobs)\n"
+      },
+      {
+        "line": 238,
+        "context": "        # Avoid division by zero if there are greedy requests.\n        if not all_random:\n            temp = torch.where(temp < _SAMPLING_EPS, 1.0, temp)\n        return logits.div_(temp.unsqueeze(dim=1))\n\n    @staticmethod\n    def greedy_sample(logits: torch.Tensor) -> torch.Tensor:\n        return logits.argmax(dim=-1).view(-1)"
+      },
+      {
+        "line": 242,
+        "context": "\n    @staticmethod\n    def greedy_sample(logits: torch.Tensor) -> torch.Tensor:\n        return logits.argmax(dim=-1).view(-1)\n\n    def sample(\n        self,\n        logits: torch.Tensor,"
+      },
+      {
+        "line": 248,
+        "context": "        self,\n        logits: torch.Tensor,\n        sampling_metadata: SamplingMetadata,\n        logprobs_mode_override: LogprobsMode | None = None,\n    ) -> tuple[torch.Tensor, torch.Tensor | None]:\n        \"\"\"Sample logits based on sampling metadata.\n\n        The various logits processing functions called in this method"
+      },
+      {
+        "line": 256,
+        "context": "        may update the logits tensor in-place.\n        \"\"\"\n\n        logprobs_mode = logprobs_mode_override or self.logprobs_mode\n        assert not (sampling_metadata.all_greedy and sampling_metadata.all_random)\n        if sampling_metadata.all_random:\n            greedy_sampled = None\n        else:"
+      },
+      {
+        "line": 268,
+        "context": "                    sampling_metadata.max_num_logprobs is not None\n                    or sampling_metadata.logprob_token_ids\n                ):\n                    if logprobs_mode == \"processed_logits\":\n                        processed_logprobs = logits\n                    elif logprobs_mode == \"processed_logprobs\":\n                        processed_logprobs = self.compute_logprobs(logits)\n                return greedy_sampled, processed_logprobs"
+      },
+      {
+        "line": 270,
+        "context": "                ):\n                    if logprobs_mode == \"processed_logits\":\n                        processed_logprobs = logits\n                    elif logprobs_mode == \"processed_logprobs\":\n                        processed_logprobs = self.compute_logprobs(logits)\n                return greedy_sampled, processed_logprobs\n\n        assert sampling_metadata.temperature is not None"
+      },
+      {
+        "line": 277,
+        "context": "        assert sampling_metadata.temperature is not None\n\n        # Apply temperature.\n        logits = self.apply_temperature(\n            logits, sampling_metadata.temperature, sampling_metadata.all_random\n        )\n\n        # Apply logits processors that only apply to random sampling"
+      },
+      {
+        "line": 284,
+        "context": "        # Apply logits processors that only apply to random sampling\n        # (argmax invariant)\n        for processor in sampling_metadata.logitsprocs.argmax_invariant:\n            logits = processor.apply(logits)\n\n        # Apply top_k and/or top_p.\n        random_sampled, processed_logprobs = self.topk_topp_sampler(\n            logits,"
+      },
+      {
+        "line": 307,
+        "context": "\n    @staticmethod\n    def compute_logprobs(logits: torch.Tensor) -> torch.Tensor:\n        return logits.log_softmax(dim=-1, dtype=torch.float32)\n\n    @staticmethod\n    def gather_logprobs(\n        logprobs: torch.Tensor,"
+      },
+      {
+        "line": 310,
+        "context": "        return logits.log_softmax(dim=-1, dtype=torch.float32)\n\n    @staticmethod\n    def gather_logprobs(\n        logprobs: torch.Tensor,\n        num_logprobs: int,\n        token_ids: torch.Tensor,\n    ) -> LogprobsTensors:"
+      },
+      {
+        "line": 402,
+        "context": "\n        # Apply logits processors which can impact greedy sampling.\n        for processor in sampling_metadata.logitsprocs.non_argmax_invariant:\n            logits = processor.apply(logits)\n\n        # Apply penalties (e.g., freq_penalties).\n        logits = self.apply_penalties(logits, sampling_metadata, output_token_ids)\n        holder = sampling_metadata.thinking_budget_state_holder"
+      },
+      {
+        "line": 405,
+        "context": "            logits = processor.apply(logits)\n\n        # Apply penalties (e.g., freq_penalties).\n        logits = self.apply_penalties(logits, sampling_metadata, output_token_ids)\n        holder = sampling_metadata.thinking_budget_state_holder\n        if holder is not None and holder.has_tracked_requests():\n            # Committed outputs only; spec drafts live in ``spec_token_ids``.\n            holder.update_state("
+      },
+      {
+        "line": 414,
+        "context": "                sampling_metadata.spec_token_ids,\n                repeat_indices=None,\n            )\n            logits = holder.apply_to_logits(\n                logits,\n                predict_bonus_token,\n                sampling_metadata.spec_token_ids,\n            )"
+      },
+      {
+        "line": 419,
+        "context": "                predict_bonus_token,\n                sampling_metadata.spec_token_ids,\n            )\n        return logits\n\n    @staticmethod\n    def apply_penalties(\n        logits: torch.Tensor,"
+      },
+      {
+        "line": 428,
+        "context": "        output_token_ids: list[list[int]],\n    ) -> torch.Tensor:\n        if sampling_metadata.no_penalties:\n            return logits\n\n        assert sampling_metadata.prompt_token_ids is not None\n        return apply_all_penalties(\n            logits,"
+      }
+    ]
+  },
+  {
+    "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/model_executor/layers/logits_processor.py",
+    "sha256": "6b0603d67b0c756253c2fdc882a3896d2e873a16e9aa2ef877aabca8d36bdb5f",
+    "excerpts": [
+      {
+        "line": 93,
+        "context": "        # Whether to use gather or all-gather to gather the logits.\n        self.use_all_gather = current_platform.use_all_gather()\n        # Dtype of the lm_head projection. Defaults to the model dtype; an\n        # fp32 head (via `--hf-overrides '{\"head_dtype\": \"float32\"}'`) is\n        # required for RL training-inference consistency.\n        model_config = get_current_vllm_config().model_config\n        self.head_dtype = model_config.head_dtype if model_config is not None else None\n"
+      },
+      {
+        "line": 106,
+        "context": "        skip_gather: bool = False,\n    ) -> torch.Tensor | None:\n        if self.logits_as_input:\n            logits = hidden_states\n        else:\n            # Get the logits for the next tokens.\n            logits = self._get_logits(\n                hidden_states, lm_head, embedding_bias, skip_gather"
+      },
+      {
+        "line": 109,
+        "context": "            logits = hidden_states\n        else:\n            # Get the logits for the next tokens.\n            logits = self._get_logits(\n                hidden_states, lm_head, embedding_bias, skip_gather\n            )\n        if logits is not None:\n            if self.soft_cap is not None:"
+      },
+      {
+        "line": 114,
+        "context": "            )\n        if logits is not None:\n            if self.soft_cap is not None:\n                logits = logits / self.soft_cap\n                logits = torch.tanh(logits)\n                logits = logits * self.soft_cap\n\n            if self.scale != 1.0:"
+      },
+      {
+        "line": 115,
+        "context": "        if logits is not None:\n            if self.soft_cap is not None:\n                logits = logits / self.soft_cap\n                logits = torch.tanh(logits)\n                logits = logits * self.soft_cap\n\n            if self.scale != 1.0:\n                logits *= self.scale"
+      },
+      {
+        "line": 116,
+        "context": "            if self.soft_cap is not None:\n                logits = logits / self.soft_cap\n                logits = torch.tanh(logits)\n                logits = logits * self.soft_cap\n\n            if self.scale != 1.0:\n                logits *= self.scale\n        return logits"
+      },
+      {
+        "line": 120,
+        "context": "\n            if self.scale != 1.0:\n                logits *= self.scale\n        return logits\n\n    def _gather_logits(self, logits: torch.Tensor) -> torch.Tensor:\n        \"\"\"gather/all-gather the logits tensor across model parallel group.\"\"\"\n        if self.use_all_gather:"
+      },
+      {
+        "line": 130,
+        "context": "            # NOTE(woosuk): Here, the outputs of every device should not be None\n            # because XLA requires strict SPMD among all devices. Every device\n            # should execute the same operations after gathering the logits.\n            logits = tensor_model_parallel_all_gather(logits)\n        else:\n            # None may be returned for rank > 0\n            logits = tensor_model_parallel_gather(logits)\n        return logits"
+      },
+      {
+        "line": 133,
+        "context": "            logits = tensor_model_parallel_all_gather(logits)\n        else:\n            # None may be returned for rank > 0\n            logits = tensor_model_parallel_gather(logits)\n        return logits\n\n    def _apply_head(\n        self,"
+      },
+      {
+        "line": 134,
+        "context": "        else:\n            # None may be returned for rank > 0\n            logits = tensor_model_parallel_gather(logits)\n        return logits\n\n    def _apply_head(\n        self,\n        lm_head: VocabParallelEmbedding,"
+      },
+      {
+        "line": 159,
+        "context": "                \"supported for an unquantized lm_head.\"\n            )\n        if (\n            self.head_dtype == torch.float32\n            and (current_platform.is_cuda() or current_platform.is_rocm())\n            and hidden_states.is_cuda\n        ):\n            # Accumulate the projection directly into fp32. This avoids"
+      },
+      {
+        "line": 170,
+        "context": "            # implemented for CUDA and ROCm (the latter via the non-Lt GEMM\n            # path); other platforms fall back to the cast path below.\n            flat = hidden_states.reshape(-1, hidden_states.shape[-1])\n            logits = torch.mm(flat, lm_head.weight.t(), out_dtype=self.head_dtype)\n            if embedding_bias is not None:\n                logits = logits + embedding_bias.to(self.head_dtype)\n            return logits.reshape(*hidden_states.shape[:-1], -1)\n        return F.linear("
+      },
+      {
+        "line": 172,
+        "context": "            flat = hidden_states.reshape(-1, hidden_states.shape[-1])\n            logits = torch.mm(flat, lm_head.weight.t(), out_dtype=self.head_dtype)\n            if embedding_bias is not None:\n                logits = logits + embedding_bias.to(self.head_dtype)\n            return logits.reshape(*hidden_states.shape[:-1], -1)\n        return F.linear(\n            hidden_states.to(self.head_dtype),\n            lm_head.weight.to(self.head_dtype),"
+      },
+      {
+        "line": 173,
+        "context": "            logits = torch.mm(flat, lm_head.weight.t(), out_dtype=self.head_dtype)\n            if embedding_bias is not None:\n                logits = logits + embedding_bias.to(self.head_dtype)\n            return logits.reshape(*hidden_states.shape[:-1], -1)\n        return F.linear(\n            hidden_states.to(self.head_dtype),\n            lm_head.weight.to(self.head_dtype),\n            embedding_bias.to(self.head_dtype) if embedding_bias is not None else None,"
+      },
+      {
+        "line": 188,
+        "context": "        skip_gather: bool = False,\n    ) -> torch.Tensor | None:\n        # Get the logits for the next tokens.\n        logits = self._apply_head(lm_head, hidden_states, embedding_bias)\n        if skip_gather:\n            return logits\n\n        # Gather logits for TP"
+      },
+      {
+        "line": 190,
+        "context": "        # Get the logits for the next tokens.\n        logits = self._apply_head(lm_head, hidden_states, embedding_bias)\n        if skip_gather:\n            return logits\n\n        # Gather logits for TP\n        if lm_head.tp_size > 1:\n            logits = self._gather_logits(logits)"
+      },
+      {
+        "line": 194,
+        "context": "\n        # Gather logits for TP\n        if lm_head.tp_size > 1:\n            logits = self._gather_logits(logits)\n\n        # Remove paddings in vocab (if any).\n        if logits is not None:\n            logits = logits[..., : self.org_vocab_size]"
+      },
+      {
+        "line": 198,
+        "context": "\n        # Remove paddings in vocab (if any).\n        if logits is not None:\n            logits = logits[..., : self.org_vocab_size]\n        return logits\n\n    def get_top_tokens(\n        self,"
+      },
+      {
+        "line": 199,
+        "context": "        # Remove paddings in vocab (if any).\n        if logits is not None:\n            logits = logits[..., : self.org_vocab_size]\n        return logits\n\n    def get_top_tokens(\n        self,\n        lm_head: VocabParallelEmbedding,"
+      },
+      {
+        "line": 220,
+        "context": "            )\n        tp_size = lm_head.tp_size\n\n        logits = self._apply_head(lm_head, hidden_states, embedding_bias)\n        if self.soft_cap is not None:\n            logits = torch.tanh(logits / self.soft_cap) * self.soft_cap\n        if self.scale != 1.0:\n            logits = logits * self.scale"
+      },
+      {
+        "line": 222,
+        "context": "\n        logits = self._apply_head(lm_head, hidden_states, embedding_bias)\n        if self.soft_cap is not None:\n            logits = torch.tanh(logits / self.soft_cap) * self.soft_cap\n        if self.scale != 1.0:\n            logits = logits * self.scale\n\n        # Mask out padding entries beyond org_vocab_size on this shard."
+      },
+      {
+        "line": 224,
+        "context": "        if self.soft_cap is not None:\n            logits = torch.tanh(logits / self.soft_cap) * self.soft_cap\n        if self.scale != 1.0:\n            logits = logits * self.scale\n\n        # Mask out padding entries beyond org_vocab_size on this shard.\n        num_pad = lm_head.shard_indices.num_org_vocab_padding\n        if num_pad > 0:"
+      },
+      {
+        "line": 241,
+        "context": "            return global_indices\n\n        # All-gather (value, index) pairs, then reduce to global argmax.\n        # Use float32 to avoid bf16 precision loss on large vocab indices.\n        local_pair = torch.stack(\n            [local_max_vals.float(), global_indices.float()], dim=-1\n        )\n        # [batch, 2] -> [batch, 2 * tp_size]"
+      },
+      {
+        "line": 276,
+        "context": "                \"non-positive logit scaling factors.\"\n            )\n\n        logits = self._apply_head(lm_head, hidden_states, embedding_bias)\n\n        # Mask out padding entries beyond org_vocab_size on this shard.\n        num_pad = lm_head.shard_indices.num_org_vocab_padding\n        if num_pad > 0:"
+      }
+    ]
+  },
+  {
+    "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/v1/sample/ops/topk_topp_sampler.py",
+    "sha256": "13ea4359832bc914492330958ec4f5ac140f408b8f410cc05c6eaf7ddcd70be4",
+    "excerpts": [
+      {
+        "line": 55,
+        "context": "    Assumes flashinfer is installed, as guaranteed by ``requirements/cuda.txt``;\n    otherwise importing the FlashInfer backend below raises ``ImportError``.\n\n    Note: callers must additionally ensure ``logprobs_mode`` doesn't require\n    post-top-k/top-p logits/logprobs for any request whose logprobs will be\n    returned in this step, since FlashInfer doesn't expose those.\n    \"\"\"\n    if not current_platform.is_cuda():"
+      },
+      {
+        "line": 103,
+        "context": "\n    def __init__(\n        self,\n        logprobs_mode: LogprobsMode = \"raw_logprobs\",\n        use_fp64_gumbel: bool = False,\n    ) -> None:\n        super().__init__()\n        self.logprobs_mode = logprobs_mode"
+      },
+      {
+        "line": 107,
+        "context": "        use_fp64_gumbel: bool = False,\n    ) -> None:\n        super().__init__()\n        self.logprobs_mode = logprobs_mode\n        self.use_fp64_gumbel = use_fp64_gumbel\n        if current_platform.is_cuda():\n            # FlashInfer doesn't expose post-top-k/top-p logits/logprobs,\n            # so it can't be used when the configured mode requires them."
+      },
+      {
+        "line": 113,
+        "context": "            # FlashInfer doesn't expose post-top-k/top-p logits/logprobs,\n            # so it can't be used when the configured mode requires them.\n            can_use_flashinfer = (\n                logprobs_mode not in PROCESSED_LOGPROBS_MODES\n                and flashinfer_sampler_supported()\n            )\n            self.forward = (\n                self.forward_cuda if can_use_flashinfer else self.forward_native"
+      },
+      {
+        "line": 134,
+        "context": "            else:\n                self.forward = self.forward_native\n        elif (\n            logprobs_mode not in PROCESSED_LOGPROBS_MODES\n            and rocm_aiter_ops.is_enabled()\n            and not _skip_aiter_sampler_on_gfx1250()  # TODO (JPVILLAM): Enable\n        ):\n            self.aiter_ops = None"
+      },
+      {
+        "line": 162,
+        "context": "\n        The logits tensor may be updated in-place.\n        \"\"\"\n        logits = apply_top_k_top_p(logits, k, p)\n        logits_to_return = None\n        if self.logprobs_mode == \"processed_logits\":\n            logits_to_return = logits\n        elif self.logprobs_mode == \"processed_logprobs\":"
+      },
+      {
+        "line": 164,
+        "context": "        \"\"\"\n        logits = apply_top_k_top_p(logits, k, p)\n        logits_to_return = None\n        if self.logprobs_mode == \"processed_logits\":\n            logits_to_return = logits\n        elif self.logprobs_mode == \"processed_logprobs\":\n            logits_to_return = logits.log_softmax(dim=-1, dtype=torch.float32)\n        probs = logits.softmax(dim=-1, dtype=torch.float32)"
+      },
+      {
+        "line": 166,
+        "context": "        logits_to_return = None\n        if self.logprobs_mode == \"processed_logits\":\n            logits_to_return = logits\n        elif self.logprobs_mode == \"processed_logprobs\":\n            logits_to_return = logits.log_softmax(dim=-1, dtype=torch.float32)\n        probs = logits.softmax(dim=-1, dtype=torch.float32)\n        return (\n            random_sample(probs, generators, self.use_fp64_gumbel),"
+      },
+      {
+        "line": 167,
+        "context": "        if self.logprobs_mode == \"processed_logits\":\n            logits_to_return = logits\n        elif self.logprobs_mode == \"processed_logprobs\":\n            logits_to_return = logits.log_softmax(dim=-1, dtype=torch.float32)\n        probs = logits.softmax(dim=-1, dtype=torch.float32)\n        return (\n            random_sample(probs, generators, self.use_fp64_gumbel),\n            logits_to_return,"
+      },
+      {
+        "line": 168,
+        "context": "            logits_to_return = logits\n        elif self.logprobs_mode == \"processed_logprobs\":\n            logits_to_return = logits.log_softmax(dim=-1, dtype=torch.float32)\n        probs = logits.softmax(dim=-1, dtype=torch.float32)\n        return (\n            random_sample(probs, generators, self.use_fp64_gumbel),\n            logits_to_return,\n        )"
+      },
+      {
+        "line": 195,
+        "context": "            return self.forward_native(logits, generators, k, p)\n        if self.use_fp64_gumbel:\n            return self.forward_native(logits, generators, k, p)\n        assert self.logprobs_mode not in PROCESSED_LOGPROBS_MODES, (\n            \"FlashInfer does not support returning logits/logprobs\"\n        )\n        # flashinfer sampling functions expect contiguous logits.\n        # In flex_attn/triton_attn fp32 inference, logits can be non-contiguous"
+      },
+      {
+        "line": 215,
+        "context": "\n        The logits tensor may be updated in-place.\n        \"\"\"\n        logits = apply_top_k_top_p(logits, k, p)\n        logits_to_return = None\n        if self.logprobs_mode == \"processed_logits\":\n            logits_to_return = logits\n        elif self.logprobs_mode == \"processed_logprobs\":"
+      },
+      {
+        "line": 217,
+        "context": "        \"\"\"\n        logits = apply_top_k_top_p(logits, k, p)\n        logits_to_return = None\n        if self.logprobs_mode == \"processed_logits\":\n            logits_to_return = logits\n        elif self.logprobs_mode == \"processed_logprobs\":\n            logits_to_return = logits.log_softmax(dim=-1, dtype=torch.float32)\n"
+      },
+      {
+        "line": 219,
+        "context": "        logits_to_return = None\n        if self.logprobs_mode == \"processed_logits\":\n            logits_to_return = logits\n        elif self.logprobs_mode == \"processed_logprobs\":\n            logits_to_return = logits.log_softmax(dim=-1, dtype=torch.float32)\n\n        if not generators and not self.use_fp64_gumbel:\n            return compiled_random_sample(logits), logits_to_return"
+      },
+      {
+        "line": 220,
+        "context": "        if self.logprobs_mode == \"processed_logits\":\n            logits_to_return = logits\n        elif self.logprobs_mode == \"processed_logprobs\":\n            logits_to_return = logits.log_softmax(dim=-1, dtype=torch.float32)\n\n        if not generators and not self.use_fp64_gumbel:\n            return compiled_random_sample(logits), logits_to_return\n"
+      },
+      {
+        "line": 225,
+        "context": "        if not generators and not self.use_fp64_gumbel:\n            return compiled_random_sample(logits), logits_to_return\n\n        probs = logits.softmax(dim=-1, dtype=torch.float32)\n        q = empty_exponential_noise_like(probs, self.use_fp64_gumbel)\n        q.exponential_()\n        for i, generator in generators.items():\n            q[i].exponential_(generator=generator)"
+      },
+      {
+        "line": 266,
+        "context": "            return self.forward_native(logits, generators, k, p)\n        if self.use_fp64_gumbel:\n            return self.forward_native(logits, generators, k, p)\n        assert self.logprobs_mode not in PROCESSED_LOGPROBS_MODES, (\n            \"aiter sampler does not support returning logits/logprobs.\"\n        )\n        if self.aiter_ops is None and not self._init_aiter_ops():\n            return self.forward_native(logits, generators, k, p)"
+      },
+      {
+        "line": 286,
+        "context": "        use_top_p = p is not None\n        # Joint k+p path\n        if use_top_p and use_top_k:\n            probs = logits.softmax(dim=-1, dtype=torch.float32).contiguous()\n            next_token_ids = self.aiter_ops.top_k_top_p_sampling_from_probs(\n                probs,\n                None,\n                *_to_tensor_scalar_tuple(k),"
+      },
+      {
+        "line": 297,
+        "context": "            return next_token_ids.view(-1)\n        # Top-p only path\n        elif use_top_p:\n            probs = logits.softmax(dim=-1, dtype=torch.float32).contiguous()\n            next_token_ids = self.aiter_ops.top_p_sampling_from_probs(\n                probs, None, *_to_tensor_scalar_tuple(p), deterministic=True\n            )\n            return next_token_ids.view(-1)"
+      },
+      {
+        "line": 304,
+        "context": "            return next_token_ids.view(-1)\n        # Top-k only path\n        elif use_top_k:\n            probs = logits.softmax(dim=-1, dtype=torch.float32).contiguous()\n            renorm_probs = self.aiter_ops.top_k_renorm_probs(\n                probs, *_to_tensor_scalar_tuple(k)\n            )\n            return torch.multinomial(renorm_probs, num_samples=1).view(-1)"
+      },
+      {
+        "line": 329,
+        "context": "            logits.shape[0], dtype=torch.int64, device=logits.device\n        )\n        logits_to_return = None\n        if self.logprobs_mode in PROCESSED_LOGPROBS_MODES:\n            logits_to_return = torch.empty_like(logits)\n\n        assert len(generators) != logits.shape[0], (\n            \"xpu kernel topk_topp_sampler does not support batch-wise generators.\""
+      },
+      {
+        "line": 347,
+        "context": "        if k is not None:\n            k = k.to(torch.int64)\n        torch.ops.vllm.xpu_topk_topp_sampler(\n            random_sampled, logits_to_return, logits, k, p, self.logprobs_mode, seeds\n        )\n        # The custom XPU sampler kernel consumes RNG values internally, so advance\n        # the default generator's offset to keep future draws deterministic.\n        # pytorch: offset must be multiple of 4"
+      },
+      {
+        "line": 362,
+        "context": "# https://github.com/pytorch/pytorch/pull/151218\n@torch.compile(dynamic=True, backend=current_platform.simple_compile_backend)\ndef compiled_random_sample(logits: torch.Tensor) -> torch.Tensor:\n    probs = logits.softmax(dim=-1, dtype=torch.float32)\n    q = torch.empty_like(probs)\n    q.exponential_()\n    return probs.div(q).argmax(dim=-1).view(-1)\n"
+      },
+      {
+        "line": 372,
+        "context": "    logits: torch.Tensor, k: torch.Tensor | None, p: torch.Tensor | None\n) -> torch.Tensor:\n    if p is None and k is None:\n        return logits\n\n    if HAS_TRITON:\n        return apply_top_k_top_p_triton(logits, k, p)\n"
+      },
+      {
+        "line": 396,
+        "context": "    \"\"\"\n    if p is None:\n        if k is None:\n            return logits\n\n        if allow_cpu_sync:\n            # Avoid sorting vocab for top-k only case.\n            return apply_top_k_only(logits, k)"
+      },
+      {
+        "line": 422,
+        "context": "        logits_sort.masked_fill_(top_p_mask, -float(\"inf\"))\n\n    # Re-sort the probabilities.\n    return logits.scatter_(dim=-1, index=logits_idx, src=logits_sort)\n\n\ndef apply_top_k_only(logits: torch.Tensor, k: torch.Tensor) -> torch.Tensor:\n    \"\"\""
+      },
+      {
+        "line": 445,
+        "context": "    top_k_mask = logits.topk(max_top_k, dim=1).values.gather(1, k_index.long())\n    # Handle non-topk rows.\n    top_k_mask.masked_fill_(no_top_k_mask.unsqueeze(1), -float(\"inf\"))\n    return logits.masked_fill_(logits < top_k_mask, -float(\"inf\"))\n\n\ndef empty_exponential_noise_like(\n    probs: torch.Tensor, use_fp64_gumbel: bool"
+      },
+      {
+        "line": 510,
+        "context": "    assert not (k is None and p is None)\n    if k is None:\n        # Top-p only.\n        probs = logits.softmax(dim=-1, dtype=torch.float32)\n        next_token_ids = flashinfer.sampling.top_p_sampling_from_probs(\n            probs, p, deterministic=True\n        )\n    elif p is None:"
+      },
+      {
+        "line": 516,
+        "context": "        )\n    elif p is None:\n        # Top-k only.\n        probs = logits.softmax(dim=-1, dtype=torch.float32)\n        next_token_ids = flashinfer.sampling.top_k_sampling_from_probs(\n            probs, k, deterministic=True\n        )\n    else:"
+      }
+    ]
+  }
+]

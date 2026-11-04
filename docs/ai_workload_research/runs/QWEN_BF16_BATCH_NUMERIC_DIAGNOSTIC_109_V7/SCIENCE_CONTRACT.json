@@ -1,0 +1,305 @@
+{
+  "schema": "BF16_BATCH_NUMERIC_DIAGNOSTIC_V7",
+  "status": "FROZEN_CPU_TESTED_PRELOCK",
+  "base_commit": "29a86372d47f622afe1e1a53b675b8f1cd499a16",
+  "base_tree": "c2f954519910af464548e5f4fc631437a318c12f",
+  "new_independent_experiment": true,
+  "old_goals_resumed": false,
+  "question": "Are full-generate 32-minus-1 token deltas compatible with BF16 streaming-weight supply, and does a two-real-request batch amortize that cost?",
+  "hypotheses": {
+    "H1": "Streaming weight supply: one full dense weight pass per decode step; ideal B2 shares one pass across two requests. A ratio near1 is compatible but also possible under H2.",
+    "H2": "Compute, launch/scheduling, padded graph dispatch, sampling/logprobs or other execution changes may explain deltas/batch response; no resource-only causal axis.",
+    "H3": "Model/input/backend/dtype/graph or actual scheduling identity mismatches invalidate the structural comparison; STOP runtime/numeric failures."
+  },
+  "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+  "dtype": "bfloat16",
+  "TP": 1,
+  "quantization": null,
+  "one_engine": true,
+  "engine": {
+    "max_model_len": 544,
+    "max_num_batched_tokens": 1088,
+    "max_num_seqs": 2,
+    "compilation_mode": "VLLM_COMPILE",
+    "backend": "inductor",
+    "cudagraph_mode": "FULL_AND_PIECEWISE",
+    "enforce_eager": false,
+    "enable_prefix_caching": false,
+    "cpu_offload_gb": 0,
+    "gpu_memory_utilization": 0.92
+  },
+  "points": [
+    {
+      "point": "P1",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00"
+      ],
+      "output_tokens": 1
+    },
+    {
+      "point": "P2",
+      "sources": [
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 1
+    },
+    {
+      "point": "P3",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00",
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 1
+    },
+    {
+      "point": "P4",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00"
+      ],
+      "output_tokens": 32
+    },
+    {
+      "point": "P5",
+      "sources": [
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 32
+    },
+    {
+      "point": "P6",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00",
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 32
+    }
+  ],
+  "warmup_rounds": [
+    [
+      "P1",
+      "P4",
+      "P2",
+      "P5",
+      "P3",
+      "P6"
+    ],
+    [
+      "P6",
+      "P3",
+      "P5",
+      "P2",
+      "P4",
+      "P1"
+    ]
+  ],
+  "formal_rounds": [
+    [
+      "P1",
+      "P4",
+      "P2",
+      "P5",
+      "P3",
+      "P6"
+    ],
+    [
+      "P6",
+      "P3",
+      "P5",
+      "P2",
+      "P4",
+      "P1"
+    ],
+    [
+      "P2",
+      "P5",
+      "P3",
+      "P6",
+      "P1",
+      "P4"
+    ],
+    [
+      "P4",
+      "P1",
+      "P6",
+      "P3",
+      "P5",
+      "P2"
+    ],
+    [
+      "P3",
+      "P6",
+      "P1",
+      "P4",
+      "P2",
+      "P5"
+    ]
+  ],
+  "warmups_per_point": 2,
+  "formal_per_point": 5,
+  "sampling": {
+    "seed": 0,
+    "temperature": 0,
+    "top_p": 1,
+    "ignore_eos": true,
+    "detokenize": false,
+    "logprobs": 20
+  },
+  "numeric": {
+    "tokens": "Exact lengths and exact same-source tokens across repetitions and B1/B2 at same output length",
+    "logprobs": "All returned finite; sampled per-step abs(delta)<=0.05+0.01*abs(reference)",
+    "atol": 0.05,
+    "rtol": 0.01,
+    "historical_A00_32": "Pinned MP02_A reference exact tokens and sampled logprobs, B1 and B2; A01 has self-repeatability plus B1/B2 crosscheck, no independent oracle",
+    "failure": "NUMERIC_OR_RUNTIME_NO_GO; no tolerance change"
+  },
+  "timing": "pre-sync; CUDA-event start; one llm.generate; event stop; post-sync; event elapsed. Host generate-call wall separately (excludes post-sync), plus synchronized host request wall.",
+  "analysis": {
+    "delta_A00": "median(P4)-median(P1)",
+    "delta_A01": "median(P5)-median(P2)",
+    "delta_batch": "median(P6)-median(P3)",
+    "ratio": "delta_batch / mean(delta_A00,delta_A01)",
+    "statistics": "5-sample median and unscaled MAD; all raw samples; no posthoc point selection",
+    "descriptive_envelope": "abs(delta)>max(0.05*min(two medians),3*sum(two MADs)); ratio no causal classification",
+    "stability": "MAD/median<=0.05 per point; otherwise INCONCLUSIVE",
+    "weight_model": "Conditional traffic/bandwidth bound only, not measured DRAM; signed deltas include prefill and graph effects"
+  },
+  "GPU": {
+    "lock": "/data/c16/locks/c16_gpu_campaign.lock",
+    "single_nonblocking_attempt": true,
+    "UUID": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+    "held_seconds_max": 1500,
+    "own_NVML_MiB_max": 15400,
+    "tree_RSS_bytes_max": 17179869184,
+    "new_disk_bytes_max": 3221225472,
+    "goal_start_epoch": 1793809465,
+    "goal_seconds_max": 3600,
+    "owner_count": 1
+  },
+  "stops": [
+    "Missing real input/model/source identity",
+    "Lock conflict: GPU_RESOURCE_DEFERRED no retry",
+    "Any eager/weak/fallback backend or non-BF16/quantized path",
+    "Frozen numeric failure",
+    "Formal compile/capture or absent32-token graph replay",
+    "Unknown/foreign GPU process or resource overrun",
+    "No additional scientific points/Profiler/RTL/Goal"
+  ],
+  "next_candidate": "Only if concrete residual cost and a new falsifiable hardware variable exist after software exclusion; never automatic.",
+  "frozen_utc_epoch": 1793809741.5177448,
+  "frozen_tool_hashes": {
+    "util/ai_workload_research/bf16_batch_numeric_diagnostic_v7/supervisor.py": "3f0a8274dc593d752b0984ac1489c9f2384847d0b837fdee40dcfee9d89a56d0",
+    "util/ai_workload_research/bf16_batch_numeric_diagnostic_v7/persistence.py": "8ae2447aa05c65c45688a1d16c755aa9d412176118293c1d3358adc02b122c4a",
+    "util/ai_workload_research/bf16_batch_numeric_diagnostic_v7/worker.py": "be3f9bbf2fbaa89010a5cbd1442b91b4f3f38fdded8156eb410953d339ee22ba",
+    "util/ai_workload_research/bf16_batch_numeric_diagnostic_v7/test_shared_monitoring.py": "60a4bdf242c0e3aec2a17da9fee493e258b6207c3f22bbb0d514cf10df382b15",
+    "util/ai_workload_research/bf16_batch_numeric_diagnostic_v7/test_desktop_policy.py": "a083fb683d15c5e43f81628a0b3e719c567f3e4202c7204ef8c801416e045470",
+    "util/ai_workload_research/bf16_batch_numeric_diagnostic_v7/analyze.py": "9ede0c960b39c3a0ae11436f5da14a4efe00debd5ab409047116269c4ef047ba",
+    "util/ai_workload_research/bf16_batch_numeric_diagnostic_v7/independent_analysis.py": "7758b5d01e0c04621737217dd5961e7ba70de5ae2abbe2e9b54f35e7a7e28987",
+    "util/ai_workload_research/bf16_batch_numeric_diagnostic_v7/test_rss_lifecycle.py": "7e325e282ffabdaca89a0536abfa9689096fa58d9b3a895070387a7278a27865",
+    "util/ai_workload_research/bf16_batch_numeric_diagnostic_v7/revalidate.py": "ec941f5cd06e7d3b785617bacd0c728fcf3e4c359a2d65b4b4f17bc69a50fc69",
+    "util/ai_workload_research/bf16_batch_numeric_diagnostic_v7/shared_gate.py": "96267cf3933235442d4416a4e38d0ac3b69d96865d251fe92fa7877089c45c06",
+    "util/ai_workload_research/bf16_batch_numeric_diagnostic_v7/desktop_policy.py": "77bc5e9eabb6f2df45c78a3c8911489beb260d7f3ce8f520287a85030278677f",
+    "util/ai_workload_research/bf16_batch_numeric_diagnostic_v7/rss_lifecycle.py": "fed7f292c927be7fc181cd5e0db5e745e6dc0a3ebd92343c6f3b9b499381f9bc",
+    "util/ai_workload_research/bf16_batch_numeric_diagnostic_v7/test_capture.py": "8d2319e0e684ac131d6e68c51573e483996007c3c4ec367b78ee7ff399f2647b",
+    "util/ai_workload_research/bf16_batch_numeric_diagnostic_v7/test_shared_gate.py": "8de716a771d2270d7858860f1502d598c64d5de73299a8f3da0d0578f35e8a2b",
+    "util/ai_workload_research/bf16_batch_numeric_diagnostic_v7/capture.py": "ed4ab5c1a8205612cdf2558bb083acbe5d3c0c9f451d7843cc943cb67f71b9ac",
+    "util/ai_workload_research/bf16_batch_numeric_diagnostic_v7/resource_monitor.py": "9cd0ffaade661c07d8d5c6760a1b7a219c545c0846de55e4272a43a6ec3cd9b1",
+    "util/ai_workload_research/bf16_batch_numeric_diagnostic_v7/test_supervision.py": "1f031619c77c117a0479bb09e90090f382c25c8172f4feb4e265b541fe2c69a3"
+  },
+  "G0_validation": {
+    "status": "PASS_CPU",
+    "model": "G0_REVALIDATION.json",
+    "tests": 37,
+    "real_GPU_lock_attempts": 0,
+    "NVML_init_before_lock": 0,
+    "science_fields_sha256": "8571824801bf46ae9f1c84c55470274e580fa7d8b9ff5491ded36e87172a5397"
+  },
+  "inherited_scientific_fields": [
+    "question",
+    "hypotheses",
+    "model_revision",
+    "dtype",
+    "TP",
+    "quantization",
+    "one_engine",
+    "engine",
+    "points",
+    "warmup_rounds",
+    "formal_rounds",
+    "sampling",
+    "numeric",
+    "timing",
+    "analysis"
+  ],
+  "inherited_science_sha256": "8571824801bf46ae9f1c84c55470274e580fa7d8b9ff5491ded36e87172a5397",
+  "V1_contract_sha256": "39818fb0c4f9688013d8301025a2b6388837d9ac1d77cffdc8e8c6ae99a1dd5a",
+  "V2_execution_binding": "EXECUTION_BINDING.json",
+  "V2_CPU_tests": "CPU_TEST_RESULT.json",
+  "V3_execution_binding": "EXECUTION_BINDING.json",
+  "V3_process_identity": "CPU_PROCESS_IDENTITIES.json",
+  "V3_desktop_proof": "PROCESS_CLASSIFICATION.json + DESKTOP_SERVICE_EVIDENCE.json",
+  "V3_resource_policy_changes": {
+    "previous": "V2 forbids all external GPU processes;720sGPU/2700sGoal",
+    "current": "Evidence-qualified desktop service ancestry and unchanged live fingerprints may coexist;all externalGPU<=512MiB;3samples within5s eachGPUutil<=5%;unknown/plaincompute forbidden;1500sGPU/3600sGoal",
+    "runtime": "Reject new/unqualifiedPID,identity change,cap violation,observeddesktopSMutil>5%;per-process activity-attribution API gaps duringworker STOP andpersist;never infer external interference from own overall utilization alone.",
+    "observational_label": "DESKTOP_CO_RESIDENT_NATIVE_OBSERVATION only after actual qualification and actual model execution;notexclusive"
+  },
+  "V3_engineering_changes": [
+    "IndependentV3Goal epoch/OUT/private/cache/log/resource binding",
+    "Identity proof and bounded activity policy with14newCPUcases,retained23V2cases",
+    "First plannedwarmup enforces alreadyrequired compiled/Graph identity;no addedGPUmatrix",
+    "CurrentPIDreuse checked including unqualifiedknownuserprocess",
+    "ReuseV2fullSHA with unchangedinode,size,mtime,ctime;hash onlychangedassets"
+  ],
+  "V4_execution_binding": "EXECUTION_BINDING.json",
+  "V4_resource_window": "RESOURCE_WINDOW_STATUS.json",
+  "V4_source_reuse": "NoRuntimeLogicChanges;onlyV4pathbindings. V3desktoppolicy and1500/3600limitsunchanged.",
+  "owner_window_confirmed_epoch": 1793784774.1805987,
+  "V5_execution_binding": "EXECUTION_BINDING.json",
+  "V5_resource_review": "IMAGE_LAB_RESOURCE_REVIEW.json",
+  "V5_resource_contract": {
+    "classification": "VERIFIED_GATED_RESIDENT_CONTEXT",
+    "ImageLab_owner": {
+      "pid": 3518111,
+      "uid": 1004,
+      "start_ticks": "442348560",
+      "boot_id": "35425a62-1268-4560-a3cb-b674371cd7aa",
+      "executable": "/usr/bin/python3.12"
+    },
+    "source_commit": "761ab4f22690f6305b7f903e15a99cc685382a1b",
+    "audit_commit": "4bcee3fe8d0f82a891d67818cd02d8c580dbe6fb",
+    "cooperative_scope": "Reviewedrestricted-v2 production gate,notanOSsandbox. CommonflockstillonlyGPUexecutionowner;Comfyresidentmemoryallowed.",
+    "reservation": "Authenticatedidentityboundpause_new_work reservation;noownershipuntilactualflock. Do notoverwriteexistingclaim;deleteonlyownclaimaftercleanup.",
+    "checks": "PIDUIDstartbootexe,run_nonce,loadedfunctions/modules,profilehealth,commoninode+kernelholder+reservation,quiescenceandnoactivechildren. Stablecompleted_scopeswhileheld. NewunknowncomputeSTOP.",
+    "external_memory_cap_MiB": 512,
+    "baseline_activity": "3sampleswithin5s,GPUutil<=5%",
+    "runtime_activity": "NVMLidentity/memoryandgateproofrequired. ObservedexternaldesktopSM>5STOP. Missingper-processdesktoptelemetryretainsINCONCLUSIVE;notmaskedbasicmonitorfailure.",
+    "condition_label": "VERIFIED_GATED_RESIDENT_CO_RESIDENT_NATIVE_OBSERVATION",
+    "scientific_fields_unchanged": "8571824801bf46ae9f1c84c55470274e580fa7d8b9ff5491ded36e87172a5397"
+  },
+  "V6_diagnostic_phase": {
+    "groups": 2,
+    "order_each": [
+      "P1",
+      "P2",
+      "P3"
+    ],
+    "output_tokens_each": 1,
+    "role": "DIAGNOSTIC_NOT_FORMAL",
+    "policy": "Persist all completions and execution identity before any gate. Finish both fixed groups for repeatability despite numeric-only failure, then STOP if any comparison failed. Runtime/backend/resource failures stop immediately. No selection of passing groups. Same engine conditional original warmup/formal only if all gates pass.",
+    "numeric": {
+      "tokens": "Exact lengths and exact same-source tokens across repetitions and B1/B2 at same output length",
+      "logprobs": "All returned finite; sampled per-step abs(delta)<=0.05+0.01*abs(reference)",
+      "atol": 0.05,
+      "rtol": 0.01,
+      "historical_A00_32": "Pinned MP02_A reference exact tokens and sampled logprobs, B1 and B2; A01 has self-repeatability plus B1/B2 crosscheck, no independent oracle",
+      "failure": "NUMERIC_OR_RUNTIME_NO_GO; no tolerance change"
+    },
+    "question": "Why same A00 token but B1/B2 first-token sampled logprob delta0.10269761085510254?"
+  },
+  "V7_resource_observation_contract": "RESOURCE_OBSERVATION_CONTRACT.json",
+  "V7_engineering_changes": [
+    "OWN_EXITED_CHILD_RSS_RACE strictlifecycleclassification",
+    "Supplementaryread-onlyownSSHsessionchargedmemorypeak",
+    "Sampledtokenlogprobsincludedinfullbatchpre-gateprivatecapture"
+  ]
+}
