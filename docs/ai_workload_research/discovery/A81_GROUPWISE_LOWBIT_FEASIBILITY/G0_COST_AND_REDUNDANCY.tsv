@@ -1,0 +1,8 @@
+evidence_level	object	M	K	N	group_size	groups_per_output	LOGICAL_REPETITION	REMOVABLE_ARITHMETIC	NET_HARDWARE_COST	state_size	status	boundary
+SOURCE_METADATA	up_proj_L0	1	3584	18944	128	28	NA	NA	NA	NA	NO_REAL_TENSOR_AUTHORITY	Frozen actual shape; qweight/qzeros/scales bytes missing
+SOURCE_METADATA	gate_proj_L0	1	3584	18944	128	28	NA	NA	NA	NA	NOT_VALIDATED_SECOND_PROJECTION	Same revision metadata; no weight-byte verification
+REAL_ACTIVATION_BYTE_CHECK	up_proj_L0_D0_D3	1	3584	18944	128	28	NA	NA	NA	NA	4_OF_4_SHA_MATCH	Original FP16 inputs readable; no paired W4 sample
+REAL_ACTIVATION_BYTE_CHECK	gate_proj_L0_D0_D3	1	3584	18944	128	28	NA	NA	NA	NA	4_OF_4_SHA_MATCH	Identity only; G1 not run
+ALGORITHMIC_COST_ESTIMATE	CONDITIONAL_ONE_FULL_GROUP	NA	128	1	128	1	U<=16; (128-U)/128 repetition	128-U ideal multiplications	127 FP adds plus 128 decode/select and bucket RMW	up to 16 FP32 buckets =64 B	NOT_REAL_SAMPLE	First insertion assignment: 128-U bucket adds plus U-1 combine adds =127; exact dequant coefficients/rounding required
+ALGORITHMIC_COST_ESTIMATE	CONDITIONAL_COUNTER_W4A4	NA	128	1	128	1	<=256 operand pairs	NOT_APPLICABLE_TO_W4A16	256 counters x 8 bits =256 B plus decode; R29 author-specific	8-bit unsigned counts cover 0..128	DIFFERENT_CONTRACT	FP16 activations require FP sums, counters alone lose magnitude/sign
+HISTORICAL_OTHER_LINEAGE	GROUPED_SYNTHETIC_M64	64	4096	12288	128	32	conversion Rdup=0.75	NA	NA	8192 B decoded tile; 4 CTA consumers	EXCLUDED_FROM_REAL_G0	E-C16 conversion-address reuse is not real value frequency

@@ -1,0 +1,302 @@
+{
+  "schema": "A81_SOURCE_NUMERIC_V1",
+  "lane": "A81-LBIT",
+  "scientific_status": "NO_REAL_TENSOR_AUTHORITY",
+  "g0": "INPUT_PAIR_GATE_FAILED",
+  "g1": "NOT_ADMITTED",
+  "coordination": {
+    "commit": "ed365741b230718f6ffc1ccbed125fc2566aac15",
+    "tree": "e2f3c9d2d4485b0d41db6c6ceec33af0d8e35304"
+  },
+  "authority": {
+    "commit": "6c92e9cd868df48594f1c80f8f2294e404af6933",
+    "tree": "128468f3e4825b8375685eeb1cea804fefcaac97",
+    "path": "docs/vm_tlb/review_packs/C16_MERGED_GATE_UP_NATIVE_STRONG_BASELINE_109_V1/AUTHORITY_CONTRACT.json",
+    "scope": "B0 accepted AutoAWQ natural decode; B2 correctness STOP preserved"
+  },
+  "model": {
+    "id": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "revision": "b25037543e9394b818fdfca67ab2a00ecc7dd641",
+    "weight_bytes_readable": false,
+    "historical_shards": [
+      {
+        "bytes": 3996422976,
+        "path": "/data/c16/models/.incoming/qwen2p5_7b_instruct_awq/b25037543e9394b818fdfca67ab2a00ecc7dd641/model-00001-of-00002.safetensors",
+        "sha256": "4ad6e70f93823a9228931615e04b5e9293854c236fb4bd5f85e27f3b600605ad"
+      },
+      {
+        "bytes": 1574406784,
+        "path": "/data/c16/models/.incoming/qwen2p5_7b_instruct_awq/b25037543e9394b818fdfca67ab2a00ecc7dd641/model-00002-of-00002.safetensors",
+        "sha256": "920a8cc9d3c81668f18014a69bb041ab8bab22a31640a713f90f5e7580e2f126"
+      }
+    ],
+    "missing_paths": [
+      {
+        "path": "/data/c16/models/.incoming/qwen2p5_7b_instruct_awq/b25037543e9394b818fdfca67ab2a00ecc7dd641/config.json",
+        "exists": false,
+        "readable": false
+      },
+      {
+        "path": "/data/c16/models/.incoming/qwen2p5_7b_instruct_awq/b25037543e9394b818fdfca67ab2a00ecc7dd641/model.safetensors.index.json",
+        "exists": false,
+        "readable": false
+      },
+      {
+        "path": "/data/c16/models/.incoming/qwen2p5_7b_instruct_awq/b25037543e9394b818fdfca67ab2a00ecc7dd641/model-00001-of-00002.safetensors",
+        "exists": false,
+        "readable": false
+      },
+      {
+        "path": "/data/c16/models/.incoming/qwen2p5_7b_instruct_awq/b25037543e9394b818fdfca67ab2a00ecc7dd641/model-00002-of-00002.safetensors",
+        "exists": false,
+        "readable": false
+      }
+    ],
+    "parent_observation": {
+      "parent": "/data/c16/models/.incoming/qwen2p5_7b_instruct_awq",
+      "parent_exists": true,
+      "parent_readable": true,
+      "parent_entries": [],
+      "revision_exists": false,
+      "search_scope": "exact frozen revision and parent; no global cache/data/164 scan"
+    }
+  },
+  "quantization": {
+    "contract": "W4A16",
+    "encoding": "AWQ GEMM packed INT32, eight unsigned 4-bit codes per word",
+    "code_range": [
+      0,
+      15
+    ],
+    "canonical_nibble_reorder": [
+      0,
+      4,
+      1,
+      5,
+      2,
+      6,
+      3,
+      7
+    ],
+    "zero_point": true,
+    "zero_point_encoding": "packed unsigned 4-bit qzeros; historical hashes only",
+    "group_size": 128,
+    "scale_dtype": "FP16",
+    "scale_granularity": "one per K128/output",
+    "groups_per_output": 28,
+    "layer0_up_shapes": {
+      "logical_K_N": [
+        3584,
+        18944
+      ],
+      "qweight": [
+        3584,
+        2368
+      ],
+      "qzeros": [
+        28,
+        2368
+      ],
+      "scales": [
+        28,
+        18944
+      ]
+    },
+    "historical_layer0_hashes": {
+      "canonical_after": {
+        "gate_qweight": "e760c9402e2eaa3f0abd6eb1558df737c4aa7be8f48b5c108e6b7c10e5ba1728",
+        "gate_qzeros": "88473bc5ce6d40b40074f86bc23bbe7aa45bc4883a7e1cad4a672c390161aaa1",
+        "up_qweight": "9d90e7b1d0ccfc41cc7668aa30c7ce4586d191345228d6aefac4bf4ea5fdf0de",
+        "up_qzeros": "c98322d961a233fc3b542399e536a81e5044c083d12ea1ecdeffe98cbfd976c4"
+      },
+      "canonical_before": {
+        "gate_qweight": "e760c9402e2eaa3f0abd6eb1558df737c4aa7be8f48b5c108e6b7c10e5ba1728",
+        "gate_qzeros": "88473bc5ce6d40b40074f86bc23bbe7aa45bc4883a7e1cad4a672c390161aaa1",
+        "up_qweight": "9d90e7b1d0ccfc41cc7668aa30c7ce4586d191345228d6aefac4bf4ea5fdf0de",
+        "up_qzeros": "c98322d961a233fc3b542399e536a81e5044c083d12ea1ecdeffe98cbfd976c4"
+      },
+      "exact": {
+        "gate_qweight_raw": true,
+        "gate_qzeros_raw": true,
+        "gate_scales_bytes": true,
+        "up_qweight_raw": true,
+        "up_qzeros_raw": true,
+        "up_scales_bytes": true
+      },
+      "layer": 0,
+      "logical_quant_bytes": 70547456,
+      "merged_raw_sha256": {
+        "qweight": "637f9ce42ad3a36e7a22e671c4080a34fbca3794c76a75a14ed7fea9793713d1",
+        "qzeros": "948e446c2110b8da8ee91849b1a140dc3139863f47adc1c7ceb4099dd15c2191",
+        "scales": "a1ffa2558da079b2040cc999f9d56e87187541621c17e7c7d979365badd774f0"
+      },
+      "merged_shapes": {
+        "qweight": [
+          3584,
+          4736
+        ],
+        "qzeros": [
+          28,
+          4736
+        ],
+        "scales": [
+          28,
+          37888
+        ]
+      },
+      "source_raw_sha256": {
+        "gate_proj.qweight": "4d6bee79eae86067e7f17af9f477360ab53cbe2d25ee5b63c251b6283883f8aa",
+        "gate_proj.qzeros": "3c3f9a4fe827ca1c7d9298f1dae8b16d22cd8d1e4c5797fbc21da1efc77af000",
+        "gate_proj.scales": "8059a8694918b8b110461296f88cf36c8b86d4899b2af9494043f6251d33c22a",
+        "up_proj.qweight": "b07a8dec390cec4f664bfd2384acf080c4676e1c6d29386bfaf225e4e68d181a",
+        "up_proj.qzeros": "fa29c34518732c98417613df87bbb46dcf3cd825bd681700a5daa0a49b24205b",
+        "up_proj.scales": "84e59277679d49510b3449687598d47cbe8f9ce356c73f07b2abc60019b0a175"
+      },
+      "status": "PASS"
+    },
+    "runtime_decode_rounding": "Exact half2 schedule/rounding is part of frozen conversion identity; not newly numerically validated."
+  },
+  "activation": {
+    "source": "/data/c16/merged_gate_up_native_v1/raw/C16R_merged-gate-up-native-strong-baseline_20261001T031741Z/canary_b0.tensors.pt",
+    "archive_sha256": "0e1b0975c0781dd9c5d248051379b950a0a8dbc45c872345212db80d42cd4a97",
+    "archive_matches_frozen_index": true,
+    "restricted_metadata_parser_no_torch": true,
+    "byte_checks": [
+      {
+        "name": "L0.D0.up_proj.input",
+        "shape": [
+          1,
+          1,
+          3584
+        ],
+        "dtype": "FP16",
+        "bytes": 7168,
+        "sha256": "1241b8f94067b40d63d7946e485ab95746b0f01055ccf76f2646e7d9f7bf42ef",
+        "accepted_occurrence_sha256": "1241b8f94067b40d63d7946e485ab95746b0f01055ccf76f2646e7d9f7bf42ef",
+        "match": true,
+        "storage": "16"
+      },
+      {
+        "name": "L0.D1.up_proj.input",
+        "shape": [
+          1,
+          1,
+          3584
+        ],
+        "dtype": "FP16",
+        "bytes": 7168,
+        "sha256": "d2f9eab5b3cde9b1e8e5c4487a91b5e396c6dc12d30d6dda077361b7ff955a66",
+        "accepted_occurrence_sha256": "d2f9eab5b3cde9b1e8e5c4487a91b5e396c6dc12d30d6dda077361b7ff955a66",
+        "match": true,
+        "storage": "18"
+      },
+      {
+        "name": "L0.D2.up_proj.input",
+        "shape": [
+          1,
+          1,
+          3584
+        ],
+        "dtype": "FP16",
+        "bytes": 7168,
+        "sha256": "10f11af8b788226f394a91405cc3886e6c7856bde09025a7ad9cd0f7cc361177",
+        "accepted_occurrence_sha256": "10f11af8b788226f394a91405cc3886e6c7856bde09025a7ad9cd0f7cc361177",
+        "match": true,
+        "storage": "20"
+      },
+      {
+        "name": "L0.D3.up_proj.input",
+        "shape": [
+          1,
+          1,
+          3584
+        ],
+        "dtype": "FP16",
+        "bytes": 7168,
+        "sha256": "9e7734930ffe1cb6f035cd455794ce8e535a9853c7ceb5a236770a4cc2b33a06",
+        "accepted_occurrence_sha256": "9e7734930ffe1cb6f035cd455794ce8e535a9853c7ceb5a236770a4cc2b33a06",
+        "match": true,
+        "storage": "22"
+      },
+      {
+        "name": "L0.D0.gate_proj.input",
+        "shape": [
+          1,
+          1,
+          3584
+        ],
+        "dtype": "FP16",
+        "bytes": 7168,
+        "sha256": "1241b8f94067b40d63d7946e485ab95746b0f01055ccf76f2646e7d9f7bf42ef",
+        "accepted_occurrence_sha256": "1241b8f94067b40d63d7946e485ab95746b0f01055ccf76f2646e7d9f7bf42ef",
+        "match": true,
+        "storage": "8"
+      },
+      {
+        "name": "L0.D1.gate_proj.input",
+        "shape": [
+          1,
+          1,
+          3584
+        ],
+        "dtype": "FP16",
+        "bytes": 7168,
+        "sha256": "d2f9eab5b3cde9b1e8e5c4487a91b5e396c6dc12d30d6dda077361b7ff955a66",
+        "accepted_occurrence_sha256": "d2f9eab5b3cde9b1e8e5c4487a91b5e396c6dc12d30d6dda077361b7ff955a66",
+        "match": true,
+        "storage": "10"
+      },
+      {
+        "name": "L0.D2.gate_proj.input",
+        "shape": [
+          1,
+          1,
+          3584
+        ],
+        "dtype": "FP16",
+        "bytes": 7168,
+        "sha256": "10f11af8b788226f394a91405cc3886e6c7856bde09025a7ad9cd0f7cc361177",
+        "accepted_occurrence_sha256": "10f11af8b788226f394a91405cc3886e6c7856bde09025a7ad9cd0f7cc361177",
+        "match": true,
+        "storage": "12"
+      },
+      {
+        "name": "L0.D3.gate_proj.input",
+        "shape": [
+          1,
+          1,
+          3584
+        ],
+        "dtype": "FP16",
+        "bytes": 7168,
+        "sha256": "9e7734930ffe1cb6f035cd455794ce8e535a9853c7ceb5a236770a4cc2b33a06",
+        "accepted_occurrence_sha256": "9e7734930ffe1cb6f035cd455794ce8e535a9853c7ceb5a236770a4cc2b33a06",
+        "match": true,
+        "storage": "14"
+      }
+    ],
+    "model_runtime_executed": false,
+    "small_M": 1,
+    "larger_M": null,
+    "larger_M_reason": "Frozen natural dump contains D0-D3 M1. Historical M32/M64 grouped inputs synthetic and excluded; no stacking."
+  },
+  "numeric_rules": {
+    "historical_tolerance": {
+      "atol": 0.05,
+      "report_max_abs_mean_abs_relative_l2": true,
+      "rtol": 0.01
+    },
+    "applicability": "Historical B0/B2 per-output gate; no G1 comparison admitted, no Numeric PASS.",
+    "accumulation": "FP16 dequantized operands, FP32 MMA, split8 FP16 scratch, 8-to-1 reduction; group and split boundaries/casts required.",
+    "bias": "Preserve if present; not independently recovered without config.",
+    "activation_precision_change_permitted": false,
+    "bitwise_equivalence_claimed": false
+  },
+  "access": {
+    "node": "109",
+    "read_only": true,
+    "no_weight_dataset_download": true,
+    "no_164_access": true,
+    "authority": "User-authorized existing C16 assets; no inferred download/redistribution rights; only digests/metadata committed."
+  }
+}

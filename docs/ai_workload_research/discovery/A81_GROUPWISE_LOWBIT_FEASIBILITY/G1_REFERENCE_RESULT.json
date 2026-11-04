@@ -1,0 +1,41 @@
+{
+  "schema": "A81_G1_V1",
+  "scientific_status": "NO_REAL_TENSOR_AUTHORITY",
+  "execution_status": "NOT_ADMITTED_G0_REAL_WEIGHT_BYTES_MISSING",
+  "reference_A_executed": false,
+  "reference_B_executed": false,
+  "real_weight_samples": 0,
+  "conditional_A": "y_mn = b_n + sum_g sum_k_in_g x_mk * D_AWQ(q_kn,z_gn,s_gn); D_AWQ must reproduce accepted half2 dequant rounding.",
+  "conditional_B": "Within each intersection of scale group and original accumulation partition: S_c=sum_{k:q_kn=c} x_mk; combine D_AWQ(c,z_gn,s_gn)*S_c. Preserve scratch/output casts/reductions. FP reduction, not integer counting.",
+  "equivalence": "CONDITIONAL_REAL_ARITHMETIC_ONLY; not executed G1",
+  "exact_real_identity": true,
+  "fp_bitwise_identity": false,
+  "numeric_pass": null,
+  "error_distribution": null,
+  "tolerance_changed": false,
+  "cost_prediction": {
+    "label": "ALGORITHMIC_COST_ESTIMATE",
+    "real_sample_prediction": null,
+    "ideal_group": {
+      "length": 128,
+      "U_upper": 16,
+      "baseline_products": 128,
+      "bucket_products_upper": 16,
+      "bucket_adds": "128-U",
+      "combine_adds": "U-1",
+      "total_adds": 127,
+      "bucket_state_bytes_max": 64,
+      "index_decode_events": 128,
+      "scale_cost": "At least one per group/output; exact FP16 dequant coefficients cannot silently be replaced by real-valued outer scale.",
+      "coefficient_setup": "Up to U per group/output, amortization across M separate.",
+      "net_hardware_cost": "UNKNOWN: FP32 bucket bank RMW, selection/ports, initialization, coefficient setup, registers/spills, reads/writes and split scratch."
+    }
+  },
+  "application_denominator": {
+    "candidate_specific": "NOT_ESTABLISHED",
+    "historical_only": "E-C16 natural SHARE3 subset f=0.017399766619420998; zero-target ceiling 1.0177078795916403x. Different synthetic grouped shape, not transferable."
+  },
+  "ppa_evidence": false,
+  "gpu_promotion": false,
+  "stop_reason": "Exact frozen revision config/index/two weight shards absent; readable parent empty. No replacement/download or reference execution."
+}
