@@ -1,8 +1,8 @@
 # Latest Performance-First results
 
-Updated 2026-11-04T19:51:34.467829+00:00. Fixed48 planned cells: Tag safety HOLD=16; non-Tag accepted=27, archived negative=2, unused-family-HOLD=0, pending=3. Fixed exploratory inputs=8. These are not the core32 population.
+Updated 2026-11-04T19:52:26.934651+00:00. Fixed48 planned cells: Tag safety HOLD=16; non-Tag accepted=27, archived negative=4, unused-family-HOLD=0, pending=1. Fixed exploratory inputs=8. These are not the core32 population.
 
-Immutable complete table, source identities, CSV and missingness: [snapshot](progress_snapshots/20261104T195127_943ebd50/README.md). See LATEST_RESULTS_SUMMARY.json and the matching JSON/CSV in that snapshot.
+Immutable complete table, source identities, CSV and missingness: [snapshot](progress_snapshots/20261104T195219_bbb71c8f/README.md). See LATEST_RESULTS_SUMMARY.json and the matching JSON/CSV in that snapshot.
 
 All curves and GM use one fixed variant at a time. Direct variant comparison requires the common accepted input intersection; no best-per-program stitching. Tag HOLD cells have no simulated cycles and are not performance negatives. Missing counters are unavailable, not zero.
 
