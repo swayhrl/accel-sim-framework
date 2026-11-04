@@ -1,0 +1,135 @@
+{
+  "historical_pid_only_assumption": false,
+  "processes": [
+    {
+      "pid": 3246996,
+      "classification": "ORDINARY_USER_PROCESS_NOT_DESKTOP",
+      "reason": "Python interpreter in user login session; no desktop service provenance. Whether still GPU-active must be checked by live NVML.",
+      "metadata": {
+        "pid": 3246996,
+        "observed_epoch": 1793782088.1056025,
+        "exists": true,
+        "comm": "python",
+        "exe": "/usr/bin/python3.12",
+        "cgroup": "0::/user.slice/user-1004.slice/session-84262.scope",
+        "ppid": 1,
+        "state": "S",
+        "start_ticks": 431862775,
+        "start_epoch": 1793695731.75,
+        "start_utc": "2026-11-03T08:48:51.750000+00:00",
+        "uids": [
+          1004,
+          1004,
+          1004,
+          1004
+        ],
+        "package_owner": "python3.12-minimal: /usr/bin/python3.12"
+      }
+    },
+    {
+      "pid": 1760,
+      "classification": "VERIFIED_DESKTOP_SERVICE_IDENTITY_ACTIVITY_PENDING",
+      "reason": "Root-owned active GDM MainPID1623, parent ancestry and matching display session; actual exe inaccessible, gap retained.",
+      "metadata": {
+        "pid": 1760,
+        "observed_epoch": 1793782088.373778,
+        "exists": true,
+        "comm": "Xorg",
+        "exe_error": "PermissionError",
+        "cgroup": "0::/user.slice/user-120.slice/session-c1.scope",
+        "ppid": 1751,
+        "state": "S",
+        "start_ticks": 614,
+        "start_epoch": 1789377110.14,
+        "start_utc": "2026-09-14T09:11:50.140000+00:00",
+        "uids": [
+          120,
+          120,
+          120,
+          120
+        ]
+      }
+    },
+    {
+      "pid": 2035,
+      "classification": "VERIFIED_DESKTOP_SERVICE_IDENTITY_ACTIVITY_PENDING",
+      "reason": "Root-owned active GDM MainPID1623, parent ancestry and matching display session; actual exe inaccessible, gap retained.",
+      "metadata": {
+        "pid": 2035,
+        "observed_epoch": 1793782088.3741312,
+        "exists": true,
+        "comm": "gnome-shell",
+        "exe_error": "PermissionError",
+        "cgroup": "0::/user.slice/user-120.slice/session-c1.scope",
+        "ppid": 2015,
+        "state": "S",
+        "start_ticks": 771,
+        "start_epoch": 1789377111.71,
+        "start_utc": "2026-09-14T09:11:51.710000+00:00",
+        "uids": [
+          120,
+          120,
+          120,
+          120
+        ]
+      }
+    }
+  ],
+  "desktop_identity_catalog": {
+    "1760": {
+      "fingerprint": {
+        "pid": 1760,
+        "ppid": 1751,
+        "uids": [
+          120,
+          120,
+          120,
+          120
+        ],
+        "comm": "Xorg",
+        "cgroup": "0::/user.slice/user-120.slice/session-c1.scope",
+        "start_ticks": 614
+      },
+      "classification": "VERIFIED_DESKTOP_SERVICE_IDENTITY_ACTIVITY_PENDING",
+      "ancestry": [
+        1760,
+        1751,
+        1644,
+        1623
+      ],
+      "service_MainPID": 1623,
+      "service_start_ticks": 597,
+      "exe_read_gap": "PermissionError",
+      "proof": "CPU_PROCESS_IDENTITIES.json + DESKTOP_SERVICE_EVIDENCE.json"
+    },
+    "2035": {
+      "fingerprint": {
+        "pid": 2035,
+        "ppid": 2015,
+        "uids": [
+          120,
+          120,
+          120,
+          120
+        ],
+        "comm": "gnome-shell",
+        "cgroup": "0::/user.slice/user-120.slice/session-c1.scope",
+        "start_ticks": 771
+      },
+      "classification": "VERIFIED_DESKTOP_SERVICE_IDENTITY_ACTIVITY_PENDING",
+      "ancestry": [
+        2035,
+        2015,
+        2013,
+        1751,
+        1644,
+        1623
+      ],
+      "service_MainPID": 1623,
+      "service_start_ticks": 597,
+      "exe_read_gap": "PermissionError",
+      "proof": "CPU_PROCESS_IDENTITIES.json + DESKTOP_SERVICE_EVIDENCE.json"
+    }
+  },
+  "qualification": "Desktop identity alone does not admit GPU co-residence; livePIDfingerprints,aggregateVRAM and bounded low-activity samples required."
+}
