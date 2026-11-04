@@ -1,0 +1,460 @@
+{
+  "adoption_ready": false,
+  "best_global_uniform_GM": null,
+  "best_global_uniform_profile": null,
+  "blocked_common_subset_proposals": [],
+  "blocked_reason": "Pending/engineering-only cells cannot rank or count as terminal failures",
+  "contract": {
+    "CH_matching": "all frozen identities for both selected uniform classes; reuse already registered exact CH cells only",
+    "FRFCFS_credit_coupling": "shared per controller = frfcfs + 191; private credits=2",
+    "area_matching": false,
+    "boundary_incremental_GM": 1.01,
+    "boundary_requires_upper_level_gain": true,
+    "candidate_classes": [
+      "baseline",
+      "moderate",
+      "high_resource"
+    ],
+    "combination_pairs": [
+      [
+        "entries",
+        "merge"
+      ],
+      [
+        "entries",
+        "miss_queue"
+      ],
+      [
+        "entries",
+        "frfcfs"
+      ],
+      [
+        "merge",
+        "miss_queue"
+      ],
+      [
+        "merge",
+        "frfcfs"
+      ]
+    ],
+    "combination_rule": "one best family level per pair; if all significant directions exist also one union, never Cartesian product",
+    "comparison_population": "identical accepted identities for every candidate compared",
+    "distinct_classes_required": true,
+    "engineering_failures": "preserve UUID; coordinator diagnoses; never retry actual consumed identity",
+    "family_extension_multiplier": 2,
+    "fixed_L2_bytes": 10485760,
+    "fixed_before_results": true,
+    "fixed_clocks": "1410:1410:1410:850 MHz",
+    "full_suite_required_for_formal_candidate": true,
+    "future_combination_escalation": "same supported direction levels can be doubled only after its whole-suite single-factor boundary evidence qualifies",
+    "high_resource_rule": "maximum normalized logical slot sum among full-suite tested profiles, tie broken by higher whole-suite DH/P0 GM; improvement_proven may be false",
+    "insufficient_distinct_classes": "fewer than two fully accepted non-P0 parameter vectors cannot be adopted as the requested three-class comparison",
+    "minimum_whole_common_population_GM": 1.01,
+    "missing_imputation": false,
+    "moderate_rule": "excluding high-resource vector, minimum normalized logical slot sum among whole-suite profiles with DH/P0 GM >=1.01; absent benefit report lowest-cost remaining tested profile as unimproved",
+    "no_total_start_cap": true,
+    "only_parameter_keys": [
+      "entries",
+      "merge",
+      "miss_queue",
+      "frfcfs"
+    ],
+    "provisional_search_with_terminal_negatives": true,
+    "schema": "DTC_L2_MLP_ADAPTIVE_CONTRACT_V1",
+    "statistics": "suite rows and negatives retained; GM never selects best profile per input",
+    "stopping": "saturation (<1.01 marginal), regression, source bounds, observed resource rejection or missing scientific evidence",
+    "whole_uniform_profile_only": true
+  },
+  "decisions": [],
+  "engineering_cells": [
+    {
+      "cell": "DH",
+      "input_digest": "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+      "profile": "M16",
+      "state": "ENGINEERING_TERMINAL_NEGATIVE_ARCHIVED_NO_RETRY"
+    }
+  ],
+  "fixed_suite_uniform_champions": [],
+  "formal_candidates": [],
+  "interaction_phase_gate": {
+    "new_phases": [
+      "V3_CONTEXT_BOUNDARY",
+      "V3_CONTEXT_BRACKET",
+      "V3_CONTEXT_SATURATION_CONFIRM",
+      "V3_STRUCTURAL_SEED",
+      "V3_UNIFORM_CH_MATCH",
+      "V3_WIDE_ABLATION"
+    ],
+    "status": "PASS_EXPLICIT_V3_PHASES_FULL35_PARENTS"
+  },
+  "interaction_policy": {
+    "epsilon": 1e-12,
+    "implementation": "SEEDS_ABLATIONS_CONTEXT_BRACKETS_DOUBLING_CH_CLOSURE",
+    "schema": "DTC_L2_MLP_INTERACTION_POLICY_V3",
+    "scope": "primary frozen35 only; no supplemental union",
+    "six_seeds_are_not_total_cap": true
+  },
+  "interaction_search": {
+    "CH_work_closed": false,
+    "DH_work_closed": false,
+    "declared_context_ladder_count": 14,
+    "declared_seed_count": 6,
+    "ladders": [],
+    "new_proposals": 0,
+    "notes": [
+      {
+        "action": "WAIT_INITIAL_350_TERMINAL",
+        "missing": [
+          {
+            "cell": "CH",
+            "input_digest": "ddb6806316876a85cdea5766f2e1fc88bf9d4b699066a522eb5a5b9ff17a10d8",
+            "profile": "P0"
+          },
+          {
+            "cell": "DH",
+            "input_digest": "ddb6806316876a85cdea5766f2e1fc88bf9d4b699066a522eb5a5b9ff17a10d8",
+            "profile": "E384"
+          },
+          {
+            "cell": "DH",
+            "input_digest": "ddb6806316876a85cdea5766f2e1fc88bf9d4b699066a522eb5a5b9ff17a10d8",
+            "profile": "E768"
+          },
+          {
+            "cell": "DH",
+            "input_digest": "b51811aca9dc70cfe109fad8de73d5305647bc16d70b9289c1c918f4d3ab5d39",
+            "profile": "M8"
+          },
+          {
+            "cell": "DH",
+            "input_digest": "ddb6806316876a85cdea5766f2e1fc88bf9d4b699066a522eb5a5b9ff17a10d8",
+            "profile": "M8"
+          },
+          {
+            "cell": "DH",
+            "input_digest": "ddb6806316876a85cdea5766f2e1fc88bf9d4b699066a522eb5a5b9ff17a10d8",
+            "profile": "M16"
+          },
+          {
+            "cell": "DH",
+            "input_digest": "09f94fcc7494a03b160b40b705cbc7ff5f41e88e8ee417d187e5c7fbcac82123",
+            "profile": "Q64"
+          },
+          {
+            "cell": "DH",
+            "input_digest": "b51811aca9dc70cfe109fad8de73d5305647bc16d70b9289c1c918f4d3ab5d39",
+            "profile": "Q64"
+          },
+          {
+            "cell": "DH",
+            "input_digest": "ddb6806316876a85cdea5766f2e1fc88bf9d4b699066a522eb5a5b9ff17a10d8",
+            "profile": "Q64"
+          },
+          {
+            "cell": "DH",
+            "input_digest": "09f94fcc7494a03b160b40b705cbc7ff5f41e88e8ee417d187e5c7fbcac82123",
+            "profile": "Q128"
+          },
+          {
+            "cell": "DH",
+            "input_digest": "b51811aca9dc70cfe109fad8de73d5305647bc16d70b9289c1c918f4d3ab5d39",
+            "profile": "Q128"
+          },
+          {
+            "cell": "DH",
+            "input_digest": "ddb6806316876a85cdea5766f2e1fc88bf9d4b699066a522eb5a5b9ff17a10d8",
+            "profile": "Q128"
+          },
+          {
+            "cell": "DH",
+            "input_digest": "b51811aca9dc70cfe109fad8de73d5305647bc16d70b9289c1c918f4d3ab5d39",
+            "profile": "F128"
+          },
+          {
+            "cell": "DH",
+            "input_digest": "ddb6806316876a85cdea5766f2e1fc88bf9d4b699066a522eb5a5b9ff17a10d8",
+            "profile": "F128"
+          },
+          {
+            "cell": "DH",
+            "input_digest": "ddb6806316876a85cdea5766f2e1fc88bf9d4b699066a522eb5a5b9ff17a10d8",
+            "profile": "F256"
+          }
+        ]
+      }
+    ],
+    "phase": "INITIAL_GATE"
+  },
+  "negative_review_disposition_required": true,
+  "original_base_recommendation_retained": {
+    "adoption_ready": false,
+    "blocked_reason": "Pending/engineering-only cells cannot rank or count as terminal failures",
+    "contract": {
+      "CH_matching": "all frozen identities for both selected uniform classes; reuse already registered exact CH cells only",
+      "FRFCFS_credit_coupling": "shared per controller = frfcfs + 191; private credits=2",
+      "area_matching": false,
+      "boundary_incremental_GM": 1.01,
+      "boundary_requires_upper_level_gain": true,
+      "candidate_classes": [
+        "baseline",
+        "moderate",
+        "high_resource"
+      ],
+      "combination_pairs": [
+        [
+          "entries",
+          "merge"
+        ],
+        [
+          "entries",
+          "miss_queue"
+        ],
+        [
+          "entries",
+          "frfcfs"
+        ],
+        [
+          "merge",
+          "miss_queue"
+        ],
+        [
+          "merge",
+          "frfcfs"
+        ]
+      ],
+      "combination_rule": "one best family level per pair; if all significant directions exist also one union, never Cartesian product",
+      "comparison_population": "identical accepted identities for every candidate compared",
+      "distinct_classes_required": true,
+      "engineering_failures": "preserve UUID; coordinator diagnoses; never retry actual consumed identity",
+      "family_extension_multiplier": 2,
+      "fixed_L2_bytes": 10485760,
+      "fixed_before_results": true,
+      "fixed_clocks": "1410:1410:1410:850 MHz",
+      "full_suite_required_for_formal_candidate": true,
+      "future_combination_escalation": "same supported direction levels can be doubled only after its whole-suite single-factor boundary evidence qualifies",
+      "high_resource_rule": "maximum normalized logical slot sum among full-suite tested profiles, tie broken by higher whole-suite DH/P0 GM; improvement_proven may be false",
+      "insufficient_distinct_classes": "fewer than two fully accepted non-P0 parameter vectors cannot be adopted as the requested three-class comparison",
+      "minimum_whole_common_population_GM": 1.01,
+      "missing_imputation": false,
+      "moderate_rule": "excluding high-resource vector, minimum normalized logical slot sum among whole-suite profiles with DH/P0 GM >=1.01; absent benefit report lowest-cost remaining tested profile as unimproved",
+      "no_total_start_cap": true,
+      "only_parameter_keys": [
+        "entries",
+        "merge",
+        "miss_queue",
+        "frfcfs"
+      ],
+      "provisional_search_with_terminal_negatives": true,
+      "schema": "DTC_L2_MLP_ADAPTIVE_CONTRACT_V1",
+      "statistics": "suite rows and negatives retained; GM never selects best profile per input",
+      "stopping": "saturation (<1.01 marginal), regression, source bounds, observed resource rejection or missing scientific evidence",
+      "whole_uniform_profile_only": true
+    },
+    "decisions": [],
+    "engineering_cells": [
+      {
+        "cell": "DH",
+        "input_digest": "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+        "profile": "M16",
+        "state": "ENGINEERING_TERMINAL_NEGATIVE_ARCHIVED_NO_RETRY"
+      }
+    ],
+    "formal_candidates": [],
+    "pending_profiles": [
+      "E384",
+      "E768",
+      "M8",
+      "M16",
+      "Q64",
+      "Q128",
+      "F128",
+      "F256",
+      "P0_CH"
+    ],
+    "proposals": [],
+    "requires_engineering_review": true,
+    "schema": "DTC_L2_MLP_ADAPTIVE_DECISIONS_V1",
+    "scientific_stage_complete": false,
+    "state": "WAIT_INITIAL_TERMINAL"
+  },
+  "pending_profiles": [
+    "E384",
+    "E768",
+    "M8",
+    "M16",
+    "Q64",
+    "Q128",
+    "F128",
+    "F256",
+    "P0_CH"
+  ],
+  "performance_potential_interpretation": "best observed uniform performance is distinct from highest-resource exploration; neither establishes a physical or unexplored performance upper bound",
+  "proposals": [],
+  "registry_journal_status": {
+    "admission_owner_unchanged": true,
+    "healthy_models_must_continue": true,
+    "pending": [],
+    "requires_engineering_review": false,
+    "safe_for_scientific_completion": true,
+    "schema": "L2_MLP_EXTENSION_JOURNAL_STATUS_V1"
+  },
+  "requires_engineering_review": true,
+  "schema": "DTC_L2_MLP_ADAPTIVE_DECISIONS_V1",
+  "scientific_stage_complete": false,
+  "state": "WAIT_INITIAL_TERMINAL",
+  "supplementary_decisions": [
+    {
+      "action": "WAIT_INITIAL_ALL35_TERMINAL",
+      "pending": [
+        {
+          "cell": "CH",
+          "profile": "P0"
+        },
+        {
+          "cell": "DH",
+          "profile": "E384"
+        },
+        {
+          "cell": "DH",
+          "profile": "E768"
+        },
+        {
+          "cell": "DH",
+          "profile": "M8"
+        },
+        {
+          "cell": "DH",
+          "profile": "M16"
+        },
+        {
+          "cell": "DH",
+          "profile": "Q64"
+        },
+        {
+          "cell": "DH",
+          "profile": "Q128"
+        },
+        {
+          "cell": "DH",
+          "profile": "F128"
+        },
+        {
+          "cell": "DH",
+          "profile": "F256"
+        }
+      ]
+    }
+  ],
+  "supplementary_new_proposals": 0,
+  "supplementary_policy": {
+    "CH_rule": "retain V1 full35 candidate matching; additionally match full35 globally positive best-observed uniform profile and each fixed-suite useful champion regardless of initial/noninitial identity; retain useful noninitial matching; never reduce the CH population",
+    "base_adaptive_source_sha256": "f21bc1233dfcaca2e003b9d5277fa31d27eb4b5f9d2cf21e6a694de9d2d0a1c3",
+    "base_contract_retained": true,
+    "base_decision_sha256": "32c340d391dbb7d840959de8183b088767c88c6ec5e2e9c5287704aa7c1a804c",
+    "boundary_missing_rule": "pending or unaccepted highest registered level holds family; never skip over it",
+    "boundary_rule": "highest registered accepted single-factor level / P0 >1+epsilon AND highest / immediately lower level >1+epsilon => factor times2",
+    "candidate_revision": 2,
+    "combination_pairs": [
+      [
+        "entries",
+        "merge"
+      ],
+      [
+        "entries",
+        "miss_queue"
+      ],
+      [
+        "entries",
+        "frfcfs"
+      ],
+      [
+        "merge",
+        "miss_queue"
+      ],
+      [
+        "merge",
+        "frfcfs"
+      ]
+    ],
+    "combination_rule": "one strongest useful completed family level per fixed context; supported pairs plus one union if >=3 directions; full35 uniform DH, no Cartesian grid",
+    "epsilon": 1e-12,
+    "final_guard": "never turn an existing false adoption/completion true; preserve and reapply registry journal guard outside augmentation",
+    "fixed": [
+      "35 frozen inputs",
+      "7 unresolved excluded",
+      "DRAM850MHz",
+      "same Core/FW/binaries",
+      "L2 capacity/address map",
+      "DTC L1 architecture",
+      "Hash family",
+      "original P0 identity"
+    ],
+    "global_context": "full35 GM>1+epsilon; 1% is materiality only, not eligibility gate",
+    "identity_rule": "same canonical profile/parameter/design/frozen input population => same64hex proposal ID as base; never regrant evaluated/failed/pending identities",
+    "initial_stage": "all350 initial point cells terminal; pending/engineering event never terminal",
+    "material_gain_label": 1.01,
+    "no_historical_reinterpretation": true,
+    "no_per_program_bestof": true,
+    "no_total_start_cap": true,
+    "potential_interpretation": "best observed uniform performance is distinct from highest-resource exploration; neither establishes a physical or unexplored performance upper bound",
+    "schema": "DTC_L2_MLP_SUPPLEMENTARY_BOUNDARY_POLICY_V2",
+    "status": "CANDIDATE_REQUIRES_MAIN_REVIEW_VERSIONED_ANNOUNCEMENT_NOT_PRODUCTION_APPLIED",
+    "stopping": "nonpositive marginal/overall gain, source bound, explicit evidenced resource hold, or incomplete scientific evidence; no total-start cap",
+    "suite_context": "immutable suite membership; n>=3, GM>=1.01, strictly more than half positive by epsilon",
+    "supplementary_evidence": "full35 accepted DH, exact same frozen population; no subset extrapolation",
+    "unactivated_preimage_source_sha256": "7f2e3ddf571788719e65fdd319f910b2c001ef96a9f11b2dc733aa56e3ba3ea5",
+    "uniform_best_rule": "rank only full35 accepted uniform DH profiles including P0; maximum whole35 GM, ties lower normalized logical slot score then deterministic profile name; expose all incomplete profiles"
+  },
+  "typed_engineering_analysis_view": {
+    "native_receipts_created": false,
+    "original_aggregate_values_unmodified": true,
+    "original_state_counts_retained": {
+      "FAIL_L2MLP_ARCHIVED_NO_RETRY": 11,
+      "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE": 317,
+      "PENDING": 16,
+      "REFERENCE_ACCEPTED_NO_NEW_START": 6
+    },
+    "original_summary_sha256": "e939d491d7f3e2920d4ad88980d49da5edb3f542c68e57580ad21c96d207049e",
+    "projected_cohorts": [
+      "E2-DTCL2MLP-6df3a84b612086e8-DH-M16-V1"
+    ],
+    "raw_summary_unmodified": true,
+    "schema": "EXPLICIT_TYPED_ENGINEERING_NEGATIVE_ANALYSIS_VIEW_V1",
+    "state_counts": {
+      "ENGINEERING_TERMINAL_NEGATIVE_ARCHIVED_NO_RETRY": 1,
+      "FAIL_L2MLP_ARCHIVED_NO_RETRY": 11,
+      "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE": 317,
+      "PENDING": 15,
+      "REFERENCE_ACCEPTED_NO_NEW_START": 6
+    }
+  },
+  "typed_engineering_terminal_policy": {
+    "acceptance_unchanged": true,
+    "final_completion": "never clear existing engineering-review/finalguard flags; reviewed-negative completion needs explicit separate disposition",
+    "inference": "full35 accepted source profiles and P0 only; no original V1 common34 proposal pass-through",
+    "schema": "DTC_L2_MLP_TYPED_ENGINEERING_TERMINAL_FULL35_POLICY_V1",
+    "source_pins": {
+      "base": "f21bc1233dfcaca2e003b9d5277fa31d27eb4b5f9d2cf21e6a694de9d2d0a1c3",
+      "supplement": "a7e476604d18ba7c9d9d53af7dd381b95eabc502f33617ee7b945dafa63dbd01"
+    },
+    "status": "CPU_CANDIDATE_NOT_APPLIED_REQUIRES_VERSIONED_MAIN_ANNOUNCEMENT",
+    "terminal_membership": "only independently verified engineering-negative archive certificate",
+    "typed_terminal_is_not_standard_native_FAIL": true
+  },
+  "verified_typed_engineering_negatives": [
+    {
+      "archive_verified": true,
+      "bundle_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/engineering_negative_evidence_v1/E2-DTCL2MLP-6df3a84b612086e8-DH-M16-V1/1e968456ccefd837eacee605d7ffacc712860114e8a7fea17b4633b25cecbf5f",
+      "certificate_sha256": "37842f4191c6a0f293a01d22834c28794c3e23a477b1d657976d01bdb055c9e7",
+      "cohort": "E2-DTCL2MLP-6df3a84b612086e8-DH-M16-V1",
+      "cycles": null,
+      "missing_done_exit_disclosed": true,
+      "no_model_retry_verified": true,
+      "performance_accepted": false,
+      "source_identity_verified": true,
+      "uuid": "19105d9d-7522-498e-bf1d-73fbf7aba766",
+      "verified": true,
+      "verifier_sha256": "9a023005a1847108dfb7e05ef0bacddbadcb7558766c5847bb08d2e2f678e673"
+    }
+  ]
+}
