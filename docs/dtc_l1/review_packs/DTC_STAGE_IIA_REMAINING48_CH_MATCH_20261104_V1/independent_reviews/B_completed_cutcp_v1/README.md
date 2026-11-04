@@ -1,0 +1,1 @@
+cutcp six-accepted-source control,11 kernels/source. Read REPORT.md and PROGRAM_FACT_MATRIX.json. Publish MANIFEST-listed members only, each<8MiB. No live data or final24 gate change. Root alone publishes.

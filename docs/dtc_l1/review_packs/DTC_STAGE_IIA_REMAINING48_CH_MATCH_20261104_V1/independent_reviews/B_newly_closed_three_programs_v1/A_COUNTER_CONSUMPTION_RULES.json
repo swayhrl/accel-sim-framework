@@ -1,0 +1,80 @@
+{
+  "all7_runtime_counter_availability": "PENDING_CLOSED_QUALIFIED_SOURCES",
+  "fixed_Core": "9eedb3131937748f0492fa83aad37d3691118d70",
+  "fixed_Framework": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+  "inherited_catalog_pin": {
+    "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_remaining48_execution_20261104_v1/agents/B_closed_samples_analysis_v1/CONSUMED_COUNTER_CATALOG.json",
+    "sha256": "b7bea76d9acbf7af32938ab109238c47b11784eb99f62ac26a220eea0a03f547"
+  },
+  "inherited_scope_note": "The reused catalogue was proven on the first8 source/closed set. Source semantics are reused conditionally; actual printing/availability in these7 inputs remains unknown until natural closure.",
+  "no_live_logs_read": true,
+  "rules": [
+    {
+      "field": "strict accepted cycles and proof.kernels[*].gpu_sim_cycle",
+      "future_use": "Bind full input/profile and ordered symbol+ordinal first. Compare CH/DH P0/F whole cycles; retain kernel intervals separately and reconcile their sum/residual with strict total.",
+      "missing": "No accepted strict identity: null, never a partial-cycle substitution.",
+      "type": "WHOLE_REPLAY_CYCLES_VS_KERNEL_INTERVAL_CYCLES"
+    },
+    {
+      "field": "L2 accepted GLOBAL_ACC_R sectors",
+      "future_use": "HIT+HIT_RESERVED+MISS+SECTOR_MISS, excluding RESERVATION_FAIL retries and supplementary MSHR_HIT. Valid nonnegative differences of consecutive matched print boundaries give interval totals.",
+      "missing": "Raw field absent at a boundary: phase not established; not zero.",
+      "type": "CUMULATIVE_TYPED_32B_SECTORS"
+    },
+    {
+      "field": "L2 all-access misses/reservation_fails and raw fail-breakdown",
+      "future_use": "Keep access type. Strict misses include other types such as writes; positive-only bracketed reasons need closed-sidecar parser, not invented strict fields.",
+      "missing": "Absence from positive-only print/strict numeric parser is not measured zero or occupancy.",
+      "type": "CUMULATIVE_RETRY_EVENTS_NOT_REQUESTS_OR_CYCLES"
+    },
+    {
+      "field": "DRAM issued reads/writes",
+      "future_use": "reads=n_rd+n_rd_L2_A, preserve write-allocation vs demand domains; consecutive print deltas only when fully observed and monotone.",
+      "missing": "Do not infer zero from missing controller records.",
+      "type": "CUMULATIVE_32B_COMMAND_ATOMS"
+    },
+    {
+      "field": "gpu_stall_dramfull",
+      "future_use": "Same-design/F association with cycles and traffic. It is not isolated FR-FCFS full cycles and may count40subpartitions per L2 tick.",
+      "missing": "No critical-path percentage from these event totals.",
+      "type": "SUBPARTITION_ICNT_ADMISSION_BLOCK_EVENTS"
+    },
+    {
+      "field": "CH common Tag/PIB and DH OO Tag/PIB",
+      "future_use": "CH PAPER_BASE commonPIB256; DH PAPER_OO PIB128. Bank service tag_conflicts differs from mapping evictions. Compare within design and field source; do not treat DH genericPIB8 as active capacity.",
+      "missing": "OO tag-conflict/full fields not printed stay MISSING, not zero; common-field labels cannot certify identical mechanism.",
+      "type": "DIFFERENT_ACTIVE_ARCHITECTURE_NAMESPACES"
+    },
+    {
+      "field": "DH finite-service integrals/sums/counts",
+      "future_use": "A declared additive difference may be grouped by exact ordinals; divide PIB integral by matching sample count and service-sum by matching retired count. Keep nonzero denominators and event class.",
+      "missing": "CH finite_service0 absence is not zero. Mean service delay is not critical-path application time.",
+      "type": "CUMULATIVE_TYPED_ADDITIVE_COUNTS_AND_ITEM_CYCLES"
+    },
+    {
+      "field": "occupancy/outstanding gauges and running peaks",
+      "future_use": "Use gauges for drain/conservation and peaks for whole-prefix diagnostics. Never sum/difference running maxima into per-kernel peaks.",
+      "missing": "Terminal0 means drained, not no queue pressure.",
+      "type": "TERMINAL_GAUGE_OR_CUMULATIVE_MAX"
+    },
+    {
+      "field": "avg_mrq_latency",
+      "future_use": "May describe same-design/F cumulative request age when printed. Do not difference means or weight by DRAM atoms; exact per-phase mean needs compatible numerator+request denominator.",
+      "missing": "Does not provide complete L2-to-DRAM queue+service latency; phase numerator/denominator may be unavailable.",
+      "type": "INTEGER_TRUNCATED_REQUEST_POPULATION_MEAN_TO_BANK_ASSIGNMENT"
+    },
+    {
+      "field": "averagemflatency/avg_icnt2mem_latency/avg_icnt2sh_latency",
+      "future_use": "Retain as explicitly limited diagnostics only. Fold/tail and distinct numerator/denominator windows preclude exact final or interval attribution by default.",
+      "missing": "Missing is not0; no unsourced regex/value repair.",
+      "type": "CONDITIONALLY_FOLDED_DISTINCT_DOMAIN_MEANS"
+    },
+    {
+      "field": "MemcpyHtoD / L2 model initial state",
+      "future_use": "With perf_sim_memcpy1, each HtoD invokes forced L2 tag fill, not ordinary queued DRAM data transfer. Keep command placements in the kernel join and disclose persistent L2/flush contract.",
+      "missing": "Repeated source addresses/copies do not prove hits, pending merges, original numeric values or CPU wall time.",
+      "type": "STATIC_COMMANDLIST_PLUS_FIXED_MODEL_SEMANTICS"
+    }
+  ],
+  "schema": "DTC_LONGTAIL_COUNTER_READY_MAP_NOT_RUNTIME_MEASUREMENT_V1"
+}

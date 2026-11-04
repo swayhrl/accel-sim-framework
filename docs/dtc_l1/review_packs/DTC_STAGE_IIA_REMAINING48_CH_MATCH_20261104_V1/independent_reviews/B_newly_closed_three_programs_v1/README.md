@@ -1,0 +1,1 @@
+Read REPORT.md and PROGRAM_FACT_MATRIX.json for3 newly closed matched programs.18 accepted sources/2604 kernel records. Publish MANIFEST-listed members only; each<8MiB. No live consumption or final24 gate change. Root alone publishes.

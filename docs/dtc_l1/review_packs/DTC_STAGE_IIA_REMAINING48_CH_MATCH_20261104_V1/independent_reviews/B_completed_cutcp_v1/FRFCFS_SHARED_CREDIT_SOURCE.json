@@ -1,0 +1,8 @@
+{
+  "commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+  "path": "/root/data/dtc_failure_repair_20261025_v1/core/src/gpgpu-sim/l2cache.cc",
+  "sha256": "1b2b0ebca49a2f5943c9350a637d849961da96159a147a70b887434bd7f37ff5",
+  "line_start": 133,
+  "line_end": 149,
+  "excerpt": "133:     : m_last_borrower(config->m_n_sub_partition_per_memory_channel - 1),\n134:       m_private_credit(config->m_n_sub_partition_per_memory_channel, 0),\n135:       m_shared_credit(0) {\n136:   // each sub partition get at least 1 credit for forward progress\n137:   // the rest is shared among with other partitions\n138:   m_private_credit_limit = 1;\n139:   m_shared_credit_limit = config->gpgpu_frfcfs_dram_sched_queue_size +\n140:                           config->gpgpu_dram_return_queue_size -\n141:                           (config->m_n_sub_partition_per_memory_channel - 1);\n142:   if (config->seperate_write_queue_enabled)\n143:     m_shared_credit_limit += config->gpgpu_frfcfs_dram_write_queue_size;\n144:   if (config->gpgpu_frfcfs_dram_sched_queue_size == 0 or\n145:       config->gpgpu_dram_return_queue_size == 0) {\n146:     m_shared_credit_limit =\n147:         0;  // no limit if either of the queue has no limit in size\n148:   }\n149:   assert(m_shared_credit_limit >= 0);"
+}
