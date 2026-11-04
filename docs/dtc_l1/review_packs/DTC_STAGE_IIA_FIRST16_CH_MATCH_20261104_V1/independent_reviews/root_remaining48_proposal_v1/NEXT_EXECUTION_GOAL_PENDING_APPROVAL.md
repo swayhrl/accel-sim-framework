@@ -1,0 +1,3 @@
+# Pending approval: DTC-L1 Stage II-A remaining48 core CH matching
+
+No execution authorization is provided by this file. Approval must bind this package commit/manifest and the exact48 PLAN IDs in PROPOSED_MATRIX.json (or an explicitly named16-candidate logical group). After approval, create a fresh epoch2 request/one-start identities/unique owner and resource/archive qualification. Follow REPORT.md scientific and resource constraints, preserve all outcomes and old ledgers; no first16 budget reuse/reset, additional model, combination, input change, capture,109 task or v0.23 edit. Do not auto-release this proposal.
