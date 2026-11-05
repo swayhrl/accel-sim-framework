@@ -7,7 +7,7 @@ V10 authority94cbc8197cc3a5ec22669a55e7ccfb1a3df16962/tree56c90b40360d9f7c555534
 
 ## 1. Dominant modules and selected native evidence
 
-V9 remains the native latency authority: B1approximately10.125ms/extra token,B2approximately10.448ms,ratio1.0318448. CPU reconstruction places gate/up and down at78.13%/78.31%of B1/B2 Dense kernel time. Adding O-projection covers approximately83.6%of Dense time. Down accounts forapproximately0.13094ms of the observed0.19779ms B2 Dense increment per step.
+V9 remains the native latency authority: B1approximately10.125ms/extra token,B2approximately10.448ms,ratio1.0318448. CPU reconstruction places gate/up and down at78.13%/78.31%of B1/B2 Dense kernel time in the collected V9 trace. That trace retains the CUDA13-driver/CUPTI12.8 fallback and missing-event warning,so its shares and copy bounds do not guarantee whole-application trace completeness. Adding O-projection covers approximately83.6%of Dense time. Down accounts forapproximately0.13094ms of the observed0.19779ms B2 Dense increment per step.
 
 V11 selected O/gate-up/down at layers0 and17 in B1(A00) and B2(A00+A01). Frozen512-token inputs,Qwen2.5-3B revision aa8e72537993ba99e69dfaafa59ed015b17504d1,BF16/TP1/no quantization,strong VLLM_COMPILE/inductor/FULL_AND_PIECEWISE,FlashAttentionImpl,UnquantizedLinearMethod,544/1088/2,prefix cache off and LP_NONE remain unchanged.
 
@@ -67,7 +67,7 @@ No production vLLM,Image-Lab or third-party library was edited. The process pref
 
 The72 attention-adjacent copies remain tied to cache-update/splitKV and splitKV-combine/O-projection. Actual source/destination pointers,strides and internal FA2 transform are unavailable. Installed Torch/vLLM use a default Graph capture that does not retain the queryable graph object;the formal introspection path would change capture retention or requires unavailable support. Shape profiling can itself retain tensors or add copies. An unsafe deletion would not be a valid counterfactual.
 
-Consequently exact copy necessity/removability remains UNRESOLVED. The same-profile ideal copy-only request-time ceiling0.809538%from V10 is retained;it is not an observed speedup. Close this copy-specific hardware direction for the present Qwen scope,without claiming the copies are universally necessary.
+Consequently exact copy necessity/removability remains UNRESOLVED. The same-profile ideal request-time ceiling0.809538%for the collected copies from V10 is retained;it is not an observed speedup and inherits that trace-coverage limitation. Close this copy-specific hardware direction for the present Qwen scope,without claiming the copies are universally necessary.
 
 ## 5. Competing mechanisms and opportunity ranking
 
