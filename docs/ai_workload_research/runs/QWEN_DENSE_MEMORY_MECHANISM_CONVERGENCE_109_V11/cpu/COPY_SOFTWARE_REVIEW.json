@@ -1,0 +1,407 @@
+{
+  "schema": "V11_CPU_COPY_SOFTWARE_REVIEW_V1",
+  "created_utc": "2026-11-05T04:50:29.201839+00:00",
+  "scientific_status": "OBSERVED_ADJACENCY_EXACT_COPY_SEMANTICS_UNRESOLVED",
+  "recommendation": "DEPRIORITIZED_LOW_APPLICATION_BOUND_NO_BLIND_COPY_PATCH",
+  "scope": {
+    "read_only_inputs": true,
+    "new_GPU_CUDA_NVML_operations": false,
+    "torch_vllm_import": false,
+    "production_runtime_ImageLab_changes": false,
+    "source_downloads": 0,
+    "full_raw_rearchival": false,
+    "writes_only": [
+      "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/cpu/COPY_SOFTWARE_REVIEW.json",
+      "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/cpu/COPY_SOFTWARE_REVIEW.md"
+    ]
+  },
+  "inherited_observations": {
+    "B1_decode_steps": 31,
+    "B2_decode_steps": 31,
+    "B1_direct_copy_nodes": 0,
+    "B2_direct_copy_nodes": 2232,
+    "B2_direct_copy_per_step": 72,
+    "B2_direct_copy_per_layer_per_step": 2,
+    "every_B2_step_same_adjacency_pattern": true,
+    "pre_attention_count": 1116,
+    "post_attention_count": 1116,
+    "pre_attention_pattern": "same-layer packedQKV dense -> RoPE fused pointwise -> reshape_and_cache_flash -> direct_copy -> flash_fwd_splitkv -> flash_fwd_splitkv_combine",
+    "post_attention_pattern": "flash_fwd_splitkv_combine -> direct_copy -> same-layer self_attn.o_proj dense GEMM",
+    "observed_grid": [
+      8,
+      1,
+      1
+    ],
+    "observed_block": [
+      128,
+      1,
+      1
+    ],
+    "copy_dtype_in_kernel_symbol": "c10::BFloat16",
+    "copy_summed_ms_total": 3.197527,
+    "copy_union_ms_total_sum_of_steps": 3.197527,
+    "copy_mean_ms_per_step": 0.10314603225806451
+  },
+  "bound": {
+    "grade": "OBSERVED_TRACE_LOCAL_IDEAL_COUNTERFACTUAL_BOUND",
+    "copy_summed_ms": 3.197527,
+    "same_profile_complete_B2_N32_event_ms": 394.98172,
+    "max_time_saved_percent_if_all_copy_duration_disappeared_other_work_fixed": 0.8095379705167115,
+    "not_measured_speedup": true,
+    "scope": "Same V9 profiled request used by accepted V10 LOCAL_OPTIMIZATION_BOUND; no additional app speedup measurement. Union already includes copies. Trace driver/CUPTI coverage warning inherited. Does not bound broader attention redesign or pipeline changes."
+  },
+  "classification": [
+    {
+      "category": "ATTENTION_INTERFACE_REQUIRED_CONVERSION",
+      "status": "UNRESOLVED",
+      "reason": "No runtime source/destination copy tensor parameters. Q/K/V compiled final stride1 means Python maybe_contiguous does not establish a conversion. Static attention boundary shape contracts do not prove internal copy arguments."
+    },
+    {
+      "category": "COMPILER_LAYOUT_ALIGNMENT",
+      "status": "GUARD_PRESENT_TRIGGER_NOT_OBSERVED",
+      "reason": "Generated copy_if_misaligned guards exist; no actual input pointer/alignment branch observation. Cannot claim those guards generated the two inside/around attention copies."
+    },
+    {
+      "category": "FA2_INTERNAL_GQA_REARRANGEMENT",
+      "status": "PLAUSIBLE_NOT_SOURCE_PROVEN",
+      "reason": "Copies bracket FA2 splitKV/combine for B2. The exact compiled FA2 C++ translation unit is absent locally. Binary strings contain build path only, not sufficient control-flow proof."
+    },
+    {
+      "category": "SOFTWARE_ELIMINABLE_MOVEMENT",
+      "status": "NOT_DEMONSTRATED",
+      "reason": "No exact transform or independent output-preserving replacement is identified. Deleting kernels, changing strides speculatively or forcing alternate attention/linear backend changes computation and cannot serve as a copy-only counterfactual."
+    },
+    {
+      "category": "COPY_IS_NECESSARY",
+      "status": "NOT_PROVEN",
+      "reason": "Failure to identify an elimination is not evidence of necessity."
+    }
+  ],
+  "new_observer_feasibility": [
+    {
+      "method": "Torch CUDAGraph.raw_cuda_graph + driver node query",
+      "availability": "NOT_ZERO_CHANGE_FOR_EXISTING_NATIVE_CAPTURE",
+      "evidence": "Torch default keep_graph=False destroys underlying cudaGraph_t at capture_end. Installed vLLM cuda_graph.py constructs torch.cuda.CUDAGraph() without keep_graph=True. Queryable preserved graph would require a separately labelled capture change. raw_cuda_graph_exec alone does not expose original tensor strides or ATen operation identity."
+    },
+    {
+      "method": "Torch CUDAGraph.get_graph_data",
+      "availability": "NOT_APPLICABLE_AS_EXISTING_NATIVE_READ_ONLY_SOLUTION",
+      "evidence": "Installed source requires keep_graph=True and instantiated graph. Its tools-id path requires cuda.bindings/driver>=13.1; accepted runtime driver13.0 does not meet that stated requirement. Returned topology/kernel names still do not contain source/destination tensor stride semantics."
+    },
+    {
+      "method": "torch.profiler record_shapes/with_stack",
+      "availability": "DIAGNOSTIC_ONLY_OBSERVER_EFFECT_NOT_FREE",
+      "evidence": "Installed API documents overhead; record_shapes holds tensor references, may inhibit optimizations and introduce extra copies. Internal FA2 C++ temporaries need not appear as Python op inputs; cannot promise exact tensor attribution."
+    },
+    {
+      "method": "Python wrapper metadata at FA2 entry/exit",
+      "availability": "BOUNDARY_METADATA_ONLY",
+      "evidence": "q/k/v/out data_ptr/shape/stride could be logged during uncaptured/capture path without intentionally changing math, but this is instrumentation rather than an established zero-effect read-only API. Graph replay bypasses Python and internal copied temporaries remain opaque. Label altered observation and separately verify graph/output identity if used."
+    }
+  ],
+  "minimal_software_counterfactual_decision": {
+    "execute_now": false,
+    "reason": "No exact local-source/runtime-argument proof supports a minimal replacement; copy-only trace ceiling0.81% makes speculative intrusive recompilation or backend replacement low value beside dominant Dense measurement.",
+    "safe_future_prerequisites": [
+      "Exact FA2 source matched to installed wheel/binary, with reproducible build identity",
+      "Source/destination pointer and stride association for each copy, plus operation branch condition",
+      "An isolated per-worker replacement with identical output/numerical behavior and independently checked native/altered Graph descriptors",
+      "Whole generate interleaved performance, not removed kernel count; preserve failure data"
+    ],
+    "does_not_close_as_necessary": true,
+    "does_not_promote_hardware_candidate": true
+  },
+  "source_identity_revalidation": [
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/.private/NSYS/compilation/rank_0_0/backbone/computation_graph.py",
+      "exists": true,
+      "prior_V10_sha256": "6dee87cf10e38fd652b3716a41db29584bff91c448ef2dca41af48459e59cc0d",
+      "bytes": 810749,
+      "prior_line_ranges": [
+        {
+          "start": 678,
+          "end": 693,
+          "finding": "Attention output allocation and Q/K/V/output views"
+        },
+        {
+          "start": 695,
+          "end": 702,
+          "finding": "Opaque custom-op partition with KV update and unified_attention_with_output"
+        },
+        {
+          "start": 704,
+          "end": 710,
+          "finding": "Attention output view then layer0 o_proj linear"
+        }
+      ],
+      "sha256": "6dee87cf10e38fd652b3716a41db29584bff91c448ef2dca41af48459e59cc0d",
+      "same_as_V10": true
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/.private/NSYS/vllm/torch_compile_cache/torch_aot_compile/c159787be9fd1a9231c01c0dd24cfcfe41773e8745e34dcda927917ff1090e8e/inductor_cache/y4/cy4engdtvxatgfis5ow3p2lxyujcnesxvxmhyqrylgheorfv6xlz.py",
+      "exists": true,
+      "prior_V10_sha256": "66dacd116effe98abb2f778708764400134c18cb52a44a91fc67ec7920e43b65",
+      "bytes": 45079,
+      "prior_line_ranges": [
+        {
+          "start": 630,
+          "end": 636,
+          "finding": "Packed QKV bias/weight contract and addmm"
+        },
+        {
+          "start": 643,
+          "end": 653,
+          "finding": "K contiguous allocation; Q [s72,16,128] stride[2048,128,1]; V strided view [s72,2,128] stride[2560,128,1], offset2304; output contiguous allocation"
+        }
+      ],
+      "sha256": "66dacd116effe98abb2f778708764400134c18cb52a44a91fc67ec7920e43b65",
+      "same_as_V10": true
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/.private/NSYS/vllm/torch_compile_cache/torch_aot_compile/c159787be9fd1a9231c01c0dd24cfcfe41773e8745e34dcda927917ff1090e8e/inductor_cache/xw/cxwxcg5zf6tfqmw2irursgvupaqypwfjpw5hqmpftajxz5zmikw3.py",
+      "exists": true,
+      "prior_V10_sha256": "9a9bbf6b4c04ad4c5cf0d32f03ad119446dfaef7ab6453a6684513140ace9383",
+      "bytes": 78456,
+      "prior_line_ranges": [
+        {
+          "start": 496,
+          "end": 496,
+          "finding": "copy_if_misaligned imported from C++ torch._C._dynamo.guards"
+        },
+        {
+          "start": 950,
+          "end": 963,
+          "finding": "O-proj input assert stride[2048,128,1], pointer alignment guard, flatten view, mm"
+        },
+        {
+          "start": 1007,
+          "end": 1028,
+          "finding": "Following QKV/RoPE and returned views"
+        }
+      ],
+      "sha256": "9a9bbf6b4c04ad4c5cf0d32f03ad119446dfaef7ab6453a6684513140ace9383",
+      "same_as_V10": true
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/.private/NSYS/vllm/torch_compile_cache/torch_aot_compile/c159787be9fd1a9231c01c0dd24cfcfe41773e8745e34dcda927917ff1090e8e/inductor_cache/qe/cqe5esxtdgnhdntkhdcr2buajsr6xuqd6i2kbfat7umtphzrkokj.py",
+      "exists": true,
+      "prior_V10_sha256": "41039f5bb5a62818d1b21b4586c2ed7cf2e22a367c4e208945a3e31ef1317d78",
+      "bytes": 52835,
+      "prior_line_ranges": [
+        {
+          "start": 599,
+          "end": 611,
+          "finding": "Last-layer o_proj contiguous input contract, pointer alignment guard and mm"
+        }
+      ],
+      "sha256": "41039f5bb5a62818d1b21b4586c2ed7cf2e22a367c4e208945a3e31ef1317d78",
+      "same_as_V10": true
+    },
+    {
+      "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/v1/attention/backends/flash_attn.py",
+      "exists": true,
+      "prior_V10_sha256": "b170a4789e18104c1bee35bea70df51abe6766693d8f4726a59f2e6f5c4282aa",
+      "bytes": 81870,
+      "prior_line_ranges": [
+        {
+          "start": 1166,
+          "end": 1188,
+          "finding": "Attention forward tensor shape contract"
+        },
+        {
+          "start": 1275,
+          "end": 1288,
+          "finding": "DCP route requires dcp_world_size>1"
+        },
+        {
+          "start": 1381,
+          "end": 1407,
+          "finding": "Dense FA wrapper receives query/output views and KV cache"
+        },
+        {
+          "start": 1491,
+          "end": 1496,
+          "finding": "query.contiguous exists only inside separate DCP helper"
+        }
+      ],
+      "sha256": "b170a4789e18104c1bee35bea70df51abe6766693d8f4726a59f2e6f5c4282aa",
+      "same_as_V10": true
+    },
+    {
+      "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/vllm_flash_attn/flash_attn_interface.py",
+      "exists": true,
+      "prior_V10_sha256": "d6fccbb0fe1931c79013f5942199c5c9cbba0eedd7ac5ff037f55db19c38421a",
+      "bytes": 24876,
+      "prior_line_ranges": [
+        {
+          "start": 117,
+          "end": 118,
+          "finding": "maybe_contiguous only copies if last dimension stride!=1"
+        },
+        {
+          "start": 294,
+          "end": 294,
+          "finding": "maybe_contiguous for q/k/v"
+        },
+        {
+          "start": 298,
+          "end": 342,
+          "finding": "FA2 opaque torch.ops._vllm_fa2_C.varlen_fwd"
+        }
+      ],
+      "sha256": "d6fccbb0fe1931c79013f5942199c5c9cbba0eedd7ac5ff037f55db19c38421a",
+      "same_as_V10": true
+    },
+    {
+      "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/model_executor/layers/attention/attention.py",
+      "exists": true,
+      "prior_V10_sha256": "bc897e452f3aea603e353ca42a365d3be8836e9485d78cbf8cc4677baca2fb42",
+      "bytes": 33071,
+      "prior_line_ranges": [
+        {
+          "start": 526,
+          "end": 577,
+          "finding": "allocate output, view query/key/value/output, cache-update and unified_attention_with_output, flatten return"
+        }
+      ],
+      "sha256": "bc897e452f3aea603e353ca42a365d3be8836e9485d78cbf8cc4677baca2fb42",
+      "same_as_V10": true
+    }
+  ],
+  "additional_source_evidence": [
+    {
+      "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/torch/cuda/graphs.py",
+      "bytes": 38171,
+      "sha256": "15b535903f0832cbfbf83070c663ed899a9fd87b5499befde5087b4c2962ed81",
+      "line_ranges": [
+        [
+          78,
+          98
+        ],
+        [
+          212,
+          222
+        ],
+        [
+          231,
+          277
+        ]
+      ]
+    },
+    {
+      "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/compilation/cuda_graph.py",
+      "bytes": 14304,
+      "sha256": "05c86392d7fae967ac73076dba7e01990a0e3ae619e4866450a0c1be56bd1192",
+      "line_ranges": [
+        [
+          278,
+          294
+        ]
+      ]
+    },
+    {
+      "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/compilation/breakable_cudagraph.py",
+      "bytes": 16071,
+      "sha256": "3cc427612a08e2b9b3fee47548026400c1d0776e2d4747535e59ef5512bdf1e8",
+      "line_ranges": [
+        [
+          173,
+          184
+        ]
+      ]
+    },
+    {
+      "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/torch/profiler/profiler.py",
+      "bytes": 64912,
+      "sha256": "2e7e248cba6f46787aeb693cd3fb82a1328936dc37e41be86a8e490ea1051eb9",
+      "line_ranges": [
+        [
+          163,
+          180
+        ],
+        [
+          193,
+          199
+        ]
+      ]
+    },
+    {
+      "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/v1/attention/backends/flash_attn.py",
+      "bytes": 81870,
+      "sha256": "b170a4789e18104c1bee35bea70df51abe6766693d8f4726a59f2e6f5c4282aa",
+      "line_ranges": [
+        [
+          94,
+          113
+        ],
+        [
+          1381,
+          1407
+        ]
+      ]
+    },
+    {
+      "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm-0.30.0.dist-info/direct_url.json",
+      "bytes": 305,
+      "sha256": "839ab977eb8be54da12fbf9a4b568dda0a012ba5f9db9c675381a75c462a2897",
+      "line_ranges": [
+        [
+          1,
+          1
+        ]
+      ]
+    }
+  ],
+  "binary_scope": {
+    "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/vllm_flash_attn/_vllm_fa2_C.abi3.so",
+    "actual_size": 307955360,
+    "wheel_RECORD_declared_hash": "sha256=zisN0JXVwdRs0rtXKMmUNQY76u982beb4t4mIoqfe1o",
+    "wheel_RECORD_declared_size": "307955360",
+    "full_binary_rehash_performed": false,
+    "strings_stream_filter": [
+      "flash_api.cpp",
+      "seqlenq_ngroups_swapped",
+      "num_heads % num_heads_k",
+      "is_contiguous()",
+      "TensorIteratorBase"
+    ],
+    "matched_source_path": "/workspace/.deps/vllm-flash-attn-src/csrc/flash_attn/flash_api.cpp",
+    "installed_cpp_source_present_in_FA_package": false,
+    "no_inference_from_build_path_alone": true
+  },
+  "bounded_read_scope": {
+    "existing_V10_files": [
+      "cpu/COPY_PATH_REVIEW.json",
+      "FINAL_REPORT.md",
+      "SYNTHESIS.json"
+    ],
+    "source_prefixes": [
+      "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/vllm_flash_attn",
+      "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/v1/attention/backends",
+      "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/torch/profiler",
+      "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/torch/include",
+      "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/compilation",
+      "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/v1/worker"
+    ],
+    "search": "rg unavailable; bounded Python textual scans of .py/.h/.hpp in named installed-source prefixes. No assets or other projects searched. Streamed strings over one accepted FA2 shared object; no binary rewrite."
+  },
+  "cpu_resource_receipt": {
+    "writer_process_pid": 3795760,
+    "writer_threads_and_memory": {
+      "VmHWM": "17060 kB",
+      "VmRSS": "16428 kB",
+      "Threads": "1"
+    },
+    "writer_ru_maxrss_KiB": 17060,
+    "writer_ru_utime_sec": 0.019317,
+    "writer_ru_stime_sec": 0.008133,
+    "prior_short_SSH_processes_peak_not_continuously_sampled": true,
+    "previous_strings_child_peak": "UNOBSERVED_NOT_ZERO",
+    "not_complete_agent_process_tree_peak": true,
+    "GPU_use": 0
+  },
+  "validation": {
+    "all_reused_source_hashes_same_as_V10": true,
+    "no_duplicate_timeline_or_csv_archive": true
+  }
+}

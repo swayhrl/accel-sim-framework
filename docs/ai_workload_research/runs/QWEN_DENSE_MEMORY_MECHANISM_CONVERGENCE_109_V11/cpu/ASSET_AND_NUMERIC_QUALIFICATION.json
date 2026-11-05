@@ -1,0 +1,341 @@
+{
+  "schema": "V11_CPU_ASSET_AND_NUMERIC_QUALIFICATION_V1",
+  "created_utc": "2026-11-05T04:47:10.428519+00:00",
+  "external_model_status": "NOT_AVAILABLE",
+  "independent_dense_decoder_qualified": false,
+  "independent_accepted_natural_input": false,
+  "blocking_main_research": false,
+  "scope": "Bounded reuse of V10 qualification, CURRENT_STATE, C16 authority index and explicit accepted109 asset root. No node-wide availability claim.",
+  "asset_root": "/data/c16/stagea_runtime_qualification_v1/assets",
+  "asset_entries": [
+    {
+      "directory": "/data/c16/stagea_runtime_qualification_v1/assets/qwen2.5-3b-instruct/aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "model_id": "qwen2.5-3b-instruct",
+      "architecture": [
+        "Qwen2ForCausalLM"
+      ],
+      "dtype": "bfloat16",
+      "quantization": null,
+      "independent_from_current_qwen": false,
+      "license_metadata": "Qwen RESEARCH LICENSE AGREEMENT; README license other/qwen-research; research-use authorization inherited, no new grant inferred",
+      "file_names": [
+        ".gitattributes",
+        "DOWNLOAD_RECEIPT.json",
+        "LICENSE",
+        "README.md",
+        "config.json",
+        "generation_config.json",
+        "merges.txt",
+        "model-00001-of-00002.safetensors",
+        "model-00002-of-00002.safetensors",
+        "model.safetensors.index.json",
+        "tokenizer.json",
+        "tokenizer_config.json",
+        "vocab.json"
+      ],
+      "weight_files": [
+        {
+          "name": "model-00002-of-00002.safetensors",
+          "bytes": 2203268048,
+          "sha256_revalidated_in_this_subtask": false
+        },
+        {
+          "name": "model-00001-of-00002.safetensors",
+          "bytes": 3968658944,
+          "sha256_revalidated_in_this_subtask": false
+        }
+      ],
+      "qualification": "CURRENT_LINEAGE_ONLY_NOT_INDEPENDENT"
+    },
+    {
+      "directory": "/data/c16/stagea_runtime_qualification_v1/assets/qwen2.5-3b-instruct-awq/3559b226e8ce77211e2c1bd7ddfb7686fec4d6dd",
+      "revision": "3559b226e8ce77211e2c1bd7ddfb7686fec4d6dd",
+      "model_id": "qwen2.5-3b-instruct-awq",
+      "architecture": [
+        "Qwen2ForCausalLM"
+      ],
+      "dtype": "float16",
+      "quantization": {
+        "bits": 4,
+        "group_size": 128,
+        "modules_to_not_convert": null,
+        "quant_method": "awq",
+        "version": "gemm",
+        "zero_point": true
+      },
+      "independent_from_current_qwen": false,
+      "license_metadata": "Qwen RESEARCH LICENSE AGREEMENT; README license other/qwen-research; research-use authorization inherited, no new grant inferred",
+      "file_names": [
+        ".gitattributes",
+        "DOWNLOAD_RECEIPT.json",
+        "LICENSE",
+        "README.md",
+        "config.json",
+        "generation_config.json",
+        "merges.txt",
+        "model.safetensors",
+        "tokenizer.json",
+        "tokenizer_config.json",
+        "vocab.json"
+      ],
+      "weight_files": [
+        {
+          "name": "model.safetensors",
+          "bytes": 2686704624,
+          "sha256_revalidated_in_this_subtask": false
+        }
+      ],
+      "qualification": "CURRENT_LINEAGE_ONLY_NOT_INDEPENDENT"
+    }
+  ],
+  "gaps": [
+    "No independently registered Dense decoder revision + readable published-file authority within the allowed asset root.",
+    "No independently accepted tokenizer/natural-input identity and frozen numeric contract for a second model.",
+    "C16 index mentions Llama-3.2-1B historical AWMA tied-weight training/reference-repeatability evidence, not a registered109 independent native decoder candidate; raw review references node164, which was not accessed.",
+    "Other C16 names Qwen3-30B/DeepSeek/OLMoE are selected MoE lineage evidence, not independent Dense decoder authority."
+  ],
+  "numeric": {
+    "status": "STATIC_SEMANTIC_MAPPING_ONLY_NATIVE_CAUSAL_MAPPING_NOT_ESTABLISHED",
+    "v8": {
+      "path": "NATIVE_COMPILED_POST_FORMAL_OBSERVER",
+      "source_lines": {
+        "worker_compiled": [
+          45,
+          49
+        ],
+        "observer_hidden_and_logits": [
+          12,
+          25
+        ],
+        "observer_output_and_selected_head_rows": [
+          26,
+          45
+        ]
+      },
+      "observation": "Final normalized hidden states and sampler-input raw logits differ across B1/B2 before normalization at captured rows.",
+      "captured_top20_representative_of_MAIN": true,
+      "limitation": "Captured steps 0/1/15/31 only, separate observation outside formal timings; final hidden/logits do not localize an internal first cause. Exact selected top20 does not prove every internal tensor/kernel is unchanged."
+    },
+    "v9": {
+      "path": "NO_NUMERIC_BOUNDARY_RUN",
+      "evidence": "SYNTHESIS.json says resource STOP before NUMERIC; V8 authority retained"
+    },
+    "v10": {
+      "path": "ALTERED_EAGER_NOT_NATIVE",
+      "compilation": "NONE",
+      "cudagraph": "NONE",
+      "enforce_eager": true,
+      "logprobs": "NOT_CAPTURED_NOT_COMPUTED",
+      "observed_boundary": "layer0 returned hidden first differs among five sampled boundaries",
+      "native_first_divergence_layer_established": false,
+      "source_lines": {
+        "worker_task_and_mode": [
+          19,
+          65
+        ],
+        "sparse_selected_rows": [
+          11,
+          16
+        ],
+        "sparse_hooks_and_clone": [
+          18,
+          32
+        ],
+        "sampler_identity_assertion": [
+          33,
+          44
+        ]
+      },
+      "limitations": [
+        "No internal QKV/attention/MLP sub-boundaries were captured; layer0 output differs but the responsible operation is unlocalized.",
+        "Only the last query row per request was sampled. Earlier-token or previous-prefill KV differences may propagate into the first decode observation.",
+        "Single altered eager capture per input/batch condition; N1/N2 prefill equality is an internal repeat check, not a statistical repeatability study.",
+        "CPU copies and hooks synchronize/change timing; compilation and graph replay are disabled. No native causal equivalence or native timing conclusion follows.",
+        "No raw logits tensor, logprob or probability was saved here; sampled token equality does not imply equal logits/probabilities.",
+        "Runtime prompt token identity and sampled history match, but full model input_ids/positions/query_start_loc snapshots were not saved; preserved explicit mapping evidence is described above.",
+        "Large tensors stay in .private/NUMERIC/boundaries; public output includes hashes, shapes and aggregate comparisons only."
+      ]
+    },
+    "reliable_CPU_mapping": [
+      {
+        "source": "qwen2.py",
+        "lines": [
+          290,
+          310
+        ],
+        "mapping": "Decoder returns MLP branch hidden and residual as separate tensors; hidden_plus_residual label is conceptual, not a saved sum."
+      },
+      {
+        "source": "qwen2.py",
+        "lines": [
+          401,
+          450
+        ],
+        "mapping": "Embedding -> layer loop of (hidden,residual) -> final RMSNorm output index0."
+      },
+      {
+        "source": "qwen2.py",
+        "lines": [
+          499,
+          516
+        ],
+        "mapping": "Qwen2ForCausalLM forward returns model hidden; compute_logits applies logits_processor(lm_head,hidden)."
+      },
+      {
+        "source": "sparse_boundaries.py",
+        "lines": [
+          14,
+          42
+        ],
+        "mapping": "Select positions==positions.max(), clone selected rows during hook; sampler logits_indices asserted equal selected rows; request IDs and sample IDs retained."
+      },
+      {
+        "source": "local_observer.py",
+        "lines": [
+          12,
+          25
+        ],
+        "mapping": "V8 compute_logits input snapshot and sampler raw logits snapshot provide semantic endpoints."
+      }
+    ],
+    "unreliable_or_unavailable_mapping": [
+      "No CPU source-only proof of native Inductor fusion, selected GEMM/GEMV algorithm, graph padding, reduction order, or per-layer native BF16 values.",
+      "V10 last-query-row eager boundaries cannot be numerically substituted for V8 native compiled boundaries or native timing.",
+      "V10 lacks full direct input_ids/positions/query_start_loc snapshots; existing returned prompt/history and row-index receipts support only the stated selected-row mapping.",
+      "No native internal boundary values exist in this reviewed evidence; a first differing native operation is NOT_ESTABLISHED.",
+      "Source identity and algebraic topology do not imply bitwise execution equivalence."
+    ],
+    "decision": "Preserve bounded evidence; do not request a new GPU dump or relax numeric thresholds."
+  },
+  "resource_receipt": {
+    "worker": "CPU parallel D",
+    "pid": 3794557,
+    "cpu_only": true,
+    "process_threads": 1,
+    "python_ru_maxrss_KiB": 16632,
+    "previous_observed_python_ru_maxrss_KiB": 11740,
+    "resource_scope": "Remote short-lived standard-library Python workers; this writer reports own high-water RSS and thread count. Not a continuous parent/SSH/all-agent process-tree peak; root Goal monitor owns aggregate resource accounting.",
+    "tensor_payloads_loaded": 0,
+    "weight_payloads_read_bytes": 0,
+    "CUDA_calls": 0,
+    "NVML_calls": 0,
+    "GPU_lock_attempts": 0,
+    "downloads": 0,
+    "installs": 0,
+    "broad_project_or_disk_scans": 0,
+    "other_nodes_accessed": 0,
+    "old_assets_modified": false,
+    "bounded_directory_listing": [
+      "the explicit V10 asset root, two model children and revision children",
+      "V8/V9/V10 evidence run top-level file names",
+      "known V8 tool directory top-level file names"
+    ],
+    "new_files_only": [
+      "cpu/ASSET_AND_NUMERIC_QUALIFICATION.json",
+      "cpu/ASSET_AND_NUMERIC_QUALIFICATION.md"
+    ]
+  },
+  "source_manifest": [
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/CURRENT_STATE.md",
+      "bytes": 6453,
+      "sha256": "5de4aeb4ee2973071baa0aa995886b10a3867d06c5161293a007a90a04d2724d"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md",
+      "bytes": 29774,
+      "sha256": "16339e8aa0f3d973d7dbe2ad0b4756fa845ec447e6be40fb731cb5628ab1c133"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/EXTERNAL_MODEL_QUALIFICATION.json",
+      "bytes": 338,
+      "sha256": "c1b944bc95063ca4cc819d31518db5b4833105b1ee51b47818224352e31764eb"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/SOURCE_AND_RUNTIME.json",
+      "bytes": 10417,
+      "sha256": "7896c783c82c1cef1f70549f2b4bd00886ebdef7a2f031e1e83f4eba3efea964"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/AUTHORITY.json",
+      "bytes": 227,
+      "sha256": "2d46121dced11cd527f941e3825516766220d04c9a75a3981d77eae09400e228"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/NUMERIC_BOUNDARY_ANALYSIS.json",
+      "bytes": 158968,
+      "sha256": "776a02ffe97f26035dfa8d42ad11db01f94367dfb7e8bac76374075372a24551"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_BF16_BATCH_PERFORMANCE_NUMERIC_STUDY_109_V8/NUMERIC_ATTRIBUTION.json",
+      "bytes": 131860,
+      "sha256": "939861dc18cc7ac689f2c9656e6729e74d2d780da4a77fa17047860b98b21a8d"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_BF16_BATCH_PERFORMANCE_NUMERIC_STUDY_109_V8/NUMERIC_SUMMARY.json",
+      "bytes": 27031,
+      "sha256": "d4062689251c7fb848c356a1efa85b0bf4adcff6749be87107ff08111bd4ac2e"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/SYNTHESIS.json",
+      "bytes": 2515,
+      "sha256": "cfa9586da9feda8c6f617bce40f4f22a7f791acb270e1f97c403620d4388531a"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/util/ai_workload_research/decode_memory_compute_v10/sparse_boundaries.py",
+      "bytes": 3812,
+      "sha256": "7d1eef72cbd3428fb5ddc869c1dd7f60c8abbbb1c141cb1f9ecd744375faac63"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/util/ai_workload_research/decode_memory_compute_v10/worker.py",
+      "bytes": 14785,
+      "sha256": "f9a883218a49eaf7476670b2ec2148f6647ac8ae7a6644c7ce8b056dcf59bd62"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/util/ai_workload_research/bf16_batch_performance_numeric_v8/local_observer.py",
+      "bytes": 4136,
+      "sha256": "c9f8204938383b47a800aa6eaf8ea54013c3c5dbcd955f5affa3622c35144f00"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/util/ai_workload_research/bf16_batch_performance_numeric_v8/worker.py",
+      "bytes": 14454,
+      "sha256": "6ca8ab7b1e2a51e42341901786e0155da43c8222a2efbd79bbded38e75380de7"
+    },
+    {
+      "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/model_executor/models/qwen2.py",
+      "bytes": 18709,
+      "sha256": "eb2f0eeb13c57a28bbc06bc64afff18cd8865f89fbe9ff2a3cf3a896f037cfe9"
+    },
+    {
+      "path": "/data/c16/stagea_runtime_qualification_v1/assets/qwen2.5-3b-instruct/aa8e72537993ba99e69dfaafa59ed015b17504d1/config.json",
+      "bytes": 661,
+      "sha256": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b"
+    },
+    {
+      "path": "/data/c16/stagea_runtime_qualification_v1/assets/qwen2.5-3b-instruct/aa8e72537993ba99e69dfaafa59ed015b17504d1/README.md",
+      "bytes": 4930,
+      "sha256": "2c74693e6ae36ba878124d465195b4dad0f71035b54ece1c9fd1553cc497ef8c"
+    },
+    {
+      "path": "/data/c16/stagea_runtime_qualification_v1/assets/qwen2.5-3b-instruct/aa8e72537993ba99e69dfaafa59ed015b17504d1/LICENSE",
+      "bytes": 7388,
+      "sha256": "ef52482bb785733093dc9a2e8edd8e764c77d12d8e9d8f10a80c9b547d32d0f9"
+    },
+    {
+      "path": "/data/c16/stagea_runtime_qualification_v1/assets/qwen2.5-3b-instruct-awq/3559b226e8ce77211e2c1bd7ddfb7686fec4d6dd/config.json",
+      "bytes": 839,
+      "sha256": "9366ca39ab036f807f40ff93f03d77ce910d512174150821a87a87080c2b8c65"
+    },
+    {
+      "path": "/data/c16/stagea_runtime_qualification_v1/assets/qwen2.5-3b-instruct-awq/3559b226e8ce77211e2c1bd7ddfb7686fec4d6dd/README.md",
+      "bytes": 5293,
+      "sha256": "0839aa719e9d117769576b9e3a8d7603132344b64fa44f5868f5df6626d3817f"
+    },
+    {
+      "path": "/data/c16/stagea_runtime_qualification_v1/assets/qwen2.5-3b-instruct-awq/3559b226e8ce77211e2c1bd7ddfb7686fec4d6dd/LICENSE",
+      "bytes": 7388,
+      "sha256": "ef52482bb785733093dc9a2e8edd8e764c77d12d8e9d8f10a80c9b547d32d0f9"
+    }
+  ]
+}

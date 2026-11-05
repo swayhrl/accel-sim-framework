@@ -1,0 +1,28 @@
+.................................................................F...E.......................
+======================================================================
+ERROR: test_proxy_not_native (test_v10.V10Tests.test_proxy_not_native)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/util/ai_workload_research/dense_memory_mechanism_v11/test_v10.py", line 23, in test_proxy_not_native
+    s=(Path(__file__).parent/'micro_worker.py').read_text();self.assertIn('not_model_performance=True',s);self.assertIn('distinct_weights=1',s)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/util/ai_workload_research/dense_memory_mechanism_v11/micro_worker.py'
+
+======================================================================
+FAIL: test_backup_not_assumed_zero (test_v10.V10Tests.test_backup_not_assumed_zero)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/util/ai_workload_research/dense_memory_mechanism_v11/test_v10.py", line 15, in test_backup_not_assumed_zero
+    with self.assertRaises((ValueError,KeyError)):audit_csv(self.csv(1,0,True))
+AssertionError: (<class 'ValueError'>, <class 'KeyError'>) not raised
+
+----------------------------------------------------------------------
+Ran 93 tests in 0.166s
+
+FAILED (failures=1, errors=1)

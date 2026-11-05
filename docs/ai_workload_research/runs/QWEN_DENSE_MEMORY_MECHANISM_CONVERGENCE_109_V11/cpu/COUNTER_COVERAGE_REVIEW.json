@@ -1,0 +1,1444 @@
+{
+  "schema": "v11.cpu.counter-coverage-review.v1",
+  "created_utc": "2026-11-05T04:49:01.650377+00:00",
+  "grade": "OBSERVED_CPU_EVIDENCE_REVIEW_WITH_UNEXECUTED_V11_SELECTION",
+  "scope": {
+    "writes_only": [
+      "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/cpu/COUNTER_COVERAGE_REVIEW.json",
+      "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/cpu/COUNTER_COVERAGE_REVIEW.md"
+    ],
+    "v9_v10_readonly": true,
+    "GPU_CUDA_NVML_initialized": false,
+    "profiler_metric_query_or_model_executed": false,
+    "models_or_large_metric_dump_read": false,
+    "CPU_method": "stdlib JSON/CSV/gzip streaming, source text and installed manual reads; no imports of torch/vllm/pynvml"
+  },
+  "critical_finding": "Old gemv|gemm|cutlass name regex matches FlashAttention type names containing cutlass::bfloat16_t. It was safe for first dense selection only because QKV preceded attention; it is wrong for multi-dense launch ordinals.",
+  "regex_cpu_replay": {
+    "ledger": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/cpu/COST_LEDGER_KERNELS.tsv.gz",
+    "old_pattern": ".*(gemv|gemm|cutlass).*",
+    "new_pattern": "(internal::gemvx::kernel<|cutlass::Kernel2<.*gemm)",
+    "method": "Python re.search against every existing first-decode row in both points, compared with existing dense labels. This is not a run of NCU C++ regex parser.",
+    "results": {
+      "A00_N32": {
+        "step_rows": 415,
+        "dense_labeled_rows": 145,
+        "old_matches": 217,
+        "old_false_positives": 72,
+        "new_matches": 145,
+        "new_false_positives": 0,
+        "new_false_negatives": 0,
+        "new_matching_graph_nodes": 144,
+        "new_matching_outside_graph": 1,
+        "old_false_positive_examples": [
+          {
+            "catalog_id": "K012",
+            "kernel_name": "void flash::flash_fwd_splitkv_kernel<Flash_fwd_kernel_traits<(int)128, (int)64, (int)128, (int)4, (bool)0, (bool)0, cutlass::bfloat16_t, Flash_kernel_traits<(int)128, (int)64, (int)128, (int)4, cutlass::bfloat16_t>>, (bool)0, (bool)0, (bool)0, (bool)0, (bool)1, (bool)0, (bool)1, (bool)0>(flash::Flash_fwd_params)"
+          },
+          {
+            "catalog_id": "K013",
+            "kernel_name": "void flash::flash_fwd_splitkv_combine_kernel<Flash_fwd_kernel_traits<(int)128, (int)64, (int)128, (int)4, (bool)0, (bool)0, cutlass::bfloat16_t, Flash_kernel_traits<(int)128, (int)64, (int)128, (int)4, cutlass::bfloat16_t>>, (int)4, (int)3, (bool)1>(flash::Flash_fwd_params)"
+          }
+        ]
+      },
+      "B2_N32": {
+        "step_rows": 487,
+        "dense_labeled_rows": 145,
+        "old_matches": 217,
+        "old_false_positives": 72,
+        "new_matches": 145,
+        "new_false_positives": 0,
+        "new_false_negatives": 0,
+        "new_matching_graph_nodes": 144,
+        "new_matching_outside_graph": 1,
+        "old_false_positive_examples": [
+          {
+            "catalog_id": "K040",
+            "kernel_name": "void flash::flash_fwd_splitkv_kernel<Flash_fwd_kernel_traits<(int)128, (int)64, (int)128, (int)4, (bool)0, (bool)0, cutlass::bfloat16_t, Flash_kernel_traits<(int)128, (int)64, (int)128, (int)4, cutlass::bfloat16_t>>, (bool)0, (bool)0, (bool)0, (bool)0, (bool)1, (bool)0, (bool)1, (bool)0>(flash::Flash_fwd_params)"
+          },
+          {
+            "catalog_id": "K041",
+            "kernel_name": "void flash::flash_fwd_splitkv_combine_kernel<Flash_fwd_kernel_traits<(int)128, (int)64, (int)128, (int)4, (bool)0, (bool)0, cutlass::bfloat16_t, Flash_kernel_traits<(int)128, (int)64, (int)128, (int)4, cutlass::bfloat16_t>>, (int)4, (int)3, (bool)1>(flash::Flash_fwd_params)"
+          }
+        ]
+      }
+    },
+    "graph_scope": "Each point has144 matching graph dense nodes and1 matching graph-external lm_head. The decodeGraph push/pop plus first-graph profiler API window is essential to exclude the latter.",
+    "claim_limit": "Matching of existing trace names is observed; new V11 kernel ordering/name drift must fail attribution rather than silently reuse this map."
+  },
+  "historical_v10": {
+    "counter_comparison": {
+      "status": "SYMMETRIC_SINGLE_NODE_COUNTERS_COMPLETE",
+      "grade": "OBSERVED",
+      "nodes": {
+        "NCU_B1": {
+          "grade": "OBSERVED_SINGLE_NODE",
+          "DRAM_read_bytes": 10492288,
+          "duration_ns": 19840.0,
+          "replayed_node_read_GB_s": 528.8451612903226,
+          "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 6, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+          "grid": "(640, 1, 1)",
+          "block": "(16, 4, 1)",
+          "actual_passes": 1,
+          "backup_counter_value": null,
+          "backup_counter_emitted": false,
+          "save_restore_interpretation": "Actualonepass+toolguideindicatesnosave_restore;missingcounternotzero",
+          "scope": "FirstfilteredDenseinsidefirstDecodeGraphaftertwoN32warmups;notappbytesortiming",
+          "runtime_weight": {
+            "module": "model.layers.0.self_attn.qkv_proj",
+            "shape": [
+              2560,
+              2048
+            ],
+            "stride": [
+              2048,
+              1
+            ],
+            "dtype": "torch.bfloat16",
+            "method": "UnquantizedLinearMethod"
+          },
+          "shape_attribution": "Compiledsource+moduleweight+Graphdescriptor+order/gridconsistent;noargumentdimensioncapture"
+        },
+        "NCU_B2": {
+          "grade": "OBSERVED_SINGLE_NODE",
+          "DRAM_read_bytes": 10510208,
+          "duration_ns": 23360.0,
+          "replayed_node_read_GB_s": 449.92328767123286,
+          "kernel": "void Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(Params)",
+          "grid": "(8, 20, 1)",
+          "block": "(32, 1, 1)",
+          "actual_passes": 1,
+          "backup_counter_value": null,
+          "backup_counter_emitted": false,
+          "save_restore_interpretation": "Actualonepass+toolguideindicatesnosave_restore;missingcounternotzero",
+          "scope": "FirstfilteredDenseinsidefirstDecodeGraphaftertwoN32warmups;notappbytesortiming",
+          "runtime_weight": {
+            "module": "model.layers.0.self_attn.qkv_proj",
+            "shape": [
+              2560,
+              2048
+            ],
+            "stride": [
+              2048,
+              1
+            ],
+            "dtype": "torch.bfloat16",
+            "method": "UnquantizedLinearMethod"
+          },
+          "shape_attribution": "Compiledsource+moduleweight+Graphdescriptor+order/gridconsistent;noargumentdimensioncapture"
+        }
+      },
+      "B2_over_B1": {
+        "DRAM_read_bytes": 1.0017079210940454,
+        "duration": 1.1774193548387097
+      },
+      "weight_model_bytes": 10485760,
+      "global_DRAM_unmeasured": true,
+      "global_memory_bound_not_proven": true,
+      "uncertainty": "Oneprofilednodepermode,separatefreshengines,samefrozeninputs/warmup/config;noCIorwholeappsum;defaultclockscachesnotforced;Graphnodeidentitysourceconsistent"
+    },
+    "raw_observations": {
+      "NCU_B1": {
+        "raw_status": "V9_WORKER_COMPLETE",
+        "profile_capture": {
+          "task": "NCU_B1",
+          "targets": [
+            "A00_N32"
+          ],
+          "ncu_first_decode_graph_capture": true,
+          "not_formal": true
+        },
+        "samples": [
+          {
+            "point": "A00_N32",
+            "role": "PROFILE_WARMUP",
+            "fullgraph_replay_count": 31,
+            "formal_compile_capture": false,
+            "status": "PASS_RUNTIME_VALID"
+          },
+          {
+            "point": "A00_N32",
+            "role": "PROFILE_WARMUP",
+            "fullgraph_replay_count": 31,
+            "formal_compile_capture": false,
+            "status": "PASS_RUNTIME_VALID"
+          },
+          {
+            "point": "A00_N32",
+            "role": "PROFILED",
+            "fullgraph_replay_count": 31,
+            "formal_compile_capture": false,
+            "status": "PASS_RUNTIME_VALID"
+          }
+        ],
+        "layer0_weights": [
+          {
+            "module": "model.layers.0.self_attn.qkv_proj",
+            "shape": [
+              2560,
+              2048
+            ],
+            "stride": [
+              2048,
+              1
+            ],
+            "dtype": "torch.bfloat16",
+            "method": "UnquantizedLinearMethod"
+          },
+          {
+            "module": "model.layers.0.self_attn.o_proj",
+            "shape": [
+              2048,
+              2048
+            ],
+            "stride": [
+              2048,
+              1
+            ],
+            "dtype": "torch.bfloat16",
+            "method": "UnquantizedLinearMethod"
+          },
+          {
+            "module": "model.layers.0.mlp.gate_up_proj",
+            "shape": [
+              22016,
+              2048
+            ],
+            "stride": [
+              2048,
+              1
+            ],
+            "dtype": "torch.bfloat16",
+            "method": "UnquantizedLinearMethod"
+          },
+          {
+            "module": "model.layers.0.mlp.down_proj",
+            "shape": [
+              2048,
+              11008
+            ],
+            "stride": [
+              11008,
+              1
+            ],
+            "dtype": "torch.bfloat16",
+            "method": "UnquantizedLinearMethod"
+          }
+        ],
+        "runtime_subset": {
+          "vllm": "0.30.0",
+          "torch": "2.13.0+cu130",
+          "compilation_mode": "VLLM_COMPILE",
+          "backend": "inductor",
+          "cudagraph_mode": "FULL_AND_PIECEWISE",
+          "attention": [
+            "FlashAttentionImpl"
+          ],
+          "linear": [
+            "UnquantizedLinearMethod"
+          ],
+          "actual_enforce_eager": false,
+          "altered_diagnostic_path": false
+        }
+      },
+      "NCU_B2": {
+        "raw_status": "V9_WORKER_COMPLETE",
+        "profile_capture": {
+          "task": "NCU_B2",
+          "targets": [
+            "B2_N32"
+          ],
+          "ncu_first_decode_graph_capture": true,
+          "not_formal": true
+        },
+        "samples": [
+          {
+            "point": "B2_N32",
+            "role": "PROFILE_WARMUP",
+            "fullgraph_replay_count": 31,
+            "formal_compile_capture": false,
+            "status": "PASS_RUNTIME_VALID"
+          },
+          {
+            "point": "B2_N32",
+            "role": "PROFILE_WARMUP",
+            "fullgraph_replay_count": 31,
+            "formal_compile_capture": false,
+            "status": "PASS_RUNTIME_VALID"
+          },
+          {
+            "point": "B2_N32",
+            "role": "PROFILED",
+            "fullgraph_replay_count": 31,
+            "formal_compile_capture": false,
+            "status": "PASS_RUNTIME_VALID"
+          }
+        ],
+        "layer0_weights": [
+          {
+            "module": "model.layers.0.self_attn.qkv_proj",
+            "shape": [
+              2560,
+              2048
+            ],
+            "stride": [
+              2048,
+              1
+            ],
+            "dtype": "torch.bfloat16",
+            "method": "UnquantizedLinearMethod"
+          },
+          {
+            "module": "model.layers.0.self_attn.o_proj",
+            "shape": [
+              2048,
+              2048
+            ],
+            "stride": [
+              2048,
+              1
+            ],
+            "dtype": "torch.bfloat16",
+            "method": "UnquantizedLinearMethod"
+          },
+          {
+            "module": "model.layers.0.mlp.gate_up_proj",
+            "shape": [
+              22016,
+              2048
+            ],
+            "stride": [
+              2048,
+              1
+            ],
+            "dtype": "torch.bfloat16",
+            "method": "UnquantizedLinearMethod"
+          },
+          {
+            "module": "model.layers.0.mlp.down_proj",
+            "shape": [
+              2048,
+              11008
+            ],
+            "stride": [
+              11008,
+              1
+            ],
+            "dtype": "torch.bfloat16",
+            "method": "UnquantizedLinearMethod"
+          }
+        ],
+        "runtime_subset": {
+          "vllm": "0.30.0",
+          "torch": "2.13.0+cu130",
+          "compilation_mode": "VLLM_COMPILE",
+          "backend": "inductor",
+          "cudagraph_mode": "FULL_AND_PIECEWISE",
+          "attention": [
+            "FlashAttentionImpl"
+          ],
+          "linear": [
+            "UnquantizedLinearMethod"
+          ],
+          "actual_enforce_eager": false,
+          "altered_diagnostic_path": false
+        }
+      }
+    },
+    "manager_descriptors": {
+      "A00_N32": {
+        "BatchExecutionDescriptor(cg_mode=<CUDAGraphMode.FULL: 2>, num_tokens=1, num_reqs=1, uniform_token_count=1, max_query_len=None, num_active_loras=0, num_ubatches=1)": 31
+      },
+      "B2_N32": {
+        "BatchExecutionDescriptor(cg_mode=<CUDAGraphMode.FULL: 2>, num_tokens=2, num_reqs=2, uniform_token_count=1, max_query_len=None, num_active_loras=0, num_ubatches=1)": 31
+      }
+    },
+    "QKV_policy": "Reuse V10 QKV evidence; do not select QKV again for V11 counters."
+  },
+  "compiled_module_contracts": [
+    {
+      "task": "NCU_B1",
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/native_counters/.private/NCU_B1/compilation/rank_0_0/backbone/computation_graph.py",
+      "sha256": "6dee87cf10e38fd652b3716a41db29584bff91c448ef2dca41af48459e59cc0d",
+      "source_anchors": [
+        {
+          "line": 705,
+          "text": "        def forward(self, output_3: \"bf16[s72, 16, 128]\", s72: \"Sym(s72)\", l_self_modules_layers_modules_0_modules_self_attn_modules_o_proj_parameters_weight_: \"bf16[2048, 2048]\", l_self_modules_layers_modules_0_modules_post_attention_layernorm_parameters_weight_: \"bf16[2048]\", hidden_states: \"bf16[s72, 2048]\", l_self_modules_layers_modules_0_modules_mlp_modules_gate_up_proj_parameters_weight_: \"bf16[22016, 2048]\", l_self_modules_layers_modules_0_modules_mlp_modules_down_proj_parameters_weight_: \"bf16[2048, 11008]\", l_self_modules_layers_modules_1_modules_input_layernorm_parameters_weight_: \"bf16[2048]\", l_self_modules_layers_modules_1_modules_self_attn_modules_qkv_proj_parameters_weight_: \"bf16[2560, 2048]\", l_self_modules_layers_modules_1_modules_self_attn_modules_qkv_proj_parameters_bia"
+        },
+        {
+          "line": 710,
+          "text": "            linear: \"bf16[s72, 2048]\" = torch._C._nn.linear(view, l_self_modules_layers_modules_0_modules_self_attn_modules_o_proj_parameters_weight_, None);  view = l_self_modules_layers_modules_0_modules_self_attn_modules_o_proj_parameters_weight_ = None"
+        },
+        {
+          "line": 721,
+          "text": "            linear_1: \"bf16[s72, 22016]\" = torch._C._nn.linear(getitem, l_self_modules_layers_modules_0_modules_mlp_modules_gate_up_proj_parameters_weight_, None);  getitem = l_self_modules_layers_modules_0_modules_mlp_modules_gate_up_proj_parameters_weight_ = None"
+        },
+        {
+          "line": 724,
+          "text": "            getitem_2: \"bf16[s72, 11008]\" = linear_1[(Ellipsis, slice(None, 11008, None))]"
+        },
+        {
+          "line": 730,
+          "text": "            linear_2: \"bf16[s72, 2048]\" = torch._C._nn.linear(mul, l_self_modules_layers_modules_0_modules_mlp_modules_down_proj_parameters_weight_, None);  mul = l_self_modules_layers_modules_0_modules_mlp_modules_down_proj_parameters_weight_ = None"
+        },
+        {
+          "line": 741,
+          "text": "            linear_3: \"bf16[s72, 2560]\" = torch._C._nn.linear(getitem_4, l_self_modules_layers_modules_1_modules_self_attn_modules_qkv_proj_parameters_weight_, l_self_modules_layers_modules_1_modules_self_attn_modules_qkv_proj_parameters_bias_);  getitem_4 = l_self_modules_layers_modules_1_modules_self_attn_modules_qkv_proj_parameters_weight_ = l_self_modules_layers_modules_1_modules_self_attn_modules_qkv_proj_parameters_bias_ = None"
+        }
+      ],
+      "interpretation": "Source contract has O -> gate_up -> SiLU/mul -> down -> next-layer QKV; raw GEMM arguments/pointers are not captured."
+    },
+    {
+      "task": "NCU_B2",
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/native_b2/.private/NCU_B2/compilation/rank_0_0/backbone/computation_graph.py",
+      "sha256": "6dee87cf10e38fd652b3716a41db29584bff91c448ef2dca41af48459e59cc0d",
+      "source_anchors": [
+        {
+          "line": 705,
+          "text": "        def forward(self, output_3: \"bf16[s72, 16, 128]\", s72: \"Sym(s72)\", l_self_modules_layers_modules_0_modules_self_attn_modules_o_proj_parameters_weight_: \"bf16[2048, 2048]\", l_self_modules_layers_modules_0_modules_post_attention_layernorm_parameters_weight_: \"bf16[2048]\", hidden_states: \"bf16[s72, 2048]\", l_self_modules_layers_modules_0_modules_mlp_modules_gate_up_proj_parameters_weight_: \"bf16[22016, 2048]\", l_self_modules_layers_modules_0_modules_mlp_modules_down_proj_parameters_weight_: \"bf16[2048, 11008]\", l_self_modules_layers_modules_1_modules_input_layernorm_parameters_weight_: \"bf16[2048]\", l_self_modules_layers_modules_1_modules_self_attn_modules_qkv_proj_parameters_weight_: \"bf16[2560, 2048]\", l_self_modules_layers_modules_1_modules_self_attn_modules_qkv_proj_parameters_bia"
+        },
+        {
+          "line": 710,
+          "text": "            linear: \"bf16[s72, 2048]\" = torch._C._nn.linear(view, l_self_modules_layers_modules_0_modules_self_attn_modules_o_proj_parameters_weight_, None);  view = l_self_modules_layers_modules_0_modules_self_attn_modules_o_proj_parameters_weight_ = None"
+        },
+        {
+          "line": 721,
+          "text": "            linear_1: \"bf16[s72, 22016]\" = torch._C._nn.linear(getitem, l_self_modules_layers_modules_0_modules_mlp_modules_gate_up_proj_parameters_weight_, None);  getitem = l_self_modules_layers_modules_0_modules_mlp_modules_gate_up_proj_parameters_weight_ = None"
+        },
+        {
+          "line": 724,
+          "text": "            getitem_2: \"bf16[s72, 11008]\" = linear_1[(Ellipsis, slice(None, 11008, None))]"
+        },
+        {
+          "line": 730,
+          "text": "            linear_2: \"bf16[s72, 2048]\" = torch._C._nn.linear(mul, l_self_modules_layers_modules_0_modules_mlp_modules_down_proj_parameters_weight_, None);  mul = l_self_modules_layers_modules_0_modules_mlp_modules_down_proj_parameters_weight_ = None"
+        },
+        {
+          "line": 741,
+          "text": "            linear_3: \"bf16[s72, 2560]\" = torch._C._nn.linear(getitem_4, l_self_modules_layers_modules_1_modules_self_attn_modules_qkv_proj_parameters_weight_, l_self_modules_layers_modules_1_modules_self_attn_modules_qkv_proj_parameters_bias_);  getitem_4 = l_self_modules_layers_modules_1_modules_self_attn_modules_qkv_proj_parameters_weight_ = l_self_modules_layers_modules_1_modules_self_attn_modules_qkv_proj_parameters_bias_ = None"
+        }
+      ],
+      "interpretation": "Source contract has O -> gate_up -> SiLU/mul -> down -> next-layer QKV; raw GEMM arguments/pointers are not captured."
+    }
+  ],
+  "target_node_maps_first_three_layers": {
+    "A00_N32": [
+      {
+        "dense_ordinal_zero_based": "0",
+        "inferred_layer_zero_based": "0",
+        "inferred_op": "self_attn.qkv_proj",
+        "catalog_id": "K009",
+        "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+        "gridX": "640",
+        "gridY": "1",
+        "gridZ": "1",
+        "blockX": "16",
+        "blockY": "4",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "272",
+        "graphNodeId": "2907692859393",
+        "correlationId": "17829",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "1",
+        "compiled_contract_K": "2048",
+        "compiled_contract_N": "2560",
+        "logical_weight_BF16_bytes": "10485760",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      {
+        "dense_ordinal_zero_based": "1",
+        "inferred_layer_zero_based": "0",
+        "inferred_op": "self_attn.o_proj",
+        "catalog_id": "K014",
+        "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+        "gridX": "512",
+        "gridY": "1",
+        "gridZ": "1",
+        "blockX": "16",
+        "blockY": "4",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "272",
+        "graphNodeId": "2907692859399",
+        "correlationId": "17829",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "1",
+        "compiled_contract_K": "2048",
+        "compiled_contract_N": "2048",
+        "logical_weight_BF16_bytes": "8388608",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      {
+        "dense_ordinal_zero_based": "2",
+        "inferred_layer_zero_based": "0",
+        "inferred_op": "mlp.gate_up_proj",
+        "catalog_id": "K016",
+        "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+        "gridX": "5504",
+        "gridY": "1",
+        "gridZ": "1",
+        "blockX": "16",
+        "blockY": "4",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "272",
+        "graphNodeId": "2907692859401",
+        "correlationId": "17829",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "1",
+        "compiled_contract_K": "2048",
+        "compiled_contract_N": "22016",
+        "logical_weight_BF16_bytes": "90177536",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      {
+        "dense_ordinal_zero_based": "3",
+        "inferred_layer_zero_based": "0",
+        "inferred_op": "mlp.down_proj",
+        "catalog_id": "K018",
+        "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)7, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+        "gridX": "512",
+        "gridY": "1",
+        "gridZ": "1",
+        "blockX": "32",
+        "blockY": "4",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "528",
+        "graphNodeId": "2907692859403",
+        "correlationId": "17829",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "1",
+        "compiled_contract_K": "11008",
+        "compiled_contract_N": "2048",
+        "logical_weight_BF16_bytes": "45088768",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      {
+        "dense_ordinal_zero_based": "4",
+        "inferred_layer_zero_based": "1",
+        "inferred_op": "self_attn.qkv_proj",
+        "catalog_id": "K009",
+        "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+        "gridX": "640",
+        "gridY": "1",
+        "gridZ": "1",
+        "blockX": "16",
+        "blockY": "4",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "272",
+        "graphNodeId": "2907692859405",
+        "correlationId": "17829",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "1",
+        "compiled_contract_K": "2048",
+        "compiled_contract_N": "2560",
+        "logical_weight_BF16_bytes": "10485760",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      {
+        "dense_ordinal_zero_based": "5",
+        "inferred_layer_zero_based": "1",
+        "inferred_op": "self_attn.o_proj",
+        "catalog_id": "K014",
+        "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+        "gridX": "512",
+        "gridY": "1",
+        "gridZ": "1",
+        "blockX": "16",
+        "blockY": "4",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "272",
+        "graphNodeId": "2907692859411",
+        "correlationId": "17829",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "1",
+        "compiled_contract_K": "2048",
+        "compiled_contract_N": "2048",
+        "logical_weight_BF16_bytes": "8388608",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      {
+        "dense_ordinal_zero_based": "6",
+        "inferred_layer_zero_based": "1",
+        "inferred_op": "mlp.gate_up_proj",
+        "catalog_id": "K016",
+        "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+        "gridX": "5504",
+        "gridY": "1",
+        "gridZ": "1",
+        "blockX": "16",
+        "blockY": "4",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "272",
+        "graphNodeId": "2907692859413",
+        "correlationId": "17829",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "1",
+        "compiled_contract_K": "2048",
+        "compiled_contract_N": "22016",
+        "logical_weight_BF16_bytes": "90177536",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      {
+        "dense_ordinal_zero_based": "7",
+        "inferred_layer_zero_based": "1",
+        "inferred_op": "mlp.down_proj",
+        "catalog_id": "K018",
+        "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)7, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+        "gridX": "512",
+        "gridY": "1",
+        "gridZ": "1",
+        "blockX": "32",
+        "blockY": "4",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "528",
+        "graphNodeId": "2907692859415",
+        "correlationId": "17829",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "1",
+        "compiled_contract_K": "11008",
+        "compiled_contract_N": "2048",
+        "logical_weight_BF16_bytes": "45088768",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      {
+        "dense_ordinal_zero_based": "8",
+        "inferred_layer_zero_based": "2",
+        "inferred_op": "self_attn.qkv_proj",
+        "catalog_id": "K009",
+        "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+        "gridX": "640",
+        "gridY": "1",
+        "gridZ": "1",
+        "blockX": "16",
+        "blockY": "4",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "272",
+        "graphNodeId": "2907692859417",
+        "correlationId": "17829",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "1",
+        "compiled_contract_K": "2048",
+        "compiled_contract_N": "2560",
+        "logical_weight_BF16_bytes": "10485760",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      {
+        "dense_ordinal_zero_based": "9",
+        "inferred_layer_zero_based": "2",
+        "inferred_op": "self_attn.o_proj",
+        "catalog_id": "K014",
+        "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+        "gridX": "512",
+        "gridY": "1",
+        "gridZ": "1",
+        "blockX": "16",
+        "blockY": "4",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "272",
+        "graphNodeId": "2907692859423",
+        "correlationId": "17829",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "1",
+        "compiled_contract_K": "2048",
+        "compiled_contract_N": "2048",
+        "logical_weight_BF16_bytes": "8388608",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      {
+        "dense_ordinal_zero_based": "10",
+        "inferred_layer_zero_based": "2",
+        "inferred_op": "mlp.gate_up_proj",
+        "catalog_id": "K016",
+        "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+        "gridX": "5504",
+        "gridY": "1",
+        "gridZ": "1",
+        "blockX": "16",
+        "blockY": "4",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "272",
+        "graphNodeId": "2907692859425",
+        "correlationId": "17829",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "1",
+        "compiled_contract_K": "2048",
+        "compiled_contract_N": "22016",
+        "logical_weight_BF16_bytes": "90177536",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      {
+        "dense_ordinal_zero_based": "11",
+        "inferred_layer_zero_based": "2",
+        "inferred_op": "mlp.down_proj",
+        "catalog_id": "K018",
+        "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)7, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+        "gridX": "512",
+        "gridY": "1",
+        "gridZ": "1",
+        "blockX": "32",
+        "blockY": "4",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "528",
+        "graphNodeId": "2907692859427",
+        "correlationId": "17829",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "1",
+        "compiled_contract_K": "11008",
+        "compiled_contract_N": "2048",
+        "logical_weight_BF16_bytes": "45088768",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      }
+    ],
+    "B2_N32": [
+      {
+        "dense_ordinal_zero_based": "0",
+        "inferred_layer_zero_based": "0",
+        "inferred_op": "self_attn.qkv_proj",
+        "catalog_id": "K036",
+        "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+        "gridX": "8",
+        "gridY": "20",
+        "gridZ": "1",
+        "blockX": "32",
+        "blockY": "1",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "16896",
+        "graphNodeId": "2894807957505",
+        "correlationId": "38271",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "2",
+        "compiled_contract_K": "2048",
+        "compiled_contract_N": "2560",
+        "logical_weight_BF16_bytes": "10485760",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      {
+        "dense_ordinal_zero_based": "1",
+        "inferred_layer_zero_based": "0",
+        "inferred_op": "self_attn.o_proj",
+        "catalog_id": "K042",
+        "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+        "gridX": "8",
+        "gridY": "16",
+        "gridZ": "1",
+        "blockX": "32",
+        "blockY": "1",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "16896",
+        "graphNodeId": "2894807957512",
+        "correlationId": "38271",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "2",
+        "compiled_contract_K": "2048",
+        "compiled_contract_N": "2048",
+        "logical_weight_BF16_bytes": "8388608",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      {
+        "dense_ordinal_zero_based": "2",
+        "inferred_layer_zero_based": "0",
+        "inferred_op": "mlp.gate_up_proj",
+        "catalog_id": "K043",
+        "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+        "gridX": "8",
+        "gridY": "172",
+        "gridZ": "1",
+        "blockX": "32",
+        "blockY": "1",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "16896",
+        "graphNodeId": "2894807957514",
+        "correlationId": "38271",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "2",
+        "compiled_contract_K": "2048",
+        "compiled_contract_N": "22016",
+        "logical_weight_BF16_bytes": "90177536",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      {
+        "dense_ordinal_zero_based": "3",
+        "inferred_layer_zero_based": "0",
+        "inferred_op": "mlp.down_proj",
+        "catalog_id": "K042",
+        "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+        "gridX": "8",
+        "gridY": "16",
+        "gridZ": "1",
+        "blockX": "32",
+        "blockY": "1",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "16896",
+        "graphNodeId": "2894807957516",
+        "correlationId": "38271",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "2",
+        "compiled_contract_K": "11008",
+        "compiled_contract_N": "2048",
+        "logical_weight_BF16_bytes": "45088768",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      {
+        "dense_ordinal_zero_based": "4",
+        "inferred_layer_zero_based": "1",
+        "inferred_op": "self_attn.qkv_proj",
+        "catalog_id": "K036",
+        "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+        "gridX": "8",
+        "gridY": "20",
+        "gridZ": "1",
+        "blockX": "32",
+        "blockY": "1",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "16896",
+        "graphNodeId": "2894807957518",
+        "correlationId": "38271",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "2",
+        "compiled_contract_K": "2048",
+        "compiled_contract_N": "2560",
+        "logical_weight_BF16_bytes": "10485760",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      {
+        "dense_ordinal_zero_based": "5",
+        "inferred_layer_zero_based": "1",
+        "inferred_op": "self_attn.o_proj",
+        "catalog_id": "K042",
+        "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+        "gridX": "8",
+        "gridY": "16",
+        "gridZ": "1",
+        "blockX": "32",
+        "blockY": "1",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "16896",
+        "graphNodeId": "2894807957525",
+        "correlationId": "38271",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "2",
+        "compiled_contract_K": "2048",
+        "compiled_contract_N": "2048",
+        "logical_weight_BF16_bytes": "8388608",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      {
+        "dense_ordinal_zero_based": "6",
+        "inferred_layer_zero_based": "1",
+        "inferred_op": "mlp.gate_up_proj",
+        "catalog_id": "K043",
+        "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+        "gridX": "8",
+        "gridY": "172",
+        "gridZ": "1",
+        "blockX": "32",
+        "blockY": "1",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "16896",
+        "graphNodeId": "2894807957527",
+        "correlationId": "38271",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "2",
+        "compiled_contract_K": "2048",
+        "compiled_contract_N": "22016",
+        "logical_weight_BF16_bytes": "90177536",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      {
+        "dense_ordinal_zero_based": "7",
+        "inferred_layer_zero_based": "1",
+        "inferred_op": "mlp.down_proj",
+        "catalog_id": "K042",
+        "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+        "gridX": "8",
+        "gridY": "16",
+        "gridZ": "1",
+        "blockX": "32",
+        "blockY": "1",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "16896",
+        "graphNodeId": "2894807957529",
+        "correlationId": "38271",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "2",
+        "compiled_contract_K": "11008",
+        "compiled_contract_N": "2048",
+        "logical_weight_BF16_bytes": "45088768",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      {
+        "dense_ordinal_zero_based": "8",
+        "inferred_layer_zero_based": "2",
+        "inferred_op": "self_attn.qkv_proj",
+        "catalog_id": "K036",
+        "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+        "gridX": "8",
+        "gridY": "20",
+        "gridZ": "1",
+        "blockX": "32",
+        "blockY": "1",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "16896",
+        "graphNodeId": "2894807957531",
+        "correlationId": "38271",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "2",
+        "compiled_contract_K": "2048",
+        "compiled_contract_N": "2560",
+        "logical_weight_BF16_bytes": "10485760",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      {
+        "dense_ordinal_zero_based": "9",
+        "inferred_layer_zero_based": "2",
+        "inferred_op": "self_attn.o_proj",
+        "catalog_id": "K042",
+        "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+        "gridX": "8",
+        "gridY": "16",
+        "gridZ": "1",
+        "blockX": "32",
+        "blockY": "1",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "16896",
+        "graphNodeId": "2894807957538",
+        "correlationId": "38271",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "2",
+        "compiled_contract_K": "2048",
+        "compiled_contract_N": "2048",
+        "logical_weight_BF16_bytes": "8388608",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      {
+        "dense_ordinal_zero_based": "10",
+        "inferred_layer_zero_based": "2",
+        "inferred_op": "mlp.gate_up_proj",
+        "catalog_id": "K043",
+        "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+        "gridX": "8",
+        "gridY": "172",
+        "gridZ": "1",
+        "blockX": "32",
+        "blockY": "1",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "16896",
+        "graphNodeId": "2894807957540",
+        "correlationId": "38271",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "2",
+        "compiled_contract_K": "2048",
+        "compiled_contract_N": "22016",
+        "logical_weight_BF16_bytes": "90177536",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      {
+        "dense_ordinal_zero_based": "11",
+        "inferred_layer_zero_based": "2",
+        "inferred_op": "mlp.down_proj",
+        "catalog_id": "K042",
+        "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+        "gridX": "8",
+        "gridY": "16",
+        "gridZ": "1",
+        "blockX": "32",
+        "blockY": "1",
+        "blockZ": "1",
+        "dynamic_shared_bytes": "16896",
+        "graphNodeId": "2894807957542",
+        "correlationId": "38271",
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "compiled_contract_M": "2",
+        "compiled_contract_K": "11008",
+        "compiled_contract_N": "2048",
+        "logical_weight_BF16_bytes": "45088768",
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      }
+    ]
+  },
+  "recommended_plan": {
+    "preferred_total_six_nodes": "Three nodes per batch mode: layer0 O, gate_up, down. B1+B2 =6 total; all new operator coverage without a new QKV counter result.",
+    "argv_prefix_template_not_executed": [
+      "/opt/nvidia/nsight-compute/2025.1.1/ncu",
+      "--config-file",
+      "0",
+      "--target-processes",
+      "application-only",
+      "--graph-profiling",
+      "node",
+      "--replay-mode",
+      "kernel",
+      "--profile-from-start",
+      "no",
+      "--nvtx",
+      "--nvtx-include",
+      "decodeGraph/",
+      "--filter-mode",
+      "global",
+      "--kernel-name-base",
+      "demangled",
+      "--rename-kernels",
+      "off",
+      "--kernel-name",
+      "regex:(internal::gemvx::kernel<|cutlass::Kernel2<.*gemm)",
+      "--launch-skip",
+      "1",
+      "--launch-count",
+      "3",
+      "--kill",
+      "no",
+      "--clock-control",
+      "none",
+      "--cache-control",
+      "none",
+      "--pipeline-boost-state",
+      "dynamic",
+      "--disable-extra-suffixes",
+      "--metrics",
+      "dram__bytes_read.sum,gpu__time_duration.sum",
+      "--export",
+      "OWNER_UNIQUE_REPORT_STEM"
+    ],
+    "worker_suffix": [
+      "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/bin/python",
+      "OWNER_FROZEN_V11_WORKER",
+      "OWNER_TASK"
+    ],
+    "preconditions": [
+      "Same frozen model/input/backend and warm real compiled engine; zero new compile/capture during PROFILED phase.",
+      "Keep actual worker ownership, normal strict terminal drain and all existing resource limits.",
+      "Worker explicitly starts profiler immediately before first true decode graph and stops after that graph completes; use decodeGraph/ push-pop NVTX filter. NVTX alone does not activate profile-from-start no.",
+      "Use reviewed unsimplified kernel function names via rename-kernels off. Avoid broad cutlass substring.",
+      "Retain owner mode/task/first-decode token pairing. No raw matrix-argument or weight-pointer capture is claimed."
+    ],
+    "selected_ordinals_zero_based": [
+      1,
+      2,
+      3
+    ],
+    "selected_source_modules": [
+      "model.layers.0.self_attn.o_proj",
+      "model.layers.0.mlp.gate_up_proj",
+      "model.layers.0.mlp.down_proj"
+    ],
+    "expected_per_mode_result_rows": 3,
+    "six_or_eight_per_mode_alternative": {
+      "six_per_mode": [
+        {
+          "independent_profile_launch": 1,
+          "launch_skip": 1,
+          "launch_count": 3,
+          "dense_ordinals": [
+            1,
+            2,
+            3
+          ],
+          "modules": "layer0 O/gate_up/down"
+        },
+        {
+          "independent_profile_launch": 2,
+          "launch_skip": 5,
+          "launch_count": 3,
+          "dense_ordinals": [
+            5,
+            6,
+            7
+          ],
+          "modules": "layer1 O/gate_up/down"
+        }
+      ],
+      "eight_per_mode_additional_block": {
+        "independent_profile_launch": 3,
+        "launch_skip": 10,
+        "launch_count": 2,
+        "dense_ordinals": [
+          10,
+          11
+        ],
+        "modules": "layer2 gate_up/down"
+      },
+      "cost_and_reset_limit": "These are separate profiler launch-counter domains, not assumed resets on cudaProfilerStart. Repeated engine initialization consumes budget. Prefer6 total unless owner explicitly chooses wider blocks.",
+      "do_not_do": "Changing count3 to count6/count8 after skip1 crosses layer1 QKV and violates the no-QKV counter plan.",
+      "optional_depth_spread_block": {
+        "launch_skip": 141,
+        "launch_count": 3,
+        "dense_ordinals": [
+          141,
+          142,
+          143
+        ],
+        "modules": "layer35 O/gate_up/down",
+        "use": "May replace adjacent layer1 block if owner wants early/late coverage; requires separate profiler launch-counter domain. CPU ledger verified; no new GPU result implied."
+      }
+    }
+  },
+  "filter_semantics": {
+    "launch_skip": "Counts only launches matching kernel filters. This skip1 is the QKV in the narrow dense sequence, not the first raw kernel or first attention launch.",
+    "launch_count": "Limits matched collected profile results, not replay passes.",
+    "launch_skip_before_match": "Counts all launches regardless of kernel filters; not interchangeable with launch-skip and should remain unset here.",
+    "filter_mode_global": "Skip/count apply collectively. per-launch-config changes counters by launch configuration and would invalidate the proposed dense-global ordinal map.",
+    "kernel_id": "Format context-id:stream-id:[name-operator:]kernel-name:invocation-nr. Invocation count includes context,stream,name,grid,block,shared bytes; omitted context/stream are not included. Regex invocation numbers are per matching launch-configuration identity, not one combined dense ordinal.",
+    "kernel_id_warning": "Do not use :::2|3|4 to mean global dense nodes2,3,4. Context/stream IDs are run-local; historical1:7 is not a universal stable ID.",
+    "nvtx": "Singleton push/pop include requires trailing slash. Range only scopes graph launch; it does not create an operator-level NVTX identity for each compiled graph node.",
+    "graph_node_mapping": "Historical graphNodeId values are trace-local evidence and cannot be reused as NCU kernel-id. No direct graph-node-ID CLI selector was established."
+  },
+  "single_pass_and_backup": {
+    "expected": "Metric set per selected kernel is unchanged, so selecting more kernels need not itself add passes per kernel. Installed guide says a one-pass kernel result skips save/restore.",
+    "not_proven_CPU_only": "Each new gate_up/down/O kernel must actually show one pass. Six/eight results is not proof of one pass per result; no general force-one-pass/no-backup switch was found.",
+    "backup_missing": "V10 B1/B2 emitted passes1 but no backup counter. Keep null and describe actual one-pass+guide inference, not measured zero bytes.",
+    "other_overhead": "No replay backup does not prove zero tool allocation, no kernel serialization, unchanged cache evolution, or native timing. All observations remain separate PROFILER evidence."
+  },
+  "required_all_rows_audit": [
+    "Fix/review old V10 audit_csv logic: it reads only header+unit+first data row. V11 must audit every actual data row and expected total3 per mode or explicit block count.",
+    "Every row must have profiler__replayer_passes==1, finite nonnegative DRAMread and strictly positive duration with correct base units. Any>1pass aborts wider profiling.",
+    "If backup statistic emitted require0; otherwise keep null and require unambiguous completed per-kernel1pass log plus source guide inference. No Backing up warning and no incomplete report.",
+    "Verify row order and exact function/grid/block/shared metadata against the expected selected module sequence; reject attention/QKV/unexpected extra rows.",
+    "B2 O and down share function,grid(8,16,1),block(32,1,1),shared16896, so use ordinal and compiled source sequence; grid/name alone is non-injective.",
+    "Require worker expected status, numeric/token pairing and ownership/resource/terminal drain completion independently of counter success.",
+    "Never sum the representative nodes into whole-decodeGraph DRAM bytes without an explicit separately justified model."
+  ],
+  "CPU_tests_recommended": [
+    "Existing ledger replay confirms old filter catches72 non-dense kernels per mode while new filter has0 false positives/negatives.",
+    "Changing launch-skip1/count3 produces O/gate/down; skip5/count3 produces layer1 triplet; broad old regex produces attention and must fail.",
+    "Synthetic multirow CSV with first row1pass and later row2passes must fail; missing/extra rows, unit row confusion, NaN/negative metrics or missing duration must fail.",
+    "B2 identical O/down launch geometry must remain two distinct ordinal-attributed nodes.",
+    "Graph?lm_head and repeated decode graphs must not leak into selected scope."
+  ],
+  "source_files": [
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/cpu/COST_LEDGER_KERNELS.tsv.gz",
+      "bytes": 718802,
+      "sha256": "0729a7e1fed17607ea64fb3bd07d096641f191de0bff1d6fdac625c1407d0348"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/HARDWARE_COUNTER_COMPARISON.json",
+      "bytes": 2826,
+      "sha256": "bf72e046908a2d6e21395a76f95d6133ba05cbc5855166f8078401470dad6040"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/cpu/COST_LEDGER.json",
+      "bytes": 26078,
+      "sha256": "fb7be0e0990445c170a79b5cfdfed76ddec013edbb3100c8b5e430c78dd08d1f"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/native_counters/raw/NCU_B1.json",
+      "bytes": 40046,
+      "sha256": "3df44f1f3d777c3db04b5054c6159a9ed2cca1133d2d46dd599d459f10baeabe"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/native_counters/raw/NCU_B1_BASE.csv",
+      "bytes": 12506,
+      "sha256": "b34731cd88c37f736e0aae4972654cc7b26c58fd092ca03e5997cb07961fcd00"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/native_b2/raw/NCU_B2.json",
+      "bytes": 40025,
+      "sha256": "52671f12a4364c6fa621276bdd052ad8eb7b9fe5fc0109e529d4bfb16816d2fc"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/native_b2/raw/NCU_B2_BASE.csv",
+      "bytes": 12300,
+      "sha256": "fe4376790faa9c49c76a01f4ff3ecd2762fc75ab963f297bd20f142da9fae1a4"
+    }
+  ],
+  "official_installed_docs": [
+    {
+      "path": "/opt/nvidia/nsight-compute/2025.1.1/docs/NsightComputeCli/index.html",
+      "sha256": "813ce12d46546cbe2d006b4f94a00cddea038d071ca07a8425202c6cac29236c",
+      "anchors": [
+        {
+          "line": 313,
+          "excerpt": "Delimiter between range names. When only a single range name is"
+        },
+        {
+          "line": 762,
+          "excerpt": "filter-mode"
+        },
+        {
+          "line": 765,
+          "excerpt": "global: Apply provided launch filters on kernel launches collectively."
+        },
+        {
+          "line": 766,
+          "excerpt": "per-gpu: Apply provided launch filters on kernel launches separately on each device. Effective launch filters for this mode are --launch-count and --launch-skip"
+        },
+        {
+          "line": 767,
+          "excerpt": "per-launch-config: Apply kernel filters and launch filters on kernel launches separately for each GPU launch parameter i.e. Grid Size, Block Size and Shared Memory."
+        },
+        {
+          "line": 774,
+          "excerpt": "The identifier must be of the following format: context-id:stream-id:[name-operator:]kernel-name:invocation-nr"
+        },
+        {
+          "line": 780,
+          "excerpt": "invocation-nr is the N\u2019th invocation of matching kernel filter i.e. ctx id, stream id, kernel name, grid dimensions, block dimensions and shared memory bytes are all considered for invocation count. If ctx id or stream id is not provided then respective id is not considered for invocation count. If Multiple invocations can also be specified using regular expressions."
+        },
+        {
+          "line": 830,
+          "excerpt": "c,launch-count"
+        },
+        {
+          "line": 831,
+          "excerpt": "Limit the number of profiled kernel launches. The count is only incremented for launches that match the kernel filters. 1"
+        },
+        {
+          "line": 834,
+          "excerpt": "s,launch-skip"
+        },
+        {
+          "line": 835,
+          "excerpt": "Set the number of kernel launches to skip before starting to profile kernels. The number takes into account only launches that match the kernel filters. 1"
+        },
+        {
+          "line": 838,
+          "excerpt": "launch-skip-before-match"
+        },
+        {
+          "line": 839,
+          "excerpt": "Set the number of kernel launches to skip before starting to profile. The count is incremented for all launches, regardless of the kernel filters. 1"
+        },
+        {
+          "line": 842,
+          "excerpt": "range-filter"
+        },
+        {
+          "line": 843,
+          "excerpt": "Filter to profile specified instance(s) of matching NVTX ranges or start/stop ranges created through cu(da)ProfilerStart/Stop APIs."
+        },
+        {
+          "line": 918,
+          "excerpt": "graph-profiling"
+        },
+        {
+          "line": 938,
+          "excerpt": "--metrics are used, no sets are collected. Use --list-sets to see which set is the default."
+        }
+      ]
+    },
+    {
+      "path": "/opt/nvidia/nsight-compute/2025.1.1/docs/ProfilingGuide/index.html",
+      "sha256": "309d59d7a2700478127871990b66fdb53ee2db88143411a82f3e83f77c7b35cf",
+      "anchors": [
+        {
+          "line": 320,
+          "excerpt": "As explained in Overhead , the time needed for this increases the more memory is accessed, especially written, by a kernel. If NVIDIA Nsight Compute determines that only a single replay pass is necessary to collect the requested metrics, no save-and-restore is performed at all to reduce overhead."
+        },
+        {
+          "line": 2014,
+          "excerpt": "profiler__replayer_bytes_mem_backed_up.sum"
+        },
+        {
+          "line": 2017,
+          "excerpt": "profiler__replayer_passes"
+        }
+      ]
+    }
+  ],
+  "reused_help_evidence": {
+    "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/.private/CPU_FULL_PROFILER_FEASIBILITY.json",
+    "sha256": "a178914fed0eab024dcd284cae30905537d7a12c18a669a6e0a7d05593ca9369",
+    "note": "No new help/version or metric query was executed for V11."
+  },
+  "cpu_resources": {
+    "unit": "KiB on Linux",
+    "this_artifact_process_ru_maxrss_KiB": 20696,
+    "earlier_read_only_probe_ru_maxrss_KiB": [
+      11876,
+      12500,
+      13548,
+      11920,
+      12420,
+      12724,
+      14548,
+      13924,
+      12520
+    ],
+    "scope": "Measured CPU-side remote Python processes only, not an estimate of entire agent/session memory; gzip streamed, no model weights loaded.",
+    "final_selection_test_process_ru_maxrss_KiB": 18188
+  },
+  "executed_CPU_only_selection_tests": [
+    {
+      "point": "A00_N32",
+      "narrow_skip1_count3": [
+        "self_attn.o_proj",
+        "mlp.gate_up_proj",
+        "mlp.down_proj"
+      ],
+      "old_broad_skip1_count3": [
+        "NON_DENSE_ATTENTION",
+        "NON_DENSE_ATTENTION",
+        "self_attn.o_proj"
+      ],
+      "generic_4L_plus1_count3_layer_checks": [
+        0,
+        1,
+        35
+      ],
+      "all_pass": true
+    },
+    {
+      "point": "B2_N32",
+      "narrow_skip1_count3": [
+        "self_attn.o_proj",
+        "mlp.gate_up_proj",
+        "mlp.down_proj"
+      ],
+      "old_broad_skip1_count3": [
+        "NON_DENSE_ATTENTION",
+        "NON_DENSE_ATTENTION",
+        "self_attn.o_proj"
+      ],
+      "generic_4L_plus1_count3_layer_checks": [
+        0,
+        1,
+        35
+      ],
+      "all_pass": true
+    }
+  ],
+  "supplemental_clock_tensor_pilot_review": {
+    "created_utc": "2026-11-05T04:55:15.929302+00:00",
+    "scope": "CPU stream scan of previously captured query only; no new NCU/query/GPU/model execution.",
+    "query_evidence": {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/.private/NCU_METRIC_QUERY.txt",
+      "bytes": 78063767,
+      "expected_sha256": "2d260b923d0e5e2acb689ff2824b7279c4b91c7dbdbde7b689ea58935868b817",
+      "streamed_sha256": "2d260b923d0e5e2acb689ff2824b7279c4b91c7dbdbde7b689ea58935868b817",
+      "sha_match": true,
+      "exact_name_matching": "Metric token bounded against letters,digits,underscore,dot; no substring suffix false matches.",
+      "exact_names": {
+        "dram__bytes_read.sum": [
+          {
+            "line": 215,
+            "description_lines": [
+              {
+                "line": 215,
+                "text": "dram__bytes_read.sum                                                        Counter         byte            # of bytes read from DRAM (This counter metric represents the sum"
+              },
+              {
+                "line": 216,
+                "text": "across all sub-unit instances)"
+              }
+            ]
+          }
+        ],
+        "gpu__time_duration.sum": [
+          {
+            "line": 5259,
+            "description_lines": [
+              {
+                "line": 5259,
+                "text": "gpu__time_duration.sum                                                      Counter         ns              equals to gpu__time_duration_measured_user if collectable, otherwise"
+              },
+              {
+                "line": 5260,
+                "text": "equals to gpu__time_duration_measured_wallclock (This counter metric"
+              },
+              {
+                "line": 5261,
+                "text": "represents the sum across all sub-unit instances)"
+              }
+            ]
+          }
+        ],
+        "sm__cycles_elapsed.avg": [
+          {
+            "line": 316976,
+            "description_lines": [
+              {
+                "line": 316976,
+                "text": "sm__cycles_elapsed.avg                                                      Counter         cycle           # of cycles elapsed on SM (This counter metric represents the avg"
+              },
+              {
+                "line": 316977,
+                "text": "across all sub-unit instances)"
+              }
+            ]
+          }
+        ],
+        "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": [
+          {
+            "line": 328022,
+            "description_lines": [
+              {
+                "line": 328022,
+                "text": "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed             Counter         %               # of cycles where tensor pipe was active [DEPRECATED: use"
+              },
+              {
+                "line": 328023,
+                "text": "sm__pipe_tensor_cycles_active_v2 instead] (This counter metric"
+              },
+              {
+                "line": 328024,
+                "text": "represents the avg percent of the peak sustained rate achieved"
+              },
+              {
+                "line": 328025,
+                "text": "during elapsed cycles across all sub-unit instances)"
+              }
+            ]
+          }
+        ]
+      },
+      "scan_wall_seconds": 2.4317695843055844
+    },
+    "tiny_DOWN_pilot": {
+      "logical_K": 11008,
+      "logical_N": 2048,
+      "BF16_weight_bytes": 45088768,
+      "note": "Pilot evidence establishes metric/pass feasibility on this small controlled launch only; actual native O/gate_up/down and B1/B2 rows still require independent per-result audits.",
+      "candidate_A": [
+        "dram__bytes_read.sum",
+        "gpu__time_duration.sum",
+        "sm__cycles_elapsed.avg",
+        "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed"
+      ],
+      "candidate_B": [
+        "dram__bytes_read.sum",
+        "gpu__time_duration.sum",
+        "sm__cycles_elapsed.avg"
+      ],
+      "fallback_verified_native_V10_pair": [
+        "dram__bytes_read.sum",
+        "gpu__time_duration.sum"
+      ],
+      "options_for_explicit_minimal_selection": [
+        "--disable-extra-suffixes",
+        "--metrics",
+        "CANDIDATE_COMMA_SEPARATED_LIST"
+      ],
+      "decision": "Run A under owner-held lock; if not one-pass/no-save-restore scheme try B; otherwise retain2metrics. CPU metric existence does not predict actual pass count. Require reviewed pilot completion before selecting native plan.",
+      "deprecated_metric": "Original tensor-active metric is present but description says DEPRECATED: use sm__pipe_tensor_cycles_active_v2 instead. Do not silently change to v2: that would be a different candidate whose metric existence and pass feasibility need separate evidence."
+    },
+    "clock_proxy_interpretation": {
+      "formula_Hz": "sm__cycles_elapsed.avg / gpu__time_duration.sum_ns *1e9",
+      "preferred_label": "profiled-kernel elapsed-SM-cycle-rate proxy",
+      "units": "cycles per second; divide by1e9 to express GHz",
+      "limits": [
+        "sm__cycles_elapsed.avg averages elapsed cycles across SM sub-unit instances, not a direct clock sensor.",
+        "Duration uses measured_user when collectable, otherwise measured_wallclock per captured query description.",
+        "Only form ratio from same result with consistent interval and actual one-pass evidence; CPU-only cannot prove denominator interval equivalence.",
+        "This is not physical clock telemetry, a stable-clock guarantee, requested clock setting or proof of throttling. Short launches and measurement effects limit precision.",
+        "Keep clock-control none and native formal timing separate; do not reinterpret profiler duration as uninstrumented engine timing."
+      ]
+    },
+    "tensor_activity_interpretation": {
+      "description": "Average percent of peak sustained tensor-pipe active-cycle rate during elapsed cycles across sub-unit instances.",
+      "preferred_label": "tensor-pipe activity percentage during the profiled kernel",
+      "forbidden_inference_from_metric_alone": [
+        "compute bottleneck proven",
+        "Tensor Core FLOP/s or occupancy measured",
+        "whole-model compute-bound classification",
+        "low tensor activity proves memory-bound behavior"
+      ],
+      "reason": "Active cycles report pipeline activity, not how much useful matrix work was issued per active cycle or what resource limits performance. B1 GEMV can use a different non-tensor implementation from B2 GEMM. Even high tensor activity alone does not identify the binding resource."
+    },
+    "cpu_resources": {
+      "stream_scan_process_ru_maxrss_KiB": 16124,
+      "earlier_match_probe_ru_maxrss_KiB": 15460,
+      "description_probe_ru_maxrss_KiB": 11480,
+      "query_materialized_in_memory": false,
+      "model_weights_read": false
+    }
+  }
+}

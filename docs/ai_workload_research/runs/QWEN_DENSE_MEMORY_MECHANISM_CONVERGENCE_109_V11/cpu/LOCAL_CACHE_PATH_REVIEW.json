@@ -1,0 +1,832 @@
+{
+  "schema": "v11.cpu.local-cache-path-review.v1",
+  "created_utc": "2026-11-05T05:19:43.044670+00:00",
+  "grade": "OBSERVED_OFFLINE_SASS_MODIFIER_DIFFERENCE_MECHANISTIC_CAUSALITY_UNKNOWN",
+  "scope": {
+    "writes_only": [
+      "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/cpu/LOCAL_CACHE_PATH_REVIEW.json",
+      "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/cpu/LOCAL_CACHE_PATH_REVIEW.md"
+    ],
+    "reports_read_only_completed_LOCAL_B1_LOCAL_B2": true,
+    "running_Lt_or_other_new_reports_read": false,
+    "commands": "NCU --help and report --import only, no target program and no --query-metrics",
+    "GPU_CUDA_NVML_or_model_initialization_requested": false,
+    "GPU_lock_acquired": false,
+    "execution_source_raw_reports_modified": false,
+    "stdout_cap_bytes_per_import": 2097152,
+    "wall_cap_seconds_per_import": 30,
+    "stderr_cap_bytes_per_import": 65536
+  },
+  "help_receipt": {
+    "argv": [
+      "/opt/nvidia/nsight-compute/2025.1.1/ncu",
+      "--help"
+    ],
+    "exit_code": 0,
+    "stdout_sha256": "62f9c7e9473087aa5a9e8e0adadc4e80d17d948512cb2d98feea50e6cec57bab",
+    "supported_option_excerpts": {
+      "--page": {
+        "stdout_line": 315,
+        "text": "  --page arg (=details)                 Select report page to output:\n                                          details: sections and rules\n                                          raw: all collected metrics\n                                          source: source code\n                                          session: session and device attributes\n  --print-source arg                    Select source view:\n                                          sass\n                                          ptx\n                                          cuda"
+      },
+      "--print-source": {
+        "stdout_line": 320,
+        "text": "  --print-source arg                    Select source view:\n                                          sass\n                                          ptx\n                                          cuda\n                                          cuda,sass\n                                         Metric correlation with source is available in sass, and cuda,sass source \n                                        view.\n                                         Metrics specified with --metrics and specified section file with --section are\n                                        correlated."
+      },
+      "--launch-count": {
+        "stdout_line": 235,
+        "text": "  -c [ --launch-count ] arg             Limit the number of collected profile results. The count is only incremented \n                                        for launches that match the kernel filters.\n  -s [ --launch-skip ] arg (=0)         Set the number of kernel launches to skip before starting to profile. The count\n                                        is incremented for launches that match the kernel filters only.\n  --launch-skip-before-match arg (=0)   Set the number of kernel launches to skip before starting to profile. The count\n                                        is incremented for all launches.\n  --section arg                         Collect the section by providing section identifier in one of the following \n                                        ways:\n                                          <section identifier> Set the section identifier for an exact match."
+      },
+      "--launch-skip": {
+        "stdout_line": 237,
+        "text": "  -s [ --launch-skip ] arg (=0)         Set the number of kernel launches to skip before starting to profile. The count\n                                        is incremented for launches that match the kernel filters only.\n  --launch-skip-before-match arg (=0)   Set the number of kernel launches to skip before starting to profile. The count\n                                        is incremented for all launches.\n  --section arg                         Collect the section by providing section identifier in one of the following \n                                        ways:\n                                          <section identifier> Set the section identifier for an exact match.\n                                          regex:<expression> Set the regex to use for matching the section identifier.\n                                        If option is not specified, the default section set is collected."
+      }
+    }
+  },
+  "sources": [
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/util/ai_workload_research/dense_memory_mechanism_v11/worker.py",
+      "sha256": "7c072e83e6f268a02eb4589b8f3c678b885d6156e5a16231490e8c1030052c8a",
+      "bytes": 14882
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/util/ai_workload_research/dense_memory_mechanism_v11/controlled_worker.py",
+      "sha256": "cf4e23bfdb9f7d02329dc5adc71bc410053ca72277b1b14fd927292df7c26514",
+      "bytes": 1922
+    },
+    {
+      "path": "/opt/nvidia/nsight-compute/2025.1.1/docs/NsightComputeCli/index.html",
+      "sha256": "813ce12d46546cbe2d006b4f94a00cddea038d071ca07a8425202c6cac29236c",
+      "bytes": 168124
+    }
+  ],
+  "reports": {
+    "LOCAL_B1": {
+      "report": {
+        "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/.private/LOCAL_B1/metrics.ncu-rep",
+        "bytes": 5417466,
+        "sha256": "3c7d499c6a3d2f500d64c1361715268fa42399279d26f78bb5c3e9bf424a9f64",
+        "stat_and_sha_unchanged": true
+      },
+      "raw": {
+        "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/raw/LOCAL_B1.json",
+        "sha256": "73f2f6f29d2b4e297f8bd6417b31a299c11423ab6d521c178f3c9ed51b6976c1",
+        "shape": {
+          "B": 1,
+          "K": 11008,
+          "N": 2048
+        },
+        "proxy": true,
+        "output_identical": true,
+        "precondition_order": [
+          "REUSE",
+          "EVICT",
+          "EVICT",
+          "REUSE",
+          "REUSE",
+          "EVICT",
+          "EVICT",
+          "REUSE",
+          "REUSE",
+          "EVICT"
+        ]
+      },
+      "audit": {
+        "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/raw/LOCAL_B1_AUDIT.json",
+        "sha256": "116eed43bda3d9cbe4542adef1288f7a8e6bdbc3a569dd24dce22f793468a223",
+        "actual_rows": 10,
+        "safe_single_pass": true,
+        "unique_kernel_names": [
+          "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)"
+        ]
+      },
+      "DRAM_read_summary": {
+        "REUSE": {
+          "count": 5,
+          "min_bytes": 45092096.0,
+          "max_bytes": 45100672.0,
+          "bytes": [
+            45092352.0,
+            45095680.0,
+            45100672.0,
+            45092352.0,
+            45092096.0
+          ]
+        },
+        "EVICT": {
+          "count": 5,
+          "min_bytes": 45117056.0,
+          "max_bytes": 45138176.0,
+          "bytes": [
+            45138176.0,
+            45120000.0,
+            45117184.0,
+            45119616.0,
+            45117056.0
+          ]
+        }
+      },
+      "offline_exports": [
+        {
+          "argv": [
+            "/opt/nvidia/nsight-compute/2025.1.1/ncu",
+            "--config-file",
+            "0",
+            "--import",
+            "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/.private/LOCAL_B1/metrics.ncu-rep",
+            "--page",
+            "source",
+            "--print-source",
+            "sass",
+            "--launch-skip",
+            "0",
+            "--launch-count",
+            "1",
+            "--metrics",
+            "dram__bytes_read.sum"
+          ],
+          "exit_code": 0,
+          "stop": null,
+          "seconds": 0.5412658536806703,
+          "selected_import_ordinal_zero_based": 0,
+          "precondition_from_raw": "REUSE",
+          "stdout_bytes": 90960,
+          "stdout_sha256": "4f417b6f7f8c264a9c45fdd6f4c3837d49c2dae9bdecc953a70433be2cbcb851",
+          "stderr": "",
+          "sass": {
+            "lines": 1137,
+            "instruction_positions": 1128,
+            "memory_opcode_static_counts": {
+              "LDG.E": 2,
+              "LDG.E.U16.STRONG.SM": 119,
+              "LDG.E.EF.U16": 119,
+              "LDS": 3,
+              "LDG.E.U16.CONSTANT": 1,
+              "LDG.E.U16": 1,
+              "STG.E.U16": 1
+            },
+            "examples": {
+              "LDG.E": [
+                {
+                  "stdout_line": 20,
+                  "text": "0x7c7d35c435a0     @!P0  LDG.E R140, [R2.64]"
+                },
+                {
+                  "stdout_line": 21,
+                  "text": "0x7c7d35c435b0     @!P0  LDG.E R139, [R4.64]"
+                }
+              ],
+              "LDG.E.U16.STRONG.SM": [
+                {
+                  "stdout_line": 117,
+                  "text": "0x7c7d35c43bb0           LDG.E.U16.STRONG.SM R130, [R56.64]"
+                },
+                {
+                  "stdout_line": 121,
+                  "text": "0x7c7d35c43bf0           LDG.E.U16.STRONG.SM R128, [R90.64]"
+                },
+                {
+                  "stdout_line": 125,
+                  "text": "0x7c7d35c43c30           LDG.E.U16.STRONG.SM R126, [R58.64]"
+                }
+              ],
+              "LDG.E.EF.U16": [
+                {
+                  "stdout_line": 119,
+                  "text": "0x7c7d35c43bd0           LDG.E.EF.U16 R131, [R8.64]"
+                },
+                {
+                  "stdout_line": 123,
+                  "text": "0x7c7d35c43c10           LDG.E.EF.U16 R129, [R10.64]"
+                },
+                {
+                  "stdout_line": 127,
+                  "text": "0x7c7d35c43c50           LDG.E.EF.U16 R127, [R12.64]"
+                }
+              ],
+              "LDS": [
+                {
+                  "stdout_line": 1076,
+                  "text": "0x7c7d35c477a0     @!P1  LDS R4, [R0.X4]"
+                },
+                {
+                  "stdout_line": 1077,
+                  "text": "0x7c7d35c477b0     @!P1  LDS R5, [R5]"
+                },
+                {
+                  "stdout_line": 1088,
+                  "text": "0x7c7d35c47860           LDS R9, [R0.X4]"
+                }
+              ],
+              "LDG.E.U16.CONSTANT": [
+                {
+                  "stdout_line": 1100,
+                  "text": "0x7c7d35c47920     @P0   LDG.E.U16.CONSTANT R4, [R4.64]"
+                }
+              ],
+              "LDG.E.U16": [
+                {
+                  "stdout_line": 1102,
+                  "text": "0x7c7d35c47940     @P1   LDG.E.U16 R2, [R2.64]"
+                }
+              ],
+              "STG.E.U16": [
+                {
+                  "stdout_line": 1121,
+                  "text": "0x7c7d35c47a70           STG.E.U16 [R4.64], R0"
+                }
+              ]
+            },
+            "normalized_instruction_sha256": "a74feb062b8d931f2d11fffc76b2bacc97de7bf9f36388e7435e729715110f57",
+            "normalized_instruction_count": 1128,
+            "kernel_header": [
+              "------------------ ------------------------------------------------------------",
+              "Kernel Name        std::enable_if<!T7, void>::type internal::gemvx::kernel<int,",
+              "                    int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (b",
+              "                   ool)0, (bool)1, (bool)1, (bool)0, (int)7, (bool)0, cublasGem",
+              "                   vParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfl",
+              "                   oat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>,",
+              "                    cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+              "------------------ ------------------------------------------------------------"
+            ]
+          }
+        },
+        {
+          "argv": [
+            "/opt/nvidia/nsight-compute/2025.1.1/ncu",
+            "--config-file",
+            "0",
+            "--import",
+            "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/.private/LOCAL_B1/metrics.ncu-rep",
+            "--page",
+            "source",
+            "--print-source",
+            "sass",
+            "--launch-skip",
+            "1",
+            "--launch-count",
+            "1",
+            "--metrics",
+            "dram__bytes_read.sum"
+          ],
+          "exit_code": 0,
+          "stop": null,
+          "seconds": 0.5473340637981892,
+          "selected_import_ordinal_zero_based": 1,
+          "precondition_from_raw": "EVICT",
+          "stdout_bytes": 90960,
+          "stdout_sha256": "4f417b6f7f8c264a9c45fdd6f4c3837d49c2dae9bdecc953a70433be2cbcb851",
+          "stderr": "",
+          "sass": {
+            "lines": 1137,
+            "instruction_positions": 1128,
+            "memory_opcode_static_counts": {
+              "LDG.E": 2,
+              "LDG.E.U16.STRONG.SM": 119,
+              "LDG.E.EF.U16": 119,
+              "LDS": 3,
+              "LDG.E.U16.CONSTANT": 1,
+              "LDG.E.U16": 1,
+              "STG.E.U16": 1
+            },
+            "examples": {
+              "LDG.E": [
+                {
+                  "stdout_line": 20,
+                  "text": "0x7c7d35c435a0     @!P0  LDG.E R140, [R2.64]"
+                },
+                {
+                  "stdout_line": 21,
+                  "text": "0x7c7d35c435b0     @!P0  LDG.E R139, [R4.64]"
+                }
+              ],
+              "LDG.E.U16.STRONG.SM": [
+                {
+                  "stdout_line": 117,
+                  "text": "0x7c7d35c43bb0           LDG.E.U16.STRONG.SM R130, [R56.64]"
+                },
+                {
+                  "stdout_line": 121,
+                  "text": "0x7c7d35c43bf0           LDG.E.U16.STRONG.SM R128, [R90.64]"
+                },
+                {
+                  "stdout_line": 125,
+                  "text": "0x7c7d35c43c30           LDG.E.U16.STRONG.SM R126, [R58.64]"
+                }
+              ],
+              "LDG.E.EF.U16": [
+                {
+                  "stdout_line": 119,
+                  "text": "0x7c7d35c43bd0           LDG.E.EF.U16 R131, [R8.64]"
+                },
+                {
+                  "stdout_line": 123,
+                  "text": "0x7c7d35c43c10           LDG.E.EF.U16 R129, [R10.64]"
+                },
+                {
+                  "stdout_line": 127,
+                  "text": "0x7c7d35c43c50           LDG.E.EF.U16 R127, [R12.64]"
+                }
+              ],
+              "LDS": [
+                {
+                  "stdout_line": 1076,
+                  "text": "0x7c7d35c477a0     @!P1  LDS R4, [R0.X4]"
+                },
+                {
+                  "stdout_line": 1077,
+                  "text": "0x7c7d35c477b0     @!P1  LDS R5, [R5]"
+                },
+                {
+                  "stdout_line": 1088,
+                  "text": "0x7c7d35c47860           LDS R9, [R0.X4]"
+                }
+              ],
+              "LDG.E.U16.CONSTANT": [
+                {
+                  "stdout_line": 1100,
+                  "text": "0x7c7d35c47920     @P0   LDG.E.U16.CONSTANT R4, [R4.64]"
+                }
+              ],
+              "LDG.E.U16": [
+                {
+                  "stdout_line": 1102,
+                  "text": "0x7c7d35c47940     @P1   LDG.E.U16 R2, [R2.64]"
+                }
+              ],
+              "STG.E.U16": [
+                {
+                  "stdout_line": 1121,
+                  "text": "0x7c7d35c47a70           STG.E.U16 [R4.64], R0"
+                }
+              ]
+            },
+            "normalized_instruction_sha256": "a74feb062b8d931f2d11fffc76b2bacc97de7bf9f36388e7435e729715110f57",
+            "normalized_instruction_count": 1128,
+            "kernel_header": [
+              "------------------ ------------------------------------------------------------",
+              "Kernel Name        std::enable_if<!T7, void>::type internal::gemvx::kernel<int,",
+              "                    int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (b",
+              "                   ool)0, (bool)1, (bool)1, (bool)0, (int)7, (bool)0, cublasGem",
+              "                   vParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfl",
+              "                   oat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>,",
+              "                    cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+              "------------------ ------------------------------------------------------------"
+            ]
+          }
+        }
+      ],
+      "first_REUSE_vs_first_EVICT_normalized_SASS_identical": true,
+      "SASS_status": "OBSERVED",
+      "operand_to_weight_mapping": "UNKNOWN",
+      "specific_modifier_cache_eviction_semantics": "UNKNOWN"
+    },
+    "LOCAL_B2": {
+      "report": {
+        "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/.private/LOCAL_B2/metrics.ncu-rep",
+        "bytes": 1549663,
+        "sha256": "62199590031b4676200e18ae75efd80ba9484c083eba7622634f0e0f5c34b699",
+        "stat_and_sha_unchanged": true
+      },
+      "raw": {
+        "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/raw/LOCAL_B2.json",
+        "sha256": "9da466be800a8f0cfa05c38b48e80d858b20caafdf195e8e0c4d0ea7376c573f",
+        "shape": {
+          "B": 2,
+          "K": 11008,
+          "N": 2048
+        },
+        "proxy": true,
+        "output_identical": true,
+        "precondition_order": [
+          "REUSE",
+          "EVICT",
+          "EVICT",
+          "REUSE",
+          "REUSE",
+          "EVICT",
+          "EVICT",
+          "REUSE",
+          "REUSE",
+          "EVICT"
+        ]
+      },
+      "audit": {
+        "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/raw/LOCAL_B2_AUDIT.json",
+        "sha256": "c4a7919ab2c43f82e457fc99a8798969f89adf89f9fff33e682a3b5cd59d5685",
+        "actual_rows": 10,
+        "safe_single_pass": true,
+        "unique_kernel_names": [
+          "void Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(Params)"
+        ]
+      },
+      "DRAM_read_summary": {
+        "REUSE": {
+          "count": 5,
+          "min_bytes": 384.0,
+          "max_bytes": 383744.0,
+          "bytes": [
+            383744.0,
+            896.0,
+            384.0,
+            1152.0,
+            384.0
+          ]
+        },
+        "EVICT": {
+          "count": 5,
+          "min_bytes": 45143936.0,
+          "max_bytes": 45160576.0,
+          "bytes": [
+            45160576.0,
+            45148160.0,
+            45144192.0,
+            45143936.0,
+            45146240.0
+          ]
+        }
+      },
+      "offline_exports": [
+        {
+          "argv": [
+            "/opt/nvidia/nsight-compute/2025.1.1/ncu",
+            "--config-file",
+            "0",
+            "--import",
+            "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/.private/LOCAL_B2/metrics.ncu-rep",
+            "--page",
+            "source",
+            "--print-source",
+            "sass",
+            "--launch-skip",
+            "0",
+            "--launch-count",
+            "1",
+            "--metrics",
+            "dram__bytes_read.sum"
+          ],
+          "exit_code": 0,
+          "stop": null,
+          "seconds": 0.5370756518095732,
+          "selected_import_ordinal_zero_based": 0,
+          "precondition_from_raw": "REUSE",
+          "stdout_bytes": 73360,
+          "stdout_sha256": "073381e69c7f41392af4d73fe82772ed6de0b7feb4b5da89da31aa3fb9af294a",
+          "stderr": "",
+          "sass": {
+            "lines": 917,
+            "instruction_positions": 912,
+            "memory_opcode_static_counts": {
+              "LDG.E.64": 4,
+              "LDG.E.LTC128B.128": 32,
+              "LD.E": 72,
+              "LDG.E": 2,
+              "LDG.E.STRONG.GPU": 2,
+              "CCTL.IVALL": 2,
+              "LDG.E.LTC128B.64": 2,
+              "LDS.128": 4,
+              "STG.E.64": 4,
+              "STG.E.STRONG.GPU": 1
+            },
+            "examples": {
+              "LDG.E.64": [
+                {
+                  "stdout_line": 36,
+                  "text": "0x7786afc436e0           LDG.E.64 R32, [R32.64]"
+                },
+                {
+                  "stdout_line": 37,
+                  "text": "0x7786afc436f0           LDG.E.64 R72, [R72.64]"
+                },
+                {
+                  "stdout_line": 675,
+                  "text": "0x7786afc45ed0           LDG.E.64 R2, [R2.64]"
+                }
+              ],
+              "LDG.E.LTC128B.128": [
+                {
+                  "stdout_line": 167,
+                  "text": "0x7786afc43f10     @P0   LDG.E.LTC128B.128 R68, [R14.64]"
+                },
+                {
+                  "stdout_line": 169,
+                  "text": "0x7786afc43f30     @P1   LDG.E.LTC128B.128 R64, [R12.64]"
+                },
+                {
+                  "stdout_line": 171,
+                  "text": "0x7786afc43f50     @P2   LDG.E.LTC128B.128 R60, [R10.64]"
+                }
+              ],
+              "LD.E": [
+                {
+                  "stdout_line": 300,
+                  "text": "0x7786afc44760           LD.E R2, [R22.64+0x2100]"
+                },
+                {
+                  "stdout_line": 302,
+                  "text": "0x7786afc44780           LD.E R3, [R22.64+0x2110]"
+                },
+                {
+                  "stdout_line": 305,
+                  "text": "0x7786afc447b0           LD.E R16, [R22.64+0x3180]"
+                }
+              ],
+              "LDG.E": [
+                {
+                  "stdout_line": 639,
+                  "text": "0x7786afc45c90     @P1   LDG.E R24, [R12.64]"
+                },
+                {
+                  "stdout_line": 640,
+                  "text": "0x7786afc45ca0     @P0   LDG.E R25, [R2.64]"
+                }
+              ],
+              "LDG.E.STRONG.GPU": [
+                {
+                  "stdout_line": 705,
+                  "text": "0x7786afc460b0     @!P0  LDG.E.STRONG.GPU R15, [R26.64]"
+                },
+                {
+                  "stdout_line": 772,
+                  "text": "0x7786afc464e0           LDG.E.STRONG.GPU R15, [R26.64]"
+                }
+              ],
+              "CCTL.IVALL": [
+                {
+                  "stdout_line": 711,
+                  "text": "0x7786afc46110           CCTL.IVALL"
+                },
+                {
+                  "stdout_line": 773,
+                  "text": "0x7786afc464f0           CCTL.IVALL"
+                }
+              ],
+              "LDG.E.LTC128B.64": [
+                {
+                  "stdout_line": 791,
+                  "text": "0x7786afc46610     @P0   LDG.E.LTC128B.64 R20, [R16.64]"
+                },
+                {
+                  "stdout_line": 796,
+                  "text": "0x7786afc46660     @P0   LDG.E.LTC128B.64 R2, [R14.64]"
+                }
+              ],
+              "LDS.128": [
+                {
+                  "stdout_line": 810,
+                  "text": "0x7786afc46740           LDS.128 R16, [R30]"
+                },
+                {
+                  "stdout_line": 811,
+                  "text": "0x7786afc46750           LDS.128 R12, [R30+0x300]"
+                },
+                {
+                  "stdout_line": 870,
+                  "text": "0x7786afc46b00           LDS.128 R16, [R30]"
+                }
+              ],
+              "STG.E.64": [
+                {
+                  "stdout_line": 840,
+                  "text": "0x7786afc46920     @P0   STG.E.64 [R28.64], R4"
+                },
+                {
+                  "stdout_line": 852,
+                  "text": "0x7786afc469e0           STG.E.64 [R6.64], R2"
+                },
+                {
+                  "stdout_line": 892,
+                  "text": "0x7786afc46c60     @P0   STG.E.64 [R28.64], R4"
+                }
+              ],
+              "STG.E.STRONG.GPU": [
+                {
+                  "stdout_line": 904,
+                  "text": "0x7786afc46d20           STG.E.STRONG.GPU [R26.64], R3"
+                }
+              ]
+            },
+            "normalized_instruction_sha256": "fed571a7aa2788950db6f518eebd3b1157712c0bdff911e992aa1b2ef97bfe37",
+            "normalized_instruction_count": 912,
+            "kernel_header": [
+              "------------------ ------------------------------------------------------------",
+              "Kernel Name        void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616g",
+              "                   emm_bf16_16x16_128x2_tn_align8>(T1::Params)                 ",
+              "------------------ ------------------------------------------------------------",
+              "Address            Source                                                      ",
+              "0x7786afc43500           MOV R1, c[0x0][0x28]                                  ",
+              "0x7786afc43510           S2R R2, SR_CTAID.Y                                    ",
+              "0x7786afc43520           IMAD.MOV.U32 R0, RZ, RZ, -0x1                         "
+            ]
+          }
+        },
+        {
+          "argv": [
+            "/opt/nvidia/nsight-compute/2025.1.1/ncu",
+            "--config-file",
+            "0",
+            "--import",
+            "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/.private/LOCAL_B2/metrics.ncu-rep",
+            "--page",
+            "source",
+            "--print-source",
+            "sass",
+            "--launch-skip",
+            "1",
+            "--launch-count",
+            "1",
+            "--metrics",
+            "dram__bytes_read.sum"
+          ],
+          "exit_code": 0,
+          "stop": null,
+          "seconds": 0.5302213244140148,
+          "selected_import_ordinal_zero_based": 1,
+          "precondition_from_raw": "EVICT",
+          "stdout_bytes": 73360,
+          "stdout_sha256": "073381e69c7f41392af4d73fe82772ed6de0b7feb4b5da89da31aa3fb9af294a",
+          "stderr": "",
+          "sass": {
+            "lines": 917,
+            "instruction_positions": 912,
+            "memory_opcode_static_counts": {
+              "LDG.E.64": 4,
+              "LDG.E.LTC128B.128": 32,
+              "LD.E": 72,
+              "LDG.E": 2,
+              "LDG.E.STRONG.GPU": 2,
+              "CCTL.IVALL": 2,
+              "LDG.E.LTC128B.64": 2,
+              "LDS.128": 4,
+              "STG.E.64": 4,
+              "STG.E.STRONG.GPU": 1
+            },
+            "examples": {
+              "LDG.E.64": [
+                {
+                  "stdout_line": 36,
+                  "text": "0x7786afc436e0           LDG.E.64 R32, [R32.64]"
+                },
+                {
+                  "stdout_line": 37,
+                  "text": "0x7786afc436f0           LDG.E.64 R72, [R72.64]"
+                },
+                {
+                  "stdout_line": 675,
+                  "text": "0x7786afc45ed0           LDG.E.64 R2, [R2.64]"
+                }
+              ],
+              "LDG.E.LTC128B.128": [
+                {
+                  "stdout_line": 167,
+                  "text": "0x7786afc43f10     @P0   LDG.E.LTC128B.128 R68, [R14.64]"
+                },
+                {
+                  "stdout_line": 169,
+                  "text": "0x7786afc43f30     @P1   LDG.E.LTC128B.128 R64, [R12.64]"
+                },
+                {
+                  "stdout_line": 171,
+                  "text": "0x7786afc43f50     @P2   LDG.E.LTC128B.128 R60, [R10.64]"
+                }
+              ],
+              "LD.E": [
+                {
+                  "stdout_line": 300,
+                  "text": "0x7786afc44760           LD.E R2, [R22.64+0x2100]"
+                },
+                {
+                  "stdout_line": 302,
+                  "text": "0x7786afc44780           LD.E R3, [R22.64+0x2110]"
+                },
+                {
+                  "stdout_line": 305,
+                  "text": "0x7786afc447b0           LD.E R16, [R22.64+0x3180]"
+                }
+              ],
+              "LDG.E": [
+                {
+                  "stdout_line": 639,
+                  "text": "0x7786afc45c90     @P1   LDG.E R24, [R12.64]"
+                },
+                {
+                  "stdout_line": 640,
+                  "text": "0x7786afc45ca0     @P0   LDG.E R25, [R2.64]"
+                }
+              ],
+              "LDG.E.STRONG.GPU": [
+                {
+                  "stdout_line": 705,
+                  "text": "0x7786afc460b0     @!P0  LDG.E.STRONG.GPU R15, [R26.64]"
+                },
+                {
+                  "stdout_line": 772,
+                  "text": "0x7786afc464e0           LDG.E.STRONG.GPU R15, [R26.64]"
+                }
+              ],
+              "CCTL.IVALL": [
+                {
+                  "stdout_line": 711,
+                  "text": "0x7786afc46110           CCTL.IVALL"
+                },
+                {
+                  "stdout_line": 773,
+                  "text": "0x7786afc464f0           CCTL.IVALL"
+                }
+              ],
+              "LDG.E.LTC128B.64": [
+                {
+                  "stdout_line": 791,
+                  "text": "0x7786afc46610     @P0   LDG.E.LTC128B.64 R20, [R16.64]"
+                },
+                {
+                  "stdout_line": 796,
+                  "text": "0x7786afc46660     @P0   LDG.E.LTC128B.64 R2, [R14.64]"
+                }
+              ],
+              "LDS.128": [
+                {
+                  "stdout_line": 810,
+                  "text": "0x7786afc46740           LDS.128 R16, [R30]"
+                },
+                {
+                  "stdout_line": 811,
+                  "text": "0x7786afc46750           LDS.128 R12, [R30+0x300]"
+                },
+                {
+                  "stdout_line": 870,
+                  "text": "0x7786afc46b00           LDS.128 R16, [R30]"
+                }
+              ],
+              "STG.E.64": [
+                {
+                  "stdout_line": 840,
+                  "text": "0x7786afc46920     @P0   STG.E.64 [R28.64], R4"
+                },
+                {
+                  "stdout_line": 852,
+                  "text": "0x7786afc469e0           STG.E.64 [R6.64], R2"
+                },
+                {
+                  "stdout_line": 892,
+                  "text": "0x7786afc46c60     @P0   STG.E.64 [R28.64], R4"
+                }
+              ],
+              "STG.E.STRONG.GPU": [
+                {
+                  "stdout_line": 904,
+                  "text": "0x7786afc46d20           STG.E.STRONG.GPU [R26.64], R3"
+                }
+              ]
+            },
+            "normalized_instruction_sha256": "fed571a7aa2788950db6f518eebd3b1157712c0bdff911e992aa1b2ef97bfe37",
+            "normalized_instruction_count": 912,
+            "kernel_header": [
+              "------------------ ------------------------------------------------------------",
+              "Kernel Name        void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616g",
+              "                   emm_bf16_16x16_128x2_tn_align8>(T1::Params)                 ",
+              "------------------ ------------------------------------------------------------",
+              "Address            Source                                                      ",
+              "0x7786afc43500           MOV R1, c[0x0][0x28]                                  ",
+              "0x7786afc43510           S2R R2, SR_CTAID.Y                                    ",
+              "0x7786afc43520           IMAD.MOV.U32 R0, RZ, RZ, -0x1                         "
+            ]
+          }
+        }
+      ],
+      "first_REUSE_vs_first_EVICT_normalized_SASS_identical": true,
+      "SASS_status": "OBSERVED",
+      "operand_to_weight_mapping": "UNKNOWN",
+      "specific_modifier_cache_eviction_semantics": "UNKNOWN"
+    }
+  },
+  "observed_lexical_difference": {
+    "B1": [
+      "LDG.E.EF.U16",
+      "LDG.E.U16.STRONG.SM"
+    ],
+    "B2": [
+      "LDG.E.LTC128B.128"
+    ],
+    "description": "These are exact opcode modifier strings in the imported report SASS. Static counts count instruction positions, not executed instructions or traffic."
+  },
+  "supported_findings": [
+    "SASS source is readable offline for both completed local reports within caps.",
+    "The first REUSE/EVICT results within each report have identical normalized instruction sequences; precondition changes did not produce a different static instruction body in these selected results.",
+    "B1/B2 use visibly different instruction streams and load modifier strings, consistent with different GEMV/GEMM implementations.",
+    "Recorded DRAM reuse/eviction behavior differs across B1/B2 even while each local report retains the same kernel name."
+  ],
+  "unknown_or_not_supported": [
+    "No runtime pointer/dataflow annotation establishes which observed load instruction addresses the weight tensor versus input/metadata/output.",
+    "No architecture-validated meaning for EF, STRONG.SM or LTC128B was established here; no PTX cache operator is inferred from a SASS token.",
+    "Modifier presence alone does not prove L1 bypass, L2 persistence, eviction-first behavior, cache-hit rate or cause of the measured DRAM difference.",
+    "No dynamic instruction execution frequency, cache-line identity or per-load traffic was collected.",
+    "No claim about full model/global decode memory bottleneck follows from this proxy investigation."
+  ],
+  "next_evidence_boundary": "Retain lexical SASS evidence as an implementation-path clue. A causal cache-policy statement would require independently supported architecture semantics and operand attribution or a separately authorized controlled experiment. No new GPU validation was performed.",
+  "cpu_resources": {
+    "parent_python_ru_maxrss_KiB": 23092,
+    "offline_ncu_child_ru_maxrss_KiB": 204732,
+    "note": "Peak resident set of CPU-side review process and its offline importer children; Linux KiB."
+  }
+}

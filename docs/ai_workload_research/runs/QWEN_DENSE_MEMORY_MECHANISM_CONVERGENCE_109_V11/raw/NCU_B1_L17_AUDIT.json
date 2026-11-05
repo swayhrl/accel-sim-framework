@@ -1,0 +1,275 @@
+{
+  "nodes": [
+    {
+      "passes": 1.0,
+      "backup_bytes": null,
+      "backup_counter_emitted": false,
+      "safe_single_pass": true,
+      "metrics": {
+        "dram__bytes_read.sum": {
+          "unit": "byte",
+          "value": "8,389,760"
+        },
+        "gpu__time_duration.sum": {
+          "unit": "ns",
+          "value": "16,896"
+        },
+        "profiler__perfworks_session_reuse": {
+          "unit": "",
+          "value": "0"
+        },
+        "profiler__replayer_passes": {
+          "unit": "pass",
+          "value": "1"
+        },
+        "profiler__replayer_passes_type_warmup": {
+          "unit": "pass",
+          "value": "0"
+        },
+        "sm__cycles_elapsed.avg": {
+          "unit": "cycle",
+          "value": "46,681.95"
+        },
+        "sm__maximum_warps_avg_per_active_cycle": {
+          "unit": "warp",
+          "value": "12"
+        },
+        "sm__maximum_warps_per_active_cycle_pct": {
+          "unit": "%",
+          "value": "25"
+        },
+        "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+          "unit": "%",
+          "value": "0"
+        }
+      },
+      "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 6, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+      "grid": "(512, 1, 1)",
+      "block": "(16, 4, 1)",
+      "raw_ID": "0",
+      "target": {
+        "point": "A00_N32",
+        "logical_module": "model.layers.17.self_attn.o_proj",
+        "decoder_layer_zero_based": 17,
+        "logical_op": "self_attn.o_proj",
+        "dense_ordinal_zero_based_within_first_decode_graph": 69,
+        "all_kernel_step_ordinal_zero_based": 201,
+        "all_kernel_graph_ordinal_zero_based": 193,
+        "graph_kernel_count": 397,
+        "all_kernel_graph_launch_skip_single_target": 193,
+        "all_kernel_graph_launch_count_single_target": 1,
+        "dense_filter_launch_skip_single_target": 69,
+        "dense_filter_launch_count_single_target": 1,
+        "NCU_filtered_triplet_launch_skip": 69,
+        "NCU_filtered_triplet_launch_count": 3,
+        "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+        "grid": [
+          512,
+          1,
+          1
+        ],
+        "block": [
+          16,
+          4,
+          1
+        ],
+        "compiled_contract_M": 1,
+        "compiled_contract_N": 2048,
+        "compiled_contract_K": 2048,
+        "logical_weight_shape_out_in": [
+          2048,
+          2048
+        ],
+        "logical_weight_BF16_bytes": 8388608,
+        "first_step_duration_ns": 14336,
+        "sqlite_kernel_rowid": 1351,
+        "graphNodeId": 2907692859603,
+        "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+      },
+      "paired_by_order_contract_grid_weight": true,
+      "mapping_limit": "Source/Graph/order/weightcontract,notrawkernelarguments"
+    },
+    {
+      "passes": 1.0,
+      "backup_bytes": null,
+      "backup_counter_emitted": false,
+      "safe_single_pass": true,
+      "metrics": {
+        "dram__bytes_read.sum": {
+          "unit": "byte",
+          "value": "90,185,472"
+        },
+        "gpu__time_duration.sum": {
+          "unit": "ns",
+          "value": "138,880"
+        },
+        "profiler__perfworks_session_reuse": {
+          "unit": "",
+          "value": "1"
+        },
+        "profiler__replayer_passes": {
+          "unit": "pass",
+          "value": "1"
+        },
+        "profiler__replayer_passes_type_warmup": {
+          "unit": "pass",
+          "value": "0"
+        },
+        "sm__cycles_elapsed.avg": {
+          "unit": "cycle",
+          "value": "389,156.24"
+        },
+        "sm__maximum_warps_avg_per_active_cycle": {
+          "unit": "warp",
+          "value": "12"
+        },
+        "sm__maximum_warps_per_active_cycle_pct": {
+          "unit": "%",
+          "value": "25"
+        },
+        "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+          "unit": "%",
+          "value": "0"
+        }
+      },
+      "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 6, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+      "grid": "(5504, 1, 1)",
+      "block": "(16, 4, 1)",
+      "raw_ID": "1",
+      "target": {
+        "point": "A00_N32",
+        "logical_module": "model.layers.17.mlp.gate_up_proj",
+        "decoder_layer_zero_based": 17,
+        "logical_op": "mlp.gate_up_proj",
+        "dense_ordinal_zero_based_within_first_decode_graph": 70,
+        "all_kernel_step_ordinal_zero_based": 203,
+        "all_kernel_graph_ordinal_zero_based": 195,
+        "graph_kernel_count": 397,
+        "all_kernel_graph_launch_skip_single_target": 195,
+        "all_kernel_graph_launch_count_single_target": 1,
+        "dense_filter_launch_skip_single_target": 70,
+        "dense_filter_launch_count_single_target": 1,
+        "NCU_filtered_triplet_launch_skip": 69,
+        "NCU_filtered_triplet_launch_count": 3,
+        "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+        "grid": [
+          5504,
+          1,
+          1
+        ],
+        "block": [
+          16,
+          4,
+          1
+        ],
+        "compiled_contract_M": 1,
+        "compiled_contract_N": 22016,
+        "compiled_contract_K": 2048,
+        "logical_weight_shape_out_in": [
+          22016,
+          2048
+        ],
+        "logical_weight_BF16_bytes": 90177536,
+        "first_step_duration_ns": 136800,
+        "sqlite_kernel_rowid": 1353,
+        "graphNodeId": 2907692859605,
+        "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+      },
+      "paired_by_order_contract_grid_weight": true,
+      "mapping_limit": "Source/Graph/order/weightcontract,notrawkernelarguments"
+    },
+    {
+      "passes": 1.0,
+      "backup_bytes": null,
+      "backup_counter_emitted": false,
+      "safe_single_pass": true,
+      "metrics": {
+        "dram__bytes_read.sum": {
+          "unit": "byte",
+          "value": "45,092,864"
+        },
+        "gpu__time_duration.sum": {
+          "unit": "ns",
+          "value": "71,584"
+        },
+        "profiler__perfworks_session_reuse": {
+          "unit": "",
+          "value": "1"
+        },
+        "profiler__replayer_passes": {
+          "unit": "pass",
+          "value": "1"
+        },
+        "profiler__replayer_passes_type_warmup": {
+          "unit": "pass",
+          "value": "0"
+        },
+        "sm__cycles_elapsed.avg": {
+          "unit": "cycle",
+          "value": "199,533.50"
+        },
+        "sm__maximum_warps_avg_per_active_cycle": {
+          "unit": "warp",
+          "value": "12"
+        },
+        "sm__maximum_warps_per_active_cycle_pct": {
+          "unit": "%",
+          "value": "25"
+        },
+        "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+          "unit": "%",
+          "value": "0"
+        }
+      },
+      "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+      "grid": "(512, 1, 1)",
+      "block": "(32, 4, 1)",
+      "raw_ID": "2",
+      "target": {
+        "point": "A00_N32",
+        "logical_module": "model.layers.17.mlp.down_proj",
+        "decoder_layer_zero_based": 17,
+        "logical_op": "mlp.down_proj",
+        "dense_ordinal_zero_based_within_first_decode_graph": 71,
+        "all_kernel_step_ordinal_zero_based": 205,
+        "all_kernel_graph_ordinal_zero_based": 197,
+        "graph_kernel_count": 397,
+        "all_kernel_graph_launch_skip_single_target": 197,
+        "all_kernel_graph_launch_count_single_target": 1,
+        "dense_filter_launch_skip_single_target": 71,
+        "dense_filter_launch_count_single_target": 1,
+        "NCU_filtered_triplet_launch_skip": 69,
+        "NCU_filtered_triplet_launch_count": 3,
+        "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)7, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+        "grid": [
+          512,
+          1,
+          1
+        ],
+        "block": [
+          32,
+          4,
+          1
+        ],
+        "compiled_contract_M": 1,
+        "compiled_contract_N": 2048,
+        "compiled_contract_K": 11008,
+        "logical_weight_shape_out_in": [
+          2048,
+          11008
+        ],
+        "logical_weight_BF16_bytes": 45088768,
+        "first_step_duration_ns": 70720,
+        "sqlite_kernel_rowid": 1355,
+        "graphNodeId": 2907692859607,
+        "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+      },
+      "paired_by_order_contract_grid_weight": true,
+      "mapping_limit": "Source/Graph/order/weightcontract,notrawkernelarguments"
+    }
+  ],
+  "actual_rows": 3,
+  "safe_single_pass": true,
+  "backup_missing_not_zero": true,
+  "expected_rows": 3
+}

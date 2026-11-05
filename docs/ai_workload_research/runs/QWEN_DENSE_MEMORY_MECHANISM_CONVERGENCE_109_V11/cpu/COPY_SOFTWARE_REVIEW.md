@@ -1,0 +1,13 @@
+# V11 copy/software review
+
+The 72 extra B2 copies per Decode step remain OBSERVED attention-adjacent work, with exact tensor transform and removability UNRESOLVED. This CPU review adds native observation API constraints, while reusing V10 measurements.
+
+The accepted trace has 36 pre-FA and 36 post-FA copies per step, BF16 direct-copy symbols, and no B1 counterparts. Static Q/K/V last-dimension stride is 1; the Python maybe_contiguous guard therefore does not establish their cause. The DCP contiguous branch is not evidence for this TP1 run. Inductor alignment guards exist, but no live pointer/branch result associates them with these copies. FA2 GQA rearrangement remains a hypothesis, not a source-proven result: only the FA2 binary and Python interface are installed.
+
+Torch CUDAGraph retains a queryable cudaGraph_t only when keep_graph=True. Installed vLLM uses the default constructor, while Torch documents that keep_graph=False destroys that graph after capture. The installed get_graph_data path additionally states tools-ID support requires driver/cuda.bindings 13.1; the accepted driver is 13.0. That method returns topology, not original tensor strides. Torch profiler's own documentation warns shape recording may retain tensors and introduce additional copies. A Python q/k/v/out wrapper would observe boundary metadata during capture, not identify all FA2 internal temporaries during replay. No zero-effect formal API was identified that recovers the missing copy arguments from the existing native graph.
+
+No copy patch is recommended in this Goal. There is no source-backed minimal replacement with proven output equivalence. Absence of such a patch does not prove the copies necessary. For the same collected B2_N32 request, 3.197527 ms of copy time divided by 394.981720 ms gives an ideal copy-only time-saving ceiling of 0.809538%. This is not observed speedup and does not bound broader attention changes. Copies are already included in Non-Dense time; do not add them twice. The inherited Nsight compatibility/coverage caveat remains.
+
+A future software counterfactual needs exact binary-matched C++ source, actual pointer/stride and branch association, and an isolated replacement verified for output and graph identity. An alternate attention backend or speculative copy deletion would change more than this variable. Given the small local bound, dominant Dense-node measurement has higher information value here. No copy-only hardware candidate is promoted.
+
+COPY_SOFTWARE_REVIEW.json records exact source hashes and line ranges, the scope of bounded read-only searches, and the limited CPU resource observation. No CUDA, GPU/NVML, Torch/vLLM import, download, production edit, or raw re-archive occurred.

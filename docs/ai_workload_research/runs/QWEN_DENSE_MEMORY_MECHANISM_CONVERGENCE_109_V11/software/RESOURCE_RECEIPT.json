@@ -1,0 +1,465 @@
+{
+  "status": "V11_STUDY_COMPLETE",
+  "lock_attempt_count": 1,
+  "lock_acquired": true,
+  "lock_released": true,
+  "NVML_initialized": true,
+  "worker_launches": 1,
+  "children": [
+    {
+      "task": "NCU_LT_B1_L0",
+      "launcher_pid": 3802991,
+      "start_epoch": 1793855590.6437476,
+      "launch": {
+        "task": "NCU_LT_B1_L0",
+        "command": [
+          "/opt/nvidia/nsight-compute/2025.1.1/ncu",
+          "--target-processes",
+          "application-only",
+          "--graph-profiling",
+          "node",
+          "--replay-mode",
+          "kernel",
+          "--profile-from-start",
+          "no",
+          "--nvtx",
+          "--kernel-name-base",
+          "demangled",
+          "--rename-kernels",
+          "off",
+          "--filter-mode",
+          "global",
+          "--kernel-name",
+          "regex:.*(gemv|gemm).*",
+          "--nvtx-include",
+          "decodeGraph/",
+          "--launch-skip",
+          "1",
+          "--launch-count",
+          "3",
+          "--kill",
+          "no",
+          "--clock-control",
+          "none",
+          "--cache-control",
+          "none",
+          "--pipeline-boost-state",
+          "dynamic",
+          "--disable-extra-suffixes",
+          "--metrics",
+          "dram__bytes_read.sum,gpu__time_duration.sum,sm__cycles_elapsed.avg,sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed",
+          "--force-overwrite",
+          "--export",
+          "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/software/.private/NCU_LT_B1_L0/metrics",
+          "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/bin/python",
+          "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/util/ai_workload_research/dense_memory_mechanism_v11/software/worker.py",
+          "NCU_LT_B1_L0"
+        ],
+        "nonce": "84058b52441a8ecab4caaf1bba27999c1658a2487c855533",
+        "scope": "ALTERED_EAGER_NOT_NATIVE",
+        "clock_control": "none",
+        "prefix_cache": false
+      },
+      "actual_worker": {
+        "task": "NCU_LT_B1_L0",
+        "nonce": "84058b52441a8ecab4caaf1bba27999c1658a2487c855533",
+        "supervisor_pid": 3802979,
+        "identity": {
+          "pid": 3803005,
+          "uid": 1004,
+          "start_ticks": "447848695",
+          "boot_id": "35425a62-1268-4560-a3cb-b674371cd7aa",
+          "executable": "/usr/bin/python3.12"
+        },
+        "worker_sha256": "e249bb067140d4ed90e55cfb7e0060662db660ab6619323a635fc00f521ffc8d"
+      },
+      "exit_code": 0,
+      "finish_epoch": 1793855658.996618,
+      "preemptive_profile_stop": false,
+      "model_initializations": 1,
+      "result_status": "V9_WORKER_COMPLETE",
+      "error": null,
+      "counter_audit": {
+        "nodes": [
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "8,389,760"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "17,504"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "0"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "48,499.97"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "12"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "25"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "0"
+              }
+            },
+            "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 6, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+            "grid": "(512, 1, 1)",
+            "block": "(16, 4, 1)",
+            "raw_ID": "0",
+            "target": {
+              "point": "A00_N32",
+              "logical_module": "model.layers.0.self_attn.o_proj",
+              "decoder_layer_zero_based": 0,
+              "logical_op": "self_attn.o_proj",
+              "dense_ordinal_zero_based_within_first_decode_graph": 1,
+              "all_kernel_step_ordinal_zero_based": 14,
+              "all_kernel_graph_ordinal_zero_based": 6,
+              "graph_kernel_count": 397,
+              "all_kernel_graph_launch_skip_single_target": 6,
+              "all_kernel_graph_launch_count_single_target": 1,
+              "dense_filter_launch_skip_single_target": 1,
+              "dense_filter_launch_count_single_target": 1,
+              "NCU_filtered_triplet_launch_skip": 1,
+              "NCU_filtered_triplet_launch_count": 3,
+              "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+              "grid": [
+                512,
+                1,
+                1
+              ],
+              "block": [
+                16,
+                4,
+                1
+              ],
+              "compiled_contract_M": 1,
+              "compiled_contract_N": 2048,
+              "compiled_contract_K": 2048,
+              "logical_weight_shape_out_in": [
+                2048,
+                2048
+              ],
+              "logical_weight_BF16_bytes": 8388608,
+              "first_step_duration_ns": 14368,
+              "sqlite_kernel_rowid": 1164,
+              "graphNodeId": 2907692859399,
+              "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+            },
+            "paired_by_order_contract_grid_weight": true,
+            "mapping_limit": "Source/Graph/order/weightcontract,notrawkernelarguments"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "90,185,728"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "139,456"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "390,501.08"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "12"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "25"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "0"
+              }
+            },
+            "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 6, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+            "grid": "(5504, 1, 1)",
+            "block": "(16, 4, 1)",
+            "raw_ID": "1",
+            "target": {
+              "point": "A00_N32",
+              "logical_module": "model.layers.0.mlp.gate_up_proj",
+              "decoder_layer_zero_based": 0,
+              "logical_op": "mlp.gate_up_proj",
+              "dense_ordinal_zero_based_within_first_decode_graph": 2,
+              "all_kernel_step_ordinal_zero_based": 16,
+              "all_kernel_graph_ordinal_zero_based": 8,
+              "graph_kernel_count": 397,
+              "all_kernel_graph_launch_skip_single_target": 8,
+              "all_kernel_graph_launch_count_single_target": 1,
+              "dense_filter_launch_skip_single_target": 2,
+              "dense_filter_launch_count_single_target": 1,
+              "NCU_filtered_triplet_launch_skip": 1,
+              "NCU_filtered_triplet_launch_count": 3,
+              "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+              "grid": [
+                5504,
+                1,
+                1
+              ],
+              "block": [
+                16,
+                4,
+                1
+              ],
+              "compiled_contract_M": 1,
+              "compiled_contract_N": 22016,
+              "compiled_contract_K": 2048,
+              "logical_weight_shape_out_in": [
+                22016,
+                2048
+              ],
+              "logical_weight_BF16_bytes": 90177536,
+              "first_step_duration_ns": 137760,
+              "sqlite_kernel_rowid": 1166,
+              "graphNodeId": 2907692859401,
+              "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+            },
+            "paired_by_order_contract_grid_weight": true,
+            "mapping_limit": "Source/Graph/order/weightcontract,notrawkernelarguments"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "45,112,960"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "71,808"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "200,466.58"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "12"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "25"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "0"
+              }
+            },
+            "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+            "grid": "(512, 1, 1)",
+            "block": "(32, 4, 1)",
+            "raw_ID": "2",
+            "target": {
+              "point": "A00_N32",
+              "logical_module": "model.layers.0.mlp.down_proj",
+              "decoder_layer_zero_based": 0,
+              "logical_op": "mlp.down_proj",
+              "dense_ordinal_zero_based_within_first_decode_graph": 3,
+              "all_kernel_step_ordinal_zero_based": 18,
+              "all_kernel_graph_ordinal_zero_based": 10,
+              "graph_kernel_count": 397,
+              "all_kernel_graph_launch_skip_single_target": 10,
+              "all_kernel_graph_launch_count_single_target": 1,
+              "dense_filter_launch_skip_single_target": 3,
+              "dense_filter_launch_count_single_target": 1,
+              "NCU_filtered_triplet_launch_skip": 1,
+              "NCU_filtered_triplet_launch_count": 3,
+              "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)7, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+              "grid": [
+                512,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                4,
+                1
+              ],
+              "compiled_contract_M": 1,
+              "compiled_contract_N": 2048,
+              "compiled_contract_K": 11008,
+              "logical_weight_shape_out_in": [
+                2048,
+                11008
+              ],
+              "logical_weight_BF16_bytes": 45088768,
+              "first_step_duration_ns": 70784,
+              "sqlite_kernel_rowid": 1168,
+              "graphNodeId": 2907692859403,
+              "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+            },
+            "paired_by_order_contract_grid_weight": true,
+            "mapping_limit": "Source/Graph/order/weightcontract,notrawkernelarguments"
+          }
+        ],
+        "actual_rows": 3,
+        "safe_single_pass": true,
+        "backup_missing_not_zero": true,
+        "expected_rows": 3
+      }
+    }
+  ],
+  "monitor_gaps": [],
+  "GPU_model_initializations": 1,
+  "EXCLUSIVITY_EVIDENCE_COMPLETE": false,
+  "shared_reservation": {
+    "request_id": "640222d6b581cbe5c5e18ef877f99987",
+    "owner": {
+      "pid": 3802979,
+      "uid": 1004,
+      "start_ticks": "447848400",
+      "boot_id": "35425a62-1268-4560-a3cb-b674371cd7aa",
+      "executable": "/usr/bin/python3.12"
+    },
+    "expires_unix": 1793857388.3660498,
+    "ownership_granted": false,
+    "pause_new_work": true
+  },
+  "lock_acquired_epoch": 1793855588.769701,
+  "device": {
+    "name": "NVIDIA GeForce RTX 4080",
+    "UUID": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+    "total_MiB": 16376.0
+  },
+  "admission_activity_samples": [
+    {
+      "index": 0,
+      "wall": 1793855589.3505974,
+      "gpu_utilization_pct": 0,
+      "memory_utilization_pct": 0,
+      "elapsed": 0.28297756239771843,
+      "external_pids": [
+        1760,
+        2035,
+        3518111
+      ]
+    },
+    {
+      "index": 1,
+      "wall": 1793855590.0903304,
+      "gpu_utilization_pct": 0,
+      "memory_utilization_pct": 0,
+      "elapsed": 1.0227110078558326,
+      "external_pids": [
+        1760,
+        2035,
+        3518111
+      ]
+    },
+    {
+      "index": 2,
+      "wall": 1793855590.6378558,
+      "gpu_utilization_pct": 0,
+      "memory_utilization_pct": 0,
+      "elapsed": 1.5702363289892673,
+      "external_pids": [
+        1760,
+        2035,
+        3518111
+      ]
+    }
+  ],
+  "environment_classification": "VERIFIED_GATED_RESIDENT_CONTEXT",
+  "measurement_condition": "VERIFIED_GATED_RESIDENT_CO_RESIDENT_NATIVE_OBSERVATION",
+  "baseline_activity_window_seconds": 1.571197485551238,
+  "desktop_activity_attribution_gap": true,
+  "performance_comparability_gap": "Desktop per-process NVML activity unavailable;retain INCONCLUSIVE",
+  "last_process_util_timestamp": 1793855658241611,
+  "software_observed_path_changed": false,
+  "optional_skips": [
+    {
+      "task": "NCU_LT_B2_L0",
+      "reason": "NO_OBSERVED_PATH_EFFECT under preferred cuBLASLt; no sweep"
+    },
+    {
+      "task": "SW_BASE_NATIVE",
+      "reason": "NO_OBSERVED_PATH_EFFECT under preferred cuBLASLt; no sweep"
+    },
+    {
+      "task": "SW_LT_NATIVE",
+      "reason": "NO_OBSERVED_PATH_EFFECT under preferred cuBLASLt; no sweep"
+    },
+    {
+      "task": "LOCAL_LT_B1",
+      "reason": "NO_OBSERVED_PATH_EFFECT under preferred cuBLASLt; no sweep"
+    }
+  ],
+  "own_GPU_contexts_cleared": true,
+  "final_GPU_pids": [
+    3518111,
+    1760,
+    2035
+  ],
+  "final_observation_state": "EXTERNAL_GPU_PID",
+  "GPU_lock_held_seconds": 71.46371063776314,
+  "lock_closed": true,
+  "NVML_shutdown": true,
+  "DESKTOP_CO_RESIDENCE_EVIDENCE_COMPLETE": false,
+  "shared_reservation_cleanup": {
+    "released": true,
+    "ownership_granted": false
+  },
+  "whole_Goal_elapsed_seconds": 2066.6843309402466,
+  "full_executed_receipt_archive": {
+    "path": "raw/RESOURCE_RECEIPT.json.gz",
+    "uncompressed_sha256": "aaff9b3ab7ff457820c61aac440a4b8e33475e88dcf1bcee424bf880a51857d6",
+    "samples": 146
+  }
+}

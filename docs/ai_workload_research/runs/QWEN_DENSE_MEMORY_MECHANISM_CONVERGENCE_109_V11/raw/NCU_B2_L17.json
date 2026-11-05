@@ -1,0 +1,2015 @@
+{
+  "status": "V9_WORKER_COMPLETE",
+  "task": "NCU_B2_L17",
+  "model_initializations": 1,
+  "samples": [
+    {
+      "index": 0,
+      "point": "B2_N32",
+      "mode": "B2",
+      "output_tokens_each": 32,
+      "role": "PROFILE_WARMUP",
+      "round": 0,
+      "block": "INITIAL",
+      "request_gpu_elapsed_ms": 420.1560974121094,
+      "host_generate_call_ms": 420.124107,
+      "host_synchronized_request_ms": 420.230624,
+      "fullgraph_replay_count": 31,
+      "status": "PASS_RUNTIME_VALID",
+      "private_record_sha256": "61e0013fbb709f8f8f7bb60fc45cb06dc83766e8bd2b5a8bc8a079a86ab7d1f7",
+      "public_record_sha256": "fac510c765d32485b8c38b42f25f366bf3c98ebaa13240428fadd73be565d6ed",
+      "formal_compile_capture": false
+    },
+    {
+      "index": 1,
+      "point": "B2_N32",
+      "mode": "B2",
+      "output_tokens_each": 32,
+      "role": "PROFILE_WARMUP",
+      "round": 1,
+      "block": "INITIAL",
+      "request_gpu_elapsed_ms": 406.3465881347656,
+      "host_generate_call_ms": 406.313433,
+      "host_synchronized_request_ms": 406.411099,
+      "fullgraph_replay_count": 31,
+      "status": "PASS_RUNTIME_VALID",
+      "private_record_sha256": "d37d6f03eb6f6559440d205ebc806d3bfb5adaee9cea5f16c47fafcf6c445b18",
+      "public_record_sha256": "017c2da7314cda603a4584b4fcf63a22132dbfeaaa8b5822789e186e04ea722d",
+      "formal_compile_capture": false
+    },
+    {
+      "index": 2,
+      "point": "B2_N32",
+      "mode": "B2",
+      "output_tokens_each": 32,
+      "role": "PROFILED",
+      "round": 0,
+      "block": "INITIAL",
+      "request_gpu_elapsed_ms": 652.77587890625,
+      "host_generate_call_ms": 652.733822,
+      "host_synchronized_request_ms": 652.843469,
+      "fullgraph_replay_count": 31,
+      "status": "PASS_RUNTIME_VALID",
+      "private_record_sha256": "9c01cff5f7f49862580c3591266670d9431cdd34628bba5a535f76f70d8147a1",
+      "public_record_sha256": "15160a17bcf10bb49184daf912abb8c4c5fad107d84dac7ae36b9f569d94d9fd",
+      "formal_compile_capture": false
+    }
+  ],
+  "optional": true,
+  "worker_identity": {
+    "task": "NCU_B2_L17",
+    "nonce": "133ae9d568d72d9a3538744e7c0a2e9314cb0e3cd010ce1f",
+    "supervisor_pid": 3798022,
+    "identity": {
+      "pid": 3800366,
+      "uid": 1004,
+      "start_ticks": "447796509",
+      "boot_id": "35425a62-1268-4560-a3cb-b674371cd7aa",
+      "executable": "/usr/bin/python3.12"
+    },
+    "worker_sha256": "7c072e83e6f268a02eb4589b8f3c678b885d6156e5a16231490e8c1030052c8a"
+  },
+  "linear_weight_identity": [
+    {
+      "module": "model.embed_tokens",
+      "shape": [
+        151936,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedEmbeddingMethod"
+    },
+    {
+      "module": "model.layers.0.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.0.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.0.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.0.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.1.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.1.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.1.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.1.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.2.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.2.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.2.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.2.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.3.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.3.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.3.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.3.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.4.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.4.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.4.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.4.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.5.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.5.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.5.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.5.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.6.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.6.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.6.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.6.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.7.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.7.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.7.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.7.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.8.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.8.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.8.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.8.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.9.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.9.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.9.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.9.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.10.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.10.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.10.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.10.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.11.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.11.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.11.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.11.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.12.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.12.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.12.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.12.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.13.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.13.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.13.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.13.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.14.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.14.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.14.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.14.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.15.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.15.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.15.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.15.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.16.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.16.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.16.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.16.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.17.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.17.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.17.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.17.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.18.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.18.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.18.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.18.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.19.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.19.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.19.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.19.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.20.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.20.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.20.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.20.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.21.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.21.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.21.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.21.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.22.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.22.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.22.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.22.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.23.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.23.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.23.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.23.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.24.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.24.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.24.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.24.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.25.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.25.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.25.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.25.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.26.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.26.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.26.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.26.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.27.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.27.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.27.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.27.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.28.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.28.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.28.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.28.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.29.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.29.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.29.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.29.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.30.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.30.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.30.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.30.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.31.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.31.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.31.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.31.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.32.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.32.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.32.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.32.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.33.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.33.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.33.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.33.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.34.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.34.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.34.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.34.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.35.self_attn.qkv_proj",
+      "shape": [
+        2560,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.35.self_attn.o_proj",
+      "shape": [
+        2048,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.35.mlp.gate_up_proj",
+      "shape": [
+        22016,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "model.layers.35.mlp.down_proj",
+      "shape": [
+        2048,
+        11008
+      ],
+      "stride": [
+        11008,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedLinearMethod"
+    },
+    {
+      "module": "lm_head",
+      "shape": [
+        151936,
+        2048
+      ],
+      "stride": [
+        2048,
+        1
+      ],
+      "dtype": "torch.bfloat16",
+      "method": "UnquantizedEmbeddingMethod"
+    }
+  ],
+  "runtime": {
+    "vllm": "0.30.0",
+    "torch": "2.13.0+cu130",
+    "source_sha256": {
+      "compilation.py": "c9cec5c7200e8e559810ec8c30113ad61dab6780f9f7fb3c116bd0d9b5a43065",
+      "qwen2.py": "eb2f0eeb13c57a28bbc06bc64afff18cd8865f89fbe9ff2a3cf3a896f037cfe9"
+    },
+    "attention": [
+      "FlashAttentionImpl"
+    ],
+    "linear": [
+      "UnquantizedLinearMethod"
+    ],
+    "capacity": {
+      "max_model_len": 544,
+      "max_num_batched_tokens": 1088,
+      "max_num_seqs": 2
+    },
+    "compilation_mode": "VLLM_COMPILE",
+    "backend": "inductor",
+    "cudagraph_mode": "FULL_AND_PIECEWISE",
+    "cache_root": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/.private/NCU_B2_L17",
+    "local_cache_dir": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/.private/NCU_B2_L17/compilation/rank_0_0/backbone",
+    "cache_identity": "V9_PRIVATE_COMPILATION_IDENTITY",
+    "initialization_seconds": 68.86025079991668,
+    "graph_observation": "Accepted manager-level fullgraph counter only; descriptors may contain padding and are not kernel/profiler observations.",
+    "runner_class": "vllm.v1.worker.gpu.model_runner.GPUModelRunner",
+    "sampler_class": "vllm.v1.worker.gpu.sample.sampler.Sampler",
+    "sampler_source_sha256": "832c9945d201a1e730ff9b4b52076aa83bd4a5064e1e4cfea952cf84d4a8d1f0",
+    "actual_enforce_eager": false,
+    "altered_diagnostic_path": false,
+    "logprobs": null,
+    "enable_prefix_caching": false
+  },
+  "profile_capture": {
+    "task": "NCU_B2_L17",
+    "targets": [
+      "B2_N32"
+    ],
+    "ncu_first_decode_graph_capture": true,
+    "not_formal": true
+  },
+  "context_seconds": 74.63911373447627
+}

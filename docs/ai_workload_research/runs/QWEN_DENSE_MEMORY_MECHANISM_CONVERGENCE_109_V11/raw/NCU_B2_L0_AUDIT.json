@@ -1,0 +1,275 @@
+{
+  "nodes": [
+    {
+      "passes": 1.0,
+      "backup_bytes": null,
+      "backup_counter_emitted": false,
+      "safe_single_pass": true,
+      "metrics": {
+        "dram__bytes_read.sum": {
+          "unit": "byte",
+          "value": "8,390,656"
+        },
+        "gpu__time_duration.sum": {
+          "unit": "ns",
+          "value": "18,048"
+        },
+        "profiler__perfworks_session_reuse": {
+          "unit": "",
+          "value": "0"
+        },
+        "profiler__replayer_passes": {
+          "unit": "pass",
+          "value": "1"
+        },
+        "profiler__replayer_passes_type_warmup": {
+          "unit": "pass",
+          "value": "0"
+        },
+        "sm__cycles_elapsed.avg": {
+          "unit": "cycle",
+          "value": "50,227.37"
+        },
+        "sm__maximum_warps_avg_per_active_cycle": {
+          "unit": "warp",
+          "value": "5"
+        },
+        "sm__maximum_warps_per_active_cycle_pct": {
+          "unit": "%",
+          "value": "10.42"
+        },
+        "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+          "unit": "%",
+          "value": "3.43"
+        }
+      },
+      "kernel": "void Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(Params)",
+      "grid": "(8, 16, 1)",
+      "block": "(32, 1, 1)",
+      "raw_ID": "0",
+      "target": {
+        "point": "B2_N32",
+        "logical_module": "model.layers.0.self_attn.o_proj",
+        "decoder_layer_zero_based": 0,
+        "logical_op": "self_attn.o_proj",
+        "dense_ordinal_zero_based_within_first_decode_graph": 1,
+        "all_kernel_step_ordinal_zero_based": 16,
+        "all_kernel_graph_ordinal_zero_based": 8,
+        "graph_kernel_count": 469,
+        "all_kernel_graph_launch_skip_single_target": 8,
+        "all_kernel_graph_launch_count_single_target": 1,
+        "dense_filter_launch_skip_single_target": 1,
+        "dense_filter_launch_count_single_target": 1,
+        "NCU_filtered_triplet_launch_skip": 1,
+        "NCU_filtered_triplet_launch_count": 3,
+        "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+        "grid": [
+          8,
+          16,
+          1
+        ],
+        "block": [
+          32,
+          1,
+          1
+        ],
+        "compiled_contract_M": 2,
+        "compiled_contract_N": 2048,
+        "compiled_contract_K": 2048,
+        "logical_weight_shape_out_in": [
+          2048,
+          2048
+        ],
+        "logical_weight_BF16_bytes": 8388608,
+        "first_step_duration_ns": 14688,
+        "sqlite_kernel_rowid": 14385,
+        "graphNodeId": 2894807957512,
+        "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+      },
+      "paired_by_order_contract_grid_weight": true,
+      "mapping_limit": "Source/Graph/order/weightcontract,notrawkernelarguments"
+    },
+    {
+      "passes": 1.0,
+      "backup_bytes": null,
+      "backup_counter_emitted": false,
+      "safe_single_pass": true,
+      "metrics": {
+        "dram__bytes_read.sum": {
+          "unit": "byte",
+          "value": "90,186,752"
+        },
+        "gpu__time_duration.sum": {
+          "unit": "ns",
+          "value": "150,080"
+        },
+        "profiler__perfworks_session_reuse": {
+          "unit": "",
+          "value": "1"
+        },
+        "profiler__replayer_passes": {
+          "unit": "pass",
+          "value": "1"
+        },
+        "profiler__replayer_passes_type_warmup": {
+          "unit": "pass",
+          "value": "0"
+        },
+        "sm__cycles_elapsed.avg": {
+          "unit": "cycle",
+          "value": "420,761.18"
+        },
+        "sm__maximum_warps_avg_per_active_cycle": {
+          "unit": "warp",
+          "value": "5"
+        },
+        "sm__maximum_warps_per_active_cycle_pct": {
+          "unit": "%",
+          "value": "10.42"
+        },
+        "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+          "unit": "%",
+          "value": "4.41"
+        }
+      },
+      "kernel": "void Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(Params)",
+      "grid": "(8, 172, 1)",
+      "block": "(32, 1, 1)",
+      "raw_ID": "1",
+      "target": {
+        "point": "B2_N32",
+        "logical_module": "model.layers.0.mlp.gate_up_proj",
+        "decoder_layer_zero_based": 0,
+        "logical_op": "mlp.gate_up_proj",
+        "dense_ordinal_zero_based_within_first_decode_graph": 2,
+        "all_kernel_step_ordinal_zero_based": 18,
+        "all_kernel_graph_ordinal_zero_based": 10,
+        "graph_kernel_count": 469,
+        "all_kernel_graph_launch_skip_single_target": 10,
+        "all_kernel_graph_launch_count_single_target": 1,
+        "dense_filter_launch_skip_single_target": 2,
+        "dense_filter_launch_count_single_target": 1,
+        "NCU_filtered_triplet_launch_skip": 1,
+        "NCU_filtered_triplet_launch_count": 3,
+        "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+        "grid": [
+          8,
+          172,
+          1
+        ],
+        "block": [
+          32,
+          1,
+          1
+        ],
+        "compiled_contract_M": 2,
+        "compiled_contract_N": 22016,
+        "compiled_contract_K": 2048,
+        "logical_weight_shape_out_in": [
+          22016,
+          2048
+        ],
+        "logical_weight_BF16_bytes": 90177536,
+        "first_step_duration_ns": 138304,
+        "sqlite_kernel_rowid": 14387,
+        "graphNodeId": 2894807957514,
+        "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+      },
+      "paired_by_order_contract_grid_weight": true,
+      "mapping_limit": "Source/Graph/order/weightcontract,notrawkernelarguments"
+    },
+    {
+      "passes": 1.0,
+      "backup_bytes": null,
+      "backup_counter_emitted": false,
+      "safe_single_pass": true,
+      "metrics": {
+        "dram__bytes_read.sum": {
+          "unit": "byte",
+          "value": "45,099,520"
+        },
+        "gpu__time_duration.sum": {
+          "unit": "ns",
+          "value": "75,584"
+        },
+        "profiler__perfworks_session_reuse": {
+          "unit": "",
+          "value": "1"
+        },
+        "profiler__replayer_passes": {
+          "unit": "pass",
+          "value": "1"
+        },
+        "profiler__replayer_passes_type_warmup": {
+          "unit": "pass",
+          "value": "0"
+        },
+        "sm__cycles_elapsed.avg": {
+          "unit": "cycle",
+          "value": "211,407.47"
+        },
+        "sm__maximum_warps_avg_per_active_cycle": {
+          "unit": "warp",
+          "value": "5"
+        },
+        "sm__maximum_warps_per_active_cycle_pct": {
+          "unit": "%",
+          "value": "10.42"
+        },
+        "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+          "unit": "%",
+          "value": "4.38"
+        }
+      },
+      "kernel": "void Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(Params)",
+      "grid": "(8, 16, 1)",
+      "block": "(32, 1, 1)",
+      "raw_ID": "2",
+      "target": {
+        "point": "B2_N32",
+        "logical_module": "model.layers.0.mlp.down_proj",
+        "decoder_layer_zero_based": 0,
+        "logical_op": "mlp.down_proj",
+        "dense_ordinal_zero_based_within_first_decode_graph": 3,
+        "all_kernel_step_ordinal_zero_based": 20,
+        "all_kernel_graph_ordinal_zero_based": 12,
+        "graph_kernel_count": 469,
+        "all_kernel_graph_launch_skip_single_target": 12,
+        "all_kernel_graph_launch_count_single_target": 1,
+        "dense_filter_launch_skip_single_target": 3,
+        "dense_filter_launch_count_single_target": 1,
+        "NCU_filtered_triplet_launch_skip": 1,
+        "NCU_filtered_triplet_launch_count": 3,
+        "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+        "grid": [
+          8,
+          16,
+          1
+        ],
+        "block": [
+          32,
+          1,
+          1
+        ],
+        "compiled_contract_M": 2,
+        "compiled_contract_N": 2048,
+        "compiled_contract_K": 11008,
+        "logical_weight_shape_out_in": [
+          2048,
+          11008
+        ],
+        "logical_weight_BF16_bytes": 45088768,
+        "first_step_duration_ns": 74560,
+        "sqlite_kernel_rowid": 14389,
+        "graphNodeId": 2894807957516,
+        "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+      },
+      "paired_by_order_contract_grid_weight": true,
+      "mapping_limit": "Source/Graph/order/weightcontract,notrawkernelarguments"
+    }
+  ],
+  "actual_rows": 3,
+  "safe_single_pass": true,
+  "backup_missing_not_zero": true,
+  "expected_rows": 3
+}

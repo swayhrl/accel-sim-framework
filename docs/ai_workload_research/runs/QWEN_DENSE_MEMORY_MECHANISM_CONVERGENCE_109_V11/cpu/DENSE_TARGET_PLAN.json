@@ -1,0 +1,1184 @@
+{
+  "schema": "V11_CPU_DENSE_TARGET_PLAN_V1",
+  "created_utc": "2026-11-05T04:48:56.644834+00:00",
+  "status": "CPU_SOURCE_AND_TIMELINE_PLAN_NO_NEW_PROFILING",
+  "scope": {
+    "new_GPU_CUDA_NVML_calls": false,
+    "torch_vllm_import": false,
+    "V9_V10_writes": false,
+    "new_raw_archive": false,
+    "output_dir": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/cpu",
+    "B1": "A00_N32 one512-token request;31realincrementaldecodesteps",
+    "B2": "A00+A01 batched B2_N32;31realincrementalbatchsteps",
+    "native_graph": "VLLM_COMPILE/inductor/FULL_AND_PIECEWISE, TP1, frozen Qwen revision aa8e72537993ba99e69dfaafa59ed015b17504d1",
+    "sample_size": "Single V9 profiled timeline per batch mode; descriptive time shares, no new repeats."
+  },
+  "main_findings": {
+    "dominant_modules": "gate_up/down account for about78%of dense union; adding O-proj covers about84%.",
+    "per_module_cost": {
+      "A00_N32": [
+        {
+          "logical_op": "mlp.gate_up_proj",
+          "count": 1116,
+          "summed_ms": 151.802787,
+          "mean_per_decode_step_ms": 4.896864096774194,
+          "fraction_of_dense_union": 0.5139527779580548,
+          "fraction_of_all_kernel_union": 0.4847891014512748,
+          "logical_BF16_weight_model_bytes_per_batch_step": 3246391296
+        },
+        {
+          "logical_op": "mlp.down_proj",
+          "count": 1116,
+          "summed_ms": 78.969873,
+          "mean_per_decode_step_ms": 2.547415258064516,
+          "fraction_of_dense_union": 0.26736522039838956,
+          "fraction_of_all_kernel_union": 0.2521938795062523,
+          "logical_BF16_weight_model_bytes_per_batch_step": 1623195648
+        },
+        {
+          "logical_op": "lm_head",
+          "count": 31,
+          "summed_ms": 28.73042,
+          "mean_per_decode_step_ms": 0.9267877419354839,
+          "fraction_of_dense_union": 0.09727146294686709,
+          "fraction_of_all_kernel_union": 0.09175190239503135,
+          "logical_BF16_weight_model_bytes_per_batch_step": 622329856
+        },
+        {
+          "logical_op": "self_attn.qkv_proj",
+          "count": 1116,
+          "summed_ms": 19.686868,
+          "mean_per_decode_step_ms": 0.6350602580645162,
+          "fraction_of_dense_union": 0.0666530615007321,
+          "fraction_of_all_kernel_union": 0.06287090795052304,
+          "logical_BF16_weight_model_bytes_per_batch_step": 377487360
+        },
+        {
+          "logical_op": "self_attn.o_proj",
+          "count": 1116,
+          "summed_ms": 16.173349,
+          "mean_per_decode_step_ms": 0.521720935483871,
+          "fraction_of_dense_union": 0.05475747719595641,
+          "fraction_of_all_kernel_union": 0.0516503252945407,
+          "logical_BF16_weight_model_bytes_per_batch_step": 301989888
+        }
+      ],
+      "B2_N32": [
+        {
+          "logical_op": "mlp.gate_up_proj",
+          "count": 1116,
+          "summed_ms": 153.07173,
+          "mean_per_decode_step_ms": 4.9377977419354835,
+          "fraction_of_dense_union": 0.5077095876002925,
+          "fraction_of_all_kernel_union": 0.47231033650458354,
+          "logical_BF16_weight_model_bytes_per_batch_step": 3246391296
+        },
+        {
+          "logical_op": "mlp.down_proj",
+          "count": 1116,
+          "summed_ms": 83.028965,
+          "mean_per_decode_step_ms": 2.6783537096774195,
+          "fraction_of_dense_union": 0.27539116190186863,
+          "fraction_of_all_kernel_union": 0.25618994701880804,
+          "logical_BF16_weight_model_bytes_per_batch_step": 1623195648
+        },
+        {
+          "logical_op": "lm_head",
+          "count": 31,
+          "summed_ms": 28.981557,
+          "mean_per_decode_step_ms": 0.934888935483871,
+          "fraction_of_dense_union": 0.0961262693802727,
+          "fraction_of_all_kernel_union": 0.08942401669528899,
+          "logical_BF16_weight_model_bytes_per_batch_step": 622329856
+        },
+        {
+          "logical_op": "self_attn.qkv_proj",
+          "count": 1116,
+          "summed_ms": 19.91055,
+          "mean_per_decode_step_ms": 0.6422758064516129,
+          "fraction_of_dense_union": 0.06603947789310936,
+          "fraction_of_all_kernel_union": 0.06143497934263457,
+          "logical_BF16_weight_model_bytes_per_batch_step": 377487360
+        },
+        {
+          "logical_op": "self_attn.o_proj",
+          "count": 1116,
+          "summed_ms": 16.501859,
+          "mean_per_decode_step_ms": 0.5323180322580645,
+          "fraction_of_dense_union": 0.05473350322445677,
+          "fraction_of_all_kernel_union": 0.05091729594511796,
+          "logical_BF16_weight_model_bytes_per_batch_step": 301989888
+        }
+      ]
+    },
+    "per_kernel_name_cost": {
+      "A00_N32": [
+        {
+          "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+          "count": 3379,
+          "summed_ms": 216.393424,
+          "mean_per_decode_step_ms": 6.980433032258064,
+          "fraction_of_dense_union": 0.7326347796016104,
+          "fraction_of_all_kernel_union": 0.6910622370913699,
+          "modules": [
+            "lm_head",
+            "mlp.gate_up_proj",
+            "self_attn.o_proj",
+            "self_attn.qkv_proj"
+          ]
+        },
+        {
+          "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)7, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+          "count": 1116,
+          "summed_ms": 78.969873,
+          "mean_per_decode_step_ms": 2.547415258064516,
+          "fraction_of_dense_union": 0.26736522039838956,
+          "fraction_of_all_kernel_union": 0.2521938795062523,
+          "modules": [
+            "mlp.down_proj"
+          ]
+        }
+      ],
+      "B2_N32": [
+        {
+          "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+          "count": 4495,
+          "summed_ms": 301.494661,
+          "mean_per_decode_step_ms": 9.725634225806452,
+          "fraction_of_dense_union": 1.0,
+          "fraction_of_all_kernel_union": 0.9302765755064331,
+          "modules": [
+            "lm_head",
+            "mlp.down_proj",
+            "mlp.gate_up_proj",
+            "self_attn.o_proj",
+            "self_attn.qkv_proj"
+          ]
+        }
+      ]
+    },
+    "per_kernel_name_grid_block_cost": {
+      "A00_N32": [
+        {
+          "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+          "grid": [
+            5504,
+            1,
+            1
+          ],
+          "block": [
+            16,
+            4,
+            1
+          ],
+          "modules": [
+            "mlp.gate_up_proj"
+          ],
+          "count": 1116,
+          "summed_ms": 151.802787,
+          "mean_per_decode_step_ms": 4.896864096774194,
+          "fraction_of_dense_union": 0.5139527779580548,
+          "fraction_of_all_kernel_union": 0.4847891014512748
+        },
+        {
+          "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)7, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+          "grid": [
+            512,
+            1,
+            1
+          ],
+          "block": [
+            32,
+            4,
+            1
+          ],
+          "modules": [
+            "mlp.down_proj"
+          ],
+          "count": 1116,
+          "summed_ms": 78.969873,
+          "mean_per_decode_step_ms": 2.547415258064516,
+          "fraction_of_dense_union": 0.26736522039838956,
+          "fraction_of_all_kernel_union": 0.2521938795062523
+        },
+        {
+          "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+          "grid": [
+            37984,
+            1,
+            1
+          ],
+          "block": [
+            16,
+            4,
+            1
+          ],
+          "modules": [
+            "lm_head"
+          ],
+          "count": 31,
+          "summed_ms": 28.73042,
+          "mean_per_decode_step_ms": 0.9267877419354839,
+          "fraction_of_dense_union": 0.09727146294686709,
+          "fraction_of_all_kernel_union": 0.09175190239503135
+        },
+        {
+          "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+          "grid": [
+            640,
+            1,
+            1
+          ],
+          "block": [
+            16,
+            4,
+            1
+          ],
+          "modules": [
+            "self_attn.qkv_proj"
+          ],
+          "count": 1116,
+          "summed_ms": 19.686868,
+          "mean_per_decode_step_ms": 0.6350602580645162,
+          "fraction_of_dense_union": 0.0666530615007321,
+          "fraction_of_all_kernel_union": 0.06287090795052304
+        },
+        {
+          "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+          "grid": [
+            512,
+            1,
+            1
+          ],
+          "block": [
+            16,
+            4,
+            1
+          ],
+          "modules": [
+            "self_attn.o_proj"
+          ],
+          "count": 1116,
+          "summed_ms": 16.173349,
+          "mean_per_decode_step_ms": 0.521720935483871,
+          "fraction_of_dense_union": 0.05475747719595641,
+          "fraction_of_all_kernel_union": 0.0516503252945407
+        }
+      ],
+      "B2_N32": [
+        {
+          "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+          "grid": [
+            8,
+            172,
+            1
+          ],
+          "block": [
+            32,
+            1,
+            1
+          ],
+          "modules": [
+            "mlp.gate_up_proj"
+          ],
+          "count": 1116,
+          "summed_ms": 153.07173,
+          "mean_per_decode_step_ms": 4.9377977419354835,
+          "fraction_of_dense_union": 0.5077095876002925,
+          "fraction_of_all_kernel_union": 0.47231033650458354
+        },
+        {
+          "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+          "grid": [
+            8,
+            16,
+            1
+          ],
+          "block": [
+            32,
+            1,
+            1
+          ],
+          "modules": [
+            "mlp.down_proj",
+            "self_attn.o_proj"
+          ],
+          "count": 2232,
+          "summed_ms": 99.530824,
+          "mean_per_decode_step_ms": 3.2106717419354838,
+          "fraction_of_dense_union": 0.3301246651263254,
+          "fraction_of_all_kernel_union": 0.307107242963926
+        },
+        {
+          "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+          "grid": [
+            8,
+            1187,
+            1
+          ],
+          "block": [
+            32,
+            1,
+            1
+          ],
+          "modules": [
+            "lm_head"
+          ],
+          "count": 31,
+          "summed_ms": 28.981557,
+          "mean_per_decode_step_ms": 0.934888935483871,
+          "fraction_of_dense_union": 0.0961262693802727,
+          "fraction_of_all_kernel_union": 0.08942401669528899
+        },
+        {
+          "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+          "grid": [
+            8,
+            20,
+            1
+          ],
+          "block": [
+            32,
+            1,
+            1
+          ],
+          "modules": [
+            "self_attn.qkv_proj"
+          ],
+          "count": 1116,
+          "summed_ms": 19.91055,
+          "mean_per_decode_step_ms": 0.6422758064516129,
+          "fraction_of_dense_union": 0.06603947789310936,
+          "fraction_of_all_kernel_union": 0.06143497934263457
+        }
+      ]
+    },
+    "B2_minus_B1_dense_delta": [
+      {
+        "logical_op": "mlp.gate_up_proj",
+        "B2_minus_B1_mean_ms": 0.04093364516128961,
+        "fraction_of_dense_delta": 0.20695933237693528
+      },
+      {
+        "logical_op": "mlp.down_proj",
+        "B2_minus_B1_mean_ms": 0.13093845161290352,
+        "fraction_of_dense_delta": 0.6620210445832283
+      },
+      {
+        "logical_op": "lm_head",
+        "B2_minus_B1_mean_ms": 0.00810119354838712,
+        "fraction_of_dense_delta": 0.040959401529578124
+      },
+      {
+        "logical_op": "self_attn.qkv_proj",
+        "B2_minus_B1_mean_ms": 0.007215548387096704,
+        "fraction_of_dense_delta": 0.03648160507188896
+      },
+      {
+        "logical_op": "self_attn.o_proj",
+        "B2_minus_B1_mean_ms": 0.010597096774193515,
+        "fraction_of_dense_delta": 0.053578616438364826
+      }
+    ],
+    "dense_sums_equal_dense_unions_in_existing_trace": true,
+    "whole_step_DRAM_not_measured": true,
+    "scope_warning": "Observed profiled timing shares; logical weight sizes are conditional payload models, not measured DRAM traffic or compute utilization."
+  },
+  "target_nodes": [
+    {
+      "point": "A00_N32",
+      "logical_module": "model.layers.0.self_attn.o_proj",
+      "decoder_layer_zero_based": 0,
+      "logical_op": "self_attn.o_proj",
+      "dense_ordinal_zero_based_within_first_decode_graph": 1,
+      "all_kernel_step_ordinal_zero_based": 14,
+      "all_kernel_graph_ordinal_zero_based": 6,
+      "graph_kernel_count": 397,
+      "all_kernel_graph_launch_skip_single_target": 6,
+      "all_kernel_graph_launch_count_single_target": 1,
+      "dense_filter_launch_skip_single_target": 1,
+      "dense_filter_launch_count_single_target": 1,
+      "NCU_filtered_triplet_launch_skip": 1,
+      "NCU_filtered_triplet_launch_count": 3,
+      "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+      "grid": [
+        512,
+        1,
+        1
+      ],
+      "block": [
+        16,
+        4,
+        1
+      ],
+      "compiled_contract_M": 1,
+      "compiled_contract_N": 2048,
+      "compiled_contract_K": 2048,
+      "logical_weight_shape_out_in": [
+        2048,
+        2048
+      ],
+      "logical_weight_BF16_bytes": 8388608,
+      "first_step_duration_ns": 14368,
+      "sqlite_kernel_rowid": 1164,
+      "graphNodeId": 2907692859399,
+      "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+    },
+    {
+      "point": "A00_N32",
+      "logical_module": "model.layers.0.mlp.gate_up_proj",
+      "decoder_layer_zero_based": 0,
+      "logical_op": "mlp.gate_up_proj",
+      "dense_ordinal_zero_based_within_first_decode_graph": 2,
+      "all_kernel_step_ordinal_zero_based": 16,
+      "all_kernel_graph_ordinal_zero_based": 8,
+      "graph_kernel_count": 397,
+      "all_kernel_graph_launch_skip_single_target": 8,
+      "all_kernel_graph_launch_count_single_target": 1,
+      "dense_filter_launch_skip_single_target": 2,
+      "dense_filter_launch_count_single_target": 1,
+      "NCU_filtered_triplet_launch_skip": 1,
+      "NCU_filtered_triplet_launch_count": 3,
+      "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+      "grid": [
+        5504,
+        1,
+        1
+      ],
+      "block": [
+        16,
+        4,
+        1
+      ],
+      "compiled_contract_M": 1,
+      "compiled_contract_N": 22016,
+      "compiled_contract_K": 2048,
+      "logical_weight_shape_out_in": [
+        22016,
+        2048
+      ],
+      "logical_weight_BF16_bytes": 90177536,
+      "first_step_duration_ns": 137760,
+      "sqlite_kernel_rowid": 1166,
+      "graphNodeId": 2907692859401,
+      "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+    },
+    {
+      "point": "A00_N32",
+      "logical_module": "model.layers.0.mlp.down_proj",
+      "decoder_layer_zero_based": 0,
+      "logical_op": "mlp.down_proj",
+      "dense_ordinal_zero_based_within_first_decode_graph": 3,
+      "all_kernel_step_ordinal_zero_based": 18,
+      "all_kernel_graph_ordinal_zero_based": 10,
+      "graph_kernel_count": 397,
+      "all_kernel_graph_launch_skip_single_target": 10,
+      "all_kernel_graph_launch_count_single_target": 1,
+      "dense_filter_launch_skip_single_target": 3,
+      "dense_filter_launch_count_single_target": 1,
+      "NCU_filtered_triplet_launch_skip": 1,
+      "NCU_filtered_triplet_launch_count": 3,
+      "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)7, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+      "grid": [
+        512,
+        1,
+        1
+      ],
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "compiled_contract_M": 1,
+      "compiled_contract_N": 2048,
+      "compiled_contract_K": 11008,
+      "logical_weight_shape_out_in": [
+        2048,
+        11008
+      ],
+      "logical_weight_BF16_bytes": 45088768,
+      "first_step_duration_ns": 70784,
+      "sqlite_kernel_rowid": 1168,
+      "graphNodeId": 2907692859403,
+      "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+    },
+    {
+      "point": "A00_N32",
+      "logical_module": "model.layers.17.self_attn.o_proj",
+      "decoder_layer_zero_based": 17,
+      "logical_op": "self_attn.o_proj",
+      "dense_ordinal_zero_based_within_first_decode_graph": 69,
+      "all_kernel_step_ordinal_zero_based": 201,
+      "all_kernel_graph_ordinal_zero_based": 193,
+      "graph_kernel_count": 397,
+      "all_kernel_graph_launch_skip_single_target": 193,
+      "all_kernel_graph_launch_count_single_target": 1,
+      "dense_filter_launch_skip_single_target": 69,
+      "dense_filter_launch_count_single_target": 1,
+      "NCU_filtered_triplet_launch_skip": 69,
+      "NCU_filtered_triplet_launch_count": 3,
+      "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+      "grid": [
+        512,
+        1,
+        1
+      ],
+      "block": [
+        16,
+        4,
+        1
+      ],
+      "compiled_contract_M": 1,
+      "compiled_contract_N": 2048,
+      "compiled_contract_K": 2048,
+      "logical_weight_shape_out_in": [
+        2048,
+        2048
+      ],
+      "logical_weight_BF16_bytes": 8388608,
+      "first_step_duration_ns": 14336,
+      "sqlite_kernel_rowid": 1351,
+      "graphNodeId": 2907692859603,
+      "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+    },
+    {
+      "point": "A00_N32",
+      "logical_module": "model.layers.17.mlp.gate_up_proj",
+      "decoder_layer_zero_based": 17,
+      "logical_op": "mlp.gate_up_proj",
+      "dense_ordinal_zero_based_within_first_decode_graph": 70,
+      "all_kernel_step_ordinal_zero_based": 203,
+      "all_kernel_graph_ordinal_zero_based": 195,
+      "graph_kernel_count": 397,
+      "all_kernel_graph_launch_skip_single_target": 195,
+      "all_kernel_graph_launch_count_single_target": 1,
+      "dense_filter_launch_skip_single_target": 70,
+      "dense_filter_launch_count_single_target": 1,
+      "NCU_filtered_triplet_launch_skip": 69,
+      "NCU_filtered_triplet_launch_count": 3,
+      "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+      "grid": [
+        5504,
+        1,
+        1
+      ],
+      "block": [
+        16,
+        4,
+        1
+      ],
+      "compiled_contract_M": 1,
+      "compiled_contract_N": 22016,
+      "compiled_contract_K": 2048,
+      "logical_weight_shape_out_in": [
+        22016,
+        2048
+      ],
+      "logical_weight_BF16_bytes": 90177536,
+      "first_step_duration_ns": 136800,
+      "sqlite_kernel_rowid": 1353,
+      "graphNodeId": 2907692859605,
+      "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+    },
+    {
+      "point": "A00_N32",
+      "logical_module": "model.layers.17.mlp.down_proj",
+      "decoder_layer_zero_based": 17,
+      "logical_op": "mlp.down_proj",
+      "dense_ordinal_zero_based_within_first_decode_graph": 71,
+      "all_kernel_step_ordinal_zero_based": 205,
+      "all_kernel_graph_ordinal_zero_based": 197,
+      "graph_kernel_count": 397,
+      "all_kernel_graph_launch_skip_single_target": 197,
+      "all_kernel_graph_launch_count_single_target": 1,
+      "dense_filter_launch_skip_single_target": 71,
+      "dense_filter_launch_count_single_target": 1,
+      "NCU_filtered_triplet_launch_skip": 69,
+      "NCU_filtered_triplet_launch_count": 3,
+      "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)7, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+      "grid": [
+        512,
+        1,
+        1
+      ],
+      "block": [
+        32,
+        4,
+        1
+      ],
+      "compiled_contract_M": 1,
+      "compiled_contract_N": 2048,
+      "compiled_contract_K": 11008,
+      "logical_weight_shape_out_in": [
+        2048,
+        11008
+      ],
+      "logical_weight_BF16_bytes": 45088768,
+      "first_step_duration_ns": 70720,
+      "sqlite_kernel_rowid": 1355,
+      "graphNodeId": 2907692859607,
+      "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+    },
+    {
+      "point": "B2_N32",
+      "logical_module": "model.layers.0.self_attn.o_proj",
+      "decoder_layer_zero_based": 0,
+      "logical_op": "self_attn.o_proj",
+      "dense_ordinal_zero_based_within_first_decode_graph": 1,
+      "all_kernel_step_ordinal_zero_based": 16,
+      "all_kernel_graph_ordinal_zero_based": 8,
+      "graph_kernel_count": 469,
+      "all_kernel_graph_launch_skip_single_target": 8,
+      "all_kernel_graph_launch_count_single_target": 1,
+      "dense_filter_launch_skip_single_target": 1,
+      "dense_filter_launch_count_single_target": 1,
+      "NCU_filtered_triplet_launch_skip": 1,
+      "NCU_filtered_triplet_launch_count": 3,
+      "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+      "grid": [
+        8,
+        16,
+        1
+      ],
+      "block": [
+        32,
+        1,
+        1
+      ],
+      "compiled_contract_M": 2,
+      "compiled_contract_N": 2048,
+      "compiled_contract_K": 2048,
+      "logical_weight_shape_out_in": [
+        2048,
+        2048
+      ],
+      "logical_weight_BF16_bytes": 8388608,
+      "first_step_duration_ns": 14688,
+      "sqlite_kernel_rowid": 14385,
+      "graphNodeId": 2894807957512,
+      "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+    },
+    {
+      "point": "B2_N32",
+      "logical_module": "model.layers.0.mlp.gate_up_proj",
+      "decoder_layer_zero_based": 0,
+      "logical_op": "mlp.gate_up_proj",
+      "dense_ordinal_zero_based_within_first_decode_graph": 2,
+      "all_kernel_step_ordinal_zero_based": 18,
+      "all_kernel_graph_ordinal_zero_based": 10,
+      "graph_kernel_count": 469,
+      "all_kernel_graph_launch_skip_single_target": 10,
+      "all_kernel_graph_launch_count_single_target": 1,
+      "dense_filter_launch_skip_single_target": 2,
+      "dense_filter_launch_count_single_target": 1,
+      "NCU_filtered_triplet_launch_skip": 1,
+      "NCU_filtered_triplet_launch_count": 3,
+      "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+      "grid": [
+        8,
+        172,
+        1
+      ],
+      "block": [
+        32,
+        1,
+        1
+      ],
+      "compiled_contract_M": 2,
+      "compiled_contract_N": 22016,
+      "compiled_contract_K": 2048,
+      "logical_weight_shape_out_in": [
+        22016,
+        2048
+      ],
+      "logical_weight_BF16_bytes": 90177536,
+      "first_step_duration_ns": 138304,
+      "sqlite_kernel_rowid": 14387,
+      "graphNodeId": 2894807957514,
+      "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+    },
+    {
+      "point": "B2_N32",
+      "logical_module": "model.layers.0.mlp.down_proj",
+      "decoder_layer_zero_based": 0,
+      "logical_op": "mlp.down_proj",
+      "dense_ordinal_zero_based_within_first_decode_graph": 3,
+      "all_kernel_step_ordinal_zero_based": 20,
+      "all_kernel_graph_ordinal_zero_based": 12,
+      "graph_kernel_count": 469,
+      "all_kernel_graph_launch_skip_single_target": 12,
+      "all_kernel_graph_launch_count_single_target": 1,
+      "dense_filter_launch_skip_single_target": 3,
+      "dense_filter_launch_count_single_target": 1,
+      "NCU_filtered_triplet_launch_skip": 1,
+      "NCU_filtered_triplet_launch_count": 3,
+      "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+      "grid": [
+        8,
+        16,
+        1
+      ],
+      "block": [
+        32,
+        1,
+        1
+      ],
+      "compiled_contract_M": 2,
+      "compiled_contract_N": 2048,
+      "compiled_contract_K": 11008,
+      "logical_weight_shape_out_in": [
+        2048,
+        11008
+      ],
+      "logical_weight_BF16_bytes": 45088768,
+      "first_step_duration_ns": 74560,
+      "sqlite_kernel_rowid": 14389,
+      "graphNodeId": 2894807957516,
+      "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+    },
+    {
+      "point": "B2_N32",
+      "logical_module": "model.layers.17.self_attn.o_proj",
+      "decoder_layer_zero_based": 17,
+      "logical_op": "self_attn.o_proj",
+      "dense_ordinal_zero_based_within_first_decode_graph": 69,
+      "all_kernel_step_ordinal_zero_based": 237,
+      "all_kernel_graph_ordinal_zero_based": 229,
+      "graph_kernel_count": 469,
+      "all_kernel_graph_launch_skip_single_target": 229,
+      "all_kernel_graph_launch_count_single_target": 1,
+      "dense_filter_launch_skip_single_target": 69,
+      "dense_filter_launch_count_single_target": 1,
+      "NCU_filtered_triplet_launch_skip": 69,
+      "NCU_filtered_triplet_launch_count": 3,
+      "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+      "grid": [
+        8,
+        16,
+        1
+      ],
+      "block": [
+        32,
+        1,
+        1
+      ],
+      "compiled_contract_M": 2,
+      "compiled_contract_N": 2048,
+      "compiled_contract_K": 2048,
+      "logical_weight_shape_out_in": [
+        2048,
+        2048
+      ],
+      "logical_weight_BF16_bytes": 8388608,
+      "first_step_duration_ns": 14944,
+      "sqlite_kernel_rowid": 14606,
+      "graphNodeId": 2894807957733,
+      "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+    },
+    {
+      "point": "B2_N32",
+      "logical_module": "model.layers.17.mlp.gate_up_proj",
+      "decoder_layer_zero_based": 17,
+      "logical_op": "mlp.gate_up_proj",
+      "dense_ordinal_zero_based_within_first_decode_graph": 70,
+      "all_kernel_step_ordinal_zero_based": 239,
+      "all_kernel_graph_ordinal_zero_based": 231,
+      "graph_kernel_count": 469,
+      "all_kernel_graph_launch_skip_single_target": 231,
+      "all_kernel_graph_launch_count_single_target": 1,
+      "dense_filter_launch_skip_single_target": 70,
+      "dense_filter_launch_count_single_target": 1,
+      "NCU_filtered_triplet_launch_skip": 69,
+      "NCU_filtered_triplet_launch_count": 3,
+      "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+      "grid": [
+        8,
+        172,
+        1
+      ],
+      "block": [
+        32,
+        1,
+        1
+      ],
+      "compiled_contract_M": 2,
+      "compiled_contract_N": 22016,
+      "compiled_contract_K": 2048,
+      "logical_weight_shape_out_in": [
+        22016,
+        2048
+      ],
+      "logical_weight_BF16_bytes": 90177536,
+      "first_step_duration_ns": 138656,
+      "sqlite_kernel_rowid": 14608,
+      "graphNodeId": 2894807957735,
+      "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+    },
+    {
+      "point": "B2_N32",
+      "logical_module": "model.layers.17.mlp.down_proj",
+      "decoder_layer_zero_based": 17,
+      "logical_op": "mlp.down_proj",
+      "dense_ordinal_zero_based_within_first_decode_graph": 71,
+      "all_kernel_step_ordinal_zero_based": 241,
+      "all_kernel_graph_ordinal_zero_based": 233,
+      "graph_kernel_count": 469,
+      "all_kernel_graph_launch_skip_single_target": 233,
+      "all_kernel_graph_launch_count_single_target": 1,
+      "dense_filter_launch_skip_single_target": 71,
+      "dense_filter_launch_count_single_target": 1,
+      "NCU_filtered_triplet_launch_skip": 69,
+      "NCU_filtered_triplet_launch_count": 3,
+      "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+      "grid": [
+        8,
+        16,
+        1
+      ],
+      "block": [
+        32,
+        1,
+        1
+      ],
+      "compiled_contract_M": 2,
+      "compiled_contract_N": 2048,
+      "compiled_contract_K": 11008,
+      "logical_weight_shape_out_in": [
+        2048,
+        11008
+      ],
+      "logical_weight_BF16_bytes": 45088768,
+      "first_step_duration_ns": 75168,
+      "sqlite_kernel_rowid": 14610,
+      "graphNodeId": 2894807957737,
+      "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+    }
+  ],
+  "filter_plan": {
+    "dense_regex": "regex:.*(gemv|gemm).*",
+    "filter_mode": "global",
+    "kernel_name_base": "demangled",
+    "NVTX_include": "decodeGraph/",
+    "profile_scope": "Only first actual incremental decodeGraph; explicit profiler start/stop brackets exactly one original fullgraph replay. Initialization, twoN32warmups, prefill and latergraphs outside collection.",
+    "existing_worker_reference": {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/util/ai_workload_research/decode_memory_compute_v10/native_counters/worker.py",
+      "line_range": [
+        42,
+        58
+      ],
+      "meaning": "Read-only V10 precedent starts profiler for first PROFILED run_fullgraph, pushes decodeGraph, calls original, synchronizes, pops and stops."
+    },
+    "contiguous_triplets": [
+      {
+        "priority": 1,
+        "decoder_layer_zero_based": 0,
+        "per_batch_invocation_args": [
+          "--config-file",
+          "0",
+          "--target-processes",
+          "application-only",
+          "--graph-profiling",
+          "node",
+          "--replay-mode",
+          "kernel",
+          "--profile-from-start",
+          "no",
+          "--nvtx",
+          "--nvtx-include",
+          "decodeGraph/",
+          "--filter-mode",
+          "global",
+          "--rename-kernels",
+          "off",
+          "--kernel-name-base",
+          "demangled",
+          "--kernel-name",
+          "regex:.*(gemv|gemm).*",
+          "--metrics",
+          "dram__bytes_read.sum,gpu__time_duration.sum",
+          "--disable-extra-suffixes",
+          "--kill",
+          "no",
+          "--clock-control",
+          "none",
+          "--cache-control",
+          "none",
+          "--pipeline-boost-state",
+          "dynamic",
+          "--launch-skip",
+          "1",
+          "--launch-count",
+          "3"
+        ],
+        "expected_filtered_dense_ordinals": [
+          1,
+          2,
+          3
+        ],
+        "expected_modules": [
+          "self_attn.o_proj",
+          "mlp.gate_up_proj",
+          "mlp.down_proj"
+        ],
+        "QKV_counter_recollection": false,
+        "actual_pass_count": "MUST_AUDIT_EACH_OF_THREE_RESULTS;3results !=3passes",
+        "number_of_fresh_model_contexts_for_B1_B2_symmetry": 2
+      },
+      {
+        "priority": 2,
+        "decoder_layer_zero_based": 17,
+        "per_batch_invocation_args": [
+          "--config-file",
+          "0",
+          "--target-processes",
+          "application-only",
+          "--graph-profiling",
+          "node",
+          "--replay-mode",
+          "kernel",
+          "--profile-from-start",
+          "no",
+          "--nvtx",
+          "--nvtx-include",
+          "decodeGraph/",
+          "--filter-mode",
+          "global",
+          "--rename-kernels",
+          "off",
+          "--kernel-name-base",
+          "demangled",
+          "--kernel-name",
+          "regex:.*(gemv|gemm).*",
+          "--metrics",
+          "dram__bytes_read.sum,gpu__time_duration.sum",
+          "--disable-extra-suffixes",
+          "--kill",
+          "no",
+          "--clock-control",
+          "none",
+          "--cache-control",
+          "none",
+          "--pipeline-boost-state",
+          "dynamic",
+          "--launch-skip",
+          "69",
+          "--launch-count",
+          "3"
+        ],
+        "expected_filtered_dense_ordinals": [
+          69,
+          70,
+          71
+        ],
+        "expected_modules": [
+          "self_attn.o_proj",
+          "mlp.gate_up_proj",
+          "mlp.down_proj"
+        ],
+        "QKV_counter_recollection": false,
+        "actual_pass_count": "MUST_AUDIT_EACH_OF_THREE_RESULTS;3results !=3passes",
+        "number_of_fresh_model_contexts_for_B1_B2_symmetry": 2
+      }
+    ],
+    "answer_skip1_count3": "YES with strict gemv|gemm demangled filter, global counting and unique firstDecodeGraph scope. Matched0isQKV,1/2/3areO/gate_up/down. Layer17uses69/70/71. Simulated against actual B1/B2 node sequence.",
+    "all_kernel_skip_definition": "With no name filter and only decodeGraph NVTX scope, use graph-kernel ordinal as skip/count1. Whole-step ordinal includes8pre-graph kernels. Numeric graphNodeId can contain non-kernel gaps and is not a launch ordinal.",
+    "why_not_all_kernel_count3": "O,norm,gate,silu,down are5launches; count3fromO missesdown and includesnorm.",
+    "pitfalls": [
+      "Do not use gemv|gemm|cutlass regex: FlashAttention demangled template types contain cutlass::bfloat16_t; actual negative control then matches splitKV immediately afterQKV.",
+      "launch-skip-before-match counts all launches, not dense matches.",
+      "per-launch-config mode changes counting across name/grid/block groups.",
+      "B2 O and down have same kernelname/grid[8,16,1]/block[32,1,1]; distinguish by denseorder and K2048vs11008contract.",
+      "kernel-id invocation counts consider matching name/launchconfig; not a verified globaldenseordinal selector.",
+      "One skip/count pair cannot select disjoint1..3and69..71. Prefer separate early/midtriplet invocations rather than collecting all71nodes. No validated sparse6selection in one invocation is claimed.",
+      "Disable kernel renaming explicitly rather than relying on whether simplified demangled names retain lowercase gemv/gemm substrings."
+    ],
+    "rename_kernels": "off; disable optional demangled-name simplification so filters/identity are compared against preserved full timeline names. Installed CLI docs lines818-820 document default renaming on."
+  },
+  "single_pass_audit": {
+    "metrics": [
+      "dram__bytes_read.sum",
+      "gpu__time_duration.sum"
+    ],
+    "precedent": "V10 nativeQKV B1/B2 each reported1pass. New kernels must be audited separately.",
+    "required_per_result": [
+      "Exactly3completed results in expected O/gate/down order with expected names/grid/block.",
+      "Actual replay pass field/log confirms1for every node; count3is3results,not3replaypasses.",
+      "Explicit metrics+disable-extra-suffixes; no implicit set/section.",
+      "Missing backup counter remains unknown,notzero. Actual1pass plus installedguide supports no save/restore.",
+      "Worker completes token/runtime/graphidentity checks; unexpected selection/count invalidates mapping."
+    ]
+  },
+  "source_mapping": {
+    "grade": "Compiled source+weight contract+runtime graphdescriptor+denseorder/grid consistent; no rawkernelM/N/Kargument capture.",
+    "cached_graph_module_lines": [
+      {
+        "module": "model.layers.0.self_attn.o_proj",
+        "source_lines": [
+          710
+        ]
+      },
+      {
+        "module": "model.layers.0.mlp.gate_up_proj",
+        "source_lines": [
+          721
+        ]
+      },
+      {
+        "module": "model.layers.0.mlp.down_proj",
+        "source_lines": [
+          730
+        ]
+      },
+      {
+        "module": "model.layers.17.self_attn.o_proj",
+        "source_lines": [
+          3600
+        ]
+      },
+      {
+        "module": "model.layers.17.mlp.gate_up_proj",
+        "source_lines": [
+          3611
+        ]
+      },
+      {
+        "module": "model.layers.17.mlp.down_proj",
+        "source_lines": [
+          3620
+        ]
+      }
+    ],
+    "generated_dense_call_lines": {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/.private/NSYS/vllm/torch_compile_cache/torch_aot_compile/c159787be9fd1a9231c01c0dd24cfcfe41773e8745e34dcda927917ff1090e8e/inductor_cache/xw/cxwxcg5zf6tfqmw2irursgvupaqypwfjpw5hqmpftajxz5zmikw3.py",
+      "ranges": [
+        [
+          955,
+          963
+        ],
+        [
+          975,
+          979
+        ],
+        [
+          987,
+          992
+        ]
+      ],
+      "finding": "O:[s72,2048]x[2048,2048]; gate:[s72,2048]x[2048,22016]; down:[s72,11008]x[11008,2048]. AllBF16; transposeviews arestaticcontracts."
+    },
+    "count_model": "36*4+1head=145denseperstep; firstDecodeGraph has144backboneprojections, head runs outsidegraph in sampler."
+  },
+  "official_local_docs": [
+    {
+      "path": "/opt/nvidia/nsight-compute/2025.1.1/docs/NsightComputeCli/index.html",
+      "line_ranges": [
+        [
+          762,
+          780
+        ],
+        [
+          830,
+          848
+        ],
+        [
+          808,
+          820
+        ]
+      ],
+      "meaning": "Global filtering, invocation semantics, filteredskip/count versus skipbeforematch."
+    },
+    {
+      "path": "/opt/nvidia/nsight-compute/2025.1.1/docs/ProfilingGuide/index.html",
+      "line_ranges": [
+        [
+          313,
+          321
+        ]
+      ],
+      "meaning": "Tool-selected1pass avoidskernel save/restore."
+    }
+  ],
+  "read_sources": [
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/cpu/COST_LEDGER_KERNELS.tsv.gz",
+      "bytes": 718802,
+      "sha256": "0729a7e1fed17607ea64fb3bd07d096641f191de0bff1d6fdac625c1407d0348"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/cpu/COST_LEDGER.json",
+      "bytes": 26078,
+      "sha256": "fb7be0e0990445c170a79b5cfdfed76ddec013edbb3100c8b5e430c78dd08d1f"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/HARDWARE_COUNTER_COMPARISON.json",
+      "bytes": 2826,
+      "sha256": "bf72e046908a2d6e21395a76f95d6133ba05cbc5855166f8078401470dad6040"
+    },
+    {
+      "path": "/opt/nvidia/nsight-compute/2025.1.1/docs/NsightComputeCli/index.html",
+      "bytes": 168124,
+      "sha256": "813ce12d46546cbe2d006b4f94a00cddea038d071ca07a8425202c6cac29236c"
+    },
+    {
+      "path": "/opt/nvidia/nsight-compute/2025.1.1/docs/ProfilingGuide/index.html",
+      "bytes": 268961,
+      "sha256": "309d59d7a2700478127871990b66fdb53ee2db88143411a82f3e83f77c7b35cf"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/.private/NSYS/compilation/rank_0_0/backbone/computation_graph.py",
+      "bytes": 810749,
+      "sha256": "6dee87cf10e38fd652b3716a41db29584bff91c448ef2dca41af48459e59cc0d"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/.private/NSYS/vllm/torch_compile_cache/torch_aot_compile/c159787be9fd1a9231c01c0dd24cfcfe41773e8745e34dcda927917ff1090e8e/inductor_cache/xw/cxwxcg5zf6tfqmw2irursgvupaqypwfjpw5hqmpftajxz5zmikw3.py",
+      "bytes": 78456,
+      "sha256": "9a9bbf6b4c04ad4c5cf0d32f03ad119446dfaef7ab6453a6684513140ace9383"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/util/ai_workload_research/decode_memory_compute_v10/native_counters/worker.py",
+      "bytes": 14869,
+      "sha256": "75782c63812bdd2df894d8221a7779d185b0fcb0064708749693d03a4a70ffe3"
+    }
+  ],
+  "raw_reuse": "Refer to existing V10 COST_LEDGER_KERNELS.tsv.gz and V9 cachedsource; no new SQLite/NSYS/tensorraw archive.",
+  "cpu_resource_receipt": {
+    "scope": "Final CPU-only analysis/writer process. Earlier extraction independently observed peak70580KiB and1Pythonthread.",
+    "pid": 3795119,
+    "python_threads": 1,
+    "kernel_thread_count": 1,
+    "proc_status": {
+      "VmHWM": "127728 kB",
+      "VmRSS": "90228 kB",
+      "Threads": "1"
+    },
+    "ru_maxrss_KiB": 127728,
+    "env_thread_limits": {
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "unique_source_storage_bytes_read": 2088865,
+    "gzip_decompressed_logical_bytes": 10817708,
+    "read_accounting": "One tracked payload read per source in this final process; compressed bytes count as stored bytes. This is not physical I/O/page-cache accounting. Earlier inspection repeats are outside this exact read total."
+  },
+  "validation": {
+    "decode_kernel_rows": 27904,
+    "target_count": 12,
+    "triplets_match_actual_B1_B2_sequence": true,
+    "graph_dense_count144": true,
+    "dense_total4495_each31steps": true,
+    "negative_control_cutlass_hits_flash": true,
+    "target_weight_bytes_O_gate_down": [
+      8388608,
+      90177536,
+      45088768
+    ]
+  },
+  "selection_payload_scope": {
+    "one_layer_O_gate_down_BF16_weight_bytes": 143654912,
+    "one_layer_MiB": 137,
+    "two_layers_weight_bytes": 287309824,
+    "all36layers_selected_module_payload_bytes": 5171576832,
+    "sampled_two_layers_not_all_instances": "Sixselectednodesmeasure2/36instancesofeachlogicalmoduleperbatchcondition;do not extrapolate theirDRAMsumtoall36layerswithoutanexplicitvalidatedmodel."
+  }
+}

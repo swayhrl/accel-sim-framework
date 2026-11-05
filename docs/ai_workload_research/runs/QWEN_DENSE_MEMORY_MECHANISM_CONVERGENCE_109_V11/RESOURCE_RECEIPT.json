@@ -1,0 +1,2747 @@
+{
+  "status": "V11_STUDY_COMPLETE",
+  "lock_attempt_count": 1,
+  "lock_acquired": true,
+  "lock_released": true,
+  "NVML_initialized": true,
+  "worker_launches": 7,
+  "children": [
+    {
+      "task": "PILOT_A",
+      "launcher_pid": 3798034,
+      "start_epoch": 1793854846.1291862,
+      "launch": {
+        "task": "PILOT_A",
+        "command": [
+          "/opt/nvidia/nsight-compute/2025.1.1/ncu",
+          "--target-processes",
+          "application-only",
+          "--graph-profiling",
+          "node",
+          "--replay-mode",
+          "kernel",
+          "--profile-from-start",
+          "no",
+          "--nvtx",
+          "--kernel-name-base",
+          "demangled",
+          "--rename-kernels",
+          "off",
+          "--filter-mode",
+          "global",
+          "--kernel-name",
+          "regex:.*(internal::gemvx::kernel<|cutlass::Kernel2<.*gemm).*",
+          "--nvtx-include",
+          "v11Local/",
+          "--launch-skip",
+          "0",
+          "--launch-count",
+          "1",
+          "--kill",
+          "no",
+          "--clock-control",
+          "none",
+          "--cache-control",
+          "none",
+          "--pipeline-boost-state",
+          "dynamic",
+          "--disable-extra-suffixes",
+          "--metrics",
+          "dram__bytes_read.sum,gpu__time_duration.sum,sm__cycles_elapsed.avg,sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed",
+          "--force-overwrite",
+          "--export",
+          "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/.private/PILOT_A/metrics",
+          "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/bin/python",
+          "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/util/ai_workload_research/dense_memory_mechanism_v11/worker.py",
+          "PILOT_A"
+        ],
+        "nonce": "6eb559203f095800482b273763d65a5ebc432b9322a0efdf",
+        "scope": "SYNTHETIC_PROFILED_PROXY",
+        "clock_control": "none",
+        "prefix_cache": false
+      },
+      "actual_worker": {
+        "task": "PILOT_A",
+        "nonce": "6eb559203f095800482b273763d65a5ebc432b9322a0efdf",
+        "supervisor_pid": 3798022,
+        "identity": {
+          "pid": 3798049,
+          "uid": 1004,
+          "start_ticks": "447774243",
+          "boot_id": "35425a62-1268-4560-a3cb-b674371cd7aa",
+          "executable": "/usr/bin/python3.12"
+        },
+        "worker_sha256": "7c072e83e6f268a02eb4589b8f3c678b885d6156e5a16231490e8c1030052c8a"
+      },
+      "exit_code": 0,
+      "finish_epoch": 1793854848.6500025,
+      "preemptive_profile_stop": false,
+      "model_initializations": 0,
+      "result_status": "V9_WORKER_COMPLETE",
+      "error": null,
+      "counter_audit": {
+        "nodes": [
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "446,592"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "23,776"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "0"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "55,018.11"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "12"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "25"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "0"
+              }
+            },
+            "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+            "grid": "(512, 1, 1)",
+            "block": "(32, 4, 1)",
+            "raw_ID": "0"
+          }
+        ],
+        "actual_rows": 1,
+        "safe_single_pass": true,
+        "backup_missing_not_zero": true,
+        "expected_rows": 1
+      }
+    },
+    {
+      "task": "NCU_B1_L0",
+      "launcher_pid": 3798139,
+      "start_epoch": 1793854849.4379907,
+      "launch": {
+        "task": "NCU_B1_L0",
+        "command": [
+          "/opt/nvidia/nsight-compute/2025.1.1/ncu",
+          "--target-processes",
+          "application-only",
+          "--graph-profiling",
+          "node",
+          "--replay-mode",
+          "kernel",
+          "--profile-from-start",
+          "no",
+          "--nvtx",
+          "--kernel-name-base",
+          "demangled",
+          "--rename-kernels",
+          "off",
+          "--filter-mode",
+          "global",
+          "--kernel-name",
+          "regex:.*(internal::gemvx::kernel<|cutlass::Kernel2<.*gemm).*",
+          "--nvtx-include",
+          "decodeGraph/",
+          "--launch-skip",
+          "1",
+          "--launch-count",
+          "3",
+          "--kill",
+          "no",
+          "--clock-control",
+          "none",
+          "--cache-control",
+          "none",
+          "--pipeline-boost-state",
+          "dynamic",
+          "--disable-extra-suffixes",
+          "--metrics",
+          "dram__bytes_read.sum,gpu__time_duration.sum,sm__cycles_elapsed.avg,sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed",
+          "--force-overwrite",
+          "--export",
+          "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/.private/NCU_B1_L0/metrics",
+          "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/bin/python",
+          "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/util/ai_workload_research/dense_memory_mechanism_v11/worker.py",
+          "NCU_B1_L0"
+        ],
+        "nonce": "9359a90bf6d30777b7ce03d87d5225fd6609667c9cdec752",
+        "scope": "ALTERED_EAGER_NOT_NATIVE",
+        "clock_control": "none",
+        "prefix_cache": false
+      },
+      "actual_worker": {
+        "task": "NCU_B1_L0",
+        "nonce": "9359a90bf6d30777b7ce03d87d5225fd6609667c9cdec752",
+        "supervisor_pid": 3798022,
+        "identity": {
+          "pid": 3798153,
+          "uid": 1004,
+          "start_ticks": "447774573",
+          "boot_id": "35425a62-1268-4560-a3cb-b674371cd7aa",
+          "executable": "/usr/bin/python3.12"
+        },
+        "worker_sha256": "7c072e83e6f268a02eb4589b8f3c678b885d6156e5a16231490e8c1030052c8a"
+      },
+      "exit_code": 0,
+      "finish_epoch": 1793854917.8326175,
+      "preemptive_profile_stop": false,
+      "model_initializations": 1,
+      "result_status": "V9_WORKER_COMPLETE",
+      "error": null,
+      "counter_audit": {
+        "nodes": [
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "8,389,760"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "18,208"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "0"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "50,493.95"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "12"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "25"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "0"
+              }
+            },
+            "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 6, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+            "grid": "(512, 1, 1)",
+            "block": "(16, 4, 1)",
+            "raw_ID": "0",
+            "target": {
+              "point": "A00_N32",
+              "logical_module": "model.layers.0.self_attn.o_proj",
+              "decoder_layer_zero_based": 0,
+              "logical_op": "self_attn.o_proj",
+              "dense_ordinal_zero_based_within_first_decode_graph": 1,
+              "all_kernel_step_ordinal_zero_based": 14,
+              "all_kernel_graph_ordinal_zero_based": 6,
+              "graph_kernel_count": 397,
+              "all_kernel_graph_launch_skip_single_target": 6,
+              "all_kernel_graph_launch_count_single_target": 1,
+              "dense_filter_launch_skip_single_target": 1,
+              "dense_filter_launch_count_single_target": 1,
+              "NCU_filtered_triplet_launch_skip": 1,
+              "NCU_filtered_triplet_launch_count": 3,
+              "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+              "grid": [
+                512,
+                1,
+                1
+              ],
+              "block": [
+                16,
+                4,
+                1
+              ],
+              "compiled_contract_M": 1,
+              "compiled_contract_N": 2048,
+              "compiled_contract_K": 2048,
+              "logical_weight_shape_out_in": [
+                2048,
+                2048
+              ],
+              "logical_weight_BF16_bytes": 8388608,
+              "first_step_duration_ns": 14368,
+              "sqlite_kernel_rowid": 1164,
+              "graphNodeId": 2907692859399,
+              "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+            },
+            "paired_by_order_contract_grid_weight": true,
+            "mapping_limit": "Source/Graph/order/weightcontract,notrawkernelarguments"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "90,185,984"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "139,520"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "390,807.16"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "12"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "25"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "0"
+              }
+            },
+            "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 6, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+            "grid": "(5504, 1, 1)",
+            "block": "(16, 4, 1)",
+            "raw_ID": "1",
+            "target": {
+              "point": "A00_N32",
+              "logical_module": "model.layers.0.mlp.gate_up_proj",
+              "decoder_layer_zero_based": 0,
+              "logical_op": "mlp.gate_up_proj",
+              "dense_ordinal_zero_based_within_first_decode_graph": 2,
+              "all_kernel_step_ordinal_zero_based": 16,
+              "all_kernel_graph_ordinal_zero_based": 8,
+              "graph_kernel_count": 397,
+              "all_kernel_graph_launch_skip_single_target": 8,
+              "all_kernel_graph_launch_count_single_target": 1,
+              "dense_filter_launch_skip_single_target": 2,
+              "dense_filter_launch_count_single_target": 1,
+              "NCU_filtered_triplet_launch_skip": 1,
+              "NCU_filtered_triplet_launch_count": 3,
+              "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+              "grid": [
+                5504,
+                1,
+                1
+              ],
+              "block": [
+                16,
+                4,
+                1
+              ],
+              "compiled_contract_M": 1,
+              "compiled_contract_N": 22016,
+              "compiled_contract_K": 2048,
+              "logical_weight_shape_out_in": [
+                22016,
+                2048
+              ],
+              "logical_weight_BF16_bytes": 90177536,
+              "first_step_duration_ns": 137760,
+              "sqlite_kernel_rowid": 1166,
+              "graphNodeId": 2907692859401,
+              "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+            },
+            "paired_by_order_contract_grid_weight": true,
+            "mapping_limit": "Source/Graph/order/weightcontract,notrawkernelarguments"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "45,112,832"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "71,744"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "199,983.55"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "12"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "25"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "0"
+              }
+            },
+            "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+            "grid": "(512, 1, 1)",
+            "block": "(32, 4, 1)",
+            "raw_ID": "2",
+            "target": {
+              "point": "A00_N32",
+              "logical_module": "model.layers.0.mlp.down_proj",
+              "decoder_layer_zero_based": 0,
+              "logical_op": "mlp.down_proj",
+              "dense_ordinal_zero_based_within_first_decode_graph": 3,
+              "all_kernel_step_ordinal_zero_based": 18,
+              "all_kernel_graph_ordinal_zero_based": 10,
+              "graph_kernel_count": 397,
+              "all_kernel_graph_launch_skip_single_target": 10,
+              "all_kernel_graph_launch_count_single_target": 1,
+              "dense_filter_launch_skip_single_target": 3,
+              "dense_filter_launch_count_single_target": 1,
+              "NCU_filtered_triplet_launch_skip": 1,
+              "NCU_filtered_triplet_launch_count": 3,
+              "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)7, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+              "grid": [
+                512,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                4,
+                1
+              ],
+              "compiled_contract_M": 1,
+              "compiled_contract_N": 2048,
+              "compiled_contract_K": 11008,
+              "logical_weight_shape_out_in": [
+                2048,
+                11008
+              ],
+              "logical_weight_BF16_bytes": 45088768,
+              "first_step_duration_ns": 70784,
+              "sqlite_kernel_rowid": 1168,
+              "graphNodeId": 2907692859403,
+              "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+            },
+            "paired_by_order_contract_grid_weight": true,
+            "mapping_limit": "Source/Graph/order/weightcontract,notrawkernelarguments"
+          }
+        ],
+        "actual_rows": 3,
+        "safe_single_pass": true,
+        "backup_missing_not_zero": true,
+        "expected_rows": 3
+      }
+    },
+    {
+      "task": "NCU_B2_L0",
+      "launcher_pid": 3798821,
+      "start_epoch": 1793854918.727084,
+      "launch": {
+        "task": "NCU_B2_L0",
+        "command": [
+          "/opt/nvidia/nsight-compute/2025.1.1/ncu",
+          "--target-processes",
+          "application-only",
+          "--graph-profiling",
+          "node",
+          "--replay-mode",
+          "kernel",
+          "--profile-from-start",
+          "no",
+          "--nvtx",
+          "--kernel-name-base",
+          "demangled",
+          "--rename-kernels",
+          "off",
+          "--filter-mode",
+          "global",
+          "--kernel-name",
+          "regex:.*(internal::gemvx::kernel<|cutlass::Kernel2<.*gemm).*",
+          "--nvtx-include",
+          "decodeGraph/",
+          "--launch-skip",
+          "1",
+          "--launch-count",
+          "3",
+          "--kill",
+          "no",
+          "--clock-control",
+          "none",
+          "--cache-control",
+          "none",
+          "--pipeline-boost-state",
+          "dynamic",
+          "--disable-extra-suffixes",
+          "--metrics",
+          "dram__bytes_read.sum,gpu__time_duration.sum,sm__cycles_elapsed.avg,sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed",
+          "--force-overwrite",
+          "--export",
+          "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/.private/NCU_B2_L0/metrics",
+          "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/bin/python",
+          "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/util/ai_workload_research/dense_memory_mechanism_v11/worker.py",
+          "NCU_B2_L0"
+        ],
+        "nonce": "af9b9e6fe929f964e60b9ab4f56184e8620e6d7a81d6f804",
+        "scope": "ALTERED_EAGER_NOT_NATIVE",
+        "clock_control": "none",
+        "prefix_cache": false
+      },
+      "actual_worker": {
+        "task": "NCU_B2_L0",
+        "nonce": "af9b9e6fe929f964e60b9ab4f56184e8620e6d7a81d6f804",
+        "supervisor_pid": 3798022,
+        "identity": {
+          "pid": 3798835,
+          "uid": 1004,
+          "start_ticks": "447781502",
+          "boot_id": "35425a62-1268-4560-a3cb-b674371cd7aa",
+          "executable": "/usr/bin/python3.12"
+        },
+        "worker_sha256": "7c072e83e6f268a02eb4589b8f3c678b885d6156e5a16231490e8c1030052c8a"
+      },
+      "exit_code": 0,
+      "finish_epoch": 1793854992.5153744,
+      "preemptive_profile_stop": false,
+      "model_initializations": 1,
+      "result_status": "V9_WORKER_COMPLETE",
+      "error": null,
+      "counter_audit": {
+        "nodes": [
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "8,390,656"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "18,048"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "0"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "50,227.37"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "5"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "10.42"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "3.43"
+              }
+            },
+            "kernel": "void Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(Params)",
+            "grid": "(8, 16, 1)",
+            "block": "(32, 1, 1)",
+            "raw_ID": "0",
+            "target": {
+              "point": "B2_N32",
+              "logical_module": "model.layers.0.self_attn.o_proj",
+              "decoder_layer_zero_based": 0,
+              "logical_op": "self_attn.o_proj",
+              "dense_ordinal_zero_based_within_first_decode_graph": 1,
+              "all_kernel_step_ordinal_zero_based": 16,
+              "all_kernel_graph_ordinal_zero_based": 8,
+              "graph_kernel_count": 469,
+              "all_kernel_graph_launch_skip_single_target": 8,
+              "all_kernel_graph_launch_count_single_target": 1,
+              "dense_filter_launch_skip_single_target": 1,
+              "dense_filter_launch_count_single_target": 1,
+              "NCU_filtered_triplet_launch_skip": 1,
+              "NCU_filtered_triplet_launch_count": 3,
+              "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+              "grid": [
+                8,
+                16,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "compiled_contract_M": 2,
+              "compiled_contract_N": 2048,
+              "compiled_contract_K": 2048,
+              "logical_weight_shape_out_in": [
+                2048,
+                2048
+              ],
+              "logical_weight_BF16_bytes": 8388608,
+              "first_step_duration_ns": 14688,
+              "sqlite_kernel_rowid": 14385,
+              "graphNodeId": 2894807957512,
+              "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+            },
+            "paired_by_order_contract_grid_weight": true,
+            "mapping_limit": "Source/Graph/order/weightcontract,notrawkernelarguments"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "90,186,752"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "150,080"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "420,761.18"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "5"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "10.42"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "4.41"
+              }
+            },
+            "kernel": "void Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(Params)",
+            "grid": "(8, 172, 1)",
+            "block": "(32, 1, 1)",
+            "raw_ID": "1",
+            "target": {
+              "point": "B2_N32",
+              "logical_module": "model.layers.0.mlp.gate_up_proj",
+              "decoder_layer_zero_based": 0,
+              "logical_op": "mlp.gate_up_proj",
+              "dense_ordinal_zero_based_within_first_decode_graph": 2,
+              "all_kernel_step_ordinal_zero_based": 18,
+              "all_kernel_graph_ordinal_zero_based": 10,
+              "graph_kernel_count": 469,
+              "all_kernel_graph_launch_skip_single_target": 10,
+              "all_kernel_graph_launch_count_single_target": 1,
+              "dense_filter_launch_skip_single_target": 2,
+              "dense_filter_launch_count_single_target": 1,
+              "NCU_filtered_triplet_launch_skip": 1,
+              "NCU_filtered_triplet_launch_count": 3,
+              "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+              "grid": [
+                8,
+                172,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "compiled_contract_M": 2,
+              "compiled_contract_N": 22016,
+              "compiled_contract_K": 2048,
+              "logical_weight_shape_out_in": [
+                22016,
+                2048
+              ],
+              "logical_weight_BF16_bytes": 90177536,
+              "first_step_duration_ns": 138304,
+              "sqlite_kernel_rowid": 14387,
+              "graphNodeId": 2894807957514,
+              "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+            },
+            "paired_by_order_contract_grid_weight": true,
+            "mapping_limit": "Source/Graph/order/weightcontract,notrawkernelarguments"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "45,099,520"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "75,584"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "211,407.47"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "5"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "10.42"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "4.38"
+              }
+            },
+            "kernel": "void Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(Params)",
+            "grid": "(8, 16, 1)",
+            "block": "(32, 1, 1)",
+            "raw_ID": "2",
+            "target": {
+              "point": "B2_N32",
+              "logical_module": "model.layers.0.mlp.down_proj",
+              "decoder_layer_zero_based": 0,
+              "logical_op": "mlp.down_proj",
+              "dense_ordinal_zero_based_within_first_decode_graph": 3,
+              "all_kernel_step_ordinal_zero_based": 20,
+              "all_kernel_graph_ordinal_zero_based": 12,
+              "graph_kernel_count": 469,
+              "all_kernel_graph_launch_skip_single_target": 12,
+              "all_kernel_graph_launch_count_single_target": 1,
+              "dense_filter_launch_skip_single_target": 3,
+              "dense_filter_launch_count_single_target": 1,
+              "NCU_filtered_triplet_launch_skip": 1,
+              "NCU_filtered_triplet_launch_count": 3,
+              "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+              "grid": [
+                8,
+                16,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "compiled_contract_M": 2,
+              "compiled_contract_N": 2048,
+              "compiled_contract_K": 11008,
+              "logical_weight_shape_out_in": [
+                2048,
+                11008
+              ],
+              "logical_weight_BF16_bytes": 45088768,
+              "first_step_duration_ns": 74560,
+              "sqlite_kernel_rowid": 14389,
+              "graphNodeId": 2894807957516,
+              "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+            },
+            "paired_by_order_contract_grid_weight": true,
+            "mapping_limit": "Source/Graph/order/weightcontract,notrawkernelarguments"
+          }
+        ],
+        "actual_rows": 3,
+        "safe_single_pass": true,
+        "backup_missing_not_zero": true,
+        "expected_rows": 3
+      }
+    },
+    {
+      "task": "NCU_B1_L17",
+      "launcher_pid": 3799589,
+      "start_epoch": 1793854993.547032,
+      "launch": {
+        "task": "NCU_B1_L17",
+        "command": [
+          "/opt/nvidia/nsight-compute/2025.1.1/ncu",
+          "--target-processes",
+          "application-only",
+          "--graph-profiling",
+          "node",
+          "--replay-mode",
+          "kernel",
+          "--profile-from-start",
+          "no",
+          "--nvtx",
+          "--kernel-name-base",
+          "demangled",
+          "--rename-kernels",
+          "off",
+          "--filter-mode",
+          "global",
+          "--kernel-name",
+          "regex:.*(internal::gemvx::kernel<|cutlass::Kernel2<.*gemm).*",
+          "--nvtx-include",
+          "decodeGraph/",
+          "--launch-skip",
+          "69",
+          "--launch-count",
+          "3",
+          "--kill",
+          "no",
+          "--clock-control",
+          "none",
+          "--cache-control",
+          "none",
+          "--pipeline-boost-state",
+          "dynamic",
+          "--disable-extra-suffixes",
+          "--metrics",
+          "dram__bytes_read.sum,gpu__time_duration.sum,sm__cycles_elapsed.avg,sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed",
+          "--force-overwrite",
+          "--export",
+          "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/.private/NCU_B1_L17/metrics",
+          "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/bin/python",
+          "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/util/ai_workload_research/dense_memory_mechanism_v11/worker.py",
+          "NCU_B1_L17"
+        ],
+        "nonce": "1f970c7d4c3c4f81b118bb7d1b37e90bf23abf72c20bc8c5",
+        "scope": "ALTERED_EAGER_NOT_NATIVE",
+        "clock_control": "none",
+        "prefix_cache": false
+      },
+      "actual_worker": {
+        "task": "NCU_B1_L17",
+        "nonce": "1f970c7d4c3c4f81b118bb7d1b37e90bf23abf72c20bc8c5",
+        "supervisor_pid": 3798022,
+        "identity": {
+          "pid": 3799601,
+          "uid": 1004,
+          "start_ticks": "447788984",
+          "boot_id": "35425a62-1268-4560-a3cb-b674371cd7aa",
+          "executable": "/usr/bin/python3.12"
+        },
+        "worker_sha256": "7c072e83e6f268a02eb4589b8f3c678b885d6156e5a16231490e8c1030052c8a"
+      },
+      "exit_code": 0,
+      "finish_epoch": 1793855067.6406813,
+      "preemptive_profile_stop": false,
+      "model_initializations": 1,
+      "result_status": "V9_WORKER_COMPLETE",
+      "error": null,
+      "counter_audit": {
+        "nodes": [
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "8,389,760"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "16,896"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "0"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "46,681.95"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "12"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "25"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "0"
+              }
+            },
+            "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 6, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+            "grid": "(512, 1, 1)",
+            "block": "(16, 4, 1)",
+            "raw_ID": "0",
+            "target": {
+              "point": "A00_N32",
+              "logical_module": "model.layers.17.self_attn.o_proj",
+              "decoder_layer_zero_based": 17,
+              "logical_op": "self_attn.o_proj",
+              "dense_ordinal_zero_based_within_first_decode_graph": 69,
+              "all_kernel_step_ordinal_zero_based": 201,
+              "all_kernel_graph_ordinal_zero_based": 193,
+              "graph_kernel_count": 397,
+              "all_kernel_graph_launch_skip_single_target": 193,
+              "all_kernel_graph_launch_count_single_target": 1,
+              "dense_filter_launch_skip_single_target": 69,
+              "dense_filter_launch_count_single_target": 1,
+              "NCU_filtered_triplet_launch_skip": 69,
+              "NCU_filtered_triplet_launch_count": 3,
+              "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+              "grid": [
+                512,
+                1,
+                1
+              ],
+              "block": [
+                16,
+                4,
+                1
+              ],
+              "compiled_contract_M": 1,
+              "compiled_contract_N": 2048,
+              "compiled_contract_K": 2048,
+              "logical_weight_shape_out_in": [
+                2048,
+                2048
+              ],
+              "logical_weight_BF16_bytes": 8388608,
+              "first_step_duration_ns": 14336,
+              "sqlite_kernel_rowid": 1351,
+              "graphNodeId": 2907692859603,
+              "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+            },
+            "paired_by_order_contract_grid_weight": true,
+            "mapping_limit": "Source/Graph/order/weightcontract,notrawkernelarguments"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "90,185,472"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "138,880"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "389,156.24"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "12"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "25"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "0"
+              }
+            },
+            "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 6, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+            "grid": "(5504, 1, 1)",
+            "block": "(16, 4, 1)",
+            "raw_ID": "1",
+            "target": {
+              "point": "A00_N32",
+              "logical_module": "model.layers.17.mlp.gate_up_proj",
+              "decoder_layer_zero_based": 17,
+              "logical_op": "mlp.gate_up_proj",
+              "dense_ordinal_zero_based_within_first_decode_graph": 70,
+              "all_kernel_step_ordinal_zero_based": 203,
+              "all_kernel_graph_ordinal_zero_based": 195,
+              "graph_kernel_count": 397,
+              "all_kernel_graph_launch_skip_single_target": 195,
+              "all_kernel_graph_launch_count_single_target": 1,
+              "dense_filter_launch_skip_single_target": 70,
+              "dense_filter_launch_count_single_target": 1,
+              "NCU_filtered_triplet_launch_skip": 69,
+              "NCU_filtered_triplet_launch_count": 3,
+              "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+              "grid": [
+                5504,
+                1,
+                1
+              ],
+              "block": [
+                16,
+                4,
+                1
+              ],
+              "compiled_contract_M": 1,
+              "compiled_contract_N": 22016,
+              "compiled_contract_K": 2048,
+              "logical_weight_shape_out_in": [
+                22016,
+                2048
+              ],
+              "logical_weight_BF16_bytes": 90177536,
+              "first_step_duration_ns": 136800,
+              "sqlite_kernel_rowid": 1353,
+              "graphNodeId": 2907692859605,
+              "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+            },
+            "paired_by_order_contract_grid_weight": true,
+            "mapping_limit": "Source/Graph/order/weightcontract,notrawkernelarguments"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "45,092,864"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "71,584"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "199,533.50"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "12"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "25"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "0"
+              }
+            },
+            "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+            "grid": "(512, 1, 1)",
+            "block": "(32, 4, 1)",
+            "raw_ID": "2",
+            "target": {
+              "point": "A00_N32",
+              "logical_module": "model.layers.17.mlp.down_proj",
+              "decoder_layer_zero_based": 17,
+              "logical_op": "mlp.down_proj",
+              "dense_ordinal_zero_based_within_first_decode_graph": 71,
+              "all_kernel_step_ordinal_zero_based": 205,
+              "all_kernel_graph_ordinal_zero_based": 197,
+              "graph_kernel_count": 397,
+              "all_kernel_graph_launch_skip_single_target": 197,
+              "all_kernel_graph_launch_count_single_target": 1,
+              "dense_filter_launch_skip_single_target": 71,
+              "dense_filter_launch_count_single_target": 1,
+              "NCU_filtered_triplet_launch_skip": 69,
+              "NCU_filtered_triplet_launch_count": 3,
+              "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)7, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+              "grid": [
+                512,
+                1,
+                1
+              ],
+              "block": [
+                32,
+                4,
+                1
+              ],
+              "compiled_contract_M": 1,
+              "compiled_contract_N": 2048,
+              "compiled_contract_K": 11008,
+              "logical_weight_shape_out_in": [
+                2048,
+                11008
+              ],
+              "logical_weight_BF16_bytes": 45088768,
+              "first_step_duration_ns": 70720,
+              "sqlite_kernel_rowid": 1355,
+              "graphNodeId": 2907692859607,
+              "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+            },
+            "paired_by_order_contract_grid_weight": true,
+            "mapping_limit": "Source/Graph/order/weightcontract,notrawkernelarguments"
+          }
+        ],
+        "actual_rows": 3,
+        "safe_single_pass": true,
+        "backup_missing_not_zero": true,
+        "expected_rows": 3
+      }
+    },
+    {
+      "task": "NCU_B2_L17",
+      "launcher_pid": 3800352,
+      "start_epoch": 1793855068.7916248,
+      "launch": {
+        "task": "NCU_B2_L17",
+        "command": [
+          "/opt/nvidia/nsight-compute/2025.1.1/ncu",
+          "--target-processes",
+          "application-only",
+          "--graph-profiling",
+          "node",
+          "--replay-mode",
+          "kernel",
+          "--profile-from-start",
+          "no",
+          "--nvtx",
+          "--kernel-name-base",
+          "demangled",
+          "--rename-kernels",
+          "off",
+          "--filter-mode",
+          "global",
+          "--kernel-name",
+          "regex:.*(internal::gemvx::kernel<|cutlass::Kernel2<.*gemm).*",
+          "--nvtx-include",
+          "decodeGraph/",
+          "--launch-skip",
+          "69",
+          "--launch-count",
+          "3",
+          "--kill",
+          "no",
+          "--clock-control",
+          "none",
+          "--cache-control",
+          "none",
+          "--pipeline-boost-state",
+          "dynamic",
+          "--disable-extra-suffixes",
+          "--metrics",
+          "dram__bytes_read.sum,gpu__time_duration.sum,sm__cycles_elapsed.avg,sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed",
+          "--force-overwrite",
+          "--export",
+          "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/.private/NCU_B2_L17/metrics",
+          "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/bin/python",
+          "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/util/ai_workload_research/dense_memory_mechanism_v11/worker.py",
+          "NCU_B2_L17"
+        ],
+        "nonce": "133ae9d568d72d9a3538744e7c0a2e9314cb0e3cd010ce1f",
+        "scope": "ALTERED_EAGER_NOT_NATIVE",
+        "clock_control": "none",
+        "prefix_cache": false
+      },
+      "actual_worker": {
+        "task": "NCU_B2_L17",
+        "nonce": "133ae9d568d72d9a3538744e7c0a2e9314cb0e3cd010ce1f",
+        "supervisor_pid": 3798022,
+        "identity": {
+          "pid": 3800366,
+          "uid": 1004,
+          "start_ticks": "447796509",
+          "boot_id": "35425a62-1268-4560-a3cb-b674371cd7aa",
+          "executable": "/usr/bin/python3.12"
+        },
+        "worker_sha256": "7c072e83e6f268a02eb4589b8f3c678b885d6156e5a16231490e8c1030052c8a"
+      },
+      "exit_code": 0,
+      "finish_epoch": 1793855144.2687957,
+      "preemptive_profile_stop": false,
+      "model_initializations": 1,
+      "result_status": "V9_WORKER_COMPLETE",
+      "error": null,
+      "counter_audit": {
+        "nodes": [
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "8,407,040"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "18,304"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "0"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "50,899.08"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "5"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "10.42"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "3.39"
+              }
+            },
+            "kernel": "void Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(Params)",
+            "grid": "(8, 16, 1)",
+            "block": "(32, 1, 1)",
+            "raw_ID": "0",
+            "target": {
+              "point": "B2_N32",
+              "logical_module": "model.layers.17.self_attn.o_proj",
+              "decoder_layer_zero_based": 17,
+              "logical_op": "self_attn.o_proj",
+              "dense_ordinal_zero_based_within_first_decode_graph": 69,
+              "all_kernel_step_ordinal_zero_based": 237,
+              "all_kernel_graph_ordinal_zero_based": 229,
+              "graph_kernel_count": 469,
+              "all_kernel_graph_launch_skip_single_target": 229,
+              "all_kernel_graph_launch_count_single_target": 1,
+              "dense_filter_launch_skip_single_target": 69,
+              "dense_filter_launch_count_single_target": 1,
+              "NCU_filtered_triplet_launch_skip": 69,
+              "NCU_filtered_triplet_launch_count": 3,
+              "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+              "grid": [
+                8,
+                16,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "compiled_contract_M": 2,
+              "compiled_contract_N": 2048,
+              "compiled_contract_K": 2048,
+              "logical_weight_shape_out_in": [
+                2048,
+                2048
+              ],
+              "logical_weight_BF16_bytes": 8388608,
+              "first_step_duration_ns": 14944,
+              "sqlite_kernel_rowid": 14606,
+              "graphNodeId": 2894807957733,
+              "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+            },
+            "paired_by_order_contract_grid_weight": true,
+            "mapping_limit": "Source/Graph/order/weightcontract,notrawkernelarguments"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "90,186,240"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "148,736"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "417,334.37"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "5"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "10.42"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "4.44"
+              }
+            },
+            "kernel": "void Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(Params)",
+            "grid": "(8, 172, 1)",
+            "block": "(32, 1, 1)",
+            "raw_ID": "1",
+            "target": {
+              "point": "B2_N32",
+              "logical_module": "model.layers.17.mlp.gate_up_proj",
+              "decoder_layer_zero_based": 17,
+              "logical_op": "mlp.gate_up_proj",
+              "dense_ordinal_zero_based_within_first_decode_graph": 70,
+              "all_kernel_step_ordinal_zero_based": 239,
+              "all_kernel_graph_ordinal_zero_based": 231,
+              "graph_kernel_count": 469,
+              "all_kernel_graph_launch_skip_single_target": 231,
+              "all_kernel_graph_launch_count_single_target": 1,
+              "dense_filter_launch_skip_single_target": 70,
+              "dense_filter_launch_count_single_target": 1,
+              "NCU_filtered_triplet_launch_skip": 69,
+              "NCU_filtered_triplet_launch_count": 3,
+              "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+              "grid": [
+                8,
+                172,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "compiled_contract_M": 2,
+              "compiled_contract_N": 22016,
+              "compiled_contract_K": 2048,
+              "logical_weight_shape_out_in": [
+                22016,
+                2048
+              ],
+              "logical_weight_BF16_bytes": 90177536,
+              "first_step_duration_ns": 138656,
+              "sqlite_kernel_rowid": 14608,
+              "graphNodeId": 2894807957735,
+              "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+            },
+            "paired_by_order_contract_grid_weight": true,
+            "mapping_limit": "Source/Graph/order/weightcontract,notrawkernelarguments"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "45,100,288"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "75,744"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "211,763.58"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "5"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "10.42"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "4.38"
+              }
+            },
+            "kernel": "void Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(Params)",
+            "grid": "(8, 16, 1)",
+            "block": "(32, 1, 1)",
+            "raw_ID": "2",
+            "target": {
+              "point": "B2_N32",
+              "logical_module": "model.layers.17.mlp.down_proj",
+              "decoder_layer_zero_based": 17,
+              "logical_op": "mlp.down_proj",
+              "dense_ordinal_zero_based_within_first_decode_graph": 71,
+              "all_kernel_step_ordinal_zero_based": 241,
+              "all_kernel_graph_ordinal_zero_based": 233,
+              "graph_kernel_count": 469,
+              "all_kernel_graph_launch_skip_single_target": 233,
+              "all_kernel_graph_launch_count_single_target": 1,
+              "dense_filter_launch_skip_single_target": 71,
+              "dense_filter_launch_count_single_target": 1,
+              "NCU_filtered_triplet_launch_skip": 69,
+              "NCU_filtered_triplet_launch_count": 3,
+              "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+              "grid": [
+                8,
+                16,
+                1
+              ],
+              "block": [
+                32,
+                1,
+                1
+              ],
+              "compiled_contract_M": 2,
+              "compiled_contract_N": 2048,
+              "compiled_contract_K": 11008,
+              "logical_weight_shape_out_in": [
+                2048,
+                11008
+              ],
+              "logical_weight_BF16_bytes": 45088768,
+              "first_step_duration_ns": 75168,
+              "sqlite_kernel_rowid": 14610,
+              "graphNodeId": 2894807957737,
+              "mapping_grade": "COMPILED_SOURCE_AND_GRAPH_DESCRIPTOR_PLUS_DENSE_ORDER; NOT_RAW_KERNEL_ARGUMENTS"
+            },
+            "paired_by_order_contract_grid_weight": true,
+            "mapping_limit": "Source/Graph/order/weightcontract,notrawkernelarguments"
+          }
+        ],
+        "actual_rows": 3,
+        "safe_single_pass": true,
+        "backup_missing_not_zero": true,
+        "expected_rows": 3
+      }
+    },
+    {
+      "task": "LOCAL_B1",
+      "launcher_pid": 3801076,
+      "start_epoch": 1793855145.5850298,
+      "launch": {
+        "task": "LOCAL_B1",
+        "command": [
+          "/opt/nvidia/nsight-compute/2025.1.1/ncu",
+          "--target-processes",
+          "application-only",
+          "--graph-profiling",
+          "node",
+          "--replay-mode",
+          "kernel",
+          "--profile-from-start",
+          "no",
+          "--nvtx",
+          "--kernel-name-base",
+          "demangled",
+          "--rename-kernels",
+          "off",
+          "--filter-mode",
+          "global",
+          "--kernel-name",
+          "regex:.*(internal::gemvx::kernel<|cutlass::Kernel2<.*gemm).*",
+          "--nvtx-include",
+          "v11Local/",
+          "--launch-skip",
+          "0",
+          "--launch-count",
+          "10",
+          "--kill",
+          "no",
+          "--clock-control",
+          "none",
+          "--cache-control",
+          "none",
+          "--pipeline-boost-state",
+          "dynamic",
+          "--disable-extra-suffixes",
+          "--metrics",
+          "dram__bytes_read.sum,gpu__time_duration.sum,sm__cycles_elapsed.avg,sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed",
+          "--force-overwrite",
+          "--export",
+          "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/.private/LOCAL_B1/metrics",
+          "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/bin/python",
+          "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/util/ai_workload_research/dense_memory_mechanism_v11/worker.py",
+          "LOCAL_B1"
+        ],
+        "nonce": "b10af2000b83ad1b958d9af7092fddd7d10715f5064d5102",
+        "scope": "ALTERED_EAGER_NOT_NATIVE",
+        "clock_control": "none",
+        "prefix_cache": false
+      },
+      "actual_worker": {
+        "task": "LOCAL_B1",
+        "nonce": "b10af2000b83ad1b958d9af7092fddd7d10715f5064d5102",
+        "supervisor_pid": 3798022,
+        "identity": {
+          "pid": 3801090,
+          "uid": 1004,
+          "start_ticks": "447804188",
+          "boot_id": "35425a62-1268-4560-a3cb-b674371cd7aa",
+          "executable": "/usr/bin/python3.12"
+        },
+        "worker_sha256": "7c072e83e6f268a02eb4589b8f3c678b885d6156e5a16231490e8c1030052c8a"
+      },
+      "exit_code": 0,
+      "finish_epoch": 1793855148.3614302,
+      "preemptive_profile_stop": false,
+      "model_initializations": 0,
+      "result_status": "V9_WORKER_COMPLETE",
+      "error": null,
+      "counter_audit": {
+        "nodes": [
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "45,092,352"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "70,912"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "0"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "175,687.92"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "12"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "25"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "0"
+              }
+            },
+            "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+            "grid": "(512, 1, 1)",
+            "block": "(32, 4, 1)",
+            "raw_ID": "0"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "45,138,176"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "98,080"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "244,368.89"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "12"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "25"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "0"
+              }
+            },
+            "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+            "grid": "(512, 1, 1)",
+            "block": "(32, 4, 1)",
+            "raw_ID": "1"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "45,120,000"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "96,064"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "239,536.50"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "12"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "25"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "0"
+              }
+            },
+            "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+            "grid": "(512, 1, 1)",
+            "block": "(32, 4, 1)",
+            "raw_ID": "2"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "45,095,680"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "70,688"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "175,330.89"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "12"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "25"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "0"
+              }
+            },
+            "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+            "grid": "(512, 1, 1)",
+            "block": "(32, 4, 1)",
+            "raw_ID": "3"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "45,100,672"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "70,784"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "175,553.32"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "12"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "25"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "0"
+              }
+            },
+            "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+            "grid": "(512, 1, 1)",
+            "block": "(32, 4, 1)",
+            "raw_ID": "4"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "45,117,184"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "97,600"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "243,024.21"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "12"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "25"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "0"
+              }
+            },
+            "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+            "grid": "(512, 1, 1)",
+            "block": "(32, 4, 1)",
+            "raw_ID": "5"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "45,119,616"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "95,904"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "239,120.21"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "12"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "25"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "0"
+              }
+            },
+            "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+            "grid": "(512, 1, 1)",
+            "block": "(32, 4, 1)",
+            "raw_ID": "6"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "45,092,352"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "71,584"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "177,376.18"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "12"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "25"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "0"
+              }
+            },
+            "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+            "grid": "(512, 1, 1)",
+            "block": "(32, 4, 1)",
+            "raw_ID": "7"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "45,092,096"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "70,464"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "174,786.29"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "12"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "25"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "0"
+              }
+            },
+            "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+            "grid": "(512, 1, 1)",
+            "block": "(32, 4, 1)",
+            "raw_ID": "8"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "45,117,056"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "94,880"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "236,515.95"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "12"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "25"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "0"
+              }
+            },
+            "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 7, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+            "grid": "(512, 1, 1)",
+            "block": "(32, 4, 1)",
+            "raw_ID": "9"
+          }
+        ],
+        "actual_rows": 10,
+        "safe_single_pass": true,
+        "backup_missing_not_zero": true,
+        "expected_rows": 10
+      }
+    },
+    {
+      "task": "LOCAL_B2",
+      "launcher_pid": 3801125,
+      "start_epoch": 1793855149.6423194,
+      "launch": {
+        "task": "LOCAL_B2",
+        "command": [
+          "/opt/nvidia/nsight-compute/2025.1.1/ncu",
+          "--target-processes",
+          "application-only",
+          "--graph-profiling",
+          "node",
+          "--replay-mode",
+          "kernel",
+          "--profile-from-start",
+          "no",
+          "--nvtx",
+          "--kernel-name-base",
+          "demangled",
+          "--rename-kernels",
+          "off",
+          "--filter-mode",
+          "global",
+          "--kernel-name",
+          "regex:.*(internal::gemvx::kernel<|cutlass::Kernel2<.*gemm).*",
+          "--nvtx-include",
+          "v11Local/",
+          "--launch-skip",
+          "0",
+          "--launch-count",
+          "10",
+          "--kill",
+          "no",
+          "--clock-control",
+          "none",
+          "--cache-control",
+          "none",
+          "--pipeline-boost-state",
+          "dynamic",
+          "--disable-extra-suffixes",
+          "--metrics",
+          "dram__bytes_read.sum,gpu__time_duration.sum,sm__cycles_elapsed.avg,sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed",
+          "--force-overwrite",
+          "--export",
+          "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/.private/LOCAL_B2/metrics",
+          "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/bin/python",
+          "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-dense-memory-mechanism-convergence-109-v11/util/ai_workload_research/dense_memory_mechanism_v11/worker.py",
+          "LOCAL_B2"
+        ],
+        "nonce": "e5ce4281fa8c77b67ab4b353a44d6438dbd5f8eb9ba8d1b7",
+        "scope": "ALTERED_EAGER_NOT_NATIVE",
+        "clock_control": "none",
+        "prefix_cache": false
+      },
+      "actual_worker": {
+        "task": "LOCAL_B2",
+        "nonce": "e5ce4281fa8c77b67ab4b353a44d6438dbd5f8eb9ba8d1b7",
+        "supervisor_pid": 3798022,
+        "identity": {
+          "pid": 3801137,
+          "uid": 1004,
+          "start_ticks": "447804594",
+          "boot_id": "35425a62-1268-4560-a3cb-b674371cd7aa",
+          "executable": "/usr/bin/python3.12"
+        },
+        "worker_sha256": "7c072e83e6f268a02eb4589b8f3c678b885d6156e5a16231490e8c1030052c8a"
+      },
+      "exit_code": 0,
+      "finish_epoch": 1793855152.0008354,
+      "preemptive_profile_stop": false,
+      "model_initializations": 0,
+      "result_status": "V9_WORKER_COMPLETE",
+      "error": null,
+      "counter_audit": {
+        "nodes": [
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "383,744"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "48,992"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "0"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "121,490.13"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "5"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "10.42"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "7.63"
+              }
+            },
+            "kernel": "void Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(Params)",
+            "grid": "(8, 16, 1)",
+            "block": "(32, 1, 1)",
+            "raw_ID": "0"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "45,160,576"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "102,240"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "255,614.58"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "5"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "10.42"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "3.63"
+              }
+            },
+            "kernel": "void Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(Params)",
+            "grid": "(8, 16, 1)",
+            "block": "(32, 1, 1)",
+            "raw_ID": "1"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "45,148,160"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "104,160"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "260,506.95"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "5"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "10.42"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "3.56"
+              }
+            },
+            "kernel": "void Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(Params)",
+            "grid": "(8, 16, 1)",
+            "block": "(32, 1, 1)",
+            "raw_ID": "2"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "896"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "48,640"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "120,527.08"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "5"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "10.42"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "7.69"
+              }
+            },
+            "kernel": "void Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(Params)",
+            "grid": "(8, 16, 1)",
+            "block": "(32, 1, 1)",
+            "raw_ID": "3"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "384"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "47,968"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "118,956.24"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "5"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "10.42"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "7.79"
+              }
+            },
+            "kernel": "void Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(Params)",
+            "grid": "(8, 16, 1)",
+            "block": "(32, 1, 1)",
+            "raw_ID": "4"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "45,144,192"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "104,448"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "261,202.61"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "5"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "10.42"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "3.55"
+              }
+            },
+            "kernel": "void Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(Params)",
+            "grid": "(8, 16, 1)",
+            "block": "(32, 1, 1)",
+            "raw_ID": "5"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "45,143,936"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "104,736"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "261,812.03"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "5"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "10.42"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "3.54"
+              }
+            },
+            "kernel": "void Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(Params)",
+            "grid": "(8, 16, 1)",
+            "block": "(32, 1, 1)",
+            "raw_ID": "6"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "1,152"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "48,224"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "119,609.29"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "5"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "10.42"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "7.75"
+              }
+            },
+            "kernel": "void Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(Params)",
+            "grid": "(8, 16, 1)",
+            "block": "(32, 1, 1)",
+            "raw_ID": "7"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "384"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "47,840"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "118,667.63"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "5"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "10.42"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "7.81"
+              }
+            },
+            "kernel": "void Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(Params)",
+            "grid": "(8, 16, 1)",
+            "block": "(32, 1, 1)",
+            "raw_ID": "8"
+          },
+          {
+            "passes": 1.0,
+            "backup_bytes": null,
+            "backup_counter_emitted": false,
+            "safe_single_pass": true,
+            "metrics": {
+              "dram__bytes_read.sum": {
+                "unit": "byte",
+                "value": "45,146,240"
+              },
+              "gpu__time_duration.sum": {
+                "unit": "ns",
+                "value": "102,368"
+              },
+              "profiler__perfworks_session_reuse": {
+                "unit": "",
+                "value": "1"
+              },
+              "profiler__replayer_passes": {
+                "unit": "pass",
+                "value": "1"
+              },
+              "profiler__replayer_passes_type_warmup": {
+                "unit": "pass",
+                "value": "0"
+              },
+              "sm__cycles_elapsed.avg": {
+                "unit": "cycle",
+                "value": "255,901.08"
+              },
+              "sm__maximum_warps_avg_per_active_cycle": {
+                "unit": "warp",
+                "value": "5"
+              },
+              "sm__maximum_warps_per_active_cycle_pct": {
+                "unit": "%",
+                "value": "10.42"
+              },
+              "sm__pipe_tensor_cycles_active.avg.pct_of_peak_sustained_elapsed": {
+                "unit": "%",
+                "value": "3.62"
+              }
+            },
+            "kernel": "void Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(Params)",
+            "grid": "(8, 16, 1)",
+            "block": "(32, 1, 1)",
+            "raw_ID": "9"
+          }
+        ],
+        "actual_rows": 10,
+        "safe_single_pass": true,
+        "backup_missing_not_zero": true,
+        "expected_rows": 10
+      }
+    }
+  ],
+  "monitor_gaps": [],
+  "GPU_model_initializations": 4,
+  "EXCLUSIVITY_EVIDENCE_COMPLETE": false,
+  "shared_reservation": {
+    "request_id": "838790c82f61eb75d11874c6b470b629",
+    "owner": {
+      "pid": 3798022,
+      "uid": 1004,
+      "start_ticks": "447773986",
+      "boot_id": "35425a62-1268-4560-a3cb-b674371cd7aa",
+      "executable": "/usr/bin/python3.12"
+    },
+    "expires_unix": 1793856644.217339,
+    "ownership_granted": false,
+    "pause_new_work": true
+  },
+  "lock_acquired_epoch": 1793854844.222027,
+  "device": {
+    "name": "NVIDIA GeForce RTX 4080",
+    "UUID": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+    "total_MiB": 16376.0
+  },
+  "admission_activity_samples": [
+    {
+      "index": 0,
+      "wall": 1793854845.0750453,
+      "gpu_utilization_pct": 0,
+      "memory_utilization_pct": 0,
+      "elapsed": 0.276263827458024,
+      "external_pids": [
+        1760,
+        2035,
+        3518111
+      ]
+    },
+    {
+      "index": 1,
+      "wall": 1793854845.6021988,
+      "gpu_utilization_pct": 0,
+      "memory_utilization_pct": 0,
+      "elapsed": 0.8034171517938375,
+      "external_pids": [
+        1760,
+        2035,
+        3518111
+      ]
+    },
+    {
+      "index": 2,
+      "wall": 1793854846.1258895,
+      "gpu_utilization_pct": 0,
+      "memory_utilization_pct": 0,
+      "elapsed": 1.3271079659461975,
+      "external_pids": [
+        1760,
+        2035,
+        3518111
+      ]
+    }
+  ],
+  "environment_classification": "VERIFIED_GATED_RESIDENT_CONTEXT",
+  "measurement_condition": "VERIFIED_GATED_RESIDENT_CO_RESIDENT_NATIVE_OBSERVATION",
+  "baseline_activity_window_seconds": 1.3279004823416471,
+  "desktop_activity_attribution_gap": true,
+  "performance_comparability_gap": "Desktop per-process NVML activity unavailable;retain INCONCLUSIVE",
+  "last_process_util_timestamp": 1793855151602142,
+  "own_GPU_contexts_cleared": true,
+  "final_GPU_pids": [
+    3518111,
+    1760,
+    2035
+  ],
+  "final_observation_state": "EXTERNAL_GPU_PID",
+  "GPU_lock_held_seconds": 309.80877256114036,
+  "lock_closed": true,
+  "NVML_shutdown": true,
+  "DESKTOP_CO_RESIDENCE_EVIDENCE_COMPLETE": false,
+  "shared_reservation_cleanup": {
+    "released": true,
+    "ownership_granted": false
+  },
+  "whole_Goal_elapsed_seconds": 1560.308888912201,
+  "full_executed_receipt_archive": {
+    "path": "raw/RESOURCE_RECEIPT.json.gz",
+    "uncompressed_sha256": "a01582cc45faee22b45a0a9046354331a5efa19c0a526c686ec1ab491d178b2a",
+    "samples": 478
+  }
+}

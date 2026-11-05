@@ -1,0 +1,60 @@
+{
+  "final_state": "NO_HARDWARE_CANDIDATE_PROMOTED",
+  "directions": [
+    {
+      "rank": 1,
+      "status": "NOT_PROMOTED",
+      "direction": "Moreefficientweight-supplyservice",
+      "actual_problem": "Gate/up+down~78%ofDense;actualselectedDRAMreads~oneBF16weightpayloadpernode",
+      "existing_software": "StrongcompiledGraphs,B1GEMV/B2WMMA,batchamortizationalreadyused",
+      "remaining_cost": "NecessaryweightbytesratherthanprovenredundantDRAMtraffic",
+      "hardware_variable": "Memoryservicebandwidth/latencyperjoule,conditionalnotanovelmechanism",
+      "mechanism": "Reduceweightservicecriticalpathifitlimitsnativeexecution",
+      "falsifier": "NativeDecodeslopeinsensitivetoindependentlegalmemorysupplychangeatfixedSMsupply",
+      "costs": "PHY/channels/packaging/pins/power,crossbarandtimingcostunknown;noPPAmeasured",
+      "blocking_gap": "Noindependentnativehardware-supplyresponseaxisorindependentworkload"
+    },
+    {
+      "rank": 2,
+      "status": "NOT_PROMOTED",
+      "direction": "Cachecapacity/policyforweightreuse",
+      "actual_problem": "LocalB1reusesstill~45MBreads;B2readonlycontrolreuses~384bytesvscold45MB",
+      "existing_software": "CacheandbatchalreadyreuselocalB2weights;libraryhinttoLtnoobservedB1kernelchange",
+      "remaining_cost": "NativewholemodelreusefarbeyondnominalL2;noevidencenative43MiBDownwouldstayresident",
+      "hardware_variable": "Allocation/retentionpolicyorcapacity",
+      "mechanism": "Reduceoffchipfetchonlyifrealnativereuseexists",
+      "falsifier": "Weightreuse-distance/effectivecapacityshowbenefitabsent,orstrongsoftwareachievesit",
+      "costs": "Capacityarea/leakage/latency/metadata,replacementcomplexityandKV/activationpollution;unmeasured",
+      "blocking_gap": "SASSloadstringsnotweightmapping;localnotnativeopportunity;genericlargecacheisnotnewidea"
+    },
+    {
+      "rank": 3,
+      "status": "DEPRIORITIZED_SOFTWARE_FIRST",
+      "direction": "Densealgorithm/lowMpacking",
+      "actual_problem": "B2up/downreadbytes~B1,time~5-8%higher;Tensorpipeactivitylowbutnotbottleneckproof",
+      "existing_software": "cuBLASGEMV/CUTLASSWMMA;preferredblaslibraryhinttested",
+      "remaining_cost": "Kernelorganizationandpaddedtileefficiencyunresolved",
+      "hardware_variable": "LowMdatapath/tilegeometryonlyifsoftwaregapshown",
+      "mechanism": "Usefulworkperissuedtileorbetterdatafeeding",
+      "falsifier": "Compatiblelibrary/kernelchoiceabsorbsbenefit,ornativetimedoesnotrespond",
+      "costs": "Issue/control/register/datapathareaandverificationcomplexity;PPAunknown",
+      "blocking_gap": "NoexactSMresourcecausalityorvalidatedendtoendsoftwarecounterfactualgain"
+    },
+    {
+      "rank": 4,
+      "status": "CLOSED_AS_HARDWARE_IDEA_FOR_THIS_QWEN_SCOPE",
+      "direction": "Attentionadjacentcopyhardware",
+      "actual_problem": "72copies/step~0.103146msalreadyinsideNonDense",
+      "existing_software": "FlashAttentionandcompilerlayout/alignmentpaths",
+      "remaining_cost": "Actualcopytensorpointers/stridesnotidentified",
+      "hardware_variable": "Layoutconversionengineorfusion",
+      "mechanism": "Removeonlyprovenavoidablemovement",
+      "falsifier": "Copiesrequiredorsoftwareeliminatesorfullrequestgainnegligible",
+      "costs": "Extraengine/interconnect/controlcomplexity;unjustifiedbyidealtracebound~0.81%",
+      "blocking_gap": "Noresponsibleblindpatch;notprovennecessaryorremovable"
+    }
+  ],
+  "no_PPA_gain_claim": true,
+  "recommendation": "ArchiveQwenasload-analysisbaseline;prioritizenewhigher-valuelegallyqualifiedAIworkloadsbeforefurtherhardwaremechanismwork",
+  "no_automatic_new_goal": true
+}
