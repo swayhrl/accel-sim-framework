@@ -4,6 +4,10 @@
   "all_eight_independently_released": true,
   "application_NI": "NOT_MEASURED",
   "automatic_model_retry": false,
+  "bounded_interpretations": [
+    "B is a same-newSource F policy comparison; positive cycles savings do not isolate T and do not establish cross-workload optimality or GPU calibration.",
+    "In this exact Vector input the pressure epoch never activated. The frozen admission counters show Native service before activation; RO acceptance must be reported explicitly rather than crediting a faster active RO path."
+  ],
   "budgets": {
     "A": {
       "budget": 3,
@@ -56,6 +60,40 @@
     "pending": 6,
     "technical_failure": 0
   },
+  "logical_architecture_costs": {
+    "A": {
+      "Banks": 4,
+      "Payload_slots_per_slice": 1168,
+      "Tag_entries_per_slice": 256,
+      "bank_ops_per_physical_cycle": 1,
+      "extra_control_state_bits_per_slice": 1,
+      "extra_payload_arrays": 0,
+      "extra_query_ports": 0,
+      "physical_mux_timing": "NOT_PROVEN"
+    },
+    "B": {
+      "Banks": 4,
+      "Payload_slots_per_slice": 1168,
+      "Tag_entries_per_slice": 256,
+      "extra_CAM_or_queue_entries": 0,
+      "extra_control_state_bits_per_slice": 1,
+      "physical_timing_PPA": "NOT_PROVEN",
+      "query_port_and_query_cycle": "ORIGINAL_FINITE_COST_RETAINED"
+    },
+    "C": {
+      "qualification": "PARTIAL_REAL_PRODUCTION_ENGINEERING_NOT_FULL_QUOTA",
+      "scientific_models_authorized": 0
+    },
+    "D": {
+      "Banks": 4,
+      "Payload_slots_per_slice": 1168,
+      "Tag_capacity_ratio": 2,
+      "Tag_entries_per_slice_G32W8": 256,
+      "Tag_entries_per_slice_G64W8": 512,
+      "physical_PPA": "NOT_PROVEN",
+      "same_Source78_fixed_service_background": true
+    }
+  },
   "numeric_output": "UNKNOWN",
   "physical_PPA": "NOT_PROVEN",
   "points": [
@@ -103,7 +141,12 @@
       "cohort": "EP_PERF_PFV5_A_FWT_G32W8_WV_OFF_V1",
       "consumed": true,
       "cycles": null,
-      "done_ref": null,
+      "done_ref": {
+        "bytes": 9906,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_PFV5_A_FWT_G32W8_WV_OFF_V1.DONE.json",
+        "sha256": "ac7ec5aab82731abe8525b91dbc740c5063fceb41125fb3ed5f27061729c8ede"
+      },
+      "elapsed_seconds": 733.153609521687,
       "group": "A",
       "host_limits": {
         "AS_bytes": 10737418240,
@@ -112,6 +155,7 @@
         "wall_seconds": 28800
       },
       "independent_release": true,
+      "launcher_wait_returncode": 0,
       "mode": "WV_ZERO_RO",
       "source_identity": {
         "archive_sha256": "ff81389a1bdc59f7cc338cdd0376b7c37f5a656d045b923dc07c4b0dd7816380",
@@ -124,7 +168,8 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_a_wv/host_private_candidate_v1/main_materialized/37e5a2db776190ee3f74/execution/cases/EP_PERF_PFV5_A_FWT_G32W8_WV_OFF_V1/control/FROZEN_SPEC.json",
         "sha256": "daf77ac812340d44f3ec2ccb25339a65fb2cb64549fbaeb322e25cebd0077dbd"
       },
-      "state": "CONSUMED_BEFORE_FORK",
+      "state": "PARSE_HOLD",
+      "stop_reason": null,
       "uuid": "2ef88a1c-c691-45d9-98d1-4e8c57897dce",
       "validation_ref": null
     },
@@ -161,7 +206,7 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_a_wv/host_private_candidate_v1/main_materialized/37e5a2db776190ee3f74/execution/cases/EP_PERF_PFV5_A_FWT_G32W8_WV_ON_V1/control/FROZEN_SPEC.json",
         "sha256": "96147b5cb6dbe44dbe3fb5f195d66de61a8582cc5567e1132ac4f78270054a6e"
       },
-      "state": "NATURAL_COMPLETE_PENDING_VALIDATION",
+      "state": "PARSE_HOLD",
       "stop_reason": null,
       "uuid": "de908126-3592-4b2c-b38b-ee6fac72e18a",
       "validation_ref": null
@@ -497,6 +542,32 @@
     }
   ],
   "refund": false,
+  "remaining_scope_gaps": [
+    {
+      "cohort": "EP_PERF_PFV5_A_FWT_G32W8_S_V1",
+      "state": "PARSE_HOLD"
+    },
+    {
+      "cohort": "EP_PERF_PFV5_A_FWT_G32W8_WV_OFF_V1",
+      "state": "PARSE_HOLD"
+    },
+    {
+      "cohort": "EP_PERF_PFV5_A_FWT_G32W8_WV_ON_V1",
+      "state": "PARSE_HOLD"
+    },
+    {
+      "cohort": "EP_PERF_PFV4_A2_3MM_S_G64W8_V1",
+      "state": "CONSUMED_BEFORE_FORK"
+    },
+    {
+      "cohort": "EP_PERF_PFV4_A2_3MM_WV_ZERO_RO_G64W8_V1",
+      "state": "CONSUMED_BEFORE_FORK"
+    },
+    {
+      "cohort": "EP_PERF_PFV4_A2_3MM_WV_ZERO_RO_REF32W8_V1",
+      "state": "CONSUMED_BEFORE_FORK"
+    }
+  ],
   "schema": "EP_MAIN_PFV5_ROLLING_EXACT8_RESULTS_V1",
-  "utc": "2026-11-05T04:05:54.944385+00:00"
+  "utc": "2026-11-05T04:25:49.514516+00:00"
 }

@@ -69,11 +69,26 @@ def report():
  d='EP_PERF_PFV4_A2_3MM_S_G64W8_V1'
  comparisons['D_S_G64_vs_accepted_S_REF32']=dict(reference_cycles=1696618,candidate_cycles=cycles[d],saved_cycles=1696618-cycles[d],reduction_percent=100*(1696618-cycles[d])/1696618)if d in cycles else dict(status='UNKNOWN_UNTIL_EXACT_G64_S_ACCEPTED')
  out=dict(schema='EP_MAIN_PFV5_ROLLING_EXACT8_RESULTS_V1',utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),counts=counts,points=rows,comparisons=comparisons,budgets={g:{k:reg['registered_future_requests'][z['request_id']].get(k)for k in ['budget','remaining','state']}for g,z in m['groups'].items()},all_eight_independently_released=True,complete_scientific_scope=8,automatic_model_retry=False,refund=False,C_models_authorized=0,application_NI='NOT_MEASURED',physical_PPA='NOT_PROVEN',numeric_output='UNKNOWN',Source_KEEP=True)
+ out['logical_architecture_costs']=dict(A=dict(Tag_entries_per_slice=256,Payload_slots_per_slice=1168,Banks=4,bank_ops_per_physical_cycle=1,extra_control_state_bits_per_slice=1,extra_query_ports=0,extra_payload_arrays=0,physical_mux_timing='NOT_PROVEN'),B=dict(Tag_entries_per_slice=256,Payload_slots_per_slice=1168,Banks=4,extra_control_state_bits_per_slice=1,query_port_and_query_cycle='ORIGINAL_FINITE_COST_RETAINED',extra_CAM_or_queue_entries=0,physical_timing_PPA='NOT_PROVEN'),D=dict(Tag_entries_per_slice_G32W8=256,Tag_entries_per_slice_G64W8=512,Tag_capacity_ratio=2,Payload_slots_per_slice=1168,Banks=4,same_Source78_fixed_service_background=True,physical_PPA='NOT_PROVEN'),C=dict(scientific_models_authorized=0,qualification='PARTIAL_REAL_PRODUCTION_ENGINEERING_NOT_FULL_QUOTA'))
+ out['bounded_interpretations']=[]
+ if comparisons['B_same_newSource_F_pressure_vs_Fbaseline'].get('saved_cycles')is not None:
+  out['bounded_interpretations'].append('B is a same-newSource F policy comparison; positive cycles savings do not isolate T and do not establish cross-workload optimality or GPU calibration.')
+  for rr in rows:
+   if rr['group']=='B'and rr['mode']=='F_PRESSURE_EPOCH'and rr.get('mechanisms',{}).get('EPL2ROP5|ADMISSION|',{}).get('totals',{}).get('activations')==0:
+    out['bounded_interpretations'].append('In this exact Vector input the pressure epoch never activated. The frozen admission counters show Native service before activation; RO acceptance must be reported explicitly rather than crediting a faster active RO path.')
+ a_comp=comparisons['A_cold_ON_vs_OFF'];a_query=comparisons['A_observed_frontend_queries_OFF_vs_ON']
+ if a_comp.get('saved_cycles')is not None:
+  out['bounded_interpretations'].append('A evaluates lifetime-never-installed cold proof only. It does not solve sustained Stencil Victim retention; no general empty-directory oracle is claimed.')
+  if a_query.get('fewer_queries',0)>0 and a_comp['saved_cycles']<=0:
+   out['bounded_interpretations'].append('A reduced observed total frontend queries without reducing complete-application cycles. Query-count improvement alone is not an application performance benefit.')
+ out['remaining_scope_gaps']=[dict(cohort=rr['cohort'],state=rr['state'])for rr in rows if rr['state']!='CLOSED_ACCEPTED']
  write(C/'PERFORMANCE_CURRENT.json',out)
  lines=['# EP-L2 V5 exact8 rolling results','','Only CLOSED_ACCEPTED cells with full true164 archive and two distinct Native restores have published accepted cycles. Missing cells are UNKNOWN. All eight cells release independently.','','| Group | Cohort | State | Accepted cycles |','|---|---|---|---:|']
  for r in rows:lines+=['| '+r['group']+' | '+r['cohort']+' | '+r['state']+' | '+str(r['cycles']if r['cycles']is not None else'UNKNOWN')+' |']
  lines+=['','Counts: '+json.dumps(counts), '','## Matched comparisons','']
  for k,v in comparisons.items():lines+=['- '+k+': '+json.dumps(v)]
+ lines+=['','## Architecture cost and bounded interpretation','','Logical costs: '+json.dumps(out['logical_architecture_costs']),'']
+ for text in out['bounded_interpretations']:lines+=['- '+text]
  lines+=['','A cold filter is lifetime never-installed proof, not general empty-directory detection. B retains full query port and cycle costs. C remains partial production engineering with no science starts. 1700MHz is service diagnostic, not GPU calibration.','']
  (C/'PERFORMANCE_CURRENT.md').write_text('\n'.join(lines))
  return out
@@ -83,7 +98,7 @@ def main():
   current=report();basefile=C/'PUBLICATION_EXPECTED_HEAD.json';base=read(basefile)['head']if basefile.exists()else BASE
   assert api('GET',REPO+'/git/ref/heads/'+BRANCH)['object']['sha']==base,'no force on moved branch'
   files={}
-  allowed=['USER_REQUEST_SCOPE_TRANSCRIPTION.txt','USER_AUTHORIZATION.json','A_USER_AUTHORIZATION.json','B_USER_AUTHORIZATION.json','D_USER_AUTHORIZATION.json','A_MAIN_HOST_DELTA_APPROVAL.json','B_MAIN_HOST_DELTA_APPROVAL.json','D_MAIN_HOST_DELTA_APPROVAL.json','EXACT_EXECUTION_MANIFEST.json','MAIN_FORMAL_NATIVE_INSTALLATION_RECEIPT.json','MAIN_FINAL_SPEC_ACTIVATION_DIFFERENCES.json','ROOT_LAUNCH_ACK.json','MAIN_DISPATCHER_STARTUP_REVIEW.json','PERFORMANCE_CURRENT.json','PERFORMANCE_CURRENT.md','EXECUTOR_STARTED.json','EXECUTOR_FINISHED.json','MAIN_EXECUTOR_ACTIVATION.json','MAIN_REAL_PREPARE_AFTER_INSTALL.json','FINAL_SCOPE_CLOSURE.json','main_activate_exact8.py','main_publish_v5_progress.py','main_metadata_watch_v5.py','closed_counter_summary_v5.py','ACTIVATION_TRUE164_ARCHIVE_RECEIPT.json','MAIN_PRECONSUME_CANONICAL_OWNED_ROUTE_FIX.json','MAIN_ACTUAL_EIGHT_MODEL_GENERATIONS_INITIAL.json','MAIN_OLD_EP_ROWS_PRESERVED_AFTER_ALL8_STARTS.json','MAIN_C_FRONTEND_PARTIAL_ENGINEERING_REVIEW.json']
+  allowed=['USER_REQUEST_SCOPE_TRANSCRIPTION.txt','USER_AUTHORIZATION.json','A_USER_AUTHORIZATION.json','B_USER_AUTHORIZATION.json','D_USER_AUTHORIZATION.json','A_MAIN_HOST_DELTA_APPROVAL.json','B_MAIN_HOST_DELTA_APPROVAL.json','D_MAIN_HOST_DELTA_APPROVAL.json','EXACT_EXECUTION_MANIFEST.json','MAIN_FORMAL_NATIVE_INSTALLATION_RECEIPT.json','MAIN_FINAL_SPEC_ACTIVATION_DIFFERENCES.json','ROOT_LAUNCH_ACK.json','MAIN_DISPATCHER_STARTUP_REVIEW.json','PERFORMANCE_CURRENT.json','PERFORMANCE_CURRENT.md','EXECUTOR_STARTED.json','EXECUTOR_FINISHED.json','MAIN_EXECUTOR_ACTIVATION.json','MAIN_REAL_PREPARE_AFTER_INSTALL.json','FINAL_SCOPE_CLOSURE.json','main_activate_exact8.py','main_publish_v5_progress.py','main_metadata_watch_v5.py','closed_counter_summary_v5.py','ACTIVATION_TRUE164_ARCHIVE_RECEIPT.json','MAIN_PRECONSUME_CANONICAL_OWNED_ROUTE_FIX.json','MAIN_ACTUAL_EIGHT_MODEL_GENERATIONS_INITIAL.json','MAIN_OLD_EP_ROWS_PRESERVED_AFTER_ALL8_STARTS.json','MAIN_C_FRONTEND_PARTIAL_ENGINEERING_REVIEW.json','MAIN_A_POSTCLOSE_QUALIFICATION_GAPS.json']
   for name in allowed:
    p=C/name
    if p.exists():files['control/'+name]=p
@@ -104,6 +119,10 @@ def main():
    if cp.is_file()and ('core_candidate'not in cp.relative_to(cr).parts)and ('__pycache__'not in cp.parts)and cp.suffix in ['.py','.json','.md','.patch','.h','.inc','.cc','.config']and cp.stat().st_size<1024*1024:
     files['C_partial_engineering/'+str(cp.relative_to(cr))]=cp
   for cp in (C/'CLOSED_COUNTERS').glob('*.json')if (C/'CLOSED_COUNTERS').exists()else []:files['control/CLOSED_COUNTERS/'+cp.name]=cp
+  ar=V/'activation_20261105_v1/a_closed_consumer_fix_v1'
+  for name in ['EXACT_CAUSE_AND_AST_DELTA.json','ACTUAL_THREE_RAW_OFFLINE_RESULT.json','closed_consumer_283.py']:
+   ap=ar/name
+   if ap.exists():files['A_postclose_gap/'+name]=ap
   entries=[];manifest=[]
   for name,p in sorted(files.items()):
    raw=p.read_bytes();out=(json.dumps(clean(json.loads(raw)),sort_keys=True,indent=2)+'\n').encode()if p.suffix=='.json'else raw
