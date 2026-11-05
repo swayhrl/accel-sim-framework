@@ -1,13 +1,13 @@
 # Closed metadata performance report candidate
 
-Status: PARTIAL_UNKNOWN_RESULTS_PRESERVED
+Status: ALL_SIX_CLOSED_QUALIFIED
 
 Only CLOSED_ACCEPTED results with exact Source/input/Spec/full drain, full-SHA archive and two distinct same-SHA native restores receive cycles. Missing results remain UNKNOWN.
 
 | Group | Cohort | Mode | Cycles | Qualification |
 |---|---|---|---:|---|
-| A1 | EP_PERF_PFV4_A1_STENCIL_S_G64W8_V1 | S | UNKNOWN | UNKNOWN |
-| A1 | EP_PERF_PFV4_A1_STENCIL_WV_ZERO_RO_G64W8_V1 | WV_ZERO_RO | UNKNOWN | UNKNOWN |
+| A1 | EP_PERF_PFV4_A1_STENCIL_S_G64W8_V1 | S | 4299729 | QUALIFIED_CLOSED_METADATA |
+| A1 | EP_PERF_PFV4_A1_STENCIL_WV_ZERO_RO_G64W8_V1 | WV_ZERO_RO | 4282418 | QUALIFIED_CLOSED_METADATA |
 | B | EP_PERF_PFV4_VECTOR4M_WV_ZERO_RO_1700_V1 | WV_ZERO_RO | 45425 | QUALIFIED_CLOSED_METADATA |
 | B | EP_PERF_PFV4_VECTOR4M_W_ONLY_1700_V1 | W_ONLY | 45446 | QUALIFIED_CLOSED_METADATA |
 | A3 | EP_PERF_PFV4_A3_TRANSPOSE_S_G64W8_V1 | S | 200330 | QUALIFIED_CLOSED_METADATA |
@@ -17,8 +17,8 @@ Delta is candidate minus baseline; reduction percent is 100*(baseline-candidate)
 
 | Comparison | Signed cycle delta | Reduction percent | Status |
 |---|---:|---:|---|
-| A1 S G64W8 minus exact same-mode REF | UNKNOWN | UNKNOWN | UNKNOWN |
-| A1 WV_ZERO_RO G64W8 minus exact same-mode REF | UNKNOWN | UNKNOWN | UNKNOWN |
+| A1 S G64W8 minus exact same-mode REF | -943210 | +17.990101% | QUALIFIED_CLOSED_METADATA_COMPARISON |
+| A1 WV_ZERO_RO G64W8 minus exact same-mode REF | -486475 | +10.201005% | QUALIFIED_CLOSED_METADATA_COMPARISON |
 | A3 S G64W8 minus exact same-mode REF | +0 | +0.000000% | QUALIFIED_CLOSED_METADATA_COMPARISON |
 | A3 WV_ZERO_RO G64W8 minus exact same-mode REF | +0 | +0.000000% | QUALIFIED_CLOSED_METADATA_COMPARISON |
 | B W minus S | -528 | +1.148475% | QUALIFIED_CLOSED_METADATA_COMPARISON |

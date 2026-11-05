@@ -2,33 +2,35 @@
   "authority_snapshot": {
     "coherence_attempt": 1,
     "epoch": 2,
-    "epoch_sha256": "304e5ed04f233fd71a0f69431012088f50a93a3258cefd5fb4ae70af2fca114f",
+    "epoch_sha256": "750804cc2e81544cc986d8f44421083b4ffb2ae62ba7259c27da0e6f13b8dd98",
     "holder": "huangrulin-sshfs-174",
-    "registry_sha256": "49e7df8215c718dd6bda5832c8a9d93b547825190c5500f1769df5bd44de00af",
+    "registry_sha256": "9518630ee1d681eaec8fad4391091c493b2fb0032b1c09fe98844d63d5b56e04",
     "state": "NATIVE_SCIENCE_ACTIVE"
   },
   "comparisons": [
     {
       "baseline_cohort": "EP_PERF_STENCIL_BD0309DF_S_REF_V1",
+      "baseline_cycles": 5242939,
       "candidate_cohort": "EP_PERF_PFV4_A1_STENCIL_S_G64W8_V1",
-      "cycle_reduction_percent": "UNKNOWN",
+      "candidate_cycles": 4299729,
+      "cycle_reduction_percent": 17.990100590527565,
       "interpretation": "Geometry changes tag/data resources; no equal-area or PPA claim.",
       "label": "A1 S G64W8 minus exact same-mode REF",
-      "reason": "one or both results not qualified closed metadata",
-      "signed_cycle_delta": "UNKNOWN",
-      "signed_cycle_reduction": "UNKNOWN",
-      "status": "UNKNOWN"
+      "signed_cycle_delta": -943210,
+      "signed_cycle_reduction": 943210,
+      "status": "QUALIFIED_CLOSED_METADATA_COMPARISON"
     },
     {
       "baseline_cohort": "EP_PERF_V2_PROPOSED_STENCIL_BD0309DF_WV_ZERO_RO",
+      "baseline_cycles": 4768893,
       "candidate_cohort": "EP_PERF_PFV4_A1_STENCIL_WV_ZERO_RO_G64W8_V1",
-      "cycle_reduction_percent": "UNKNOWN",
+      "candidate_cycles": 4282418,
+      "cycle_reduction_percent": 10.201004719543928,
       "interpretation": "Geometry changes tag/data resources; no equal-area or PPA claim.",
       "label": "A1 WV_ZERO_RO G64W8 minus exact same-mode REF",
-      "reason": "one or both results not qualified closed metadata",
-      "signed_cycle_delta": "UNKNOWN",
-      "signed_cycle_reduction": "UNKNOWN",
-      "status": "UNKNOWN"
+      "signed_cycle_delta": -486475,
+      "signed_cycle_reduction": 486475,
+      "status": "QUALIFIED_CLOSED_METADATA_COMPARISON"
     },
     {
       "baseline_cohort": "EP_PERF_TRANSPOSE_DA6CAAE1_S_REF_V1",
@@ -97,7 +99,7 @@
     "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/activation_20261104_v1/control/EXACT_EXECUTION_MANIFEST.json",
     "sha256": "5d31b274ea3dc46dc13f68da0a7dad8d05d4338274df3a0aa9eb36dba316aa4a"
   },
-  "markdown_candidate": "# Closed metadata performance report candidate\n\nStatus: PARTIAL_UNKNOWN_RESULTS_PRESERVED\n\nOnly CLOSED_ACCEPTED results with exact Source/input/Spec/full drain, full-SHA archive and two distinct same-SHA native restores receive cycles. Missing results remain UNKNOWN.\n\n| Group | Cohort | Mode | Cycles | Qualification |\n|---|---|---|---:|---|\n| A1 | EP_PERF_PFV4_A1_STENCIL_S_G64W8_V1 | S | UNKNOWN | UNKNOWN |\n| A1 | EP_PERF_PFV4_A1_STENCIL_WV_ZERO_RO_G64W8_V1 | WV_ZERO_RO | UNKNOWN | UNKNOWN |\n| B | EP_PERF_PFV4_VECTOR4M_WV_ZERO_RO_1700_V1 | WV_ZERO_RO | 45425 | QUALIFIED_CLOSED_METADATA |\n| B | EP_PERF_PFV4_VECTOR4M_W_ONLY_1700_V1 | W_ONLY | 45446 | QUALIFIED_CLOSED_METADATA |\n| A3 | EP_PERF_PFV4_A3_TRANSPOSE_S_G64W8_V1 | S | 200330 | QUALIFIED_CLOSED_METADATA |\n| A3 | EP_PERF_PFV4_A3_TRANSPOSE_WV_ZERO_RO_G64W8_V1 | WV_ZERO_RO | 200972 | QUALIFIED_CLOSED_METADATA |\n\nDelta is candidate minus baseline; reduction percent is 100*(baseline-candidate)/baseline. Both signs are retained.\n\n| Comparison | Signed cycle delta | Reduction percent | Status |\n|---|---:|---:|---|\n| A1 S G64W8 minus exact same-mode REF | UNKNOWN | UNKNOWN | UNKNOWN |\n| A1 WV_ZERO_RO G64W8 minus exact same-mode REF | UNKNOWN | UNKNOWN | UNKNOWN |\n| A3 S G64W8 minus exact same-mode REF | +0 | +0.000000% | QUALIFIED_CLOSED_METADATA_COMPARISON |\n| A3 WV_ZERO_RO G64W8 minus exact same-mode REF | +0 | +0.000000% | QUALIFIED_CLOSED_METADATA_COMPARISON |\n| B W minus S | -528 | +1.148475% | QUALIFIED_CLOSED_METADATA_COMPARISON |\n| B WV minus W | -21 | +0.046209% | QUALIFIED_CLOSED_METADATA_COMPARISON |\n| B F minus WV | +10500 | -23.115025% | QUALIFIED_CLOSED_METADATA_COMPARISON |\n| V3 FWT S G64W8 minus G32W16 | +332 | -0.195370% | QUALIFIED_CLOSED_METADATA_COMPARISON |\n| V3 FWT WV_ZERO_RO G64W8 minus G32W16 | -120 | +0.070495% | QUALIFIED_CLOSED_METADATA_COMPARISON |\n| V3 GEMM S G64W8 minus G32W16 | +0 | +0.000000% | QUALIFIED_CLOSED_METADATA_COMPARISON |\n| V3 GEMM WV_ZERO_RO G64W8 minus G32W16 | +0 | +0.000000% | QUALIFIED_CLOSED_METADATA_COMPARISON |\n\nOriginal V3 eight accepted cells (each independently requalified from closed metadata):\n\n| Cohort | Mode | Cycles | Qualification |\n|---|---|---:|---|\n| EP_PERF_PFV3_MIDTAG_FWT_S_G32W16_V1 | S | 169934 | QUALIFIED_CLOSED_METADATA |\n| EP_PERF_PFV3_MIDTAG_FWT_S_G64W8_V1 | S | 170266 | QUALIFIED_CLOSED_METADATA |\n| EP_PERF_PFV3_MIDTAG_FWT_WV_ZERO_RO_G32W16_V1 | WV_ZERO_RO | 170225 | QUALIFIED_CLOSED_METADATA |\n| EP_PERF_PFV3_MIDTAG_FWT_WV_ZERO_RO_G64W8_V1 | WV_ZERO_RO | 170105 | QUALIFIED_CLOSED_METADATA |\n| EP_PERF_PFV3_MIDTAG_GEMM_S_G32W16_V1 | S | 548988 | QUALIFIED_CLOSED_METADATA |\n| EP_PERF_PFV3_MIDTAG_GEMM_S_G64W8_V1 | S | 548988 | QUALIFIED_CLOSED_METADATA |\n| EP_PERF_PFV3_MIDTAG_GEMM_WV_ZERO_RO_G32W16_V1 | WV_ZERO_RO | 548988 | QUALIFIED_CLOSED_METADATA |\n| EP_PERF_PFV3_MIDTAG_GEMM_WV_ZERO_RO_G64W8_V1 | WV_ZERO_RO | 548988 | QUALIFIED_CLOSED_METADATA |\n\nA1/A3 references come from each final FAMILY_SCOPE accepted_same_mode_ref. B reuses S45974/F55925; W is not a same-mode REF. F minus WV does not identify an independent causal T effect. Geometry changes resources; no equal-area, cross-workload aggregate, geometric mean or PPA claim.\n\nThis foreground tool reads only JSON metadata and emits stdout. It never starts a model/background actor, writes authority/controller state, imports native/dispatcher code, reads raw logs/Trace/archive bodies, copies Trace or publishes Git.\n",
+  "markdown_candidate": "# Closed metadata performance report candidate\n\nStatus: ALL_SIX_CLOSED_QUALIFIED\n\nOnly CLOSED_ACCEPTED results with exact Source/input/Spec/full drain, full-SHA archive and two distinct same-SHA native restores receive cycles. Missing results remain UNKNOWN.\n\n| Group | Cohort | Mode | Cycles | Qualification |\n|---|---|---|---:|---|\n| A1 | EP_PERF_PFV4_A1_STENCIL_S_G64W8_V1 | S | 4299729 | QUALIFIED_CLOSED_METADATA |\n| A1 | EP_PERF_PFV4_A1_STENCIL_WV_ZERO_RO_G64W8_V1 | WV_ZERO_RO | 4282418 | QUALIFIED_CLOSED_METADATA |\n| B | EP_PERF_PFV4_VECTOR4M_WV_ZERO_RO_1700_V1 | WV_ZERO_RO | 45425 | QUALIFIED_CLOSED_METADATA |\n| B | EP_PERF_PFV4_VECTOR4M_W_ONLY_1700_V1 | W_ONLY | 45446 | QUALIFIED_CLOSED_METADATA |\n| A3 | EP_PERF_PFV4_A3_TRANSPOSE_S_G64W8_V1 | S | 200330 | QUALIFIED_CLOSED_METADATA |\n| A3 | EP_PERF_PFV4_A3_TRANSPOSE_WV_ZERO_RO_G64W8_V1 | WV_ZERO_RO | 200972 | QUALIFIED_CLOSED_METADATA |\n\nDelta is candidate minus baseline; reduction percent is 100*(baseline-candidate)/baseline. Both signs are retained.\n\n| Comparison | Signed cycle delta | Reduction percent | Status |\n|---|---:|---:|---|\n| A1 S G64W8 minus exact same-mode REF | -943210 | +17.990101% | QUALIFIED_CLOSED_METADATA_COMPARISON |\n| A1 WV_ZERO_RO G64W8 minus exact same-mode REF | -486475 | +10.201005% | QUALIFIED_CLOSED_METADATA_COMPARISON |\n| A3 S G64W8 minus exact same-mode REF | +0 | +0.000000% | QUALIFIED_CLOSED_METADATA_COMPARISON |\n| A3 WV_ZERO_RO G64W8 minus exact same-mode REF | +0 | +0.000000% | QUALIFIED_CLOSED_METADATA_COMPARISON |\n| B W minus S | -528 | +1.148475% | QUALIFIED_CLOSED_METADATA_COMPARISON |\n| B WV minus W | -21 | +0.046209% | QUALIFIED_CLOSED_METADATA_COMPARISON |\n| B F minus WV | +10500 | -23.115025% | QUALIFIED_CLOSED_METADATA_COMPARISON |\n| V3 FWT S G64W8 minus G32W16 | +332 | -0.195370% | QUALIFIED_CLOSED_METADATA_COMPARISON |\n| V3 FWT WV_ZERO_RO G64W8 minus G32W16 | -120 | +0.070495% | QUALIFIED_CLOSED_METADATA_COMPARISON |\n| V3 GEMM S G64W8 minus G32W16 | +0 | +0.000000% | QUALIFIED_CLOSED_METADATA_COMPARISON |\n| V3 GEMM WV_ZERO_RO G64W8 minus G32W16 | +0 | +0.000000% | QUALIFIED_CLOSED_METADATA_COMPARISON |\n\nOriginal V3 eight accepted cells (each independently requalified from closed metadata):\n\n| Cohort | Mode | Cycles | Qualification |\n|---|---|---:|---|\n| EP_PERF_PFV3_MIDTAG_FWT_S_G32W16_V1 | S | 169934 | QUALIFIED_CLOSED_METADATA |\n| EP_PERF_PFV3_MIDTAG_FWT_S_G64W8_V1 | S | 170266 | QUALIFIED_CLOSED_METADATA |\n| EP_PERF_PFV3_MIDTAG_FWT_WV_ZERO_RO_G32W16_V1 | WV_ZERO_RO | 170225 | QUALIFIED_CLOSED_METADATA |\n| EP_PERF_PFV3_MIDTAG_FWT_WV_ZERO_RO_G64W8_V1 | WV_ZERO_RO | 170105 | QUALIFIED_CLOSED_METADATA |\n| EP_PERF_PFV3_MIDTAG_GEMM_S_G32W16_V1 | S | 548988 | QUALIFIED_CLOSED_METADATA |\n| EP_PERF_PFV3_MIDTAG_GEMM_S_G64W8_V1 | S | 548988 | QUALIFIED_CLOSED_METADATA |\n| EP_PERF_PFV3_MIDTAG_GEMM_WV_ZERO_RO_G32W16_V1 | WV_ZERO_RO | 548988 | QUALIFIED_CLOSED_METADATA |\n| EP_PERF_PFV3_MIDTAG_GEMM_WV_ZERO_RO_G64W8_V1 | WV_ZERO_RO | 548988 | QUALIFIED_CLOSED_METADATA |\n\nA1/A3 references come from each final FAMILY_SCOPE accepted_same_mode_ref. B reuses S45974/F55925; W is not a same-mode REF. F minus WV does not identify an independent causal T effect. Geometry changes resources; no equal-area, cross-workload aggregate, geometric mean or PPA claim.\n\nThis foreground tool reads only JSON metadata and emits stdout. It never starts a model/background actor, writes authority/controller state, imports native/dispatcher code, reads raw logs/Trace/archive bodies, copies Trace or publishes Git.\n",
   "matched_references": [
     {
       "CTA": 6400,
@@ -898,20 +900,106 @@
   ],
   "points": [
     {
+      "CTA": 6400,
+      "accepted_point_ref": {
+        "bytes": 2745,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A1/execution/cases/EP_PERF_PFV4_A1_STENCIL_S_G64W8_V1/run/39f3fed8-e836-4f6d-9677-133c5d24f053/ACCEPTED_POINT.json",
+        "sha256": "4bf8e83b62329150ef78f78be37063c4bf0f14c0329e5f3065d5ebac63c099d3"
+      },
+      "archive_proof": {
+        "archive_body_reopened": false,
+        "archive_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/ep_l2_pfv4_a1_source78_20261104_v1/accepted/EP_PERF_PFV4_A1_STENCIL_S_G64W8_V1/39f3fed8-e836-4f6d-9677-133c5d24f053/result.tar",
+        "archive_sha256": "1b9b1fb0ad6732ac70cd9ca4aba02d55b16580feb57de00b9a14a3f6b329d8bd",
+        "two_distinct_restore_targets": [
+          "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A1/execution/restore_windows/EP_PERF_PFV4_A1_STENCIL_S_G64W8_V1_FIRST_peb4rb8q/fresh_target",
+          "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A1/execution/restore_windows/EP_PERF_PFV4_A1_STENCIL_S_G64W8_V1_INDEPENDENT_luzxo5uv/fresh_target"
+        ]
+      },
+      "archive_receipt_ref": {
+        "bytes": 2018,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A1/execution/cases/EP_PERF_PFV4_A1_STENCIL_S_G64W8_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "34d3a9323308131d4cd8dc1863106340ce601bb4a5d6f56baf19bf9d31d1d334"
+      },
       "cohort": "EP_PERF_PFV4_A1_STENCIL_S_G64W8_V1",
-      "cycles": "UNKNOWN",
+      "cycles": 4299729,
+      "geometry": {
+        "line_bytes": 128,
+        "sets": 64,
+        "slices": 64,
+        "ways": 8
+      },
       "group": "A1",
+      "hardware_drained": true,
+      "input_identity_sha256": "bd0309dfeec5745ba97400978c2c5f1413fa9c604376b3dd97e1dd3d5c8cc146",
+      "instructions": 2193446000,
+      "kernel_count": 100,
       "mode": "S",
-      "reason": "registry state is CONSUMED_BEFORE_FORK",
-      "status": "UNKNOWN"
+      "program": "STENCIL",
+      "request_id": "EP_L2_PFV4_A1_STENCIL_SOURCE78_850_L100_V1",
+      "source_identity": {
+        "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+        "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+        "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A1/execution/cases/EP_PERF_PFV4_A1_STENCIL_S_G64W8_V1/control/FROZEN_SPEC.json",
+        "sha256": "8396d44f20267851ad43e0539c93eb7e4acefc3243e2ef196dcb1ee0637f3151"
+      },
+      "state": "CLOSED_ACCEPTED",
+      "status": "QUALIFIED_CLOSED_METADATA"
     },
     {
+      "CTA": 6400,
+      "accepted_point_ref": {
+        "bytes": 2799,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A1/execution/cases/EP_PERF_PFV4_A1_STENCIL_WV_ZERO_RO_G64W8_V1/run/db4f490f-0191-4add-b8b5-1e96627b6683/ACCEPTED_POINT.json",
+        "sha256": "7ad0ad822ee2b6fe0ccfe7986cb9a823c766621b1d819fea7c6e9d96b908d2bb"
+      },
+      "archive_proof": {
+        "archive_body_reopened": false,
+        "archive_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/ep_l2_pfv4_a1_source78_20261104_v1/accepted/EP_PERF_PFV4_A1_STENCIL_WV_ZERO_RO_G64W8_V1/db4f490f-0191-4add-b8b5-1e96627b6683/result.tar",
+        "archive_sha256": "e2af0349b0d2a85e4365a13f920545125d457b0396683c6e951b0a2b4c896039",
+        "two_distinct_restore_targets": [
+          "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A1/execution/restore_windows/EP_PERF_PFV4_A1_STENCIL_WV_ZERO_RO_G64W8_V1_FIRST_ve_tqwil/fresh_target",
+          "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A1/execution/restore_windows/EP_PERF_PFV4_A1_STENCIL_WV_ZERO_RO_G64W8_V1_INDEPENDENT_brwnxu6w/fresh_target"
+        ]
+      },
+      "archive_receipt_ref": {
+        "bytes": 2063,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A1/execution/cases/EP_PERF_PFV4_A1_STENCIL_WV_ZERO_RO_G64W8_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "37eb3b68733aafde206e5a4f7eaf9dba784c0ea842befc28d73519558b946bd6"
+      },
       "cohort": "EP_PERF_PFV4_A1_STENCIL_WV_ZERO_RO_G64W8_V1",
-      "cycles": "UNKNOWN",
+      "cycles": 4282418,
+      "geometry": {
+        "line_bytes": 128,
+        "sets": 64,
+        "slices": 64,
+        "ways": 8
+      },
       "group": "A1",
+      "hardware_drained": true,
+      "input_identity_sha256": "bd0309dfeec5745ba97400978c2c5f1413fa9c604376b3dd97e1dd3d5c8cc146",
+      "instructions": 2193446000,
+      "kernel_count": 100,
       "mode": "WV_ZERO_RO",
-      "reason": "registry state is CONSUMED_BEFORE_FORK",
-      "status": "UNKNOWN"
+      "program": "STENCIL",
+      "request_id": "EP_L2_PFV4_A1_STENCIL_SOURCE78_850_L100_V1",
+      "source_identity": {
+        "archive_sha256": "e5a743a2bb796d82f58109251f43d5c1997d5c1f7fdeac61213416da3835b697",
+        "binary_sha256": "78d4e96bb79c776e27146bcf168d7c70cf3897ef9cb84d837d8974fec4c91b8a",
+        "core_source_commit": "78f4b59e865b136eede74df74c44c210f5b4ca04",
+        "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+        "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b"
+      },
+      "spec_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v4_20261104_v1/track_a/resource_admission_followup_v2/A1/execution/cases/EP_PERF_PFV4_A1_STENCIL_WV_ZERO_RO_G64W8_V1/control/FROZEN_SPEC.json",
+        "sha256": "516f6f72cdacdd16f962074bc49c534607ea521610ca2d0547bae806ae5a39d4"
+      },
+      "state": "CLOSED_ACCEPTED",
+      "status": "QUALIFIED_CLOSED_METADATA"
     },
     {
       "CTA": 15625,
@@ -1130,6 +1218,6 @@
     "signed_changes_preserved": true,
     "unknown_results_not_imputed": true
   },
-  "status": "PARTIAL_UNKNOWN_RESULTS_PRESERVED",
-  "utc": "2026-11-04T12:20:43.288922+00:00"
+  "status": "ALL_SIX_CLOSED_QUALIFIED",
+  "utc": "2026-11-05T00:34:03.588107+00:00"
 }
