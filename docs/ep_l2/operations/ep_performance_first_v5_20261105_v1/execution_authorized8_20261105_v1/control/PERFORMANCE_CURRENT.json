@@ -6,13 +6,15 @@
   "automatic_model_retry": false,
   "bounded_interpretations": [
     "B is a same-newSource F policy comparison; positive cycles savings do not isolate T and do not establish cross-workload optimality or GPU calibration.",
-    "In this exact Vector input the pressure epoch never activated. The frozen admission counters show Native service before activation; RO acceptance must be reported explicitly rather than crediting a faster active RO path."
+    "In this exact Vector input the pressure epoch never activated. The frozen admission counters show Native service before activation; RO acceptance must be reported explicitly rather than crediting a faster active RO path.",
+    "A evaluates lifetime-never-installed cold proof only. It does not solve sustained Stencil Victim retention; no general empty-directory oracle is claimed.",
+    "A reduced observed total frontend queries without reducing complete-application cycles. Query-count improvement alone is not an application performance benefit."
   ],
   "budgets": {
     "A": {
       "budget": 3,
       "remaining": 0,
-      "state": "RUNNING"
+      "state": "CLOSED_COMPLETED"
     },
     "B": {
       "budget": 2,
@@ -27,16 +29,29 @@
   },
   "comparisons": {
     "A_WV_OFF_vs_S": {
-      "status": "UNKNOWN_UNTIL_BOTH_EXACT_CELLS_ACCEPTED"
+      "candidate_cycles": 178951,
+      "reduction_percent": 1.5817232864206086,
+      "reference_cycles": 181827,
+      "saved_cycles": 2876
     },
     "A_WV_ON_vs_S": {
-      "status": "UNKNOWN_UNTIL_BOTH_EXACT_CELLS_ACCEPTED"
+      "candidate_cycles": 180074,
+      "reduction_percent": 0.9641032409928119,
+      "reference_cycles": 181827,
+      "saved_cycles": 1753
     },
     "A_cold_ON_vs_OFF": {
-      "status": "UNKNOWN_UNTIL_BOTH_EXACT_CELLS_ACCEPTED"
+      "candidate_cycles": 180074,
+      "reduction_percent": -0.6275460880352722,
+      "reference_cycles": 178951,
+      "saved_cycles": -1123
     },
     "A_observed_frontend_queries_OFF_vs_ON": {
-      "status": "UNKNOWN_UNTIL_BOTH_FINAL_COUNTER_SUMMARIES_AVAILABLE"
+      "OFF": 150462,
+      "ON": 148843,
+      "fewer_queries": 1619,
+      "reduction_percent": 1.0760191942151507,
+      "semantics": "final64-slice cumulative totals of matched complete FWT cells; exact cold_bypasses is not exported by frozen Source; no invented per-access attribution"
     },
     "B_same_newSource_F_pressure_vs_Fbaseline": {
       "candidate_cycles": 45425,
@@ -56,8 +71,8 @@
   },
   "complete_scientific_scope": 8,
   "counts": {
-    "accepted": 2,
-    "pending": 6,
+    "accepted": 5,
+    "pending": 3,
     "technical_failure": 0
   },
   "logical_architecture_costs": {
@@ -98,11 +113,25 @@
   "physical_PPA": "NOT_PROVEN",
   "points": [
     {
-      "accepted_point_ref": null,
-      "archive_receipt_ref": null,
+      "CTA": 7040,
+      "accepted_point_ref": {
+        "bytes": 4020,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_a_wv/host_private_candidate_v1/main_materialized/37e5a2db776190ee3f74/execution/cases/EP_PERF_PFV5_A_FWT_G32W8_S_V1/run/49f7b80a-ad74-4d42-8dbe-6ab57dd38c37/ACCEPTED_POINT.json",
+        "sha256": "ca7d145bb1d29050f6e86544357db9d4ca35784b80b053aa224f9db5d8aa50a9"
+      },
+      "archive_receipt_ref": {
+        "bytes": 2070,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_a_wv/host_private_candidate_v1/main_materialized/37e5a2db776190ee3f74/execution/cases/EP_PERF_PFV5_A_FWT_G32W8_S_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "1a5b638688ed38c8bc309b58e847a24f9441ed605df2399e8564ab5be0feb431"
+      },
+      "archive_two_restores": true,
+      "closed_counter_summary_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/activation_20261105_v1/control/CLOSED_COUNTERS/EP_PERF_PFV5_A_FWT_G32W8_S_V1.json",
+        "sha256": "80f8447881aaa2390475fb47ded9752e7132fc3cb4d5c32bd4dfa5434e18bd6d"
+      },
       "cohort": "EP_PERF_PFV5_A_FWT_G32W8_S_V1",
       "consumed": true,
-      "cycles": null,
+      "cycles": 181827,
       "done_ref": {
         "bytes": 9868,
         "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_PFV5_A_FWT_G32W8_S_V1.DONE.json",
@@ -110,6 +139,7 @@
       },
       "elapsed_seconds": 659.3218799903989,
       "group": "A",
+      "hardware_drained": true,
       "host_limits": {
         "AS_bytes": 10737418240,
         "RSS_bytes": 2147483648,
@@ -117,7 +147,27 @@
         "wall_seconds": 28800
       },
       "independent_release": true,
+      "instructions": 180944896,
+      "kernel_count": 16,
       "launcher_wait_returncode": 0,
+      "mechanisms": {
+        "EPL2ROP5|ADMISSION|": {
+          "emitted_lines": 0,
+          "status": "NOT_EMITTED_NO_SYNTHETIC_ZERO"
+        },
+        "EPL2ROV1|SUMMARY|": {
+          "emitted_lines": 0,
+          "status": "NOT_EMITTED_NO_SYNTHETIC_ZERO"
+        },
+        "EPL2TVDV2|SUMMARY|": {
+          "emitted_lines": 0,
+          "status": "NOT_EMITTED_NO_SYNTHETIC_ZERO"
+        },
+        "EPL2TVDV3|METADATA_COST|": {
+          "emitted_lines": 0,
+          "status": "NOT_EMITTED_NO_SYNTHETIC_ZERO"
+        }
+      },
       "mode": "S",
       "source_identity": {
         "archive_sha256": "ff81389a1bdc59f7cc338cdd0376b7c37f5a656d045b923dc07c4b0dd7816380",
@@ -130,17 +180,34 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_a_wv/host_private_candidate_v1/main_materialized/37e5a2db776190ee3f74/execution/cases/EP_PERF_PFV5_A_FWT_G32W8_S_V1/control/FROZEN_SPEC.json",
         "sha256": "024981c60b20ca49b53f60ee8369e5ccd83552e398c8d975780a9d8b6bef9eb3"
       },
-      "state": "PARSE_HOLD",
+      "state": "CLOSED_ACCEPTED",
       "stop_reason": null,
       "uuid": "49f7b80a-ad74-4d42-8dbe-6ab57dd38c37",
-      "validation_ref": null
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_a_wv/host_private_candidate_v1/main_materialized/37e5a2db776190ee3f74/execution/cases/EP_PERF_PFV5_A_FWT_G32W8_S_V1/run/49f7b80a-ad74-4d42-8dbe-6ab57dd38c37/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "e61d5c5cab05c0d054c0011ae914171487098dfde973819a9999d844490471ba"
+      }
     },
     {
-      "accepted_point_ref": null,
-      "archive_receipt_ref": null,
+      "CTA": 7040,
+      "accepted_point_ref": {
+        "bytes": 4063,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_a_wv/host_private_candidate_v1/main_materialized/37e5a2db776190ee3f74/execution/cases/EP_PERF_PFV5_A_FWT_G32W8_WV_OFF_V1/run/2ef88a1c-c691-45d9-98d1-4e8c57897dce/ACCEPTED_POINT.json",
+        "sha256": "665609929593c04edc7956bb23d6901764690bf176b19c6d29f2a2004d4e6d22"
+      },
+      "archive_receipt_ref": {
+        "bytes": 2095,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_a_wv/host_private_candidate_v1/main_materialized/37e5a2db776190ee3f74/execution/cases/EP_PERF_PFV5_A_FWT_G32W8_WV_OFF_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "086270d9d6c3db72b565fa24cf36f5586826ea317ae0bdb6accf65c8596ff443"
+      },
+      "archive_two_restores": true,
+      "closed_counter_summary_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/activation_20261105_v1/control/CLOSED_COUNTERS/EP_PERF_PFV5_A_FWT_G32W8_WV_OFF_V1.json",
+        "sha256": "565bdb757abe04e807e24068bfa404c8906a684055008d5426a3219d9b0fbdab"
+      },
       "cohort": "EP_PERF_PFV5_A_FWT_G32W8_WV_OFF_V1",
       "consumed": true,
-      "cycles": null,
+      "cycles": 178951,
       "done_ref": {
         "bytes": 9906,
         "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_PFV5_A_FWT_G32W8_WV_OFF_V1.DONE.json",
@@ -148,6 +215,7 @@
       },
       "elapsed_seconds": 733.153609521687,
       "group": "A",
+      "hardware_drained": true,
       "host_limits": {
         "AS_bytes": 10737418240,
         "RSS_bytes": 2147483648,
@@ -155,7 +223,52 @@
         "wall_seconds": 28800
       },
       "independent_release": true,
+      "instructions": 180944896,
+      "kernel_count": 16,
       "launcher_wait_returncode": 0,
+      "mechanisms": {
+        "EPL2ROP5|ADMISSION|": {
+          "emitted_lines": 0,
+          "status": "NOT_EMITTED_NO_SYNTHETIC_ZERO"
+        },
+        "EPL2ROV1|SUMMARY|": {
+          "emitted_lines": 0,
+          "status": "NOT_EMITTED_NO_SYNTHETIC_ZERO"
+        },
+        "EPL2TVDV2|SUMMARY|": {
+          "emitted_lines": 1088,
+          "status": "FINAL_CUMULATIVE64_SLICE_SUMMARIES",
+          "totals": {
+            "bank_wait_cycles": 3209,
+            "clean_installs": 249,
+            "clean_retention_slot_cycles": 6543794,
+            "directory_queries": 150462,
+            "dirty_forward_responses": 3312,
+            "dirty_installs": 59532,
+            "icnt_wait_cycles": 0,
+            "lookup_wait_cycles": 150462,
+            "promotions": 26182,
+            "read_responses": 88069,
+            "retention_slot_cycles": 858885334,
+            "served_sector_bytes": 2818208,
+            "served_sectors": 88069,
+            "total_retention_slot_cycles": 865429128,
+            "wb_wait_cycles": 89726
+          }
+        },
+        "EPL2TVDV3|METADATA_COST|": {
+          "emitted_lines": 1088,
+          "status": "FINAL_CUMULATIVE64_SLICE_SUMMARIES",
+          "totals": {
+            "completion_cam_queries": 59532,
+            "frontend_cam_queries": 150462,
+            "indexed_rollback": 0,
+            "indexed_wb_accept": 59532,
+            "native_install_commits": 36211,
+            "native_promotion_commits": 26182
+          }
+        }
+      },
       "mode": "WV_ZERO_RO",
       "source_identity": {
         "archive_sha256": "ff81389a1bdc59f7cc338cdd0376b7c37f5a656d045b923dc07c4b0dd7816380",
@@ -168,17 +281,34 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_a_wv/host_private_candidate_v1/main_materialized/37e5a2db776190ee3f74/execution/cases/EP_PERF_PFV5_A_FWT_G32W8_WV_OFF_V1/control/FROZEN_SPEC.json",
         "sha256": "daf77ac812340d44f3ec2ccb25339a65fb2cb64549fbaeb322e25cebd0077dbd"
       },
-      "state": "PARSE_HOLD",
+      "state": "CLOSED_ACCEPTED",
       "stop_reason": null,
       "uuid": "2ef88a1c-c691-45d9-98d1-4e8c57897dce",
-      "validation_ref": null
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_a_wv/host_private_candidate_v1/main_materialized/37e5a2db776190ee3f74/execution/cases/EP_PERF_PFV5_A_FWT_G32W8_WV_OFF_V1/run/2ef88a1c-c691-45d9-98d1-4e8c57897dce/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "5763cee04e9f5d2f4c246387ccf20f30c029e630da10b427a24b06cfc1953ce6"
+      }
     },
     {
-      "accepted_point_ref": null,
-      "archive_receipt_ref": null,
+      "CTA": 7040,
+      "accepted_point_ref": {
+        "bytes": 4057,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_a_wv/host_private_candidate_v1/main_materialized/37e5a2db776190ee3f74/execution/cases/EP_PERF_PFV5_A_FWT_G32W8_WV_ON_V1/run/de908126-3592-4b2c-b38b-ee6fac72e18a/ACCEPTED_POINT.json",
+        "sha256": "7400cb272cf8815a254da36a3dfaf1383c0e9002a61336ad5f9ee28417c760bf"
+      },
+      "archive_receipt_ref": {
+        "bytes": 2090,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_a_wv/host_private_candidate_v1/main_materialized/37e5a2db776190ee3f74/execution/cases/EP_PERF_PFV5_A_FWT_G32W8_WV_ON_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "797d339457b5607aee18a68af809e360dc73f505aab3ac20e707ef6b237f7453"
+      },
+      "archive_two_restores": true,
+      "closed_counter_summary_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/activation_20261105_v1/control/CLOSED_COUNTERS/EP_PERF_PFV5_A_FWT_G32W8_WV_ON_V1.json",
+        "sha256": "1386df097f932007b2b41ef7f5fcab57d263df3622ca4039544276b4d0c6c195"
+      },
       "cohort": "EP_PERF_PFV5_A_FWT_G32W8_WV_ON_V1",
       "consumed": true,
-      "cycles": null,
+      "cycles": 180074,
       "done_ref": {
         "bytes": 9900,
         "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_PFV5_A_FWT_G32W8_WV_ON_V1.DONE.json",
@@ -186,6 +316,7 @@
       },
       "elapsed_seconds": 743.0491391904652,
       "group": "A",
+      "hardware_drained": true,
       "host_limits": {
         "AS_bytes": 10737418240,
         "RSS_bytes": 2147483648,
@@ -193,7 +324,52 @@
         "wall_seconds": 28800
       },
       "independent_release": true,
+      "instructions": 180944896,
+      "kernel_count": 16,
       "launcher_wait_returncode": 0,
+      "mechanisms": {
+        "EPL2ROP5|ADMISSION|": {
+          "emitted_lines": 0,
+          "status": "NOT_EMITTED_NO_SYNTHETIC_ZERO"
+        },
+        "EPL2ROV1|SUMMARY|": {
+          "emitted_lines": 0,
+          "status": "NOT_EMITTED_NO_SYNTHETIC_ZERO"
+        },
+        "EPL2TVDV2|SUMMARY|": {
+          "emitted_lines": 1088,
+          "status": "FINAL_CUMULATIVE64_SLICE_SUMMARIES",
+          "totals": {
+            "bank_wait_cycles": 3268,
+            "clean_installs": 275,
+            "clean_retention_slot_cycles": 6807407,
+            "directory_queries": 148843,
+            "dirty_forward_responses": 3373,
+            "dirty_installs": 58841,
+            "icnt_wait_cycles": 0,
+            "lookup_wait_cycles": 148843,
+            "promotions": 25572,
+            "read_responses": 87134,
+            "retention_slot_cycles": 864260024,
+            "served_sector_bytes": 2788288,
+            "served_sectors": 87134,
+            "total_retention_slot_cycles": 871067431,
+            "wb_wait_cycles": 93879
+          }
+        },
+        "EPL2TVDV3|METADATA_COST|": {
+          "emitted_lines": 1088,
+          "status": "FINAL_CUMULATIVE64_SLICE_SUMMARIES",
+          "totals": {
+            "completion_cam_queries": 58841,
+            "frontend_cam_queries": 148843,
+            "indexed_rollback": 0,
+            "indexed_wb_accept": 58841,
+            "native_install_commits": 36201,
+            "native_promotion_commits": 25572
+          }
+        }
+      },
       "mode": "WV_ZERO_RO",
       "source_identity": {
         "archive_sha256": "ff81389a1bdc59f7cc338cdd0376b7c37f5a656d045b923dc07c4b0dd7816380",
@@ -206,10 +382,13 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_a_wv/host_private_candidate_v1/main_materialized/37e5a2db776190ee3f74/execution/cases/EP_PERF_PFV5_A_FWT_G32W8_WV_ON_V1/control/FROZEN_SPEC.json",
         "sha256": "96147b5cb6dbe44dbe3fb5f195d66de61a8582cc5567e1132ac4f78270054a6e"
       },
-      "state": "PARSE_HOLD",
+      "state": "CLOSED_ACCEPTED",
       "stop_reason": null,
       "uuid": "de908126-3592-4b2c-b38b-ee6fac72e18a",
-      "validation_ref": null
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_a_wv/host_private_candidate_v1/main_materialized/37e5a2db776190ee3f74/execution/cases/EP_PERF_PFV5_A_FWT_G32W8_WV_ON_V1/run/de908126-3592-4b2c-b38b-ee6fac72e18a/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "953ab41d5f8c9374913719fe05aeb8d770ebe6c1daecc694958a3240c9b4802a"
+      }
     },
     {
       "CTA": 15625,
@@ -544,18 +723,6 @@
   "refund": false,
   "remaining_scope_gaps": [
     {
-      "cohort": "EP_PERF_PFV5_A_FWT_G32W8_S_V1",
-      "state": "PARSE_HOLD"
-    },
-    {
-      "cohort": "EP_PERF_PFV5_A_FWT_G32W8_WV_OFF_V1",
-      "state": "PARSE_HOLD"
-    },
-    {
-      "cohort": "EP_PERF_PFV5_A_FWT_G32W8_WV_ON_V1",
-      "state": "PARSE_HOLD"
-    },
-    {
       "cohort": "EP_PERF_PFV4_A2_3MM_S_G64W8_V1",
       "state": "CONSUMED_BEFORE_FORK"
     },
@@ -569,5 +736,5 @@
     }
   ],
   "schema": "EP_MAIN_PFV5_ROLLING_EXACT8_RESULTS_V1",
-  "utc": "2026-11-05T04:25:49.514516+00:00"
+  "utc": "2026-11-05T04:54:35.085591+00:00"
 }
