@@ -68,8 +68,8 @@ D三点缺少compact_module_ref。Main的隔离消费实例只补已有资格的
 
 8点在唯一Main动态队列中独立释放，全局EP cap10按CPU/RAM/cgroup/SSD/真164及其他owner承诺准入。旧900秒、3600秒及12/14小时仅为软参考；激活前分别冻结B2h、A8h、D72h有限安全上限，运行中未热改。所有模型自然exit0，没有因旧软参考强制中断。两类消费端工程HOLD已按明确补充审结，未伪装为从未发生。
 
-[最终逐项审计](FINAL_REQUIREMENT_COMPLETION_AUDIT.json)核对8个不同UUID、2+3+3预算、每点完整实际配置/应用人口、硬件排空、实际域/CPU/argv/环境、归档正文和全部成员SHA、两次不同Native目标完整恢复、监督自然结束及原47条EP请求逐字节保持。Source KEEP，释放0。临时恢复工作集按原受验证流程在验证后释放，科学源与归档保留。
+[最终逐项审计](FINAL_REQUIREMENT_COMPLETION_AUDIT.json)核对8个不同UUID、2+3+3预算、每点完整实际配置/应用人口、硬件排空、实际域/CPU/argv/环境、归档正文和全部成员SHA、两次不同Native目标完整恢复、监督自然结束及原47条EP请求全部字段保持一致（规范JSON散列一致；不声称共享注册表整体文件字节不变）。Source KEEP，释放0。临时恢复工作集按原受验证流程在验证后释放，科学源与归档保留。
 
 应用NI未测、B0/M0a未证明边界、物理PPA和程序数值输出UNKNOWN均保持。没有新增NI、完整GPU校准、109采集、Trace或论文编辑。后续科学模型仍需独立准确授权。
 
-审计与统一报告也保存至真164，入口见FINAL_CLOSEOUT_TRUE164_RECEIPT.json。每点原归档与恢复回执在PERFORMANCE_CURRENT.json和最终审计中保留精确路径/SHA。
+审计与统一报告也保存至真164，入口见FINAL_CLOSEOUT_TRUE164_RECEIPT_V2.json。每点原归档与恢复回执在PERFORMANCE_CURRENT.json和最终审计中保留精确路径/SHA。
