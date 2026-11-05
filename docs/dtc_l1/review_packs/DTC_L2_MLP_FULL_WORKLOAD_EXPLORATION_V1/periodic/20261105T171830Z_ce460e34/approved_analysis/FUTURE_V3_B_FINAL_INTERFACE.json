@@ -1,0 +1,46 @@
+{
+  "schema": "DTC_STRACE_FUTURE_ENTRY_V3_INTERFACE",
+  "status": "FROZEN_CANDIDATE_NOT_INSTALLED_REAL4_PREREQUISITE_MISSING",
+  "overlay_id": "DTC_STRACE_FUTURE_ENTRY_V3",
+  "native_directory": "/root/data/dtc_l2_mlp_exploration_20261027_v1/control/operational_amendments/strace_bpf_future_entry_v3",
+  "native_copy_roles": {
+    "entry": "native-entry/bin/experiment",
+    "frontend": "bpf_frontend.py",
+    "producer": "strace_entry.py",
+    "extra_strict": "bpf_extra_strict.py",
+    "consumer": "consumer_bridge.py"
+  },
+  "qualified_sources": {
+    "entry": "2a21ba7d62ea9094dd1dc6de7c4d0c699c9baf491e07467228f1b307d60c8792",
+    "frontend": "c1557a219ada13fb0478830209f137036324048d8387cdffaa850f3744a5e8d2",
+    "producer": "06e52cd8e359791a912ba081b9e3cb16d7e23baae1d7a8511eefa8d74528c675",
+    "extra_strict": "702a0a3e27645ece6cf15a68c598bce4067b69132a74c1fb1e3cfde03a621c3b",
+    "consumer": "de70cede8876fca5bf909f5b8d685b74da43a6ca08880e18e09d59e924c0225b"
+  },
+  "policy_source": {"native_relative_path": "future_policy.py", "sha256": "389be2e9dc01e071bc4c3edae10f8fa67ba1555c357840225b4a9687b8622b91"},
+  "configuration_builder": {
+    "module": "cfg_metadata.py",
+    "read_only_functions": ["source_set(five_native_source_paths)", "expected_pins(native_policy_path, old_pins=None)", "make_configuration(source_paths, QA_path, readback_path, canary4_prerequisite_path, policy_source_path=..., v2_entry_path=..., old_pins=None)", "operational_record(cfg)"],
+    "writes_or_registration_or_install": false
+  },
+  "config_status_when_real_prerequisite_exists": "ACTIVE_FUTURE_SCOPED",
+  "current_config_status": "PENDING_REAL_CANARY4_NO_ACTIVE_ENTRY_WRITTEN",
+  "future_primary_policy": "MATRIX_REGISTERED_UNSPENT_BPF_REQUIRED",
+  "future_ir_policy": "EXACT_REGISTERED_IR11_BPF_REQUIRED",
+  "modes_allowlist": "NONE; policy derives real MATRIX primary and frozen IR plan, never another cohort list",
+  "required_QA_aggregate": {"status": "PASS", "native_prefix_qualified": true, "extra_strict_qualified": true, "consumer_archive_qualified": true, "qualified_sources": "exact final five role hashes above", "expected_pins": "exact cfg_metadata.expected_pins(native_policy_path) map", "production_release_eligible": false, "actual_canary4_qualified": false, "note": "Three flags qualify CPU prefix/extra/archive mechanics only. Keep actual-model release separate."},
+  "required_source_readback": {"verified": true, "QA_sha256": "raw SHA of actual aggregate", "qualified_sources": "exact five hashes", "expected_pins": "same map as aggregate/config", "transport": "honest native + 164 byte readback, no mandatory Git/HTTPS"},
+  "real_prerequisite_export": "newextra.capture_release_prerequisite(actual_frame, actual_main_module, immutable_gate_path), before V3 safe_finish changes and outside every authority EX",
+  "real_prerequisite_verify": "newextra.verify_release_prerequisite(cfg,current_q) performs independent exact4 original/V2 strict + real archive replay; CPU stand-in can never release production",
+  "registration_record": "cfg_metadata.operational_record(cfg) precomputed outside authority EX; Main appends q.additional_operational_overlays[overlay_id] without grants/old-row mutation",
+  "main_install_sequence": ["Real4 capture and all source/QA/readback checks", "Drain pre-exec claims; retain actual same owner and aging lock", "Main official IR11 memory/scope transactions and source-bound view/primary-strip integration, no science-matrix writes", "consumer.install_on_frame(frame,ACTIVE_ENTRY_path,engine.assert_parent_lease)", "producer.install_owner_dispatch(frame,ACTIVE_ENTRY_path,consumer.consumer_check)"],
+  "checks": ["consumer.consumer_check(frame,cfg)", "producer.validate(cfg,engine.registered()[2])", "same owner/frame/pool/claims/old references and immutable old source bytes"],
+  "restore": ["producer.restore_owner_dispatch() first", "consumer.restore_in_owner(engine.assert_parent_lease) second", "Either refuses admitted dangling V3 claims or unaccepted new generations; no automatic claim deletion/cancellation or blind old fallback"],
+  "route_claim": {"path": "R/control/strace_bpf_v3_route_claims/<C>.json", "schema": "STRACE_BPF_V3_FUTURE_ROUTE_CLAIM_V1", "writer": "producer.write_route_claim(engine,cfg,C) before selected raw worker", "snapshot_keys": ["route_claim_utf8", "route_claim_sha256"], "three_binding_key": "route_claim_sha256", "scientific_credit_consumed": false},
+  "historical_scope_api": "classify_scope(cfg,C,q,spec=None,stage='ADMISSION',historical_context=None); TERMINAL uses frozen snapshot context while current canonical/input/UUID remain joined",
+  "old_route_preservation": "Engineering4 exact saved V2 worker first; non-scope/spent exact previous route. No global native46/fa3/CPU2/IO/subprocess edits.",
+  "production_changes": 0,
+  "actual_model_starts": 0,
+  "registry_changes": 0,
+  "production_release_eligible": false
+}

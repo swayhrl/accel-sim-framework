@@ -1,0 +1,30 @@
+{
+  "F3_actual_terminal_event": {
+    "UTC": "2026-10-29T01:57:31.541360+00:00",
+    "error": "ORIGINAL_REFERENCE_DRIFT",
+    "kind": "RUN_FAILED_SOURCE_KEEP",
+    "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/control/operational_amendments/negative_archive_autoclose_owner_v3/RUN_v1/events/1793239051541401814_12_RUN_FAILED_SOURCE_KEEP.json",
+    "sha256": "3352acd802bdde256498c6eb413bc755af023bf19c63f97f122baad0e2fc2858"
+  },
+  "actual_locked_probe": {
+    "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/control/operational_amendments/negative_archive_autoclose_owner_v3/readonly_ref_identity_v1/ACK.json",
+    "sha256": "6a60b38b3ae56769141f332c06fad6291ac68d2e73c32edffcc4faf7b6cfe7d5"
+  },
+  "limits": "Historical F3 event logged no index, so cannot assign each old event uniquely to one of these two confirmed defects. Both are corrected independently; permanent reference changes remain failures.",
+  "root_causes": [
+    {
+      "finding": "Actual FrameReadGuard.choose temporarily sets aging.frame_provider=self.frames under aging.lock and restores original_provider in finally. F3 snapshots were unlocked.",
+      "index": 12,
+      "lines": "61-80",
+      "reference": "aging.frame_provider",
+      "source": "/root/data/dtc_l2_mlp_exploration_20261027_v1/control/operational_amendments/frame_read_guard_v1/frame_read_guard.py"
+    },
+    {
+      "finding": "Actual ScopeSync.extend is bound method; lookup creates fresh temporary method identity while self/func stay fixed. Root locked probe confirms actual boundmethod; advance14 is a stable plain function.",
+      "index": 33,
+      "reference": "registry.extend",
+      "source": "/root/data/dtc_l2_mlp_exploration_20261027_v1/control/operational_amendments/future_memory_scope_sync_v1/scope_sync.py"
+    }
+  ],
+  "schema": "F4_REFERENCE_STABILITY_SOURCE_DIAGNOSIS"
+}
