@@ -94,6 +94,8 @@ H_OTHER is PARTIALLY_ATTRIBUTED within the V9 collected trace: Non-Dense increas
 | FlashAttention and cache kernels | Existing strong attention path | Identify copy arguments and software elimination feasibility |
 | Prefix-cache / logprob controls | V8 authority retained, no matrix repetition | Do not confuse software state with weight bandwidth |
 
+For the observed copies alone, even the unrealistic removal of all collected copy time with other work fixed is at most3.197527ms out of the same profiled B2_N32 generate394.981720ms, approximately0.81%. Overlap and necessary movement reduce that ceiling. This is a trace-local ideal bound, not an observed native speedup, and makes copy-only hardware novelty a weak application-value case here. LOCAL_OPTIMIZATION_BOUND.json binds the same-profile numerator/denominator; the NSYS completeness limitation remains.
+
 No global claim reaches CAUSALLY_SUPPORTED. No new microarchitecture/RTL candidate is promoted. NEXT_QUESTIONS.md records falsifiers, not an automatically started next Goal.
 
 ## Engineering, resources, and evidence limits
