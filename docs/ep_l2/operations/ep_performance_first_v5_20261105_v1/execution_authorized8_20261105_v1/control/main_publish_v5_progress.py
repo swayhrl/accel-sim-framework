@@ -1,6 +1,6 @@
 """Main finite V5 metadata publisher. Read results; never launches or changes science."""
 from pathlib import Path
-import json,hashlib,subprocess,fcntl,datetime,sys,os
+import json,hashlib,subprocess,fcntl,datetime,sys,os,importlib.util
 C=Path(__file__).resolve().parent;V=C.parent.parent;J=V.parent.parent
 REG=Path('/root/data/ep_l2_dtc_l1_native_v2/control/science_authority/NATIVE_SCIENCE_REGISTRY.json')
 BRANCH='hrl/ep-l2-performance-first-v5-20261105-v1';BASE='a7318d0fe51bbd00b94da095bd925c60a06f0750'
@@ -39,6 +39,13 @@ def report():
    assert ar['status']=='TRUE164_RESULT_SHA_AND_TWO_NATIVE_TARGET_RESTORES_PASS'and len(rest)==2 and len({x['target']for x in rest})==2
    assert all(x['status']=='INDEPENDENT_NATIVE_TARGET_COMPLETE_SHA_RESTORE_PASS'and x['archive_sha256']==ar['archive_ref']['sha256']for x in rest)
    item.update(cycles=a['cycles'],instructions=a['instructions'],CTA=a['CTA'],kernel_count=a['kernel_count'],hardware_drained=True,archive_two_restores=True)
+   if p['group']in ['A','B']:
+    try:
+     hp=C/'closed_counter_summary_v5.py';assert sha(hp)=='47a544533398c7e7cbd3419f67d1bc0b793dd2e29f0ad29f1568c1b3f3f1a328','Main collector pin changed'
+     sp=importlib.util.spec_from_file_location('main_readonly_closed_counter_collector',hp);mod=importlib.util.module_from_spec(sp);sp.loader.exec_module(mod)
+     counters=mod.collect(p['cohort'],s,r,C);cp=C/'CLOSED_COUNTERS'/(p['cohort']+'.json')
+     item['closed_counter_summary_ref']=ref(cp);item['mechanisms']={k:{kk:vv for kk,vv in vv.items()if kk!='last_per_slice'}for k,vv in counters['groups'].items()}
+    except Exception as err:item['mechanism_summary_gap']=repr(err)
    cycles[p['cohort']]=a['cycles'];counts['accepted']+=1
   elif state=='CLOSED_UNACCEPTED':counts['technical_failure']+=1
   else:counts['pending']+=1
@@ -53,6 +60,12 @@ def report():
  'A_WV_ON_vs_S':compare('EP_PERF_PFV5_A_FWT_G32W8_S_V1','EP_PERF_PFV5_A_FWT_G32W8_WV_ON_V1'),
  'D_G64_WV_vs_S':compare('EP_PERF_PFV4_A2_3MM_S_G64W8_V1','EP_PERF_PFV4_A2_3MM_WV_ZERO_RO_G64W8_V1'),
  'D_WV_G64_vs_REF32':compare('EP_PERF_PFV4_A2_3MM_WV_ZERO_RO_REF32W8_V1','EP_PERF_PFV4_A2_3MM_WV_ZERO_RO_G64W8_V1')}
+ off=next((r for r in rows if r['cohort']=='EP_PERF_PFV5_A_FWT_G32W8_WV_OFF_V1'),{})
+ on=next((r for r in rows if r['cohort']=='EP_PERF_PFV5_A_FWT_G32W8_WV_ON_V1'),{})
+ try:
+  x=off['mechanisms']['EPL2TVDV3|METADATA_COST|']['totals']['frontend_cam_queries'];y=on['mechanisms']['EPL2TVDV3|METADATA_COST|']['totals']['frontend_cam_queries']
+  comparisons['A_observed_frontend_queries_OFF_vs_ON']=dict(OFF=x,ON=y,fewer_queries=x-y,reduction_percent=100*(x-y)/x if x else None,semantics='final64-slice cumulative totals of matched complete FWT cells; exact cold_bypasses is not exported by frozen Source; no invented per-access attribution')
+ except KeyError:comparisons['A_observed_frontend_queries_OFF_vs_ON']=dict(status='UNKNOWN_UNTIL_BOTH_FINAL_COUNTER_SUMMARIES_AVAILABLE')
  d='EP_PERF_PFV4_A2_3MM_S_G64W8_V1'
  comparisons['D_S_G64_vs_accepted_S_REF32']=dict(reference_cycles=1696618,candidate_cycles=cycles[d],saved_cycles=1696618-cycles[d],reduction_percent=100*(1696618-cycles[d])/1696618)if d in cycles else dict(status='UNKNOWN_UNTIL_EXACT_G64_S_ACCEPTED')
  out=dict(schema='EP_MAIN_PFV5_ROLLING_EXACT8_RESULTS_V1',utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),counts=counts,points=rows,comparisons=comparisons,budgets={g:{k:reg['registered_future_requests'][z['request_id']].get(k)for k in ['budget','remaining','state']}for g,z in m['groups'].items()},all_eight_independently_released=True,complete_scientific_scope=8,automatic_model_retry=False,refund=False,C_models_authorized=0,application_NI='NOT_MEASURED',physical_PPA='NOT_PROVEN',numeric_output='UNKNOWN',Source_KEEP=True)
@@ -70,7 +83,7 @@ def main():
   current=report();basefile=C/'PUBLICATION_EXPECTED_HEAD.json';base=read(basefile)['head']if basefile.exists()else BASE
   assert api('GET',REPO+'/git/ref/heads/'+BRANCH)['object']['sha']==base,'no force on moved branch'
   files={}
-  allowed=['USER_REQUEST_SCOPE_TRANSCRIPTION.txt','USER_AUTHORIZATION.json','A_USER_AUTHORIZATION.json','B_USER_AUTHORIZATION.json','D_USER_AUTHORIZATION.json','A_MAIN_HOST_DELTA_APPROVAL.json','B_MAIN_HOST_DELTA_APPROVAL.json','D_MAIN_HOST_DELTA_APPROVAL.json','EXACT_EXECUTION_MANIFEST.json','MAIN_FORMAL_NATIVE_INSTALLATION_RECEIPT.json','MAIN_FINAL_SPEC_ACTIVATION_DIFFERENCES.json','ROOT_LAUNCH_ACK.json','MAIN_DISPATCHER_STARTUP_REVIEW.json','PERFORMANCE_CURRENT.json','PERFORMANCE_CURRENT.md','EXECUTOR_STARTED.json','EXECUTOR_FINISHED.json','MAIN_EXECUTOR_ACTIVATION.json','MAIN_REAL_PREPARE_AFTER_INSTALL.json','FINAL_SCOPE_CLOSURE.json','main_activate_exact8.py','main_publish_v5_progress.py','main_metadata_watch_v5.py','MAIN_PRECONSUME_CANONICAL_OWNED_ROUTE_FIX.json','MAIN_ACTUAL_EIGHT_MODEL_GENERATIONS_INITIAL.json','MAIN_OLD_EP_ROWS_PRESERVED_AFTER_ALL8_STARTS.json','MAIN_C_FRONTEND_PARTIAL_ENGINEERING_REVIEW.json']
+  allowed=['USER_REQUEST_SCOPE_TRANSCRIPTION.txt','USER_AUTHORIZATION.json','A_USER_AUTHORIZATION.json','B_USER_AUTHORIZATION.json','D_USER_AUTHORIZATION.json','A_MAIN_HOST_DELTA_APPROVAL.json','B_MAIN_HOST_DELTA_APPROVAL.json','D_MAIN_HOST_DELTA_APPROVAL.json','EXACT_EXECUTION_MANIFEST.json','MAIN_FORMAL_NATIVE_INSTALLATION_RECEIPT.json','MAIN_FINAL_SPEC_ACTIVATION_DIFFERENCES.json','ROOT_LAUNCH_ACK.json','MAIN_DISPATCHER_STARTUP_REVIEW.json','PERFORMANCE_CURRENT.json','PERFORMANCE_CURRENT.md','EXECUTOR_STARTED.json','EXECUTOR_FINISHED.json','MAIN_EXECUTOR_ACTIVATION.json','MAIN_REAL_PREPARE_AFTER_INSTALL.json','FINAL_SCOPE_CLOSURE.json','main_activate_exact8.py','main_publish_v5_progress.py','main_metadata_watch_v5.py','closed_counter_summary_v5.py','ACTIVATION_TRUE164_ARCHIVE_RECEIPT.json','MAIN_PRECONSUME_CANONICAL_OWNED_ROUTE_FIX.json','MAIN_ACTUAL_EIGHT_MODEL_GENERATIONS_INITIAL.json','MAIN_OLD_EP_ROWS_PRESERVED_AFTER_ALL8_STARTS.json','MAIN_C_FRONTEND_PARTIAL_ENGINEERING_REVIEW.json']
   for name in allowed:
    p=C/name
    if p.exists():files['control/'+name]=p
@@ -90,6 +103,7 @@ def main():
   for cp in cr.rglob('*'):
    if cp.is_file()and ('core_candidate'not in cp.relative_to(cr).parts)and ('__pycache__'not in cp.parts)and cp.suffix in ['.py','.json','.md','.patch','.h','.inc','.cc','.config']and cp.stat().st_size<1024*1024:
     files['C_partial_engineering/'+str(cp.relative_to(cr))]=cp
+  for cp in (C/'CLOSED_COUNTERS').glob('*.json')if (C/'CLOSED_COUNTERS').exists()else []:files['control/CLOSED_COUNTERS/'+cp.name]=cp
   entries=[];manifest=[]
   for name,p in sorted(files.items()):
    raw=p.read_bytes();out=(json.dumps(clean(json.loads(raw)),sort_keys=True,indent=2)+'\n').encode()if p.suffix=='.json'else raw

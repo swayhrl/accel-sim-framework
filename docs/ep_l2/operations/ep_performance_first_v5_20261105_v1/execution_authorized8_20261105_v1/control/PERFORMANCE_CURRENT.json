@@ -31,6 +31,9 @@
     "A_cold_ON_vs_OFF": {
       "status": "UNKNOWN_UNTIL_BOTH_EXACT_CELLS_ACCEPTED"
     },
+    "A_observed_frontend_queries_OFF_vs_ON": {
+      "status": "UNKNOWN_UNTIL_BOTH_FINAL_COUNTER_SUMMARIES_AVAILABLE"
+    },
     "B_same_newSource_F_pressure_vs_Fbaseline": {
       "candidate_cycles": 45425,
       "reduction_percent": 18.775145283862315,
@@ -62,7 +65,12 @@
       "cohort": "EP_PERF_PFV5_A_FWT_G32W8_S_V1",
       "consumed": true,
       "cycles": null,
-      "done_ref": null,
+      "done_ref": {
+        "bytes": 9868,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_PFV5_A_FWT_G32W8_S_V1.DONE.json",
+        "sha256": "292c94c8d64c5fa7990c9e2acca0b9eceadfd2e64716bd12d103904cea8a6daf"
+      },
+      "elapsed_seconds": 659.3218799903989,
       "group": "A",
       "host_limits": {
         "AS_bytes": 10737418240,
@@ -71,6 +79,7 @@
         "wall_seconds": 28800
       },
       "independent_release": true,
+      "launcher_wait_returncode": 0,
       "mode": "S",
       "source_identity": {
         "archive_sha256": "ff81389a1bdc59f7cc338cdd0376b7c37f5a656d045b923dc07c4b0dd7816380",
@@ -83,7 +92,8 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_a_wv/host_private_candidate_v1/main_materialized/37e5a2db776190ee3f74/execution/cases/EP_PERF_PFV5_A_FWT_G32W8_S_V1/control/FROZEN_SPEC.json",
         "sha256": "024981c60b20ca49b53f60ee8369e5ccd83552e398c8d975780a9d8b6bef9eb3"
       },
-      "state": "CONSUMED_BEFORE_FORK",
+      "state": "PARSE_HOLD",
+      "stop_reason": null,
       "uuid": "49f7b80a-ad74-4d42-8dbe-6ab57dd38c37",
       "validation_ref": null
     },
@@ -124,7 +134,12 @@
       "cohort": "EP_PERF_PFV5_A_FWT_G32W8_WV_ON_V1",
       "consumed": true,
       "cycles": null,
-      "done_ref": null,
+      "done_ref": {
+        "bytes": 9900,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_PFV5_A_FWT_G32W8_WV_ON_V1.DONE.json",
+        "sha256": "48096cf4803b55ffa0e93a732dcb538dcc8fd1dccf4adce4534689603f3f68f6"
+      },
+      "elapsed_seconds": 743.0491391904652,
       "group": "A",
       "host_limits": {
         "AS_bytes": 10737418240,
@@ -133,6 +148,7 @@
         "wall_seconds": 28800
       },
       "independent_release": true,
+      "launcher_wait_returncode": 0,
       "mode": "WV_ZERO_RO",
       "source_identity": {
         "archive_sha256": "ff81389a1bdc59f7cc338cdd0376b7c37f5a656d045b923dc07c4b0dd7816380",
@@ -145,7 +161,8 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_a_wv/host_private_candidate_v1/main_materialized/37e5a2db776190ee3f74/execution/cases/EP_PERF_PFV5_A_FWT_G32W8_WV_ON_V1/control/FROZEN_SPEC.json",
         "sha256": "96147b5cb6dbe44dbe3fb5f195d66de61a8582cc5567e1132ac4f78270054a6e"
       },
-      "state": "CONSUMED_BEFORE_FORK",
+      "state": "NATURAL_COMPLETE_PENDING_VALIDATION",
+      "stop_reason": null,
       "uuid": "de908126-3592-4b2c-b38b-ee6fac72e18a",
       "validation_ref": null
     },
@@ -162,6 +179,10 @@
         "sha256": "001a59a37c5d80ca20e9512565d47e4be197a22dc51a2751c981291be5d7814b"
       },
       "archive_two_restores": true,
+      "closed_counter_summary_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/activation_20261105_v1/control/CLOSED_COUNTERS/EP_PERF_PFV5_B1_VECTOR4M_F_BASELINE_1700_V1.json",
+        "sha256": "ee87a14a99bf9cf636b79d538ce55e61c1f60cb3b2e6cf3734f7aca643591460"
+      },
       "cohort": "EP_PERF_PFV5_B1_VECTOR4M_F_BASELINE_1700_V1",
       "consumed": true,
       "cycles": 55925,
@@ -183,6 +204,66 @@
       "instructions": 56000000,
       "kernel_count": 1,
       "launcher_wait_returncode": 0,
+      "mechanisms": {
+        "EPL2ROP5|ADMISSION|": {
+          "emitted_lines": 128,
+          "status": "FINAL_CUMULATIVE64_SLICE_SUMMARIES",
+          "totals": {
+            "activations": 0,
+            "native_before_activation": 0
+          }
+        },
+        "EPL2ROV1|SUMMARY|": {
+          "emitted_lines": 128,
+          "status": "FINAL_CUMULATIVE64_SLICE_SUMMARIES",
+          "totals": {
+            "accepted_global_reads": 1000000,
+            "accepted_oracle_candidates": 1000000,
+            "accepted_ro": 1000000,
+            "concurrent_duplicate_sectors": 0,
+            "detached": 0,
+            "lower_sectors": 1000000,
+            "merges": 749151,
+            "responses": 1000000,
+            "ro_bank_fill_ops": 1000000,
+            "ro_bank_response_ops": 1000000,
+            "transactions": 250849
+          }
+        },
+        "EPL2TVDV2|SUMMARY|": {
+          "emitted_lines": 128,
+          "status": "FINAL_CUMULATIVE64_SLICE_SUMMARIES",
+          "totals": {
+            "bank_wait_cycles": 0,
+            "clean_installs": 257731,
+            "clean_retention_slot_cycles": 266752719,
+            "directory_queries": 375000,
+            "dirty_forward_responses": 0,
+            "dirty_installs": 117269,
+            "icnt_wait_cycles": 0,
+            "lookup_wait_cycles": 375000,
+            "promotions": 0,
+            "read_responses": 0,
+            "retention_slot_cycles": 142220104,
+            "served_sector_bytes": 0,
+            "served_sectors": 0,
+            "total_retention_slot_cycles": 408972823,
+            "wb_wait_cycles": 0
+          }
+        },
+        "EPL2TVDV3|METADATA_COST|": {
+          "emitted_lines": 128,
+          "status": "FINAL_CUMULATIVE64_SLICE_SUMMARIES",
+          "totals": {
+            "completion_cam_queries": 117269,
+            "frontend_cam_queries": 375000,
+            "indexed_rollback": 0,
+            "indexed_wb_accept": 117269,
+            "native_install_commits": 375000,
+            "native_promotion_commits": 0
+          }
+        }
+      },
       "mode": "F_BASELINE",
       "source_identity": {
         "archive_sha256": "a7e9c8ce045710c8f3655aebb82a65628a5a18638036af17fa0ec8c755580d3e",
@@ -216,6 +297,10 @@
         "sha256": "9d7cb1b1a6587cae16e9b083389b950e300369376618dd33aed0e7d4ad11262d"
       },
       "archive_two_restores": true,
+      "closed_counter_summary_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/activation_20261105_v1/control/CLOSED_COUNTERS/EP_PERF_PFV5_B1_VECTOR4M_F_PRESSURE_EPOCH_1700_V1.json",
+        "sha256": "0a332d53093259091d06106271986fa1db82b19df0df6e8fa5cbc02593ac5d6e"
+      },
       "cohort": "EP_PERF_PFV5_B1_VECTOR4M_F_PRESSURE_EPOCH_1700_V1",
       "consumed": true,
       "cycles": 45425,
@@ -237,6 +322,66 @@
       "instructions": 56000000,
       "kernel_count": 1,
       "launcher_wait_returncode": 0,
+      "mechanisms": {
+        "EPL2ROP5|ADMISSION|": {
+          "emitted_lines": 128,
+          "status": "FINAL_CUMULATIVE64_SLICE_SUMMARIES",
+          "totals": {
+            "activations": 0,
+            "native_before_activation": 1000000
+          }
+        },
+        "EPL2ROV1|SUMMARY|": {
+          "emitted_lines": 128,
+          "status": "FINAL_CUMULATIVE64_SLICE_SUMMARIES",
+          "totals": {
+            "accepted_global_reads": 1000000,
+            "accepted_oracle_candidates": 1000000,
+            "accepted_ro": 0,
+            "concurrent_duplicate_sectors": 0,
+            "detached": 0,
+            "lower_sectors": 0,
+            "merges": 0,
+            "responses": 0,
+            "ro_bank_fill_ops": 0,
+            "ro_bank_response_ops": 0,
+            "transactions": 0
+          }
+        },
+        "EPL2TVDV2|SUMMARY|": {
+          "emitted_lines": 128,
+          "status": "FINAL_CUMULATIVE64_SLICE_SUMMARIES",
+          "totals": {
+            "bank_wait_cycles": 0,
+            "clean_installs": 257586,
+            "clean_retention_slot_cycles": 204194788,
+            "directory_queries": 375000,
+            "dirty_forward_responses": 0,
+            "dirty_installs": 117414,
+            "icnt_wait_cycles": 0,
+            "lookup_wait_cycles": 375000,
+            "promotions": 0,
+            "read_responses": 0,
+            "retention_slot_cycles": 120252838,
+            "served_sector_bytes": 0,
+            "served_sectors": 0,
+            "total_retention_slot_cycles": 324447626,
+            "wb_wait_cycles": 0
+          }
+        },
+        "EPL2TVDV3|METADATA_COST|": {
+          "emitted_lines": 128,
+          "status": "FINAL_CUMULATIVE64_SLICE_SUMMARIES",
+          "totals": {
+            "completion_cam_queries": 117414,
+            "frontend_cam_queries": 375000,
+            "indexed_rollback": 0,
+            "indexed_wb_accept": 117414,
+            "native_install_commits": 375000,
+            "native_promotion_commits": 0
+          }
+        }
+      },
       "mode": "F_PRESSURE_EPOCH",
       "source_identity": {
         "archive_sha256": "a7e9c8ce045710c8f3655aebb82a65628a5a18638036af17fa0ec8c755580d3e",
@@ -353,5 +498,5 @@
   ],
   "refund": false,
   "schema": "EP_MAIN_PFV5_ROLLING_EXACT8_RESULTS_V1",
-  "utc": "2026-11-05T04:01:44.216800+00:00"
+  "utc": "2026-11-05T04:05:54.944385+00:00"
 }

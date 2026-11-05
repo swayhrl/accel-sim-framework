@@ -4,9 +4,9 @@ Only CLOSED_ACCEPTED cells with full true164 archive and two distinct Native res
 
 | Group | Cohort | State | Accepted cycles |
 |---|---|---|---:|
-| A | EP_PERF_PFV5_A_FWT_G32W8_S_V1 | CONSUMED_BEFORE_FORK | UNKNOWN |
+| A | EP_PERF_PFV5_A_FWT_G32W8_S_V1 | PARSE_HOLD | UNKNOWN |
 | A | EP_PERF_PFV5_A_FWT_G32W8_WV_OFF_V1 | CONSUMED_BEFORE_FORK | UNKNOWN |
-| A | EP_PERF_PFV5_A_FWT_G32W8_WV_ON_V1 | CONSUMED_BEFORE_FORK | UNKNOWN |
+| A | EP_PERF_PFV5_A_FWT_G32W8_WV_ON_V1 | NATURAL_COMPLETE_PENDING_VALIDATION | UNKNOWN |
 | B | EP_PERF_PFV5_B1_VECTOR4M_F_BASELINE_1700_V1 | CLOSED_ACCEPTED | 55925 |
 | B | EP_PERF_PFV5_B1_VECTOR4M_F_PRESSURE_EPOCH_1700_V1 | CLOSED_ACCEPTED | 45425 |
 | D | EP_PERF_PFV4_A2_3MM_S_G64W8_V1 | CONSUMED_BEFORE_FORK | UNKNOWN |
@@ -23,6 +23,7 @@ Counts: {"accepted": 2, "technical_failure": 0, "pending": 6}
 - A_WV_ON_vs_S: {"status": "UNKNOWN_UNTIL_BOTH_EXACT_CELLS_ACCEPTED"}
 - D_G64_WV_vs_S: {"status": "UNKNOWN_UNTIL_BOTH_EXACT_CELLS_ACCEPTED"}
 - D_WV_G64_vs_REF32: {"status": "UNKNOWN_UNTIL_BOTH_EXACT_CELLS_ACCEPTED"}
+- A_observed_frontend_queries_OFF_vs_ON: {"status": "UNKNOWN_UNTIL_BOTH_FINAL_COUNTER_SUMMARIES_AVAILABLE"}
 - D_S_G64_vs_accepted_S_REF32: {"status": "UNKNOWN_UNTIL_EXACT_G64_S_ACCEPTED"}
 
 A cold filter is lifetime never-installed proof, not general empty-directory detection. B retains full query port and cycle costs. C remains partial production engineering with no science starts. 1700MHz is service diagnostic, not GPU calibration.
