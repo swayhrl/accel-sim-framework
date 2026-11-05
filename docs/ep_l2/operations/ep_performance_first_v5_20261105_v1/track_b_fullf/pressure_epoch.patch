@@ -1,0 +1,119 @@
+diff --git a/src/gpgpu-sim/ep-l2-ro-runtime.inc b/src/gpgpu-sim/ep-l2-ro-runtime.inc
+index 844de49..0d35645 100644
+--- a/src/gpgpu-sim/ep-l2-ro-runtime.inc
++++ b/src/gpgpu-sim/ep-l2-ro-runtime.inc
+@@ -29,6 +29,10 @@ class ep_l2_ro_runtime : public ep_l2_ro::tag_port {
+   mutable uint64_t observed_uid=~uint64_t(0),blocked_mask=0;
+   mutable std::array<uint64_t,6> first_wait{},unique_blocks{},wait_cycles{};
+   mutable std::array<std::array<uint64_t,16>,6> wait_hist{};
++  // One physical control bit per slice. Set only at the timed frontend on observed pressure,
++  // never by preview, and never clear while any epoch owner may remain live.
++  bool pressure_epoch_active=false;
++  uint64_t pressure_epoch_activations=0,pressure_native_accepted=0;
+   uint64_t accepted_global_reads, accepted_candidates, accepted_ro;
+   uint64_t epoch_begin_cycle=0,epoch_end_cycle=0,last_response_cycle=0;
+   ep_l2_ro_runtime(l2_cache &cache) : c(cache), port(c.m_ep_l2_payload,*this,true),
+@@ -107,6 +111,16 @@ class ep_l2_ro_runtime : public ep_l2_ro::tag_port {
+   // Called once at the actual timed frontend-head observation point. Preview
+   // itself never launches a lookup, reserves ownership or changes counters.
+   void frontend_cycle(mem_fetch *m) {
++    if(c.m_config.m_ro_pressure_epoch && !pressure_epoch_active &&
++       directory_ready(m) && candidate(m)) {
++      unsigned index=~0U;
++      const auto p=c.m_tag_array->probe(c.m_config.block_addr(m->get_addr()),index,m,false,true);
++      // The existing indexed Tag probe and maintained native LineMSHR count
++      // feed this one-bit control update. No ownership is granted here.
++      if(p!=HIT && (p==RESERVATION_FAIL || c.m_mshrs.num_entries_used()>=128)) {
++        pressure_epoch_active=true;++pressure_epoch_activations;
++      }
++    }
+     if (!new_request(m) || !directory_ready(m)) return;
+     const auto now=physical_cycle();
+     if (query_uid!=m->get_request_uid()) {
+@@ -146,7 +160,11 @@ class ep_l2_ro_runtime : public ep_l2_ro::tag_port {
+   }
+   void record_accepted(mem_fetch *m) {
+     if(demand(m))++accepted_global_reads;
+-    if(candidate(m))++accepted_candidates;
++    if(candidate(m)) {
++      ++accepted_candidates;
++      if(c.m_config.m_ro_pressure_epoch && !pressure_epoch_active)
++        ++pressure_native_accepted;
++    }
+     if (observed_uid==m->get_request_uid()) {
+       for (unsigned r=0;r<6;++r) if (blocked_mask&(uint64_t(1)<<r)) {
+         uint64_t duration=physical_cycle()-first_wait[r];wait_cycles[r]+=duration;
+@@ -214,6 +232,10 @@ class ep_l2_ro_runtime : public ep_l2_ro::tag_port {
+       if(c.m_tag_array->block_is_modified(i) || (c.m_ep_l2_payload.handle_live(resident) &&
+           (c.m_ep_l2_payload.inspect(resident).pending_sector_mask.any() || c.m_ep_l2_payload.inspect(resident).pins)))return false;
+     }
++    // Both predicates are existing indexed Tag/LineMSHR admission results.
++    // No address CAM or new target directory is introduced. Before activation
++    // there is no RO owner; after activation all old RO ownership rules stay.
++    if(c.m_config.m_ro_pressure_epoch && !pressure_epoch_active)return false;
+     return p!=HIT;
+   }
+   unsigned needed(mem_fetch *m,handle h) const {
+@@ -436,6 +458,9 @@ void l2_cache::ro_print(FILE *f,unsigned slice) const {
+     }
+   }
+   if(m_ro){
++  fprintf(f,"EPL2ROP5|ADMISSION|slice=%u|policy_pressure_epoch=%u|active=%u|activations=%llu|native_before_activation=%llu|control_bits_per_slice=1|query_ports_added=0|directory_entries_added=0|epoch_reset=INIT_ONLY_ONE_COMMANDLIST_EPOCH\n",
++    slice,m_config.m_ro_pressure_epoch,m_ro->pressure_epoch_active,
++    (unsigned long long)m_ro->pressure_epoch_activations,(unsigned long long)m_ro->pressure_native_accepted);
+   const auto &s=m_ro->tx->stats;
+   fprintf(f,"EPL2ROV1|SUMMARY|slice=%u|detach=%u|bypass=%u|accepted_global_reads=%llu|accepted_oracle_candidates=%llu|accepted_ro=%llu|transactions=%llu|merges=%llu|detached=%llu|lower_sectors=%llu|concurrent_duplicate_sectors=%llu|responses=%llu|ro_bank_fill_ops=%llu|ro_bank_response_ops=%llu|live=%u|manifest=%s|scope=%s\n",
+     slice,m_config.m_ro_tag_detach,m_config.m_ro_line_mshr_bypass,
+@@ -478,3 +503,7 @@ void l2_cache::ro_frontend_cycle(mem_fetch *mf) {if(m_ro){
+   // behind an RO owner before access() gets a chance to reject the violation.
+   m_ro->check_access(mf);m_ro->frontend_cycle(mf);
+ }}
++
++// CPU protocol probes expose counters only; they perform no query or mutation.
++bool l2_cache::ro_pressure_epoch_active_for_test() const {return m_ro && m_ro->pressure_epoch_active;}
++unsigned long long l2_cache::ro_query_count_for_test() const {return m_ro?m_ro->query_count:0;}
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index e587eda..3df9a68 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -623,7 +623,7 @@ class cache_config {
+     m_ep_l2_ms_observer = false;
+     m_ep_l2_payload_policy = 0;
+     m_ep_l2_feature_unified_payload = false;
+-    m_ro_tag_detach=m_ro_line_mshr_bypass=false;
++    m_ro_tag_detach=m_ro_line_mshr_bypass=m_ro_pressure_epoch=false;
+     m_ro_ranges=m_ro_ranges_sha256=m_ro_manifest_sha256=m_ro_scope=m_ro_manifest=nullptr;
+     m_ep_l2_feature_ro_pending_state = false;
+     m_ep_l2_feature_tvd = false;
+@@ -1012,7 +1012,7 @@ class cache_config {
+   // Policy 0 is the only currently supported static policy.
+   unsigned m_ep_l2_payload_policy;
+   bool m_ep_l2_feature_unified_payload;
+-  bool m_ro_tag_detach,m_ro_line_mshr_bypass;
++  bool m_ro_tag_detach,m_ro_line_mshr_bypass,m_ro_pressure_epoch;
+   char *m_ro_ranges,*m_ro_ranges_sha256,*m_ro_manifest_sha256,*m_ro_scope,*m_ro_manifest;
+   bool m_ep_l2_feature_ro_pending_state;
+   bool m_ep_l2_feature_tvd;
+@@ -3099,6 +3099,8 @@ class l2_cache : public data_cache {
+   bool ro_tag_detach_enabled_for_test() const {return m_config.m_ro_tag_detach;}
+   bool access_ready() const;
+   void ro_frontend_cycle(mem_fetch *);
++  bool ro_pressure_epoch_active_for_test() const;
++  unsigned long long ro_query_count_for_test() const;
+   void ro_bind_commandlist(const char *);
+   void ro_begin_epoch();
+   void ro_end_epoch();
+diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
+index 683b7c8..6b3096d 100644
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -301,6 +301,9 @@ void memory_config::reg_options(class OptionParser *opp) {
+   option_parser_register(opp, "-gpgpu_ep_l2_ro_tag_detach", OPT_BOOL,
+                          &m_L2_config.m_ro_tag_detach,
+                          "Certified whole-commandlist RO pending Tag detach", "0");
++  option_parser_register(opp, "-gpgpu_ep_l2_ro_pressure_epoch", OPT_BOOL,
++                         &m_L2_config.m_ro_pressure_epoch,
++                         "RO admission activates once Tag-set or native LineMSHR pressure occurs; remains active until epoch drain", "0");
+   option_parser_register(opp, "-gpgpu_ep_l2_ro_line_mshr_bypass", OPT_BOOL,
+                          &m_L2_config.m_ro_line_mshr_bypass,
+                          "Certified RO completions use shared D512 without native line records", "0");

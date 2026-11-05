@@ -1,0 +1,78 @@
+{
+  "schema": "EP_L2_PFV5_B1_COST_AND_CYCLE_CONTRACT_V1",
+  "candidate": "B1_PRESSURE_TRIGGERED_EPOCH_STICKY_RO_ADMISSION",
+  "selected": true,
+  "source_identity": {
+    "core_source_commit": "812fe1e029b4fb09afaf3d8d25d3f909464cc06c",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "archive_sha256": "a7e9c8ce045710c8f3655aebb82a65628a5a18638036af17fa0ec8c755580d3e",
+    "binary_sha256": "a60600a418e6460e7aaf896b62469be0612046d0f4da34ac8c98da2eed3852e1"
+  },
+  "policy_scope": "Only exact F_BASELINE0/F_PRESSURE_EPOCH1 Vector4M1700 request currently qualified",
+  "existing_resources_unchanged": {
+    "Tag": {
+      "sets": 32,
+      "ways": 8,
+      "line_bytes": 128
+    },
+    "Payload_slots_per_slice": 1168,
+    "Payload_Banks": 4,
+    "bank_ops_per_cycle": 1,
+    "WBUF_entries": 16,
+    "WAD_entries": 128,
+    "TVD_entries": 128,
+    "LineMSHR_entries": 128,
+    "descriptors": 512,
+    "descriptor_per_address": 32,
+    "RO_frontend_query_tickets": 1,
+    "RO_frontend_query_ports": 1,
+    "RO_query_latency_physical_GPU_cycles": 1,
+    "TVD_frontend_CAM_ports": 1,
+    "TVD_completion_CAM_ports": 1,
+    "lower_queues": "exact accepted config unchanged",
+    "response_buffers": "no new buffer"
+  },
+  "incremental_hardware": {
+    "runtime_state_bits_per_slice": 1,
+    "configuration_select_bits": 1,
+    "additional_CAM_entries": 0,
+    "additional_directory_entries": 0,
+    "additional_query_ports": 0,
+    "additional_data_arrays": 0,
+    "additional_queue_entries": 0,
+    "additional_response_buffer": 0,
+    "pressure_predicates": [
+      "existing indexed Tag probe RESERVATION_FAIL result",
+      "existing native LineMSHR128 full/count predicate for non-HIT certified demand"
+    ],
+    "control_logic": "one OR and enable mux feeding existing frontend decision and epoch FF; enum equality uses existing indexed result",
+    "state_SET": "At real ro_frontend_cycle only after TVD directory_ready; shares single-head frontend ticket control write event. Preserve one atomic control update plus original ticket write; no independent update port.",
+    "state_CLEAR": "Initialization at drained whole-commandlist boundary only. Existing ever_open forbids second epoch in the same instance; no mid-epoch reset/hysteresis/downcounter.",
+    "observer_only_stats": "Two uint64 software counters for activation/native-before-activation; not functional synthesized storage",
+    "PPA": "UNKNOWN",
+    "control_mux_clock_closure": "UNKNOWN; do not claim cost-free physical closure"
+  },
+  "cycle_behavior": [
+    "Pure preview cannot SET or issue ticket",
+    "First timed pressure observation can SET and issue original RO ticket in same physical cycle",
+    "Ticket usable only at now+1, original one query port per slice",
+    "CPU assertion shows same-tick access RESERVATION_FAIL with lookup_wait=true",
+    "Tag-full without RO owner waits for existing native owner completion; never frees native ownership",
+    "Once active no certified request switches to native inside epoch",
+    "Before activation no RO transaction exists; ordinary bounded native MSHR+descriptor service",
+    "Original sector, WB, pin, response bank/ICNT/lower backpressure, retire and Core862 CDC semantics retained"
+  ],
+  "oracle_cost": "Existing offline full-epoch certificate remains idealized model input, not a newly free hardware oracle",
+  "remaining_risks": [
+    "Sticky activation remains active after pressure subsides",
+    "Indexed fanout and one-bit update need physical timing; no PPA claim",
+    "Synthetic rig cycle saving not application forecast",
+    "New-Source full application baseline required"
+  ],
+  "fallback_B2": {
+    "status": "NOT_IMPLEMENTED_NOT_REQUESTED",
+    "route": "bounded TVD/RO one-ticket overlap preserving original ports and both one-cycle services",
+    "why_deferred": "B1 targets eager RO work in non-pressure accepted Vector; no second full version before matched evidence"
+  }
+}

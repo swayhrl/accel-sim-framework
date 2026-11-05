@@ -1,0 +1,100 @@
+[1/4] Generating build string file to /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/build/gpgpu-sim
+[2/4] Building CXX object gpgpu-sim/src/cuda-sim/CMakeFiles/ptxsim.dir/cuda-sim.cc.o
+In file included from /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/../gpgpu-sim/shader.h:54,
+                 from /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.h:37,
+                 from /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:33:
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/../gpgpu-sim/gpu-cache.h: In constructor ‘baseline_cache::baseline_cache(const char*, cache_config&, int, int, mem_fetch_interface*, mem_fetch_status, cache_gpu_level, gpgpu_sim*)’:
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/../gpgpu-sim/gpu-cache.h:1948:24: warning: ‘baseline_cache::m_bandwidth_management’ will be initialized after [-Wreorder]
+ 1948 |   bandwidth_management m_bandwidth_management;
+      |                        ^~~~~~~~~~~~~~~~~~~~~~
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/../gpgpu-sim/gpu-cache.h:1861:19: warning:   ‘cache_gpu_level baseline_cache::m_level’ [-Wreorder]
+ 1861 |   cache_gpu_level m_level;
+      |                   ^~~~~~~
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/../gpgpu-sim/gpu-cache.h:1658:3: warning:   when initialized here [-Wreorder]
+ 1658 |   baseline_cache(const char *name, cache_config &config, int core_id,
+      |   ^~~~~~~~~~~~~~
+In file included from /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/../gpgpu-sim/shader.h:54,
+                 from /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.h:37,
+                 from /root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:33:
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/../gpgpu-sim/gpu-cache.h: In member function ‘bool l2_cache::ep_l2_tag_payload_consistent() const’:
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/../gpgpu-sim/gpu-cache.h:3073:45: warning: suggest parentheses around ‘&&’ within ‘||’ [-Wparentheses]
+ 3072 |           m_ep_l2_payload.resident(handle.payload_id).allocation_role !=
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 3073 |               ep_l2_payload_store::RESIDENT &&
+      |               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+ 3074 |           !(m_ep_l2_payload.resident(handle.payload_id).allocation_role==ep_l2_payload_store::RO && m_ep_l2_payload.resident(handle.payload_id).status==ep_l2_payload_store::RO_FILL_ATTACHED))
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc: In member function ‘virtual void ptx_instruction::pre_decode()’:
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:1183:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+ 1183 |         for (int i = 0; i < num_elem; i++) arch_reg.dst[i] = o.arch_reg_num(i);
+      |                         ~~^~~~~~~~~~
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:1216:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+ 1216 |         for (int i = 0; i < num_elem; i++)
+      |                         ~~^~~~~~~~~~
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc: In member function ‘void ptx_thread_info::ptx_exec_inst(warp_inst_t&, unsigned int)’:
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:1894:49: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+ 1894 |          config.get_ptx_inst_debug_thread_uid() == get_uid())) {
+      |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:1957:49: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+ 1957 |          config.get_ptx_inst_debug_thread_uid() == get_uid())) {
+      |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc: In member function ‘void cuda_sim::gpgpu_cuda_ptx_sim_main_func(kernel_info_t&, bool)’:
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:2540:27: warning: comparison of integer expressions of different signedness: ‘unsigned int’ and ‘int’ [-Wsign-compare]
+ 2540 |          kernel.get_uid() == cp_kernel) ||
+      |          ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:2541:26: warning: comparison of integer expressions of different signedness: ‘unsigned int’ and ‘int’ [-Wsign-compare]
+ 2541 |         kernel.get_uid() < cp_kernel)  // just fro testing
+      |         ~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc: In member function ‘void functionalCoreSim::initializeCTA(unsigned int)’:
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:2614:21: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+ 2614 |   for (int i = 0; i < m_warp_count; i++) {
+      |                   ~~^~~~~~~~~~~~~~
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:2618:21: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+ 2618 |   for (int i = 0; i < m_warp_count * m_warp_size; i++) m_thread[i] = NULL;
+      |                   ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:2634:21: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+ 2634 |   for (int k = 0; k < m_warp_count; k++) createWarp(k);
+      |                   ~~^~~~~~~~~~~~~~
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc: In member function ‘void functionalCoreSim::createWarp(unsigned int)’:
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:2641:40: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+ 2641 |   for (int i = warpId * m_warp_size; i < warpId * m_warp_size + m_warp_size;
+      |                                      ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:2659:42: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+ 2659 |     for (int i = warpId * m_warp_size; i < warpId * m_warp_size + m_warp_size;
+      |                                        ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc: In member function ‘void functionalCoreSim::execute(int, unsigned int)’:
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:2683:30: warning: comparison of integer expressions of different signedness: ‘unsigned int’ and ‘int’ [-Wsign-compare]
+ 2683 |         (m_kernel->get_uid() == m_gpu->checkpoint_kernel) &&
+      |          ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:2684:19: warning: comparison of integer expressions of different signedness: ‘unsigned int’ and ‘int’ [-Wsign-compare]
+ 2684 |         (ctaid_cp >= m_gpu->checkpoint_CTA) &&
+      |          ~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:2703:28: warning: comparison of integer expressions of different signedness: ‘unsigned int’ and ‘int’ [-Wsign-compare]
+ 2703 |       (m_kernel->get_uid() == m_gpu->checkpoint_kernel) &&
+      |        ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:2704:17: warning: comparison of integer expressions of different signedness: ‘unsigned int’ and ‘int’ [-Wsign-compare]
+ 2704 |       (ctaid_cp >= m_gpu->checkpoint_CTA) &&
+      |        ~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:2710:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+ 2710 |     for (int i = 0; i < 32 * m_warp_count; i++) {
+      |                     ~~^~~~~~~~~~~~~~~~~~~
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:2725:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+ 2725 |     for (int i = 0; i < m_warp_count; i++) {
+      |                     ~~^~~~~~~~~~~~~~
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc: In member function ‘virtual void functionalCoreSim::warp_exit(unsigned int)’:
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:2928:21: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+ 2928 |   for (int i = 0; i < m_warp_count * m_warp_size; i++) {
+      |                   ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc: In instantiation of ‘bool cuda_sim::ptx_debug_exec_dump_cond(int, addr_t) [with int activate_level = 5; addr_t = long long unsigned int]’:
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:1903:64:   required from here
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:1718:18: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+ 1718 |         (thd_uid != (unsigned)g_debug_thread_uid)) {
+      |         ~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc: In instantiation of ‘bool cuda_sim::ptx_debug_exec_dump_cond(int, addr_t) [with int activate_level = 6; addr_t = long long unsigned int]’:
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:1963:66:   required from here
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:1718:18: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc: In instantiation of ‘bool cuda_sim::ptx_debug_exec_dump_cond(int, addr_t) [with int activate_level = 10; addr_t = long long unsigned int]’:
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:1968:67:   required from here
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/cuda-sim/cuda-sim.cc:1718:18: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+[3/4] Linking CXX static library gpgpu-sim/src/cuda-sim/libptxsim.a
+[4/4] Linking CXX executable accel-sim.out

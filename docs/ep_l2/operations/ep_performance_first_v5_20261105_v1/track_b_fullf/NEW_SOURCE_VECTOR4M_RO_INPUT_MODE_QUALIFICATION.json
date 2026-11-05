@@ -1,0 +1,70 @@
+{
+  "schema": "EP_L2_PFV5_B1_NEW_SOURCE_VECTOR4M_RO_INPUT_MODE_CPU_V1",
+  "status": "PRODUCTION_LOADER_AND_INPUT_MODE_CPU_PASS_NOT_APPLICATION_ACCEPTANCE",
+  "source_identity": {
+    "core_source_commit": "812fe1e029b4fb09afaf3d8d25d3f909464cc06c",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "archive_sha256": "a7e9c8ce045710c8f3655aebb82a65628a5a18638036af17fa0ec8c755580d3e",
+    "binary_sha256": "a60600a418e6460e7aaf896b62469be0612046d0f4da34ac8c98da2eed3852e1"
+  },
+  "input_identity_sha256": "ddf26d4f6b4b672de3c5f6d1ab633cc44d3d9ef8023b87ae9a10760f3f4057dc",
+  "trace_entry": "/root/share/mnt164/huangrulin/traces/bundles/8dd5220ea41cd5b260451c981fb7783ca83525686f7c171d6c8b420d976739f4/tree/kernelslist.g",
+  "commandlist_sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a",
+  "kernel_members": [
+    {
+      "member": "kernel-1.traceg",
+      "path": "/root/share/mnt164/huangrulin/traces/bundles/8dd5220ea41cd5b260451c981fb7783ca83525686f7c171d6c8b420d976739f4/tree/kernel-1.traceg",
+      "sha256": "94e13da58ea335219851fa0b03b759a848017155d3bade6ac32a64623eaf460d",
+      "size": 103535866
+    }
+  ],
+  "content_reused_from_accepted_source862_only": true,
+  "old_source_qualification_inherited": false,
+  "oracle_manifest_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/oracle_content_reuse/RO_MANIFEST.json",
+    "bytes": 2100,
+    "sha256": "f1d2be4bc00a7e2bdde18f550736a2e6184949a4e8742267c0fcfd46e27b47aa"
+  },
+  "oracle_ranges_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/oracle_content_reuse/RO_RANGES.csv",
+    "bytes": 102,
+    "sha256": "b641caad1bd90443803770d5a27918eb71d5ac5490f7606867bad7cccc5e1560"
+  },
+  "loader_source_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/gpgpu-sim/ep-l2-ro-runtime.inc",
+    "bytes": 32364,
+    "sha256": "ae1db8d466953c0b2ad6f8d16cbbda818af49e3387b3f4528ed45574ef8e4e3b"
+  },
+  "actual_production_loader_cpu_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/cpu/exact_Vector4M_RO_loader_cpu_source812.RUN.json",
+    "bytes": 1219,
+    "sha256": "9a12e7eeeae7cfdb4007bb648c22bd601b3b772fe23ad19bb01960022535bc68"
+  },
+  "actual_production_parser_283_ref": {
+    "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/cpu/ACTUAL_283_OPTIONS_QUALIFICATION.json",
+    "bytes": 3888,
+    "sha256": "5c371028fcc3ce5939b632bd9186eb5532f99731ae8e34afe6a2310473b59ece"
+  },
+  "qualified_policy_variants": [
+    "F_BASELINE",
+    "F_PRESSURE_EPOCH"
+  ],
+  "epoch_scope": "whole_commandlist",
+  "address_domain": "CANONICAL_GPU_GLOBAL_VA_NO_TRANSLATION_ALIAS",
+  "qualifications": [
+    "full-epoch loader manifest/range SHA and command identity",
+    "original certified writer rejection in both policy states",
+    "admission before epoch drain rejected",
+    "pressure SET only timed frontend after paid TVD lookup",
+    "same-tick RO query remains not ready; access rejected until full original cycle",
+    "native/RO in-flight exclusion and sector-return identity unchanged"
+  ],
+  "limits": [
+    "CPU protocol and exact input loader only; no application NI measured",
+    "B0/M0a not proven",
+    "PPA/extra control mux clock closure not measured",
+    "full application accepted reference must be newly measured on this Source5"
+  ],
+  "full_application_models": 0
+}

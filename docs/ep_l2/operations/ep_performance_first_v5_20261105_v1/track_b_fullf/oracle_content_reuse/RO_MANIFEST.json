@@ -1,0 +1,44 @@
+{
+  "schema": "EP_L2_RO_ORACLE_V1",
+  "status": "CERTIFIED_WITH_MODEL_SCOPE",
+  "framework_source_commit": "aabc7d80f576ee7e412a60c5af0cc4d32278fbea",
+  "epoch": "whole_commandlist",
+  "address_domain": "CANONICAL_GPU_GLOBAL_VA_NO_TRANSLATION_ALIAS",
+  "scope": "TRACE_MODEL_CLOSED_WORLD",
+  "assumptions": [
+    "All listed kernels/all traced lanes are visible agents",
+    "No external/CPU/DMA/device-side concurrent writers during epoch",
+    "Pre-epoch writes/writebacks are drained before oracle activation",
+    "No virtual aliases to different canonical addresses; no MMIO",
+    "Memcpy commands occur at drained command boundaries"
+  ],
+  "host_updates_excluded": [],
+  "kernel_count": 1,
+  "commandlist": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernelslist.g",
+  "commandlist_sha256": "755319919723f68f25aa7c64b9bdcaf5699b9aca38e7b664825e81d49f306e9a",
+  "kernels": [
+    {
+      "path": "/workspace/worktrees/accel-sim-decoupled-l2/hw_run/decoupled-l2-pretraces/cudasdk/9.1/vectorAdd/__size_4000000/traces/kernel-1.traceg",
+      "sha256": "94e13da58ea335219851fa0b03b759a848017155d3bade6ac32a64623eaf460d",
+      "opcodes": {
+        "LDG": 250000,
+        "STG": 125000
+      }
+    }
+  ],
+  "unresolved_opcodes": {},
+  "counts": {
+    "CERTIFIED_RO_lines": 250000,
+    "CERTIFIED_RO_read_lane_references": 8000000,
+    "NO_GLOBAL_READ_lines": 125000,
+    "NO_GLOBAL_READ_read_lane_references": 0
+  },
+  "oracle_cost": "offline SQLite O(unique lines), 16 MiB SQLite page cache; runtime oracle idealized input, not free hardware",
+  "artifacts": {
+    "oracle.sqlite3": "2d4370e04590a5b32d6da5e881834e5009a1a44a7ed1f0c26fb2347aeb8a497e",
+    "coverage.csv": "ed07d2fef99bb829740759c03141433cff7a22de961c9c7b43d7ae5a07fcdf04",
+    "exclusion.csv": "6016c34f95ef7ca7c99c541bc171d4e66cee0c89b802c168b4cf93e4be9a62ae",
+    "certified_lines.txt": "ae6d6df29a10e87f73c40c7b159f1a9a664f9b67f7d0898cd3f4af1811567582",
+    "certified_ranges.csv": "b641caad1bd90443803770d5a27918eb71d5ac5490f7606867bad7cccc5e1560"
+  }
+}

@@ -1,0 +1,9 @@
+#!/usr/bin/python3
+import os,sys,json
+sys.path.insert(0,'/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_d_workloads/three_mm/runtime')
+os.environ['EP_FULL_PERF_NATIVE_ENTRY']='1'
+from ep_perf_frontend import main
+try:print(json.dumps(main(sys.argv[1:])))
+except Exception as e:
+ print(json.dumps(dict(status='HOLD',reason=str(e),automatic_retry=False)),file=sys.stderr)
+ sys.exit(2)

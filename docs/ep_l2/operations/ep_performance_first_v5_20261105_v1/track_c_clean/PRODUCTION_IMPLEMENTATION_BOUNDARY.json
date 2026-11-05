@@ -1,0 +1,64 @@
+{
+  "schema": "EP_PFV5_C_PARTIAL_REAL_PRODUCTION_BOUNDARY_V1",
+  "rows": [
+    {
+      "path": "lower WB accept",
+      "implemented": "Existing original miss-queue head stays until row READ/COMMIT reservation is available; grant precedes m_memport push; row commit uses bound UID/incarnation/payload generation. Bank data service still charged independently.",
+      "status": "NEW_PRODUCTION_COMPILE_AND_BOUNDED_CPU_DELTA_PASS",
+      "remaining": "Whole-source fairness, nonzero count path integration and formal Host/mode mapping."
+    },
+    {
+      "path": "WB completion simple model",
+      "implemented": "bool set_done HOLD keeps original bounded DRAM latency-queue head. Row/tracker commit occurs before arbitration credit return and caller deletion.",
+      "status": "NEW_PRODUCTION_COMPILE_AND_BOUNDED_CPU_DELTA_PASS",
+      "remaining": "New production harness must demonstrate credit/tracker/drain conservation."
+    },
+    {
+      "path": "WB completion detailed DRAM",
+      "implemented": "Existing bounded DRAM returnq holds original packet and credit. No new unbounded completion queue. Paid single completion CAM result cached in one finite context and reused for commit.",
+      "status": "NEW_PRODUCTION_COMPILE_AND_BOUNDED_CPU_DELTA_PASS",
+      "remaining": "Model CDC readiness tied to explicit L2 tick; RTL synchronizer/handshake and physical timing not qualified."
+    },
+    {
+      "path": "K1/K2 row ports",
+      "implemented": "Fixed array2 slots, live count bounded by K; one READ then nonoverlapped COMMIT; same-row refusal; pending batch excludes new READ; downstream hold does not ack or refund service.",
+      "status": "NEW_CPP_CPU_DELTA_PASS",
+      "remaining": "Six-producer fair arbitration and all-mutator integration; metadata bits packing/area unknown."
+    },
+    {
+      "path": "CLEAN count commit",
+      "implemented": "C++ ordered signed net-delta reducer for up to K; checks intermediate quota before any caller-visible count.",
+      "status": "HELPER_ONLY_NOT_FULL_PRODUCTION_COUNTER_PATH",
+      "remaining": "Existing production +/-count mutations not routed through this reducer. Do not claim 1-lane count integration or complete hardware timing."
+    },
+    {
+      "path": "frontend install/reclaim/promotion",
+      "implemented": "Original bf4 production paths preserved.",
+      "status": "NOT_ASYNC_GATED",
+      "remaining": "Collect all affected row/allocator/tag/MSHR/lower intents before visible mutation; reject >K rows or qualified multibeat atomics."
+    },
+    {
+      "path": "reader pins and response retirement",
+      "implemented": "Existing row incarnation, payload generation, readers/pins and sector/version checks retained.",
+      "status": "FUNCTIONAL_OLD_PATH_NOT_TIMING_QUALIFIED",
+      "remaining": "Pay row READ/COMMIT before pin/bank and actual response enqueue; exactly-once rollback/cancel integration."
+    },
+    {
+      "path": "rollback and epoch cleanup",
+      "implemented": "Original bf4 methods preserved.",
+      "status": "NOT_ASYNC_GATED",
+      "remaining": "Finite cleanup service and allocator releases before drain acknowledgement; rollback cannot need an unavailable port after destructive mutation."
+    }
+  ],
+  "not_complete_production_quota_implementation": true,
+  "scientific_eligibility": false,
+  "new_scientific_starts": 0,
+  "new_source5": {
+    "core_source_commit": "bf0727871db05bec266099e703a551b02180eabb",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "binary_sha256": "aff0d05ac6bfb60abe77f8a12e5300c68b39f2504ab0f5526367dee9b941782e",
+    "archive_sha256": "3757ab2e47a9e7694bbf71194c545bfec1e0dedec580a41ab7c7800e7f751e61"
+  },
+  "completed_new_CPU_paths": 4
+}

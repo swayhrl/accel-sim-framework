@@ -1,0 +1,238 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 48cd8c6..9b15a93 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -357,3 +357,10 @@ add_executable(ep_l2_tag_capacity_geometry EXCLUDE_FROM_ALL tests/ep_l2/test_tag
+ target_compile_options(ep_l2_tag_capacity_geometry PRIVATE -UNDEBUG)
+ target_include_directories(ep_l2_tag_capacity_geometry PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
+ target_link_libraries(ep_l2_tag_capacity_geometry PRIVATE -Wl,--start-group entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
++
++# V5 bounded CPU production-path witness; never a default or application target.
++add_executable(ep_l2_v5_cold_filter EXCLUDE_FROM_ALL tests/ep_l2/test_v5_cold_filter.cc)
++target_include_directories(ep_l2_v5_cold_filter PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
++target_link_libraries(ep_l2_v5_cold_filter PRIVATE -Wl,--start-group
++    entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group
++    ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
+diff --git a/src/gpgpu-sim/ep-l2-ft-cache.inc b/src/gpgpu-sim/ep-l2-ft-cache.inc
+index 9b8c8c9..967322a 100644
+--- a/src/gpgpu-sim/ep-l2-ft-cache.inc
++++ b/src/gpgpu-sim/ep-l2-ft-cache.inc
+@@ -338,7 +338,9 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+   if(probe==RESERVATION_FAIL && m_ro){m_ro->relieve(addr);probe=m_tag_array->probe(owner,index,mf,mf->is_write(),true);if(diagnostic.d)diagnostic.d->add(probe>=0&&probe<=WRITE_ALLOCATED?field(post_relief_hit+probe):post_relief_unknown);}
+   if (probe == RESERVATION_FAIL) return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_tag));
+   if (m_tvd && probe == MISS &&
+-      !(m_tvd_lookup == mf && m_tvd_lookup_done)) return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_directory));
++      !(m_tvd_lookup == mf && m_tvd_lookup_done) &&
++      !(m_config.m_ep_l2_tvd_cold_filter && m_tvd->never_installed()))
++    return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_directory));
+   // Capture each original short-circuit result without extra modeled checks.
+   bool diagnostic_capacity_ok=false;
+   if(ro_new && (!(diagnostic_capacity_ok=m_ro->capacity(mf,false)) || !miss_queue_has_slots(mf->get_access_sector_mask().count()+(probe==MISS && m_tag_array->block_is_modified(index)))))return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,diagnostic_capacity_ok?denied_missq:denied_capacity));
+diff --git a/src/gpgpu-sim/ep-l2-tvd-cache.inc b/src/gpgpu-sim/ep-l2-tvd-cache.inc
+index c6da475..c84d91e 100644
+--- a/src/gpgpu-sim/ep-l2-tvd-cache.inc
++++ b/src/gpgpu-sim/ep-l2-tvd-cache.inc
+@@ -78,6 +78,14 @@ l2_cache::tvd_frontend_result l2_cache::tvd_frontend(mem_fetch *mf,
+     ms_observe_frontend(mf, now, 1ULL << reason, false, known | (1ULL << reason));
+     return TVD_WAIT;
+   };
++  // The 1-bit negative proof is read alongside the normal Tag result. No
++  // address match, Payload readiness or bank port is inferred. Same-cycle
++  // producer commits set the sticky bit before publishing a directory row.
++  if (m_config.m_ep_l2_tvd_cold_filter && m_tvd->never_installed()) {
++    assert(!m_tvd_lookup && !m_tvd_read);
++    ++m_tvd_cold_bypasses;
++    return TVD_NORMAL;
++  }
+   if (m_tvd_lookup != mf) {
+     assert(!m_tvd_read);
+     m_tvd_lookup = mf; m_tvd_lookup_cycle = now;
+diff --git a/src/gpgpu-sim/ep-l2-tvd-directory.h b/src/gpgpu-sim/ep-l2-tvd-directory.h
+index 3ce1b89..e5f1f1e 100644
+--- a/src/gpgpu-sim/ep-l2-tvd-directory.h
++++ b/src/gpgpu-sim/ep-l2-tvd-directory.h
+@@ -115,11 +115,15 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+   explicit ep_l2_tvd_directory(unsigned capacity = 128, bool clean = false,
+                                bool dirty = false)
+       : m_capacity(capacity), m_clean(clean), m_dirty(dirty), m_revision(0),
+-        m_clock(0), m_age(0) {
++        m_clock(0), m_age(0), m_ever_installed(false) {
+     if (!capacity || capacity > 128) throw std::invalid_argument("WAD/TVD capacity");
+   }
+   ep_l2_tvd_directory(const ep_l2_tvd_directory &) = delete;
+   ep_l2_tvd_directory &operator=(const ep_l2_tvd_directory &) = delete;
++  // One sticky bit per directory. Set before ANY successful installation is
++  // visible; never cleared on reclaim, rollback, WB completion or epoch cleanup.
++  // Thus false is a lifetime negative proof, not an address lookup/occupancy CAM.
++  bool never_installed() const { return !m_ever_installed; }
+   unsigned capacity() const { return m_capacity; }
+   unsigned occupied() const {
+     unsigned n = 0;
+@@ -199,6 +203,7 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+     assert(e.status == EMPTY || e.reclaimable());
+     if (e.status != EMPTY) ++m_stats.reclaimed;
+     bump(e.incarnation);
++    m_ever_installed = true;
+     e.status = writeback ? WB_STAGED : CLEAN;
+     e.line = line; e.payload = handle;
+     e.valid_sectors = valid; e.dirty_sectors = dirty; e.readers = 0;
+@@ -402,6 +407,7 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+   std::uint64_t m_revision;
+   cycle_type m_clock;
+   std::uint64_t m_age;
++  bool m_ever_installed;
+   std::array<entry, 128> m_entries;
+   counters m_stats;
+ };
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index 49f9298..b9af8cb 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -628,6 +628,7 @@ class cache_config {
+     m_ep_l2_feature_ro_pending_state = false;
+     m_ep_l2_feature_tvd = false;
+     m_ep_l2_tvd_clean = m_ep_l2_tvd_dirty = false;
++    m_ep_l2_tvd_cold_filter = false;
+     m_ep_l2_tvd_fixed_entries=0;
+     m_ep_l2_feature_adaptive_policy = false;
+     m_ep_l2_b0_stats = true;
+@@ -911,7 +912,7 @@ class cache_config {
+         !m_ep_l2_ideal_wb && !m_ep_l2_ideal_meta && !m_ep_l2_ideal_read_hit &&
+         !m_ep_l2_mq2 && !m_ep_l2_rg1 && !m_ep_l2_diag_copy_free &&
+         !m_ep_l2_diag_l2_data_free && !m_ep_l2_ms_observer &&
+-        !m_ep_l2_tvd_clean && !m_ep_l2_tvd_dirty && !m_ep_l2_tvd_fixed_entries && !ro_requested();
++        !m_ep_l2_tvd_clean && !m_ep_l2_tvd_dirty && !m_ep_l2_tvd_cold_filter && !m_ep_l2_tvd_fixed_entries && !ro_requested();
+   }
+   enum mshr_config_t get_mshr_type() const { return m_mshr_type; }
+   void set_assoc(unsigned n) {
+@@ -1017,6 +1018,7 @@ class cache_config {
+   bool m_ep_l2_feature_ro_pending_state;
+   bool m_ep_l2_feature_tvd;
+   bool m_ep_l2_tvd_clean, m_ep_l2_tvd_dirty;
++  bool m_ep_l2_tvd_cold_filter;
+   unsigned m_ep_l2_tvd_fixed_entries;
+   bool m_ep_l2_feature_adaptive_policy;
+   // Observational only. Disabling it must not change simulator timing.
+@@ -3078,6 +3080,7 @@ class l2_cache : public data_cache {
+   }
+ 
+   typedef ep_l2_tvd_directory<> tvd_directory;
++  unsigned long long tvd_cold_bypasses_for_test() const { return m_tvd_cold_bypasses; }
+   bool tvd_enabled() const { return bool(m_tvd); }
+   bool tvd_write_candidate(mem_fetch *mf) const {
+     return m_tvd && m_tvd_lookup == mf && m_tvd_lookup_done &&
+@@ -3291,6 +3294,7 @@ class l2_cache : public data_cache {
+   unsigned long long m_tvd_indexed_accepts=0, m_tvd_indexed_completions=0,
+       m_tvd_indexed_rollbacks=0, m_tvd_native_installs=0, m_tvd_native_promotions=0;
+   unsigned long long m_tvd_completion_cam_cycle=(unsigned long long)-1;
++  unsigned long long m_tvd_cold_bypasses=0;
+   struct ft_replacement {
+     mem_fetch *request;
+     unsigned tag_index, phase, landing_id;
+@@ -3335,6 +3339,12 @@ class l2_cache : public data_cache {
+   ep_l2_ro_runtime *m_ro;
+   void ro_init();
+   void validate_ep_l2_mode_config() const {
++    if (m_config.m_ep_l2_tvd_cold_filter &&
++        (!(m_config.m_ep_l2_tvd_clean || m_config.m_ep_l2_tvd_dirty) ||
++         m_config.ro_requested())) {
++      fprintf(stderr,"TVD cold filter requires WV without RO; other compositions unqualified\n");
++      abort();
++    }
+     if ((m_config.m_ep_l2_tvd_clean || m_config.m_ep_l2_tvd_dirty) &&
+         (m_config.m_ep_l2_diag_copy_free || m_config.m_ep_l2_payload_mode != 2 ||
+          m_config.m_ep_l2_descriptor_pool_size != 512 || m_config.m_mshr_entries != 128 ||
+diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
+index 683b7c8..3b66521 100644
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -343,6 +343,7 @@ void memory_config::reg_options(class OptionParser *opp) {
+   option_parser_register(opp,"-gpgpu_ep_l2_tvd_fixed_entries",OPT_UINT32,
+       &m_L2_config.m_ep_l2_tvd_fixed_entries,"Fixed victim/non-victim bank quotas:0 dynamic,64 fixed (1168 total)","0");
+   option_parser_register(opp,"-gpgpu_ep_l2_tvd_clean",OPT_BOOL,&m_L2_config.m_ep_l2_tvd_clean,"study CLEAN_ONLY", "0");
++  option_parser_register(opp,"-gpgpu_ep_l2_tvd_cold_filter",OPT_BOOL,&m_L2_config.m_ep_l2_tvd_cold_filter,"lifetime-never-installed negative TVD gate; one sticky bit, no query when cold", "0");
+   option_parser_register(opp,"-gpgpu_ep_l2_tvd_dirty",OPT_BOOL,&m_L2_config.m_ep_l2_tvd_dirty,"study DIRTY_PENDING_INFLIGHT (new source, native qualification required)", "0");
+   option_parser_register(opp, "-gpgpu_ep_l2_feature_tvd", OPT_BOOL,
+                          &m_L2_config.m_ep_l2_feature_tvd,
+diff --git a/tests/ep_l2/test_v5_cold_filter.cc b/tests/ep_l2/test_v5_cold_filter.cc
+new file mode 100644
+index 0000000..be386d0
+--- /dev/null
++++ b/tests/ep_l2/test_v5_cold_filter.cc
+@@ -0,0 +1,35 @@
++#include "ms_victim/native_fixture.h"
++int main(int argc,char **argv) {
++  assert(argc==4);const std::string mode=argv[3];
++  char two[]="2",sixteen[]="16",zero[]="0",one[]="1";
++  char *args[]={argv[0],argv[1],argv[2],two,sixteen,zero,zero,one};
++  victim_fixture f(args,"512:2:64:64","S:32:128:8,L:B:m:L:L,A:128:1,256:0,32");
++  auto cache=f.cache;auto dir=cache->tvd_for_test();assert(dir && dir->never_installed());
++  const bool enabled=mode!="off";
++  f.read(0);
++  assert(dir->never_installed());
++  assert(enabled ? (cache->tvd_lookup_queries_for_test()==0 && cache->tvd_cold_bypasses_for_test()>0)
++                 : (cache->tvd_lookup_queries_for_test()>0 && cache->tvd_cold_bypasses_for_test()==0));
++  std::vector<new_addr_type> lines;lines.push_back(0);
++  for(new_addr_type a=128;lines.size()<10;a+=128)
++    if(f.gpu->getMemoryConfig()->m_L2_config.set_index(a)==0)lines.push_back(a);
++  if(mode=="dirty")f.write(0);
++  for(unsigned i=1;i<9;++i)f.read(lines[i]);
++  assert(!dir->never_installed());
++  const auto bypasses=cache->tvd_cold_bypasses_for_test();
++  const auto queries=cache->tvd_lookup_queries_for_test();
++  if(mode=="dirty") {
++    assert(cache->ep_l2_wad_contains(0));
++    auto r=f.make(0,false);const auto uid=r->get_request_uid();f.send(r);
++    for(unsigned i=0;i<6;++i)f.step();
++    assert(cache->tvd_lookup_queries_for_test()>queries);
++    f.complete_writebacks(); f.wait(uid);
++  } else {
++    f.read(0);assert(cache->tvd_lookup_queries_for_test()>queries);
++  }
++  assert(cache->tvd_cold_bypasses_for_test()==bypasses);
++  f.finish();assert(!dir->occupied() && !dir->never_installed());
++  f.read(lines[9]);assert(cache->tvd_cold_bypasses_for_test()==bypasses);
++  f.finish();printf("V5_COLD_FILTER_PASS|mode=%s|queries=%llu|bypasses=%llu\n",
++      mode.c_str(),cache->tvd_lookup_queries_for_test(),cache->tvd_cold_bypasses_for_test());
++}
+diff --git a/tests/ep_l2/test_v5_cold_proof.cc b/tests/ep_l2/test_v5_cold_proof.cc
+new file mode 100644
+index 0000000..206bc82
+--- /dev/null
++++ b/tests/ep_l2/test_v5_cold_proof.cc
+@@ -0,0 +1,35 @@
++#include "../../src/gpgpu-sim/ep-l2-tvd-directory.h"
++#include <cstdio>
++using D=ep_l2_tvd_directory<>;
++int main(){
++  for(bool dirty:{false,true}) {
++    D d(1,true,true);D::ticket t;ep_l2::PayloadHandle h(0,1);
++    assert(d.never_installed());
++    auto p=d.preview_install(0,dirty);
++    assert(d.commit_install(p,0,h,1,dirty?1:0,1,dirty,1,t)==D::INVALID_INPUT);
++    assert(d.never_installed()); // unsuccessful producer never sets false-positive
++    assert(d.commit_install(p,0,h,1,dirty?1:0,0,dirty,1,t)==D::OK);
++    assert(!d.never_installed() && d.occupied()==1); // SET precedes visibility
++    const auto o=d.preview_ticket(t,1,D::READ_OP);D::read_lease l;
++    assert(o.status==D::READ_READY && d.begin_read(o,1,l)==D::OK);
++    ep_l2::PayloadHandle released;
++    assert(d.reclaim(t,released,1)==(dirty?D::WAIT_WRITEBACK:D::PINNED));
++    assert(!d.never_installed());
++    assert(d.cancel_read(l)==D::OK);
++    if(dirty) {
++      assert(d.bind_writeback(t,23)==D::OK);
++      assert(d.lower_accept(t,false,2)==D::DATA_TRANSFER_UNPROVEN);
++      assert(d.lower_accept(t,true,2)==D::OK);
++      assert(!d.epoch_ready() && !d.never_installed());
++      assert(d.set_done(t,3)==D::OK);
++    }
++    assert(d.reclaim(t,released,4)==D::OK);
++    assert(!d.occupied() && !d.never_installed()); // sticky; no unsafe empty reset
++    assert(d.reclaim(t,released,4)==D::STALE);
++    auto q=d.preview_install(128,true);
++    assert(d.commit_install(q,128,h,1,1,0,true,5,t)==D::OK);
++    assert(d.rollback_staged(t,6)==D::OK);
++    assert(!d.occupied() && !d.never_installed());
++  }
++  printf("V5_COLD_PROOF_PASS|profiles=2|checks=failed_commit,set_before_visible,reader_pin,mandatory_WB,lower_data,stale_ticket,rollback,sticky_empty\n");
++}

@@ -1,0 +1,30 @@
+diff --git a/src/gpgpu-sim/gpu-cache.cc b/src/gpgpu-sim/gpu-cache.cc
+index 159b73c..d65577b 100644
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -2774,7 +2774,9 @@ void l2_cache::ep_l2_wad_complete(new_addr_type block_addr,
+     assert(m_tvd->live(t) && m_tvd->at(t.index).line==normalized);
+     const auto h=m_tvd->at(t.index).payload;
+     const auto qkey=quota_key(2,completing_request_uid,t);
+-    assert(m_tvd->set_done(t,cycle)==tvd_directory::OK);
++    const auto completion_status = m_tvd->set_done(t,cycle);
++    assert(completion_status==tvd_directory::OK);
++    (void)completion_status;
+     if(m_config.m_ep_l2_quota_row_lanes) {
+       m_quota_row_port.commit(qkey,m_quota_l2_tick);
+       m_quota_completion_head=nullptr;
+diff --git a/src/gpgpu-sim/l2cache.cc b/src/gpgpu-sim/l2cache.cc
+index cfad5a9..d7e61d1 100644
+--- a/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/l2cache.cc
+@@ -661,7 +661,9 @@ void memory_partition_unit::simple_dram_model_cycle() {
+           true, m_sub_partition[dest_spid]->dram_L2_queue_full());
+       if (!m_sub_partition[dest_spid]->dram_L2_queue_full()) {
+         if (mf_return->get_access_type() == L1_WRBK_ACC) {
+-          assert(m_sub_partition[dest_spid]->set_done(mf_return));
++          const bool done = m_sub_partition[dest_spid]->set_done(mf_return);
++          assert(done);
++          (void)done;
+           delete mf_return;
+         } else {
+           m_sub_partition[dest_spid]->dram_L2_queue_push(mf_return);

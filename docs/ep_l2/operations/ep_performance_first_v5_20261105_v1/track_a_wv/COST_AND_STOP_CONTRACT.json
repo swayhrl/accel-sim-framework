@@ -1,0 +1,37 @@
+{
+  "schema": "EP_L2_PFV5_A_COST_AND_STOP_CONTRACT_V1",
+  "cold_filter": {
+    "status": "PRIVATE_PRODUCTION_IMPLEMENTED_CPU_VALIDATED_NO_APPLICATION",
+    "flag": "-gpgpu_ep_l2_tvd_cold_filter",
+    "default": 0,
+    "metadata_bits_per_slice": 1,
+    "set_port": "one sticky SET signal from successful row-install commit; concurrent same-value SET is idempotent, no read-modify-write counter",
+    "reset": "cache/directory construction only; never at reclaim/rollback/WB completion/epoch/flush",
+    "read_path": "one negative proof read alongside existing Tag miss stage on the single serialized frontend; max one request check per physical cache cycle; no associative lookup/ticket generated while cold",
+    "cycle_cost": "folded small gate into existing Tag stage; no separate CAM query is launched; the added wire/logic is NOT physically closed and not claimed free or 0ns",
+    "timing_failure": "if gate cannot meet the existing Tag-stage timing, insert an explicit stage; a one-cycle serial gate can erase latency benefit versus one-cycle baseline query; do not suppress cost",
+    "invariant": "never_installed implies occupied==0 by induction over all production insertion paths; first successful install sets sticky before visible row; dirty promotion requires an already existing source row",
+    "qualification": "default-off/clean/dirty partition; failed commit/pin/mandatory/stale/rollback/lower backing proof; no full app acceptance"
+  },
+  "retention_model": {
+    "status": "ACCURATE_SERIAL_CYCLE_ENGINEERING_MODEL_NOT_CACHE_INTEGRATED",
+    "chosen_policy": "unified LRU across reclaimable CLEAN and WB_COMPLETE, same-bank only; no completed-WB priority over more-recent CLEAN",
+    "existing_metadata": "production entry age is uint64_t per 128 rows (8192 bits logical age metadata); not a new free counter/array; hardware compression/ranking unresolved",
+    "selector": "one existing-or-budgeted control row-read lane, one 64bit age comparator, sequential 1 row per cycle; 128 rows require128 scan cycles",
+    "new_pending_metadata": "one selected index/incarnation/age + scan cursor/bank/phase, about148 logical bits excluding reuse of existing clock enable; simulator64bit timestamps not asserted hardware area",
+    "commit": "one distinct shared row-update lane cycle after complete scan, live incarnation/status/readers/age recheck; blocks on any busy lane; no lower enqueue without allocator/credit pre-reservation",
+    "not_implemented": [
+      "cache/frontend connection",
+      "atomic allocator release and mandatory WB producer integration",
+      "sameSource application ELF for this policy",
+      "clock-domain/physical timing closure"
+    ],
+    "stop": "do not spend long Stencil scientific starts on 128-cycle on-demand scan without evidence its retention win amortizes that cost; parallel127-comparator tree would require a new explicit area/timing contract"
+  },
+  "stopped_directions": [
+    "bank-aware same-bank reclaim is already present in Source78; no duplicate version",
+    "FWT/GEMM current evidence has zero victim installs; retention LRU cannot help those exact existing runs",
+    "cold proof is not a general empty-directory filter and ceases forever after first install",
+    "no broad reduction of WB/reader/epoch completion constraints"
+  ]
+}

@@ -1,0 +1,145 @@
+DRAM Timing Options:
+nbk                                    16 # number of banks
+CCD                                     1 # column to column delay
+RRD                                     3 # minimal delay between activation of rows in different banks
+RCD                                    12 # row to column delay
+RAS                                    28 # time needed to activate row
+RP                                     12 # time needed to precharge (deactivate) row
+RC                                     40 # row cycle time
+CDLR                                    3 # switching from write to read (changes tWTR)
+WR                                     10 # last data-in to row precharge
+CL                                     12 # CAS latency
+WL                                      2 # Write latency
+nbkgrp                                  4 # number of bank groups
+CCDL                                    2 # column to column delay between accesses to different bank groups
+RTPL                                    3 # read to precharge delay between accesses to different bank groups
+Total number of memory sub partition = 1
+addr_dec_mask[CHIP]  = 0000000000000000 	high:64 low:0
+addr_dec_mask[BK]    = 0000000000007100 	high:15 low:8
+addr_dec_mask[ROW]   = 000000000fff8000 	high:28 low:15
+addr_dec_mask[COL]   = 0000000000000eff 	high:12 low:0
+addr_dec_mask[BURST] = 000000000000001f 	high:5 low:0
+sub_partition_id_mask = 0000000000000000
+GPGPU-Sim uArch: clock freqs: 1132000000.000000:1132000000.000000:1132000000.000000:1700000000.000000
+GPGPU-Sim uArch: clock periods: 0.00000000088339222615:0.00000000088339222615:0.00000000088339222615:0.00000000058823529412
+*** Initializing Memory Statistics ***
+GPGPU-Sim uArch: performance model initialization complete.
+EPL2ROP5|ADMISSION|slice=0|policy_pressure_epoch=0|active=0|activations=0|native_before_activation=0|control_bits_per_slice=1|query_ports_added=0|directory_entries_added=0|epoch_reset=ONLY_AFTER_DRAIN
+EPL2ROV1|SUMMARY|slice=0|detach=1|bypass=1|accepted_global_reads=20|accepted_oracle_candidates=20|accepted_ro=20|transactions=20|merges=0|detached=0|lower_sectors=20|concurrent_duplicate_sectors=0|responses=20|ro_bank_fill_ops=20|ro_bank_response_ops=20|live=0|manifest=3685cb6c64fddf72b99e404101cfc29ccd77a5909a490b89edb80a455a0b6c98|scope=TRACE_MODEL_CLOSED_WORLD
+EPL2ROC1|CLOSURE|slice=0|native_descriptor_responses=0|ro_descriptor_responses=20|shared_descriptor_used=0|shared_line_used=0|ro_live=0|epoch_closed=1|scope=NATIVE_AND_RO_DISTINCT_SUBCOUNTERS_NOT_ALL_FRONTEND_REQUESTS
+EPL2ROC1|RESOURCE|slice=0|normal_line_allocations=0|avoided_line_allocations=20|peak_transactions=20|peak_shared_descriptors=20|peak_shared_lines=0|lower_read_bytes=640|concurrent_duplicate_read_bytes=0|query_count=20|query_latency_gpu_cycles=1|query_ports_per_slice=1|query_wait_cycles=20|query_port_wait_attempts=0|shared_descriptor_capacity=512|payload_capacity=1168|line_capacity=128|oracle=TRACE_MODEL_CLOSED_WORLD
+EPL2ROC1|LOWER_CONCURRENCY|slice=0|peak_lower_transactions=20|peak_independent_lower_lines=20|epoch_begin_gpu_cycle=0|epoch_end_gpu_cycle=120|last_response_gpu_cycle=120|completed_ro_requesters=20|scope=RO_ISSUED_NOT_RETURNED_PER_SLICE|measurement=OBSERVER_ONLY_NO_ADMISSION_LOOKUP
+EPL2ROC1|WAIT|slice=0|reason=TAG_SET_ALL_PENDING|unique_head_requests=0|first_to_accept_cycles=0|pending_head=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|scope=SLICE_FRONTEND_HEAD_NONEXCLUSIVE_WAIT
+EPL2ROC1|WAIT|slice=0|reason=LINE_MSHR_FULL|unique_head_requests=0|first_to_accept_cycles=0|pending_head=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|scope=SLICE_FRONTEND_HEAD_NONEXCLUSIVE_WAIT
+EPL2ROC1|WAIT|slice=0|reason=SHARED_DESCRIPTOR_FULL|unique_head_requests=0|first_to_accept_cycles=0|pending_head=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|scope=SLICE_FRONTEND_HEAD_NONEXCLUSIVE_WAIT
+EPL2ROC1|WAIT|slice=0|reason=PER_ADDRESS_FULL|unique_head_requests=0|first_to_accept_cycles=0|pending_head=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|scope=SLICE_FRONTEND_HEAD_NONEXCLUSIVE_WAIT
+B1_DELTA|case=no_pressure|policy=0|queries=20|cycle=121|PASS
+DRAM Timing Options:
+nbk                                    16 # number of banks
+CCD                                     1 # column to column delay
+RRD                                     3 # minimal delay between activation of rows in different banks
+RCD                                    12 # row to column delay
+RAS                                    28 # time needed to activate row
+RP                                     12 # time needed to precharge (deactivate) row
+RC                                     40 # row cycle time
+CDLR                                    3 # switching from write to read (changes tWTR)
+WR                                     10 # last data-in to row precharge
+CL                                     12 # CAS latency
+WL                                      2 # Write latency
+nbkgrp                                  4 # number of bank groups
+CCDL                                    2 # column to column delay between accesses to different bank groups
+RTPL                                    3 # read to precharge delay between accesses to different bank groups
+Total number of memory sub partition = 1
+addr_dec_mask[CHIP]  = 0000000000000000 	high:64 low:0
+addr_dec_mask[BK]    = 0000000000007100 	high:15 low:8
+addr_dec_mask[ROW]   = 000000000fff8000 	high:28 low:15
+addr_dec_mask[COL]   = 0000000000000eff 	high:12 low:0
+addr_dec_mask[BURST] = 000000000000001f 	high:5 low:0
+sub_partition_id_mask = 0000000000000000
+GPGPU-Sim uArch: clock freqs: 1132000000.000000:1132000000.000000:1132000000.000000:1700000000.000000
+GPGPU-Sim uArch: clock periods: 0.00000000088339222615:0.00000000088339222615:0.00000000088339222615:0.00000000058823529412
+*** Initializing Memory Statistics ***
+GPGPU-Sim uArch: performance model initialization complete.
+EPL2ROP5|ADMISSION|slice=0|policy_pressure_epoch=1|active=0|activations=0|native_before_activation=20|control_bits_per_slice=1|query_ports_added=0|directory_entries_added=0|epoch_reset=ONLY_AFTER_DRAIN
+EPL2ROV1|SUMMARY|slice=0|detach=1|bypass=1|accepted_global_reads=20|accepted_oracle_candidates=20|accepted_ro=0|transactions=0|merges=0|detached=0|lower_sectors=0|concurrent_duplicate_sectors=0|responses=0|ro_bank_fill_ops=0|ro_bank_response_ops=0|live=0|manifest=3685cb6c64fddf72b99e404101cfc29ccd77a5909a490b89edb80a455a0b6c98|scope=TRACE_MODEL_CLOSED_WORLD
+EPL2ROC1|CLOSURE|slice=0|native_descriptor_responses=20|ro_descriptor_responses=0|shared_descriptor_used=0|shared_line_used=0|ro_live=0|epoch_closed=1|scope=NATIVE_AND_RO_DISTINCT_SUBCOUNTERS_NOT_ALL_FRONTEND_REQUESTS
+EPL2ROC1|RESOURCE|slice=0|normal_line_allocations=0|avoided_line_allocations=0|peak_transactions=0|peak_shared_descriptors=0|peak_shared_lines=0|lower_read_bytes=0|concurrent_duplicate_read_bytes=0|query_count=0|query_latency_gpu_cycles=1|query_ports_per_slice=1|query_wait_cycles=0|query_port_wait_attempts=0|shared_descriptor_capacity=512|payload_capacity=1168|line_capacity=128|oracle=TRACE_MODEL_CLOSED_WORLD
+EPL2ROC1|LOWER_CONCURRENCY|slice=0|peak_lower_transactions=0|peak_independent_lower_lines=0|epoch_begin_gpu_cycle=0|epoch_end_gpu_cycle=100|last_response_gpu_cycle=NA|completed_ro_requesters=0|scope=RO_ISSUED_NOT_RETURNED_PER_SLICE|measurement=OBSERVER_ONLY_NO_ADMISSION_LOOKUP
+EPL2ROC1|WAIT|slice=0|reason=TAG_SET_ALL_PENDING|unique_head_requests=0|first_to_accept_cycles=0|pending_head=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|scope=SLICE_FRONTEND_HEAD_NONEXCLUSIVE_WAIT
+EPL2ROC1|WAIT|slice=0|reason=LINE_MSHR_FULL|unique_head_requests=0|first_to_accept_cycles=0|pending_head=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|scope=SLICE_FRONTEND_HEAD_NONEXCLUSIVE_WAIT
+EPL2ROC1|WAIT|slice=0|reason=SHARED_DESCRIPTOR_FULL|unique_head_requests=0|first_to_accept_cycles=0|pending_head=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|scope=SLICE_FRONTEND_HEAD_NONEXCLUSIVE_WAIT
+EPL2ROC1|WAIT|slice=0|reason=PER_ADDRESS_FULL|unique_head_requests=0|first_to_accept_cycles=0|pending_head=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|scope=SLICE_FRONTEND_HEAD_NONEXCLUSIVE_WAIT
+B1_DELTA|case=no_pressure|policy=1|queries=0|cycle=101|PASS
+DRAM Timing Options:
+nbk                                    16 # number of banks
+CCD                                     1 # column to column delay
+RRD                                     3 # minimal delay between activation of rows in different banks
+RCD                                    12 # row to column delay
+RAS                                    28 # time needed to activate row
+RP                                     12 # time needed to precharge (deactivate) row
+RC                                     40 # row cycle time
+CDLR                                    3 # switching from write to read (changes tWTR)
+WR                                     10 # last data-in to row precharge
+CL                                     12 # CAS latency
+WL                                      2 # Write latency
+nbkgrp                                  4 # number of bank groups
+CCDL                                    2 # column to column delay between accesses to different bank groups
+RTPL                                    3 # read to precharge delay between accesses to different bank groups
+Total number of memory sub partition = 1
+addr_dec_mask[CHIP]  = 0000000000000000 	high:64 low:0
+addr_dec_mask[BK]    = 0000000000007100 	high:15 low:8
+addr_dec_mask[ROW]   = 000000000fff8000 	high:28 low:15
+addr_dec_mask[COL]   = 0000000000000eff 	high:12 low:0
+addr_dec_mask[BURST] = 000000000000001f 	high:5 low:0
+sub_partition_id_mask = 0000000000000000
+GPGPU-Sim uArch: clock freqs: 1132000000.000000:1132000000.000000:1132000000.000000:1700000000.000000
+GPGPU-Sim uArch: clock periods: 0.00000000088339222615:0.00000000088339222615:0.00000000088339222615:0.00000000058823529412
+*** Initializing Memory Statistics ***
+GPGPU-Sim uArch: performance model initialization complete.
+EPL2ROP5|ADMISSION|slice=0|policy_pressure_epoch=1|active=1|activations=1|native_before_activation=1|control_bits_per_slice=1|query_ports_added=0|directory_entries_added=0|epoch_reset=ONLY_AFTER_DRAIN
+EPL2ROV1|SUMMARY|slice=0|detach=1|bypass=1|accepted_global_reads=3|accepted_oracle_candidates=3|accepted_ro=2|transactions=2|merges=0|detached=1|lower_sectors=2|concurrent_duplicate_sectors=0|responses=2|ro_bank_fill_ops=2|ro_bank_response_ops=2|live=0|manifest=3685cb6c64fddf72b99e404101cfc29ccd77a5909a490b89edb80a455a0b6c98|scope=TRACE_MODEL_CLOSED_WORLD
+EPL2ROC1|CLOSURE|slice=0|native_descriptor_responses=1|ro_descriptor_responses=2|shared_descriptor_used=0|shared_line_used=0|ro_live=0|epoch_closed=1|scope=NATIVE_AND_RO_DISTINCT_SUBCOUNTERS_NOT_ALL_FRONTEND_REQUESTS
+EPL2ROC1|RESOURCE|slice=0|normal_line_allocations=0|avoided_line_allocations=2|peak_transactions=2|peak_shared_descriptors=2|peak_shared_lines=0|lower_read_bytes=64|concurrent_duplicate_read_bytes=0|query_count=2|query_latency_gpu_cycles=1|query_ports_per_slice=1|query_wait_cycles=2|query_port_wait_attempts=0|shared_descriptor_capacity=512|payload_capacity=1168|line_capacity=128|oracle=TRACE_MODEL_CLOSED_WORLD
+EPL2ROC1|LOWER_CONCURRENCY|slice=0|peak_lower_transactions=2|peak_independent_lower_lines=2|epoch_begin_gpu_cycle=0|epoch_end_gpu_cycle=25|last_response_gpu_cycle=25|completed_ro_requesters=2|scope=RO_ISSUED_NOT_RETURNED_PER_SLICE|measurement=OBSERVER_ONLY_NO_ADMISSION_LOOKUP
+EPL2ROC1|WAIT|slice=0|reason=TAG_SET_ALL_PENDING|unique_head_requests=1|first_to_accept_cycles=4|pending_head=0|hist_log2=0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0|scope=SLICE_FRONTEND_HEAD_NONEXCLUSIVE_WAIT
+EPL2ROC1|WAIT|slice=0|reason=LINE_MSHR_FULL|unique_head_requests=0|first_to_accept_cycles=0|pending_head=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|scope=SLICE_FRONTEND_HEAD_NONEXCLUSIVE_WAIT
+EPL2ROC1|WAIT|slice=0|reason=SHARED_DESCRIPTOR_FULL|unique_head_requests=0|first_to_accept_cycles=0|pending_head=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|scope=SLICE_FRONTEND_HEAD_NONEXCLUSIVE_WAIT
+EPL2ROC1|WAIT|slice=0|reason=PER_ADDRESS_FULL|unique_head_requests=0|first_to_accept_cycles=0|pending_head=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|scope=SLICE_FRONTEND_HEAD_NONEXCLUSIVE_WAIT
+B1_DELTA|case=tag_pressure_timed_activation_preview_purity_native_owner_late_return_icnt|PASS
+DRAM Timing Options:
+nbk                                    16 # number of banks
+CCD                                     1 # column to column delay
+RRD                                     3 # minimal delay between activation of rows in different banks
+RCD                                    12 # row to column delay
+RAS                                    28 # time needed to activate row
+RP                                     12 # time needed to precharge (deactivate) row
+RC                                     40 # row cycle time
+CDLR                                    3 # switching from write to read (changes tWTR)
+WR                                     10 # last data-in to row precharge
+CL                                     12 # CAS latency
+WL                                      2 # Write latency
+nbkgrp                                  4 # number of bank groups
+CCDL                                    2 # column to column delay between accesses to different bank groups
+RTPL                                    3 # read to precharge delay between accesses to different bank groups
+Total number of memory sub partition = 1
+addr_dec_mask[CHIP]  = 0000000000000000 	high:64 low:0
+addr_dec_mask[BK]    = 0000000000007100 	high:15 low:8
+addr_dec_mask[ROW]   = 000000000fff8000 	high:28 low:15
+addr_dec_mask[COL]   = 0000000000000eff 	high:12 low:0
+addr_dec_mask[BURST] = 000000000000001f 	high:5 low:0
+sub_partition_id_mask = 0000000000000000
+GPGPU-Sim uArch: clock freqs: 1132000000.000000:1132000000.000000:1132000000.000000:1700000000.000000
+GPGPU-Sim uArch: clock periods: 0.00000000088339222615:0.00000000088339222615:0.00000000088339222615:0.00000000058823529412
+*** Initializing Memory Statistics ***
+GPGPU-Sim uArch: performance model initialization complete.
+EPL2ROP5|ADMISSION|slice=0|policy_pressure_epoch=1|active=1|activations=1|native_before_activation=128|control_bits_per_slice=1|query_ports_added=0|directory_entries_added=0|epoch_reset=ONLY_AFTER_DRAIN
+EPL2ROV1|SUMMARY|slice=0|detach=1|bypass=1|accepted_global_reads=129|accepted_oracle_candidates=129|accepted_ro=1|transactions=1|merges=0|detached=0|lower_sectors=1|concurrent_duplicate_sectors=0|responses=1|ro_bank_fill_ops=1|ro_bank_response_ops=1|live=0|manifest=3685cb6c64fddf72b99e404101cfc29ccd77a5909a490b89edb80a455a0b6c98|scope=TRACE_MODEL_CLOSED_WORLD
+EPL2ROC1|CLOSURE|slice=0|native_descriptor_responses=128|ro_descriptor_responses=1|shared_descriptor_used=0|shared_line_used=0|ro_live=0|epoch_closed=1|scope=NATIVE_AND_RO_DISTINCT_SUBCOUNTERS_NOT_ALL_FRONTEND_REQUESTS
+EPL2ROC1|RESOURCE|slice=0|normal_line_allocations=0|avoided_line_allocations=1|peak_transactions=1|peak_shared_descriptors=129|peak_shared_lines=128|lower_read_bytes=32|concurrent_duplicate_read_bytes=0|query_count=1|query_latency_gpu_cycles=1|query_ports_per_slice=1|query_wait_cycles=1|query_port_wait_attempts=0|shared_descriptor_capacity=512|payload_capacity=1168|line_capacity=128|oracle=TRACE_MODEL_CLOSED_WORLD
+EPL2ROC1|LOWER_CONCURRENCY|slice=0|peak_lower_transactions=1|peak_independent_lower_lines=1|epoch_begin_gpu_cycle=0|epoch_end_gpu_cycle=647|last_response_gpu_cycle=519|completed_ro_requesters=1|scope=RO_ISSUED_NOT_RETURNED_PER_SLICE|measurement=OBSERVER_ONLY_NO_ADMISSION_LOOKUP
+EPL2ROC1|WAIT|slice=0|reason=TAG_SET_ALL_PENDING|unique_head_requests=0|first_to_accept_cycles=0|pending_head=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|scope=SLICE_FRONTEND_HEAD_NONEXCLUSIVE_WAIT
+EPL2ROC1|WAIT|slice=0|reason=LINE_MSHR_FULL|unique_head_requests=0|first_to_accept_cycles=0|pending_head=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|scope=SLICE_FRONTEND_HEAD_NONEXCLUSIVE_WAIT
+EPL2ROC1|WAIT|slice=0|reason=SHARED_DESCRIPTOR_FULL|unique_head_requests=0|first_to_accept_cycles=0|pending_head=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|scope=SLICE_FRONTEND_HEAD_NONEXCLUSIVE_WAIT
+EPL2ROC1|WAIT|slice=0|reason=PER_ADDRESS_FULL|unique_head_requests=0|first_to_accept_cycles=0|pending_head=0|hist_log2=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|scope=SLICE_FRONTEND_HEAD_NONEXCLUSIVE_WAIT
+B1_DELTA|case=line128_activation_shared_descriptors_mixed_return_native_owner|PASS
+PFV5_B1_PRODUCTION_CPU|PASS|full_application_models=0

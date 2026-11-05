@@ -1,0 +1,94 @@
+{
+  "status": "READ_ONLY_PATH_REVIEW_AND_PRIVATE_IMPLEMENTATION",
+  "paths": [
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/gpgpu-sim/ep-l2-ro-runtime.inc",
+      "bytes": 32364,
+      "sha256": "ae1db8d466953c0b2ad6f8d16cbbda818af49e3387b3f4528ed45574ef8e4e3b",
+      "symbols": [
+        {
+          "line": 113,
+          "text": "void frontend_cycle(mem_fetch *m) {"
+        },
+        {
+          "line": 157,
+          "text": "void check_access(mem_fetch *m) const {"
+        },
+        {
+          "line": 218,
+          "text": "bool native_owner_conflict(mem_fetch *m) const {"
+        },
+        {
+          "line": 226,
+          "text": "bool new_request(mem_fetch *m) const {"
+        },
+        {
+          "line": 360,
+          "text": "cache_request_status accept_new(mem_fetch *m,unsigned index,cache_request_status probe,unsigned time,std::list<cache_event>&events) {"
+        },
+        {
+          "line": 382,
+          "text": "bool prepare(uint64_t cycle) {"
+        },
+        {
+          "line": 398,
+          "text": "void commit(uint64_t cycle) {"
+        }
+      ]
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/gpgpu-sim/ep-l2-ft-cache.inc",
+      "bytes": 41725,
+      "sha256": "e27b7624732f3b1c30f0803caef9b3da8cb1a7b84ea82193cd3d24e667e603cc",
+      "symbols": [
+        {
+          "line": 537,
+          "text": "const cache_request_status result = ro_new ? m_ro->accept_new(mf,index,probe,time,events) : data_cache::access(addr, mf, time, events);"
+        }
+      ]
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/gpgpu-sim/ep-l2-tvd-cache.inc",
+      "bytes": 14188,
+      "sha256": "16456828b6bfc34496ca973a02ff308b03ab182ee8bec11359bdb20387893578",
+      "symbols": [
+        {
+          "line": 60,
+          "text": "l2_cache::tvd_frontend_result l2_cache::tvd_frontend(mem_fetch *mf,"
+        }
+      ]
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/gpgpu-sim/gpu-cache.cc",
+      "bytes": 134350,
+      "sha256": "9c516c0a81f591fedf1f043d0b10662ad9219fbd69aa8b43a70bdcf9d31b6b76",
+      "symbols": [
+        {
+          "line": 2716,
+          "text": "void l2_cache::ep_l2_wad_complete(new_addr_type block_addr,"
+        }
+      ]
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/gpgpu-sim/dram.cc",
+      "bytes": 31341,
+      "sha256": "fb23ce6c943253b170e20f0c2a0aad06747dd3338e0a3b739b1c59eafdb5de1c",
+      "symbols": []
+    },
+    {
+      "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/core/src/gpgpu-sim/l2cache.cc",
+      "bytes": 136931,
+      "sha256": "5508a63fa049fc01cd2a18243a4e3721124cfe86d6203a2570443df67c1550d0",
+      "symbols": [
+        {
+          "line": 1351,
+          "text": "const auto result=eligible?m_L2cache->tvd_frontend(mf,now,!m_L2_icnt_queue->full()):l2_cache::TVD_NORMAL;"
+        },
+        {
+          "line": 2783,
+          "text": "m_L2cache->ep_l2_wad_complete("
+        }
+      ]
+    }
+  ]
+}

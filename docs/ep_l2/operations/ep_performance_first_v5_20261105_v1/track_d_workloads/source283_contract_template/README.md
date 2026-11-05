@@ -1,0 +1,6 @@
+# Source-specific 283-option consumer template
+This is an unqualified private engineering template, not A or B qualification. It copies the V4 strict43 runtime schema unchanged except for the exact283 map requirement and explicit one-Source/profile/feature-whitelist/actual-constructor-review gates. The old Source78 3MM graph remains282 and is untouched.
+
+Main must independently supply the actual new Source5 and matching22 Native plus Host dependency closure; exact complete283 maps for every profile and same-mode feature-off backgrounds; a finite declared feature-option whitelist; the real production constructor receipt and an immutable Main CPU review that joins its actual schema/Source/profiles. A and B receive separate contracts and pins. The template's Source5=null, empty maps and TEMPLATE_NOT_QUALIFIED status reject before any consume.
+
+This does not implement scientific mode/background qualification, current CPU binding, staged release, scoped Native route installation, registration, consume, archive or model execution. Reuse the unchanged monitor and production Native checks after Main integrates the exact source-specific map. Do not inherit old Source78 application acceptance or use this template to label a new Source qualified. CPU schema PASS alone is not application PASS.

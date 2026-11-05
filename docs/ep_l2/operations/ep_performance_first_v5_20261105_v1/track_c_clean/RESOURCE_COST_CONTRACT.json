@@ -1,0 +1,76 @@
+{
+  "fixed_resource_invariants": {
+    "Tag": "current same config unchanged",
+    "Payload_per_slice": 1168,
+    "banks": 4,
+    "data_ops_per_bank_per_physical_cycle": 1,
+    "WAD_TVD_rows": 128,
+    "descriptors": 512,
+    "MSHR_lines": 128,
+    "merge": 32,
+    "extra_victim_data_array": false
+  },
+  "K1": {
+    "row_service_lanes": 1,
+    "ideal_rows_per_2_L2_beats": 1,
+    "row_intent_slots": 1,
+    "directory_metadata_array_requirement": "one selected-row read and one selected-row write during separate READ/COMMIT beats"
+  },
+  "K2": {
+    "row_service_lanes": 2,
+    "ideal_rows_per_2_L2_beats": 2,
+    "row_intent_slots": 2,
+    "directory_metadata_array_requirement": "two distinct selected-row reads and two distinct writes; requires real ports or conflict-aware banking, decoder/mux/enable cost not qualified"
+  },
+  "count_lane": {
+    "proposed": 1,
+    "signed_delta_per_row_bits": 2,
+    "signed_sum_K2_bits": 3,
+    "logical_count_bits": 8,
+    "logical_cap_bits": 8,
+    "projected_bits": 9,
+    "production_counter_integration": "MISSING"
+  },
+  "row_key_logical_minimum_bits": {
+    "producer": 3,
+    "UID": 32,
+    "row": 7,
+    "payload_id": 11,
+    "state": 3,
+    "incarnation": 64,
+    "generation": 64,
+    "valid": 1,
+    "sum_per_slot": 185
+  },
+  "completion_context": {
+    "capacity": 1,
+    "identity": "existing packet UID + selected row incarnation/payload generation; no new packet header fields",
+    "CAM_ports": 1,
+    "CAM_latency": "paid READ context then subsequent L2-beat row COMMIT",
+    "new_completion_queue": 0,
+    "storage_reused": "existing finite detailed-DRAM returnq / simple latency queue"
+  },
+  "cost_limits": [
+    "185bits/slot is a logical field sum, not synthesized area",
+    "C++ pointer is simulator bookkeeping, not a free hardware pointer",
+    "diagnostic 64bit ticks are model control state; RTL encoding unqualified",
+    "all row producers not yet connected, no complete throughput/PPA claim",
+    "new returnq WB occupancy and head-of-line stalls are real modeled costs",
+    "K2 cost includes second row-array service path and arbitration, not merely185 extra intent bits; four payload banks/P1 are not free metadata ports."
+  ],
+  "CDC": "Explicit L2 tick prevents faster DRAM callbacks granting extra beats; actual circuit CDC/clock closure unqualified",
+  "PPA": "UNKNOWN",
+  "physical_frequency": "UNKNOWN",
+  "CPU_fixture_bounded_origin": {
+    "base_path": "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/cpu_fixture_inputs/base.config",
+    "frfcfs_sched_entries": 64,
+    "DRAM_returnq_entries": 192,
+    "subpartitions_per_channel": 1,
+    "shared_credit_limit": 256,
+    "private_credit_total": 1,
+    "reserved_WB_credit": 1,
+    "upper_inflight_credit_bound": 258,
+    "meaning": "simple latency list is bounded here by actual finite issue credits; detailed returnq itself has192 entries",
+    "future_profile_gate": "must freeze nonzero finite scheduler/returnq limits; prototype alone does not reject unlimited historical configs"
+  }
+}

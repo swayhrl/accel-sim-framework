@@ -1,0 +1,498 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 48cd8c6..86eb0f3 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -357,3 +357,11 @@ add_executable(ep_l2_tag_capacity_geometry EXCLUDE_FROM_ALL tests/ep_l2/test_tag
+ target_compile_options(ep_l2_tag_capacity_geometry PRIVATE -UNDEBUG)
+ target_include_directories(ep_l2_tag_capacity_geometry PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
+ target_link_libraries(ep_l2_tag_capacity_geometry PRIVATE -Wl,--start-group entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
++
++# V5 C: finite engineering-only production handshake delta targets.
++add_executable(ep_l2_quota_row_port_v5 EXCLUDE_FROM_ALL tests/ep_l2/test_quota_row_port_v5.cc)
++add_executable(ep_l2_quota_handshake_v5 EXCLUDE_FROM_ALL tests/ep_l2/test_quota_handshake_v5.cc)
++target_include_directories(ep_l2_quota_handshake_v5 PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
++target_link_libraries(ep_l2_quota_handshake_v5 PRIVATE -Wl,--start-group
++  entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group
++  ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
+diff --git a/src/gpgpu-sim/dram.cc b/src/gpgpu-sim/dram.cc
+index e675e95..61e3160 100644
+--- a/src/gpgpu-sim/dram.cc
++++ b/src/gpgpu-sim/dram.cc
+@@ -311,8 +311,9 @@ void dram_t::cycle() {
+           data->set_reply();
+           returnq->push(data);
+         } else {
+-          m_memory_partition_unit->set_done(data);
+-          delete data;
++          // Use the EXISTING bounded returnq as CDC/backpressure storage.
++          // Partition retains this exact packet+credit until metadata COMMIT.
++          returnq->push(data);
+         }
+         delete cmd;
+       }
+diff --git a/src/gpgpu-sim/ep-l2-ft-cache.inc b/src/gpgpu-sim/ep-l2-ft-cache.inc
+index 9b8c8c9..149d0cc 100644
+--- a/src/gpgpu-sim/ep-l2-ft-cache.inc
++++ b/src/gpgpu-sim/ep-l2-ft-cache.inc
+@@ -621,6 +621,13 @@ bool l2_cache::lower_ready(mem_fetch *mf, unsigned long long cycle) {
+   if (!ft_enabled() || mf->get_access_type() != L2_WRBK_ACC) return true;
+   std::map<mem_fetch *,ft_wb_record>::iterator it = m_ft_wb.find(mf);
+   assert(it != m_ft_wb.end());
++  if(m_tvd && m_config.m_ep_l2_quota_row_lanes) {
++    if(m_quota_row_port.lanes()!=m_config.m_ep_l2_quota_row_lanes)
++      m_quota_row_port.configure(m_config.m_ep_l2_quota_row_lanes);
++    const auto t=it->second.wad_ticket;
++    assert(m_tvd->writeback_matches(t,m_config.block_addr(mf->get_addr()),mf->get_request_uid()));
++    if(!m_quota_row_port.ready(quota_key(1,mf->get_request_uid(),t),m_quota_l2_tick))return false;
++  }
+   const ep_l2_payload_store::request_result result = m_ep_l2_payload.request(
+       it->second.handle, false, cycle, (unsigned long long)-1, ep_l2_payload_store::WB_READOUT,ep_l2_payload_store::LOWER_WB,mf->get_request_uid());
+   if (result != ep_l2_payload_store::GRANTED) { ++m_ft_stats.bank_block;
+@@ -651,7 +658,9 @@ void l2_cache::lower_accepted(mem_fetch *mf, unsigned long long cycle) {
+     const auto t=it->second.wad_ticket;
+     assert(m_tvd->live(t) && m_tvd->at(t.index).line==m_config.block_addr(mf->get_addr()));
+     assert(m_tvd->writeback_matches(t,m_config.block_addr(mf->get_addr()),mf->get_request_uid()));
++    const auto qkey=quota_key(1,mf->get_request_uid(),t);
+     assert(m_tvd->lower_accept(t,true,cycle)==tvd_directory::OK);
++    if(m_config.m_ep_l2_quota_row_lanes)m_quota_row_port.commit(qkey,m_quota_l2_tick);
+     ++m_tvd_indexed_accepts;
+     if (m_tvd->at(t.index).payload.valid()) {
+       if (!m_ep_l2_payload.inspect(it->second.handle).pins)
+diff --git a/src/gpgpu-sim/ep-l2-quota-row-port.h b/src/gpgpu-sim/ep-l2-quota-row-port.h
+new file mode 100644
+index 0000000..903a143
+--- /dev/null
++++ b/src/gpgpu-sim/ep-l2-quota-row-port.h
+@@ -0,0 +1,90 @@
++// New private V5 production prototype: bounded metadata reservation only.
++// This does not complete frontend/cleanup integration; see Track C README.
++#ifndef EP_L2_QUOTA_ROW_PORT_H
++#define EP_L2_QUOTA_ROW_PORT_H
++#include <array>
++#include <cstdint>
++#include <stdexcept>
++#include <limits>
++class ep_l2_quota_row_port {
++ public:
++  struct key {
++    unsigned producer, uid, row, payload_id, state;
++    std::uint64_t incarnation, generation;
++    key(unsigned p=0,unsigned u=0,unsigned r=128,std::uint64_t i=0,
++        unsigned h=~0u,std::uint64_t g=0,unsigned st=0):
++      producer(p),uid(u),row(r),payload_id(h),state(st),incarnation(i),generation(g){}
++    bool operator==(const key&o)const{return producer==o.producer&&uid==o.uid&&row==o.row&&
++      payload_id==o.payload_id&&state==o.state&&incarnation==o.incarnation&&generation==o.generation;}
++  };
++  struct counters {
++    std::uint64_t read_beats=0,commit_beats=0,acks=0,holds=0,row_conflicts=0,
++      port_conflicts=0,cancellations=0;
++  };
++  explicit ep_l2_quota_row_port(unsigned k=2): lanes_(k) {
++    if(k!=1&&k!=2)throw std::invalid_argument("row lanes must be1 or2");
++  }
++  void configure(unsigned k) {
++    if(pending())throw std::logic_error("configure busy row port");
++    if(k!=1&&k!=2)throw std::invalid_argument("row lanes must be1 or2");lanes_=k;
++  }
++  // Time is an explicit L2 service tick, not core-cycle or DRAM-call count.
++  // First same-tick requests form READ; subsequent ticks expose COMMIT.
++  // No new READ while any prepared entry remains. All repeated polls are free
++  // of new mutation, but each failed poll is diagnostic only, not a clock.
++  bool ready(const key&k,std::uint64_t tick) {
++    monotonic(tick);
++    for(unsigned i=0;i<2;++i)if(slots_[i].live&&slots_[i].identity==k) {
++      if(tick<=read_tick_){++stats_.holds;return false;}
++      commit_tick_=tick;return true;
++    }
++    if(pending()&&tick!=read_tick_){++stats_.port_conflicts;return false;}
++    if(!pending()&&(commit_tick_==tick || (stats_.read_beats&&read_tick_==tick))) {
++      ++stats_.port_conflicts;return false;
++    }
++    for(unsigned i=0;i<2;++i)if(slots_[i].live&&slots_[i].identity.row==k.row) {
++      ++stats_.row_conflicts;return false;
++    }
++    unsigned n=pending();if(n>=lanes_){++stats_.port_conflicts;return false;}
++    if(!n){read_tick_=tick;commit_tick_=unset();++stats_.read_beats;}
++    for(unsigned i=0;i<2;++i)if(!slots_[i].live){slots_[i].live=true;slots_[i].identity=k;break;}
++    ++stats_.holds;return false;
++  }
++  void commit(const key&k,std::uint64_t tick) {
++    monotonic(tick);
++    if(commit_tick_!=tick||tick<=read_tick_)throw std::logic_error("commit without paid reservation");
++    for(unsigned i=0;i<2;++i)if(slots_[i].live&&slots_[i].identity==k) {
++      if(last_count_commit_!=tick){++stats_.commit_beats;last_count_commit_=tick;}
++      slots_[i].live=false;++stats_.acks;return;
++    }
++    throw std::logic_error("unowned row commit");
++  }
++  // Reservation cancellation never refunds an occupied READ/COMMIT beat.
++  // No allocator, packet, row or count has changed at this preflight stage.
++  bool cancel(const key&k) {
++    for(auto&slot:slots_)if(slot.live&&slot.identity==k){slot.live=false;++stats_.cancellations;return true;}
++    return false;
++  }
++  unsigned pending()const{unsigned n=0;for(const auto&s:slots_)n+=s.live;return n;}
++  unsigned lanes()const{return lanes_;}
++  const counters&stats()const{return stats_;}
++  // Explicit one-count-write arithmetic helper. Caller must preflight all row
++  // transitions and publish atomically; production count mutations are not yet
++  // routed here. This helper is NOT a claim of completed quota integration.
++  static unsigned merged_count(unsigned count,unsigned cap,const int*delta,unsigned n,unsigned k) {
++    if(k!=1&&k!=2)throw std::invalid_argument("row lanes");
++    if(n>k||cap>128||count>cap)throw std::invalid_argument("count contract");
++    int projected=count;
++    for(unsigned i=0;i<n;++i){if(delta[i]<-1||delta[i]>1)throw std::invalid_argument("row delta");
++      projected+=delta[i];if(projected<0||projected>int(cap))throw std::overflow_error("ordered quota block");}
++    return unsigned(projected);
++  }
++ private:
++  struct slot{bool live=false;key identity;};
++  static std::uint64_t unset(){return std::numeric_limits<std::uint64_t>::max();}
++  void monotonic(std::uint64_t tick){if(tick<observed_tick_)throw std::logic_error("row clock regressed");observed_tick_=tick;}
++  unsigned lanes_;std::array<slot,2>slots_;
++  std::uint64_t observed_tick_=0,read_tick_=0,commit_tick_=unset(),last_count_commit_=unset();
++  counters stats_;
++};
++#endif
+diff --git a/src/gpgpu-sim/gpu-cache.cc b/src/gpgpu-sim/gpu-cache.cc
+index 5c14308..159b73c 100644
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -2713,6 +2713,25 @@ enum cache_request_status l2_cache::access(new_addr_type addr, mem_fetch *mf,
+   return result;
+ }
+ 
++bool l2_cache::ep_l2_wad_completion_ready(mem_fetch *mf) {
++  if(!m_tvd || !m_config.m_ep_l2_quota_row_lanes)return true;
++  if(m_quota_row_port.lanes()!=m_config.m_ep_l2_quota_row_lanes)
++    m_quota_row_port.configure(m_config.m_ep_l2_quota_row_lanes);
++  if(m_quota_completion_head && m_quota_completion_head!=mf)return false;
++  if(!m_quota_completion_head) {
++    if(m_quota_completion_cam_tick==m_quota_l2_tick)return false;
++    m_quota_completion_cam_tick=m_quota_l2_tick;
++    ++m_quota_completion_cam_queries;
++    m_quota_completion_ticket=m_tvd->find(m_config.block_addr(mf->get_addr()));
++    m_quota_completion_head=mf;
++  }
++  const auto t=m_quota_completion_ticket;
++  if(!m_tvd->writeback_matches(t,m_config.block_addr(mf->get_addr()),mf->get_request_uid()) ||
++     m_tvd->at(t.index).status!=tvd_directory::WB_INFLIGHT)
++    throw std::logic_error("stale WB completion before credit/packet release");
++  return m_quota_row_port.ready(quota_key(2,mf->get_request_uid(),t),m_quota_l2_tick);
++}
++
+ void l2_cache::ep_l2_wad_complete(new_addr_type block_addr,
+                                    unsigned long long cycle, unsigned completing_request_uid) {
+   if (!ep_l2_wad_enabled()) return;
+@@ -2721,9 +2740,16 @@ void l2_cache::ep_l2_wad_complete(new_addr_type block_addr,
+   if (m_tvd) {
+     // One explicitly costed completion-address CAM path, separate from the
+     // one-cycle frontend victim CAM. Never invent extra ICNT header bits.
+-    assert(m_tvd_completion_cam_cycle!=cycle && "one completion CAM query per physical cycle");
+-    m_tvd_completion_cam_cycle=cycle;
+-    completion=m_tvd->find(normalized);
++    if(m_config.m_ep_l2_quota_row_lanes) {
++      // Paid READ cached one existing CAM result; no second hidden query.
++      assert(m_quota_completion_head &&
++        m_quota_completion_head->get_request_uid()==completing_request_uid);
++      completion=m_quota_completion_ticket;
++    } else {
++      assert(m_tvd_completion_cam_cycle!=cycle && "one completion CAM query per physical cycle");
++      m_tvd_completion_cam_cycle=cycle;
++      completion=m_tvd->find(normalized);
++    }
+     // Existing packet UID plus selected row state reject a late/different WB
+     // before timestamp, directory or payload mutation. Original UID wrap
+     // limitations are inherited; no generation field is narrowed here.
+@@ -2747,7 +2773,12 @@ void l2_cache::ep_l2_wad_complete(new_addr_type block_addr,
+     const tvd_directory::ticket t=completion;
+     assert(m_tvd->live(t) && m_tvd->at(t.index).line==normalized);
+     const auto h=m_tvd->at(t.index).payload;
++    const auto qkey=quota_key(2,completing_request_uid,t);
+     assert(m_tvd->set_done(t,cycle)==tvd_directory::OK);
++    if(m_config.m_ep_l2_quota_row_lanes) {
++      m_quota_row_port.commit(qkey,m_quota_l2_tick);
++      m_quota_completion_head=nullptr;
++    }
+     ++m_tvd_indexed_completions;
+     if (h.valid() && !m_ep_l2_payload.inspect(h).pins)
+       m_ep_l2_payload.transfer(h,ep_l2_payload_store::TVD,ep_l2_payload_store::TVD_VALID);
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index fc52f0a..ef0b87a 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -42,6 +42,7 @@
+ #include "ep-l2-ft-interface.h"
+ #include "ep-l2-mechanism-observer.h"
+ #include "ep-l2-tvd-directory.h"
++#include "ep-l2-quota-row-port.h"
+ #include "ep-l2-tvd-bank-identity.h"
+ 
+ #include <iostream>
+@@ -630,6 +631,7 @@ class cache_config {
+     m_ep_l2_tvd_clean = m_ep_l2_tvd_dirty = false;
+     m_ep_l2_tvd_fixed_entries=0;
+     m_ep_l2_tvd_clean_limit=128;
++    m_ep_l2_quota_row_lanes=0;
+     m_ep_l2_feature_adaptive_policy = false;
+     m_ep_l2_b0_stats = true;
+     // M0a is deliberately opt-in.  It is a telemetry sidecar and is never
+@@ -1020,6 +1022,7 @@ class cache_config {
+   bool m_ep_l2_tvd_clean, m_ep_l2_tvd_dirty;
+   unsigned m_ep_l2_tvd_fixed_entries;
+   unsigned m_ep_l2_tvd_clean_limit;
++  unsigned m_ep_l2_quota_row_lanes;
+   bool m_ep_l2_feature_adaptive_policy;
+   // Observational only. Disabling it must not change simulator timing.
+   bool m_ep_l2_b0_stats;
+@@ -3193,6 +3196,12 @@ class l2_cache : public data_cache {
+       m_ft_wb.empty() && m_ft_read_refs.empty() && !m_ep_l2_payload.wb_used() &&
+       !m_ft_quota.reserved && !m_ft_quota.live &&
+       (!m_tvd || (m_tvd->epoch_ready() && !m_tvd_read)))); }
++  // One tick at the actual L2-domain service boundary. DRAM polls cannot mint
++  // a new READ/COMMIT beat by invoking ready repeatedly in one core cycle.
++  void quota_l2_tick_begin() {++m_quota_l2_tick;}
++  const ep_l2_quota_row_port&quota_row_port_for_test()const{return m_quota_row_port;}
++  unsigned long long quota_l2_tick_for_test()const{return m_quota_l2_tick;}
++  bool ep_l2_wad_completion_ready(mem_fetch *);
+   bool lower_ready(mem_fetch *mf, unsigned long long cycle) override;
+   bool lower_mq2_safe(mem_fetch *head, mem_fetch *next) override;
+   void lower_accepted(mem_fetch *mf, unsigned long long cycle) override;
+@@ -3293,6 +3302,18 @@ class l2_cache : public data_cache {
+   unsigned long long m_tvd_indexed_accepts=0, m_tvd_indexed_completions=0,
+       m_tvd_indexed_rollbacks=0, m_tvd_native_installs=0, m_tvd_native_promotions=0;
+   unsigned long long m_tvd_completion_cam_cycle=(unsigned long long)-1;
++  ep_l2_quota_row_port m_quota_row_port;
++  unsigned long long m_quota_l2_tick=0;
++  mem_fetch *m_quota_completion_head=nullptr;
++  tvd_directory::ticket m_quota_completion_ticket;
++  unsigned long long m_quota_completion_cam_tick=(unsigned long long)-1;
++  unsigned long long m_quota_completion_cam_queries=0;
++  ep_l2_quota_row_port::key quota_key(unsigned producer,unsigned uid,tvd_directory::ticket t) const {
++    assert(m_tvd && m_tvd->live(t));const auto&e=m_tvd->at(t.index);
++    return ep_l2_quota_row_port::key(producer,uid,t.index,t.incarnation,
++      e.payload.payload_id,e.payload.generation,unsigned(e.status));
++  }
++
+   struct ft_replacement {
+     mem_fetch *request;
+     unsigned tag_index, phase, landing_id;
+@@ -3337,6 +3358,10 @@ class l2_cache : public data_cache {
+   ep_l2_ro_runtime *m_ro;
+   void ro_init();
+   void validate_ep_l2_mode_config() const {
++    if(m_config.m_ep_l2_quota_row_lanes>2 || (m_config.m_ep_l2_quota_row_lanes &&
++      (!m_config.m_ep_l2_tvd_clean || !m_config.m_ep_l2_tvd_dirty || m_config.ro_requested()))) {
++      fprintf(stderr,"PRIVATE quota row prototype requires WV both classes, ROoff, K1/2\\n");abort();
++    }
+     if (m_config.m_ep_l2_tvd_clean_limit > 128 ||
+         (m_config.m_ep_l2_tvd_clean_limit != 128 &&
+          (!m_config.m_ep_l2_tvd_clean || !m_config.m_ep_l2_tvd_dirty || m_config.ro_requested()))) {
+diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
+index 5a85e21..a144be8 100644
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -344,6 +344,8 @@ void memory_config::reg_options(class OptionParser *opp) {
+       &m_L2_config.m_ep_l2_tvd_fixed_entries,"Fixed victim/non-victim bank quotas:0 dynamic,64 fixed (1168 total)","0");
+   option_parser_register(opp,"-gpgpu_ep_l2_tvd_clean_limit",OPT_UINT32,
+       &m_L2_config.m_ep_l2_tvd_clean_limit,"Optional CLEAN directory admission cap0..128 (default128 legacy); mandatory WB remains128", "128");
++  option_parser_register(opp,"-gpgpu_ep_l2_quota_row_lanes",OPT_UINT32,
++      &m_L2_config.m_ep_l2_quota_row_lanes,"PRIVATE V5 incomplete quota prototype:0 off,1/2 row lanes; not science qualified","0");
+   option_parser_register(opp,"-gpgpu_ep_l2_tvd_clean",OPT_BOOL,&m_L2_config.m_ep_l2_tvd_clean,"study CLEAN_ONLY", "0");
+   option_parser_register(opp,"-gpgpu_ep_l2_tvd_dirty",OPT_BOOL,&m_L2_config.m_ep_l2_tvd_dirty,"study DIRTY_PENDING_INFLIGHT (new source, native qualification required)", "0");
+   option_parser_register(opp, "-gpgpu_ep_l2_feature_tvd", OPT_BOOL,
+diff --git a/src/gpgpu-sim/l2cache.cc b/src/gpgpu-sim/l2cache.cc
+index fc7f70d..cfad5a9 100644
+--- a/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/l2cache.cc
+@@ -661,7 +661,7 @@ void memory_partition_unit::simple_dram_model_cycle() {
+           true, m_sub_partition[dest_spid]->dram_L2_queue_full());
+       if (!m_sub_partition[dest_spid]->dram_L2_queue_full()) {
+         if (mf_return->get_access_type() == L1_WRBK_ACC) {
+-          m_sub_partition[dest_spid]->set_done(mf_return);
++          assert(m_sub_partition[dest_spid]->set_done(mf_return));
+           delete mf_return;
+         } else {
+           m_sub_partition[dest_spid]->dram_L2_queue_push(mf_return);
+@@ -677,9 +677,10 @@ void memory_partition_unit::simple_dram_model_cycle() {
+       }
+ 
+     } else {
+-      this->set_done(mf_return);
+-      delete mf_return;
+-      m_dram_latency_queue.pop_front();
++      if(this->set_done(mf_return)) {
++        delete mf_return;
++        m_dram_latency_queue.pop_front();
++      } // HOLD retains original finite latency-queue head and credit.
+     }
+   }
+ 
+@@ -758,11 +759,13 @@ void memory_partition_unit::dram_cycle() {
+         mf_return->get_access_type() != L2_WRBK_ACC)
+       m_sub_partition[dest_spid]->l2_char_record_dram_return(
+           true, m_sub_partition[dest_spid]->dram_L2_queue_full());
+-    if (!m_sub_partition[dest_spid]->dram_L2_queue_full()) {
+-      if (mf_return->get_access_type() == L1_WRBK_ACC) {
+-        m_sub_partition[dest_spid]->set_done(mf_return);
+-        delete mf_return;
+-      } else {
++    const bool wb=mf_return->get_access_type()==L1_WRBK_ACC ||
++                  mf_return->get_access_type()==L2_WRBK_ACC;
++    if (wb) {
++      // Existing bounded DRAM returnq retains packet until row commit+credit.
++      if(set_done(mf_return)){delete mf_return;m_dram->return_queue_pop();}
++    } else if (!m_sub_partition[dest_spid]->dram_L2_queue_full()) {
++      {
+         m_sub_partition[dest_spid]->dram_L2_queue_push(mf_return);
+         mf_return->set_status(IN_PARTITION_DRAM_TO_L2_QUEUE,
+                               m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);
+@@ -855,10 +858,12 @@ void memory_partition_unit::dram_cycle() {
+   }
+ }
+ 
+-void memory_partition_unit::set_done(mem_fetch *mf) {
++bool memory_partition_unit::set_done(mem_fetch *mf) {
+   unsigned global_spid = mf->get_sub_partition_id();
+   int spid = global_sub_partition_id_to_local_id(global_spid);
+   assert(m_sub_partition[spid]->get_id() == global_spid);
++  // Callback commits row/tracker first. No credit is returned on HOLD.
++  if(!m_sub_partition[spid]->set_done(mf))return false;
+   if (mf->get_access_type() == L1_WRBK_ACC ||
+       mf->get_access_type() == L2_WRBK_ACC) {
+     m_arbitration_metadata.return_credit(spid, mf);
+@@ -866,7 +871,7 @@ void memory_partition_unit::set_done(mem_fetch *mf) {
+         "mem_fetch request %p return from dram to sub partition %d\n", mf,
+         spid);
+   }
+-  m_sub_partition[spid]->set_done(mf);
++  return true;
+ }
+ 
+ void memory_partition_unit::set_dram_power_stats(
+@@ -1216,6 +1221,7 @@ void memory_sub_partition::lifetime_prepare_tick(uint64_t gpu) {
+   if(!m_config->m_L2_config.disabled())m_L2cache->lifetime_tick_begin(m_id,gpu);
+ }
+ void memory_sub_partition::cache_cycle(unsigned cycle) {
++  if(!m_config->m_L2_config.disabled())m_L2cache->quota_l2_tick_begin();
+   if(!m_config->m_L2_config.disabled())
+     m_L2cache->lifetime_tick_begin(m_id,m_gpu->gpu_sim_cycle+m_gpu->gpu_tot_sim_cycle);
+   m_ep_l2_rg1_fill_suppressed=false;
+@@ -2752,8 +2758,9 @@ mem_fetch *memory_sub_partition::top() {
+   return mf;
+ }
+ 
+-void memory_sub_partition::set_done(mem_fetch *mf) {
++bool memory_sub_partition::set_done(mem_fetch *mf) {
+   if (mf->get_access_type() == L2_WRBK_ACC) {
++    if(!m_L2cache->ep_l2_wad_completion_ready(mf))return false;
+     assert(!m_L2cache->ft_enabled() || mf->has_ft_wb_data());
+     m_L2cache->ep_l2_wad_complete(
+         mf->get_addr(), m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle,
+@@ -2761,6 +2768,7 @@ void memory_sub_partition::set_done(mem_fetch *mf) {
+   }
+   m_request_tracker.erase(mf);
+   m_ideal_arrivals.erase(mf);
++  return true;
+ }
+ 
+ void memory_sub_partition::accumulate_L2cache_stats(
+diff --git a/src/gpgpu-sim/l2cache.h b/src/gpgpu-sim/l2cache.h
+index 497cee6..b7b1212 100644
+--- a/src/gpgpu-sim/l2cache.h
++++ b/src/gpgpu-sim/l2cache.h
+@@ -149,7 +149,7 @@ class memory_partition_unit {
+   void dram_cycle();
+   void simple_dram_model_cycle();
+ 
+-  void set_done(mem_fetch *mf);
++  bool set_done(mem_fetch *mf);
+ 
+   void visualizer_print(gzFile visualizer_file) const;
+   void print_stat(FILE *fp) { m_dram->print_stat(fp); }
+@@ -319,7 +319,7 @@ class memory_sub_partition {
+   void push(class mem_fetch *mf, unsigned long long clock_cycle);
+   class mem_fetch *pop();
+   class mem_fetch *top();
+-  void set_done(mem_fetch *mf);
++  bool set_done(mem_fetch *mf);
+ 
+   unsigned flushL2();
+   unsigned invalidateL2();
+diff --git a/tests/ep_l2/test_quota_handshake_v5.cc b/tests/ep_l2/test_quota_handshake_v5.cc
+new file mode 100644
+index 0000000..5b3c680
+--- /dev/null
++++ b/tests/ep_l2/test_quota_handshake_v5.cc
+@@ -0,0 +1,28 @@
++// Fixture reuse only. Old main/selectors are never called.
++#define main frozen_old_test_main_not_executed
++#include "test_tvd_production.cc"
++#undef main
++int main(int argc,char**argv){
++  assert(argc==4);bool real=std::string(argv[3])=="real";
++  scenario f(argv[1],argv[2],true,true,false,1,2,1,16);
++  auto step=[&](){
++    f.part->cache_cycle(f.gpu->gpu_sim_cycle);
++    if(real){f.part->dram_cycle();f.part->dram_cycle();f.part->dram_cycle();}
++    else {f.part->simple_dram_model_cycle();f.part->simple_dram_model_cycle();f.part->simple_dram_model_cycle();}
++    ++f.gpu->gpu_sim_cycle;f.collect();
++  };
++  auto wait=[&](unsigned uid){for(unsigned n=0;n<200000&&!f.responses.count(uid);++n)step();assert(f.responses.count(uid));};
++  for(unsigned i=0;i<12;++i){unsigned uid=f.push(i*128,true);wait(uid);}
++  for(unsigned n=0;n<400000&&f.part->busy();++n)step();
++  assert(!f.part->busy());assert(!f.sp->ep_l2_wad_occupancy());
++  assert(f.sp->l2_char_no_resource_leak());assert(f.cache()->ft_drained());
++  const auto&q=f.cache()->quota_row_port_for_test();
++  assert(q.pending()==0);assert(q.stats().acks>=20);
++  assert(q.stats().read_beats&&q.stats().commit_beats&&q.stats().holds);
++  printf("PASS PRODUCTION_HANDSHAKE path=%s K=%u rows=%llu READ=%llu COMMIT=%llu holds=%llu L2ticks=%llu cycles=%llu\n",
++    real?"bounded_real_DRAM_returnq":"bounded_simple_latency_queue",q.lanes(),
++    (unsigned long long)q.stats().acks,(unsigned long long)q.stats().read_beats,
++    (unsigned long long)q.stats().commit_beats,(unsigned long long)q.stats().holds,
++    f.cache()->quota_l2_tick_for_test(),(unsigned long long)f.gpu->gpu_sim_cycle);
++  puts("PASS actual_credit_tracker_packet_drained no_hidden_completion_ingress");
++}
+diff --git a/tests/ep_l2/test_quota_row_port_v5.cc b/tests/ep_l2/test_quota_row_port_v5.cc
+new file mode 100644
+index 0000000..73a1971
+--- /dev/null
++++ b/tests/ep_l2/test_quota_row_port_v5.cc
+@@ -0,0 +1,37 @@
++#include <cassert>
++#include <cstdio>
++#include "../../src/gpgpu-sim/ep-l2-quota-row-port.h"
++using P=ep_l2_quota_row_port;
++int main(){
++  P::key a(1,5,0,1,5,7,2),b(2,6,1,2,6,8,3),c(1,7,2,3,7,9,2);
++  for(unsigned k=1;k<=2;++k){
++    P p(k);assert(!p.ready(a,1));assert(!p.ready(a,1));
++    assert(p.stats().read_beats==1&&p.pending()==1);
++    assert(!p.ready(b,1));
++    if(k==2)assert(p.pending()==2);else assert(p.pending()==1);
++    assert(!p.ready(c,1));assert(p.pending()==k);
++    assert(p.ready(a,2));p.commit(a,2);
++    if(k==2){assert(p.ready(b,2));p.commit(b,2);}
++    assert(!p.ready(c,2));assert(p.pending()==0);
++    assert(p.stats().commit_beats==1&&p.stats().acks==k);
++    assert(!p.ready(c,3));assert(p.ready(c,7));p.commit(c,7);
++    assert(p.pending()==0&&p.stats().read_beats==2&&p.stats().commit_beats==2);
++    bool bad=false;try{p.commit(c,7);}catch(const std::logic_error&){bad=true;}assert(bad);
++    printf("PASS K%u fixed_port_batch read=%llu commit=%llu acks=%llu\n",k,
++      (unsigned long long)p.stats().read_beats,(unsigned long long)p.stats().commit_beats,
++      (unsigned long long)p.stats().acks);
++  }
++  P p(2);assert(!p.ready(a,1));
++  auto same=a;same.uid=9;assert(!p.ready(same,1));
++  assert(p.stats().row_conflicts==1&&p.pending()==1);
++  assert(p.cancel(a));assert(!p.ready(b,1)&&p.pending()==0);
++  assert(!p.ready(b,2)&&p.pending()==1);
++  assert(p.ready(b,3));assert(p.ready(b,3));assert(p.pending()==1);
++  p.commit(b,3);assert(p.pending()==0);
++  int d[2]={-1,1};assert(P::merged_count(64,64,d,2,2)==64);
++  int z[2]={0,0};assert(P::merged_count(64,64,z,2,2)==64);
++  int up[2]={1,1};bool bad=false;try{P::merged_count(63,64,up,2,2);}catch(...){bad=true;}assert(bad);
++  bad=false;int rev[2]={1,-1};try{P::merged_count(64,64,rev,2,2);}catch(...){bad=true;}assert(bad);
++  auto other=b;other.generation++;bad=false;try{p.commit(other,3);}catch(...){bad=true;}assert(bad);
++  puts("PASS same_row_conflict cancel_no_refund repeated_DRAM_poll delta_order identity_no_steal");
++}

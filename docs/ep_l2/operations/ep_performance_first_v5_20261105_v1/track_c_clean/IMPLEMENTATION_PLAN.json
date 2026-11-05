@@ -1,0 +1,35 @@
+{
+  "status": "PARTIAL_PRODUCTION_PROTOTYPE_IN_PROGRESS_NOT_SCIENCE_ELIGIBLE",
+  "private_core": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_c_clean/core_candidate",
+  "base_core": "bf4e48447136b990bd2db15e2972a4394e37d21f",
+  "new_option": "-gpgpu_ep_l2_quota_row_lanes",
+  "values": [
+    0,
+    1,
+    2
+  ],
+  "completed_cutpoints": [
+    "pre-lower-enqueue READ/COMMIT reservation",
+    "bool completion HOLD before credit/tracker/delete",
+    "bounded existing DRAM returnq instead of hidden new ingress",
+    "actual L2-tick scheduling not DRAM-call time"
+  ],
+  "remaining": [
+    "all frontend/mutation rows still not gated",
+    "quota nonzero delta atomicity",
+    "same-row changes caused by bypassed frontend",
+    "reader pin/generation/rollback async integration",
+    "epoch cleanup timing",
+    "completion CAM read-phase reservation must replace prototype preflight find",
+    "fair arbitration across six producer heads",
+    "physical CDC and PPA"
+  ],
+  "science_starts": 0,
+  "native_registration": 0,
+  "source_keep": true,
+  "build_limits": {
+    "parallel_compile": 2,
+    "wall_seconds": 1800,
+    "native_floor_GiB": 5
+  }
+}

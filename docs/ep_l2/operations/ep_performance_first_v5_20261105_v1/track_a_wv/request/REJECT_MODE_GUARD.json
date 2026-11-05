@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/root/share/mnt164/huangrulin/ep_l2_performance_first_v5_20261105_v1/track_a_wv/option_echo",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_FASTWALSHTRANSFORM_FC3A9062_WV_ZERO_RO_REF_V1/env/config-0.config",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_FASTWALSHTRANSFORM_FC3A9062_WV_ZERO_RO_REF_V1/env/config-1.config",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_FASTWALSHTRANSFORM_FC3A9062_WV_ZERO_RO_REF_V1/env/config-2.config",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/cases/EP_PERF_FASTWALSHTRANSFORM_FC3A9062_WV_ZERO_RO_REF_V1/env/config-3.config",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v3_20261104_v1/activation_20261104_v1/runtimes/midtag/configs/EP_PERF_PFV3_MIDTAG_FWT_WV_ZERO_RO_G32W16_V1/final_midtag.config",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_a_wv/request/S.config",
+    "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_a_wv/request/reject_cold_without_TVD.config"
+  ],
+  "returncode": -6,
+  "pass_expected_rejection": true,
+  "expected_reason": "TVD cold filter requires WV without RO",
+  "tail": " different banks\nRCD                                    12 # row to column delay\nRAS                                    28 # time needed to activate row\nRP                                     12 # time needed to precharge (deactivate) row\nRC                                     40 # row cycle time\nCDLR                                    3 # switching from write to read (changes tWTR)\nWR                                     10 # last data-in to row precharge\nCL                                     12 # CAS latency\nWL                                      2 # Write latency\nnbkgrp                                  4 # number of bank groups\nCCDL                                    2 # column to column delay between accesses to different bank groups\nRTPL                                    3 # read to precharge delay between accesses to different bank groups\nTotal number of memory sub partition = 64\naddr_dec_mask[CHIP]  = 00000TVD cold filter requires WV without RO; other compositions unqualified\n",
+  "application_starts": 0
+}

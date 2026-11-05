@@ -1,0 +1,98 @@
+{
+  "Source5": {
+    "core_source_commit": "812fe1e029b4fb09afaf3d8d25d3f909464cc06c",
+    "framework_source_commit": "9dd1ee57a83d83b56b7874bc7c716185ab52c8f7",
+    "vendor_pybind11_commit": "f90c430c3a1ce8f08c09942a5a1c3a797bb2295b",
+    "archive_sha256": "a7e9c8ce045710c8f3655aebb82a65628a5a18638036af17fa0ec8c755580d3e",
+    "binary_sha256": "a60600a418e6460e7aaf896b62469be0612046d0f4da34ac8c98da2eed3852e1"
+  },
+  "dependencies": [
+    {
+      "bytes": 125688,
+      "current_identity_only": true,
+      "historical_accepted_identity": "UNKNOWN_NO_HISTORICAL_PIN",
+      "path": "/bin/sh",
+      "resolved_path": "/usr/bin/dash",
+      "role": "trace child shell",
+      "sha256": "4f291296e89b784cd35479fca606f228126e3641f5bcaee68dee36583d7c9483"
+    },
+    {
+      "bytes": 35288,
+      "current_identity_only": true,
+      "historical_accepted_identity": "UNKNOWN_NO_HISTORICAL_PIN",
+      "path": "/usr/bin/cat",
+      "resolved_path": "/usr/bin/cat",
+      "role": "trace child regular-file reader",
+      "sha256": "210ffa7daedb3ef6e9230d391e9a10043699ba81080ebf40c6de70ed77e278ba"
+    },
+    {
+      "bytes": 240936,
+      "current_identity_only": true,
+      "historical_accepted_identity": "UNKNOWN_NO_HISTORICAL_PIN",
+      "path": "/lib64/ld-linux-x86-64.so.2",
+      "resolved_path": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "role": "kernel PT_INTERP for shell/cat",
+      "sha256": "41daf7836f7fce21a40ca63a00c5caf21b05a35a76ccc075d86f1716212cdf01"
+    },
+    {
+      "bytes": 2220400,
+      "current_identity_only": true,
+      "historical_accepted_identity": "UNKNOWN_NO_HISTORICAL_PIN",
+      "path": "/lib/x86_64-linux-gnu/libc.so.6",
+      "resolved_path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "role": "OS default fallback libc identity; actual production helper LD_LIBRARY_PATH selects common-lib/libc.so.6",
+      "sha256": "b2cf6c33b74d2f22543b7a469a75b538911e690f769d0b238843a49465b83793"
+    },
+    {
+      "bytes": 2220400,
+      "current_identity_only": true,
+      "historical_accepted_identity": "UNKNOWN_NO_HISTORICAL_PIN",
+      "path": "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libc.so.6",
+      "resolved_path": "/root/data/ep_l2_dtc_l1_native_v2/common-lib/libc.so.6",
+      "role": "Actual common-lib libc selected by shell/cat inherited LD_LIBRARY_PATH and strace --library-path",
+      "sha256": "c53819710b163d3f1d2541778590d58d3ef31cb0ed75adcbe059faac68c1e72d"
+    }
+  ],
+  "exact_loader_list_without_main_execution": [
+    {
+      "argv": [
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib/ld-linux-x86-64.so.2",
+        "--list",
+        "--library-path",
+        "/root/data/ep_l2_dtc_l1_native_v2/tools/lib:/root/data/ep_l2_dtc_l1_native_v2/common-lib",
+        "/root/data/ep_l2_dtc_l1_native_v2/tools/bin/strace"
+      ],
+      "model_ELF": false,
+      "stdout": "\tlinux-vdso.so.1 (0x00007fffcb1ab000)\n\tlibunwind-ptrace.so.0 => /root/data/ep_l2_dtc_l1_native_v2/tools/lib/libunwind-ptrace.so.0 (0x00007da6ad258000)\n\tlibunwind-x86_64.so.8 => /root/data/ep_l2_dtc_l1_native_v2/tools/lib/libunwind-x86_64.so.8 (0x00007da6ad23b000)\n\tlibc.so.6 => /root/data/ep_l2_dtc_l1_native_v2/common-lib/libc.so.6 (0x00007da6acc00000)\n\tliblzma.so.5 => /root/data/ep_l2_dtc_l1_native_v2/tools/lib/liblzma.so.5 (0x00007da6ad210000)\n\tlibunwind.so.8 => /root/data/ep_l2_dtc_l1_native_v2/tools/lib/libunwind.so.8 (0x00007da6acfe5000)\n\t/lib64/ld-linux-x86-64.so.2 => /root/data/ep_l2_dtc_l1_native_v2/common-lib/ld-linux-x86-64.so.2 (0x00007da6ad260000)\n"
+    },
+    {
+      "argv": [
+        "/lib64/ld-linux-x86-64.so.2",
+        "--list",
+        "--library-path",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib",
+        "/bin/sh"
+      ],
+      "model_ELF": false,
+      "stdout": "\tlinux-vdso.so.1 (0x00007fff9071c000)\n\tlibc.so.6 => /root/data/ep_l2_dtc_l1_native_v2/common-lib/libc.so.6 (0x000077b363c00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x000077b363fc4000)\n"
+    },
+    {
+      "argv": [
+        "/lib64/ld-linux-x86-64.so.2",
+        "--list",
+        "--library-path",
+        "/root/data/ep_l2_dtc_l1_native_v2/common-lib",
+        "/usr/bin/cat"
+      ],
+      "model_ELF": false,
+      "stdout": "\tlinux-vdso.so.1 (0x00007fff65dc6000)\n\tlibc.so.6 => /root/data/ep_l2_dtc_l1_native_v2/common-lib/libc.so.6 (0x00007e4b6b000000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007e4b6b270000)\n"
+    }
+  ],
+  "schema": "EP_V4_CURRENT_TRACE_CHILD_DEPENDENCIES_V1",
+  "scope": "Current identities; no claim these caused prior failures",
+  "separate_from_original_22": true,
+  "static_needed": {
+    "/bin/sh": "\nDynamic section at offset 0x1db00 contains 27 entries:\n  Tag        Type                         Name/Value\n 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]\n 0x000000000000000c (INIT)               0x4000\n 0x000000000000000d (FINI)               0x17988\n 0x0000000000000019 (INIT_ARRAY)         0x1def0\n 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)\n 0x000000000000001a (FINI_ARRAY)         0x1def8\n 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)\n 0x000000006ffffef5 (GNU_HASH)           0x3b0\n 0x0000000000000005 (STRTAB)             0xca8\n 0x0000000000000006 (SYMTAB)             0x3d8\n 0x000000000000000a (STRSZ)              880 (bytes)\n 0x000000000000000b (SYMENT)             24 (bytes)\n 0x0000000000000015 (DEBUG)              0x0\n 0x0000000000000003 (PLTGOT)             0x1ecf0\n 0x0000000000000002 (PLTRELSZ)           2040 (bytes)\n 0x0000000000000014 (PLTREL)             RELA\n 0x0000000000000017 (JMPREL)             0x2c50\n 0x0000000000000007 (RELA)               0x1168\n 0x0000000000000008 (RELASZ)             6888 (bytes)\n 0x0000000000000009 (RELAENT)            24 (bytes)\n 0x000000000000001e (FLAGS)              BIND_NOW\n 0x000000006ffffffb (FLAGS_1)            Flags: NOW PIE\n 0x000000006ffffffe (VERNEED)            0x10d8\n 0x000000006fffffff (VERNEEDNUM)         1\n 0x000000006ffffff0 (VERSYM)             0x1018\n 0x000000006ffffff9 (RELACOUNT)          280\n 0x0000000000000000 (NULL)               0x0\n",
+    "/usr/bin/cat": "\nDynamic section at offset 0x7c00 contains 27 entries:\n  Tag        Type                         Name/Value\n 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]\n 0x000000000000000c (INIT)               0x2000\n 0x000000000000000d (FINI)               0x5b74\n 0x0000000000000019 (INIT_ARRAY)         0x8ab0\n 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)\n 0x000000000000001a (FINI_ARRAY)         0x8ab8\n 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)\n 0x000000006ffffef5 (GNU_HASH)           0x3b0\n 0x0000000000000005 (STRTAB)             0x9c0\n 0x0000000000000006 (SYMTAB)             0x3d8\n 0x000000000000000a (STRSZ)              727 (bytes)\n 0x000000000000000b (SYMENT)             24 (bytes)\n 0x0000000000000015 (DEBUG)              0x0\n 0x0000000000000003 (PLTGOT)             0x8df0\n 0x0000000000000002 (PLTRELSZ)           1200 (bytes)\n 0x0000000000000014 (PLTREL)             RELA\n 0x0000000000000017 (JMPREL)             0xff8\n 0x0000000000000007 (RELA)               0xd88\n 0x0000000000000008 (RELASZ)             624 (bytes)\n 0x0000000000000009 (RELAENT)            24 (bytes)\n 0x000000000000001e (FLAGS)              BIND_NOW\n 0x000000006ffffffb (FLAGS_1)            Flags: NOW PIE\n 0x000000006ffffffe (VERNEED)            0xd18\n 0x000000006fffffff (VERNEEDNUM)         1\n 0x000000006ffffff0 (VERSYM)             0xc98\n 0x000000006ffffff9 (RELACOUNT)          16\n 0x0000000000000000 (NULL)               0x0\n"
+  }
+}
