@@ -1,0 +1,9 @@
+Independent V4 candidate: 4f11471286cb2b96861e4aa24798c470ae236649796b75c7f8db5762c2124543. Actual F3 completed two negative archives/certificates, then at01:57:31 reached RUN_FAILED_SOURCE_KEEP. F did not stop or restart production.
+
+Two confirmed defects: refs index12 observed FrameGuard frame_provider temporary swap without aging.lock; refs index33 used id of a freshly generated ScopeSync.extend bound method. advance14 is plain and stable. Historical event lacked indices, so no exact attribution per event is claimed. SOURCE_DIAGNOSIS.json records source and actual probe evidence.
+
+V4 takes guard and reference snapshots under the same actual aging.RLock, normalizes bound methods by exact self+func identity, and releases before all archive/native work. It preserves rejection of changed self/func/plain reference. Root installs only after F3 terminal thread is confirmed; old marker remains intact and alive predecessor is rejected. No production stop/apply was performed.
+
+Exact historical F3 certificates are pinned in PREEXISTING_F3_INPUTS.json and pending config, with source/config/Rootapproval/RUN/actualMainACK. V4 read-only verifies those pins, same UUID/result/DONE/EXIT/q/INTENT and archive/native metadata, then skips; it does not run new-F4 certificate comparison or rearchive/rewrite them. Future new failures use current F4 certificates. K policy needs both exact historical F3 and future F4 installations.
+
+Four focused checks passed. Real FrameGuard private mutual exclusion demonstrates temporary-swap race and successful locked wait/recheck; real ScopeSync private class demonstrates fresh boundmethod objects but stable self+func, and rejects changed target/function. Actual two F3 metadata certificates replay read-only without large raw hashing or archive callbacks. Terminal predecessor gating is checked. Old pipeline tests were not rerun; no model, production thread, q update, claim/resource math or scientific coverage changed.

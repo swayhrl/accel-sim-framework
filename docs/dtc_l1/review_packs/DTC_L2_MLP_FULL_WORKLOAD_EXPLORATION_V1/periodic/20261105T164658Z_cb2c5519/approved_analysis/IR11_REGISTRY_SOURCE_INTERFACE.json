@@ -1,0 +1,30 @@
+{
+  "schema": "IR11_REGISTRATION_INTERFACE_V1",
+  "status": "CPU_CANDIDATE_NOT_INSTALLED_NOT_REGISTERED",
+  "class": "IncidentRecoveryRegistry(root, engine, actual_scheduler_frame, configuration, fault_hook=None)",
+  "methods": ["expected_authorization()", "prepare(exact_Main_authorization)", "register(exact_Main_authorization)", "reconcile()"],
+  "source": "incident_registry.py",
+  "source_sha256": "9979d791175cd3c7545efa5fec9e89ef2c3278db4bcd4769ab149cdc6b8ec22a",
+  "configuration_schema": "IR11_REGISTRATION_CONFIGURATION_V1",
+  "configuration_fields": ["schema", "qualification_only", "source_sha256", "plan_path", "plan_sha256", "manifest_path", "manifest_sha256", "identity_proof_path", "identity_proof_sha256", "accepted_snapshot_path", "accepted_snapshot_sha256", "QA_path", "QA_sha256", "readback_path", "readback_sha256"],
+  "configuration_paths": {
+    "plan": "A/agents/B/incident11_recovery_trials_plan_v1/DRAFT_PLAN.json",
+    "manifest": "A/agents/B/incident11_recovery_trials_plan_v1/MANIFEST.json",
+    "identity_proof": "A/agents/B/incident11_recovery_trials_plan_v1/SCIENCE_IDENTITY_PROOF.json",
+    "accepted_snapshot": "A/agents/B/bpf_install_cadence_incident_v1/SOURCE_ARCHIVE_ACCEPTED_CHECKS.json"
+  },
+  "qualification_status_required": "PASS_IR11_ISOLATED_REGISTRY_CPU_QUALIFICATION",
+  "qualification_required_fields": {"source_sha256": "same frozen registration source", "real_independent_FD_EX_callback_pure": true},
+  "readback_required_fields": {"verified": true, "source_sha256": "same frozen registration source", "QA_sha256": "exact qualification file SHA"},
+  "readback_transport": "honest byte readback; no mandatory Git or HTTPS",
+  "transaction_directory": "R/control/incident_recovery_registry_v1/<configuration-derived-transaction-id>",
+  "authority_records_key": "authorized_incident_recovery_trials",
+  "authority_record_subset": ["cohort", "role", "incident_id", "original_cohort", "original_uuid", "original_negative_RESULT_sha256", "original_DONE_sha256", "science_projection_sha256", "primary_statistics_excluded", "validated_union_authorized"],
+  "authority_record_extra_fields": ["transaction_id", "initial_spec_sha256", "recovery_plan_sha256", "original_raw_sha256", "new_grants", "refunds"],
+  "authority_batch_key": "authorized_incident_recovery_transactions",
+  "planned_grants": 11,
+  "actual_production_grants": 0,
+  "scope_runtime_controller_or_CPU_policy_installed": false,
+  "primary_statistics_excluded": true,
+  "validated_union_authorized": false
+}
