@@ -24,6 +24,7 @@ Counts: {"accepted": 7, "technical_failure": 0, "pending": 1}
 - D_G64_WV_vs_S: {"status": "UNKNOWN_UNTIL_BOTH_EXACT_CELLS_ACCEPTED"}
 - D_WV_G64_vs_REF32: {"status": "UNKNOWN_UNTIL_BOTH_EXACT_CELLS_ACCEPTED"}
 - A_observed_frontend_queries_OFF_vs_ON: {"OFF": 150462, "ON": 148843, "fewer_queries": 1619, "reduction_percent": 1.0760191942151507, "semantics": "final64-slice cumulative totals of matched complete FWT cells; exact cold_bypasses is not exported by frozen Source; no invented per-access attribution"}
+- D_REF32_WV_vs_accepted_S_REF32: {"reference_cycles": 1696618, "candidate_cycles": 1671121, "saved_cycles": 25497, "reduction_percent": 1.5028132437590547}
 - D_S_G64_vs_accepted_S_REF32: {"reference_cycles": 1696618, "candidate_cycles": 1666917, "saved_cycles": 29701, "reduction_percent": 1.7506003119146443}
 
 ## Architecture cost and bounded interpretation
@@ -38,6 +39,11 @@ Logical costs: {"A": {"Tag_entries_per_slice": 256, "Payload_slots_per_slice": 1
 ## Preserved A Host/consumer incident
 
 Original PARSE_HOLD records remain immutable. The first consumer retained an obsolete282 count while the frozen actual map is283. The final ELF also embeds a precommit78_modified6 banner. Main independently rehashed all832 canonical Source files,142 reproduced objects,8 complete libraries and the entire ELF; the reproduction exactly matches the consumed ELF SHA. An exact three-result signed metadata compatibility guard checks the whole original/reproduced ELF and library, exact old literal banners and immutable raw/Spec/HOLD references. Canonical Source7b4 is not relabelled78, and no log text or consumed Spec is rewritten. The original complete postprocess outer checks, unchanged7cc/bf91 numerical body, full283 map, archive and two fresh restores remain mandatory. The failed initial reproduction with another output basename is retained. The old PFV3_G32W16 profile string is a legacy display label; actual options and sealed geometry are G32x8.
+
+
+## Preserved D postprocess incident
+
+The consumed D Specs omitted compact_module_ref. Main retains each original HOLD and supplies the exact already-qualified c17 compactor in an isolated postprocess instance, with no Spec/raw/Source/ELF change. All original source, full282 map, complete application numerical/outer checks and mandatory archive/two-restores remain unchanged. This is a consumer metadata correction, not a model retry or refund.
 
 
 A cold filter is lifetime never-installed proof, not general empty-directory detection. B retains full query port and cycle costs. C remains partial production engineering with no science starts. 1700MHz is service diagnostic, not GPU calibration.
