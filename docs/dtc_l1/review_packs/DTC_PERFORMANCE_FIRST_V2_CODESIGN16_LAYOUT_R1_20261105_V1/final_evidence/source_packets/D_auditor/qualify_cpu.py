@@ -1,0 +1,35 @@
+import pathlib,json,hashlib,types,math,ast,datetime,copy,sys,subprocess
+P=pathlib.Path;A=P('/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_v2_codesign16_layout_r1_execution_20261105_v1');D=A/'agents/D_independent_review_v1';O=D/'final_readonly_auditor_v2';source=O/'auditor.py';checks=[];sys.dont_write_bytecode=True
+def sha(p):return hashlib.sha256(P(p).read_bytes()).hexdigest()
+def rd(p):return json.loads(P(p).read_bytes())
+def ck(n,v):checks.append(dict(check=n,PASS=bool(v)));assert v,n
+def reject(n,fn):
+ try:fn()
+ except(AssertionError,ValueError,KeyError,TypeError,OSError):ck(n,True);return
+ raise AssertionError(n)
+m=types.ModuleType('D_R1_FINAL_AUDITOR_CPU_QUALIFIED');m.__file__=str(source);exec(compile(source.read_bytes(),str(source),'exec'),m.__dict__);c=rd(O/'CONTRACT.json');ck('Selfhash immutable source-contract binding',sha(source)==c['auditor_source_sha256']);ctx=m.source_context(c);R,plan,reg,q,pub,cs,rp=ctx;ck('Actual registered16 source/plan no new science action',q['budget']==16 and q['remaining']==16-len(q['consumed'])and q['model_automatic_retries']==0)
+for row in cs:
+ s=rd(R/'control/specs'/(row['proposed_native_cohort']+'.json'));ck('Full approved actual canonical input and270 '+row['proposed_native_cohort'],s['expected_options']==row['expected_effective_options']and s['input_digest']==row['input_digest']and sha(R/'control/specs'/(s['cohort']+'.json'))==q['admitted_specs'][s['cohort']]);dh=m.reference(row['DH_P0_reference']);ch=m.reference(row['CH_P0_reference']);ck('Legal accepted unchanged CH/DH refs '+row['proposed_native_cohort'],dh['cycles']>0 and ch['cycles']>0)
+m.prior_science(c,reg);ck('Old4request immutable budgets/spec/UUIDs retained',True)
+for done,label,expect in [(dict(stop_reason=None,launcher_wait_returncode=0,native_simulator_observed=True),'observednatural',True),(dict(stop_reason='SAFETY_STOP',launcher_wait_returncode=0,native_simulator_observed=True),'lateStop',False),(dict(stop_reason=None,launcher_wait_returncode=127,native_simulator_observed=False),'noModel127',False),(dict(stop_reason=None,launcher_wait_returncode=0,native_simulator_observed=False),'noModelzero',False),(dict(stop_reason=None,launcher_wait_returncode=-15,native_simulator_observed=True),'observedkilled',False)]:ck('Only observed natural can be accepted '+label,m.natural(done)is expect)
+profiles=sorted({r['profile']for r in cs});ids=sorted({r['input_digest']for r in cs});rows=[]
+for j,p in enumerate(profiles):
+ for i,digest in enumerate(ids):
+  cyc=800+50*i if(i<7 if j==0 else i>0)else None;phy=900+i if(i<6 if j==0 else i>1)else None;pib=1000+i;r=dict(profile=p,input_digest=digest,program=str(i),suite='CPU_SYNTHETIC',accepted=cyc is not None,cycles=cyc,DH_P0_cycles=1000,CH_P0_cycles=1200,physical_cycles=phy,PIB_cycles=pib,S_combo=None,R_combo=None,I=None,J=None)
+  if cyc is not None:r.update(S_combo=1000/cyc,R_combo=1200/cyc,I=1000/cyc,J=phy*pib/(1000*cyc)if phy is not None else None)
+  rows.append(r)
+summ=m.summary(rows);ck('Common accepted intersection exact6',summ['common_combo_accepted_inputs']['n']==6);ck('Distinct completeJ intersection exact4',summ['common_J_complete_terms_inputs']['n']==4)
+for p in profiles:
+ rr=[r for r in rows if r['profile']==p and r['input_digest']in summ['common_combo_accepted_inputs']['ids']];got=summ['common_combo_accepted_inputs']['profiles'][p]['S_combo'];ck('Common GM same denominator '+p,got['n']==6 and math.isclose(got['GM'],math.exp(sum(math.log(r['S_combo'])for r in rr)/6),rel_tol=1e-14))
+empty=[dict(r,accepted=False,cycles=None,S_combo=None,R_combo=None,I=None,J=None)for r in rows];es=m.summary(empty);ck('Allmissing GMNA zero valid n not16 regressions',all(x['n']==0 and x['GM']is None and x['missing']==8 and x['zero_exact_arithmetic']==0 for p in profiles for x in es['profiles'][p]['metrics'].values()))
+big=dict(cycles=10**20-1,DH_P0_cycles=10**20,CH_P0_cycles=10**20,physical_cycles=10**20,PIB_cycles=10**20,S_combo=1.,R_combo=1.,I=1.,J=1.);bs=m.stats([big],'S_combo');bj=m.stats([big],'J');ck('Integer sign beyond float precision',bs['positive_exact']==bj['positive_exact']==1 and bs['zero_exact_arithmetic']==0)
+sys.path.insert(0,c['B_package']);import archive_witness as aw
+reject('Archive unsafe traversal rejected',lambda:aw.exact_safe(O,'../outside'));reject('Archive absolute member rejected',lambda:aw.exact_safe(O,'/etc/passwd'))
+tree=ast.parse(source.read_bytes());ck('No native dispatcher/registry/Git/model/signal APIs invoked',not any(isinstance(n,ast.Call)and((isinstance(n.func,ast.Name)and n.func.id in ['run_native','prepare','update_authority'])or(isinstance(n.func,ast.Attribute)and n.func.attr in ['run_native','prepare','update_authority','kill','killpg','Popen','archive','restore']))for n in ast.walk(tree)));ck('No subprocess invocation in auditor',not any(isinstance(n,ast.Name)and n.id=='subprocess'for n in ast.walk(tree)));ck('Guard replay uses frozen perpointbinding once',source.read_text(encoding='utf-8-sig').count('frozen=e.binding()')==1 and 'strict.terminal('not in source.read_text(encoding='utf-8-sig'))
+provider=A/'agents/B_results_v1/driver_packet_v1/runs/root_live_v2/PUBLICATION_PROVIDER.json';old=m.digest
+def no_active_raw(p):
+ p=P(p)
+ if p.name=='raw.log.gz'and p.is_relative_to(R/'DTC/run/results'):raise AssertionError('CPU_LIVE_READINESS_MUST_NOT_READ_ACTIVE_RAW')
+ return old(p)
+m.digest=no_active_raw;ready=m.readiness(c,provider);ck('Actual live readiness waits terminal without raw',ready['ready']is False and ready['new_models']==ready['active_raw_reads']==0 and ready['status']=='WAIT_CLOSED_EVIDENCE');ck('No audit invoked or performance result synthesized',(not(O/'runs').exists())and not(D/'final_audit_outputs').exists())
+(O/'LIVE_READINESS_CPU_RESULT.json').write_text(json.dumps(ready,indent=2)+'\n');v=dict(schema='DTC_R1_D_FINAL_READONLY_AUDITOR_CPU_QUALIFICATION_V1',UTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),status='PASS_CPU_ONLY_FINAL_AUDITOR_PREPARATION_NOT_ACTUAL_TERMINAL_AUDIT',checks=checks,check_count=len(checks),source_sha256=sha(source),contract_sha256=sha(O/'CONTRACT.json'),live_readiness_provider=str(provider),actual_final_audit_calls=0,models_UUID_registry_Git_or_restore_actions=0,actual_R1_closed_raw_reads_by_CPU_tests=0,synthetic_statistics=summ,limitations=['No R1 final audit or fake scientific performance was executed. Actual raw/counters/lifecycle/archives/native recovery are validated only after all16 candidates obtain legal terminal evidence.','CPU statistics are synthetic; existing accepted P0 references are read only as provenance, never new combination performance.','Full archive streaming and typed restored/source trees reuse separately qualified read-only witness functions; this package does not create any archive or restore.']);(O/'CPU_QUALIFICATION.json').write_text(json.dumps(v,indent=2)+'\n');print(json.dumps(dict(checks=len(checks),status=v['status'],source_sha256=sha(source),contract_sha256=sha(O/'CONTRACT.json'),qualification_sha256=sha(O/'CPU_QUALIFICATION.json'))))

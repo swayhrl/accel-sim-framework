@@ -1,0 +1,13 @@
+{
+  "resource_source": {
+    "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_v2_codesign16_layout_r1_execution_20261105_v1/agents/A_owner_resource_v1/perf16r1_resources.py",
+    "sha256": "935a1d7a1c72a4752ae0d7aab733f654def74e026417d69c70aafb7a1c0a1429"
+  },
+  "admission_hold_AST_sha256": "9f0ba56f225ce1a9220c9111fc6aef291fa14ace1bd52fac0119d3a8c85e7de3",
+  "admission_hold_source": "def admission_hold(q,spec):\n \"\"\"Pure/read-only typed Root safety decision. Consumed healthy models are unaffected.\n Keys may be a profile, or an exact cohort with matching profile. Malformed relevant\n entries raise, causing pause-new; they are never silently treated as no hold.\n \"\"\"\n assert q['request']==REQ and spec['profile']==spec['structure_variant']and spec['profile']in VARIANT_TOKENS\n if spec['cohort']in q['consumed']:return None\n matches=[]\n for key in [spec['profile'],spec['cohort']]:\n  if key not in q.get('admission_holds',{}):continue\n  value=q['admission_holds'][key]\n  assert isinstance(value,dict)and value,'MALFORMED_RELEVANT_ADMISSION_HOLD'\n  assert value['classification']=='CONFIGURATION_OR_LIFECYCLE_SAFETY_HOLD'and value['decided_by']=='DTC_MAIN'\n  assert value['profile']==spec['profile']and value['reason']and value['created_utc']\n  assert value.get('request',REQ)==REQ\n  if key==spec['cohort']:assert value.get('cohort',key)==key\n  assert sha(value['evidence_path'])==value['evidence_sha256'],'PROFILE_HOLD_EVIDENCE_DRIFT'\n  if 'decision_path'in value:assert sha(value['decision_path'])==value['decision_sha256'],'PROFILE_HOLD_DECISION_DRIFT'\n  matches.append(dict(value,matched_key=key))\n return matches[0]if matches else None",
+  "ops_source": {
+    "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_v2_codesign16_layout_r1_execution_20261105_v1/agents/A_owner_resource_v1/perf16r1_ops.py",
+    "sha256": "c9b57f2be8fc69c038d379c3a6888ef25efaf87988eb8696930ef97ff380e9b9"
+  },
+  "interface": "R1 pure shared admission helper exactAST; actual registered sourcepins required. Draft full-module hashes are provenance only, not a grant."
+}

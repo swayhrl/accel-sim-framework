@@ -1,0 +1,19 @@
+# R1 exact16 independent final read-only auditor
+
+CPU-qualified preparation only; no actual R1 final audit has run. The current registered plan/candidate, exact approved16 input/config270 scope, source manifests and new namespace are fixed in CONTRACT.json. The53 CPU checks include legal P0 provenance, exact statistics/intersections, missing terms, integer signs, unsafe archive paths and actual live metadata readiness with active-raw access forbidden.
+
+Root CLI (replace only provider/output paths; preserve the frozen contract SHA):
+
+```sh
+python3 -B auditor.py --contract CONTRACT.json --contract-sha256 177b9463bd364a8537a1360315208288fb2b623607bc614137fe1da501a957e6 --provider /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_v2_codesign16_layout_r1_execution_20261105_v1/agents/B_results_v1/driver_packet_v1/runs/root_live_v2/PUBLICATION_PROVIDER.json --check-readiness
+```
+
+Only after readiness is true, use the same arguments with `--audit --output-dir /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_v2_codesign16_layout_r1_execution_20261105_v1/agents/D_independent_review_v1/final_audit_outputs/FINAL_UNIQUE_DIRECTORY` instead of `--check-readiness`. All outputs and the per-contract one-shot marker are exclusive; an existing attempt refuses automatic retry. Root must preserve a failed audit and explicitly diagnose it, using a separately versioned read-only forward correction if required. This never authorizes another scientific identity.
+
+Readiness reads only metadata. Audit requires all16 accounted by genuinely closed strict/archived results or fully qualified typed-unused safetyHOLD, original controller terminal metadata, and no live consumed generation. It then independently rederives population/cycles/counters from each accepted closed raw with the pinned pure capacity adapter, checks input/config/build/argv/maps/limits/observer/dispatch bindings, every authenticated progress and resource record, natural termination, and exact stored strict evidence. Frozen runtime binding is evaluated once per point and all plan source hashes are checked before/after, avoiding repeated447-source scans for each historical sample. This does not edit production strict code. It validates the declared frozen input scope and preserved original strict access evidence; it does not rehash every trace body again or certify complete-application capture or numerical values.
+
+Every actual164 chunk and full stream, native restored typed member, and retained SOURCE_KEEP original is read/hash-verified. Archive integrity is not performance acceptance. Registered negative lifecycle is preserved with cycles/S/R/I/J unavailable. Used UUIDs must be fresh and one-use, foreign/old budgets/specs/UUIDs stay intact, and typed-unused credits cannot be refunded or disguised as completed models. S/R/I/J and suite/profile/common-intersection GM/sign counts are recomputed independently from actual integer cycles and legal same-input P0/single-factor sources. Missing scan single factors never yield a fabricated J; no per-program best configuration or eight-to-CORE32 promotion is permitted.
+
+The tool performs no registration, simulation, GPU task, signal, GDB, Git, archive creation, restoration, Goal or manuscript action. It writes only a new D review directory and its report-only one-shot state. Root must independently sign off narrative/figures and publish the resulting package. Native q.state is retained as observed and does not replace result-terminal evidence. Root publication ACK remains outside this tool.
+
+V2 adds only the actual final-publication required top-level `request` field. The old source/contract/afdce34f manifest remains immutable. No actual final audit had run when this forward was frozen. The source roundtrip and contract changes are recorded in FORWARD_RECORD.json.
