@@ -1,0 +1,15 @@
+--- 47ce020d
++++ containment_keeps_full_pending
+@@ -73,7 +73,11 @@
+  """Retain all installed mandatory generations; fence only selected new IDs."""
+  frame=state['frame'];res=frame.f_locals['res'];previous=frame.f_globals['worker'];previous_choose=res.choose_dispatch;scope=set(state['scope'])
+  def worker(c):return held(state,c,'BROAD_INSTALL_CONTAINMENT')if c in scope else previous(c)
+- def choose(pending,*a,**kw):return previous_choose([s for s in pending if s['cohort']not in scope],*a,**kw)
++ def choose(pending,*a,**kw):
++  # Preserve the existing aging target and R accounting on a contained failure.
++  # Admission is blocked after the ordinary full-pending state transition.
++  decision=previous_choose(pending,*a,**kw)
++  return None if decision is not None and decision['cohort']in scope else decision
+  frame.f_globals['worker']=worker;res.choose_dispatch=choose
+  state.update(containment_worker=worker,containment_choose=choose,armed=False)
+  return dict(scope=sorted(scope),all_current_mandatory_routes_retained=True,automatic_rollback=False,automatic_retry=False,models_signaled=0)
