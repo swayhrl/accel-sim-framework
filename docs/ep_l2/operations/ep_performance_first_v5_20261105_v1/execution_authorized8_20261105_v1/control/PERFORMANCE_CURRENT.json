@@ -13,7 +13,7 @@
     "B": {
       "budget": 2,
       "remaining": 0,
-      "state": "RUNNING"
+      "state": "CLOSED_COMPLETED"
     },
     "D": {
       "budget": 3,
@@ -32,7 +32,10 @@
       "status": "UNKNOWN_UNTIL_BOTH_EXACT_CELLS_ACCEPTED"
     },
     "B_same_newSource_F_pressure_vs_Fbaseline": {
-      "status": "UNKNOWN_UNTIL_BOTH_EXACT_CELLS_ACCEPTED"
+      "candidate_cycles": 45425,
+      "reduction_percent": 18.775145283862315,
+      "reference_cycles": 55925,
+      "saved_cycles": 10500
     },
     "D_G64_WV_vs_S": {
       "status": "UNKNOWN_UNTIL_BOTH_EXACT_CELLS_ACCEPTED"
@@ -46,8 +49,8 @@
   },
   "complete_scientific_scope": 8,
   "counts": {
-    "accepted": 1,
-    "pending": 7,
+    "accepted": 2,
+    "pending": 6,
     "technical_failure": 0
   },
   "numeric_output": "UNKNOWN",
@@ -201,13 +204,29 @@
       }
     },
     {
-      "accepted_point_ref": null,
-      "archive_receipt_ref": null,
+      "CTA": 15625,
+      "accepted_point_ref": {
+        "bytes": 2832,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/host_private_candidate_v1/execution/cases/EP_PERF_PFV5_B1_VECTOR4M_F_PRESSURE_EPOCH_1700_V1/run/f7f41076-36d7-41c2-a97d-e41024ee86d4/ACCEPTED_POINT.json",
+        "sha256": "b0b416324ff44b90e43852aaad28880d0b705d739115430225ff203e10228397"
+      },
+      "archive_receipt_ref": {
+        "bytes": 2099,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/host_private_candidate_v1/execution/cases/EP_PERF_PFV5_B1_VECTOR4M_F_PRESSURE_EPOCH_1700_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "9d7cb1b1a6587cae16e9b083389b950e300369376618dd33aed0e7d4ad11262d"
+      },
+      "archive_two_restores": true,
       "cohort": "EP_PERF_PFV5_B1_VECTOR4M_F_PRESSURE_EPOCH_1700_V1",
       "consumed": true,
-      "cycles": null,
-      "done_ref": null,
+      "cycles": 45425,
+      "done_ref": {
+        "bytes": 4760,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_PFV5_B1_VECTOR4M_F_PRESSURE_EPOCH_1700_V1.DONE.json",
+        "sha256": "2ec0b39655dea12495e4a8d40b66aaad475e32ae8bcc427e0c369ebd30457b14"
+      },
+      "elapsed_seconds": 434.2527911737561,
       "group": "B",
+      "hardware_drained": true,
       "host_limits": {
         "AS_bytes": 10737418240,
         "RSS_bytes": 2147483648,
@@ -215,6 +234,9 @@
         "wall_seconds": 7200
       },
       "independent_release": true,
+      "instructions": 56000000,
+      "kernel_count": 1,
+      "launcher_wait_returncode": 0,
       "mode": "F_PRESSURE_EPOCH",
       "source_identity": {
         "archive_sha256": "a7e9c8ce045710c8f3655aebb82a65628a5a18638036af17fa0ec8c755580d3e",
@@ -227,9 +249,13 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/host_private_candidate_v1/execution/cases/EP_PERF_PFV5_B1_VECTOR4M_F_PRESSURE_EPOCH_1700_V1/control/FROZEN_SPEC.json",
         "sha256": "d5d8890708971dee58eac6ccb5c7c8fd7a26c407ac3c8be5605e4b1628a53223"
       },
-      "state": "CONSUMED_BEFORE_FORK",
+      "state": "CLOSED_ACCEPTED",
+      "stop_reason": null,
       "uuid": "f7f41076-36d7-41c2-a97d-e41024ee86d4",
-      "validation_ref": null
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/host_private_candidate_v1/execution/cases/EP_PERF_PFV5_B1_VECTOR4M_F_PRESSURE_EPOCH_1700_V1/run/f7f41076-36d7-41c2-a97d-e41024ee86d4/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "1bd8a0eaaeb6efa8d19aa771ae2cd3f733789034d76780c544dfda4bc2d84615"
+      }
     },
     {
       "accepted_point_ref": null,
@@ -327,5 +353,5 @@
   ],
   "refund": false,
   "schema": "EP_MAIN_PFV5_ROLLING_EXACT8_RESULTS_V1",
-  "utc": "2026-11-05T04:01:07.329197+00:00"
+  "utc": "2026-11-05T04:01:44.216800+00:00"
 }
