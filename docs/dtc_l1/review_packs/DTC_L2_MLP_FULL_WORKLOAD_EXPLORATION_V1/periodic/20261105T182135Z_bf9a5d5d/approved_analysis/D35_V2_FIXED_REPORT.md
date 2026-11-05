@@ -1,0 +1,13 @@
+# Derived35 readonly consumer V2
+
+V2 fixes the independently confirmed V1/c9 source-flow defect before formal release. The frozen c9 source, all V1 reports/QA and the A independent counterexample remain unchanged.
+
+`measure` now reads an existing RESULT marker **before** identity/role checks. A read/race/unknown-state failure carries explicit acceptance uncertainty. Failed identity/role verification also blocks substitution. `choose_reference` retains a valid original first, then HOLDs any apparent accepted/uncertain/identity-invalid original instead of treating it as an eligible negative gap. The exact twelve negative-lineage links and all scientific/strict/publication rules remain unchanged.
+
+Eleven focused CPU delta checks reproduce the old defect through the real frozen `measure` → `choose_reference` functions with a private apparent-PASS file and bad canonical role, then prove V2 HOLD for PASS, REUSE, wrong ROI, unreadable JSON, unknown state and bad-role negative. A genuinely absent original scan result with valid identity can still use its exact, already qualified R2 reference. No production file is altered. An AST comparison establishes that only `measure` and `choose_reference` changed; the prior30 source-bound qualification checks apply to the unchanged identity/strict/archive/math/publication code. These are 11 new delta checks plus inherited30 coverage, not41 independent new tests.
+
+The new actual dry validation is source-for-source identical on all350 selections to the frozen normal V1 snapshot: **323 original accepted + one separately identified scan R2 = 324/350 references; 26 remain missing; IR11 have no accepted source at this snapshot**. Available/common/suite/fourway coverage is unchanged. Six ratified downstream P0 proof objects omit suite/profile display fields; the precise V1 field-presence artifact remains the source for that disclosure, while full input/binding/build/all270/ROI equality remains mandatory.
+
+Formal GM remains disabled. Main must publish this V2 source and its exact QA, then provide the complete source-bound receipt described in INTERFACE. A contract-only or old-c9 publication cannot release V2. No legacy roles/unionFalse/summary/adaptive/runtime-parent membership or English v0.23 changed. Full raw/archive/native acceptance is reused from source-bound receipts; no new large raw replay or full native restore was performed by this reader.
+
+This delivery implements analysis only. It starts0 models, grants0 starts and changes0 production functions. Scope/registrar/runtime/adoption integration is not installed or authorized by it.

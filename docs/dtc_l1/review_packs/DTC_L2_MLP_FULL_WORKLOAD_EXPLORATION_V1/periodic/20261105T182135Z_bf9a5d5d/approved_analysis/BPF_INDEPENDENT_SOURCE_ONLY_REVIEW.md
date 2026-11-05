@@ -1,0 +1,15 @@
+# Strace BPF independent review — source/evidence only
+
+**PASS for sealed-evidence integrity and the scoped source review. Integration is NOT qualified; deployment is NOT approved by this report.** Main explicitly ended this turn at the source-only boundary. B's later integration must receive a separate frozen-pin review.
+
+- A REPORT `dc0bb098e42a2f3247086bf48eb6580515a674df0292c9ff93a361c035b3b8a1` and MANIFEST `ec64865abefac5c36956b7be9059bb6ce4199655d202cd168407eb59eb3bd2a6` match. All79 entries pass SHA/size checks; the old11 CPU checks were read, not rerun.
+- Current strace5.16 SHA38a5c75c…, binary02a28936…, Core library694f05ce…, progress header9b5b8767… and lower native launcherfb246ce6… match the sealed evidence. Source snippets/paths/SHAs are in EVIDENCE_AUDIT.json and SOURCE_REVIEW.md.
+- The reported39.4x is only a three-repeat CPU-helper median ratio. Production clock_gettime may use vDSO; no simulator cycles or actual simulation speedup was tested. Actual helper Seccomp2/filter1, default0/0 and debug SECCOMP support that CPU activation only.
+- Fixed srand(1) exists in the actual FW/Core source slices. Progress getpid/clock work precedes its10-second throttle, providing a plausible host-overhead mechanism. Other wall-clock timestamps/reporting, stream events, signal timing and interleaving remain reasons not to infer complete runtime equivalence from source search.
+- The matched5.16 manual permits silent ordinary-tracing fallback. Nested ptraceEPERM is failed startup, not successful fallback qualification. No-follow mode disables BPF and is unsuitable. Future activation/fallback must be explicit and fail closed where unknown.
+
+Main clarified that a separately registered short frozen-input/P0 engineering canary may receive a legal new technical allowance and new UUID. A's earlier no-new-grant/repeat recommendation is not a user-imposed experiment limit. Such a canary must remain outside primary350/GM/V3 parent data and never replace an accepted/negative result or reuse a spent identity. Original strict plus new observation checks, real natural closure and native archive restoration remain required.
+
+**Routing boundary:** leave the existing absolute native46c69a74… and memory frontendfa3efd26… files unchanged. Old replay directly pins them. Review a future-cohort-only private absolute entry through the same owner/engine/dispatcher instead of modifying shared routes or globally patching subprocess. Any narrow engineering-priority exception must be versioned and preserve full RAM/CPU/disk/claims/fresh gates; it cannot be hidden inside registration or override healthy jobs.
+
+B reported a frozen mock-only component prototype66bd1497…/9 component groups, explicitly without a production entry, three-binding implementation or extraStrict implementation. **Those components were not finally reviewed here and are not full native qualification.** Await actual frozen entry/bindings/strict/restore pins before integration assessment. No actual simulator, registration, Git action, production mutation, signal to a running model/production process or existing-attempt reconfiguration was performed by this review.
