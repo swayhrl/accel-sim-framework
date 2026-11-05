@@ -29,6 +29,7 @@ def report():
  for p in m['points']:
   g=m['groups'][p['group']];s=exact(p['spec_ref']);q=reg['registered_future_requests'][g['request_id']];r=q['consumed'].get(p['cohort'],{});state=r.get('state','NOT_STARTED')
   item=dict(cohort=p['cohort'],group=p['group'],mode=s['mode'],source_identity=s['source_identity'],state=state,consumed=bool(r),uuid=r.get('uuid'),cycles=None,spec_ref=p['spec_ref'],host_limits=s['limits'],independent_release=True)
+  item['actual_geometry']=s.get('geometry');item['source_feature_profile']=s.get('source_feature_profile');item['legacy_display_profile_label']=s.get('profile');item['display_label_does_not_override_actual_options']=True
   for k in ['done_ref','accepted_point_ref','archive_receipt_ref','validation_ref']:item[k]=r.get(k)
   if r.get('done_ref'):
    d=exact(r['done_ref']);item['elapsed_seconds']=d.get('elapsed_seconds');item['stop_reason']=d.get('stop_reason');item['launcher_wait_returncode']=d.get('launcher_wait_returncode')
@@ -89,6 +90,8 @@ def report():
  for k,v in comparisons.items():lines+=['- '+k+': '+json.dumps(v)]
  lines+=['','## Architecture cost and bounded interpretation','','Logical costs: '+json.dumps(out['logical_architecture_costs']),'']
  for text in out['bounded_interpretations']:lines+=['- '+text]
+ if (C/'MAIN_APPROVED_A_CLOSED_CONSUMER_AMENDMENT_V2.json').exists():
+  lines+=['','## Preserved A Host/consumer incident','','Original PARSE_HOLD records remain immutable. The first consumer retained an obsolete282 count while the frozen actual map is283. The final ELF also embeds a precommit78_modified6 banner. Main independently rehashed all832 canonical Source files,142 reproduced objects,8 complete libraries and the entire ELF; the reproduction exactly matches the consumed ELF SHA. An exact three-result signed metadata compatibility guard checks the whole original/reproduced ELF and library, exact old literal banners and immutable raw/Spec/HOLD references. Canonical Source7b4 is not relabelled78, and no log text or consumed Spec is rewritten. The original complete postprocess outer checks, unchanged7cc/bf91 numerical body, full283 map, archive and two fresh restores remain mandatory. The failed initial reproduction with another output basename is retained. The old PFV3_G32W16 profile string is a legacy display label; actual options and sealed geometry are G32x8.','']
  lines+=['','A cold filter is lifetime never-installed proof, not general empty-directory detection. B retains full query port and cycle costs. C remains partial production engineering with no science starts. 1700MHz is service diagnostic, not GPU calibration.','']
  (C/'PERFORMANCE_CURRENT.md').write_text('\n'.join(lines))
  return out
@@ -98,7 +101,7 @@ def main():
   current=report();basefile=C/'PUBLICATION_EXPECTED_HEAD.json';base=read(basefile)['head']if basefile.exists()else BASE
   assert api('GET',REPO+'/git/ref/heads/'+BRANCH)['object']['sha']==base,'no force on moved branch'
   files={}
-  allowed=['USER_REQUEST_SCOPE_TRANSCRIPTION.txt','USER_AUTHORIZATION.json','A_USER_AUTHORIZATION.json','B_USER_AUTHORIZATION.json','D_USER_AUTHORIZATION.json','A_MAIN_HOST_DELTA_APPROVAL.json','B_MAIN_HOST_DELTA_APPROVAL.json','D_MAIN_HOST_DELTA_APPROVAL.json','EXACT_EXECUTION_MANIFEST.json','MAIN_FORMAL_NATIVE_INSTALLATION_RECEIPT.json','MAIN_FINAL_SPEC_ACTIVATION_DIFFERENCES.json','ROOT_LAUNCH_ACK.json','MAIN_DISPATCHER_STARTUP_REVIEW.json','PERFORMANCE_CURRENT.json','PERFORMANCE_CURRENT.md','EXECUTOR_STARTED.json','EXECUTOR_FINISHED.json','MAIN_EXECUTOR_ACTIVATION.json','MAIN_REAL_PREPARE_AFTER_INSTALL.json','FINAL_SCOPE_CLOSURE.json','main_activate_exact8.py','main_publish_v5_progress.py','main_metadata_watch_v5.py','closed_counter_summary_v5.py','ACTIVATION_TRUE164_ARCHIVE_RECEIPT.json','MAIN_PRECONSUME_CANONICAL_OWNED_ROUTE_FIX.json','MAIN_ACTUAL_EIGHT_MODEL_GENERATIONS_INITIAL.json','MAIN_OLD_EP_ROWS_PRESERVED_AFTER_ALL8_STARTS.json','MAIN_C_FRONTEND_PARTIAL_ENGINEERING_REVIEW.json','MAIN_A_POSTCLOSE_QUALIFICATION_GAPS.json']
+  allowed=['USER_REQUEST_SCOPE_TRANSCRIPTION.txt','USER_AUTHORIZATION.json','A_USER_AUTHORIZATION.json','B_USER_AUTHORIZATION.json','D_USER_AUTHORIZATION.json','A_MAIN_HOST_DELTA_APPROVAL.json','B_MAIN_HOST_DELTA_APPROVAL.json','D_MAIN_HOST_DELTA_APPROVAL.json','EXACT_EXECUTION_MANIFEST.json','MAIN_FORMAL_NATIVE_INSTALLATION_RECEIPT.json','MAIN_FINAL_SPEC_ACTIVATION_DIFFERENCES.json','ROOT_LAUNCH_ACK.json','MAIN_DISPATCHER_STARTUP_REVIEW.json','PERFORMANCE_CURRENT.json','PERFORMANCE_CURRENT.md','EXECUTOR_STARTED.json','EXECUTOR_FINISHED.json','MAIN_EXECUTOR_ACTIVATION.json','MAIN_REAL_PREPARE_AFTER_INSTALL.json','FINAL_SCOPE_CLOSURE.json','main_activate_exact8.py','main_publish_v5_progress.py','main_metadata_watch_v5.py','closed_counter_summary_v5.py','ACTIVATION_TRUE164_ARCHIVE_RECEIPT.json','MAIN_PRECONSUME_CANONICAL_OWNED_ROUTE_FIX.json','MAIN_ACTUAL_EIGHT_MODEL_GENERATIONS_INITIAL.json','MAIN_OLD_EP_ROWS_PRESERVED_AFTER_ALL8_STARTS.json','MAIN_C_FRONTEND_PARTIAL_ENGINEERING_REVIEW.json','MAIN_A_POSTCLOSE_QUALIFICATION_GAPS.json','MAIN_A_INDEPENDENT_EXACT_BUILD_REPRODUCTION_REVIEW.json','MAIN_A_EXACT_BANNER_COMPATIBILITY_APPROVAL.json','MAIN_APPROVED_A_CLOSED_CONSUMER_AMENDMENT_V2.json']
   for name in allowed:
    p=C/name
    if p.exists():files['control/'+name]=p
@@ -123,6 +126,14 @@ def main():
   for name in ['EXACT_CAUSE_AND_AST_DELTA.json','ACTUAL_THREE_RAW_OFFLINE_RESULT.json','closed_consumer_283.py']:
    ap=ar/name
    if ap.exists():files['A_postclose_gap/'+name]=ap
+  ac=V/'activation_20261105_v1/a_closed_consumer_fix_v1'
+  for cp in ac.glob('*'):
+   if cp.is_file()and cp.suffix in ['.py','.json','.md']and cp.stat().st_size<1024*1024:
+    files['A_closed_consumer_resolution/'+cp.name]=cp
+  cv=V/'track_c_clean/install_followup_v4'
+  for cp in cv.rglob('*'):
+   if cp.is_file()and 'core_candidate'not in cp.relative_to(cv).parts and '__pycache__'not in cp.parts and cp.suffix in ['.py','.json','.md','.patch','.h','.inc','.cc','.config']and cp.stat().st_size<1024*1024:
+    files['C_install_partial_engineering/'+str(cp.relative_to(cv))]=cp
   entries=[];manifest=[]
   for name,p in sorted(files.items()):
    raw=p.read_bytes();out=(json.dumps(clean(json.loads(raw)),sort_keys=True,indent=2)+'\n').encode()if p.suffix=='.json'else raw

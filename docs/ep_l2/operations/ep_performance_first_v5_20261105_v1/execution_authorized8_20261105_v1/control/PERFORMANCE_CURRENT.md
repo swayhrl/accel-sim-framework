@@ -35,4 +35,9 @@ Logical costs: {"A": {"Tag_entries_per_slice": 256, "Payload_slots_per_slice": 1
 - A evaluates lifetime-never-installed cold proof only. It does not solve sustained Stencil Victim retention; no general empty-directory oracle is claimed.
 - A reduced observed total frontend queries without reducing complete-application cycles. Query-count improvement alone is not an application performance benefit.
 
+## Preserved A Host/consumer incident
+
+Original PARSE_HOLD records remain immutable. The first consumer retained an obsolete282 count while the frozen actual map is283. The final ELF also embeds a precommit78_modified6 banner. Main independently rehashed all832 canonical Source files,142 reproduced objects,8 complete libraries and the entire ELF; the reproduction exactly matches the consumed ELF SHA. An exact three-result signed metadata compatibility guard checks the whole original/reproduced ELF and library, exact old literal banners and immutable raw/Spec/HOLD references. Canonical Source7b4 is not relabelled78, and no log text or consumed Spec is rewritten. The original complete postprocess outer checks, unchanged7cc/bf91 numerical body, full283 map, archive and two fresh restores remain mandatory. The failed initial reproduction with another output basename is retained. The old PFV3_G32W16 profile string is a legacy display label; actual options and sealed geometry are G32x8.
+
+
 A cold filter is lifetime never-installed proof, not general empty-directory detection. B retains full query port and cycle costs. C remains partial production engineering with no science starts. 1700MHz is service diagnostic, not GPU calibration.
