@@ -24,7 +24,7 @@
     "D": {
       "budget": 3,
       "remaining": 0,
-      "state": "RUNNING"
+      "state": "CLOSED_COMPLETED"
     }
   },
   "comparisons": {
@@ -60,7 +60,10 @@
       "saved_cycles": 10500
     },
     "D_G64_WV_vs_S": {
-      "status": "UNKNOWN_UNTIL_BOTH_EXACT_CELLS_ACCEPTED"
+      "candidate_cycles": 1662803,
+      "reduction_percent": 0.24680293019988397,
+      "reference_cycles": 1666917,
+      "saved_cycles": 4114
     },
     "D_REF32_WV_vs_accepted_S_REF32": {
       "candidate_cycles": 1671121,
@@ -75,13 +78,16 @@
       "saved_cycles": 29701
     },
     "D_WV_G64_vs_REF32": {
-      "status": "UNKNOWN_UNTIL_BOTH_EXACT_CELLS_ACCEPTED"
+      "candidate_cycles": 1662803,
+      "reduction_percent": 0.49774971411405877,
+      "reference_cycles": 1671121,
+      "saved_cycles": 8318
     }
   },
   "complete_scientific_scope": 8,
   "counts": {
-    "accepted": 7,
-    "pending": 1,
+    "accepted": 8,
+    "pending": 0,
     "technical_failure": 0
   },
   "logical_architecture_costs": {
@@ -744,20 +750,36 @@
       }
     },
     {
-      "accepted_point_ref": null,
+      "CTA": 3072,
+      "accepted_point_ref": {
+        "bytes": 3745,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_d_workloads/three_mm/execution/cases/EP_PERF_PFV4_A2_3MM_WV_ZERO_RO_G64W8_V1/run/e3b334f7-1b0f-4f1f-8799-af695c35ab37/ACCEPTED_POINT.json",
+        "sha256": "7235afb2f649a5ab6daed7adb749439d4ff15497886f99a8a18c24f13c71ca74"
+      },
       "actual_geometry": {
         "line_bytes": 128,
         "sets": 64,
         "slices": 64,
         "ways": 8
       },
-      "archive_receipt_ref": null,
+      "archive_receipt_ref": {
+        "bytes": 2015,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_d_workloads/three_mm/execution/cases/EP_PERF_PFV4_A2_3MM_WV_ZERO_RO_G64W8_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "59147e53a3047eacfb267b9e29aecd833a3a715817264e02b546fe00d08a2a42"
+      },
+      "archive_two_restores": true,
       "cohort": "EP_PERF_PFV4_A2_3MM_WV_ZERO_RO_G64W8_V1",
       "consumed": true,
-      "cycles": null,
+      "cycles": 1662803,
       "display_label_does_not_override_actual_options": true,
-      "done_ref": null,
+      "done_ref": {
+        "bytes": 5753,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_PFV4_A2_3MM_WV_ZERO_RO_G64W8_V1.DONE.json",
+        "sha256": "e4e8a442d591f858ee11425da67921933cb5d1e74df3ffc2edef71d01fe1e18b"
+      },
+      "elapsed_seconds": 13969.844604598358,
       "group": "D",
+      "hardware_drained": true,
       "host_limits": {
         "AS_bytes": 25769803776,
         "RSS_bytes": 10737418240,
@@ -765,6 +787,9 @@
         "wall_seconds": 259200
       },
       "independent_release": true,
+      "instructions": 1813512192,
+      "kernel_count": 3,
+      "launcher_wait_returncode": 0,
       "legacy_display_profile_label": "NEXT_G64W8_850_L100_FR128",
       "mode": "WV_ZERO_RO",
       "source_feature_profile": null,
@@ -779,9 +804,13 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_d_workloads/three_mm/execution/cases/EP_PERF_PFV4_A2_3MM_WV_ZERO_RO_G64W8_V1/control/FROZEN_SPEC.json",
         "sha256": "e2210be83ea9472c5e8bad5acf629241a00c9c09a84bfa1056a165fc83b1f3cd"
       },
-      "state": "CONSUMED_BEFORE_FORK",
+      "state": "CLOSED_ACCEPTED",
+      "stop_reason": null,
       "uuid": "e3b334f7-1b0f-4f1f-8799-af695c35ab37",
-      "validation_ref": null
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_d_workloads/three_mm/execution/cases/EP_PERF_PFV4_A2_3MM_WV_ZERO_RO_G64W8_V1/run/e3b334f7-1b0f-4f1f-8799-af695c35ab37/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "8e95381d3e06bf301651f5a37f729a8750b3836c0b7eb6bdc9e9cc1c481c0085"
+      }
     },
     {
       "CTA": 3072,
@@ -848,12 +877,7 @@
     }
   ],
   "refund": false,
-  "remaining_scope_gaps": [
-    {
-      "cohort": "EP_PERF_PFV4_A2_3MM_WV_ZERO_RO_G64W8_V1",
-      "state": "CONSUMED_BEFORE_FORK"
-    }
-  ],
+  "remaining_scope_gaps": [],
   "schema": "EP_MAIN_PFV5_ROLLING_EXACT8_RESULTS_V1",
-  "utc": "2026-11-05T07:40:08.205513+00:00"
+  "utc": "2026-11-05T07:53:06.374758+00:00"
 }
