@@ -1,0 +1,846 @@
+{
+  "schema": "V10_CPU_COPY_PATH_REVIEW_V1",
+  "created_utc": "2026-11-05T03:30:44.155941+00:00",
+  "status": "OBSERVED_ATTENTION_ADJACENCY_EXACT_LAYOUT_CONVERSION_UNRESOLVED",
+  "scope": {
+    "new_GPU_CUDA_NVML_operations": false,
+    "torch_or_vllm_import": false,
+    "V9_mutations": false,
+    "writes": [
+      "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/cpu/COPY_PATH_REVIEW.json"
+    ],
+    "inputs": "Existing V10 kernel ledger, existing V9 private cached compiled Python, installed Python runtime sources; all read-only."
+  },
+  "findings": {
+    "B1_decode_steps": 31,
+    "B2_decode_steps": 31,
+    "B1_direct_copy_nodes": 0,
+    "B2_direct_copy_nodes": 2232,
+    "B2_direct_copy_per_step": 72,
+    "B2_direct_copy_per_layer_per_step": 2,
+    "every_B2_step_same_adjacency_pattern": true,
+    "pre_attention_count": 1116,
+    "post_attention_count": 1116,
+    "pre_attention_pattern": "same-layer packedQKV dense -> RoPE fused pointwise -> reshape_and_cache_flash -> direct_copy -> flash_fwd_splitkv -> flash_fwd_splitkv_combine",
+    "post_attention_pattern": "flash_fwd_splitkv_combine -> direct_copy -> same-layer self_attn.o_proj dense GEMM",
+    "observed_grid": [
+      8,
+      1,
+      1
+    ],
+    "observed_block": [
+      128,
+      1,
+      1
+    ],
+    "copy_dtype_in_kernel_symbol": "c10::BFloat16",
+    "copy_summed_ms_total": 3.197527,
+    "copy_union_ms_total_sum_of_steps": 3.197527,
+    "copy_mean_ms_per_step": 0.10314603225806451,
+    "attribution_grade": "Observed kernel adjacency within each inferred decoder-layer attention region. Layer indices rely on the already documented source/dense-order mapping.",
+    "conclusion": "The extra72copies are consistently two attention-adjacent copies per36layers. Current artifacts do not identify exact source/destination tensors, actual copy strides, or the specific layout conversion. Do not rename them QKV/GEMM weight copies or assert a GQA permutation as measured cause."
+  },
+  "compiled_contracts": {
+    "Q": {
+      "shape": "[s72,16,128]",
+      "stride": [
+        2048,
+        128,
+        1
+      ],
+      "storage_offset": 0,
+      "source": "first generated RoPE partition buf5 / later buf11"
+    },
+    "output": {
+      "shape": "[s72,16,128]",
+      "stride": [
+        2048,
+        128,
+        1
+      ],
+      "storage_offset": 0,
+      "source": "empty contiguous [s72,2048] reinterpreted as3D; next o_proj partition asserts same3D stride then flattens without an explicit copy"
+    },
+    "K": {
+      "shape": "[s72,2,128]",
+      "stride": [
+        256,
+        128,
+        1
+      ],
+      "source": "separate contiguous RoPE output"
+    },
+    "V": {
+      "shape": "[s72,2,128]",
+      "stride": [
+        2560,
+        128,
+        1
+      ],
+      "storage_offset_elements": 2304,
+      "source": "view into packedQKV output; last dimension is contiguous despite larger token-row stride"
+    },
+    "graph_token_counts": {
+      "B1": 1,
+      "B2": 2,
+      "evidence": "V9 profiled raw graph-manager descriptors as preserved in COST_LEDGER.json"
+    },
+    "grade": "Static generated code contracts; these are not copy-kernel runtime arguments or pointer/stride capture."
+  },
+  "candidate_path_review": [
+    {
+      "candidate": "Python flash_attn_interface.maybe_contiguous(q/k/v)",
+      "evidence": "Only tests stride(-1)!=1. Compiled Q/K/V contracts all have final stride1, including strided packed V view.",
+      "verdict": "The available static contracts do not support attributing these copies to that simple last-dimension check. Actual per-copy tensor identity is not recorded."
+    },
+    {
+      "candidate": "DCP query.contiguous at flash_attn.py:1495",
+      "evidence": "Inside _forward_with_dcp; main route selects it only if dcp_world_size>1.",
+      "verdict": "No evidence that this DCP helper explains the recorded TP1 decode sequence. Do not use the isolated .contiguous() line as the cause."
+    },
+    {
+      "candidate": "Inductor copy_if_misaligned guards",
+      "evidence": "Generated next partition contains pointer alignment guards before o_proj; generated QKV partitions contain analogous guards. copy_if_misaligned is a C++ helper. Actual pointer alignment and branch outcomes were not recorded.",
+      "verdict": "Presence is confirmed, triggering is unobserved. Pre-attention copy lies between cache update and FA kernels inside the opaque attention region; post-attention copy is immediately before o_proj and remains ambiguous between attention return handling and boundary guard without pointer/stack evidence."
+    },
+    {
+      "candidate": "FA2 internal grouped-query decode layout rearrangement / output restoration",
+      "evidence": "Copies bracket flash splitKV/combine for every layer, B2 only; Python calls opaque _vllm_fa2_C.varlen_fwd. Current installed package has no FlashAttention C++ source files to inspect.",
+      "verdict": "Plausible mechanism only, not source-proven or runtime-parameter-proven. Exact transform is intentionally UNRESOLVED."
+    }
+  ],
+  "do_not_infer": [
+    "Do not infer M/N/K, tensor shape, copied byte count or DRAM traffic from grid/block alone.",
+    "Do not add copy summed time to existing non-dense union; these nodes are already included in the cost ledger.",
+    "Do not equate static strided views with runtime copy input tensors; they establish boundary contracts only.",
+    "Do not state the copies are weight materialization; their consistent adjacency is around attention rather than directly before each of145dense nodes.",
+    "Do not assume B2 is two serial B1 requests; both cases have145dense nodes per batch step."
+  ],
+  "minimal_next_evidence_if_needed": "To identify the exact layout transform, obtain the exact FA2 varlen_fwd C++ source corresponding to the installed binary and a CPU-side/operator-level pointer+shape+stride association during graph capture, or equivalent existing launch-argument metadata. Any new instrumentation must be separately authorized and its observer effect labeled. No such collection was run here.",
+  "per_step": [
+    {
+      "point": "A00_N32",
+      "step": 1,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 2,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 3,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 4,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 5,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 6,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 7,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 8,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 9,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 10,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 11,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 12,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 13,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 14,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 15,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 16,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 17,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 18,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 19,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 20,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 21,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 22,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 23,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 24,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 25,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 26,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 27,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 28,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 29,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 30,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "A00_N32",
+      "step": 31,
+      "copies": 0,
+      "PRE_ATTENTION": 0,
+      "POST_ATTENTION_PRE_O_PROJ": 0,
+      "copy_summed_ms": 0.0,
+      "copy_union_ms": 0.0
+    },
+    {
+      "point": "B2_N32",
+      "step": 1,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103166,
+      "copy_union_ms": 0.103166
+    },
+    {
+      "point": "B2_N32",
+      "step": 2,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.10304,
+      "copy_union_ms": 0.10304
+    },
+    {
+      "point": "B2_N32",
+      "step": 3,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.10304,
+      "copy_union_ms": 0.10304
+    },
+    {
+      "point": "B2_N32",
+      "step": 4,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103167,
+      "copy_union_ms": 0.103167
+    },
+    {
+      "point": "B2_N32",
+      "step": 5,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103199,
+      "copy_union_ms": 0.103199
+    },
+    {
+      "point": "B2_N32",
+      "step": 6,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.1032,
+      "copy_union_ms": 0.1032
+    },
+    {
+      "point": "B2_N32",
+      "step": 7,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103103,
+      "copy_union_ms": 0.103103
+    },
+    {
+      "point": "B2_N32",
+      "step": 8,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.10336,
+      "copy_union_ms": 0.10336
+    },
+    {
+      "point": "B2_N32",
+      "step": 9,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103263,
+      "copy_union_ms": 0.103263
+    },
+    {
+      "point": "B2_N32",
+      "step": 10,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103264,
+      "copy_union_ms": 0.103264
+    },
+    {
+      "point": "B2_N32",
+      "step": 11,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.10288,
+      "copy_union_ms": 0.10288
+    },
+    {
+      "point": "B2_N32",
+      "step": 12,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103104,
+      "copy_union_ms": 0.103104
+    },
+    {
+      "point": "B2_N32",
+      "step": 13,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103104,
+      "copy_union_ms": 0.103104
+    },
+    {
+      "point": "B2_N32",
+      "step": 14,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103104,
+      "copy_union_ms": 0.103104
+    },
+    {
+      "point": "B2_N32",
+      "step": 15,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103232,
+      "copy_union_ms": 0.103232
+    },
+    {
+      "point": "B2_N32",
+      "step": 16,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103104,
+      "copy_union_ms": 0.103104
+    },
+    {
+      "point": "B2_N32",
+      "step": 17,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103199,
+      "copy_union_ms": 0.103199
+    },
+    {
+      "point": "B2_N32",
+      "step": 18,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103232,
+      "copy_union_ms": 0.103232
+    },
+    {
+      "point": "B2_N32",
+      "step": 19,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103263,
+      "copy_union_ms": 0.103263
+    },
+    {
+      "point": "B2_N32",
+      "step": 20,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103136,
+      "copy_union_ms": 0.103136
+    },
+    {
+      "point": "B2_N32",
+      "step": 21,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.1032,
+      "copy_union_ms": 0.1032
+    },
+    {
+      "point": "B2_N32",
+      "step": 22,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103136,
+      "copy_union_ms": 0.103136
+    },
+    {
+      "point": "B2_N32",
+      "step": 23,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103231,
+      "copy_union_ms": 0.103231
+    },
+    {
+      "point": "B2_N32",
+      "step": 24,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103167,
+      "copy_union_ms": 0.103167
+    },
+    {
+      "point": "B2_N32",
+      "step": 25,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103136,
+      "copy_union_ms": 0.103136
+    },
+    {
+      "point": "B2_N32",
+      "step": 26,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103137,
+      "copy_union_ms": 0.103137
+    },
+    {
+      "point": "B2_N32",
+      "step": 27,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.102943,
+      "copy_union_ms": 0.102943
+    },
+    {
+      "point": "B2_N32",
+      "step": 28,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103136,
+      "copy_union_ms": 0.103136
+    },
+    {
+      "point": "B2_N32",
+      "step": 29,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103041,
+      "copy_union_ms": 0.103041
+    },
+    {
+      "point": "B2_N32",
+      "step": 30,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103199,
+      "copy_union_ms": 0.103199
+    },
+    {
+      "point": "B2_N32",
+      "step": 31,
+      "copies": 72,
+      "PRE_ATTENTION": 36,
+      "POST_ATTENTION_PRE_O_PROJ": 36,
+      "copy_summed_ms": 0.103041,
+      "copy_union_ms": 0.103041
+    }
+  ],
+  "first_decode_step_all72_copy_neighbors": {
+    "full_rows_in_archive": true,
+    "count": 72
+  },
+  "source_evidence": [
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/.private/NSYS/compilation/rank_0_0/backbone/computation_graph.py",
+      "sha256": "6dee87cf10e38fd652b3716a41db29584bff91c448ef2dca41af48459e59cc0d",
+      "bytes": 810749,
+      "line_ranges": [
+        {
+          "start": 678,
+          "end": 693,
+          "finding": "Attention output allocation and Q/K/V/output views"
+        },
+        {
+          "start": 695,
+          "end": 702,
+          "finding": "Opaque custom-op partition with KV update and unified_attention_with_output"
+        },
+        {
+          "start": 704,
+          "end": 710,
+          "finding": "Attention output view then layer0 o_proj linear"
+        }
+      ]
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/.private/NSYS/vllm/torch_compile_cache/torch_aot_compile/c159787be9fd1a9231c01c0dd24cfcfe41773e8745e34dcda927917ff1090e8e/inductor_cache/y4/cy4engdtvxatgfis5ow3p2lxyujcnesxvxmhyqrylgheorfv6xlz.py",
+      "sha256": "66dacd116effe98abb2f778708764400134c18cb52a44a91fc67ec7920e43b65",
+      "bytes": 45079,
+      "line_ranges": [
+        {
+          "start": 630,
+          "end": 636,
+          "finding": "Packed QKV bias/weight contract and addmm"
+        },
+        {
+          "start": 643,
+          "end": 653,
+          "finding": "K contiguous allocation; Q [s72,16,128] stride[2048,128,1]; V strided view [s72,2,128] stride[2560,128,1], offset2304; output contiguous allocation"
+        }
+      ]
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/.private/NSYS/vllm/torch_compile_cache/torch_aot_compile/c159787be9fd1a9231c01c0dd24cfcfe41773e8745e34dcda927917ff1090e8e/inductor_cache/xw/cxwxcg5zf6tfqmw2irursgvupaqypwfjpw5hqmpftajxz5zmikw3.py",
+      "sha256": "9a9bbf6b4c04ad4c5cf0d32f03ad119446dfaef7ab6453a6684513140ace9383",
+      "bytes": 78456,
+      "line_ranges": [
+        {
+          "start": 496,
+          "end": 496,
+          "finding": "copy_if_misaligned imported from C++ torch._C._dynamo.guards"
+        },
+        {
+          "start": 950,
+          "end": 963,
+          "finding": "O-proj input assert stride[2048,128,1], pointer alignment guard, flatten view, mm"
+        },
+        {
+          "start": 1007,
+          "end": 1028,
+          "finding": "Following QKV/RoPE and returned views"
+        }
+      ]
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/.private/NSYS/vllm/torch_compile_cache/torch_aot_compile/c159787be9fd1a9231c01c0dd24cfcfe41773e8745e34dcda927917ff1090e8e/inductor_cache/qe/cqe5esxtdgnhdntkhdcr2buajsr6xuqd6i2kbfat7umtphzrkokj.py",
+      "sha256": "41039f5bb5a62818d1b21b4586c2ed7cf2e22a367c4e208945a3e31ef1317d78",
+      "bytes": 52835,
+      "line_ranges": [
+        {
+          "start": 599,
+          "end": 611,
+          "finding": "Last-layer o_proj contiguous input contract, pointer alignment guard and mm"
+        }
+      ]
+    },
+    {
+      "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/v1/attention/backends/flash_attn.py",
+      "sha256": "b170a4789e18104c1bee35bea70df51abe6766693d8f4726a59f2e6f5c4282aa",
+      "bytes": 81870,
+      "line_ranges": [
+        {
+          "start": 1166,
+          "end": 1188,
+          "finding": "Attention forward tensor shape contract"
+        },
+        {
+          "start": 1275,
+          "end": 1288,
+          "finding": "DCP route requires dcp_world_size>1"
+        },
+        {
+          "start": 1381,
+          "end": 1407,
+          "finding": "Dense FA wrapper receives query/output views and KV cache"
+        },
+        {
+          "start": 1491,
+          "end": 1496,
+          "finding": "query.contiguous exists only inside separate DCP helper"
+        }
+      ]
+    },
+    {
+      "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/vllm_flash_attn/flash_attn_interface.py",
+      "sha256": "d6fccbb0fe1931c79013f5942199c5c9cbba0eedd7ac5ff037f55db19c38421a",
+      "bytes": 24876,
+      "line_ranges": [
+        {
+          "start": 117,
+          "end": 118,
+          "finding": "maybe_contiguous only copies if last dimension stride!=1"
+        },
+        {
+          "start": 294,
+          "end": 294,
+          "finding": "maybe_contiguous for q/k/v"
+        },
+        {
+          "start": 298,
+          "end": 342,
+          "finding": "FA2 opaque torch.ops._vllm_fa2_C.varlen_fwd"
+        }
+      ]
+    },
+    {
+      "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/model_executor/layers/attention/attention.py",
+      "sha256": "bc897e452f3aea603e353ca42a365d3be8836e9485d78cbf8cc4677baca2fb42",
+      "bytes": 33071,
+      "line_ranges": [
+        {
+          "start": 526,
+          "end": 577,
+          "finding": "allocate output, view query/key/value/output, cache-update and unified_attention_with_output, flatten return"
+        }
+      ]
+    }
+  ],
+  "ledger_sources": [
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/cpu/COST_LEDGER.json",
+      "sha256": "d5badbdb19d8e6f22e3ccb992344285907d53b8b56cdb87279cc51c96786790c",
+      "bytes": 371360
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/cpu/COST_LEDGER_KERNELS.tsv",
+      "sha256": "76b9dc89290c0465ddf53b9f6acc98207cbc4879e6309faf18742e1effc2de2a",
+      "bytes": 10817708
+    }
+  ],
+  "validation": {
+    "copy_count72_each_B2_step": true,
+    "zero_each_B1_step": true,
+    "all2232_copies_match_exact_immediate_neighbor_patterns": true,
+    "all_copies_bracketed_by_same_inferred_layer_QKV_and_o_proj": true,
+    "all36layers_have_two_each_step": true,
+    "all_grid_block_identical": true,
+    "no_raw_runtime_layout_parameters_available": true
+  },
+  "full_exact_details_archive": {
+    "path": "COPY_PATH_REVIEW.json.gz",
+    "uncompressed_sha256": "1bd1c1600119a5531336090d3bf2540f6febed16bd2bba4323440b3351b337d4",
+    "original_bytes": 328553
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schema": "CONDITIONAL_BF16_WEIGHT_BOUND_V1",
+  "status": "CPU_RECOMPUTED_NOT_DRAM_MEASURED",
+  "model": "/data/c16/stagea_runtime_qualification_v1/assets/qwen2.5-3b-instruct/aa8e72537993ba99e69dfaafa59ed015b17504d1",
+  "stored_tensor_count": 434,
+  "stored_parameters": 3085938688,
+  "stored_BF16_payload_bytes": 6171877376,
+  "dense_matrix_payload_bytes": 6171394048,
+  "tied_embedding_lm_head": true,
+  "embedding_tie_treatment": "Embedding matrix is stored once; full matrix participates as tied dense LM head each decode step. Embedding lookup is not another full pass.",
+  "shard_file_bytes": 6171926992,
+  "nominal_bandwidth_B_s": 716800000000.0,
+  "bandwidth_source": "https://www.msi.com/Graphics-Card/GeForce-RTX-4080-16GB-SUPRIM/Specification",
+  "bandwidth_derivation": "22.4 Gbit/s per pin *256 bits /8 =716.8e9 bytes/s; rated spec, no clock or achieved bandwidth measured.",
+  "decode_increment_steps": 31,
+  "no_retention_streaming_bytes": 191313215488,
+  "no_retention_ideal_ms": 266.89901714285713,
+  "L2_only_capacity_credit_bytes": 67108864,
+  "L2_credit_traffic_lower_bytes": 189232840704,
+  "L2_credit_ideal_ms": 263.9967085714286,
+  "assumptions": [
+    "Dense BF16 projections and full-vocabulary tied head evaluated every incremental step; no quantization/compression/speculation/skip/offload.",
+    "Output32 minus output1 approximates31 extra forward steps; first prefill/sampling/graph planning may differ, so measured difference is not pure decode.",
+    "No-retention scenario rereads dense matrices once per step, ideal perfect within-step reuse. It is a conditional streaming reference, not unconditional physical lower bound.",
+    "L2-credit model assumes at most64MiB of persistent weight data, no persistent L1/register residency across steps; all other dense weights fetched from DRAM at least once. Capacity and that assumption are not newly measured.",
+    "Nominal rated bandwidth is optimistic; no DRAM counters, achieved clock, refresh, write/activation/KV/logprob overhead, contention or overlap measured.",
+    "Ideal B2 reuses same weight pass for both requests, hence batch delta near single average; two independent passes give near2. H2 can also yield ratios near1 or2."
+  ],
+  "hardware_claim": "No PPA, energy, memory-bound diagnosis or new hardware mechanism follows from byte estimates.",
+  "authority_file": "V8 MODEL_AND_BANDWIDTH_BOUND.json at fixed base commit;full434-tensortablenotduplicated"
+}

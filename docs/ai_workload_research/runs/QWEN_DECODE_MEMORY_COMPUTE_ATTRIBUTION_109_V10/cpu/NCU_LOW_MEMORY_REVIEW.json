@@ -1,0 +1,294 @@
+{
+  "schema": "v10.cpu.ncu-low-memory-review.v1",
+  "created_utc": "2026-11-05T03:06:43.170015+00:00",
+  "grade": "OBSERVED_CPU_SOURCE_REVIEW",
+  "scope": {
+    "host": "10.156.120.109",
+    "new_writes": [
+      "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/cpu/NCU_LOW_MEMORY_REVIEW.json",
+      "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/cpu/NCU_LOW_MEMORY_REVIEW.md"
+    ],
+    "v9_readonly": true,
+    "gpu_cuda_nvml_initialized": false,
+    "gpu_lock_acquired": false,
+    "profiler_or_model_executed": false,
+    "metric_query_executed": false,
+    "installs_downloads_or_environment_changes": false
+  },
+  "reused_help": {
+    "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/.private/CPU_FULL_PROFILER_FEASIBILITY.json",
+    "sha256": "a178914fed0eab024dcd284cae30905537d7a12c18a669a6e0a7d05593ca9369",
+    "bytes": 69153,
+    "version": "2025.1.1",
+    "options": {
+      "--disable-extra-suffixes": {
+        "stdout_line": 260,
+        "excerpt": "  --disable-extra-suffixes              Disables the collection of extra suffixes (avg, min, max, sum). Only collect \n                                        what is explicity specified."
+      },
+      "--app-replay-buffer": {
+        "stdout_line": 82,
+        "excerpt": "  --app-replay-buffer arg (=file)       Application replay buffer location:\n                                          file (default)\n                                          (Replay pass data is buffered in a temporary file. The report is created \n                                        after profiling completed.)\n                                          memory\n                                          (Replay pass data is buffered in memory, and the report is created while \n                                        profiling.)"
+      },
+      "--app-replay-match": {
+        "stdout_line": 89,
+        "excerpt": "  --app-replay-match arg (=grid)        Application replay kernel matching strategy, per process and device:\n                                          name\n                                          (Matched by name)\n                                          grid (default)\n                                          (Matched by name and grid/block size)\n                                          all\n                                          (Matched by name, grid/block size, context id and stream id)"
+      },
+      "--app-replay-mode": {
+        "stdout_line": 96,
+        "excerpt": "  --app-replay-mode arg (=balanced)     Application replay kernel matching mode:\n                                          strict   : Requires all filtered kernels to match across all\n                                                     replay passes in the exact order.\n                                          balanced : Requires all filtered kernels to match across all\n                                          (default)  replay passes, without strict ordering.\n                                          relaxed  : Produces results only for filtered kernels that could\n                                                     be matched across replay passes. Unmatched kernels are\n                                                     dropped."
+      },
+      "--launch-count": {
+        "stdout_line": 235,
+        "excerpt": "  -c [ --launch-count ] arg             Limit the number of collected profile results. The count is only incremented \n                                        for launches that match the kernel filters."
+      },
+      "--pm-sampling-max-passes": {
+        "stdout_line": 285,
+        "excerpt": "  --pm-sampling-max-passes arg (=0)     Set the maximum number of passes used for PM sampling, or determine dynamically\n                                        when 0.\n\nWarp State Sampling Options:"
+      },
+      "--warp-sampling-max-passes": {
+        "stdout_line": 293,
+        "excerpt": "  --warp-sampling-max-passes arg (=5)   Set maximum number of passes used for warp state sampling."
+      }
+    }
+  },
+  "official_installed_sources": [
+    {
+      "path": "/opt/nvidia/nsight-compute/2025.1.1/docs/ProfilingGuide/index.html",
+      "sha256": "309d59d7a2700478127871990b66fdb53ee2db88143411a82f3e83f77c7b35cf",
+      "matches": [
+        {
+          "key": "single replay pass",
+          "line": 320,
+          "excerpt": "written, by a kernel. If NVIDIA Nsight Compute determines that only a single replay pass is necessary to collect the requested metrics, no save-and-restore is performed at all to reduce overhead."
+        },
+        {
+          "key": "profiler__replayer_passes",
+          "line": 2017,
+          "excerpt": "profiler__replayer_passes"
+        },
+        {
+          "key": "profiler__replayer_bytes_mem_backed_up.sum",
+          "line": 2014,
+          "excerpt": "profiler__replayer_bytes_mem_backed_up.sum"
+        },
+        {
+          "key": "Application replay has the benefit",
+          "line": 338,
+          "excerpt": "Application replay has the benefit that memory accessed by the kernel does not need to be saved and restored via the tool, as each kernel launch executes only once during the lifetime of the application process. Besides avoiding memory save-and-restore overhea"
+        },
+        {
+          "key": "launch__graph_contains_device_launch",
+          "line": 1314,
+          "excerpt": "launch__graph_contains_device_launch"
+        }
+      ]
+    },
+    {
+      "path": "/opt/nvidia/nsight-compute/2025.1.1/docs/NsightComputeCli/index.html",
+      "sha256": "813ce12d46546cbe2d006b4f94a00cddea038d071ca07a8425202c6cac29236c",
+      "matches": [
+        {
+          "key": "no sets are collected",
+          "line": 938,
+          "excerpt": "--metrics are used, no sets are collected. Use --list-sets to see which set is the default."
+        },
+        {
+          "key": "app-replay-buffer",
+          "line": 876,
+          "excerpt": "app-replay-buffer"
+        },
+        {
+          "key": "graph-profiling",
+          "line": 918,
+          "excerpt": "graph-profiling"
+        },
+        {
+          "key": "app-replay-match",
+          "line": 885,
+          "excerpt": "app-replay-match"
+        },
+        {
+          "key": "app-replay-mode",
+          "line": 895,
+          "excerpt": "app-replay-mode"
+        }
+      ]
+    },
+    {
+      "path": "/opt/nvidia/nsight-compute/2025.1.1/docs/ReleaseNotes/index.html",
+      "sha256": "0cb0d022ce53ce395364d487e8c1b8f47749c3ef1c421a9e130aa0937f4fe9dc",
+      "matches": [
+        {
+          "key": "device-launchable graphs",
+          "line": 1592,
+          "excerpt": " CUDA graph kernel nodes that can launch device graphs or are part of device-launchable graphs is not supported. Use Graph Profiling mode instead."
+        }
+      ]
+    },
+    {
+      "path": "/opt/nvidia/nsight-compute/2025.1.1/sections/SpeedOfLight.section",
+      "sha256": "4ea4418617a3512e205aec32965d60fe76d7ca02e39ad1c3fc7b20769f8a591d",
+      "matches": [
+        {
+          "key": "gpu__time_duration.sum",
+          "line": 24,
+          "excerpt": "Name: \"gpu__time_duration.sum\""
+        }
+      ]
+    }
+  ],
+  "primary_conclusions": {
+    "single_pass_kernel_replay": "Installed guide explicitly says no save-and-restore is performed if the tool determines only one replay pass is necessary. CPU-only cannot prove actual pass scheduling for selected metrics, GPU, driver and graph-node kernel.",
+    "metrics_default_sections": "Explicit --metrics with no --set/--section collects no implicit default set. Use exact suffixed metrics and --disable-extra-suffixes.",
+    "duration_uncertainty": "gpu__time_duration.sum is Duration in installed SpeedOfLight.section and present in prior V9 accepted query/export. Static docs do not establish that it is a patch-based SW counter or necessarily requires a separate pass. Actual pilot decides.",
+    "no_backup_switch": "No general kernel replay disable-backup or force-one-pass CLI option found in reused complete help. cache-control none controls cache flushing, not memory save/restore. range disable-host-restore does not disable device backups. Sampling max-passes options do not cap ordinary DRAM counter collection.",
+    "proxy_limit": "A small BF16 QKV-size proxy may demonstrate one-pass on the installed stack, but each real B1/B2 profile must independently satisfy the same one-pass and zero-backed-up audit."
+  },
+  "minimal_kernel_options": [
+    "--config-file",
+    "0",
+    "--graph-profiling",
+    "node",
+    "--replay-mode",
+    "kernel",
+    "--metrics",
+    "dram__bytes_read.sum,gpu__time_duration.sum",
+    "--disable-extra-suffixes",
+    "--launch-count",
+    "1",
+    "--kill",
+    "no",
+    "--clock-control",
+    "none",
+    "--cache-control",
+    "none",
+    "--pipeline-boost-state",
+    "dynamic"
+  ],
+  "filtering_requirements": [
+    "Keep a unique narrow decodeGraph NVTX push/pop include decodeGraph/ and one observed kernel regex.",
+    "profile-from-start no requires explicit profiler start/stop; NVTX-only uses yes.",
+    "launch-count1 means one matched profile result, not one replay pass.",
+    "Record selected kernel full identity, grid/block, stream, NVTX range and invocation ordinal. A first-dense label alone does not prove layer/operator attribution."
+  ],
+  "one_pass_acceptance": {
+    "required": [
+      "Completed selected kernel result and valid numerical worker exit",
+      "Actual log reports one pass for selected result",
+      "Raw base-unit export kernel row has profiler__replayer_passes == 1",
+      "Raw export has profiler__replayer_bytes_mem_backed_up.sum == 0",
+      "Missing, N/A or ambiguous unit-row values fail proof; never default to0"
+    ],
+    "evidence": "These statistics were auto-included in V9 raw exports, so first inspect existing report fields rather than adding counters. Parse actual kernel row after CSV unit row.",
+    "optional_export_template": [
+      "/opt/nvidia/nsight-compute/2025.1.1/ncu",
+      "--import",
+      "REPORT.ncu-rep",
+      "--page",
+      "raw",
+      "--csv",
+      "--print-units",
+      "base"
+    ],
+    "do_not_infer": [
+      "Absence of backup warning does not prove zero backup.",
+      "Proxy pass count does not prove real model pass count.",
+      "One pass/zero backup does not imply zero profiler memory overhead or native timing."
+    ]
+  },
+  "v9_existing_stats_observation": {
+    "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/raw/NCU_B1_RAW_BASE.csv",
+    "sha256": "919784bd01bbda1dde18b95440bc2bbdbd6fb98643d16a54dd267b0e65767910",
+    "stats": {
+      "profiler__replayer_passes": "7",
+      "profiler__replayer_passes_type_warmup": "0",
+      "profiler__replayer_bytes_mem_backed_up.sum": "103,001,157,154",
+      "profiler__replayer_bytes_mem_backed_up.max": "14,714,451,022",
+      "dram__bytes_read.sum": "10,505,728",
+      "gpu__time_duration.sum": "18,464"
+    },
+    "interpretation": "Prior broader metric list took7passes and backed up memory. These historical data do not predict minimal V10 pass count."
+  },
+  "application_replay_fallback": {
+    "options": [
+      "--graph-profiling",
+      "node",
+      "--replay-mode",
+      "application",
+      "--app-replay-buffer",
+      "file",
+      "--app-replay-match",
+      "grid",
+      "--app-replay-mode",
+      "strict",
+      "--check-exit-code",
+      "yes"
+    ],
+    "meaning": [
+      "Application replay avoids profiler memory save/restore by rerunning whole application for passes.",
+      "file buffers pass result data; it is not a file-backed replacement for kernel memory backup.",
+      "grid matches mangled kernel name, grid/block and execution order; strict requires all filtered launches match in exact order.",
+      "Every pass repeats initialization,warmup,numerical output; record each actual child PID birth identity. Determinism and total held-lock budget are required.",
+      "Whole-graph workload row is not application-replay compatible in installed table; graph-profiling node treats graph nodes as regular CUDA kernels. Actual CUDA13 graph-node application replay remains untested."
+    ],
+    "mapping_limit": "CLI docs expose kernel/context/stream/invocation selection, not a proven stable graph-node-id filter. Host source instrumentation and launch identity are needed for operator/layer mapping. Device-launchable graph nodes are unsupported for node profiling per installed release notes."
+  },
+  "known_asset_qualification": {
+    "scope": "Only direct listing of explicitly known /data/c16/stagea_runtime_qualification_v1/assets and the two known Qwen revision directories/config.json. No broader model search or weight loading.",
+    "directory_children": [
+      "qwen2.5-3b-instruct",
+      "qwen2.5-3b-instruct-awq"
+    ],
+    "models": [
+      {
+        "path": "/data/c16/stagea_runtime_qualification_v1/assets/qwen2.5-3b-instruct/aa8e72537993ba99e69dfaafa59ed015b17504d1",
+        "config_sha256": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+        "directory_exists": true,
+        "role": "EXISTING_QWEN_BF16_NOT_INDEPENDENT",
+        "config_summary": {
+          "architectures": [
+            "Qwen2ForCausalLM"
+          ],
+          "model_type": "qwen2",
+          "hidden_size": 2048,
+          "intermediate_size": 11008,
+          "num_hidden_layers": 36,
+          "torch_dtype": "bfloat16",
+          "quantization_config": null
+        },
+        "accepted_independent_model_identity": false,
+        "qualified_independent_natural_input": false
+      },
+      {
+        "path": "/data/c16/stagea_runtime_qualification_v1/assets/qwen2.5-3b-instruct-awq/3559b226e8ce77211e2c1bd7ddfb7686fec4d6dd",
+        "config_sha256": "9366ca39ab036f807f40ff93f03d77ce910d512174150821a87a87080c2b8c65",
+        "directory_exists": true,
+        "role": "SAME_QWEN_AWQ_VARIANT_NOT_INDEPENDENT",
+        "config_summary": {
+          "architectures": [
+            "Qwen2ForCausalLM"
+          ],
+          "model_type": "qwen2",
+          "hidden_size": 2048,
+          "intermediate_size": 11008,
+          "num_hidden_layers": 36,
+          "torch_dtype": "float16",
+          "quantization_config": {
+            "bits": 4,
+            "group_size": 128,
+            "modules_to_not_convert": null,
+            "quant_method": "awq",
+            "version": "gemm",
+            "zero_point": true
+          }
+        },
+        "accepted_independent_model_identity": false,
+        "qualified_independent_natural_input": false
+      }
+    ],
+    "independent_dense_qualified_model_status": "NOT_AVAILABLE",
+    "independent_accepted_identity_status": "NOT_AVAILABLE",
+    "independent_qualified_natural_input_status": "NOT_AVAILABLE",
+    "reason": "The known assets are the existing Qwen BF16 model and its AWQ quantized variant. They do not establish an independent dense model. Directory/config presence does not create accepted identity or qualified natural input."
+  }
+}

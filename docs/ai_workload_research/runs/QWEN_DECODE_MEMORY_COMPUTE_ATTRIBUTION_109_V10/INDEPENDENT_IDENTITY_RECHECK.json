@@ -1,0 +1,129 @@
+{
+  "status": "PASS_INPUT_RUNTIME_OUTPUT_IDENTITY",
+  "tasks": [
+    {
+      "task": "NUMERIC",
+      "requests": 6,
+      "actual_completions": 8,
+      "runtime": {
+        "vllm": "0.30.0",
+        "torch": "2.13.0+cu130",
+        "source_sha256": {
+          "compilation.py": "c9cec5c7200e8e559810ec8c30113ad61dab6780f9f7fb3c116bd0d9b5a43065",
+          "qwen2.py": "eb2f0eeb13c57a28bbc06bc64afff18cd8865f89fbe9ff2a3cf3a896f037cfe9"
+        },
+        "attention": [
+          "FlashAttentionImpl"
+        ],
+        "linear": [
+          "UnquantizedLinearMethod"
+        ],
+        "capacity": {
+          "max_model_len": 544,
+          "max_num_batched_tokens": 1088,
+          "max_num_seqs": 2
+        },
+        "compilation_mode": "NONE",
+        "backend": "inductor",
+        "cudagraph_mode": "NONE",
+        "cache_root": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/.private/NUMERIC",
+        "local_cache_dir": "None",
+        "cache_identity": "V9_PRIVATE_COMPILATION_IDENTITY",
+        "initialization_seconds": 51.83593594003469,
+        "graph_observation": "Accepted manager-level fullgraph counter only; descriptors may contain padding and are not kernel/profiler observations.",
+        "runner_class": "vllm.v1.worker.gpu.model_runner.GPUModelRunner",
+        "sampler_class": "vllm.v1.worker.gpu.sample.sampler.Sampler",
+        "sampler_source_sha256": "832c9945d201a1e730ff9b4b52076aa83bd4a5064e1e4cfea952cf84d4a8d1f0",
+        "actual_enforce_eager": true,
+        "altered_diagnostic_path": true,
+        "logprobs": null,
+        "enable_prefix_caching": false
+      },
+      "all_mapping_hash_length_checks": true
+    },
+    {
+      "task": "NCU_B1",
+      "requests": 3,
+      "actual_completions": 3,
+      "runtime": {
+        "vllm": "0.30.0",
+        "torch": "2.13.0+cu130",
+        "source_sha256": {
+          "compilation.py": "c9cec5c7200e8e559810ec8c30113ad61dab6780f9f7fb3c116bd0d9b5a43065",
+          "qwen2.py": "eb2f0eeb13c57a28bbc06bc64afff18cd8865f89fbe9ff2a3cf3a896f037cfe9"
+        },
+        "attention": [
+          "FlashAttentionImpl"
+        ],
+        "linear": [
+          "UnquantizedLinearMethod"
+        ],
+        "capacity": {
+          "max_model_len": 544,
+          "max_num_batched_tokens": 1088,
+          "max_num_seqs": 2
+        },
+        "compilation_mode": "VLLM_COMPILE",
+        "backend": "inductor",
+        "cudagraph_mode": "FULL_AND_PIECEWISE",
+        "cache_root": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/native_counters/.private/NCU_B1",
+        "local_cache_dir": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/native_counters/.private/NCU_B1/compilation/rank_0_0/backbone",
+        "cache_identity": "V9_PRIVATE_COMPILATION_IDENTITY",
+        "initialization_seconds": 62.29088397696614,
+        "graph_observation": "Accepted manager-level fullgraph counter only; descriptors may contain padding and are not kernel/profiler observations.",
+        "runner_class": "vllm.v1.worker.gpu.model_runner.GPUModelRunner",
+        "sampler_class": "vllm.v1.worker.gpu.sample.sampler.Sampler",
+        "sampler_source_sha256": "832c9945d201a1e730ff9b4b52076aa83bd4a5064e1e4cfea952cf84d4a8d1f0",
+        "actual_enforce_eager": false,
+        "altered_diagnostic_path": false,
+        "logprobs": null,
+        "enable_prefix_caching": false
+      },
+      "all_mapping_hash_length_checks": true
+    },
+    {
+      "task": "NCU_B2",
+      "requests": 3,
+      "actual_completions": 6,
+      "runtime": {
+        "vllm": "0.30.0",
+        "torch": "2.13.0+cu130",
+        "source_sha256": {
+          "compilation.py": "c9cec5c7200e8e559810ec8c30113ad61dab6780f9f7fb3c116bd0d9b5a43065",
+          "qwen2.py": "eb2f0eeb13c57a28bbc06bc64afff18cd8865f89fbe9ff2a3cf3a896f037cfe9"
+        },
+        "attention": [
+          "FlashAttentionImpl"
+        ],
+        "linear": [
+          "UnquantizedLinearMethod"
+        ],
+        "capacity": {
+          "max_model_len": 544,
+          "max_num_batched_tokens": 1088,
+          "max_num_seqs": 2
+        },
+        "compilation_mode": "VLLM_COMPILE",
+        "backend": "inductor",
+        "cudagraph_mode": "FULL_AND_PIECEWISE",
+        "cache_root": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/native_b2/.private/NCU_B2",
+        "local_cache_dir": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/native_b2/.private/NCU_B2/compilation/rank_0_0/backbone",
+        "cache_identity": "V9_PRIVATE_COMPILATION_IDENTITY",
+        "initialization_seconds": 62.19120442587882,
+        "graph_observation": "Accepted manager-level fullgraph counter only; descriptors may contain padding and are not kernel/profiler observations.",
+        "runner_class": "vllm.v1.worker.gpu.model_runner.GPUModelRunner",
+        "sampler_class": "vllm.v1.worker.gpu.sample.sampler.Sampler",
+        "sampler_source_sha256": "832c9945d201a1e730ff9b4b52076aa83bd4a5064e1e4cfea952cf84d4a8d1f0",
+        "actual_enforce_eager": false,
+        "altered_diagnostic_path": false,
+        "logprobs": null,
+        "enable_prefix_caching": false
+      },
+      "all_mapping_hash_length_checks": true
+    }
+  ],
+  "returned_generate_calls": 12,
+  "returned_completions": 17,
+  "logprobs": "UNOBSERVED",
+  "not_old_numeric_PASS": true
+}

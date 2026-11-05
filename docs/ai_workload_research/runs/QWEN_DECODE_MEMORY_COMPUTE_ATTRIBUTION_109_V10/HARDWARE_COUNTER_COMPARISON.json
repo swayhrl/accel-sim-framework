@@ -1,0 +1,70 @@
+{
+  "status": "SYMMETRIC_SINGLE_NODE_COUNTERS_COMPLETE",
+  "grade": "OBSERVED",
+  "nodes": {
+    "NCU_B1": {
+      "grade": "OBSERVED_SINGLE_NODE",
+      "DRAM_read_bytes": 10492288,
+      "duration_ns": 19840.0,
+      "replayed_node_read_GB_s": 528.8451612903226,
+      "kernel": "enable_if<!T7, void>::type kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, 0, 1, 1, 0, 6, 0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+      "grid": "(640, 1, 1)",
+      "block": "(16, 4, 1)",
+      "actual_passes": 1,
+      "backup_counter_value": null,
+      "backup_counter_emitted": false,
+      "save_restore_interpretation": "Actualonepass+toolguideindicatesnosave_restore;missingcounternotzero",
+      "scope": "FirstfilteredDenseinsidefirstDecodeGraphaftertwoN32warmups;notappbytesortiming",
+      "runtime_weight": {
+        "module": "model.layers.0.self_attn.qkv_proj",
+        "shape": [
+          2560,
+          2048
+        ],
+        "stride": [
+          2048,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "method": "UnquantizedLinearMethod"
+      },
+      "shape_attribution": "Compiledsource+moduleweight+Graphdescriptor+order/gridconsistent;noargumentdimensioncapture"
+    },
+    "NCU_B2": {
+      "grade": "OBSERVED_SINGLE_NODE",
+      "DRAM_read_bytes": 10510208,
+      "duration_ns": 23360.0,
+      "replayed_node_read_GB_s": 449.92328767123286,
+      "kernel": "void Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(Params)",
+      "grid": "(8, 20, 1)",
+      "block": "(32, 1, 1)",
+      "actual_passes": 1,
+      "backup_counter_value": null,
+      "backup_counter_emitted": false,
+      "save_restore_interpretation": "Actualonepass+toolguideindicatesnosave_restore;missingcounternotzero",
+      "scope": "FirstfilteredDenseinsidefirstDecodeGraphaftertwoN32warmups;notappbytesortiming",
+      "runtime_weight": {
+        "module": "model.layers.0.self_attn.qkv_proj",
+        "shape": [
+          2560,
+          2048
+        ],
+        "stride": [
+          2048,
+          1
+        ],
+        "dtype": "torch.bfloat16",
+        "method": "UnquantizedLinearMethod"
+      },
+      "shape_attribution": "Compiledsource+moduleweight+Graphdescriptor+order/gridconsistent;noargumentdimensioncapture"
+    }
+  },
+  "B2_over_B1": {
+    "DRAM_read_bytes": 1.0017079210940454,
+    "duration": 1.1774193548387097
+  },
+  "weight_model_bytes": 10485760,
+  "global_DRAM_unmeasured": true,
+  "global_memory_bound_not_proven": true,
+  "uncertainty": "Oneprofilednodepermode,separatefreshengines,samefrozeninputs/warmup/config;noCIorwholeappsum;defaultclockscachesnotforced;Graphnodeidentitysourceconsistent"
+}

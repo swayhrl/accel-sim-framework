@@ -1,0 +1,643 @@
+{
+  "schema": "v10.cpu.terminal-lifecycle-review.v1",
+  "created_utc": "2026-11-05T03:23:43.029564+00:00",
+  "classification": "SUPPORTED_NARROW_TERMINAL_LIFECYCLE_OBSERVATION_ISSUE",
+  "acceptance_limit": "This diagnoses the historical controller STOP; it does not retroactively convert that run receipt into accepted execution. Preserve old raw/frozen/source artifacts.",
+  "scope": {
+    "cpu_readonly_audit_of_old_evidence": true,
+    "new_writes": [
+      "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/cpu/TERMINAL_LIFECYCLE_REVIEW.json",
+      "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/cpu/TERMINAL_LIFECYCLE_REVIEW.md"
+    ],
+    "execution_source_or_old_raw_modified": false,
+    "gpu_cuda_nvml_initialized": false,
+    "gpu_calls_profiler_or_model_execution": false
+  },
+  "evidence_files": [
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/native_counters/RESOURCE_RECEIPT.json",
+      "sha256": "311968b704b5072d537b012c187f8af0b7fb70cdc10d8c3ae8a1a0ed93b2f839",
+      "bytes": 1508011
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/native_counters/.private/NCU_B1/WORKER_FINISHED.json",
+      "sha256": "338a0ef5c66599bd6289abcf9bbdbd17b9d60d5caa65f98cce33707f5672418c",
+      "bytes": 451
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/native_counters/.private/NCU_B1/WORKER_IDENTITY.json",
+      "sha256": "97b4311b8391302baaedd684b2f6a4e7a9ca438d207d83f96d72fdcab6a4ab5d",
+      "bytes": 387
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/native_counters/raw/NCU_B1.json",
+      "sha256": "3df44f1f3d777c3db04b5054c6159a9ed2cca1133d2d46dd599d459f10baeabe",
+      "bytes": 40046
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/native_counters/.private/NCU_B1/worker.log",
+      "sha256": "6f489a733a8b93bbb50d0afa532f09986b0a08dd8175009647c29f10c4abc3c6",
+      "bytes": 15709
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/native_counters/EXECUTION_BINDING.json",
+      "sha256": "86d8906d7c0604bb2b4601910fb8729ada5684ec5593d57338d3d59d1cf83cae",
+      "bytes": 95480
+    }
+  ],
+  "historical_receipt": {
+    "status": "GPU_RESOURCE_DEFERRED",
+    "reason": "Unknown GPU PID/memory or incomplete resource observation",
+    "samples_count": 149,
+    "gap_sample_indices_zero_based": [
+      147
+    ],
+    "all_observed_gaps": [
+      {
+        "index": 147,
+        "gaps": [
+          "WORKER_NOT_HEALTHY"
+        ]
+      }
+    ],
+    "unknown_or_invalid_or_unqualified_samples_zero_based": [],
+    "launcher_exit_code": 0,
+    "own_GPU_contexts_cleared": true,
+    "controlled_shutdown": true,
+    "lock_released": true,
+    "budget_peaks": {
+      "own_NVML_bytes": {
+        "observed_max": 15072231424,
+        "limit": 16148070400,
+        "within_limit": true
+      },
+      "own_tree_RSS_bytes": {
+        "observed_max": 4563410944,
+        "limit": 17179869184,
+        "within_limit": true
+      },
+      "own_new_disk_bytes": {
+        "observed_max": 196543723,
+        "limit": 3221225472,
+        "within_limit": true
+      }
+    },
+    "session_kernel_charged_peak_bytes": 3953319936,
+    "selected_samples": [
+      {
+        "wall_time": 1793848449.8201132,
+        "phase": "WORKER",
+        "state": "EXTERNAL_GPU_PID",
+        "monitor_gaps": [],
+        "unknown_gpu_pids": [],
+        "invalid_pid_rows": [],
+        "unqualified_external_gpu_pids": [],
+        "own_NVML_bytes": 15044968448,
+        "own_tree_RSS_bytes": 2449137664,
+        "own_new_disk_bytes": 80098727,
+        "held_seconds": 67.1777435541153,
+        "goal_elapsed_seconds": 927.820113658905,
+        "rss_censored_observations": [],
+        "rss_sample_complete": true,
+        "sample_index_zero_based": 142,
+        "worker_pid": 3747110,
+        "worker_rss": [
+          {
+            "pid": 3747110,
+            "creation_time": 1793848384.63,
+            "rss_bytes": 2336067584
+          }
+        ],
+        "worker_gpu_rows": [
+          {
+            "pid": 3747110,
+            "kinds": [
+              "compute"
+            ],
+            "usedGpuMemory": 15044968448,
+            "memory_observation_consistent": true
+          }
+        ],
+        "shared_gate_summary": {
+          "state": "GPU_RESERVED_FOR_AI_ARCH",
+          "challenge_verified": true,
+          "in_flight_scopes": 0,
+          "profile_monitor_alive": true
+        }
+      },
+      {
+        "wall_time": 1793848450.3246849,
+        "phase": "WORKER",
+        "state": "EXTERNAL_GPU_PID",
+        "monitor_gaps": [],
+        "unknown_gpu_pids": [],
+        "invalid_pid_rows": [],
+        "unqualified_external_gpu_pids": [],
+        "own_NVML_bytes": 15070134272,
+        "own_tree_RSS_bytes": 2449227776,
+        "own_new_disk_bytes": 80109108,
+        "held_seconds": 67.68231528624892,
+        "goal_elapsed_seconds": 928.3246855735779,
+        "rss_censored_observations": [],
+        "rss_sample_complete": true,
+        "sample_index_zero_based": 143,
+        "worker_pid": 3747110,
+        "worker_rss": [
+          {
+            "pid": 3747110,
+            "creation_time": 1793848384.63,
+            "rss_bytes": 2336112640
+          }
+        ],
+        "worker_gpu_rows": [
+          {
+            "pid": 3747110,
+            "kinds": [
+              "compute"
+            ],
+            "usedGpuMemory": 15070134272,
+            "memory_observation_consistent": true
+          }
+        ],
+        "shared_gate_summary": {
+          "state": "GPU_RESERVED_FOR_AI_ARCH",
+          "challenge_verified": true,
+          "in_flight_scopes": 0,
+          "profile_monitor_alive": true
+        }
+      },
+      {
+        "wall_time": 1793848450.8171012,
+        "phase": "WORKER",
+        "state": "EXTERNAL_GPU_PID",
+        "monitor_gaps": [],
+        "unknown_gpu_pids": [],
+        "invalid_pid_rows": [],
+        "unqualified_external_gpu_pids": [],
+        "own_NVML_bytes": 15070134272,
+        "own_tree_RSS_bytes": 2507849728,
+        "own_new_disk_bytes": 80119921,
+        "held_seconds": 68.17473193537444,
+        "goal_elapsed_seconds": 928.8171021938324,
+        "rss_censored_observations": [],
+        "rss_sample_complete": true,
+        "sample_index_zero_based": 144,
+        "worker_pid": 3747110,
+        "worker_rss": [
+          {
+            "pid": 3747110,
+            "creation_time": 1793848384.63,
+            "rss_bytes": 2394660864
+          }
+        ],
+        "worker_gpu_rows": [
+          {
+            "pid": 3747110,
+            "kinds": [
+              "compute"
+            ],
+            "usedGpuMemory": 15070134272,
+            "memory_observation_consistent": true
+          }
+        ],
+        "shared_gate_summary": {
+          "state": "GPU_RESERVED_FOR_AI_ARCH",
+          "challenge_verified": true,
+          "in_flight_scopes": 0,
+          "profile_monitor_alive": true
+        }
+      },
+      {
+        "wall_time": 1793848451.3039577,
+        "phase": "WORKER",
+        "state": "EXTERNAL_GPU_PID",
+        "monitor_gaps": [],
+        "unknown_gpu_pids": [],
+        "invalid_pid_rows": [],
+        "unqualified_external_gpu_pids": [],
+        "own_NVML_bytes": 15070134272,
+        "own_tree_RSS_bytes": 2509611008,
+        "own_new_disk_bytes": 80174369,
+        "held_seconds": 68.66158812213689,
+        "goal_elapsed_seconds": 929.3039581775665,
+        "rss_censored_observations": [],
+        "rss_sample_complete": true,
+        "sample_index_zero_based": 145,
+        "worker_pid": 3747110,
+        "worker_rss": [
+          {
+            "pid": 3747110,
+            "creation_time": 1793848384.63,
+            "rss_bytes": 2396356608
+          }
+        ],
+        "worker_gpu_rows": [
+          {
+            "pid": 3747110,
+            "kinds": [
+              "compute"
+            ],
+            "usedGpuMemory": 15070134272,
+            "memory_observation_consistent": true
+          }
+        ],
+        "shared_gate_summary": {
+          "state": "GPU_RESERVED_FOR_AI_ARCH",
+          "challenge_verified": true,
+          "in_flight_scopes": 0,
+          "profile_monitor_alive": true
+        }
+      },
+      {
+        "wall_time": 1793848451.9410205,
+        "phase": "WORKER",
+        "state": "EXTERNAL_GPU_PID",
+        "monitor_gaps": [],
+        "unknown_gpu_pids": [],
+        "invalid_pid_rows": [],
+        "unqualified_external_gpu_pids": [],
+        "own_NVML_bytes": 15072231424,
+        "own_tree_RSS_bytes": 2737430528,
+        "own_new_disk_bytes": 85513539,
+        "held_seconds": 69.29865099303424,
+        "goal_elapsed_seconds": 929.9410212039948,
+        "rss_censored_observations": [],
+        "rss_sample_complete": true,
+        "sample_index_zero_based": 146,
+        "worker_pid": 3747110,
+        "worker_rss": [
+          {
+            "pid": 3747110,
+            "creation_time": 1793848384.63,
+            "rss_bytes": 2534998016
+          }
+        ],
+        "worker_gpu_rows": [
+          {
+            "pid": 3747110,
+            "kinds": [
+              "compute"
+            ],
+            "usedGpuMemory": 15072231424,
+            "memory_observation_consistent": true
+          }
+        ],
+        "shared_gate_summary": {
+          "state": "GPU_RESERVED_FOR_AI_ARCH",
+          "challenge_verified": true,
+          "in_flight_scopes": 0,
+          "profile_monitor_alive": true
+        }
+      },
+      {
+        "wall_time": 1793848452.4493744,
+        "phase": "WORKER",
+        "state": "UNKNOWN",
+        "monitor_gaps": [
+          "WORKER_NOT_HEALTHY"
+        ],
+        "unknown_gpu_pids": [],
+        "invalid_pid_rows": [],
+        "unqualified_external_gpu_pids": [],
+        "own_NVML_bytes": 15070134272,
+        "own_tree_RSS_bytes": 202502144,
+        "own_new_disk_bytes": 85528890,
+        "held_seconds": 69.80700506269932,
+        "goal_elapsed_seconds": 930.4493751525879,
+        "rss_censored_observations": [],
+        "rss_sample_complete": true,
+        "sample_index_zero_based": 147,
+        "worker_pid": 3747110,
+        "worker_rss": [
+          {
+            "pid": 3747110,
+            "creation_time": 1793848384.63,
+            "rss_bytes": 0
+          }
+        ],
+        "worker_gpu_rows": [
+          {
+            "pid": 3747110,
+            "kinds": [
+              "compute"
+            ],
+            "usedGpuMemory": 15070134272,
+            "memory_observation_consistent": true
+          }
+        ],
+        "shared_gate_summary": {
+          "state": "GPU_RESERVED_FOR_AI_ARCH",
+          "challenge_verified": true,
+          "in_flight_scopes": 0,
+          "profile_monitor_alive": true
+        }
+      },
+      {
+        "wall_time": 1793848452.7704427,
+        "phase": "FINAL_OBSERVATION",
+        "state": "EXTERNAL_GPU_PID",
+        "monitor_gaps": [],
+        "unknown_gpu_pids": [],
+        "invalid_pid_rows": [],
+        "unqualified_external_gpu_pids": [],
+        "own_NVML_bytes": 0,
+        "own_tree_RSS_bytes": 55320576,
+        "own_new_disk_bytes": 85538906,
+        "held_seconds": 70.12807300686836,
+        "goal_elapsed_seconds": 930.7704429626465,
+        "rss_censored_observations": [],
+        "rss_sample_complete": true,
+        "sample_index_zero_based": 148,
+        "worker_pid": 3747110,
+        "worker_rss": [],
+        "worker_gpu_rows": [],
+        "shared_gate_summary": {
+          "state": "GPU_RESERVED_FOR_AI_ARCH",
+          "challenge_verified": true,
+          "in_flight_scopes": 0,
+          "profile_monitor_alive": true
+        }
+      }
+    ]
+  },
+  "marker_binding_comparison": {
+    "task": {
+      "finished": "NCU_B1",
+      "bound": "NCU_B1",
+      "match": true
+    },
+    "nonce": {
+      "finished": "a3407581bb2f5e6c87f79e32999c579ed049721b64875233",
+      "bound": "a3407581bb2f5e6c87f79e32999c579ed049721b64875233",
+      "match": true
+    },
+    "supervisor_pid": {
+      "finished": 3747084,
+      "bound": 3747084,
+      "match": true
+    },
+    "identity": {
+      "finished": {
+        "pid": 3747110,
+        "uid": 1004,
+        "start_ticks": "447128063",
+        "boot_id": "35425a62-1268-4560-a3cb-b674371cd7aa",
+        "executable": "/usr/bin/python3.12"
+      },
+      "bound": {
+        "pid": 3747110,
+        "uid": 1004,
+        "start_ticks": "447128063",
+        "boot_id": "35425a62-1268-4560-a3cb-b674371cd7aa",
+        "executable": "/usr/bin/python3.12"
+      },
+      "match": true
+    },
+    "worker_sha256": {
+      "finished": "75782c63812bdd2df894d8221a7779d185b0fcb0064708749693d03a4a70ffe3",
+      "bound": "75782c63812bdd2df894d8221a7779d185b0fcb0064708749693d03a4a70ffe3",
+      "match": true
+    }
+  },
+  "additional_binding_checks": {
+    "identity_marker_equals_bound": true,
+    "raw_worker_identity_equals_bound": true,
+    "finished_status": "V9_WORKER_COMPLETE",
+    "raw_status": "V9_WORKER_COMPLETE",
+    "expected_status": "V9_WORKER_COMPLETE",
+    "status_matches_expected": true,
+    "finished_model_initializations": 1,
+    "raw_model_initializations": 1,
+    "current_frozen_worker_sha256": "75782c63812bdd2df894d8221a7779d185b0fcb0064708749693d03a4a70ffe3",
+    "worker_sha_matches_observed_source": true
+  },
+  "timing": {
+    "finished_marker_filesystem_mtime_epoch": 1793848452.217836,
+    "failure_sample_epoch": 1793848452.4493744,
+    "final_sample_epoch": 1793848452.7704427,
+    "marker_mtime_to_failure_sample_seconds": 0.2315385341644287,
+    "failure_to_final_zero_own_nvml_seconds": 0.32106828689575195,
+    "caveat": "Historical marker has no controller first-seen monotonic timestamp; mtime gives availability timing only, not proof of exact read/transition time."
+  },
+  "worker_and_profiler_observation": {
+    "completed_status_printed": true,
+    "one_pass_log": true,
+    "disconnected_from_actual_worker": true,
+    "report_log_present": true,
+    "nccl_cleanup_warning_present": true,
+    "interpretation": "At failure the worker remained birth-identifiable and listed in NVML, but its observed RSS was0 and healthy() failed. This supports teardown/liveness mismatch; RSS0 alone does not prove zombie or absence of CUDA activity."
+  },
+  "reviewed_source_anchors": [
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/util/ai_workload_research/decode_memory_compute_v10/native_counters/worker.py",
+      "sha256": "75782c63812bdd2df894d8221a7779d185b0fcb0064708749693d03a4a70ffe3",
+      "lines": [
+        {
+          "line": 20,
+          "text": " owner=dict(task=task,nonce=os.environ['V9_WORKER_NONCE'],supervisor_pid=int(os.environ['WEIGHT_PROBE_LOCK_OWNER']),identity=identity(os.getpid()),worker_sha256=sha(pathlib.Path(__file__).read_bytes()))"
+        },
+        {
+          "line": 170,
+          "text": "  raw['status']='V9_WORKER_COMPLETE'"
+        },
+        {
+          "line": 174,
+          "text": "  raw['context_seconds']=time.monotonic()-started;save(path,raw)"
+        },
+        {
+          "line": 175,
+          "text": "  save(context/'WORKER_FINISHED.json',dict(**owner,status=raw['status'],model_initializations=raw['model_initializations']))"
+        },
+        {
+          "line": 176,
+          "text": " print(json.dumps(dict(status=raw['status'],task=task,samples=len(raw['samples']))),flush=True)"
+        },
+        {
+          "line": 177,
+          "text": " return 0 if raw['status'] in ['V9_WORKER_COMPLETE','V9_OPTIONAL_UNAVAILABLE'] else 2"
+        }
+      ]
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/util/ai_workload_research/decode_memory_compute_v10/native_counters/v10_dispatch.py",
+      "sha256": "365af97890dc87c5a85c398f312df27cc9babb30ee5882f6e4bcd9283fab5345",
+      "lines": [
+        {
+          "line": 49,
+          "text": "   finish=state['context']/'WORKER_FINISHED.json';finished=False"
+        },
+        {
+          "line": 50,
+          "text": "   if finish.exists():"
+        },
+        {
+          "line": 51,
+          "text": "    v=json.loads(finish.read_text());finished=v.get('nonce')==state['nonce'] and v.get('task')==task"
+        },
+        {
+          "line": 52,
+          "text": "   if finished and not own_gpu(x):"
+        },
+        {
+          "line": 53,
+          "text": "    x.lifecycle.bind_worker(x.child.pid if alive(s.ps,x.child.pid) else s.pid)"
+        },
+        {
+          "line": 54,
+          "text": "    row=x.snapshot('PROFILER_CPU_DRAIN')"
+        },
+        {
+          "line": 55,
+          "text": "   else:row=x.snapshot('WORKER' if bound else 'WORKER_BOOTSTRAP')"
+        },
+        {
+          "line": 63,
+          "text": "  if own_gpu(x):raise MonitorStop('GPU_RESOURCE_DEFERRED','Own context not drained')"
+        }
+      ]
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/util/ai_workload_research/decode_memory_compute_v10/native_counters/rss_lifecycle.py",
+      "sha256": "fed7f292c927be7fc181cd5e0db5e745e6dc0a3ebd92343c6f3b9b499381f9bc",
+      "lines": [
+        {
+          "line": 9,
+          "text": " def healthy(self,pid):"
+        },
+        {
+          "line": 10,
+          "text": "  p=self.ps.Process(pid)"
+        },
+        {
+          "line": 11,
+          "text": "  return p.create_time()==self.identities[pid] and p.is_running() and p.status() not in ('zombie','dead')"
+        },
+        {
+          "line": 35,
+          "text": "     if pid in (self.root,self.worker) or pid not in enumerated or not absent1 or not absent2:"
+        },
+        {
+          "line": 49,
+          "text": "   if not self.healthy(self.root):gaps.append('ROOT_NOT_HEALTHY')"
+        },
+        {
+          "line": 50,
+          "text": "   if phase=='WORKER' and (self.worker is None or not self.healthy(self.worker)):gaps.append('WORKER_NOT_HEALTHY')"
+        },
+        {
+          "line": 51,
+          "text": "   if censored and (self.worker is None or not self.healthy(self.worker)):gaps.append('EXIT_RACE_WITHOUT_HEALTHY_WORKER')"
+        },
+        {
+          "line": 59,
+          "text": "    birth=self.ps.Process(pid).create_time()"
+        },
+        {
+          "line": 60,
+          "text": "    if pid in self.gpu_identities and self.gpu_identities[pid]!=birth:"
+        },
+        {
+          "line": 61,
+          "text": "     row['monitor_gaps'].append('GPU_PID_IDENTITY_CHANGED:'+str(pid))"
+        },
+        {
+          "line": 63,
+          "text": "    if pid in row['known_own_pids']:"
+        },
+        {
+          "line": 64,
+          "text": "     if self.identities.get(pid)!=birth:row['monitor_gaps'].append('OWN_GPU_IDENTITY_CONFLICT:'+str(pid))"
+        },
+        {
+          "line": 65,
+          "text": "     if self.worker is not None and pid!=self.worker:row['monitor_gaps'].append('GPU_OWNER_NOT_SINGLE_WORKER:'+str(pid))"
+        },
+        {
+          "line": 66,
+          "text": "   except Exception as e:row['monitor_gaps'].append('GPU_IDENTITY_'+str(pid)+':'+type(e).__name__)"
+        }
+      ]
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/util/ai_workload_research/decode_memory_compute_v10/native_counters/resource_monitor.py",
+      "sha256": "9cd0ffaade661c07d8d5c6760a1b7a219c545c0846de55e4272a43a6ec3cd9b1",
+      "lines": [
+        {
+          "line": 51,
+          "text": "        try:alive=bool(ps.pid_exists(pid))"
+        },
+        {
+          "line": 52,
+          "text": "        except Exception:alive=False"
+        },
+        {
+          "line": 53,
+          "text": "        if not alive or item[\"usedGpuMemory\"] is None or not item[\"memory_observation_consistent\"]:"
+        },
+        {
+          "line": 54,
+          "text": "            unknown.append(pid)"
+        },
+        {
+          "line": 65,
+          "text": "    if row[\"unknown_gpu_pids\"] or row[\"invalid_pid_rows\"] or row[\"monitor_gaps\"]:"
+        },
+        {
+          "line": 66,
+          "text": "        raise MonitorStop(\"GPU_RESOURCE_DEFERRED\",\"Unknown GPU PID/memory or incomplete resource observation\")"
+        },
+        {
+          "line": 71,
+          "text": "    for key,limit in [(\"own_NVML_bytes\",\"own_vram_bytes_max\"),(\"own_tree_RSS_bytes\",\"rss_bytes_max\"),(\"own_new_disk_bytes\",\"disk_bytes_max\")]:"
+        },
+        {
+          "line": 72,
+          "text": "        if row[key]>cfg[limit]:raise MonitorStop(\"INCONCLUSIVE\",\"Resource limit: \"+key)"
+        },
+        {
+          "line": 73,
+          "text": "    if row[\"held_seconds\"]>cfg[\"held_seconds_max\"]-cfg[\"shutdown_reserve_seconds\"]:"
+        },
+        {
+          "line": 74,
+          "text": "        raise MonitorStop(\"INCONCLUSIVE\",\"GPU deadline shutdown reserve\")"
+        },
+        {
+          "line": 75,
+          "text": "    if row[\"goal_elapsed_seconds\"]>cfg[\"goal_seconds_max\"]-25:"
+        },
+        {
+          "line": 76,
+          "text": "        raise MonitorStop(\"INCONCLUSIVE\",\"Goal deadline archival reserve\")"
+        }
+      ]
+    }
+  ],
+  "root_cause": "Dispatcher only takes PROFILER_CPU_DRAIN after finished AND no own GPU context. A valid finished worker with its context still present takes WORKER snapshot, where rss_lifecycle requires healthy worker. Observed sample147 failed only this health requirement.",
+  "bounded_phase_conditions": [
+    "Validate full terminal marker against already bound task, nonce, supervisor_pid, full actual-worker identity, frozen expected sourceSHA and expected terminal status. Also require matching raw terminal result identity/status.",
+    "Only a marker produced by reviewed source whose post-marker path is logging/return/teardown qualifies; failure/optional status is not silently accepted.",
+    "Latch first valid marker seen with controller monotonic clock; deadline<=6s cannot reset on rewritten marker. Held/goal shutdown reserve always overrides.",
+    "Use a distinct FINISHED_CONTEXT_DRAIN phase and keep original actual-worker PID binding until GPU contexts clear. Remove only the terminal-worker healthy/running precondition.",
+    "Keep every NVML memory/PID, birth identity, shared-gate challenge, external classification, RSS/session memory, disk and time policy unchanged.",
+    "NVML row with absent/identity-unreadable process, PID reuse or another own GPU PID must still fail. No unknown compute is authorized.",
+    "No next task may start during drain; require zero owned GPU contexts and successful launcher exit before completion/transition.",
+    "Cover context drain even if profiler launcher exits before NVML row clears; no-marker exit is not a successful drain.",
+    "Keep existing censored-child and worker NoSuchProcess rules. This incident had no censored observations and does not justify broad exception handling.",
+    "CPU_DRAIN after zero contexts must still reject context reappearance."
+  ],
+  "required_tests": [
+    "Same-birth terminal worker no longer healthy, context present briefly, then cleared within6s:accept phase transition and eventual exit0.",
+    "Each marker field mismatch, stale/partial JSON, missing marker, raw RUNNING or wrong expected status:reject drain.",
+    "Timer starts once and cannot reset; exactly-at/beyond deadline and held/goal reserves exercise STOP.",
+    "PID reuse, NVML process absent in proc, unreadable identity, invalid memory, unknown/extra compute, shared challenge failure and every budget overflow retain STOP.",
+    "Launcher exits before NVML clears:bounded drain still monitored; nonzero exit never accepted as complete.",
+    "No next task during drain; zero-context then context reappears:STOP.",
+    "Existing rss censored-child/NoSuchProcess failures and unknown lifecycle tests unchanged."
+  ],
+  "subsequent_B2_window_note": {
+    "provenance": "Parent agent report, not independently executed or reclassified by this audit",
+    "reported_change": "New B2 window uses strict full-field terminal validation, monotonic first-seen<=6s, distinct FINISHED_CONTEXT_DRAIN, retained actual GPU-worker binding and all prior monitoring.",
+    "limit": "No assessment of new B2 run success is inferred from this historical review."
+  }
+}

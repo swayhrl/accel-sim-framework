@@ -1,0 +1,4967 @@
+{
+  "schema": "V10_CPU_NUMERIC_BOUNDARY_ANALYSIS_V1",
+  "created_utc": "2026-11-05T03:18:04.964404+00:00",
+  "status": "ANALYZED_ALTERED_EAGER_NOT_NATIVE",
+  "classification": {
+    "execution_path": "ALTERED_EAGER_NOT_NATIVE",
+    "compilation_mode": "NONE",
+    "cudagraph_mode": "NONE",
+    "actual_enforce_eager": true,
+    "B1_requests": "A00 or A01 separately",
+    "B2_requests": "One batch containing A00+A01",
+    "N1": "max_tokens1; prefill only",
+    "N2": "max_tokens2; prefill plus one true incremental decode step",
+    "native_first_divergence_layer_established": false,
+    "global_all_token_first_divergence_layer_established": false,
+    "logprobs_status": "NOT_CAPTURED_NOT_COMPUTED"
+  },
+  "cpu_analysis_safety": {
+    "torch_load": {
+      "map_location": "cpu",
+      "weights_only": true
+    },
+    "torch_num_threads": 1,
+    "CUDA_VISIBLE_DEVICES": "",
+    "CUDA_or_NVML_calls": false,
+    "vllm_import": false,
+    "all_loaded_tensors_checked_cpu": true,
+    "new_GPU_activity": false
+  },
+  "runtime_receipt": {
+    "vllm": "0.30.0",
+    "torch": "2.13.0+cu130",
+    "source_sha256": {
+      "compilation.py": "c9cec5c7200e8e559810ec8c30113ad61dab6780f9f7fb3c116bd0d9b5a43065",
+      "qwen2.py": "eb2f0eeb13c57a28bbc06bc64afff18cd8865f89fbe9ff2a3cf3a896f037cfe9"
+    },
+    "attention": [
+      "FlashAttentionImpl"
+    ],
+    "linear": [
+      "UnquantizedLinearMethod"
+    ],
+    "capacity": {
+      "max_model_len": 544,
+      "max_num_batched_tokens": 1088,
+      "max_num_seqs": 2
+    },
+    "compilation_mode": "NONE",
+    "backend": "inductor",
+    "cudagraph_mode": "NONE",
+    "cache_root": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/.private/NUMERIC",
+    "local_cache_dir": "None",
+    "cache_identity": "V9_PRIVATE_COMPILATION_IDENTITY",
+    "initialization_seconds": 51.83593594003469,
+    "graph_observation": "Accepted manager-level fullgraph counter only; descriptors may contain padding and are not kernel/profiler observations.",
+    "runner_class": "vllm.v1.worker.gpu.model_runner.GPUModelRunner",
+    "sampler_class": "vllm.v1.worker.gpu.sample.sampler.Sampler",
+    "sampler_source_sha256": "832c9945d201a1e730ff9b4b52076aa83bd4a5064e1e4cfea952cf84d4a8d1f0",
+    "actual_enforce_eager": true,
+    "altered_diagnostic_path": true,
+    "logprobs": null,
+    "enable_prefix_caching": false
+  },
+  "model_binding": {
+    "revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+    "hidden_size": 2048,
+    "num_layers": 36,
+    "dtype": "bfloat16",
+    "tensor_parallel_size": 1,
+    "qwen2_source_matches_recorded_runtime_sha256": true
+  },
+  "source_review": {
+    "sparse_boundaries_source_sha256": "7d1eef72cbd3428fb5ddc869c1dd7f60c8abbbb1c141cb1f9ecd744375faac63",
+    "worker_source_sha256": "f9a883218a49eaf7476670b2ec2148f6647ac8ae7a6644c7ce8b056dcf59bd62",
+    "worker_matches_recorded_identity_sha256": true,
+    "source_lines": {
+      "sparse_forward_row_selection": [
+        11,
+        16
+      ],
+      "sparse_hooks_and_snapshot": [
+        17,
+        30
+      ],
+      "sampler_row_identity_assertion_and_save": [
+        32,
+        47
+      ],
+      "worker_eager_initialization": [
+        61,
+        68
+      ],
+      "worker_six_numeric_calls": [
+        155,
+        157
+      ]
+    },
+    "capture_semantics": [
+      "Hook tensors are immutable selected-row CPU snapshots made by detach().index_select(...).cpu().clone() during the hook; later residual mutation does not alter these saved values.",
+      "Decoder boundaries store the two tuple tensors separately: hidden is MLP branch output and residual is the skip stream. The sparse source's label hidden_plus_residual describes conceptual semantics; no sum was saved or used for the primary comparison.",
+      "At final RMSNorm, tuple index0 is normalized hidden, tuple index1 is updated residual after adding the last MLP branch. Qwen2Model consumes only index0; this analysis labels norm's second tensor separately.",
+      "Captured indices select every row with positions==positions.max(); sampler wrapper asserts logits_indices exactly equal these selected rows before saving, and all five registered hooks must be present. Nine receipts and successful worker output support this assertion path; logits_indices is not separately saved.",
+      "Each runtime request ID's numeric prefix was matched to the private completion request ID; completion source names and exact512prompt token IDs provide A00/A01 identity. Selected row indices are independently consistent with cumulative num_scheduled_tokens minus1.",
+      "Selected positions are511(prefill) or512(first decode). Only positions_max and positions_shape are stored, not full positions, query_start_loc or direct input_ids. Consumed input token identity is supported by returned prompt IDs, previous sampled IDs and returned generated prefix, and is explicitly not a direct model-input capture.",
+      "Current sparse source hash is recorded for review; the source file itself is not imported or executed during this CPU analysis. Only worker has a recorded executed-file identity hash available here."
+    ]
+  },
+  "findings": {
+    "primary_comparisons": 6,
+    "all_embedding_rows_bitwise_equal": true,
+    "all_first_observed_differences": "layer0 returned hidden",
+    "prefill_N1_vs_N2_repeat_comparisons_all_boundaries_bitwise_equal": true,
+    "all_sampled_output_token_ids_equal_across_B1_B2": true,
+    "summary": [
+      {
+        "comparison_id": "A00_B1_vs_B2_N1_prefill",
+        "source": "TRAIN_A_DISCOVERY_00",
+        "position": 511,
+        "embedding_bitwise_equal": true,
+        "first_observed_differing_boundary": {
+          "boundary": "layer0",
+          "components": [
+            "hidden"
+          ],
+          "claim_scope": "First differing among five sampled last-query-row boundaries in this altered eager execution only."
+        },
+        "layer0_hidden": {
+          "component": "hidden",
+          "tuple_index": 0,
+          "numel": 2048,
+          "bitwise_unequal_count": 1037,
+          "numeric_unequal_count": 1037,
+          "bitwise_equal": false,
+          "abs_max": 0.00390625,
+          "abs_median": 3.0517578125e-05,
+          "RMS": 0.00045107927298209766,
+          "abs_mean": 0.000247240939643234,
+          "finite_difference_count": 2048,
+          "nonfinite_difference_count": 0,
+          "metric_dtype": "CPU float64 after exact BF16 expansion",
+          "first_unequal_hidden_dimension": 0,
+          "first_unequal_BF16_bits_hex": [
+            "be2e",
+            "be2f"
+          ]
+        },
+        "layer0_residual": {
+          "component": "residual",
+          "tuple_index": 1,
+          "numel": 2048,
+          "bitwise_unequal_count": 0,
+          "numeric_unequal_count": 0,
+          "bitwise_equal": true,
+          "abs_max": 0.0,
+          "abs_median": 0.0,
+          "RMS": 0.0,
+          "abs_mean": 0.0,
+          "finite_difference_count": 2048,
+          "nonfinite_difference_count": 0,
+          "metric_dtype": "CPU float64 after exact BF16 expansion"
+        },
+        "final_normalized_hidden": {
+          "component": "normalized_hidden",
+          "tuple_index": 0,
+          "numel": 2048,
+          "bitwise_unequal_count": 1943,
+          "numeric_unequal_count": 1943,
+          "bitwise_equal": false,
+          "abs_max": 0.5,
+          "abs_median": 0.048828125,
+          "RMS": 0.0797068485792635,
+          "abs_mean": 0.06171369552612305,
+          "finite_difference_count": 2048,
+          "nonfinite_difference_count": 0,
+          "metric_dtype": "CPU float64 after exact BF16 expansion",
+          "first_unequal_hidden_dimension": 0,
+          "first_unequal_BF16_bits_hex": [
+            "be91",
+            "bed0"
+          ]
+        },
+        "sampled_next_token_equal": true,
+        "sampled_next_token_id": 785
+      },
+      {
+        "comparison_id": "A01_B1_vs_B2_N1_prefill",
+        "source": "TRAIN_A_DISCOVERY_01",
+        "position": 511,
+        "embedding_bitwise_equal": true,
+        "first_observed_differing_boundary": {
+          "boundary": "layer0",
+          "components": [
+            "hidden"
+          ],
+          "claim_scope": "First differing among five sampled last-query-row boundaries in this altered eager execution only."
+        },
+        "layer0_hidden": {
+          "component": "hidden",
+          "tuple_index": 0,
+          "numel": 2048,
+          "bitwise_unequal_count": 1016,
+          "numeric_unequal_count": 1016,
+          "bitwise_equal": false,
+          "abs_max": 0.0078125,
+          "abs_median": 0.0,
+          "RMS": 0.00046361261903904097,
+          "abs_mean": 0.0002311544376425445,
+          "finite_difference_count": 2048,
+          "nonfinite_difference_count": 0,
+          "metric_dtype": "CPU float64 after exact BF16 expansion",
+          "first_unequal_hidden_dimension": 3,
+          "first_unequal_BF16_bits_hex": [
+            "3d8b",
+            "3d8a"
+          ]
+        },
+        "layer0_residual": {
+          "component": "residual",
+          "tuple_index": 1,
+          "numel": 2048,
+          "bitwise_unequal_count": 0,
+          "numeric_unequal_count": 0,
+          "bitwise_equal": true,
+          "abs_max": 0.0,
+          "abs_median": 0.0,
+          "RMS": 0.0,
+          "abs_mean": 0.0,
+          "finite_difference_count": 2048,
+          "nonfinite_difference_count": 0,
+          "metric_dtype": "CPU float64 after exact BF16 expansion"
+        },
+        "final_normalized_hidden": {
+          "component": "normalized_hidden",
+          "tuple_index": 0,
+          "numel": 2048,
+          "bitwise_unequal_count": 1951,
+          "numeric_unequal_count": 1951,
+          "bitwise_equal": false,
+          "abs_max": 1.5,
+          "abs_median": 0.0625,
+          "RMS": 0.11286905544670227,
+          "abs_mean": 0.08019645512104034,
+          "finite_difference_count": 2048,
+          "nonfinite_difference_count": 0,
+          "metric_dtype": "CPU float64 after exact BF16 expansion",
+          "first_unequal_hidden_dimension": 0,
+          "first_unequal_BF16_bits_hex": [
+            "bf59",
+            "bf52"
+          ]
+        },
+        "sampled_next_token_equal": true,
+        "sampled_next_token_id": 2132
+      },
+      {
+        "comparison_id": "A00_B1_vs_B2_N2_prefill",
+        "source": "TRAIN_A_DISCOVERY_00",
+        "position": 511,
+        "embedding_bitwise_equal": true,
+        "first_observed_differing_boundary": {
+          "boundary": "layer0",
+          "components": [
+            "hidden"
+          ],
+          "claim_scope": "First differing among five sampled last-query-row boundaries in this altered eager execution only."
+        },
+        "layer0_hidden": {
+          "component": "hidden",
+          "tuple_index": 0,
+          "numel": 2048,
+          "bitwise_unequal_count": 1037,
+          "numeric_unequal_count": 1037,
+          "bitwise_equal": false,
+          "abs_max": 0.00390625,
+          "abs_median": 3.0517578125e-05,
+          "RMS": 0.00045107927298209766,
+          "abs_mean": 0.000247240939643234,
+          "finite_difference_count": 2048,
+          "nonfinite_difference_count": 0,
+          "metric_dtype": "CPU float64 after exact BF16 expansion",
+          "first_unequal_hidden_dimension": 0,
+          "first_unequal_BF16_bits_hex": [
+            "be2e",
+            "be2f"
+          ]
+        },
+        "layer0_residual": {
+          "component": "residual",
+          "tuple_index": 1,
+          "numel": 2048,
+          "bitwise_unequal_count": 0,
+          "numeric_unequal_count": 0,
+          "bitwise_equal": true,
+          "abs_max": 0.0,
+          "abs_median": 0.0,
+          "RMS": 0.0,
+          "abs_mean": 0.0,
+          "finite_difference_count": 2048,
+          "nonfinite_difference_count": 0,
+          "metric_dtype": "CPU float64 after exact BF16 expansion"
+        },
+        "final_normalized_hidden": {
+          "component": "normalized_hidden",
+          "tuple_index": 0,
+          "numel": 2048,
+          "bitwise_unequal_count": 1943,
+          "numeric_unequal_count": 1943,
+          "bitwise_equal": false,
+          "abs_max": 0.5,
+          "abs_median": 0.048828125,
+          "RMS": 0.0797068485792635,
+          "abs_mean": 0.06171369552612305,
+          "finite_difference_count": 2048,
+          "nonfinite_difference_count": 0,
+          "metric_dtype": "CPU float64 after exact BF16 expansion",
+          "first_unequal_hidden_dimension": 0,
+          "first_unequal_BF16_bits_hex": [
+            "be91",
+            "bed0"
+          ]
+        },
+        "sampled_next_token_equal": true,
+        "sampled_next_token_id": 785
+      },
+      {
+        "comparison_id": "A01_B1_vs_B2_N2_prefill",
+        "source": "TRAIN_A_DISCOVERY_01",
+        "position": 511,
+        "embedding_bitwise_equal": true,
+        "first_observed_differing_boundary": {
+          "boundary": "layer0",
+          "components": [
+            "hidden"
+          ],
+          "claim_scope": "First differing among five sampled last-query-row boundaries in this altered eager execution only."
+        },
+        "layer0_hidden": {
+          "component": "hidden",
+          "tuple_index": 0,
+          "numel": 2048,
+          "bitwise_unequal_count": 1016,
+          "numeric_unequal_count": 1016,
+          "bitwise_equal": false,
+          "abs_max": 0.0078125,
+          "abs_median": 0.0,
+          "RMS": 0.00046361261903904097,
+          "abs_mean": 0.0002311544376425445,
+          "finite_difference_count": 2048,
+          "nonfinite_difference_count": 0,
+          "metric_dtype": "CPU float64 after exact BF16 expansion",
+          "first_unequal_hidden_dimension": 3,
+          "first_unequal_BF16_bits_hex": [
+            "3d8b",
+            "3d8a"
+          ]
+        },
+        "layer0_residual": {
+          "component": "residual",
+          "tuple_index": 1,
+          "numel": 2048,
+          "bitwise_unequal_count": 0,
+          "numeric_unequal_count": 0,
+          "bitwise_equal": true,
+          "abs_max": 0.0,
+          "abs_median": 0.0,
+          "RMS": 0.0,
+          "abs_mean": 0.0,
+          "finite_difference_count": 2048,
+          "nonfinite_difference_count": 0,
+          "metric_dtype": "CPU float64 after exact BF16 expansion"
+        },
+        "final_normalized_hidden": {
+          "component": "normalized_hidden",
+          "tuple_index": 0,
+          "numel": 2048,
+          "bitwise_unequal_count": 1951,
+          "numeric_unequal_count": 1951,
+          "bitwise_equal": false,
+          "abs_max": 1.5,
+          "abs_median": 0.0625,
+          "RMS": 0.11286905544670227,
+          "abs_mean": 0.08019645512104034,
+          "finite_difference_count": 2048,
+          "nonfinite_difference_count": 0,
+          "metric_dtype": "CPU float64 after exact BF16 expansion",
+          "first_unequal_hidden_dimension": 0,
+          "first_unequal_BF16_bits_hex": [
+            "bf59",
+            "bf52"
+          ]
+        },
+        "sampled_next_token_equal": true,
+        "sampled_next_token_id": 2132
+      },
+      {
+        "comparison_id": "A00_B1_vs_B2_N2_decode1",
+        "source": "TRAIN_A_DISCOVERY_00",
+        "position": 512,
+        "embedding_bitwise_equal": true,
+        "first_observed_differing_boundary": {
+          "boundary": "layer0",
+          "components": [
+            "hidden",
+            "residual"
+          ],
+          "claim_scope": "First differing among five sampled last-query-row boundaries in this altered eager execution only."
+        },
+        "layer0_hidden": {
+          "component": "hidden",
+          "tuple_index": 0,
+          "numel": 2048,
+          "bitwise_unequal_count": 546,
+          "numeric_unequal_count": 546,
+          "bitwise_equal": false,
+          "abs_max": 0.00390625,
+          "abs_median": 0.0,
+          "RMS": 0.000293891852168687,
+          "abs_mean": 0.00010764366015791893,
+          "finite_difference_count": 2048,
+          "nonfinite_difference_count": 0,
+          "metric_dtype": "CPU float64 after exact BF16 expansion",
+          "first_unequal_hidden_dimension": 2,
+          "first_unequal_BF16_bits_hex": [
+            "3dd2",
+            "3dd1"
+          ]
+        },
+        "layer0_residual": {
+          "component": "residual",
+          "tuple_index": 1,
+          "numel": 2048,
+          "bitwise_unequal_count": 167,
+          "numeric_unequal_count": 167,
+          "bitwise_equal": false,
+          "abs_max": 0.0009765625,
+          "abs_median": 0.0,
+          "RMS": 7.800556211451471e-05,
+          "abs_mean": 1.4746561646461487e-05,
+          "finite_difference_count": 2048,
+          "nonfinite_difference_count": 0,
+          "metric_dtype": "CPU float64 after exact BF16 expansion",
+          "first_unequal_hidden_dimension": 1,
+          "first_unequal_BF16_bits_hex": [
+            "bc77",
+            "bc78"
+          ]
+        },
+        "final_normalized_hidden": {
+          "component": "normalized_hidden",
+          "tuple_index": 0,
+          "numel": 2048,
+          "bitwise_unequal_count": 1905,
+          "numeric_unequal_count": 1905,
+          "bitwise_equal": false,
+          "abs_max": 1.0,
+          "abs_median": 0.03289794921875,
+          "RMS": 0.0617881417398384,
+          "abs_mean": 0.04348624497652054,
+          "finite_difference_count": 2048,
+          "nonfinite_difference_count": 0,
+          "metric_dtype": "CPU float64 after exact BF16 expansion",
+          "first_unequal_hidden_dimension": 0,
+          "first_unequal_BF16_bits_hex": [
+            "bea7",
+            "beaa"
+          ]
+        },
+        "sampled_next_token_equal": true,
+        "sampled_next_token_id": 9234
+      },
+      {
+        "comparison_id": "A01_B1_vs_B2_N2_decode1",
+        "source": "TRAIN_A_DISCOVERY_01",
+        "position": 512,
+        "embedding_bitwise_equal": true,
+        "first_observed_differing_boundary": {
+          "boundary": "layer0",
+          "components": [
+            "hidden"
+          ],
+          "claim_scope": "First differing among five sampled last-query-row boundaries in this altered eager execution only."
+        },
+        "layer0_hidden": {
+          "component": "hidden",
+          "tuple_index": 0,
+          "numel": 2048,
+          "bitwise_unequal_count": 114,
+          "numeric_unequal_count": 114,
+          "bitwise_equal": false,
+          "abs_max": 0.00390625,
+          "abs_median": 0.0,
+          "RMS": 0.0001773510689693601,
+          "abs_mean": 2.194301487179473e-05,
+          "finite_difference_count": 2048,
+          "nonfinite_difference_count": 0,
+          "metric_dtype": "CPU float64 after exact BF16 expansion",
+          "first_unequal_hidden_dimension": 8,
+          "first_unequal_BF16_bits_hex": [
+            "b9fd",
+            "b9f2"
+          ]
+        },
+        "layer0_residual": {
+          "component": "residual",
+          "tuple_index": 1,
+          "numel": 2048,
+          "bitwise_unequal_count": 0,
+          "numeric_unequal_count": 0,
+          "bitwise_equal": true,
+          "abs_max": 0.0,
+          "abs_median": 0.0,
+          "RMS": 0.0,
+          "abs_mean": 0.0,
+          "finite_difference_count": 2048,
+          "nonfinite_difference_count": 0,
+          "metric_dtype": "CPU float64 after exact BF16 expansion"
+        },
+        "final_normalized_hidden": {
+          "component": "normalized_hidden",
+          "tuple_index": 0,
+          "numel": 2048,
+          "bitwise_unequal_count": 1897,
+          "numeric_unequal_count": 1897,
+          "bitwise_equal": false,
+          "abs_max": 1.0,
+          "abs_median": 0.03125,
+          "RMS": 0.06596665223158733,
+          "abs_mean": 0.044033415615558624,
+          "finite_difference_count": 2048,
+          "nonfinite_difference_count": 0,
+          "metric_dtype": "CPU float64 after exact BF16 expansion",
+          "first_unequal_hidden_dimension": 1,
+          "first_unequal_BF16_bits_hex": [
+            "bd6f",
+            "bd81"
+          ]
+        },
+        "sampled_next_token_equal": true,
+        "sampled_next_token_id": 4977
+      }
+    ],
+    "claim": "For matched A00/A01 last-query rows and identical evidenced token histories, the first differing sampled boundary is layer0 output hidden in this altered eager path. This brackets the observed difference after embedding and by the end of decoder0. It does not identify an operation inside decoder0, the earliest token/KV difference, or native compiled behavior."
+  },
+  "metric_definitions": {
+    "bitwise_unequal_count": "BF16 int16 storage patterns compared exactly,2048 elements per request/component.",
+    "numeric_unequal_count": "BF16 numeric != separately reported; handles possible signed-zero bit differences distinctly.",
+    "abs_max": "max(abs(float64(left)-float64(right))) over finite differences.",
+    "abs_median": "0.5 quantile with midpoint interpolation over finite absolute differences, including zeros.",
+    "RMS": "sqrt(mean((float64(left)-float64(right))^2)) over finite differences.",
+    "finite_handling": "Finite/nonfinite counts reported per capture and per comparison; all captured tensors in this dataset were finite.",
+    "sum_semantics": "No hidden+residual derived sum or logprob reconstruction was used."
+  },
+  "captures": [
+    {
+      "point": "A00_N1",
+      "step": 0,
+      "phase": "PREFILL",
+      "file_name": "A00_N1_step00.pt",
+      "bytes": 41704,
+      "sha256": "e2c3b727221af451f2289cb4659bb25a12e9dd1061b14359a561cb8d7825fcde",
+      "positions_max": 511,
+      "positions_shape": [
+        512
+      ],
+      "selected_flattened_rows": [
+        511
+      ],
+      "request_ids": [
+        "0-ab38c91e"
+      ],
+      "num_tokens": 512,
+      "num_scheduled_tokens": [
+        512
+      ],
+      "sampled_ids": [
+        [
+          785
+        ]
+      ],
+      "logits_dtype": "torch.bfloat16",
+      "row_mapping": [
+        {
+          "captured_row": 0,
+          "sampler_request_id": "0-ab38c91e",
+          "completion_request_id": "0",
+          "source": "TRAIN_A_DISCOVERY_00",
+          "flattened_model_row": 511,
+          "position": 511,
+          "position_evidence": "Capture source selects positions==max; stores max and indices, not full position vector. Sampler wrapper asserts logits_indices equal selected indices before saving.",
+          "prompt_token_count": 512,
+          "prompt_token_ids_sha256": "9c0bd2abdbe09ccd65d7e656759a84275a7ce164d32b4f0ae1bf62f387258cf5",
+          "consumed_input_token_id": 198,
+          "consumed_token_evidence": "Last prompt token from private returned prompt IDs (prefill), or previous saved sampled ID and completion prefix (decode); model input_ids not directly saved.",
+          "consumed_history_sha256": "9c0bd2abdbe09ccd65d7e656759a84275a7ce164d32b4f0ae1bf62f387258cf5",
+          "sampled_next_token_id": 785,
+          "sampled_output_position": 512,
+          "all_returned_completion_token_ids": [
+            785
+          ],
+          "num_cached_tokens": 0
+        }
+      ],
+      "boundaries": {
+        "embedding": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              512,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "first_tensor"
+        },
+        "layer0": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              512,
+              2048
+            ],
+            [
+              512,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "layer17": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              512,
+              2048
+            ],
+            [
+              512,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "layer35": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              512,
+              2048
+            ],
+            [
+              512,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "norm": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              512,
+              2048
+            ],
+            [
+              512,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "first_tensor"
+        }
+      },
+      "path": "ALTERED_EAGER_NOT_NATIVE"
+    },
+    {
+      "point": "A01_N1",
+      "step": 0,
+      "phase": "PREFILL",
+      "file_name": "A01_N1_step00.pt",
+      "bytes": 41704,
+      "sha256": "c89ad55e22d92cc7d4f4733fd43f7a54536561c77e5863d7b168eb7641a86d1b",
+      "positions_max": 511,
+      "positions_shape": [
+        512
+      ],
+      "selected_flattened_rows": [
+        511
+      ],
+      "request_ids": [
+        "1-8f6f5e89"
+      ],
+      "num_tokens": 512,
+      "num_scheduled_tokens": [
+        512
+      ],
+      "sampled_ids": [
+        [
+          2132
+        ]
+      ],
+      "logits_dtype": "torch.bfloat16",
+      "row_mapping": [
+        {
+          "captured_row": 0,
+          "sampler_request_id": "1-8f6f5e89",
+          "completion_request_id": "1",
+          "source": "TRAIN_A_DISCOVERY_01",
+          "flattened_model_row": 511,
+          "position": 511,
+          "position_evidence": "Capture source selects positions==max; stores max and indices, not full position vector. Sampler wrapper asserts logits_indices equal selected indices before saving.",
+          "prompt_token_count": 512,
+          "prompt_token_ids_sha256": "2603f85ea3378081c60adb1a978145bacea62e8777bdf5b1d0624e8cc9fb92bb",
+          "consumed_input_token_id": 198,
+          "consumed_token_evidence": "Last prompt token from private returned prompt IDs (prefill), or previous saved sampled ID and completion prefix (decode); model input_ids not directly saved.",
+          "consumed_history_sha256": "2603f85ea3378081c60adb1a978145bacea62e8777bdf5b1d0624e8cc9fb92bb",
+          "sampled_next_token_id": 2132,
+          "sampled_output_position": 512,
+          "all_returned_completion_token_ids": [
+            2132
+          ],
+          "num_cached_tokens": 0
+        }
+      ],
+      "boundaries": {
+        "embedding": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              512,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "first_tensor"
+        },
+        "layer0": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              512,
+              2048
+            ],
+            [
+              512,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "layer17": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              512,
+              2048
+            ],
+            [
+              512,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "layer35": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              512,
+              2048
+            ],
+            [
+              512,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "norm": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              512,
+              2048
+            ],
+            [
+              512,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "first_tensor"
+        }
+      },
+      "path": "ALTERED_EAGER_NOT_NATIVE"
+    },
+    {
+      "point": "B2_N1",
+      "step": 0,
+      "phase": "PREFILL",
+      "file_name": "B2_N1_step00.pt",
+      "bytes": 78551,
+      "sha256": "a3eb514ce954006defabc1ea656bd0f861cedfc9e623b6f734c789f486f6db58",
+      "positions_max": 511,
+      "positions_shape": [
+        1024
+      ],
+      "selected_flattened_rows": [
+        511,
+        1023
+      ],
+      "request_ids": [
+        "2-9b109ae0",
+        "3-937227a0"
+      ],
+      "num_tokens": 1024,
+      "num_scheduled_tokens": [
+        512,
+        512
+      ],
+      "sampled_ids": [
+        [
+          785
+        ],
+        [
+          2132
+        ]
+      ],
+      "logits_dtype": "torch.bfloat16",
+      "row_mapping": [
+        {
+          "captured_row": 0,
+          "sampler_request_id": "2-9b109ae0",
+          "completion_request_id": "2",
+          "source": "TRAIN_A_DISCOVERY_00",
+          "flattened_model_row": 511,
+          "position": 511,
+          "position_evidence": "Capture source selects positions==max; stores max and indices, not full position vector. Sampler wrapper asserts logits_indices equal selected indices before saving.",
+          "prompt_token_count": 512,
+          "prompt_token_ids_sha256": "9c0bd2abdbe09ccd65d7e656759a84275a7ce164d32b4f0ae1bf62f387258cf5",
+          "consumed_input_token_id": 198,
+          "consumed_token_evidence": "Last prompt token from private returned prompt IDs (prefill), or previous saved sampled ID and completion prefix (decode); model input_ids not directly saved.",
+          "consumed_history_sha256": "9c0bd2abdbe09ccd65d7e656759a84275a7ce164d32b4f0ae1bf62f387258cf5",
+          "sampled_next_token_id": 785,
+          "sampled_output_position": 512,
+          "all_returned_completion_token_ids": [
+            785
+          ],
+          "num_cached_tokens": 0
+        },
+        {
+          "captured_row": 1,
+          "sampler_request_id": "3-937227a0",
+          "completion_request_id": "3",
+          "source": "TRAIN_A_DISCOVERY_01",
+          "flattened_model_row": 1023,
+          "position": 511,
+          "position_evidence": "Capture source selects positions==max; stores max and indices, not full position vector. Sampler wrapper asserts logits_indices equal selected indices before saving.",
+          "prompt_token_count": 512,
+          "prompt_token_ids_sha256": "2603f85ea3378081c60adb1a978145bacea62e8777bdf5b1d0624e8cc9fb92bb",
+          "consumed_input_token_id": 198,
+          "consumed_token_evidence": "Last prompt token from private returned prompt IDs (prefill), or previous saved sampled ID and completion prefix (decode); model input_ids not directly saved.",
+          "consumed_history_sha256": "2603f85ea3378081c60adb1a978145bacea62e8777bdf5b1d0624e8cc9fb92bb",
+          "sampled_next_token_id": 2132,
+          "sampled_output_position": 512,
+          "all_returned_completion_token_ids": [
+            2132
+          ],
+          "num_cached_tokens": 0
+        }
+      ],
+      "boundaries": {
+        "embedding": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              1024,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "first_tensor"
+        },
+        "layer0": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              1024,
+              2048
+            ],
+            [
+              1024,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "layer17": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              1024,
+              2048
+            ],
+            [
+              1024,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "layer35": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              1024,
+              2048
+            ],
+            [
+              1024,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "norm": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              1024,
+              2048
+            ],
+            [
+              1024,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "first_tensor"
+        }
+      },
+      "path": "ALTERED_EAGER_NOT_NATIVE"
+    },
+    {
+      "point": "A00_N2",
+      "step": 0,
+      "phase": "PREFILL",
+      "file_name": "A00_N2_step00.pt",
+      "bytes": 41704,
+      "sha256": "50ab6448ef3a365631d882167fb20bf36c73e8a11c464e431797b5ab78d3877d",
+      "positions_max": 511,
+      "positions_shape": [
+        512
+      ],
+      "selected_flattened_rows": [
+        511
+      ],
+      "request_ids": [
+        "4-9d1e0da8"
+      ],
+      "num_tokens": 512,
+      "num_scheduled_tokens": [
+        512
+      ],
+      "sampled_ids": [
+        [
+          785
+        ]
+      ],
+      "logits_dtype": "torch.bfloat16",
+      "row_mapping": [
+        {
+          "captured_row": 0,
+          "sampler_request_id": "4-9d1e0da8",
+          "completion_request_id": "4",
+          "source": "TRAIN_A_DISCOVERY_00",
+          "flattened_model_row": 511,
+          "position": 511,
+          "position_evidence": "Capture source selects positions==max; stores max and indices, not full position vector. Sampler wrapper asserts logits_indices equal selected indices before saving.",
+          "prompt_token_count": 512,
+          "prompt_token_ids_sha256": "9c0bd2abdbe09ccd65d7e656759a84275a7ce164d32b4f0ae1bf62f387258cf5",
+          "consumed_input_token_id": 198,
+          "consumed_token_evidence": "Last prompt token from private returned prompt IDs (prefill), or previous saved sampled ID and completion prefix (decode); model input_ids not directly saved.",
+          "consumed_history_sha256": "9c0bd2abdbe09ccd65d7e656759a84275a7ce164d32b4f0ae1bf62f387258cf5",
+          "sampled_next_token_id": 785,
+          "sampled_output_position": 512,
+          "all_returned_completion_token_ids": [
+            785,
+            9234
+          ],
+          "num_cached_tokens": 0
+        }
+      ],
+      "boundaries": {
+        "embedding": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              512,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "first_tensor"
+        },
+        "layer0": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              512,
+              2048
+            ],
+            [
+              512,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "layer17": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              512,
+              2048
+            ],
+            [
+              512,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "layer35": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              512,
+              2048
+            ],
+            [
+              512,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "norm": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              512,
+              2048
+            ],
+            [
+              512,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "first_tensor"
+        }
+      },
+      "path": "ALTERED_EAGER_NOT_NATIVE"
+    },
+    {
+      "point": "A00_N2",
+      "step": 1,
+      "phase": "DECODE",
+      "file_name": "A00_N2_step01.pt",
+      "bytes": 41704,
+      "sha256": "d83ce5033de30aebb388ed90e7f593404d2458b087b44a2c0ca071ba7d01166b",
+      "positions_max": 512,
+      "positions_shape": [
+        1
+      ],
+      "selected_flattened_rows": [
+        0
+      ],
+      "request_ids": [
+        "4-9d1e0da8"
+      ],
+      "num_tokens": 1,
+      "num_scheduled_tokens": [
+        1
+      ],
+      "sampled_ids": [
+        [
+          9234
+        ]
+      ],
+      "logits_dtype": "torch.bfloat16",
+      "row_mapping": [
+        {
+          "captured_row": 0,
+          "sampler_request_id": "4-9d1e0da8",
+          "completion_request_id": "4",
+          "source": "TRAIN_A_DISCOVERY_00",
+          "flattened_model_row": 0,
+          "position": 512,
+          "position_evidence": "Capture source selects positions==max; stores max and indices, not full position vector. Sampler wrapper asserts logits_indices equal selected indices before saving.",
+          "prompt_token_count": 512,
+          "prompt_token_ids_sha256": "9c0bd2abdbe09ccd65d7e656759a84275a7ce164d32b4f0ae1bf62f387258cf5",
+          "consumed_input_token_id": 785,
+          "consumed_token_evidence": "Last prompt token from private returned prompt IDs (prefill), or previous saved sampled ID and completion prefix (decode); model input_ids not directly saved.",
+          "consumed_history_sha256": "5b38b968d573fa9a188017a5a6823c8621faf0969a02ddf389cda5268e5b3ea5",
+          "sampled_next_token_id": 9234,
+          "sampled_output_position": 513,
+          "all_returned_completion_token_ids": [
+            785,
+            9234
+          ],
+          "num_cached_tokens": 0
+        }
+      ],
+      "boundaries": {
+        "embedding": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              1,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "first_tensor"
+        },
+        "layer0": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              1,
+              2048
+            ],
+            [
+              1,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "layer17": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              1,
+              2048
+            ],
+            [
+              1,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "layer35": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              1,
+              2048
+            ],
+            [
+              1,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "norm": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              1,
+              2048
+            ],
+            [
+              1,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "first_tensor"
+        }
+      },
+      "path": "ALTERED_EAGER_NOT_NATIVE"
+    },
+    {
+      "point": "A01_N2",
+      "step": 0,
+      "phase": "PREFILL",
+      "file_name": "A01_N2_step00.pt",
+      "bytes": 41704,
+      "sha256": "78d7f68bc49f875762dbc57b2895ba0f34cd65fa695470a57437cd827c146e9b",
+      "positions_max": 511,
+      "positions_shape": [
+        512
+      ],
+      "selected_flattened_rows": [
+        511
+      ],
+      "request_ids": [
+        "5-94947168"
+      ],
+      "num_tokens": 512,
+      "num_scheduled_tokens": [
+        512
+      ],
+      "sampled_ids": [
+        [
+          2132
+        ]
+      ],
+      "logits_dtype": "torch.bfloat16",
+      "row_mapping": [
+        {
+          "captured_row": 0,
+          "sampler_request_id": "5-94947168",
+          "completion_request_id": "5",
+          "source": "TRAIN_A_DISCOVERY_01",
+          "flattened_model_row": 511,
+          "position": 511,
+          "position_evidence": "Capture source selects positions==max; stores max and indices, not full position vector. Sampler wrapper asserts logits_indices equal selected indices before saving.",
+          "prompt_token_count": 512,
+          "prompt_token_ids_sha256": "2603f85ea3378081c60adb1a978145bacea62e8777bdf5b1d0624e8cc9fb92bb",
+          "consumed_input_token_id": 198,
+          "consumed_token_evidence": "Last prompt token from private returned prompt IDs (prefill), or previous saved sampled ID and completion prefix (decode); model input_ids not directly saved.",
+          "consumed_history_sha256": "2603f85ea3378081c60adb1a978145bacea62e8777bdf5b1d0624e8cc9fb92bb",
+          "sampled_next_token_id": 2132,
+          "sampled_output_position": 512,
+          "all_returned_completion_token_ids": [
+            2132,
+            4977
+          ],
+          "num_cached_tokens": 0
+        }
+      ],
+      "boundaries": {
+        "embedding": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              512,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "first_tensor"
+        },
+        "layer0": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              512,
+              2048
+            ],
+            [
+              512,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "layer17": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              512,
+              2048
+            ],
+            [
+              512,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "layer35": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              512,
+              2048
+            ],
+            [
+              512,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "norm": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              512,
+              2048
+            ],
+            [
+              512,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "first_tensor"
+        }
+      },
+      "path": "ALTERED_EAGER_NOT_NATIVE"
+    },
+    {
+      "point": "A01_N2",
+      "step": 1,
+      "phase": "DECODE",
+      "file_name": "A01_N2_step01.pt",
+      "bytes": 41704,
+      "sha256": "f0c148e4c7eb0708918440f7dd0d8ec320bc1e98f0ace9da9c2d0ed3a2405653",
+      "positions_max": 512,
+      "positions_shape": [
+        1
+      ],
+      "selected_flattened_rows": [
+        0
+      ],
+      "request_ids": [
+        "5-94947168"
+      ],
+      "num_tokens": 1,
+      "num_scheduled_tokens": [
+        1
+      ],
+      "sampled_ids": [
+        [
+          4977
+        ]
+      ],
+      "logits_dtype": "torch.bfloat16",
+      "row_mapping": [
+        {
+          "captured_row": 0,
+          "sampler_request_id": "5-94947168",
+          "completion_request_id": "5",
+          "source": "TRAIN_A_DISCOVERY_01",
+          "flattened_model_row": 0,
+          "position": 512,
+          "position_evidence": "Capture source selects positions==max; stores max and indices, not full position vector. Sampler wrapper asserts logits_indices equal selected indices before saving.",
+          "prompt_token_count": 512,
+          "prompt_token_ids_sha256": "2603f85ea3378081c60adb1a978145bacea62e8777bdf5b1d0624e8cc9fb92bb",
+          "consumed_input_token_id": 2132,
+          "consumed_token_evidence": "Last prompt token from private returned prompt IDs (prefill), or previous saved sampled ID and completion prefix (decode); model input_ids not directly saved.",
+          "consumed_history_sha256": "b0b82d1894ff8fcc6788a562256598ecc42265b13fe2ccb77cba53b185751360",
+          "sampled_next_token_id": 4977,
+          "sampled_output_position": 513,
+          "all_returned_completion_token_ids": [
+            2132,
+            4977
+          ],
+          "num_cached_tokens": 0
+        }
+      ],
+      "boundaries": {
+        "embedding": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              1,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "first_tensor"
+        },
+        "layer0": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              1,
+              2048
+            ],
+            [
+              1,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "layer17": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              1,
+              2048
+            ],
+            [
+              1,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "layer35": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              1,
+              2048
+            ],
+            [
+              1,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "norm": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                1,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 2048,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              1,
+              2048
+            ],
+            [
+              1,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "first_tensor"
+        }
+      },
+      "path": "ALTERED_EAGER_NOT_NATIVE"
+    },
+    {
+      "point": "B2_N2",
+      "step": 0,
+      "phase": "PREFILL",
+      "file_name": "B2_N2_step00.pt",
+      "bytes": 78551,
+      "sha256": "908d5f2fe814de31530f329143e3657218e1cabbac6a8d4afbb10a6733d1b6cc",
+      "positions_max": 511,
+      "positions_shape": [
+        1024
+      ],
+      "selected_flattened_rows": [
+        511,
+        1023
+      ],
+      "request_ids": [
+        "6-aa4dbba9",
+        "7-97dbf8ad"
+      ],
+      "num_tokens": 1024,
+      "num_scheduled_tokens": [
+        512,
+        512
+      ],
+      "sampled_ids": [
+        [
+          785
+        ],
+        [
+          2132
+        ]
+      ],
+      "logits_dtype": "torch.bfloat16",
+      "row_mapping": [
+        {
+          "captured_row": 0,
+          "sampler_request_id": "6-aa4dbba9",
+          "completion_request_id": "6",
+          "source": "TRAIN_A_DISCOVERY_00",
+          "flattened_model_row": 511,
+          "position": 511,
+          "position_evidence": "Capture source selects positions==max; stores max and indices, not full position vector. Sampler wrapper asserts logits_indices equal selected indices before saving.",
+          "prompt_token_count": 512,
+          "prompt_token_ids_sha256": "9c0bd2abdbe09ccd65d7e656759a84275a7ce164d32b4f0ae1bf62f387258cf5",
+          "consumed_input_token_id": 198,
+          "consumed_token_evidence": "Last prompt token from private returned prompt IDs (prefill), or previous saved sampled ID and completion prefix (decode); model input_ids not directly saved.",
+          "consumed_history_sha256": "9c0bd2abdbe09ccd65d7e656759a84275a7ce164d32b4f0ae1bf62f387258cf5",
+          "sampled_next_token_id": 785,
+          "sampled_output_position": 512,
+          "all_returned_completion_token_ids": [
+            785,
+            9234
+          ],
+          "num_cached_tokens": 0
+        },
+        {
+          "captured_row": 1,
+          "sampler_request_id": "7-97dbf8ad",
+          "completion_request_id": "7",
+          "source": "TRAIN_A_DISCOVERY_01",
+          "flattened_model_row": 1023,
+          "position": 511,
+          "position_evidence": "Capture source selects positions==max; stores max and indices, not full position vector. Sampler wrapper asserts logits_indices equal selected indices before saving.",
+          "prompt_token_count": 512,
+          "prompt_token_ids_sha256": "2603f85ea3378081c60adb1a978145bacea62e8777bdf5b1d0624e8cc9fb92bb",
+          "consumed_input_token_id": 198,
+          "consumed_token_evidence": "Last prompt token from private returned prompt IDs (prefill), or previous saved sampled ID and completion prefix (decode); model input_ids not directly saved.",
+          "consumed_history_sha256": "2603f85ea3378081c60adb1a978145bacea62e8777bdf5b1d0624e8cc9fb92bb",
+          "sampled_next_token_id": 2132,
+          "sampled_output_position": 512,
+          "all_returned_completion_token_ids": [
+            2132,
+            4977
+          ],
+          "num_cached_tokens": 0
+        }
+      ],
+      "boundaries": {
+        "embedding": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              1024,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "first_tensor"
+        },
+        "layer0": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              1024,
+              2048
+            ],
+            [
+              1024,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "layer17": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              1024,
+              2048
+            ],
+            [
+              1024,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "layer35": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              1024,
+              2048
+            ],
+            [
+              1024,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "norm": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              1024,
+              2048
+            ],
+            [
+              1024,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "first_tensor"
+        }
+      },
+      "path": "ALTERED_EAGER_NOT_NATIVE"
+    },
+    {
+      "point": "B2_N2",
+      "step": 1,
+      "phase": "DECODE",
+      "file_name": "B2_N2_step01.pt",
+      "bytes": 78551,
+      "sha256": "5b520d3086a300037c4788ae6d594b3afe5a6cac7fe4f9eb24f24477c197ba2c",
+      "positions_max": 512,
+      "positions_shape": [
+        2
+      ],
+      "selected_flattened_rows": [
+        0,
+        1
+      ],
+      "request_ids": [
+        "6-aa4dbba9",
+        "7-97dbf8ad"
+      ],
+      "num_tokens": 2,
+      "num_scheduled_tokens": [
+        1,
+        1
+      ],
+      "sampled_ids": [
+        [
+          9234
+        ],
+        [
+          4977
+        ]
+      ],
+      "logits_dtype": "torch.bfloat16",
+      "row_mapping": [
+        {
+          "captured_row": 0,
+          "sampler_request_id": "6-aa4dbba9",
+          "completion_request_id": "6",
+          "source": "TRAIN_A_DISCOVERY_00",
+          "flattened_model_row": 0,
+          "position": 512,
+          "position_evidence": "Capture source selects positions==max; stores max and indices, not full position vector. Sampler wrapper asserts logits_indices equal selected indices before saving.",
+          "prompt_token_count": 512,
+          "prompt_token_ids_sha256": "9c0bd2abdbe09ccd65d7e656759a84275a7ce164d32b4f0ae1bf62f387258cf5",
+          "consumed_input_token_id": 785,
+          "consumed_token_evidence": "Last prompt token from private returned prompt IDs (prefill), or previous saved sampled ID and completion prefix (decode); model input_ids not directly saved.",
+          "consumed_history_sha256": "5b38b968d573fa9a188017a5a6823c8621faf0969a02ddf389cda5268e5b3ea5",
+          "sampled_next_token_id": 9234,
+          "sampled_output_position": 513,
+          "all_returned_completion_token_ids": [
+            785,
+            9234
+          ],
+          "num_cached_tokens": 0
+        },
+        {
+          "captured_row": 1,
+          "sampler_request_id": "7-97dbf8ad",
+          "completion_request_id": "7",
+          "source": "TRAIN_A_DISCOVERY_01",
+          "flattened_model_row": 1,
+          "position": 512,
+          "position_evidence": "Capture source selects positions==max; stores max and indices, not full position vector. Sampler wrapper asserts logits_indices equal selected indices before saving.",
+          "prompt_token_count": 512,
+          "prompt_token_ids_sha256": "2603f85ea3378081c60adb1a978145bacea62e8777bdf5b1d0624e8cc9fb92bb",
+          "consumed_input_token_id": 2132,
+          "consumed_token_evidence": "Last prompt token from private returned prompt IDs (prefill), or previous saved sampled ID and completion prefix (decode); model input_ids not directly saved.",
+          "consumed_history_sha256": "b0b82d1894ff8fcc6788a562256598ecc42265b13fe2ccb77cba53b185751360",
+          "sampled_next_token_id": 4977,
+          "sampled_output_position": 513,
+          "all_returned_completion_token_ids": [
+            2132,
+            4977
+          ],
+          "num_cached_tokens": 0
+        }
+      ],
+      "boundaries": {
+        "embedding": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              2,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "first_tensor"
+        },
+        "layer0": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              2,
+              2048
+            ],
+            [
+              2,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "layer17": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              2,
+              2048
+            ],
+            [
+              2,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "layer35": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              2,
+              2048
+            ],
+            [
+              2,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "hidden_plus_residual"
+        },
+        "norm": {
+          "captured_tensors": [
+            {
+              "tuple_index": 0,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            },
+            {
+              "tuple_index": 1,
+              "shape": [
+                2,
+                2048
+              ],
+              "dtype": "torch.bfloat16",
+              "device": "cpu",
+              "finite_elements": 4096,
+              "nonfinite_elements": 0
+            }
+          ],
+          "original_shapes": [
+            [
+              2,
+              2048
+            ],
+            [
+              2,
+              2048
+            ]
+          ],
+          "capture_semantic_label": "first_tensor"
+        }
+      },
+      "path": "ALTERED_EAGER_NOT_NATIVE"
+    }
+  ],
+  "primary_comparisons": [
+    {
+      "comparison_id": "A00_B1_vs_B2_N1_prefill",
+      "source": "TRAIN_A_DISCOVERY_00",
+      "phase": "PREFILL",
+      "position": 511,
+      "left": {
+        "point": "A00_N1",
+        "step": 0,
+        "captured_row": 0,
+        "request_id": "0-ab38c91e"
+      },
+      "right": {
+        "point": "B2_N1",
+        "step": 0,
+        "captured_row": 0,
+        "request_id": "2-9b109ae0"
+      },
+      "input_identity": {
+        "prompts_equal": true,
+        "prompt_token_ids_sha256": "9c0bd2abdbe09ccd65d7e656759a84275a7ce164d32b4f0ae1bf62f387258cf5",
+        "consumed_histories_equal": true,
+        "consumed_history_sha256": "9c0bd2abdbe09ccd65d7e656759a84275a7ce164d32b4f0ae1bf62f387258cf5",
+        "consumed_input_token_id": 198,
+        "direct_model_input_ids_capture": false
+      },
+      "sampled_next_token_ids": [
+        785,
+        785
+      ],
+      "sampled_next_token_equal": true,
+      "boundaries": [
+        {
+          "boundary": "embedding",
+          "completed_decoder_layers": 0,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer0",
+          "completed_decoder_layers": 1,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 1037,
+              "numeric_unequal_count": 1037,
+              "bitwise_equal": false,
+              "abs_max": 0.00390625,
+              "abs_median": 3.0517578125e-05,
+              "RMS": 0.00045107927298209766,
+              "abs_mean": 0.000247240939643234,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "be2e",
+                "be2f"
+              ]
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer17",
+          "completed_decoder_layers": 18,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 1936,
+              "numeric_unequal_count": 1936,
+              "bitwise_equal": false,
+              "abs_max": 0.15625,
+              "abs_median": 0.0078125,
+              "RMS": 0.012336150439886942,
+              "abs_mean": 0.009389604208990932,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "be48",
+                "be4e"
+              ]
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 1913,
+              "numeric_unequal_count": 1913,
+              "bitwise_equal": false,
+              "abs_max": 0.25,
+              "abs_median": 0.0107421875,
+              "RMS": 0.01833683292236872,
+              "abs_mean": 0.013474296778440475,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "3ec9",
+                "3ec3"
+              ]
+            }
+          ]
+        },
+        {
+          "boundary": "layer35",
+          "completed_decoder_layers": 36,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 1903,
+              "numeric_unequal_count": 1903,
+              "bitwise_equal": false,
+              "abs_max": 1.0,
+              "abs_median": 0.025390625,
+              "RMS": 0.04563681882285268,
+              "abs_mean": 0.031141316518187523,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "bfe5",
+                "bfe4"
+              ]
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 1910,
+              "numeric_unequal_count": 1910,
+              "bitwise_equal": false,
+              "abs_max": 0.375,
+              "abs_median": 0.0625,
+              "RMS": 0.10026472457400176,
+              "abs_mean": 0.08006727695465088,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "3faf",
+                "3f96"
+              ]
+            }
+          ]
+        },
+        {
+          "boundary": "norm",
+          "completed_decoder_layers": 36,
+          "tensor_statistics": [
+            {
+              "component": "normalized_hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 1943,
+              "numeric_unequal_count": 1943,
+              "bitwise_equal": false,
+              "abs_max": 0.5,
+              "abs_median": 0.048828125,
+              "RMS": 0.0797068485792635,
+              "abs_mean": 0.06171369552612305,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "be91",
+                "bed0"
+              ]
+            },
+            {
+              "component": "updated_residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 1918,
+              "numeric_unequal_count": 1918,
+              "bitwise_equal": false,
+              "abs_max": 1.0,
+              "abs_median": 0.0703125,
+              "RMS": 0.11153455794574273,
+              "abs_mean": 0.08728277683258057,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "bed8",
+                "bf1c"
+              ]
+            }
+          ]
+        }
+      ],
+      "first_observed_differing_boundary": {
+        "boundary": "layer0",
+        "components": [
+          "hidden"
+        ],
+        "claim_scope": "First differing among five sampled last-query-row boundaries in this altered eager execution only."
+      }
+    },
+    {
+      "comparison_id": "A01_B1_vs_B2_N1_prefill",
+      "source": "TRAIN_A_DISCOVERY_01",
+      "phase": "PREFILL",
+      "position": 511,
+      "left": {
+        "point": "A01_N1",
+        "step": 0,
+        "captured_row": 0,
+        "request_id": "1-8f6f5e89"
+      },
+      "right": {
+        "point": "B2_N1",
+        "step": 0,
+        "captured_row": 1,
+        "request_id": "3-937227a0"
+      },
+      "input_identity": {
+        "prompts_equal": true,
+        "prompt_token_ids_sha256": "2603f85ea3378081c60adb1a978145bacea62e8777bdf5b1d0624e8cc9fb92bb",
+        "consumed_histories_equal": true,
+        "consumed_history_sha256": "2603f85ea3378081c60adb1a978145bacea62e8777bdf5b1d0624e8cc9fb92bb",
+        "consumed_input_token_id": 198,
+        "direct_model_input_ids_capture": false
+      },
+      "sampled_next_token_ids": [
+        2132,
+        2132
+      ],
+      "sampled_next_token_equal": true,
+      "boundaries": [
+        {
+          "boundary": "embedding",
+          "completed_decoder_layers": 0,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer0",
+          "completed_decoder_layers": 1,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 1016,
+              "numeric_unequal_count": 1016,
+              "bitwise_equal": false,
+              "abs_max": 0.0078125,
+              "abs_median": 0.0,
+              "RMS": 0.00046361261903904097,
+              "abs_mean": 0.0002311544376425445,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 3,
+              "first_unequal_BF16_bits_hex": [
+                "3d8b",
+                "3d8a"
+              ]
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer17",
+          "completed_decoder_layers": 18,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 1925,
+              "numeric_unequal_count": 1925,
+              "bitwise_equal": false,
+              "abs_max": 0.09375,
+              "abs_median": 0.0078125,
+              "RMS": 0.011210045097189853,
+              "abs_mean": 0.00878558261319995,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 1,
+              "first_unequal_BF16_bits_hex": [
+                "bd36",
+                "bd89"
+              ]
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 1852,
+              "numeric_unequal_count": 1852,
+              "bitwise_equal": false,
+              "abs_max": 0.125,
+              "abs_median": 0.0107421875,
+              "RMS": 0.017045133789672352,
+              "abs_mean": 0.012919768691062927,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "3f2c",
+                "3f29"
+              ]
+            }
+          ]
+        },
+        {
+          "boundary": "layer35",
+          "completed_decoder_layers": 36,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 1945,
+              "numeric_unequal_count": 1945,
+              "bitwise_equal": false,
+              "abs_max": 1.0,
+              "abs_median": 0.031982421875,
+              "RMS": 0.07149602367456795,
+              "abs_mean": 0.045516759157180786,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "bf9c",
+                "bf96"
+              ]
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 1947,
+              "numeric_unequal_count": 1947,
+              "bitwise_equal": false,
+              "abs_max": 1.0,
+              "abs_median": 0.078125,
+              "RMS": 0.12012705582779051,
+              "abs_mean": 0.09290534257888794,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "bac0",
+                "bc78"
+              ]
+            }
+          ]
+        },
+        {
+          "boundary": "norm",
+          "completed_decoder_layers": 36,
+          "tensor_statistics": [
+            {
+              "component": "normalized_hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 1951,
+              "numeric_unequal_count": 1951,
+              "bitwise_equal": false,
+              "abs_max": 1.5,
+              "abs_median": 0.0625,
+              "RMS": 0.11286905544670227,
+              "abs_mean": 0.08019645512104034,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "bf59",
+                "bf52"
+              ]
+            },
+            {
+              "component": "updated_residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 1957,
+              "numeric_unequal_count": 1957,
+              "bitwise_equal": false,
+              "abs_max": 2.0,
+              "abs_median": 0.09375,
+              "RMS": 0.14704628399977787,
+              "abs_mean": 0.1082754135131836,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "bf9c",
+                "bf98"
+              ]
+            }
+          ]
+        }
+      ],
+      "first_observed_differing_boundary": {
+        "boundary": "layer0",
+        "components": [
+          "hidden"
+        ],
+        "claim_scope": "First differing among five sampled last-query-row boundaries in this altered eager execution only."
+      }
+    },
+    {
+      "comparison_id": "A00_B1_vs_B2_N2_prefill",
+      "source": "TRAIN_A_DISCOVERY_00",
+      "phase": "PREFILL",
+      "position": 511,
+      "left": {
+        "point": "A00_N2",
+        "step": 0,
+        "captured_row": 0,
+        "request_id": "4-9d1e0da8"
+      },
+      "right": {
+        "point": "B2_N2",
+        "step": 0,
+        "captured_row": 0,
+        "request_id": "6-aa4dbba9"
+      },
+      "input_identity": {
+        "prompts_equal": true,
+        "prompt_token_ids_sha256": "9c0bd2abdbe09ccd65d7e656759a84275a7ce164d32b4f0ae1bf62f387258cf5",
+        "consumed_histories_equal": true,
+        "consumed_history_sha256": "9c0bd2abdbe09ccd65d7e656759a84275a7ce164d32b4f0ae1bf62f387258cf5",
+        "consumed_input_token_id": 198,
+        "direct_model_input_ids_capture": false
+      },
+      "sampled_next_token_ids": [
+        785,
+        785
+      ],
+      "sampled_next_token_equal": true,
+      "boundaries": [
+        {
+          "boundary": "embedding",
+          "completed_decoder_layers": 0,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer0",
+          "completed_decoder_layers": 1,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 1037,
+              "numeric_unequal_count": 1037,
+              "bitwise_equal": false,
+              "abs_max": 0.00390625,
+              "abs_median": 3.0517578125e-05,
+              "RMS": 0.00045107927298209766,
+              "abs_mean": 0.000247240939643234,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "be2e",
+                "be2f"
+              ]
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer17",
+          "completed_decoder_layers": 18,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 1936,
+              "numeric_unequal_count": 1936,
+              "bitwise_equal": false,
+              "abs_max": 0.15625,
+              "abs_median": 0.0078125,
+              "RMS": 0.012336150439886942,
+              "abs_mean": 0.009389604208990932,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "be48",
+                "be4e"
+              ]
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 1913,
+              "numeric_unequal_count": 1913,
+              "bitwise_equal": false,
+              "abs_max": 0.25,
+              "abs_median": 0.0107421875,
+              "RMS": 0.01833683292236872,
+              "abs_mean": 0.013474296778440475,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "3ec9",
+                "3ec3"
+              ]
+            }
+          ]
+        },
+        {
+          "boundary": "layer35",
+          "completed_decoder_layers": 36,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 1903,
+              "numeric_unequal_count": 1903,
+              "bitwise_equal": false,
+              "abs_max": 1.0,
+              "abs_median": 0.025390625,
+              "RMS": 0.04563681882285268,
+              "abs_mean": 0.031141316518187523,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "bfe5",
+                "bfe4"
+              ]
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 1910,
+              "numeric_unequal_count": 1910,
+              "bitwise_equal": false,
+              "abs_max": 0.375,
+              "abs_median": 0.0625,
+              "RMS": 0.10026472457400176,
+              "abs_mean": 0.08006727695465088,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "3faf",
+                "3f96"
+              ]
+            }
+          ]
+        },
+        {
+          "boundary": "norm",
+          "completed_decoder_layers": 36,
+          "tensor_statistics": [
+            {
+              "component": "normalized_hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 1943,
+              "numeric_unequal_count": 1943,
+              "bitwise_equal": false,
+              "abs_max": 0.5,
+              "abs_median": 0.048828125,
+              "RMS": 0.0797068485792635,
+              "abs_mean": 0.06171369552612305,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "be91",
+                "bed0"
+              ]
+            },
+            {
+              "component": "updated_residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 1918,
+              "numeric_unequal_count": 1918,
+              "bitwise_equal": false,
+              "abs_max": 1.0,
+              "abs_median": 0.0703125,
+              "RMS": 0.11153455794574273,
+              "abs_mean": 0.08728277683258057,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "bed8",
+                "bf1c"
+              ]
+            }
+          ]
+        }
+      ],
+      "first_observed_differing_boundary": {
+        "boundary": "layer0",
+        "components": [
+          "hidden"
+        ],
+        "claim_scope": "First differing among five sampled last-query-row boundaries in this altered eager execution only."
+      }
+    },
+    {
+      "comparison_id": "A01_B1_vs_B2_N2_prefill",
+      "source": "TRAIN_A_DISCOVERY_01",
+      "phase": "PREFILL",
+      "position": 511,
+      "left": {
+        "point": "A01_N2",
+        "step": 0,
+        "captured_row": 0,
+        "request_id": "5-94947168"
+      },
+      "right": {
+        "point": "B2_N2",
+        "step": 0,
+        "captured_row": 1,
+        "request_id": "7-97dbf8ad"
+      },
+      "input_identity": {
+        "prompts_equal": true,
+        "prompt_token_ids_sha256": "2603f85ea3378081c60adb1a978145bacea62e8777bdf5b1d0624e8cc9fb92bb",
+        "consumed_histories_equal": true,
+        "consumed_history_sha256": "2603f85ea3378081c60adb1a978145bacea62e8777bdf5b1d0624e8cc9fb92bb",
+        "consumed_input_token_id": 198,
+        "direct_model_input_ids_capture": false
+      },
+      "sampled_next_token_ids": [
+        2132,
+        2132
+      ],
+      "sampled_next_token_equal": true,
+      "boundaries": [
+        {
+          "boundary": "embedding",
+          "completed_decoder_layers": 0,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer0",
+          "completed_decoder_layers": 1,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 1016,
+              "numeric_unequal_count": 1016,
+              "bitwise_equal": false,
+              "abs_max": 0.0078125,
+              "abs_median": 0.0,
+              "RMS": 0.00046361261903904097,
+              "abs_mean": 0.0002311544376425445,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 3,
+              "first_unequal_BF16_bits_hex": [
+                "3d8b",
+                "3d8a"
+              ]
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer17",
+          "completed_decoder_layers": 18,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 1925,
+              "numeric_unequal_count": 1925,
+              "bitwise_equal": false,
+              "abs_max": 0.09375,
+              "abs_median": 0.0078125,
+              "RMS": 0.011210045097189853,
+              "abs_mean": 0.00878558261319995,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 1,
+              "first_unequal_BF16_bits_hex": [
+                "bd36",
+                "bd89"
+              ]
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 1852,
+              "numeric_unequal_count": 1852,
+              "bitwise_equal": false,
+              "abs_max": 0.125,
+              "abs_median": 0.0107421875,
+              "RMS": 0.017045133789672352,
+              "abs_mean": 0.012919768691062927,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "3f2c",
+                "3f29"
+              ]
+            }
+          ]
+        },
+        {
+          "boundary": "layer35",
+          "completed_decoder_layers": 36,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 1945,
+              "numeric_unequal_count": 1945,
+              "bitwise_equal": false,
+              "abs_max": 1.0,
+              "abs_median": 0.031982421875,
+              "RMS": 0.07149602367456795,
+              "abs_mean": 0.045516759157180786,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "bf9c",
+                "bf96"
+              ]
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 1947,
+              "numeric_unequal_count": 1947,
+              "bitwise_equal": false,
+              "abs_max": 1.0,
+              "abs_median": 0.078125,
+              "RMS": 0.12012705582779051,
+              "abs_mean": 0.09290534257888794,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "bac0",
+                "bc78"
+              ]
+            }
+          ]
+        },
+        {
+          "boundary": "norm",
+          "completed_decoder_layers": 36,
+          "tensor_statistics": [
+            {
+              "component": "normalized_hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 1951,
+              "numeric_unequal_count": 1951,
+              "bitwise_equal": false,
+              "abs_max": 1.5,
+              "abs_median": 0.0625,
+              "RMS": 0.11286905544670227,
+              "abs_mean": 0.08019645512104034,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "bf59",
+                "bf52"
+              ]
+            },
+            {
+              "component": "updated_residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 1957,
+              "numeric_unequal_count": 1957,
+              "bitwise_equal": false,
+              "abs_max": 2.0,
+              "abs_median": 0.09375,
+              "RMS": 0.14704628399977787,
+              "abs_mean": 0.1082754135131836,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "bf9c",
+                "bf98"
+              ]
+            }
+          ]
+        }
+      ],
+      "first_observed_differing_boundary": {
+        "boundary": "layer0",
+        "components": [
+          "hidden"
+        ],
+        "claim_scope": "First differing among five sampled last-query-row boundaries in this altered eager execution only."
+      }
+    },
+    {
+      "comparison_id": "A00_B1_vs_B2_N2_decode1",
+      "source": "TRAIN_A_DISCOVERY_00",
+      "phase": "DECODE",
+      "position": 512,
+      "left": {
+        "point": "A00_N2",
+        "step": 1,
+        "captured_row": 0,
+        "request_id": "4-9d1e0da8"
+      },
+      "right": {
+        "point": "B2_N2",
+        "step": 1,
+        "captured_row": 0,
+        "request_id": "6-aa4dbba9"
+      },
+      "input_identity": {
+        "prompts_equal": true,
+        "prompt_token_ids_sha256": "9c0bd2abdbe09ccd65d7e656759a84275a7ce164d32b4f0ae1bf62f387258cf5",
+        "consumed_histories_equal": true,
+        "consumed_history_sha256": "5b38b968d573fa9a188017a5a6823c8621faf0969a02ddf389cda5268e5b3ea5",
+        "consumed_input_token_id": 785,
+        "direct_model_input_ids_capture": false
+      },
+      "sampled_next_token_ids": [
+        9234,
+        9234
+      ],
+      "sampled_next_token_equal": true,
+      "boundaries": [
+        {
+          "boundary": "embedding",
+          "completed_decoder_layers": 0,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer0",
+          "completed_decoder_layers": 1,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 546,
+              "numeric_unequal_count": 546,
+              "bitwise_equal": false,
+              "abs_max": 0.00390625,
+              "abs_median": 0.0,
+              "RMS": 0.000293891852168687,
+              "abs_mean": 0.00010764366015791893,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 2,
+              "first_unequal_BF16_bits_hex": [
+                "3dd2",
+                "3dd1"
+              ]
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 167,
+              "numeric_unequal_count": 167,
+              "bitwise_equal": false,
+              "abs_max": 0.0009765625,
+              "abs_median": 0.0,
+              "RMS": 7.800556211451471e-05,
+              "abs_mean": 1.4746561646461487e-05,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 1,
+              "first_unequal_BF16_bits_hex": [
+                "bc77",
+                "bc78"
+              ]
+            }
+          ]
+        },
+        {
+          "boundary": "layer17",
+          "completed_decoder_layers": 18,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 1937,
+              "numeric_unequal_count": 1937,
+              "bitwise_equal": false,
+              "abs_max": 0.09375,
+              "abs_median": 0.00536346435546875,
+              "RMS": 0.008446744348038122,
+              "abs_mean": 0.006462140125222504,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "bdae",
+                "bdc6"
+              ]
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 1842,
+              "numeric_unequal_count": 1842,
+              "bitwise_equal": false,
+              "abs_max": 0.25,
+              "abs_median": 0.0078125,
+              "RMS": 0.014407018037242023,
+              "abs_mean": 0.009985953569412231,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "be19",
+                "be17"
+              ]
+            }
+          ]
+        },
+        {
+          "boundary": "layer35",
+          "completed_decoder_layers": 36,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 1861,
+              "numeric_unequal_count": 1861,
+              "bitwise_equal": false,
+              "abs_max": 1.0,
+              "abs_median": 0.0166015625,
+              "RMS": 0.04464689529718081,
+              "abs_mean": 0.024272076785564423,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "3e9b",
+                "3ea4"
+              ]
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 1899,
+              "numeric_unequal_count": 1899,
+              "bitwise_equal": false,
+              "abs_max": 2.0,
+              "abs_median": 0.05859375,
+              "RMS": 0.09580505491251598,
+              "abs_mean": 0.06601780652999878,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "bf6a",
+                "bf70"
+              ]
+            }
+          ]
+        },
+        {
+          "boundary": "norm",
+          "completed_decoder_layers": 36,
+          "tensor_statistics": [
+            {
+              "component": "normalized_hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 1905,
+              "numeric_unequal_count": 1905,
+              "bitwise_equal": false,
+              "abs_max": 1.0,
+              "abs_median": 0.03289794921875,
+              "RMS": 0.0617881417398384,
+              "abs_mean": 0.04348624497652054,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "bea7",
+                "beaa"
+              ]
+            },
+            {
+              "component": "updated_residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 1898,
+              "numeric_unequal_count": 1898,
+              "bitwise_equal": false,
+              "abs_max": 3.0,
+              "abs_median": 0.0625,
+              "RMS": 0.1219864554861023,
+              "abs_mean": 0.07420611381530762,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "bf1c",
+                "bf1e"
+              ]
+            }
+          ]
+        }
+      ],
+      "first_observed_differing_boundary": {
+        "boundary": "layer0",
+        "components": [
+          "hidden",
+          "residual"
+        ],
+        "claim_scope": "First differing among five sampled last-query-row boundaries in this altered eager execution only."
+      }
+    },
+    {
+      "comparison_id": "A01_B1_vs_B2_N2_decode1",
+      "source": "TRAIN_A_DISCOVERY_01",
+      "phase": "DECODE",
+      "position": 512,
+      "left": {
+        "point": "A01_N2",
+        "step": 1,
+        "captured_row": 0,
+        "request_id": "5-94947168"
+      },
+      "right": {
+        "point": "B2_N2",
+        "step": 1,
+        "captured_row": 1,
+        "request_id": "7-97dbf8ad"
+      },
+      "input_identity": {
+        "prompts_equal": true,
+        "prompt_token_ids_sha256": "2603f85ea3378081c60adb1a978145bacea62e8777bdf5b1d0624e8cc9fb92bb",
+        "consumed_histories_equal": true,
+        "consumed_history_sha256": "b0b82d1894ff8fcc6788a562256598ecc42265b13fe2ccb77cba53b185751360",
+        "consumed_input_token_id": 2132,
+        "direct_model_input_ids_capture": false
+      },
+      "sampled_next_token_ids": [
+        4977,
+        4977
+      ],
+      "sampled_next_token_equal": true,
+      "boundaries": [
+        {
+          "boundary": "embedding",
+          "completed_decoder_layers": 0,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer0",
+          "completed_decoder_layers": 1,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 114,
+              "numeric_unequal_count": 114,
+              "bitwise_equal": false,
+              "abs_max": 0.00390625,
+              "abs_median": 0.0,
+              "RMS": 0.0001773510689693601,
+              "abs_mean": 2.194301487179473e-05,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 8,
+              "first_unequal_BF16_bits_hex": [
+                "b9fd",
+                "b9f2"
+              ]
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer17",
+          "completed_decoder_layers": 18,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 1937,
+              "numeric_unequal_count": 1937,
+              "bitwise_equal": false,
+              "abs_max": 0.09375,
+              "abs_median": 0.005859375,
+              "RMS": 0.009056103913118138,
+              "abs_mean": 0.006999267468927428,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 1,
+              "first_unequal_BF16_bits_hex": [
+                "bcf0",
+                "bd0d"
+              ]
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 1855,
+              "numeric_unequal_count": 1855,
+              "bitwise_equal": false,
+              "abs_max": 0.25,
+              "abs_median": 0.0078125,
+              "RMS": 0.016497210305003625,
+              "abs_mean": 0.010974392294883728,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 0,
+              "first_unequal_BF16_bits_hex": [
+                "bd6c",
+                "bd86"
+              ]
+            }
+          ]
+        },
+        {
+          "boundary": "layer35",
+          "completed_decoder_layers": 36,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 1882,
+              "numeric_unequal_count": 1882,
+              "bitwise_equal": false,
+              "abs_max": 2.0,
+              "abs_median": 0.03125,
+              "RMS": 0.08623137978794924,
+              "abs_mean": 0.040045641362667084,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 1,
+              "first_unequal_BF16_bits_hex": [
+                "bf39",
+                "bf42"
+              ]
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 1887,
+              "numeric_unequal_count": 1887,
+              "bitwise_equal": false,
+              "abs_max": 0.75,
+              "abs_median": 0.07421875,
+              "RMS": 0.11688886134265562,
+              "abs_mean": 0.09130126237869263,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 1,
+              "first_unequal_BF16_bits_hex": [
+                "3f14",
+                "3f1a"
+              ]
+            }
+          ]
+        },
+        {
+          "boundary": "norm",
+          "completed_decoder_layers": 36,
+          "tensor_statistics": [
+            {
+              "component": "normalized_hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 1897,
+              "numeric_unequal_count": 1897,
+              "bitwise_equal": false,
+              "abs_max": 1.0,
+              "abs_median": 0.03125,
+              "RMS": 0.06596665223158733,
+              "abs_mean": 0.044033415615558624,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 1,
+              "first_unequal_BF16_bits_hex": [
+                "bd6f",
+                "bd81"
+              ]
+            },
+            {
+              "component": "updated_residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 1876,
+              "numeric_unequal_count": 1876,
+              "bitwise_equal": false,
+              "abs_max": 2.0,
+              "abs_median": 0.0810546875,
+              "RMS": 0.15438837645952677,
+              "abs_mean": 0.10376358032226562,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion",
+              "first_unequal_hidden_dimension": 1,
+              "first_unequal_BF16_bits_hex": [
+                "be14",
+                "be20"
+              ]
+            }
+          ]
+        }
+      ],
+      "first_observed_differing_boundary": {
+        "boundary": "layer0",
+        "components": [
+          "hidden"
+        ],
+        "claim_scope": "First differing among five sampled last-query-row boundaries in this altered eager execution only."
+      }
+    }
+  ],
+  "repeatability_checks": [
+    {
+      "comparison_id": "A00_B1_prefill_N1_vs_N2",
+      "source": "TRAIN_A_DISCOVERY_00",
+      "phase": "PREFILL",
+      "position": 511,
+      "left": {
+        "point": "A00_N1",
+        "step": 0,
+        "captured_row": 0,
+        "request_id": "0-ab38c91e"
+      },
+      "right": {
+        "point": "A00_N2",
+        "step": 0,
+        "captured_row": 0,
+        "request_id": "4-9d1e0da8"
+      },
+      "input_identity": {
+        "prompts_equal": true,
+        "prompt_token_ids_sha256": "9c0bd2abdbe09ccd65d7e656759a84275a7ce164d32b4f0ae1bf62f387258cf5",
+        "consumed_histories_equal": true,
+        "consumed_history_sha256": "9c0bd2abdbe09ccd65d7e656759a84275a7ce164d32b4f0ae1bf62f387258cf5",
+        "consumed_input_token_id": 198,
+        "direct_model_input_ids_capture": false
+      },
+      "sampled_next_token_ids": [
+        785,
+        785
+      ],
+      "sampled_next_token_equal": true,
+      "boundaries": [
+        {
+          "boundary": "embedding",
+          "completed_decoder_layers": 0,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer0",
+          "completed_decoder_layers": 1,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer17",
+          "completed_decoder_layers": 18,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer35",
+          "completed_decoder_layers": 36,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "norm",
+          "completed_decoder_layers": 36,
+          "tensor_statistics": [
+            {
+              "component": "normalized_hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            },
+            {
+              "component": "updated_residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        }
+      ],
+      "first_observed_differing_boundary": null
+    },
+    {
+      "comparison_id": "A01_B1_prefill_N1_vs_N2",
+      "source": "TRAIN_A_DISCOVERY_01",
+      "phase": "PREFILL",
+      "position": 511,
+      "left": {
+        "point": "A01_N1",
+        "step": 0,
+        "captured_row": 0,
+        "request_id": "1-8f6f5e89"
+      },
+      "right": {
+        "point": "A01_N2",
+        "step": 0,
+        "captured_row": 0,
+        "request_id": "5-94947168"
+      },
+      "input_identity": {
+        "prompts_equal": true,
+        "prompt_token_ids_sha256": "2603f85ea3378081c60adb1a978145bacea62e8777bdf5b1d0624e8cc9fb92bb",
+        "consumed_histories_equal": true,
+        "consumed_history_sha256": "2603f85ea3378081c60adb1a978145bacea62e8777bdf5b1d0624e8cc9fb92bb",
+        "consumed_input_token_id": 198,
+        "direct_model_input_ids_capture": false
+      },
+      "sampled_next_token_ids": [
+        2132,
+        2132
+      ],
+      "sampled_next_token_equal": true,
+      "boundaries": [
+        {
+          "boundary": "embedding",
+          "completed_decoder_layers": 0,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer0",
+          "completed_decoder_layers": 1,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer17",
+          "completed_decoder_layers": 18,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer35",
+          "completed_decoder_layers": 36,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "norm",
+          "completed_decoder_layers": 36,
+          "tensor_statistics": [
+            {
+              "component": "normalized_hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            },
+            {
+              "component": "updated_residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        }
+      ],
+      "first_observed_differing_boundary": null
+    },
+    {
+      "comparison_id": "A00_B2_prefill_N1_vs_N2",
+      "source": "TRAIN_A_DISCOVERY_00",
+      "phase": "PREFILL",
+      "position": 511,
+      "left": {
+        "point": "B2_N1",
+        "step": 0,
+        "captured_row": 0,
+        "request_id": "2-9b109ae0"
+      },
+      "right": {
+        "point": "B2_N2",
+        "step": 0,
+        "captured_row": 0,
+        "request_id": "6-aa4dbba9"
+      },
+      "input_identity": {
+        "prompts_equal": true,
+        "prompt_token_ids_sha256": "9c0bd2abdbe09ccd65d7e656759a84275a7ce164d32b4f0ae1bf62f387258cf5",
+        "consumed_histories_equal": true,
+        "consumed_history_sha256": "9c0bd2abdbe09ccd65d7e656759a84275a7ce164d32b4f0ae1bf62f387258cf5",
+        "consumed_input_token_id": 198,
+        "direct_model_input_ids_capture": false
+      },
+      "sampled_next_token_ids": [
+        785,
+        785
+      ],
+      "sampled_next_token_equal": true,
+      "boundaries": [
+        {
+          "boundary": "embedding",
+          "completed_decoder_layers": 0,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer0",
+          "completed_decoder_layers": 1,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer17",
+          "completed_decoder_layers": 18,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer35",
+          "completed_decoder_layers": 36,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "norm",
+          "completed_decoder_layers": 36,
+          "tensor_statistics": [
+            {
+              "component": "normalized_hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            },
+            {
+              "component": "updated_residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        }
+      ],
+      "first_observed_differing_boundary": null
+    },
+    {
+      "comparison_id": "A01_B2_prefill_N1_vs_N2",
+      "source": "TRAIN_A_DISCOVERY_01",
+      "phase": "PREFILL",
+      "position": 511,
+      "left": {
+        "point": "B2_N1",
+        "step": 0,
+        "captured_row": 1,
+        "request_id": "3-937227a0"
+      },
+      "right": {
+        "point": "B2_N2",
+        "step": 0,
+        "captured_row": 1,
+        "request_id": "7-97dbf8ad"
+      },
+      "input_identity": {
+        "prompts_equal": true,
+        "prompt_token_ids_sha256": "2603f85ea3378081c60adb1a978145bacea62e8777bdf5b1d0624e8cc9fb92bb",
+        "consumed_histories_equal": true,
+        "consumed_history_sha256": "2603f85ea3378081c60adb1a978145bacea62e8777bdf5b1d0624e8cc9fb92bb",
+        "consumed_input_token_id": 198,
+        "direct_model_input_ids_capture": false
+      },
+      "sampled_next_token_ids": [
+        2132,
+        2132
+      ],
+      "sampled_next_token_equal": true,
+      "boundaries": [
+        {
+          "boundary": "embedding",
+          "completed_decoder_layers": 0,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer0",
+          "completed_decoder_layers": 1,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer17",
+          "completed_decoder_layers": 18,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "layer35",
+          "completed_decoder_layers": 36,
+          "tensor_statistics": [
+            {
+              "component": "hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            },
+            {
+              "component": "residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        },
+        {
+          "boundary": "norm",
+          "completed_decoder_layers": 36,
+          "tensor_statistics": [
+            {
+              "component": "normalized_hidden",
+              "tuple_index": 0,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            },
+            {
+              "component": "updated_residual",
+              "tuple_index": 1,
+              "numel": 2048,
+              "bitwise_unequal_count": 0,
+              "numeric_unequal_count": 0,
+              "bitwise_equal": true,
+              "abs_max": 0.0,
+              "abs_median": 0.0,
+              "RMS": 0.0,
+              "abs_mean": 0.0,
+              "finite_difference_count": 2048,
+              "nonfinite_difference_count": 0,
+              "metric_dtype": "CPU float64 after exact BF16 expansion"
+            }
+          ]
+        }
+      ],
+      "first_observed_differing_boundary": null
+    }
+  ],
+  "limitations": [
+    "No internal QKV/attention/MLP sub-boundaries were captured; layer0 output differs but the responsible operation is unlocalized.",
+    "Only the last query row per request was sampled. Earlier-token or previous-prefill KV differences may propagate into the first decode observation.",
+    "Single altered eager capture per input/batch condition; N1/N2 prefill equality is an internal repeat check, not a statistical repeatability study.",
+    "CPU copies and hooks synchronize/change timing; compilation and graph replay are disabled. No native causal equivalence or native timing conclusion follows.",
+    "No raw logits tensor, logprob or probability was saved here; sampled token equality does not imply equal logits/probabilities.",
+    "Runtime prompt token identity and sampled history match, but full model input_ids/positions/query_start_loc snapshots were not saved; preserved explicit mapping evidence is described above.",
+    "Large tensors stay in .private/NUMERIC/boundaries; public output includes hashes, shapes and aggregate comparisons only."
+  ],
+  "source_manifest": [
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/util/ai_workload_research/decode_memory_compute_v10/sparse_boundaries.py",
+      "bytes": 3812,
+      "sha256": "7d1eef72cbd3428fb5ddc869c1dd7f60c8abbbb1c141cb1f9ecd744375faac63"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/util/ai_workload_research/decode_memory_compute_v10/worker.py",
+      "bytes": 14785,
+      "sha256": "f9a883218a49eaf7476670b2ec2148f6647ac8ae7a6644c7ce8b056dcf59bd62"
+    },
+    {
+      "path": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1/lib/python3.12/site-packages/vllm/model_executor/models/qwen2.py",
+      "bytes": 18709,
+      "sha256": "eb2f0eeb13c57a28bbc06bc64afff18cd8865f89fbe9ff2a3cf3a896f037cfe9"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/.private/NUMERIC/boundaries/INDEX.json",
+      "bytes": 4630,
+      "sha256": "07cfbca74082c9bd3cda1ff2a16751fc72a222b5179c38acbbedf22df21992f8"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/.private/NUMERIC/completions.jsonl",
+      "bytes": 21222,
+      "sha256": "8db5c18fc64e5e8183142d65fc7b48dee733beb6f92630dac504388893a7f5c6"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/.private/NUMERIC/WORKER_IDENTITY.json",
+      "bytes": 388,
+      "sha256": "d80412fed2aa603dd38b63a9735bd70334c393404fbc09f9e6638a1749a60b07"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/.private/NUMERIC/LAUNCH.json",
+      "bytes": 435,
+      "sha256": "3be119a09c15bfe3b8ca9f9bd788a404a10715edd43f466213d8bced1ba25445"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/.private/NUMERIC/WORKER_FINISHED.json",
+      "bytes": 452,
+      "sha256": "f4104ba3b071c2c9e9ae91ec9151ab82e58bea82185c4e6178a231e0b0c263d5"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/raw/NUMERIC.json",
+      "bytes": 46398,
+      "sha256": "77cf22d61eafd55c31a0c3e5e6808da35ffb01f2c78cff1215b4a479e279e8cc"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/raw/NUMERIC_records.jsonl",
+      "bytes": 11494,
+      "sha256": "99fd2aa1bffda961f9e88d264be449452086a9bf92ccb7a8d6b5a49ebe59025c"
+    }
+  ],
+  "validation": {
+    "capture_files9_sha256_match_INDEX": true,
+    "capture_paths_altered": true,
+    "all_expected_boundaries_and_pair_shapes": true,
+    "all_request_ID_base_and_source_mappings_match": true,
+    "selected_rows_match_schedule_cumulative_last_rows": true,
+    "positions_expected511_512": true,
+    "sampled_IDs_match_private_completions": true,
+    "matched_comparison_histories": true,
+    "repeat_prefill_bitwise_equal": true,
+    "finite_all": true
+  }
+}

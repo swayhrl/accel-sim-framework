@@ -1,0 +1,519 @@
+{
+  "schema": "V10_CPU_COST_LEDGER_V1",
+  "created_utc": "2026-11-05T03:06:29.132009+00:00",
+  "status": "CPU_RECOMPUTED_FROM_READ_ONLY_V9_NSYS_SQLITE_NO_NEW_GPU_COLLECTION",
+  "scope": {
+    "v9_read_only": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9",
+    "v10_output": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-memory-compute-attribution-109-v10/docs/ai_workload_research/runs/QWEN_DECODE_MEMORY_COMPUTE_ATTRIBUTION_109_V10/cpu",
+    "gpu_cuda_nvml_calls": false,
+    "import_torch_vllm": false,
+    "B1": "A00_N32: one frozen 512-token A00 request, 32 returned tokens => 31 actual incremental decode forwards.",
+    "B2": "B2_N32: one batch containing frozen A00+A01 requests, not two serial B1 requests; 32 returned tokens/request =>31 batch decode forwards.",
+    "N1_caveat": "A00_N1 and B2_N1 mean output length one and have prefill only; do not label these as first incremental decode.",
+    "native_timing": "These are profiled timeline observations; formal LP_NONE curve remains separate."
+  },
+  "method": {
+    "assignment": "Unique CUDA runtime correlationId joins every collected kernel to a host API; API start must lie in same-globalTid request and exactly one FORWARD/SAMPLE NVTX phase. Decode step combines FORWARD and SAMPLE phases with matching step number. Includes preparation, graph kernels, lm_head and sampling; no GPU-time containment assumption.",
+    "step_span": "GPU_kernel_step_span_ms = last assigned kernel end - first assigned kernel start. This is observed GPU kernel hull, not a newly synchronized per-step wall latency.",
+    "CPU_submission_marker_hull": "Host FORWARD/SAMPLE marker hull is asynchronous submission scope; do not add it to GPU time or call it CPU exclusive cost.",
+    "union": "Half-open [start,end) union on the NSYS timebase, independently for all kernels, dense GEMV/GEMM kernels, non-dense kernels and all activity. Dense/non-dense intersection explicitly reported. Summed kernel durations are separate and can overlap.",
+    "dense_classifier": "Case-insensitive gemv|gemm in full demangled kernel name. FlashAttention names contain cutlass::bfloat16_t but no gemm/gemv and are non-dense. Exactly145 dense nodes per decode step =36*4 projections+1lm_head.",
+    "overlap": "Kernel union = dense union + non-dense union - intersection. Do not add CPU API duration, model bandwidth time, NCU node time, or memcpy/memset union on top.",
+    "gap": "GPU kernel hull minus kernel union is unoccupied by collected kernels; it may include copies, runtime scheduling, missing trace activity or profiler effects. Not identified as native CPU time.",
+    "shape": "Logical dimensions and cached compiled contracts are separate from raw launch arguments. NSYS kernel table stores grid/block/resources, not GEMM M/N/K or tensor pointers. Per-node layer/op labels beyond the first are source-order inferences, not direct module-name measurements.",
+    "coverage_caveats": [
+      "Process was launched by the profiler, see /home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/.private/NSYS/tmp/nvidia/nsight_systems/quadd_session_103707754/streams/pid_3707765_stdout.log and stderr.log for program output",
+      "Common injection library initialized successfully.",
+      "Buffers holding CUDA trace data will be flushed on CudaProfilerStop() call. See --flush-on-cudaprofilerstop to control this behavior.",
+      "Loaded CUPTI library: /opt/nvidia/nsight-systems/2024.6.2/target-linux-x64/libcupti.so.12.8",
+      "Installed CUDA driver version (13.0) is not supported by this build of Nsight Systems. CUDA trace will be collected using libraries for driver version 12.8",
+      "CUDA injection initialized successfully.",
+      "NVTX injection initialized successfully.",
+      "Profiling has started.",
+      "Profiling started due to cudaProfilerStart API invoked in the application.",
+      "Not all NVTX events might have been collected.",
+      "Number of NVTX events collected: \t203.",
+      "Not all CUDA events might have been collected.",
+      "Number of CUDA events collected: \t38071.",
+      "Profiling has stopped.",
+      "Number of CUPTI events produced: \t39523, CUPTI buffers: 50."
+    ]
+  },
+  "summary": {
+    "A00_N32": {
+      "steps": 31,
+      "total_kernels": 12836,
+      "total_dense_kernels": 4495,
+      "GPU_kernel_step_span_ms": {
+        "sum": 315.102482,
+        "mean": 10.164596193548388,
+        "median": 10.162782,
+        "min": 10.157374,
+        "max": 10.206686
+      },
+      "GPU_kernel_union_ms": {
+        "sum": 313.1316,
+        "mean": 10.10101935483871,
+        "median": 10.099925,
+        "min": 10.093651,
+        "max": 10.142967
+      },
+      "dense_union_ms": {
+        "sum": 295.363297,
+        "mean": 9.52784829032258,
+        "median": 9.527035,
+        "min": 9.521659,
+        "max": 9.55196
+      },
+      "dense_summed_ms": {
+        "sum": 295.363297,
+        "mean": 9.52784829032258,
+        "median": 9.527035,
+        "min": 9.521659,
+        "max": 9.55196
+      },
+      "non_dense_union_ms": {
+        "sum": 17.768303,
+        "mean": 0.573171064516129,
+        "median": 0.571901,
+        "min": 0.57088,
+        "max": 0.591007
+      },
+      "non_dense_summed_ms": {
+        "sum": 17.768303,
+        "mean": 0.573171064516129,
+        "median": 0.571901,
+        "min": 0.57088,
+        "max": 0.591007
+      },
+      "dense_non_dense_overlap_ms": {
+        "sum": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "span_not_covered_by_kernels_ms": {
+        "sum": 1.970882,
+        "mean": 0.06357683870967742,
+        "median": 0.063364,
+        "min": 0.062119,
+        "max": 0.06497
+      },
+      "all_GPU_activity_union_ms": {
+        "sum": 314.109423,
+        "mean": 10.132562032258065,
+        "median": 10.13163,
+        "min": 10.125587,
+        "max": 10.175383
+      },
+      "CPU_submission_marker_hull_ms": {
+        "sum": 29.525645,
+        "mean": 0.9524401612903226,
+        "median": 0.939468,
+        "min": 0.908503,
+        "max": 1.055957
+      },
+      "dense_fraction_of_kernel_union": 0.9432561165976222
+    },
+    "B2_N32": {
+      "steps": 31,
+      "total_kernels": 15068,
+      "total_dense_kernels": 4495,
+      "GPU_kernel_step_span_ms": {
+        "sum": 325.187792,
+        "mean": 10.489928774193547,
+        "median": 10.484734,
+        "min": 10.477215,
+        "max": 10.578719
+      },
+      "GPU_kernel_union_ms": {
+        "sum": 324.091425,
+        "mean": 10.454562096774193,
+        "median": 10.448925,
+        "min": 10.442933,
+        "max": 10.544666
+      },
+      "dense_union_ms": {
+        "sum": 301.494661,
+        "mean": 9.725634225806452,
+        "median": 9.719707,
+        "min": 9.715867,
+        "max": 9.810366
+      },
+      "dense_summed_ms": {
+        "sum": 301.494661,
+        "mean": 9.725634225806452,
+        "median": 9.719707,
+        "min": 9.715867,
+        "max": 9.810366
+      },
+      "non_dense_union_ms": {
+        "sum": 22.781117000000002,
+        "mean": 0.7348747419354839,
+        "median": 0.734563,
+        "min": 0.732095,
+        "max": 0.739996
+      },
+      "non_dense_summed_ms": {
+        "sum": 22.781117000000002,
+        "mean": 0.7348747419354839,
+        "median": 0.734563,
+        "min": 0.732095,
+        "max": 0.739996
+      },
+      "dense_non_dense_overlap_ms": {
+        "sum": 0.184353,
+        "mean": 0.005946870967741935,
+        "median": 0.005984,
+        "min": 0.005696,
+        "max": 0.006272
+      },
+      "span_not_covered_by_kernels_ms": {
+        "sum": 1.0963669999999999,
+        "mean": 0.035366677419354835,
+        "median": 0.035139,
+        "min": 0.033347,
+        "max": 0.039332
+      },
+      "all_GPU_activity_union_ms": {
+        "sum": 324.197761,
+        "mean": 10.457992290322581,
+        "median": 10.452346,
+        "min": 10.445749,
+        "max": 10.549178
+      },
+      "CPU_submission_marker_hull_ms": {
+        "sum": 31.524586,
+        "mean": 1.016922129032258,
+        "median": 0.99083,
+        "min": 0.9611,
+        "max": 1.210727
+      },
+      "dense_fraction_of_kernel_union": 0.9302765755064331
+    }
+  },
+  "B2_vs_B1": {
+    "GPU_kernel_step_span_ms": {
+      "B2_minus_B1_mean_ms": 0.3253325806451599,
+      "B2_over_B1_mean_ratio": 1.0320064441764694
+    },
+    "GPU_kernel_union_ms": {
+      "B2_minus_B1_mean_ms": 0.35354274193548285,
+      "B2_over_B1_mean_ratio": 1.035000699386456
+    },
+    "dense_union_ms": {
+      "B2_minus_B1_mean_ms": 0.19778593548387136,
+      "B2_over_B1_mean_ratio": 1.0207587200653438
+    },
+    "non_dense_union_ms": {
+      "B2_minus_B1_mean_ms": 0.16170367741935487,
+      "B2_over_B1_mean_ratio": 1.282121145727873
+    },
+    "span_not_covered_by_kernels_ms": {
+      "B2_minus_B1_mean_ms": -0.02821016129032259,
+      "B2_over_B1_mean_ratio": 0.556282415690031
+    },
+    "additive_kernel_hull_difference_ms_per_step": {
+      "identity": "delta hull = delta dense union + delta non-dense union - delta intersection + delta uncovered kernel-hull gap; this is a partition identity on this trace, not independent time components from separate tools.",
+      "dense_union": 0.19778593548387136,
+      "non_dense_union": 0.16170367741935487,
+      "negative_overlap_delta": -0.005946870967741935,
+      "uncovered_kernel_hull_gap": -0.02821016129032259,
+      "total_kernel_hull_delta": 0.3253325806451599
+    },
+    "extra_direct_copy_kernels": {
+      "B2_count_total": 2232,
+      "B2_count_per_step": 72,
+      "B1_count": 0,
+      "grade": "OBSERVED_NAME_COUNT",
+      "interpretation": "72 additional direct_copy elementwise kernels per B2 step; consistent with two copies per36decoder layers near attention, but not separately proven tensor identities. Dense node count remains145 per batch step."
+    }
+  },
+  "reconciliation": [
+    {
+      "point": "A00_N32",
+      "steps": 31,
+      "kernel_count": 12836,
+      "kernel_union_total_ms": 313.1316,
+      "dense_union_total_ms": 295.363297,
+      "matches_V9_TIMELINE_step_count_kernel_counts_union_and_span": true,
+      "manager_descriptor": "BatchExecutionDescriptor(cg_mode=<CUDAGraphMode.FULL: 2>, num_tokens=1, num_reqs=1, uniform_token_count=1, max_query_len=None, num_active_loras=0, num_ubatches=1)"
+    },
+    {
+      "point": "B2_N32",
+      "steps": 31,
+      "kernel_count": 15068,
+      "kernel_union_total_ms": 324.091425,
+      "dense_union_total_ms": 301.494661,
+      "matches_V9_TIMELINE_step_count_kernel_counts_union_and_span": true,
+      "manager_descriptor": "BatchExecutionDescriptor(cg_mode=<CUDAGraphMode.FULL: 2>, num_tokens=2, num_reqs=2, uniform_token_count=1, max_query_len=None, num_active_loras=0, num_ubatches=1)"
+    }
+  ],
+  "dense_first_node_matching": {
+    "grade": "SAME_LOGICAL_SOURCE_OP_COMPILED_CONTRACT_PLUS_ORDER_GRID_MATCH; RAW_KERNEL_PARAMETERS_UNOBSERVED",
+    "identity": "model.layers.0.self_attn.qkv_proj, packed biased QKV linear",
+    "model_shapes": {
+      "hidden_size": 2048,
+      "heads": 16,
+      "KV_heads": 2,
+      "head_dim": 128,
+      "Q_width": 2048,
+      "K_width": 256,
+      "V_width": 256,
+      "packed_QKV_width": 2560,
+      "BF16_weight_shape": [
+        2560,
+        2048
+      ],
+      "BF16_weight_bytes": 10485760,
+      "BF16_bias_shape": [
+        2560
+      ],
+      "B1_input_shape": [
+        1,
+        2048
+      ],
+      "B2_input_shape": [
+        2,
+        2048
+      ],
+      "outputs_B1_B2": [
+        [
+          1,
+          2560
+        ],
+        [
+          2,
+          2560
+        ]
+      ]
+    },
+    "cached_compilation_evidence": [
+      {
+        "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/.private/NSYS/compilation/rank_0_0/backbone/computation_graph.py",
+        "lines": [
+          556,
+          574
+        ],
+        "finding": "submod_0 explicitly names layer0 qkv weight/bias; embedding -> rms_norm -> linear bf16[s72,2560], then split [2048,256,256]."
+      },
+      {
+        "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/.private/NSYS/vllm/torch_compile_cache/torch_aot_compile/c159787be9fd1a9231c01c0dd24cfcfe41773e8745e34dcda927917ff1090e8e/inductor_cache/y4/cy4engdtvxatgfis5ow3p2lxyujcnesxvxmhyqrylgheorfv6xlz.py",
+        "lines": [
+          612,
+          636
+        ],
+        "finding": "s72=input argument; buf2[s72,2048]; asserts weight[2560,2048], bias[2560]; extern_kernels.addmm(bias,buf2,weight^T[2048,2560],out[s72,2560])."
+      }
+    ],
+    "manager_descriptor_evidence": {
+      "A00_N32": {
+        "BatchExecutionDescriptor(cg_mode=<CUDAGraphMode.FULL: 2>, num_tokens=1, num_reqs=1, uniform_token_count=1, max_query_len=None, num_active_loras=0, num_ubatches=1)": 31
+      },
+      "B2_N32": {
+        "BatchExecutionDescriptor(cg_mode=<CUDAGraphMode.FULL: 2>, num_tokens=2, num_reqs=2, uniform_token_count=1, max_query_len=None, num_active_loras=0, num_ubatches=1)": 31
+      }
+    },
+    "first_dense_nodes": {
+      "A00_N32": {
+        "point": "A00_N32",
+        "batch_requests": 1,
+        "decode_step": 1,
+        "step_kernel_ordinal_zero_based": 9,
+        "dense_ordinal_zero_based": 0,
+        "sqlite_kernel_rowid": 1159,
+        "start_ns": 181627417,
+        "end_ns": 181646393,
+        "duration_ns": 18976,
+        "phase": "V9_FORWARD_DECODE_STEP01",
+        "catalog_id": "K009",
+        "dense_gemv_gemm": true,
+        "kernel_name": "std::enable_if<!T7, void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, float, (bool)0, (bool)1, (bool)1, (bool)0, (int)6, (bool)0, cublasGemvParamsEx<int, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<const __nv_bfloat16>, cublasGemvTensorStridedBatched<__nv_bfloat16>, float>>(T13)",
+        "gridX": 640,
+        "gridY": 1,
+        "gridZ": 1,
+        "blockX": 16,
+        "blockY": 4,
+        "blockZ": 1,
+        "registers_per_thread": 168,
+        "static_shared_bytes": 0,
+        "dynamic_shared_bytes": 272,
+        "graphNodeId": 2907692859393,
+        "correlationId": 17829,
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "inferred_layer_zero_based": 0,
+        "inferred_op": "self_attn.qkv_proj",
+        "compiled_contract_M": 1,
+        "compiled_contract_K": 2048,
+        "compiled_contract_N": 2560,
+        "logical_weight_BF16_bytes": 10485760,
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      },
+      "B2_N32": {
+        "point": "B2_N32",
+        "batch_requests": 2,
+        "decode_step": 1,
+        "step_kernel_ordinal_zero_based": 9,
+        "dense_ordinal_zero_based": 0,
+        "sqlite_kernel_rowid": 14378,
+        "start_ns": 574130699,
+        "end_ns": 574149260,
+        "duration_ns": 18561,
+        "phase": "V9_FORWARD_DECODE_STEP01",
+        "catalog_id": "K036",
+        "dense_gemv_gemm": true,
+        "kernel_name": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_128x2_tn_align8>(T1::Params)",
+        "gridX": 8,
+        "gridY": 20,
+        "gridZ": 1,
+        "blockX": 32,
+        "blockY": 1,
+        "blockZ": 1,
+        "registers_per_thread": 120,
+        "static_shared_bytes": 0,
+        "dynamic_shared_bytes": 16896,
+        "graphNodeId": 2894807957505,
+        "correlationId": 38271,
+        "runtime_API": "cudaGraphLaunch_v10000",
+        "inferred_layer_zero_based": 0,
+        "inferred_op": "self_attn.qkv_proj",
+        "compiled_contract_M": 2,
+        "compiled_contract_K": 2048,
+        "compiled_contract_N": 2560,
+        "logical_weight_BF16_bytes": 10485760,
+        "shape_grade": "COMPILED_CONTRACT_PLUS_MANAGER_DESCRIPTOR_AND_ORDER_NOT_RAW_LAUNCH_ARGUMENTS"
+      }
+    },
+    "matching_strength": "First dense node after fused embedding+RMSNorm and before RoPE/cache/attention matches cached submod_0's single addmm. B1 GEMV and B2 CUTLASS GEMM differ as implementations of the same source projection; manager descriptors show1/2token graph inputs. B2 has145 projections per batch step, not290 serial projections.",
+    "what_is_not_proven": "SQLite has no raw GEMM parameter struct, no matrix pointers, no direct module annotation on kernel row. Grid alone is not an injective mapping to M/N/K; do not infer B2 M from gridX=8 or treat8 as batch.",
+    "low_overhead_method": [
+      "CPU-only now: bind request+DECODE_STEP01 using NVTX/API correlation; select the first gemv|gemm node within first decodeGraph; preserve catalog name/grid/block/graphNodeId plus its preceding embedding/RMSNorm and following RoPE/cache sequence.",
+      "Match compiled submod_0 cached source and the graph-manager descriptor token count1/2, with source hashes. This gives a reviewable same-logical-op/shape contract without layer hooks, tensor copies or a new GPU run.",
+      "For a future minimal counter replay select exactly first filtered dense node in the first true incremental decodeGraph, not prefill and not an arbitrary global launch ordinal. Validate the observed grid/block and sequence against this ledger, abort attribution if mismatch.",
+      "Preserve an NCU launch record containing actual kernel argument dimensions if tooling exposes them, or a CPU/API argument record of cublas addmm/GEMM shape during capture with pointer-to-parameter mapping. If added instrumentation changes the graph/path, label the result diagnostic altered path; do not substitute for native evidence.",
+      "Avoid internal nn.Module hooks under native compile/replay; they can be skipped or alter compilation. Do not use seven-pass whole-allocation kernel replay again merely to establish shape: compiled source plus runtime descriptor already narrows this target, while V9 B2 was resource-censored."
+    ]
+  },
+  "DRAM_and_conditional_weight_model": {
+    "full_step_B1_DRAM_bytes": null,
+    "full_step_B2_DRAM_bytes": null,
+    "full_application_DRAM_bytes": null,
+    "observed_counter_scope": "Only one filtered kernel from first decodeGraph of A00_N32 in separate NCU run, seven kernel-replay passes, cache-control none and clock-control none; not whole step and not joined to NSYS timestamp.",
+    "observed_B1_single_node": {
+      "read_bytes": 10505728,
+      "write_bytes": 1280,
+      "duration_ns": 18464.0,
+      "grid": "(640, 1, 1)",
+      "block": "(16, 4, 1)",
+      "weight_model_bytes": 10485760,
+      "read_over_weight_model": 1.001904296875,
+      "replayed_read_GB_s": 568.9844020797227
+    },
+    "B2_counter_status": "RESOURCE_CENSORED_NO_COMPLETED_COUNTER_VALUES; no measured B2/B1 DRAM ratio.",
+    "resource_context": {
+      "cgroup_charged_peak_bytes": 20769722368,
+      "cap_bytes": 17179869184,
+      "NCU_B2_exit_code": -15,
+      "note": "NCU backup-accessible/backed-up bytes are profiler replay state, not application DRAM read counts."
+    },
+    "conditional_model": {
+      "dense_BF16_weight_payload_per_batch_step_bytes": 6171394048,
+      "same_payload_for_B1_and_B2_with_ideal_within_step_reuse": true,
+      "B2_not_two_weight_passes_assumed": "One batch GEMM can reuse a weight read for2rows. Two passes would be a separate model, not an inference from B=2.",
+      "no_retention_streaming_reference_per_step_ms": 8.609645714285714,
+      "L2_credit_reference_per_step_ms": 8.516022857142858,
+      "nominal_B_s": 716800000000.0,
+      "nominal_source": "https://www.msi.com/Graphics-Card/GeForce-RTX-4080-16GB-SUPRIM/Specification",
+      "L2_credit_bytes": 67108864,
+      "conditional_dense_FLOPs_B1": 6171394048,
+      "conditional_dense_FLOPs_B2": 12342788096,
+      "not_measured_DRAM_or_compute_utilization": true,
+      "assumptions": [
+        "Dense BF16 projections and full-vocabulary tied head evaluated every incremental step; no quantization/compression/speculation/skip/offload.",
+        "Output32 minus output1 approximates31 extra forward steps; first prefill/sampling/graph planning may differ, so measured difference is not pure decode.",
+        "No-retention scenario rereads dense matrices once per step, ideal perfect within-step reuse. It is a conditional streaming reference, not unconditional physical lower bound.",
+        "L2-credit model assumes at most64MiB of persistent weight data, no persistent L1/register residency across steps; all other dense weights fetched from DRAM at least once. Capacity and that assumption are not newly measured.",
+        "Nominal rated bandwidth is optimistic; no DRAM counters, achieved clock, refresh, write/activation/KV/logprob overhead, contention or overlap measured.",
+        "Ideal B2 reuses same weight pass for both requests, hence batch delta near single average; two independent passes give near2. H2 can also yield ratios near1 or2."
+      ]
+    }
+  },
+  "formal_curve_context": {
+    "slope_ratio_B2_over_mean_B1": 1.0318447962992463,
+    "source": "V9 CURVE_ANALYSIS.json; not recomputed from profiler timeline",
+    "interpretation": "Small B2/B1 total-slope ratio does not by itself distinguish memory traffic, achieved bandwidth, changed kernels, compute cost or non-dense overhead. Timeline dense/non-dense costs are separate observational evidence.",
+    "comparison_scope_caveat": "Timeline B1 is A00 only. Formal curve ratio uses mean B1 of separately observed A00 and A01; do not equate these denominators."
+  },
+  "source_manifest": [
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/.private/NSYS/trace.sqlite",
+      "bytes": 3858432,
+      "sha256": "9235252a5cfd29cce7d3ad0cd7815f9f181c320e955d9517f22b793cf522f7b1"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/TIMELINE_ANALYSIS.json",
+      "bytes": 64580,
+      "sha256": "23dc9a9b9b41411f3ab2b8b0e796b89df1d09d09c3c7fc3429a7cebcccc3a172"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/CURVE_ANALYSIS.json",
+      "bytes": 76871,
+      "sha256": "1d126c1a6fd5faaf9e9dcaffc658a2ee11823a2b4a1b6057a65f09df19affc86"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/HARDWARE_COUNTERS.json",
+      "bytes": 6053,
+      "sha256": "47c378f775ba4f8267cf2e967c1291c97a155626b5b4df55c1f435de1cdc0116"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/RESOURCE_ANALYSIS.json",
+      "bytes": 1651,
+      "sha256": "ea0c6588c155eb1c1b1e2f25bd9a5c1e5bf5b9bbcbe120fa67a28c2b3e660303"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/MODEL_AND_BANDWIDTH_BOUND.json",
+      "bytes": 2456,
+      "sha256": "652b755a2966613258be9f049a7c564a59e34828cd4af06ca078b66f0c301d80"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/PRIVATE_RAW_INDEX.json",
+      "bytes": 7413,
+      "sha256": "d7baae424f46e04710b4a25ed42348d5b5c6641bf872eaddf61ecdcc71c797f6"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/raw/NSYS_records.jsonl.gz",
+      "bytes": 1797,
+      "sha256": "20ae61b79571739edd6fdd33c0ad78da94a6c56c9cdc51840966f729fabb0553"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/raw/EXECUTED_PROFILE_MARKERS.PY.txt",
+      "bytes": 1329,
+      "sha256": "757b1264c2a7851f3ffe62e0faf4a37e640e6ad819a200269f8c5143dbaf3f03"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/.private/NSYS/compilation/rank_0_0/backbone/computation_graph.py",
+      "bytes": 810749,
+      "sha256": "6dee87cf10e38fd652b3716a41db29584bff91c448ef2dca41af48459e59cc0d"
+    },
+    {
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/.private/NSYS/vllm/torch_compile_cache/torch_aot_compile/c159787be9fd1a9231c01c0dd24cfcfe41773e8745e34dcda927917ff1090e8e/inductor_cache/y4/cy4engdtvxatgfis5ow3p2lxyujcnesxvxmhyqrylgheorfv6xlz.py",
+      "bytes": 45079,
+      "sha256": "66dacd116effe98abb2f778708764400134c18cb52a44a91fc67ec7920e43b65"
+    }
+  ],
+  "validation": {
+    "all_collected_kernels_unique_request_phase_join": true,
+    "kernel_rows_joined": 29436,
+    "decode_steps": 62,
+    "decode_node_rows": 27904,
+    "every_step_dense_nodes145": true,
+    "V9_step_kernel_counts_union_span_exact": true,
+    "writes_confined_to_V10_cpu": true
+  },
+  "full_exact_details_archive": {
+    "path": "COST_LEDGER.json.gz",
+    "uncompressed_sha256": "d5badbdb19d8e6f22e3ccb992344285907d53b8b56cdb87279cc51c96786790c",
+    "original_bytes": 371360
+  }
+}

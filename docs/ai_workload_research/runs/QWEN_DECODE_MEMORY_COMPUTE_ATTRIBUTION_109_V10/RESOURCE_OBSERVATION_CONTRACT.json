@@ -1,0 +1,16 @@
+{
+  "inherits": "V7lifecycle+V9sharedresident/cgroup",
+  "limits": {
+    "goal_seconds": 7200,
+    "GPU_lock_seconds": 1800,
+    "own_NVML_MiB": 15400,
+    "RSS_cgroup_bytes": 17179869184,
+    "disk_bytes": 3221225472
+  },
+  "soft_NCU_subtask_guard_GiB": 10,
+  "soft_guard_action": "Terminateonlyownprofiler;requirecontextdrainandvalidhardcapbeforeothertasks",
+  "hard_cap_action": "StopallGPUwork;nootherGPUtasks",
+  "lock": "One nonblocking flock EX|NB",
+  "sampling_seconds": 0.1,
+  "desktop_telemetry_gap": "Retained;notexclusiveGPU"
+}
