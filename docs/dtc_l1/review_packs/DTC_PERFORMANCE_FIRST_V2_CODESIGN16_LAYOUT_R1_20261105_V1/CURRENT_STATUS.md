@@ -1,13 +1,13 @@
 # DTC-L1 Physical × PIB — R1 current status
 
-Checked: 2026-11-05T08:22:59.084954+00:00
+Checked: 2026-11-05T08:53:22.452833+00:00
 Source state: **SOURCE_QUALIFIED**.
 Fixed population: eight inputs × two uniform profiles;16 planned cells.
 已消费身份：**16**；未消费身份：**0**（源为已核 RUNTIME_CONTEXT；pending 不等于未启动；此服务不现场推断 running）。
 Accepted: **11**; archived negative: **0**; actual closed: **11**.
-Provider SHA256: `d221f84469fe71f873ce438d2915afc614fb70e3895cf09d0a0fd6c94a2d5007`.
+Provider SHA256: `54ea68c2fcea46769eda8928d359d46bde5ec3f384b75b2038c7acbb3b994da0`.
 
-[Current lightweight rows](light_snapshots/d221f84469fe71f873ce/LIGHT_RESULTS.json) · [Exact B summary](light_snapshots/d221f84469fe71f873ce/SUMMARY.json)
+[Current lightweight rows](light_snapshots/54ea68c2fcea46769eda/LIGHT_RESULTS.json) · [Exact B summary](light_snapshots/54ea68c2fcea46769eda/SUMMARY.json)
 
 Pending, unused safety HOLD and archived negatives retain missing performance. No best-per-input stitching or missing-to-zero conversion. Profile available-set GMs and common-set GMs retain their original denominators; scan J remains missing where original single-factor references were negative.
 
