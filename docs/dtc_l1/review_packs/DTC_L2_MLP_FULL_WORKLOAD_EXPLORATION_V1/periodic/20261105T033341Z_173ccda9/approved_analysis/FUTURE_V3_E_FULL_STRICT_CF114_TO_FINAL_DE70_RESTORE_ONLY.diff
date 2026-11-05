@@ -1,0 +1,15 @@
+--- consumer_cf114.py
++++ consumer_de70.py
+@@ -168,8 +168,10 @@
+    c=path.stem
+    if c in q.get('admitted_specs',{}):
+     claim=read(path);require(claim['schema']=='STRACE_BPF_V3_FUTURE_ROUTE_CLAIM_V1'and claim['overlay_id']==ID and claim['cohort']==c,'Unknown registered route claim')
+-    require(c in q['consumed']and m['bridge']['result_path'](c).exists(),'Preserve mandatory V3 route for admitted unused/unresolved claim; Main disposition required')
++    rp=m['bridge']['result_path'](c)
++    require(c in q['consumed']and rp.exists()and m['consumer'].accepted(read(rp))and read(rp)['proof'].get(EXTRA,{}).get('schema')==ID,'Preserve mandatory V3 route for admitted unused/unresolved claim; Main disposition required')
+   for c in q['consumed']:
+-   require(not m['bridge']['selected'](c)or m['bridge']['result_path'](c).exists(),'Cannot remove mandatory route from unresolved spent identity')
++   rp=m['bridge']['result_path'](c)
++   require(not m['bridge']['selected'](c)or(rp.exists()and m['consumer'].accepted(read(rp))and read(rp)['proof'].get(EXTRA,{}).get('schema')==ID),'Cannot remove mandatory route from unresolved spent identity')
+   m['consumer'].safe_finish=m['bridge']['original_safe'];delattr(main,MARKER)
+  return dict(status='EXACT_PREVIOUS_V2_OUTER_SAFE_RESTORED',models_started=0,new_grants=0)
