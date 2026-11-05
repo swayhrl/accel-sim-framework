@@ -9,11 +9,11 @@ Only CLOSED_ACCEPTED cells with full true164 archive and two distinct Native res
 | A | EP_PERF_PFV5_A_FWT_G32W8_WV_ON_V1 | CLOSED_ACCEPTED | 180074 |
 | B | EP_PERF_PFV5_B1_VECTOR4M_F_BASELINE_1700_V1 | CLOSED_ACCEPTED | 55925 |
 | B | EP_PERF_PFV5_B1_VECTOR4M_F_PRESSURE_EPOCH_1700_V1 | CLOSED_ACCEPTED | 45425 |
-| D | EP_PERF_PFV4_A2_3MM_S_G64W8_V1 | CONSUMED_BEFORE_FORK | UNKNOWN |
+| D | EP_PERF_PFV4_A2_3MM_S_G64W8_V1 | CLOSED_ACCEPTED | 1666917 |
 | D | EP_PERF_PFV4_A2_3MM_WV_ZERO_RO_G64W8_V1 | CONSUMED_BEFORE_FORK | UNKNOWN |
-| D | EP_PERF_PFV4_A2_3MM_WV_ZERO_RO_REF32W8_V1 | CONSUMED_BEFORE_FORK | UNKNOWN |
+| D | EP_PERF_PFV4_A2_3MM_WV_ZERO_RO_REF32W8_V1 | CLOSED_ACCEPTED | 1671121 |
 
-Counts: {"accepted": 5, "technical_failure": 0, "pending": 3}
+Counts: {"accepted": 7, "technical_failure": 0, "pending": 1}
 
 ## Matched comparisons
 
@@ -24,7 +24,7 @@ Counts: {"accepted": 5, "technical_failure": 0, "pending": 3}
 - D_G64_WV_vs_S: {"status": "UNKNOWN_UNTIL_BOTH_EXACT_CELLS_ACCEPTED"}
 - D_WV_G64_vs_REF32: {"status": "UNKNOWN_UNTIL_BOTH_EXACT_CELLS_ACCEPTED"}
 - A_observed_frontend_queries_OFF_vs_ON: {"OFF": 150462, "ON": 148843, "fewer_queries": 1619, "reduction_percent": 1.0760191942151507, "semantics": "final64-slice cumulative totals of matched complete FWT cells; exact cold_bypasses is not exported by frozen Source; no invented per-access attribution"}
-- D_S_G64_vs_accepted_S_REF32: {"status": "UNKNOWN_UNTIL_EXACT_G64_S_ACCEPTED"}
+- D_S_G64_vs_accepted_S_REF32: {"reference_cycles": 1696618, "candidate_cycles": 1666917, "saved_cycles": 29701, "reduction_percent": 1.7506003119146443}
 
 ## Architecture cost and bounded interpretation
 
