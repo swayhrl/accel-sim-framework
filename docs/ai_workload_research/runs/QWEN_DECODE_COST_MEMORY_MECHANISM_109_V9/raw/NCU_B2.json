@@ -1,0 +1,89 @@
+{
+  "status": "RUNNING",
+  "task": "NCU_B2",
+  "model_initializations": 1,
+  "samples": [
+    {
+      "index": 0,
+      "point": "B2_N32",
+      "mode": "B2",
+      "output_tokens_each": 32,
+      "role": "PROFILE_WARMUP",
+      "round": 0,
+      "block": "INITIAL",
+      "request_gpu_elapsed_ms": 419.9977111816406,
+      "host_generate_call_ms": 419.965432,
+      "host_synchronized_request_ms": 420.069249,
+      "fullgraph_replay_count": 31,
+      "status": "PASS_RUNTIME_VALID",
+      "private_record_sha256": "61e0013fbb709f8f8f7bb60fc45cb06dc83766e8bd2b5a8bc8a079a86ab7d1f7",
+      "public_record_sha256": "38f58ed9d8225c6f6c18f8b736a22362648adf99b0b5c2b924c90d944f31d86e",
+      "formal_compile_capture": false
+    },
+    {
+      "index": 1,
+      "point": "B2_N32",
+      "mode": "B2",
+      "output_tokens_each": 32,
+      "role": "PROFILE_WARMUP",
+      "round": 1,
+      "block": "INITIAL",
+      "request_gpu_elapsed_ms": 406.0152282714844,
+      "host_generate_call_ms": 405.991178,
+      "host_synchronized_request_ms": 406.058634,
+      "fullgraph_replay_count": 31,
+      "status": "PASS_RUNTIME_VALID",
+      "private_record_sha256": "d37d6f03eb6f6559440d205ebc806d3bfb5adaee9cea5f16c47fafcf6c445b18",
+      "public_record_sha256": "1d6586ca5b122a6eaaaf6d7317bd7b78cb7bc3ab53dd2d0516546bc9f267789a",
+      "formal_compile_capture": false
+    }
+  ],
+  "optional": true,
+  "worker_identity": {
+    "task": "NCU_B2",
+    "nonce": "92193b9bb4571c7ba062ca69402f23d2f9b5a0214be9e8f4",
+    "supervisor_pid": 3707285,
+    "identity": {
+      "pid": 3709070,
+      "uid": 1004,
+      "start_ticks": "446541325",
+      "boot_id": "35425a62-1268-4560-a3cb-b674371cd7aa",
+      "executable": "/usr/bin/python3.12"
+    },
+    "worker_sha256": "99f897bc5391a73359a6e152cc34273ade1e8d737658b00a1ed3ea7026cdd1c9"
+  },
+  "runtime": {
+    "vllm": "0.30.0",
+    "torch": "2.13.0+cu130",
+    "source_sha256": {
+      "compilation.py": "c9cec5c7200e8e559810ec8c30113ad61dab6780f9f7fb3c116bd0d9b5a43065",
+      "qwen2.py": "eb2f0eeb13c57a28bbc06bc64afff18cd8865f89fbe9ff2a3cf3a896f037cfe9"
+    },
+    "attention": [
+      "FlashAttentionImpl"
+    ],
+    "linear": [
+      "UnquantizedLinearMethod"
+    ],
+    "capacity": {
+      "max_model_len": 544,
+      "max_num_batched_tokens": 1088,
+      "max_num_seqs": 2
+    },
+    "compilation_mode": "VLLM_COMPILE",
+    "backend": "inductor",
+    "cudagraph_mode": "FULL_AND_PIECEWISE",
+    "cache_root": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/.private/NCU_B2",
+    "local_cache_dir": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-decode-cost-and-memory-mechanism-109-v9/docs/ai_workload_research/runs/QWEN_DECODE_COST_MEMORY_MECHANISM_109_V9/.private/NCU_B2/compilation/rank_0_0/backbone",
+    "cache_identity": "V9_PRIVATE_COMPILATION_IDENTITY",
+    "initialization_seconds": 66.71561810467392,
+    "graph_observation": "Accepted manager-level fullgraph counter only; descriptors may contain padding and are not kernel/profiler observations.",
+    "runner_class": "vllm.v1.worker.gpu.model_runner.GPUModelRunner",
+    "sampler_class": "vllm.v1.worker.gpu.sample.sampler.Sampler",
+    "sampler_source_sha256": "832c9945d201a1e730ff9b4b52076aa83bd4a5064e1e4cfea952cf84d4a8d1f0",
+    "actual_enforce_eager": false,
+    "altered_diagnostic_path": false,
+    "logprobs": null,
+    "enable_prefix_caching": false
+  }
+}

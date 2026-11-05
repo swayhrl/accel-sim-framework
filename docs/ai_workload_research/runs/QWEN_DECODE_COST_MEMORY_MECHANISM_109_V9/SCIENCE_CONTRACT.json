@@ -1,0 +1,494 @@
+{
+  "schema": "V9_DECODE_COST_MEMORY_MECHANISM",
+  "status": "FROZEN_CPU_TESTED_PRELOCK",
+  "base_commit": "b3e0adf450a563997717126fd1c1985e884855a3",
+  "base_tree": "304788b4233d429a154b528e5bb42e421062c9b8",
+  "goal_start_epoch": 1793840014,
+  "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+  "dtype": "bfloat16",
+  "TP": 1,
+  "quantization": null,
+  "engine": {
+    "max_model_len": 544,
+    "max_num_batched_tokens": 1088,
+    "max_num_seqs": 2,
+    "compilation_mode": "VLLM_COMPILE",
+    "backend": "inductor",
+    "cudagraph_mode": "FULL_AND_PIECEWISE",
+    "enforce_eager": false,
+    "enable_prefix_caching": false,
+    "cpu_offload_gb": 0,
+    "gpu_memory_utilization": 0.92
+  },
+  "sampling": {
+    "seed": 0,
+    "temperature": 0,
+    "top_p": 1,
+    "ignore_eos": true,
+    "detokenize": false,
+    "logprobs": null
+  },
+  "timing": "pre-sync; CUDA-event start; one llm.generate; event stop; post-sync; event elapsed. Host generate-call wall separately (excludes post-sync), plus synchronized host request wall.",
+  "output_lengths": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32
+  ],
+  "points": [
+    {
+      "point": "A00_N1",
+      "mode": "A00",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00"
+      ],
+      "output_tokens": 1
+    },
+    {
+      "point": "A01_N1",
+      "mode": "A01",
+      "sources": [
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 1
+    },
+    {
+      "point": "B2_N1",
+      "mode": "B2",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00",
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 1
+    },
+    {
+      "point": "A00_N2",
+      "mode": "A00",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00"
+      ],
+      "output_tokens": 2
+    },
+    {
+      "point": "A01_N2",
+      "mode": "A01",
+      "sources": [
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 2
+    },
+    {
+      "point": "B2_N2",
+      "mode": "B2",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00",
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 2
+    },
+    {
+      "point": "A00_N4",
+      "mode": "A00",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00"
+      ],
+      "output_tokens": 4
+    },
+    {
+      "point": "A01_N4",
+      "mode": "A01",
+      "sources": [
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 4
+    },
+    {
+      "point": "B2_N4",
+      "mode": "B2",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00",
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 4
+    },
+    {
+      "point": "A00_N8",
+      "mode": "A00",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00"
+      ],
+      "output_tokens": 8
+    },
+    {
+      "point": "A01_N8",
+      "mode": "A01",
+      "sources": [
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 8
+    },
+    {
+      "point": "B2_N8",
+      "mode": "B2",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00",
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 8
+    },
+    {
+      "point": "A00_N16",
+      "mode": "A00",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00"
+      ],
+      "output_tokens": 16
+    },
+    {
+      "point": "A01_N16",
+      "mode": "A01",
+      "sources": [
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 16
+    },
+    {
+      "point": "B2_N16",
+      "mode": "B2",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00",
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 16
+    },
+    {
+      "point": "A00_N32",
+      "mode": "A00",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00"
+      ],
+      "output_tokens": 32
+    },
+    {
+      "point": "A01_N32",
+      "mode": "A01",
+      "sources": [
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 32
+    },
+    {
+      "point": "B2_N32",
+      "mode": "B2",
+      "sources": [
+        "TRAIN_A_DISCOVERY_00",
+        "TRAIN_A_DISCOVERY_01"
+      ],
+      "output_tokens": 32
+    }
+  ],
+  "warmup_rounds": [
+    [
+      "A00_N1",
+      "A01_N1",
+      "B2_N1",
+      "A01_N2",
+      "B2_N2",
+      "A00_N2",
+      "B2_N4",
+      "A00_N4",
+      "A01_N4",
+      "A00_N8",
+      "A01_N8",
+      "B2_N8",
+      "A01_N16",
+      "B2_N16",
+      "A00_N16",
+      "B2_N32",
+      "A00_N32",
+      "A01_N32"
+    ],
+    [
+      "A01_N1",
+      "B2_N1",
+      "A00_N1",
+      "B2_N32",
+      "A00_N32",
+      "A01_N32",
+      "A00_N16",
+      "A01_N16",
+      "B2_N16",
+      "A01_N8",
+      "B2_N8",
+      "A00_N8",
+      "B2_N4",
+      "A00_N4",
+      "A01_N4",
+      "A00_N2",
+      "A01_N2",
+      "B2_N2"
+    ]
+  ],
+  "formal_rounds": [
+    [
+      "B2_N4",
+      "A00_N4",
+      "A01_N4",
+      "A00_N8",
+      "A01_N8",
+      "B2_N8",
+      "A01_N16",
+      "B2_N16",
+      "A00_N16",
+      "B2_N32",
+      "A00_N32",
+      "A01_N32",
+      "A00_N1",
+      "A01_N1",
+      "B2_N1",
+      "A01_N2",
+      "B2_N2",
+      "A00_N2"
+    ],
+    [
+      "A00_N4",
+      "A01_N4",
+      "B2_N4",
+      "A01_N2",
+      "B2_N2",
+      "A00_N2",
+      "B2_N1",
+      "A00_N1",
+      "A01_N1",
+      "A00_N32",
+      "A01_N32",
+      "B2_N32",
+      "A01_N16",
+      "B2_N16",
+      "A00_N16",
+      "B2_N8",
+      "A00_N8",
+      "A01_N8"
+    ],
+    [
+      "A01_N16",
+      "B2_N16",
+      "A00_N16",
+      "B2_N32",
+      "A00_N32",
+      "A01_N32",
+      "A00_N1",
+      "A01_N1",
+      "B2_N1",
+      "A01_N2",
+      "B2_N2",
+      "A00_N2",
+      "B2_N4",
+      "A00_N4",
+      "A01_N4",
+      "A00_N8",
+      "A01_N8",
+      "B2_N8"
+    ],
+    [
+      "B2_N16",
+      "A00_N16",
+      "A01_N16",
+      "A00_N8",
+      "A01_N8",
+      "B2_N8",
+      "A01_N4",
+      "B2_N4",
+      "A00_N4",
+      "B2_N2",
+      "A00_N2",
+      "A01_N2",
+      "A00_N1",
+      "A01_N1",
+      "B2_N1",
+      "A01_N32",
+      "B2_N32",
+      "A00_N32"
+    ],
+    [
+      "A00_N1",
+      "A01_N1",
+      "B2_N1",
+      "A01_N2",
+      "B2_N2",
+      "A00_N2",
+      "B2_N4",
+      "A00_N4",
+      "A01_N4",
+      "A00_N8",
+      "A01_N8",
+      "B2_N8",
+      "A01_N16",
+      "B2_N16",
+      "A00_N16",
+      "B2_N32",
+      "A00_N32",
+      "A01_N32"
+    ]
+  ],
+  "adaptive": {
+    "MAD_over_median_threshold": 0.05,
+    "extra_formal_rounds_max": 5,
+    "rule": "Ifanypointnoisy/compile-capture,one symmetricextra5roundblockforall18points,retainallinitialandextra"
+  },
+  "numeric": {
+    "old_atol": 0.05,
+    "old_rtol": 0.01,
+    "role": "OBSERVATION_ONLY_NOT_PERF_STOP",
+    "LP_NONE": "UNOBSERVED_LOGPROBS_NEVER_NUMERIC_PASS",
+    "token_divergence": "Preservesequence/commonprefix/shape;validfixedlength descriptiveperformancecontinues",
+    "validity_stops": [
+      "Wrong input/model/backend",
+      "Nonfinite/invalidtiming",
+      "Lengthinvalid",
+      "Irrecoverableruntime/dataerror",
+      "Resourcesafety"
+    ]
+  },
+  "profiles": {
+    "role": "PROFILED_NEVER_FORMAL",
+    "warmup_points": [
+      "A00_N1",
+      "B2_N1",
+      "A00_N32",
+      "B2_N32"
+    ],
+    "warmup_rounds": 2,
+    "targets": [
+      "A00_N1",
+      "B2_N1",
+      "A00_N32",
+      "B2_N32"
+    ],
+    "nsys": {
+      "capture": "cudaProfilerApi afterinitialization/warmup",
+      "trace": "cuda,nvtx",
+      "cuda_graph_trace": "node",
+      "sample": "none",
+      "cpuctxsw": "none",
+      "python_sampling": false,
+      "gpu_metrics_devices": "none",
+      "capture_range_end": "stop",
+      "kill": "none",
+      "optional": true
+    },
+    "ncu": {
+      "graph_profiling": "node",
+      "replay": "kernel",
+      "nvtx_include": null,
+      "launch_count": 1,
+      "profile_from_start": "no",
+      "clock_control": "none",
+      "cache_control": "none",
+      "pipeline_boost_state": "dynamic",
+      "kill": "no",
+      "metrics": "Onlyqueriedavailablemetricsexactnames;smallselectionDRAM/L2/duration/SM/tensor/occupancy",
+      "kernel_filter": "Boundedactualdensefamilyregexgemv|gemm|cutlass;firstmatchonly,notclaimedheaviest or wholeGraphcoverage",
+      "optional": true,
+      "max_passes_preferred": 4,
+      "capture": "cudaProfilerStart/Stop onlyfirstDecodeGraphafterwarmup;NVTXannotations retainedbutnotrequiredasfilter",
+      "targets": [
+        "A00_N32",
+        "B2_N32"
+      ],
+      "metric_query": "ActualsupportedmetricqueryunderownlockbeforeNCU;nofixedunsupportednames"
+    },
+    "clocks": "Read feasibility only;no clock,power,persistence settings changes"
+  },
+  "numeric_boundary": {
+    "role": "DIAGNOSTIC_ALTERED_EAGER_NOT_NATIVE",
+    "model_precision_unchanged": true,
+    "explicit_path_changes": [
+      "enforce_eager=True",
+      "compilation NONE",
+      "cudagraph NONE"
+    ],
+    "targets": [
+      "A00_N1",
+      "A01_N1",
+      "B2_N1",
+      "A00_N2",
+      "A01_N2",
+      "B2_N2"
+    ],
+    "boundaries": [
+      "embedding",
+      "decoder0_effective_hidden_plus_residual",
+      "decoder17_effective",
+      "decoder35_effective",
+      "final_norm/lm_head_input"
+    ],
+    "samples": "Onlyselectedlast-query rows,notfulltoken/layerdump",
+    "position_identity": "positions lasttoken==511 prefill,512decode and samplerlogitsindices binding verified",
+    "evidence_limit": "EarliestOBSERVEDselected-rowboundaryinalteredpath,notnativefirstdivergenceorallKVtokens",
+    "optional": true
+  },
+  "model": {
+    "form": "T_mode(N)=a+(N-1)*b",
+    "fits": [
+      "AllformalsOLS",
+      "PointmedianOLS",
+      "Adjacentincremental slopes",
+      "Residual/nonlinearity/drift"
+    ],
+    "uncertainty": "Prespecifiedpairedroundbootstrap2000seed0,descriptiveonlyn5",
+    "overlap": "Kernelcomputememoryoverlap;unionGPUactivityintervals,notnaivesum"
+  },
+  "hypotheses": {
+    "H_MEM": "LargeactualDRAMweighttrafficandsharedB1/B2reads",
+    "H_SM": "Computeshape/pipeline/SMlimitation",
+    "H_CONTROL": "Launch/graph/scheduler/idle contribution"
+  },
+  "grades": [
+    "OBSERVED",
+    "MODEL_CONSISTENT",
+    "PARTIALLY_ATTRIBUTED",
+    "CAUSALLY_SUPPORTED"
+  ],
+  "resource": {
+    "goal_seconds_max": 7200,
+    "GPU_held_seconds_max": 1800,
+    "own_NVML_MiB_max": 15400,
+    "RSS_cgroup_bytes": 17179869184,
+    "new_disk_bytes": 3221225472,
+    "lock_attempts_max": 1,
+    "one_owner": true,
+    "profiler_role_binding": "Verifiednonce+actualPythonPIDbirthfromownprocesstree;wrapperPIDisnottheGPUmodelPID;CPUexportdrainonlyafterCUDAcontextgone",
+    "inherited": "V7 lifecycle/sharedImageLab,no retuning deployment",
+    "downloads": 0,
+    "installs": 0,
+    "access164": 0,
+    "simulator_RTL": 0,
+    "profiler_cpu_drain": "AftertargetfinishedandNVMLconfirmsownCUDAcontextsabsent,supervisedworkerrolecanbindliveCPUexporterwrapper(orroot)forRSS-racehealth;anynewCUDAcontextinCPUdrainSTOP. Own target/descendants terminatedwithcreationidentityguardsifwrapperfails."
+  },
+  "frozen_utc_epoch": 1793842218.5314755,
+  "frozen_tool_hashes": {
+    "util/ai_workload_research/decode_cost_memory_v9/numeric_observation.py": "32097e3c4e7e4a09bc987db6288bd2c2b64195957fe9d8bffc64750575165217",
+    "util/ai_workload_research/decode_cost_memory_v9/supervisor.py": "6f3d3c824a662cf491e0f94ce73a725a63595de919e1a08d68886dbbd9be9aa0",
+    "util/ai_workload_research/decode_cost_memory_v9/v9_runtime.py": "7cde9dcecdc573ad6e3c3b2183f02b0e215d339f5a34f3b734549f08b682deeb",
+    "util/ai_workload_research/decode_cost_memory_v9/persistence.py": "8ae2447aa05c65c45688a1d16c755aa9d412176118293c1d3358adc02b122c4a",
+    "util/ai_workload_research/decode_cost_memory_v9/worker.py": "99f897bc5391a73359a6e152cc34273ade1e8d737658b00a1ed3ea7026cdd1c9",
+    "util/ai_workload_research/decode_cost_memory_v9/test_shared_monitoring.py": "60a4bdf242c0e3aec2a17da9fee493e258b6207c3f22bbb0d514cf10df382b15",
+    "util/ai_workload_research/decode_cost_memory_v9/test_desktop_policy.py": "a083fb683d15c5e43f81628a0b3e719c567f3e4202c7204ef8c801416e045470",
+    "util/ai_workload_research/decode_cost_memory_v9/sparse_boundaries.py": "7d1eef72cbd3428fb5ddc869c1dd7f60c8abbbb1c141cb1f9ecd744375faac63",
+    "util/ai_workload_research/decode_cost_memory_v9/test_rss_lifecycle.py": "7e325e282ffabdaca89a0536abfa9689096fa58d9b3a895070387a7278a27865",
+    "util/ai_workload_research/decode_cost_memory_v9/revalidate.py": "0cd990d42240ee76ba29362d2c5c4a7c82e82325f1231507037c4bbcd222df08",
+    "util/ai_workload_research/decode_cost_memory_v9/shared_gate.py": "96267cf3933235442d4416a4e38d0ac3b69d96865d251fe92fa7877089c45c06",
+    "util/ai_workload_research/decode_cost_memory_v9/desktop_policy.py": "77bc5e9eabb6f2df45c78a3c8911489beb260d7f3ce8f520287a85030278677f",
+    "util/ai_workload_research/decode_cost_memory_v9/rss_lifecycle.py": "fed7f292c927be7fc181cd5e0db5e745e6dc0a3ebd92343c6f3b9b499381f9bc",
+    "util/ai_workload_research/decode_cost_memory_v9/test_capture.py": "8d2319e0e684ac131d6e68c51573e483996007c3c4ec367b78ee7ff399f2647b",
+    "util/ai_workload_research/decode_cost_memory_v9/test_shared_gate.py": "8de716a771d2270d7858860f1502d598c64d5de73299a8f3da0d0578f35e8a2b",
+    "util/ai_workload_research/decode_cost_memory_v9/test_v9.py": "20786480c0e02077b747e77afe5518c96060f22b5f7e58194fe68dc0fc21e24a",
+    "util/ai_workload_research/decode_cost_memory_v9/capture.py": "743d409297564b8f44e5008458e106d75f5208dbadfa53f4dcd46ca752683c4c",
+    "util/ai_workload_research/decode_cost_memory_v9/resource_monitor.py": "9cd0ffaade661c07d8d5c6760a1b7a219c545c0846de55e4272a43a6ec3cd9b1",
+    "util/ai_workload_research/decode_cost_memory_v9/test_supervision.py": "692cf2677171e6273ae3b0fe09d053cca5e5583df94683440303e8db763a0aee",
+    "util/ai_workload_research/decode_cost_memory_v9/profile_markers.py": "757b1264c2a7851f3ffe62e0faf4a37e640e6ad819a200269f8c5143dbaf3f03"
+  }
+}

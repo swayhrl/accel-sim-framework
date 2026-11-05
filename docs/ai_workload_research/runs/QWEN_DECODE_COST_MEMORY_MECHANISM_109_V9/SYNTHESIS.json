@@ -1,0 +1,66 @@
+{
+  "status": "PRIMARY_NATIVE_COMPLETE_PARTIAL_PROFILE_RESOURCE_STOP",
+  "formal_samples": 90,
+  "grades": [
+    {
+      "id": "C_LENGTH",
+      "grade": "OBSERVED",
+      "claim": "N1/2/4/8/16/32nativecurvecompletewith5formalspermode",
+      "evidence": "CURVE_ANALYSIS.json"
+    },
+    {
+      "id": "C_LINEAR",
+      "grade": "MODEL_CONSISTENT",
+      "claim": "Linearper-stepcostadequatewithinobservedrange;medianpointresidualmax<0.15ms",
+      "evidence": "CURVE_ANALYSIS.json"
+    },
+    {
+      "id": "C_DENSE",
+      "grade": "PARTIALLY_ATTRIBUTED",
+      "claim": "CollectedPROFILEDdecodetimeisdominatedbydenseGEMV/GEMMgroups;notaseparatememory/computeelapsedpartition",
+      "evidence": "TIMELINE_ANALYSIS.json",
+      "limitation": "Driver13fallbackCUPTI12.8andpotentiallyincompleteevents;notnativeexactfraction"
+    },
+    {
+      "id": "C_NODE_TRAFFIC",
+      "grade": "MODEL_CONSISTENT",
+      "claim": "SelectedB1GEMVDRAMreadbytesclosepackedQKVweightmodel",
+      "evidence": "HARDWARE_COUNTERS.json",
+      "limitation": "Onekernel/7replays/cacheNone;matrixargumentsnotcaptured;notapplicationbytes"
+    },
+    {
+      "id": "C_KERNEL_PATH",
+      "grade": "OBSERVED",
+      "claim": "B1densegemvxandB2wmmaTensoropGEMMkernelorganizationsdiffer",
+      "evidence": "TIMELINE_ANALYSIS.json"
+    },
+    {
+      "id": "C_CONTROL",
+      "grade": "PARTIALLY_ATTRIBUTED",
+      "claim": "CollectedGPUactivitycoversabout99%profiledN32requestwindows;uncoveredtraceintervalnotdominant",
+      "evidence": "TIMELINE_ANALYSIS.json",
+      "limitation": "Notallcontrolcostisoutsidekernels;CPUAPItimeoverlapsGPU;driverfallbacklimits"
+    },
+    {
+      "id": "C_NUMERIC",
+      "grade": "OBSERVED",
+      "claim": "NoV9boundaryGPUrun:resourceSTOPbeforeNUMERIC;V8upstreamdifferenceauthorityretained",
+      "evidence": "RESOURCE_ANALYSIS.json"
+    }
+  ],
+  "global_causally_supported_architectural_claims": [],
+  "H_MEM_global": "MODEL_CONSISTENT_NOT_CAUSALLY_ESTABLISHED",
+  "H_SM_global": "NOT_SEPARATED_FROM_MEMORY_INSIDE_KERNEL",
+  "H_CONTROL": "SMALL_UNCOVERED_INTERVAL_IN_OBSERVED_PROFILE_SCOPE;NOT_ALL_NATIVE_CONTROL_ELIMINABLE",
+  "conditional_weight_reference": {
+    "bytes_per_step": 6171394048,
+    "model_inverted_GB_s": 609.5058320824318,
+    "actual_DRAM_bytes": false
+  },
+  "unavailable": {
+    "B2_NCU": "RESOURCE_CENSORED_NO_REPORT",
+    "numerical_boundary": "NOT_EXECUTED_DUE_RESOURCE_STOP",
+    "complete_native_DRAM_count": "NOT_MEASURED"
+  },
+  "no_new_hardware_mechanism_started": true
+}
