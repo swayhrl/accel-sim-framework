@@ -1,0 +1,290 @@
+diff --git a/src/gpgpu-sim/ep-l2-quota-row-port.h b/src/gpgpu-sim/ep-l2-quota-row-port.h
+index 903a143..1b07d14 100644
+--- a/src/gpgpu-sim/ep-l2-quota-row-port.h
++++ b/src/gpgpu-sim/ep-l2-quota-row-port.h
+@@ -46,8 +46,20 @@ class ep_l2_quota_row_port {
+       ++stats_.row_conflicts;return false;
+     }
+     unsigned n=pending();if(n>=lanes_){++stats_.port_conflicts;return false;}
+-    if(!n){read_tick_=tick;commit_tick_=unset();++stats_.read_beats;}
+-    for(unsigned i=0;i<2;++i)if(!slots_[i].live){slots_[i].live=true;slots_[i].identity=k;break;}
++    // Retained identity marks a physical READ claim even after cancellation.
++    // No extra register/slot is added, and no third row may reuse a cancelled
++    // K2 lane during the same READ beat.
++    if(n) {
++      unsigned claims=0;for(const auto&s:slots_)claims+=s.identity.row<128;
++      if(claims>=lanes_){++stats_.port_conflicts;return false;}
++    }
++    if(!n) {
++      read_tick_=tick;commit_tick_=unset();++stats_.read_beats;
++      for(auto&s:slots_)s.identity=key();
++    }
++    for(unsigned i=0;i<2;++i)if(!slots_[i].live && slots_[i].identity.row==128) {
++      slots_[i].live=true;slots_[i].identity=k;break;
++    }
+     ++stats_.holds;return false;
+   }
+   void commit(const key&k,std::uint64_t tick) {
+@@ -65,6 +77,13 @@ class ep_l2_quota_row_port {
+     for(auto&slot:slots_)if(slot.live&&slot.identity==k){slot.live=false;++stats_.cancellations;return true;}
+     return false;
+   }
++  // Bounded owner cancellation before any visible row/payload mutation.
++  // Cancelling cannot refund the paid READ beat or steal another producer.
++  unsigned cancel_owner(unsigned producer,unsigned uid) {
++    unsigned n=0;for(auto&slot:slots_)if(slot.live&&slot.identity.producer==producer&&slot.identity.uid==uid) {
++      slot.live=false;++stats_.cancellations;++n;
++    }return n;
++  }
+   unsigned pending()const{unsigned n=0;for(const auto&s:slots_)n+=s.live;return n;}
+   unsigned lanes()const{return lanes_;}
+   const counters&stats()const{return stats_;}
+diff --git a/src/gpgpu-sim/ep-l2-tvd-cache.inc b/src/gpgpu-sim/ep-l2-tvd-cache.inc
+index 7b3ced9..4278191 100644
+--- a/src/gpgpu-sim/ep-l2-tvd-cache.inc
++++ b/src/gpgpu-sim/ep-l2-tvd-cache.inc
+@@ -57,6 +57,41 @@ bool l2_cache::tvd_reclaim_one(unsigned bank, unsigned long long now) {
+   return false;
+ }
+ 
++bool l2_cache::tvd_frontend_reclaim(mem_fetch *mf,tvd_directory::ticket t,
++    unsigned long long now) {
++  const unsigned producer=3,uid=mf->get_request_uid();
++  auto cancel=[&](){m_quota_row_port.cancel_owner(producer,uid);};
++  if(!m_tvd->live(t)){cancel();return false;}
++  const auto plan=m_tvd->preview_reserved_reclaim(t);
++  if(plan.status==tvd_directory::PINNED){cancel();return false;}
++  if(plan.status!=tvd_directory::OK){cancel();return false;}
++  const auto h=plan.payload;
++  // All allocator release refusals precede directory/count mutation.
++  if(!h.valid()||!m_ep_l2_payload.handle_live(h)||
++     !m_ep_l2_payload.handle_owner_matches(h,m_config.block_addr(mf->get_addr()))) {
++    cancel();throw std::logic_error("frontend reclaim payload identity changed before COMMIT");
++  }
++  const auto&slot=m_ep_l2_payload.inspect(h);
++  if(slot.pins||slot.pending_sector_mask.any()){cancel();return false;}
++  if(slot.generation==std::numeric_limits<unsigned>::max()) {
++    cancel();throw std::overflow_error("frontend reclaim payload generation exhausted before COMMIT");
++  }
++  const bool timed=m_config.m_ep_l2_quota_row_lanes!=0;
++  const auto key=quota_key(producer,uid,t);
++  if(timed) {
++    if(m_quota_row_port.lanes()!=m_config.m_ep_l2_quota_row_lanes)
++      m_quota_row_port.configure(m_config.m_ep_l2_quota_row_lanes);
++    if(!m_quota_row_port.ready(key,m_quota_l2_tick))return false;
++  }
++  ep_l2::PayloadHandle released;
++  const auto result=m_tvd->commit_reserved_reclaim(plan,released,now);
++  if(result!=tvd_directory::OK) {cancel();return false;}
++  if(timed)m_quota_row_port.commit(key,m_quota_l2_tick);
++  if(released!=h)throw std::logic_error("frontend reclaim release identity mismatch");
++  m_ep_l2_payload.release(released);
++  return true;
++}
++
+ l2_cache::tvd_frontend_result l2_cache::tvd_frontend(mem_fetch *mf,
+     unsigned long long now, bool response_space) {
+   if (!m_tvd) return TVD_NORMAL;
+@@ -92,7 +127,10 @@ l2_cache::tvd_frontend_result l2_cache::tvd_frontend(mem_fetch *mf,
+     m_tvd_lookup_done = true;
+   }
+   const auto ticket = m_tvd_lookup_ticket;
+-  if (!m_tvd->live(ticket)) return TVD_NORMAL;
++  if (!m_tvd->live(ticket)) {
++    m_quota_row_port.cancel_owner(3,mf->get_request_uid());
++    return TVD_NORMAL;
++  }
+   // Dirty pending/inflight reads use a distinct client+UID+generation key
+   // in the existing bank scoreboard. The public r2 adapter delays WB->TVD
+   // role transitions while the reader is pinned. CLEAN_ONLY WAD records have
+@@ -111,11 +149,12 @@ l2_cache::tvd_frontend_result l2_cache::tvd_frontend(mem_fetch *mf,
+   }
+   if (op != tvd_directory::READ_OP) return TVD_NORMAL; // ft_access commits promotion
+   if (observation.status == tvd_directory::MISSING_SECTOR) {
+-    ep_l2::PayloadHandle released;
+-    if (m_tvd->reclaim(ticket, released, now) == tvd_directory::PINNED)
+-      return wait(M::PINNED_PAYLOAD);
+-    m_ep_l2_payload.release(released); return TVD_NORMAL;
++    if(!tvd_frontend_reclaim(mf,ticket,now))return wait(M::VICTIM_LOOKUP);
++    return TVD_NORMAL;
+   }
++  // If a previously prepared reclaim is no longer selected, cancel only this
++  // frontend owner's reservation. No beat refund or stale-handle release.
++  m_quota_row_port.cancel_owner(3,mf->get_request_uid());
+   if (observation.status != tvd_directory::READ_READY) return TVD_NORMAL;
+   known |= 1ULL << M::RESPONSE_QUEUE_FULL;
+   if (!response_space) { ++m_tvd_resp_wait; return wait(M::RESPONSE_QUEUE_FULL); }
+diff --git a/src/gpgpu-sim/ep-l2-tvd-directory.h b/src/gpgpu-sim/ep-l2-tvd-directory.h
+index 83b0737..843a427 100644
+--- a/src/gpgpu-sim/ep-l2-tvd-directory.h
++++ b/src/gpgpu-sim/ep-l2-tvd-directory.h
+@@ -66,6 +66,16 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+     promotion_plan() : status(INVALID_INPUT), revision(0), victim_line(0),
+                        valid(0), dirty(0), retain_payload(false) {}
+   };
++  // Snapshot for the new bounded frontend reclaim transaction. This owns no
++  // payload, pin, allocator or lower-queue credit, and has no visible effects.
++  struct reclaim_plan {
++    result status;
++    ticket source;
++    Handle payload;
++    state old_state;
++    unsigned valid,dirty;
++    reclaim_plan():status(STALE),old_state(EMPTY),valid(0),dirty(0){}
++  };
+   struct observation {
+     result status;
+     ticket identity;
+@@ -335,6 +345,43 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+   }
+   // Clean missing-sector fallback/reclaim drops the old directory visibility
+   // before an ordinary miss is issued. Dirty entries must first complete WB.
++  reclaim_plan preview_reserved_reclaim(ticket t) const {
++    reclaim_plan p;p.source=t;
++    if(!live(t))return p;
++    const entry&e=m_entries[t.index];
++    if(e.mandatory()){p.status=WAIT_WRITEBACK;return p;}
++    if(e.readers){p.status=PINNED;return p;}
++    // erase() bumps incarnation after decrementing CLEAN count. Exhaustion
++    // MUST be rejected before that decrement, not after partial publication.
++    if(e.incarnation==std::numeric_limits<std::uint64_t>::max())
++      throw std::overflow_error("reclaim incarnation exhausted before READ");
++    if(e.status==CLEAN && !m_clean_count)
++      throw std::logic_error("CLEAN count inconsistent before reserved reclaim");
++    p.status=OK;p.payload=e.payload;p.old_state=e.status;
++    p.valid=e.valid_sectors;p.dirty=e.dirty_sectors;return p;
++  }
++  result commit_reserved_reclaim(const reclaim_plan&p,Handle&released,cycle_type now) {
++    if(p.status!=OK)return p.status;
++    if(!live(p.source))return STALE;
++    const entry&e=m_entries[p.source.index];
++    if(e.readers)return PINNED;
++    if(e.status!=p.old_state||!same(e.payload,p.payload)||
++       e.valid_sectors!=p.valid||e.dirty_sectors!=p.dirty)return STALE;
++    if(e.mandatory())return WAIT_WRITEBACK;
++    if(e.incarnation==std::numeric_limits<std::uint64_t>::max())
++      throw std::overflow_error("reclaim incarnation exhausted before COMMIT");
++    const unsigned count_before=m_clean_count;
++    if(e.status==CLEAN && !count_before)
++      throw std::logic_error("reserved reclaim count underflow");
++    const unsigned count_target=count_before-(e.status==CLEAN?1:0);
++    // One selected-row erase and one actual signed-count update are published
++    // in the caller's paid COMMIT beat. No callback/enqueue occurs in between.
++    const result r=reclaim(p.source,released,now);
++    if(r!=OK)return r;
++    if(m_clean_count!=count_target)
++      throw std::logic_error("reserved reclaim count publication mismatch");
++    return OK;
++  }
+   result reclaim(ticket t, Handle &released, cycle_type now) {
+     if (!live(t)) return STALE;
+     entry &e = m_entries[t.index];
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index ef0b87a..7def84f 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -3291,6 +3291,7 @@ class l2_cache : public data_cache {
+       bool, unsigned long long, tvd_directory::ticket *installed = NULL);
+   bool tvd_cached_wad_contains(mem_fetch *, new_addr_type) const;
+   bool tvd_reclaim_one(unsigned, unsigned long long);
++  bool tvd_frontend_reclaim(mem_fetch *,tvd_directory::ticket,unsigned long long);
+   unsigned long long m_gpu_cycle_for_tvd() const;
+   std::unique_ptr<tvd_directory> m_tvd;
+   std::unique_ptr<tvd_directory::read_lease> m_tvd_read;
+diff --git a/tests/ep_l2/test_quota_frontend_reclaim_v3.cc b/tests/ep_l2/test_quota_frontend_reclaim_v3.cc
+new file mode 100644
+index 0000000..eef9924
+--- /dev/null
++++ b/tests/ep_l2/test_quota_frontend_reclaim_v3.cc
+@@ -0,0 +1,91 @@
++// New bounded production frontend-reclaim delta only. No old selectors run.
++#define main frozen_old_production_test_main_not_executed
++#include "test_tvd_production.cc"
++#undef main
++using D=l2_cache::tvd_directory;
++static void prepare(scenario&f) {
++  auto a=f.push(0);f.await(a);f.drain();
++  auto b=f.push(128,true);f.await(b);f.drain();
++  assert(f.cache()->tvd_for_test()->clean_occupancy()==1);
++}
++static void positive(const char*base,const char*overlay) {
++ scenario f(base,overlay,true,true,false,1,2,1,16);prepare(f);
++ auto d=f.cache()->tvd_for_test();auto t=d->find(0);assert(d->live(t));
++ auto h=d->at(t.index).payload;auto mf=f.make(32);auto uid=mf->get_request_uid();
++ auto lower=f.cache()->tvd_actual_lower_read_packets();
++ f.sp->push(mf,f.gpu->gpu_sim_cycle);
++ for(unsigned n=0;n<100&&!f.cache()->quota_row_port_for_test().pending();++n)f.step();
++ assert(f.cache()->quota_row_port_for_test().pending()==1);
++ assert(d->live(t)&&d->clean_occupancy()==1);
++ assert(f.cache()->ep_l2_payload_for_test().handle_live(h));
++ assert(f.cache()->tvd_actual_lower_read_packets()==lower);
++ auto ack=f.cache()->quota_row_port_for_test().stats().acks;
++ auto tick=f.cache()->quota_l2_tick_for_test();
++ for(unsigned i=0;i<4;++i)f.part->simple_dram_model_cycle();
++ assert(f.cache()->quota_l2_tick_for_test()==tick);
++ assert(f.cache()->quota_row_port_for_test().stats().acks==ack);
++ assert(d->live(t)&&d->clean_occupancy()==1);
++ f.step();
++ assert(f.cache()->quota_row_port_for_test().stats().acks==ack+1);
++ assert(!d->live(t)&&d->clean_occupancy()==0);
++ assert(!f.cache()->ep_l2_payload_for_test().handle_live(h));
++ f.await(uid);f.drain();
++ puts("PASS REAL_FRONTEND_CLEAN_MINUS1 READ_preserves_row_count_payload_lower COMMIT_releases_generation_once");
++}
++static void pin_cancel(const char*base,const char*overlay,bool corrupt_payload) {
++ scenario f(base,overlay,true,true,false,1,2,1,16);prepare(f);
++ auto d=const_cast<D*>(f.cache()->tvd_for_test());auto t=d->find(0);auto h=d->at(t.index).payload;
++ auto mf=f.make(32);auto uid=mf->get_request_uid();
++ auto front=[&](){return f.cache()->tvd_frontend(mf,f.gpu->gpu_sim_cycle,true);};
++ for(unsigned n=0;n<100&&!f.cache()->quota_row_port_for_test().pending();++n){front();f.step();}
++ assert(f.cache()->quota_row_port_for_test().pending()==1);
++ auto before=f.cache()->quota_row_port_for_test().stats().acks;
++ if(corrupt_payload) {
++  // Deliberate invalid external generation change: handler must fail before
++  // directory/count erase or stale-handle release; not a legal workload.
++  f.cache()->ep_l2_payload_for_test().release(h);
++  bool failed=false;try{front();}catch(const std::logic_error&){failed=true;}
++  assert(failed&&d->live(t)&&d->clean_occupancy()==1);
++  assert(f.cache()->quota_row_port_for_test().pending()==0);
++  assert(f.cache()->quota_row_port_for_test().stats().acks==before);
++  ep_l2::PayloadHandle unused;auto result=d->reclaim(t,unused,f.gpu->gpu_sim_cycle);assert(result==D::OK);
++  delete mf;f.drain();
++  puts("PASS STALE_PAYLOAD_GENERATION_FAILS_BEFORE_ROW_COUNT_MUTATION_OR_ACK");return;
++ }
++ auto o=d->preview_ticket(t,1,D::READ_OP);D::read_lease lease;
++ auto started=d->begin_read(o,1,lease);assert(started==D::OK);
++ f.cache()->ep_l2_payload_for_test().pin(h);
++ assert(front()==l2_cache::TVD_WAIT);
++ assert(d->live(t)&&d->clean_occupancy()==1&&f.cache()->quota_row_port_for_test().pending()==0);
++ assert(f.cache()->quota_row_port_for_test().stats().acks==before);
++ auto retired=d->cancel_read(lease);assert(retired==D::OK);f.cache()->ep_l2_payload_for_test().unpin(h);
++ bool committed=false;
++ for(unsigned n=0;n<100&&!committed;++n){f.step();committed=front()==l2_cache::TVD_NORMAL;}
++ assert(committed&&!d->live(t)&&d->clean_occupancy()==0);
++ assert(!f.cache()->ep_l2_payload_for_test().handle_live(h));
++ f.sp->push(mf,f.gpu->gpu_sim_cycle);f.await(uid);f.drain();
++ puts("PASS READER_PIN_CANCELS_OWN_READ_RESERVATION_NO_MUTATION_NO_REFUND_RETRY_COMMITS_ONCE");
++}
++static void directory_conflict() {
++ D d(2,true,true,2);D::ticket t;
++ auto ip=d.preview_install(0,false);
++ auto r=d.commit_install(ip,0,ep_l2::PayloadHandle(4,7),1,0,0,false,0,t);assert(r==D::OK);
++ auto p=d.preview_reserved_reclaim(t);assert(p.status==D::OK);
++ auto replacement=d.preview_install(256,false);D::ticket nt;
++ r=d.commit_install(replacement,256,ep_l2::PayloadHandle(8,11),1,0,0,false,1,nt);assert(r==D::OK);
++ // Replacement may choose empty row. Remove/reinstall original row explicitly
++ // through actual public production methods to change its incarnation.
++ ep_l2::PayloadHandle gone;r=d.reclaim(t,gone,2);assert(r==D::OK);
++ auto count=d.clean_occupancy();ep_l2::PayloadHandle released;
++ r=d.commit_reserved_reclaim(p,released,3);
++ assert(r==D::STALE&&d.clean_occupancy()==count&&!released.valid());
++ puts("PASS RESERVED_RECLAIM_STALE_INCARNATION_NO_SECOND_COUNT_DECREMENT");
++}
++int main(int argc,char**argv) {
++ assert(argc==4);
++ if(std::string(argv[3])=="positive")positive(argv[1],argv[2]);
++ else if(std::string(argv[3])=="pin")pin_cancel(argv[1],argv[2],false);
++ else if(std::string(argv[3])=="stale_payload")pin_cancel(argv[1],argv[2],true);
++ else if(std::string(argv[3])=="directory")directory_conflict();
++ else return 77;
++}

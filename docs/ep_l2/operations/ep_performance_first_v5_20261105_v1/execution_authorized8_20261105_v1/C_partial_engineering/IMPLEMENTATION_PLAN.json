@@ -1,0 +1,25 @@
+{
+  "CPU_max": 2,
+  "base_private_core": "fd1a1875e797e59487d5cb6333b2dc79ca28b736",
+  "bounds": "K1/2 slots; one existing frontend head; cancellation scoped producer3+UID; no extra buffers",
+  "formal_Native_or_registry_changes": 0,
+  "invariants": [
+    "pin/generation before directory/count erase",
+    "HOLD preserves count,row,payload and lower-request admission",
+    "nonzero update precedes allocator release in same paid COMMIT",
+    "stale cancellation no refund"
+  ],
+  "new_science_starts": 0,
+  "nice": 15,
+  "old12_3185_4handshake_rerun": false,
+  "selected_path": "CLEAN or WB_COMPLETE MISSING_SECTOR reclaim; real CLEAN count -1 at paid COMMIT",
+  "status": "REAL_FRONTEND_MISSING_SECTOR_RECLAIM_DELTA",
+  "still_incomplete": [
+    "install",
+    "promotion",
+    "reader-lifetime timing",
+    "rollback other paths",
+    "cleanup",
+    "all-producer fairness/CDC/PPA"
+  ]
+}

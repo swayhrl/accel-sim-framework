@@ -70,7 +70,7 @@ def main():
   current=report();basefile=C/'PUBLICATION_EXPECTED_HEAD.json';base=read(basefile)['head']if basefile.exists()else BASE
   assert api('GET',REPO+'/git/ref/heads/'+BRANCH)['object']['sha']==base,'no force on moved branch'
   files={}
-  allowed=['USER_REQUEST_SCOPE_TRANSCRIPTION.txt','USER_AUTHORIZATION.json','A_USER_AUTHORIZATION.json','B_USER_AUTHORIZATION.json','D_USER_AUTHORIZATION.json','A_MAIN_HOST_DELTA_APPROVAL.json','B_MAIN_HOST_DELTA_APPROVAL.json','D_MAIN_HOST_DELTA_APPROVAL.json','EXACT_EXECUTION_MANIFEST.json','MAIN_FORMAL_NATIVE_INSTALLATION_RECEIPT.json','MAIN_FINAL_SPEC_ACTIVATION_DIFFERENCES.json','ROOT_LAUNCH_ACK.json','MAIN_DISPATCHER_STARTUP_REVIEW.json','PERFORMANCE_CURRENT.json','PERFORMANCE_CURRENT.md','EXECUTOR_STARTED.json','EXECUTOR_FINISHED.json','MAIN_EXECUTOR_ACTIVATION.json','MAIN_REAL_PREPARE_AFTER_INSTALL.json','FINAL_SCOPE_CLOSURE.json','main_activate_exact8.py','main_publish_v5_progress.py','main_metadata_watch_v5.py']
+  allowed=['USER_REQUEST_SCOPE_TRANSCRIPTION.txt','USER_AUTHORIZATION.json','A_USER_AUTHORIZATION.json','B_USER_AUTHORIZATION.json','D_USER_AUTHORIZATION.json','A_MAIN_HOST_DELTA_APPROVAL.json','B_MAIN_HOST_DELTA_APPROVAL.json','D_MAIN_HOST_DELTA_APPROVAL.json','EXACT_EXECUTION_MANIFEST.json','MAIN_FORMAL_NATIVE_INSTALLATION_RECEIPT.json','MAIN_FINAL_SPEC_ACTIVATION_DIFFERENCES.json','ROOT_LAUNCH_ACK.json','MAIN_DISPATCHER_STARTUP_REVIEW.json','PERFORMANCE_CURRENT.json','PERFORMANCE_CURRENT.md','EXECUTOR_STARTED.json','EXECUTOR_FINISHED.json','MAIN_EXECUTOR_ACTIVATION.json','MAIN_REAL_PREPARE_AFTER_INSTALL.json','FINAL_SCOPE_CLOSURE.json','main_activate_exact8.py','main_publish_v5_progress.py','main_metadata_watch_v5.py','MAIN_PRECONSUME_CANONICAL_OWNED_ROUTE_FIX.json','MAIN_ACTUAL_EIGHT_MODEL_GENERATIONS_INITIAL.json','MAIN_OLD_EP_ROWS_PRESERVED_AFTER_ALL8_STARTS.json','MAIN_C_FRONTEND_PARTIAL_ENGINEERING_REVIEW.json']
   for name in allowed:
    p=C/name
    if p.exists():files['control/'+name]=p
@@ -86,6 +86,10 @@ def main():
    for p in eroot.glob('*'):
     if p.is_file()and p.suffix in ['.py','.json','.md']and p.stat().st_size<1024*1024 and p.name not in ['SAVED_SOURCE.json']:
      files['engineering/'+eroot.name+'/'+p.name]=p
+  cr=V/'track_c_clean/frontend_followup_v3'
+  for cp in cr.rglob('*'):
+   if cp.is_file()and ('core_candidate'not in cp.relative_to(cr).parts)and ('__pycache__'not in cp.parts)and cp.suffix in ['.py','.json','.md','.patch','.h','.inc','.cc','.config']and cp.stat().st_size<1024*1024:
+    files['C_partial_engineering/'+str(cp.relative_to(cr))]=cp
   entries=[];manifest=[]
   for name,p in sorted(files.items()):
    raw=p.read_bytes();out=(json.dumps(clean(json.loads(raw)),sort_keys=True,indent=2)+'\n').encode()if p.suffix=='.json'else raw

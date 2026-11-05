@@ -7,7 +7,7 @@
   "budgets": {
     "A": {
       "budget": 3,
-      "remaining": 1,
+      "remaining": 0,
       "state": "RUNNING"
     },
     "B": {
@@ -17,7 +17,7 @@
     },
     "D": {
       "budget": 3,
-      "remaining": 2,
+      "remaining": 0,
       "state": "RUNNING"
     }
   },
@@ -46,8 +46,8 @@
   },
   "complete_scientific_scope": 8,
   "counts": {
-    "accepted": 0,
-    "pending": 8,
+    "accepted": 1,
+    "pending": 7,
     "technical_failure": 0
   },
   "numeric_output": "UNKNOWN",
@@ -88,7 +88,7 @@
       "accepted_point_ref": null,
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_PFV5_A_FWT_G32W8_WV_OFF_V1",
-      "consumed": false,
+      "consumed": true,
       "cycles": null,
       "done_ref": null,
       "group": "A",
@@ -111,8 +111,8 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_a_wv/host_private_candidate_v1/main_materialized/37e5a2db776190ee3f74/execution/cases/EP_PERF_PFV5_A_FWT_G32W8_WV_OFF_V1/control/FROZEN_SPEC.json",
         "sha256": "daf77ac812340d44f3ec2ccb25339a65fb2cb64549fbaeb322e25cebd0077dbd"
       },
-      "state": "NOT_STARTED",
-      "uuid": null,
+      "state": "CONSUMED_BEFORE_FORK",
+      "uuid": "2ef88a1c-c691-45d9-98d1-4e8c57897dce",
       "validation_ref": null
     },
     {
@@ -147,13 +147,29 @@
       "validation_ref": null
     },
     {
-      "accepted_point_ref": null,
-      "archive_receipt_ref": null,
+      "CTA": 15625,
+      "accepted_point_ref": {
+        "bytes": 2796,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/host_private_candidate_v1/execution/cases/EP_PERF_PFV5_B1_VECTOR4M_F_BASELINE_1700_V1/run/bd244195-1e5a-405e-8f48-9557084ede71/ACCEPTED_POINT.json",
+        "sha256": "f8a05599733a900132ecc63397c96e828eeac32f6e97a14b0bce16d8ef8c839f"
+      },
+      "archive_receipt_ref": {
+        "bytes": 2069,
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/host_private_candidate_v1/execution/cases/EP_PERF_PFV5_B1_VECTOR4M_F_BASELINE_1700_V1/control/ARCHIVE_RECEIPT.json",
+        "sha256": "001a59a37c5d80ca20e9512565d47e4be197a22dc51a2751c981291be5d7814b"
+      },
+      "archive_two_restores": true,
       "cohort": "EP_PERF_PFV5_B1_VECTOR4M_F_BASELINE_1700_V1",
       "consumed": true,
-      "cycles": null,
-      "done_ref": null,
+      "cycles": 55925,
+      "done_ref": {
+        "bytes": 4712,
+        "path": "/root/data/ep_l2_dtc_l1_native_v2/control/qualification_ledger/EP_PERF_PFV5_B1_VECTOR4M_F_BASELINE_1700_V1.DONE.json",
+        "sha256": "2d614978cb30e8f72f49ee9bbe38764a342886e1856ffabbc681882014177327"
+      },
+      "elapsed_seconds": 463.4499957356602,
       "group": "B",
+      "hardware_drained": true,
       "host_limits": {
         "AS_bytes": 10737418240,
         "RSS_bytes": 2147483648,
@@ -161,6 +177,9 @@
         "wall_seconds": 7200
       },
       "independent_release": true,
+      "instructions": 56000000,
+      "kernel_count": 1,
+      "launcher_wait_returncode": 0,
       "mode": "F_BASELINE",
       "source_identity": {
         "archive_sha256": "a7e9c8ce045710c8f3655aebb82a65628a5a18638036af17fa0ec8c755580d3e",
@@ -173,9 +192,13 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/host_private_candidate_v1/execution/cases/EP_PERF_PFV5_B1_VECTOR4M_F_BASELINE_1700_V1/control/FROZEN_SPEC.json",
         "sha256": "4cec36623f2df38012ca4be29038955afd4f09b88b04b33d6865a38b7f56145d"
       },
-      "state": "CONSUMED_BEFORE_FORK",
+      "state": "CLOSED_ACCEPTED",
+      "stop_reason": null,
       "uuid": "bd244195-1e5a-405e-8f48-9557084ede71",
-      "validation_ref": null
+      "validation_ref": {
+        "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_b_fullf/host_private_candidate_v1/execution/cases/EP_PERF_PFV5_B1_VECTOR4M_F_BASELINE_1700_V1/run/bd244195-1e5a-405e-8f48-9557084ede71/VALIDATED_APPLICATION_BUNDLE.json",
+        "sha256": "75685fd10893cd13f7e86fc538aea38545ce113622c5e7e5728bde5769e23de8"
+      }
     },
     {
       "accepted_point_ref": null,
@@ -212,7 +235,7 @@
       "accepted_point_ref": null,
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_PFV4_A2_3MM_S_G64W8_V1",
-      "consumed": false,
+      "consumed": true,
       "cycles": null,
       "done_ref": null,
       "group": "D",
@@ -235,15 +258,15 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_d_workloads/three_mm/execution/cases/EP_PERF_PFV4_A2_3MM_S_G64W8_V1/control/FROZEN_SPEC.json",
         "sha256": "709679c2cc5cf9f22257f054e061552e7d0a00179fb53c7457ce4feced8866e0"
       },
-      "state": "NOT_STARTED",
-      "uuid": null,
+      "state": "CONSUMED_BEFORE_FORK",
+      "uuid": "2e8df9ae-3fee-42cf-8535-e567d50b2d1d",
       "validation_ref": null
     },
     {
       "accepted_point_ref": null,
       "archive_receipt_ref": null,
       "cohort": "EP_PERF_PFV4_A2_3MM_WV_ZERO_RO_G64W8_V1",
-      "consumed": false,
+      "consumed": true,
       "cycles": null,
       "done_ref": null,
       "group": "D",
@@ -266,8 +289,8 @@
         "path": "/root/data/ep_l2_full_workload_performance_20261027_v1/research/performance_first_v5_20261105_v1/track_d_workloads/three_mm/execution/cases/EP_PERF_PFV4_A2_3MM_WV_ZERO_RO_G64W8_V1/control/FROZEN_SPEC.json",
         "sha256": "e2210be83ea9472c5e8bad5acf629241a00c9c09a84bfa1056a165fc83b1f3cd"
       },
-      "state": "NOT_STARTED",
-      "uuid": null,
+      "state": "CONSUMED_BEFORE_FORK",
+      "uuid": "e3b334f7-1b0f-4f1f-8799-af695c35ab37",
       "validation_ref": null
     },
     {
@@ -304,5 +327,5 @@
   ],
   "refund": false,
   "schema": "EP_MAIN_PFV5_ROLLING_EXACT8_RESULTS_V1",
-  "utc": "2026-11-05T03:54:29.793099+00:00"
+  "utc": "2026-11-05T04:01:07.329197+00:00"
 }
