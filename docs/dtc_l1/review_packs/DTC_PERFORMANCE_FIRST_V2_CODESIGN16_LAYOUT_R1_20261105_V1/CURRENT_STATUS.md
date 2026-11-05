@@ -1,6 +1,6 @@
 # DTC-L1 Physical × PIB — R1 current status
 
-Checked: 2026-11-05T02:18:20.856156+00:00
+Checked: 2026-11-05T02:18:36.446389+00:00
 Source state: **SOURCE_QUALIFIED**.
 Fixed population: eight inputs × two uniform profiles;16 planned cells.
 已消费身份：**16**；未消费身份：**0**（源为已核 RUNTIME_CONTEXT；pending 不等于未启动；此服务不现场推断 running）。
