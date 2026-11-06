@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="18"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="1"
+	timestamp="2026-11-06T04:18:20"
+	>
+	<testcase name="dtc_l1_aefair_cache_hash_test" classname="dtc_l1_aefair_cache_hash_test" time="0.504187" status="run">
+		<system-out>dtc_l1_aefair_cache_hash_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/gpu-cache.h:777: void cache_config::init(char*, FuncCache): Assertion `m_cache_type == NORMAL &amp;&amp; m_line_sz == 128 &amp;&amp; m_nset &gt;= 4 &amp;&amp; !(m_nset &amp; (m_nset - 1)) &amp;&amp; m_nset % 4 == 0' failed.
+dtc_l1_aefair_cache_hash_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/gpu-cache.h:777: void cache_config::init(char*, FuncCache): Assertion `m_cache_type == NORMAL &amp;&amp; m_line_sz == 128 &amp;&amp; m_nset &gt;= 4 &amp;&amp; !(m_nset &amp; (m_nset - 1)) &amp;&amp; m_nset % 4 == 0' failed.
+dtc_l1_aefair_cache_hash_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/gpu-cache.h:777: void cache_config::init(char*, FuncCache): Assertion `m_cache_type == NORMAL &amp;&amp; m_line_s...
+The rest of the test output was removed since it exceeds the threshold of 1024 bytes.
+</system-out>
+	</testcase>
+	<testcase name="dtc_l1_m1_common_test" classname="dtc_l1_m1_common_test" time="0.135008" status="run">
+		<system-out></system-out>
+	</testcase>
+	<testcase name="dtc_l1_bad_generation_test" classname="dtc_l1_bad_generation_test" time="0.140507" status="run">
+		<system-out>dtc_l1_bad_generation_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/dtc-l1-common.h:710: void dtc_l1::oo_frontend::complete(dtc_l1::physical_identity): Assertion `fill_identity_matches(identity) &amp;&amp; "OO fill must match the original physical generation"' failed.
+</system-out>
+	</testcase>
+	<testcase name="dtc_l1_completion_accounting_test" classname="dtc_l1_completion_accounting_test" time="0.142111" status="run">
+		<system-out>dtc_l1_completion_accounting_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/dtc-l1-common.h:150: unsigned int dtc_l1::completion_accounting::close_once(unsigned int): Assertion `m_state == lifecycle::READY' failed.
+</system-out>
+	</testcase>
+	<testcase name="dtc_l1_finite_service_test" classname="dtc_l1_finite_service_test" time="0.137954" status="run">
+		<system-out></system-out>
+	</testcase>
+	<testcase name="dtc_l1_source_invalidation_test" classname="dtc_l1_source_invalidation_test" time="0.591484" status="run">
+		<system-out>dtc_l1_source_invalidation_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/dtc-l1-common.h:710: void dtc_l1::oo_frontend::complete(dtc_l1::physical_identity): Assertion `fill_identity_matches(identity) &amp;&amp; "OO fill must match the original physical generation"' failed.
+dtc_l1_source_invalidation_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/dtc-l1-common.h:710: void dtc_l1::oo_frontend::complete(dtc_l1::physical_identity): Assertion `fill_identity_matches(identity) &amp;&amp; "OO fill must match the original physical generation"' failed.
+OO_K1_ONLY_MODERN_AND_BASE_OUT_OF_SCOPE_STOP: -gpgpu_dtc_l1_invalidate_on_source_event=1
+OO_K1_ONLY_MODERN_AND_BASE_OUT_OF_SCOPE_STOP: -gpgpu_dtc_l1_invalidate_on_source_event=1
+IO_K1_UNIMPLEMENTED_STOP: -gpgpu_dtc_l1_invalidate_on_source_event=1
+OO_K1_ONLY_MODERN_AND...
+The rest of the test output was removed since it exceeds the threshold of 1024 bytes.
+</system-out>
+	</testcase>
+	<testcase name="dtc_l1_source_invalidation_integration_test" classname="dtc_l1_source_invalidation_integration_test" time="0.131788" status="run">
+		<system-out>DTC_INVALIDATE_V1 sm=7 order=1 phase=LDST_SOURCE_REQUEST cycle=2 request=1 source=IDLE_CLUSTER changed=1 retained=1 reclaimed=0
+DTC_INVALIDATE_V1 sm=7 order=2 phase=LDST_SOURCE_REQUEST cycle=2 request=2 source=IDLE_CLUSTER changed=0 retained=0 reclaimed=0
+DTC_INVALIDATE_V1 sm=7 order=3 phase=LDST_SOURCE_REQUEST cycle=3 request=3 source=MEMBAR changed=0 retained=0 reclaimed=0
+DTC_INVALIDATE_V1 sm=7 order=4 phase=ORDINARY_CACHE_CYCLE_RETURN cycle=4 ordinary_commit=1 first_request=1 last_request=3
+DTC_INVALIDATE_V1 sm=7 order=5 phase=LDST_SOURCE_REQUEST cycle=4 request=4 source=CACHE_CONFIG_CHANGE changed=1 retained=1 reclaimed=0
+DTC_INVALIDATE_V1 sm=7 order=6 phase=ORDINARY_REQUEST_RETURN cycle=4 ordinary_commit=2 first_request=4 last_request=4
+DTC_INVALIDATE_V1_SUMMARY sm=7 requests=4 idle=2 membar=1 config=1 unspecified=0 ordinary_commits=2 changed=2 retained_at_event=2 reclaimed_at_event=0 no_op_requests=2 first_request_cycle=2 last_request_cycle=4 first_ordinary_commit_cycle=4 last_ordinary_commit_cycle=4 p...
+The rest of the test output was removed since it exceeds the threshold of 1024 bytes.
+</system-out>
+	</testcase>
+	<testcase name="dtc_l1_k0_equivalence_test" classname="dtc_l1_k0_equivalence_test" time="0.0976342" status="run">
+		<system-out>IO finite=0 miss=2 pending=1 tag=0 allocated=2 old=0:1 new=1:1
+OO finite=0 miss=2 pending=1 tag=0 allocated=2 old=0:1 new=1:1
+IO finite=1 miss=2 pending=1 tag=0 allocated=2 old=0:1 new=1:1
+OO finite=1 miss=2 pending=1 tag=0 allocated=2 old=0:1 new=1:1
+BASE pib=0 admits=1 retires=1
+MODERN refs=0 allocated=1 pib=0
+</system-out>
+	</testcase>
+	<testcase name="dtc_l1_tag_hash_bankrow_test" classname="dtc_l1_tag_hash_bankrow_test" time="0.0928105" status="run">
+		<system-out>{"summary":"conflicts","default_granted":4,"default_denied":4,"global1_granted":2,"global1_denied":1}
+</system-out>
+	</testcase>
+	<testcase name="dtc_l1_ag3_aead_interleave_test" classname="dtc_l1_ag3_aead_interleave_test" time="0.0874483" status="run">
+		<system-out>PASS AG3 hash=0 progressive=0 quota4 plus1 late_slot_reuse K1_generation Ref_closed retired=14
+PASS AG3 hash=0 progressive=1 quota4 plus1 late_slot_reuse K1_generation Ref_closed retired=14
+PASS AG3 hash=1 progressive=0 quota4 plus1 late_slot_reuse K1_generation Ref_closed retired=14
+PASS AG3 hash=1 progressive=1 quota4 plus1 late_slot_reuse K1_generation Ref_closed retired=14
+</system-out>
+	</testcase>
+	<testcase name="dtc_l1_progressive_wakeup_test" classname="dtc_l1_progressive_wakeup_test" time="1.31152" status="run">
+		<system-out>dtc_l1_progressive_wakeup_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/dtc-l1-common.h:710: void dtc_l1::oo_frontend::complete(dtc_l1::physical_identity): Assertion `fill_identity_matches(identity) &amp;&amp; "OO fill must match the original physical generation"' failed.
+DTC_PROGRESSIVE_WAKE_UNSUPPORTED_MODE_STOP
+DTC_PROGRESSIVE_WAKE_UNSUPPORTED_MODE_STOP
+DTC_PROGRESSIVE_WAKE_UNSUPPORTED_MODE_STOP
+DTC_PROGRESSIVE_WAKE_UNSUPPORTED_MODE_STOP
+DTC_PROGRESSIVE_WAKE_UNSUPPORTED_MODE_STOP
+DTC_PROGRESSIVE_WAKE_UNSUPPORTED_MODE_STOP
+DTC_PROGRESSIVE_WAKE_UNSUPPORTED_MODE_STOP
+DTC_PROGRESSIVE_WAKE_UNSUPPORTED_MODE_STOP
+DTC_PROGRESSIVE_WAKE_UNSUPPORTED_MODE_STOP
+DTC_PROGRESSIVE_WAKE_UNSUPPORTED_MODE_STOP
+DTC_PROGRESSIVE_WAKE_UNSUPPORTED_MODE_STOP
+DTC_PROGRESSIVE_WAKE_UNSUPPORTED_MODE_STOP
+dtc_l1_progressive_wakeup_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_executi...
+The rest of the test output was removed since it exceeds the threshold of 1024 bytes.
+</system-out>
+	</testcase>
+	<testcase name="dtc_l1_progressive_ldst_test" classname="dtc_l1_progressive_ldst_test" time="0.686801" status="run">
+		<system-out>dtc_l1_progressive_ldst_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/shader.cc:3595: bool ldst_unit::dtc_l1_oo_consume_response(mem_fetch*): Assertion `false &amp;&amp; "OO response identity/address mismatch"' failed.
+dtc_l1_progressive_ldst_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/shader.cc:3595: bool ldst_unit::dtc_l1_oo_consume_response(mem_fetch*): Assertion `false &amp;&amp; "OO response identity/address mismatch"' failed.
+dtc_l1_progressive_ldst_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/shader.cc:3595: bool ldst_unit::dtc_l1_oo_consume_response(mem_fetch*): Assertion `false &amp;&amp; "OO response identity/address mismatch"' failed.
+dtc_l1_progressive_ldst_test: /root/share/mnt164/huangr...
+The rest of the test output was removed since it exceeds the threshold of 1024 bytes.
+</system-out>
+	</testcase>
+	<testcase name="dtc_l1_m4_atomic_completion_0_0" classname="dtc_l1_m4_atomic_completion_0_0" time="0.221768" status="run">
+		<system-out>DRAM Timing Options:
+nbk                                    16 # number of banks
+CCD                                     1 # column to column delay
+RRD                                     3 # minimal delay between activation of rows in different banks
+RCD                                    12 # row to column delay
+RAS                                    28 # time needed to activate row
+RP                                     12 # time needed to precharge (deactivate) row
+RC                                     40 # row cycle time
+CDLR                                    3 # switching from write to read (changes tWTR)
+WR                                     10 # last data-in to row precharge
+CL                                     12 # CAS latency
+WL                                      2 # Write latency
+nbkgrp                                  4 # number of bank groups
+CCDL                                    2 # column to column delay between accesses to different bank groups
+RTPL                                    ...
+The rest of the test output was removed since it exceeds the threshold of 1024 bytes.
+</system-out>
+	</testcase>
+	<testcase name="dtc_l1_m4_atomic_completion_1_0" classname="dtc_l1_m4_atomic_completion_1_0" time="0.216326" status="run">
+		<system-out>DRAM Timing Options:
+nbk                                    16 # number of banks
+CCD                                     1 # column to column delay
+RRD                                     3 # minimal delay between activation of rows in different banks
+RCD                                    12 # row to column delay
+RAS                                    28 # time needed to activate row
+RP                                     12 # time needed to precharge (deactivate) row
+RC                                     40 # row cycle time
+CDLR                                    3 # switching from write to read (changes tWTR)
+WR                                     10 # last data-in to row precharge
+CL                                     12 # CAS latency
+WL                                      2 # Write latency
+nbkgrp                                  4 # number of bank groups
+CCDL                                    2 # column to column delay between accesses to different bank groups
+RTPL                                    ...
+The rest of the test output was removed since it exceeds the threshold of 1024 bytes.
+</system-out>
+	</testcase>
+	<testcase name="dtc_l1_m4_atomic_completion_2_0" classname="dtc_l1_m4_atomic_completion_2_0" time="1.33427" status="run">
+		<system-out>dtc_l1_m4_atomic_completion_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/shader.cc:2682: void ldst_unit::dtc_l1_m4_observe_complete(const warp_inst_t&amp;): Assertion `entry-&gt;operation != dtc_l1_m4_operation::ATOMIC || entry-&gt;pending_atomic_lanes.none()' failed.
+dtc_l1_m4_atomic_completion_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/shader.cc:2721: ldst_unit::dtc_l1_m4_atomic_response(const warp_inst_t&amp;, const active_mask_t&amp;)::&lt;lambda(auto:1*)&gt; [with auto:1 = ldst_unit::dtc_l1_io_pib_entry]: Assertion `(entry-&gt;pending_atomic_lanes &amp; returned_lanes) == returned_lanes' failed.
+dtc_l1_m4_atomic_completion_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/shader.cc:2720: ldst_unit::dtc_l1...
+The rest of the test output was removed since it exceeds the threshold of 1024 bytes.
+</system-out>
+	</testcase>
+	<testcase name="dtc_l1_m4_atomic_completion_3_0" classname="dtc_l1_m4_atomic_completion_3_0" time="1.32478" status="run">
+		<system-out>dtc_l1_m4_atomic_completion_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/shader.cc:2691: void ldst_unit::dtc_l1_m4_observe_complete(const warp_inst_t&amp;): Assertion `entry-&gt;operation != dtc_l1_m4_operation::ATOMIC || entry-&gt;pending_atomic_lanes.none()' failed.
+dtc_l1_m4_atomic_completion_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/shader.cc:2721: ldst_unit::dtc_l1_m4_atomic_response(const warp_inst_t&amp;, const active_mask_t&amp;)::&lt;lambda(auto:1*)&gt; [with auto:1 = ldst_unit::dtc_l1_oo_pib_entry]: Assertion `(entry-&gt;pending_atomic_lanes &amp; returned_lanes) == returned_lanes' failed.
+dtc_l1_m4_atomic_completion_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/shader.cc:2720: ldst_unit::dtc_l1...
+The rest of the test output was removed since it exceeds the threshold of 1024 bytes.
+</system-out>
+	</testcase>
+	<testcase name="dtc_l1_m4_atomic_completion_3_1" classname="dtc_l1_m4_atomic_completion_3_1" time="1.33435" status="run">
+		<system-out>dtc_l1_m4_atomic_completion_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/shader.cc:2691: void ldst_unit::dtc_l1_m4_observe_complete(const warp_inst_t&amp;): Assertion `entry-&gt;operation != dtc_l1_m4_operation::ATOMIC || entry-&gt;pending_atomic_lanes.none()' failed.
+dtc_l1_m4_atomic_completion_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/shader.cc:2721: ldst_unit::dtc_l1_m4_atomic_response(const warp_inst_t&amp;, const active_mask_t&amp;)::&lt;lambda(auto:1*)&gt; [with auto:1 = ldst_unit::dtc_l1_oo_pib_entry]: Assertion `(entry-&gt;pending_atomic_lanes &amp; returned_lanes) == returned_lanes' failed.
+dtc_l1_m4_atomic_completion_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/shader.cc:2720: ldst_unit::dtc_l1...
+The rest of the test output was removed since it exceeds the threshold of 1024 bytes.
+</system-out>
+	</testcase>
+	<testcase name="dtc_l1_m4_atomic_completion_4_0" classname="dtc_l1_m4_atomic_completion_4_0" time="1.30147" status="run">
+		<system-out>dtc_l1_m4_atomic_completion_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/shader.cc:2691: void ldst_unit::dtc_l1_m4_observe_complete(const warp_inst_t&amp;): Assertion `entry-&gt;operation != dtc_l1_m4_operation::ATOMIC || entry-&gt;pending_atomic_lanes.none()' failed.
+dtc_l1_m4_atomic_completion_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/shader.cc:2721: ldst_unit::dtc_l1_m4_atomic_response(const warp_inst_t&amp;, const active_mask_t&amp;)::&lt;lambda(auto:1*)&gt; [with auto:1 = ldst_unit::dtc_l1_oo_pib_entry]: Assertion `(entry-&gt;pending_atomic_lanes &amp; returned_lanes) == returned_lanes' failed.
+dtc_l1_m4_atomic_completion_test: /root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/shader.cc:2720: ldst_unit::dtc_l1...
+The rest of the test output was removed since it exceeds the threshold of 1024 bytes.
+</system-out>
+	</testcase>
+</testsuite>

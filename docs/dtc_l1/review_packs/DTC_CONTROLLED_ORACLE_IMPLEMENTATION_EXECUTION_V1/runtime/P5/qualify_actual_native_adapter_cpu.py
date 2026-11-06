@@ -1,0 +1,4 @@
+﻿from pathlib import Path
+import hashlib,types,json
+A=Path('/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/agents/P_resource_peer_adapter_v1/v5_cpu_draft_peer');p=A/'oracle_peer_disk_adapter_v5.py';print('SHA',hashlib.sha256(p.read_bytes()).hexdigest());m=types.ModuleType('p5_actual_native_preflight');m.__file__=str(p);exec(compile(p.read_bytes(),str(p),'exec'),m.__dict__)
+R=Path('/root/data/dtc_controlled_oracle_20261106_v1/initial8');plan=m.read(R/'control/EXECUTION_PLAN.json');spec=m.read(R/'control/specs'/(plan['initial_qualifiers']['OFF_MATCHED']+'.json'));v=m.admission_disk_reservations(spec,plan);print('ACTUAL_NATIVE_ADAPTER_PREFLIGHT',v['status'],v.get('reason'),v['bounded_runtime_seconds']);assert v['status']=='PASS',v;(A/'CPU_ACTUAL_NATIVE_INITIAL_FINAL_REMAINING_DRAFT_SAMPLE.json').write_text(json.dumps(v,indent=2)+'\n')

@@ -1,0 +1,39 @@
+{
+  "schema": "DTC_ORACLE_S_LIVE_PUBLICATION_INTERFACE_V1",
+  "confirmed_by": "oracle_result_consumer Agent S",
+  "consumer_directory": "../S_live_result_consumer_v1",
+  "entrypoint": "snapshot(base_root,matrix_path,out_dir) -> dict",
+  "output_schema": "DTC_ORACLE_LIVE_READONLY_SNAPSHOT_V1",
+  "report_file": "ORACLE_LIVE_RESULTS.json",
+  "rows_n": 128,
+  "inputs_n": 32,
+  "identity_fields": [
+    "plan_id",
+    "program",
+    "suite",
+    "input_digest",
+    "mode",
+    "stage"
+  ],
+  "terminal_fields": [
+    "status",
+    "result_path",
+    "result_sha256",
+    "uuid",
+    "classification",
+    "cycles",
+    "S_oracle",
+    "H"
+  ],
+  "closed_result_count": "All rows having original RESULT path/SHA, including negative and HOLD",
+  "closed_fingerprint_sha256": "sorted original RESULT path/SHA/uuid/rawstate, excluding generated timestamps and PLAN-only data",
+  "kernel_outputs": [
+    "flat KERNEL_FACTS.<sha>.json.gz",
+    "MATCHED_KERNEL_PAIRS.json.gz"
+  ],
+  "kernel_identity": "Original ordinal1..N preserved; gpu_sim_cycle and cumulative distinguished",
+  "scientific_interpretation_owner": "S consumer; publisher copies exact files without reclassifying or clipping",
+  "actual_implementation_pin": "bc724d78767be34e5ddb32c42c89ca2b96906ae35bd8f4e7daa570a931565e16",
+  "native_base": "/root/data/dtc_controlled_oracle_20261106_v1",
+  "publication_base": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1"
+}

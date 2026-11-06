@@ -1,0 +1,858 @@
+diff --git a/src/gpgpu-sim/dtc-l1-common.h b/src/gpgpu-sim/dtc-l1-common.h
+index 8598e06..059030a 100644
+--- a/src/gpgpu-sim/dtc-l1-common.h
++++ b/src/gpgpu-sim/dtc-l1-common.h
+@@ -1761,6 +1761,10 @@ struct paper_frontend_stats {
+   uint64_t io_tag_requests = 0;
+   uint64_t io_tag_conflicts = 0;
+   std::vector<uint64_t> io_tag_requests_per_bank;
++  uint64_t oracle_l1_eligible_admitted = 0;
++  uint64_t oracle_l1_events_enqueued = 0;
++  uint64_t oracle_l1_events_delivered = 0;
++  uint64_t oracle_l1_events_pending = 0;
+   uint64_t oo_lower_created = 0;
+   uint64_t oo_lower_issued = 0;
+   uint64_t oo_lower_responses = 0;
+@@ -1886,6 +1890,10 @@ struct paper_frontend_stats {
+       io_tag_requests_per_bank.resize(other.io_tag_requests_per_bank.size(), 0);
+     for (size_t bank = 0; bank < other.io_tag_requests_per_bank.size(); ++bank)
+       io_tag_requests_per_bank[bank] += other.io_tag_requests_per_bank[bank];
++    oracle_l1_eligible_admitted += other.oracle_l1_eligible_admitted;
++    oracle_l1_events_enqueued += other.oracle_l1_events_enqueued;
++    oracle_l1_events_delivered += other.oracle_l1_events_delivered;
++    oracle_l1_events_pending += other.oracle_l1_events_pending;
+     oo_lower_created += other.oo_lower_created;
+     oo_lower_issued += other.oo_lower_issued;
+     oo_lower_responses += other.oo_lower_responses;
+diff --git a/src/gpgpu-sim/dtc-oracle-l1.h b/src/gpgpu-sim/dtc-oracle-l1.h
+new file mode 100644
+index 0000000..d829f4f
+--- /dev/null
++++ b/src/gpgpu-sim/dtc-oracle-l1.h
+@@ -0,0 +1,79 @@
++// Controlled counterfactual L1 data-availability ownership. No mem_fetch,
++// ordinary lower credits, or fabricated responses are created by this queue.
++#ifndef DTC_ORACLE_L1_H
++#define DTC_ORACLE_L1_H
++#include <cassert>
++#include <cstdint>
++#include <deque>
++#include "dtc-l1-common.h"
++namespace dtc_l1 {
++class oracle_l1_events {
++ public:
++  struct event {
++    uint64_t uid;
++    physical_identity physical;
++    uint64_t line_address;
++    unsigned owner_kernel_uid;
++    uint64_t admitted_cycle;
++    uint64_t ready_cycle;
++  };
++  explicit oracle_l1_events(unsigned capacity = 640) : m_capacity(capacity) {
++    assert(capacity);
++  }
++  void enqueue(uint64_t cycle, physical_identity identity, uint64_t address,
++               unsigned owner_kernel_uid) {
++    assert(identity.generation && !(address & (kLogicalLineBytes - 1)));
++    assert(cycle != UINT64_MAX && m_pending.size() < m_capacity);
++    for (const auto &other : m_pending)
++      assert((other.physical.id != identity.id ||
++              other.physical.generation != identity.generation) &&
++             "one virtual event per physical generation");
++    assert(m_pending.empty() || m_pending.back().admitted_cycle <= cycle);
++    m_pending.push_back({++m_enqueued, identity, address, owner_kernel_uid,
++                         cycle, cycle + 1});
++    assert_conservation();
++  }
++  // Created only by the existing finite Tag/allocation pipeline. All due
++  // generations can become available together; original complete() still
++  // applies finite notifications. No extra refill/return service is claimed.
++  template <class Frontend>
++  void deliver(uint64_t cycle, Frontend &frontend) {
++    if (cycle == m_last_delivery_cycle) return;
++    assert(m_last_delivery_cycle == UINT64_MAX || cycle > m_last_delivery_cycle);
++    m_last_delivery_cycle = cycle;
++    while (!m_pending.empty() && m_pending.front().ready_cycle <= cycle) {
++      const event current = m_pending.front();
++      assert(cycle > current.admitted_cycle);
++      assert(frontend.fill_identity_matches(current.physical) &&
++             "virtual event must match original live physical generation");
++      frontend.complete(current.physical);
++      m_pending.pop_front();
++      ++m_delivered;
++      assert_conservation();
++    }
++  }
++  bool pending(unsigned kernel_uid = 0) const {
++    if (!kernel_uid) return !m_pending.empty();
++    for (const auto &current : m_pending)
++      if (current.owner_kernel_uid == kernel_uid) return true;
++    return false;
++  }
++  size_t size() const { return m_pending.size(); }
++  uint64_t enqueued() const { return m_enqueued; }
++  uint64_t delivered() const { return m_delivered; }
++  void assert_conservation() const {
++    assert(m_enqueued == m_delivered + m_pending.size());
++  }
++  void assert_drained() const {
++    assert_conservation();
++    assert(m_pending.empty() && m_enqueued == m_delivered);
++  }
++ private:
++  unsigned m_capacity;
++  std::deque<event> m_pending;
++  uint64_t m_enqueued = 0;
++  uint64_t m_delivered = 0;
++  uint64_t m_last_delivery_cycle = UINT64_MAX;
++};
++}  // namespace dtc_l1
++#endif
+diff --git a/src/gpgpu-sim/dtc-oracle-m.h b/src/gpgpu-sim/dtc-oracle-m.h
+new file mode 100644
+index 0000000..7689cb0
+--- /dev/null
++++ b/src/gpgpu-sim/dtc-oracle-m.h
+@@ -0,0 +1,79 @@
++#ifndef DTC_CONTROLLED_ORACLE_M_H
++#define DTC_CONTROLLED_ORACLE_M_H
++#include <cassert>
++#include <cstdint>
++#include <deque>
++#include <set>
++#include <algorithm>
++namespace dtc_oracle {
++// Exactly one finite parent descriptor per already-admitted lower credit.
++// No payload cache and no additional request admission are implemented here.
++template <class Parent> class finite_read_sequencer {
++ public:
++  struct parent {
++    Parent *request;
++    unsigned uid;
++    uint64_t accepted_tick;
++    uint8_t required;
++    uint8_t transferred = 0;
++  };
++  struct sector { Parent *request; unsigned index; };
++  explicit finite_read_sequencer(unsigned capacity = 1) : m_capacity(capacity) {
++    assert(capacity);
++  }
++  void set_capacity(unsigned n) { assert(n && empty()); m_capacity = n; }
++  void enqueue(Parent *request, unsigned uid, uint8_t mask, uint64_t tick) {
++    assert(request && mask && !(mask & ~0xFU));
++    assert(m_parents.size() < m_capacity);
++    assert(m_uids.insert(uid).second && "duplicate oracle parent");
++    m_parents.push_back({request, uid, tick, mask, 0});
++    ++parents_enqueued;
++    for (unsigned s = 0; s < 4; ++s) required_sectors += !!(mask & (1U << s));
++    peak_parents = std::max(peak_parents, m_parents.size());
++  }
++  bool ready(uint64_t tick) const {
++    if (tick == m_last_transfer_tick) return false;
++    for (const parent &p : m_parents) if (tick > p.accepted_tick) return true;
++    return false;
++  }
++  sector next(uint64_t tick) {
++    assert(ready(tick));
++    // Rotation both selects an eligible parent and provides bounded RR fairness.
++    while (!(tick > m_parents.front().accepted_tick)) rotate();
++    const parent &p = m_parents.front();
++    unsigned s = 0;
++    while (!(p.required & (1U << s)) || (p.transferred & (1U << s))) ++s;
++    assert(s < 4);
++    return {p.request, s};
++  }
++  void commit(uint64_t tick, const sector &sent) {
++    assert(ready(tick) && !m_parents.empty());
++    parent &p = m_parents.front();
++    assert(p.request == sent.request && sent.index < 4);
++    const uint8_t bit = static_cast<uint8_t>(1U << sent.index);
++    assert((p.required & bit) && !(p.transferred & bit));
++    p.transferred |= bit;
++    ++sectors_enqueued;
++    m_last_transfer_tick = tick;
++    if (p.transferred == p.required) {
++      assert(m_uids.erase(p.uid) == 1);
++      m_parents.pop_front();
++      ++parents_transferred;
++    } else {
++      rotate();
++    }
++  }
++  bool empty() const { return m_parents.empty(); }
++  size_t size() const { return m_parents.size(); }
++  uint64_t parents_enqueued = 0, required_sectors = 0, sectors_enqueued = 0;
++  uint64_t parents_transferred = 0;
++  size_t peak_parents = 0;
++ private:
++  void rotate() { m_parents.push_back(m_parents.front()); m_parents.pop_front(); }
++  unsigned m_capacity;
++  uint64_t m_last_transfer_tick = UINT64_MAX;
++  std::deque<parent> m_parents;
++  std::set<unsigned> m_uids;
++};
++}  // namespace dtc_oracle
++#endif
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index 3e4c1aa..c8d5970 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -1400,6 +1400,19 @@ class baseline_cache : public cache_t {
+   bool fill_port_free() const {
+     return m_bandwidth_management.fill_port_free();
+   }
++  // Controlled L2 read counterfactual.  Called only after the original bank
++  // admission gates; consume exactly the normal HIT data-port occupancy,
++  // without probing/warming tags or allocating MSHRs/miss/DRAM metadata.
++  void dtc_oracle_virtual_read_hit(mem_fetch *mf) {
++    assert(m_level == L2_GPU_CACHE);
++    assert(mf->dtc_oracle_eligible());
++    assert(mf->get_type() == READ_REQUEST && !mf->get_is_write());
++    assert(mf->get_access_type() == GLOBAL_ACC_R && !mf->isatomic());
++    assert(data_port_free());
++    std::list<cache_event> no_events;
++    m_bandwidth_management.use_data_port(mf, HIT, no_events);
++  }
++
+   void inc_aggregated_stats(cache_request_status status,
+                             cache_request_status cache_status, mem_fetch *mf,
+                             enum cache_gpu_level level);
+diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
+index 7403d4f..8abfcd8 100644
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -237,6 +237,10 @@ void power_config::reg_options(class OptionParser *opp) {
+ }
+ 
+ void memory_config::reg_options(class OptionParser *opp) {
++  option_parser_register(opp, "-gpgpu_dtc_oracle_mode", OPT_UINT32,
++                         &m_dtc_oracle_mode,
++                         "Controlled DTC oracle 0=OFF 1=M_DATAREAD "
++                         "2=L2_DATAREAD 3=L1_DATAREADY", "0");
+   option_parser_register(opp, "-gpgpu_perf_sim_memcpy", OPT_BOOL,
+                          &m_perf_sim_memcpy, "Fill the L2 cache on memcpy",
+                          "1");
+diff --git a/src/gpgpu-sim/gpu-sim.h b/src/gpgpu-sim/gpu-sim.h
+index 038a5a0..8239901 100644
+--- a/src/gpgpu-sim/gpu-sim.h
++++ b/src/gpgpu-sim/gpu-sim.h
+@@ -220,6 +220,10 @@ class memory_config {
+     gpgpu_ctx = ctx;
+   }
+   void init(const shader_core_config *shader_config = nullptr) {
++    if (m_dtc_oracle_mode > 3 || (m_dtc_oracle_mode && l2_ideal)) {
++      fprintf(stderr, "DTC_ORACLE_INVALID_MODE_OR_STOCK_L2_STOP\n");
++      abort();
++    }
+     assert(gpgpu_dram_timing_opt);
+     if (strchr(gpgpu_dram_timing_opt, '=') == NULL) {
+       // dram timing option in ordered variables (legacy)
+@@ -347,6 +351,8 @@ class memory_config {
+   char *gpgpu_dram_timing_opt;
+   char *gpgpu_L2_queue_config;
+   bool l2_ideal;
++  // Isolated controlled counterfactual: 0=OFF, 1=M, 2=L2, 3=L1.
++  unsigned m_dtc_oracle_mode = 0;
+   unsigned gpgpu_frfcfs_dram_sched_queue_size;
+   unsigned gpgpu_dram_return_queue_size;
+   enum dram_ctrl_t scheduler_type;
+diff --git a/src/gpgpu-sim/l2cache.cc b/src/gpgpu-sim/l2cache.cc
+index 308d43d..6798918 100644
+--- a/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/l2cache.cc
+@@ -613,11 +613,40 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+       if (!output_full && port_free && interchip_free) {
+         bool accepted = false;
+         std::list<cache_event> events;
+-        enum cache_request_status status =
+-            m_L2cache->access(mf->get_addr(), mf,
+-                              m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle +
+-                                  m_memcpy_cycle_offset,
+-                              events);
++        enum cache_request_status status;
++        if (m_config->m_dtc_oracle_mode == 2 && mf->dtc_oracle_eligible()) {
++          // This is the original post-ROP, post-sector-breakdown L2 bank
++          // admission.  No real cache access/miss/MSHR/DRAM reservation occurs.
++          assert(mf->get_type() == READ_REQUEST && !mf->get_is_write());
++          assert(mf->get_access_type() == GLOBAL_ACC_R && !mf->isatomic());
++          assert(mf->get_data_size() == SECTOR_SIZE);
++          const mem_access_sector_mask_t sectors = mf->get_access_sector_mask();
++          assert(sectors.count() == 1);
++          assert((sectors.to_ulong() &
++                  mf->dtc_oracle_required_sector_mask()) == sectors.to_ulong());
++          assert(sectors.test((mf->get_addr() % MAX_MEMORY_ACCESS_SIZE) /
++                              SECTOR_SIZE));
++          mem_fetch *parent = mf->get_original_mf();
++          assert((parent ? parent->get_request_uid() : mf->get_request_uid()) ==
++                 mf->dtc_oracle_parent_uid());
++          assert(!parent ||
++                 (parent->dtc_oracle_physical_generation() ==
++                      mf->dtc_oracle_physical_generation() &&
++                  parent->dtc_oracle_required_sector_mask() ==
++                      mf->dtc_oracle_required_sector_mask()));
++          assert(m_request_tracker.count(mf) == 1);
++          assert(m_dtc_oracle_l2_inflight.insert(mf).second);
++          m_L2cache->dtc_oracle_virtual_read_hit(mf);
++          ++m_dtc_oracle_l2_eligible_seen;
++          ++m_dtc_oracle_l2_virtual_hit_served;
++          status = HIT;
++        } else {
++          status = m_L2cache->access(
++              mf->get_addr(), mf,
++              m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle +
++                  m_memcpy_cycle_offset,
++              events);
++        }
+         bool write_sent = was_write_sent(events);
+         bool read_sent = was_read_sent(events);
+         MEM_SUBPART_DPRINTF("Probing L2 cache Address=%llx, status=%u\n",
+@@ -738,6 +767,15 @@ void memory_sub_partition::print_cache_stat(unsigned &accesses,
+ }
+ 
+ void memory_sub_partition::print(FILE *fp) const {
++  fprintf(fp, "dtc_oracle_l2 sub_partition=%u eligible_seen=%llu "
++              "virtual_hit_served=%llu returned=%llu outstanding=%zu\n",
++          m_id, m_dtc_oracle_l2_eligible_seen,
++          m_dtc_oracle_l2_virtual_hit_served, m_dtc_oracle_l2_returned,
++          m_dtc_oracle_l2_inflight.size());
++  assert(m_dtc_oracle_l2_eligible_seen ==
++         m_dtc_oracle_l2_virtual_hit_served);
++  assert(m_dtc_oracle_l2_virtual_hit_served ==
++         m_dtc_oracle_l2_returned + m_dtc_oracle_l2_inflight.size());
+   if (!m_request_tracker.empty()) {
+     fprintf(fp, "Memory Sub Parition %u: pending memory requests:\n", m_id);
+     for (auto r = m_request_tracker.begin(); r != m_request_tracker.end();
+@@ -967,6 +1005,11 @@ void memory_sub_partition::push_direct(mem_fetch *m_req,
+ 
+ mem_fetch *memory_sub_partition::pop() {
+   mem_fetch *mf = m_L2_icnt_queue->pop();
++  if (mf && m_config->m_dtc_oracle_mode == 2 && mf->dtc_oracle_eligible()) {
++    assert(mf->is_read_reply());
++    assert(m_dtc_oracle_l2_inflight.erase(mf) == 1);
++    ++m_dtc_oracle_l2_returned;
++  }
+   m_request_tracker.erase(mf);
+   if (mf && mf->isatomic()) mf->do_atomic();
+   if (mf && (mf->get_access_type() == L2_WRBK_ACC ||
+diff --git a/src/gpgpu-sim/l2cache.h b/src/gpgpu-sim/l2cache.h
+index 6434dea..c5a7920 100644
+--- a/src/gpgpu-sim/l2cache.h
++++ b/src/gpgpu-sim/l2cache.h
+@@ -426,6 +426,14 @@ class memory_sub_partition {
+ 
+   std::unordered_set<mem_fetch *> m_request_tracker;
+ 
++  // Source-derived cumulative sector counters, separate from physical cache
++  // hit/miss statistics.  In-flight ownership is bounded by L2 return FIFO.
++  unsigned long long m_dtc_oracle_l2_eligible_seen = 0;
++  unsigned long long m_dtc_oracle_l2_virtual_hit_served = 0;
++  unsigned long long m_dtc_oracle_l2_returned = 0;
++  std::unordered_set<mem_fetch *> m_dtc_oracle_l2_inflight;
++
++
+   friend class L2interface;
+   friend class Chipletinterface;
+ 
+diff --git a/src/gpgpu-sim/mem_fetch.cc b/src/gpgpu-sim/mem_fetch.cc
+index 5ea476b..32dbd1e 100644
+--- a/src/gpgpu-sim/mem_fetch.cc
++++ b/src/gpgpu-sim/mem_fetch.cc
+@@ -96,6 +96,12 @@ mem_fetch::mem_fetch(const mem_access_t &access, const warp_inst_t *inst,
+   original_mf = m_original_mf;
+   original_wr_mf = m_original_wr_mf;
+   if (m_original_mf) {
++    if (m_original_mf->dtc_oracle_eligible())
++      set_dtc_oracle_admission(
++          m_original_mf->dtc_oracle_parent_uid(),
++          m_original_mf->dtc_oracle_physical_generation(),
++          m_original_mf->dtc_oracle_required_sector_mask(),
++          m_original_mf->dtc_oracle_physical_id());
+     m_raw_addr.chip = m_original_mf->get_tlx_addr().chip;
+     m_raw_addr.sub_partition = m_original_mf->get_tlx_addr().sub_partition;
+   }
+@@ -143,6 +149,12 @@ mem_fetch::mem_fetch(const mem_access_t &access,
+   original_mf = m_original_mf;
+   original_wr_mf = m_original_wr_mf;
+   if (m_original_mf) {
++    if (m_original_mf->dtc_oracle_eligible())
++      set_dtc_oracle_admission(
++          m_original_mf->dtc_oracle_parent_uid(),
++          m_original_mf->dtc_oracle_physical_generation(),
++          m_original_mf->dtc_oracle_required_sector_mask(),
++          m_original_mf->dtc_oracle_physical_id());
+     m_raw_addr.chip = m_original_mf->get_tlx_addr().chip;
+     m_raw_addr.sub_partition = m_original_mf->get_tlx_addr().sub_partition;
+   }
+diff --git a/src/gpgpu-sim/mem_fetch.h b/src/gpgpu-sim/mem_fetch.h
+index 343eac8..4093729 100644
+--- a/src/gpgpu-sim/mem_fetch.h
++++ b/src/gpgpu-sim/mem_fetch.h
+@@ -68,6 +68,29 @@ class mem_fetch {
+             mem_fetch *original_wr_mf = NULL);
+   ~mem_fetch();
+ 
++  // Set only from the original logical DTC admission, never carrier type alone.
++  void set_dtc_oracle_admission(unsigned parent_uid,
++                                uint64_t physical_generation,
++                                uint8_t required_sector_mask,
++                                unsigned physical_id = ~0U) {
++    assert(!m_dtc_oracle_eligible && required_sector_mask &&
++           !(required_sector_mask & ~0xFU) && physical_generation);
++    m_dtc_oracle_eligible = true;
++    m_dtc_oracle_parent_uid = parent_uid;
++    m_dtc_oracle_physical_generation = physical_generation;
++    m_dtc_oracle_required_sector_mask = required_sector_mask;
++    m_dtc_oracle_physical_id = physical_id;
++  }
++  bool dtc_oracle_eligible() const { return m_dtc_oracle_eligible; }
++  unsigned dtc_oracle_parent_uid() const { return m_dtc_oracle_parent_uid; }
++  uint64_t dtc_oracle_physical_generation() const {
++    return m_dtc_oracle_physical_generation;
++  }
++  uint8_t dtc_oracle_required_sector_mask() const {
++    return m_dtc_oracle_required_sector_mask;
++  }
++  unsigned dtc_oracle_physical_id() const { return m_dtc_oracle_physical_id; }
++
+   void set_status(enum mem_fetch_status status, unsigned long long cycle);
+   void set_reply() {
+     assert(m_access.get_type() != L1_WRBK_ACC &&
+@@ -154,6 +177,11 @@ class mem_fetch {
+ 
+  private:
+   static std::vector<void *> s_free_list;
++  bool m_dtc_oracle_eligible = false;
++  unsigned m_dtc_oracle_parent_uid = 0;
++  uint64_t m_dtc_oracle_physical_generation = 0;
++  uint8_t m_dtc_oracle_required_sector_mask = 0;
++  unsigned m_dtc_oracle_physical_id = ~0U;
+   // request source information
+   unsigned m_request_uid;
+   unsigned m_sid;
+diff --git a/src/gpgpu-sim/mem_fetch_status.tup b/src/gpgpu-sim/mem_fetch_status.tup
+index a279fa3..1d81e26 100644
+--- a/src/gpgpu-sim/mem_fetch_status.tup
++++ b/src/gpgpu-sim/mem_fetch_status.tup
+@@ -33,6 +33,7 @@ MF_TUP_BEGIN( mem_fetch_status )
+     MF_TUP( IN_L1C_MISS_QUEUE ),
+     MF_TUP( IN_L1TLB_MISS_QUEUE ),
+     MF_TUP( IN_VM_MANAGER_QUEUE ),
++    MF_TUP( IN_DTC_ORACLE_M_PENDING ),
+     MF_TUP( IN_ICNT_TO_MEM ),
+     MF_TUP( IN_PARTITION_ROP_DELAY ),
+     MF_TUP( IN_PARTITION_ICNT_TO_L2_QUEUE ),
+diff --git a/src/gpgpu-sim/shader.cc b/src/gpgpu-sim/shader.cc
+index 5ba543f..c47a6b0 100644
+--- a/src/gpgpu-sim/shader.cc
++++ b/src/gpgpu-sim/shader.cc
+@@ -2239,6 +2239,11 @@ void ldst_unit::get_dtc_l1_stats(
+       oo.sector_physical_allocated =
+           m_dtc_l1_sector_frontend->allocated_lines();
+     } else {
++      m_dtc_l1_oracle_events.assert_conservation();
++      oo.oracle_l1_eligible_admitted = m_dtc_l1_oracle_eligible_admitted;
++      oo.oracle_l1_events_enqueued = m_dtc_l1_oracle_events.enqueued();
++      oo.oracle_l1_events_delivered = m_dtc_l1_oracle_events.delivered();
++      oo.oracle_l1_events_pending = m_dtc_l1_oracle_events.size();
+       oo.oo_lower_created = m_dtc_l1_oo_lower_created;
+       oo.oo_lower_issued = m_dtc_l1_oo_lower_issued;
+       oo.oo_lower_responses = m_dtc_l1_oo_lower_responses;
+@@ -2723,7 +2728,18 @@ void ldst_unit::dtc_l1_m4_atomic_response(
+     consume(dtc_l1_oo_find_entry(inst.get_uid()));
+ }
+ 
++// A virtual event and its finite notification/collection/WB owners remain a
++// real outstanding data operation. Do not clear MEMBAR on a no-destination
++// load merely because the ordinary scoreboard has no destination register.
++bool ldst_unit::dtc_l1_oracle_pending_warp(unsigned warp_id) const {
++  if (m_memory_config->m_dtc_oracle_mode != 3) return false;
++  for (const auto &entry : m_dtc_l1_oo_pib)
++    if (entry.oracle_eligible && entry.inst.warp_id() == warp_id) return true;
++  return false;
++}
++
+ bool ldst_unit::dtc_l1_pending_work(unsigned kernel_uid) const {
++  if (m_dtc_l1_oracle_events.pending(kernel_uid)) return true;
+   if (kernel_uid) {
+     for (const auto &entry : m_dtc_l1_io_pib)
+       if (entry.owner_kernel_uid == kernel_uid) return true;
+@@ -3363,6 +3379,12 @@ bool ldst_unit::dtc_l1_oo_memory_cycle(
+     m_dtc_l1_oo_pib.push_back({inst, dtc_l1_io_line_references(inst), 0});
+     m_dtc_l1_oo_pib.back().owner_kernel_uid = dtc_l1_owner_kernel_uid();
+     entry = &m_dtc_l1_oo_pib.back();
++    entry->oracle_eligible = m_memory_config->m_dtc_oracle_mode != 0 &&
++        inst.space.get_type() == global_space &&
++        inst.is_load() && !inst.isatomic() && inst.cache_op != CACHE_GLOBAL &&
++        !(m_core->get_config()->gmem_skip_L1D && inst.cache_op != CACHE_L1);
++    if (m_memory_config->m_dtc_oracle_mode == 3 && entry->oracle_eligible)
++      ++m_dtc_l1_oracle_eligible_admitted;
+     assert(!entry->references.empty());
+     dtc_l1_r4c0_record_pib(entry->inst, entry->references, "OO");
+   }
+@@ -3381,8 +3403,11 @@ bool ldst_unit::dtc_l1_oo_memory_cycle(
+             : (m_dtc_l1_oo_frontend->will_new_miss(reference.line_address)
+                    ? 1
+                    : 0);
++    const bool virtual_data = m_memory_config->m_dtc_oracle_mode == 3 &&
++                              entry->oracle_eligible;
++    assert(!virtual_data || !dtc_l1_sector_oo_active());
+     if (m_dtc_l1_oo_lower_create_queue.size() +
+-            lower_candidate_reservation >
++            (virtual_data ? 0 : lower_candidate_reservation) >
+         m_config->dtc_l1_oo_pib_entries) {
+       ++m_dtc_l1_oo_lower_create_queue_full_stalls;
+       stall_reason = BK_CONF;
+@@ -3435,10 +3460,17 @@ bool ldst_unit::dtc_l1_oo_memory_cycle(
+         return false;
+       }
+       if (result.kind == dtc_l1::io_access_kind::NEW_MISS) {
+-        assert(m_dtc_l1_oo_lower_create_queue.size() <
+-               m_config->dtc_l1_oo_pib_entries);
+-        m_dtc_l1_oo_lower_create_queue.push_back(
+-            {uid, result.physical, reference.line_address, 0xF});
++        if (virtual_data) {
++          // Original admission/Tag/physical allocation and full Ref ownership
++          // have happened. The event is not a lower request or fake response.
++          m_dtc_l1_oracle_events.enqueue(cycle, result.physical,
++              reference.line_address, entry->owner_kernel_uid);
++        } else {
++          assert(m_dtc_l1_oo_lower_create_queue.size() <
++                 m_config->dtc_l1_oo_pib_entries);
++          m_dtc_l1_oo_lower_create_queue.push_back(
++              {uid, result.physical, reference.line_address, 0xF});
++        }
+       }
+     }
+     ++entry->next_reference;
+@@ -3492,6 +3524,10 @@ void ldst_unit::dtc_l1_oo_issue_lower_requests() {
+                             entry->inst.get_warp_active_mask(), byte_mask,
+                             sector_mask, m_memory_config->gpgpu_ctx);
+     mem_fetch *mf = m_mf_allocator->alloc(entry->inst, lower_read, cycle);
++    if (entry->oracle_eligible)
++      mf->set_dtc_oracle_admission(mf->get_request_uid(),
++          candidate.physical.generation, candidate.sector_mask,
++          candidate.physical.id);
+     const bool inserted = m_dtc_l1_oo_inflight
+                               .emplace(mf->get_request_uid(),
+                                        dtc_l1_oo_inflight{candidate.physical,
+@@ -3520,12 +3556,35 @@ void ldst_unit::dtc_l1_oo_issue_lower_requests() {
+ 
+ bool ldst_unit::dtc_l1_oo_consume_response(mem_fetch *mf) {
+   if (!dtc_l1_paper_oo_active()) return false;
+-  auto it = m_dtc_l1_oo_inflight.find(mf->get_request_uid());
+-  if (it == m_dtc_l1_oo_inflight.end() && mf->get_original_mf())
++  // Explicit parent identity avoids dereferencing a stale original pointer
++  // when rejecting a duplicate child after its completed parent was released.
++  auto it = m_dtc_l1_oo_inflight.find(mf->dtc_oracle_eligible()
++                                       ? mf->dtc_oracle_parent_uid()
++                                       : mf->get_request_uid());
++  if (it == m_dtc_l1_oo_inflight.end() && !mf->dtc_oracle_eligible() &&
++      mf->get_original_mf())
+     it = m_dtc_l1_oo_inflight.find(
+         mf->get_original_mf()->get_request_uid());
+-  if (it == m_dtc_l1_oo_inflight.end()) return false;
++  if (it == m_dtc_l1_oo_inflight.end()) {
++    if (mf->dtc_oracle_eligible()) {
++      fprintf(stderr, "DTC_ORACLE_UNKNOWN_PARENT_RESPONSE_STOP\n");
++      abort();
++    }
++    return false;
++  }
+   dtc_l1_oo_inflight &record = it->second;
++  if (mf->dtc_oracle_eligible()) {
++    if (mf->get_type() != READ_REPLY ||
++        mf->get_access_type() != GLOBAL_ACC_R || mf->get_is_write() ||
++        mf->isatomic() ||
++        mf->dtc_oracle_parent_uid() != it->first ||
++        mf->dtc_oracle_physical_id() != record.physical.id ||
++        mf->dtc_oracle_physical_generation() != record.physical.generation ||
++        mf->dtc_oracle_required_sector_mask() != record.expected_sector_mask) {
++      fprintf(stderr, "DTC_ORACLE_RESPONSE_GENERATION_IDENTITY_STOP\n");
++      abort();
++    }
++  }
+   const uint64_t aligned_address =
+       mf->get_addr() & ~(dtc_l1::kLogicalLineBytes - 1);
+   const unsigned sector =
+@@ -3548,6 +3607,8 @@ bool ldst_unit::dtc_l1_oo_consume_response(mem_fetch *mf) {
+     m_dtc_l1_oo_inflight.erase(it);
+     ++m_dtc_l1_oo_lower_responses;
+   }
++  if (m_memory_config->m_dtc_oracle_mode == 1 && mf->dtc_oracle_eligible())
++    m_core->get_simt_core_cluster()->dtc_oracle_m_note_response(request_complete);
+   delete mf;
+   if (original && request_complete) delete original;
+   return true;
+@@ -5141,6 +5202,11 @@ void ldst_unit::cycle() {
+       }
+     }
+   }
++  if (m_memory_config->m_dtc_oracle_mode == 3 && dtc_l1_paper_oo_active()) {
++    assert(!dtc_l1_sector_oo_active() && dtc_l1_finite_service_active());
++    m_dtc_l1_oracle_events.deliver(
++        m_core->get_gpu()->global_cycle(), *m_dtc_l1_oo_frontend);
++  }
+   if (dtc_l1_paper_base_active()) {
+     m_dtc_l1_frontend->sample_cycle(m_core->get_gpu()->gpu_sim_cycle +
+                                     m_core->get_gpu()->gpu_tot_sim_cycle);
+@@ -5852,6 +5918,8 @@ void gpgpu_sim::shader_print_cache_stats(FILE *fout) const {
+ }
+ 
+ void gpgpu_sim::shader_print_dtc_l1_stats(FILE *fout) const {
++  for (unsigned i = 0; i < m_shader_config->n_simt_clusters; ++i)
++    m_cluster[i]->print_dtc_oracle_stats(fout);
+   const unsigned mode = m_shader_config->dtc_l1_mode;
+   if (mode != static_cast<unsigned>(dtc_l1::mode::PAPER_BASE) &&
+       mode != static_cast<unsigned>(dtc_l1::mode::PAPER_IO) &&
+@@ -6101,6 +6169,18 @@ void gpgpu_sim::shader_print_dtc_l1_stats(FILE *fout) const {
+     return;
+   }
+   if (mode == static_cast<unsigned>(dtc_l1::mode::PAPER_OO)) {
++    assert(total.oracle_l1_events_pending == 0);
++    assert(total.oracle_l1_events_enqueued == total.oracle_l1_events_delivered);
++    assert(total.oo_new_misses ==
++           total.oo_lower_created + total.oracle_l1_events_enqueued);
++    fprintf(fout, "DTC_ORACLE_L1_eligible_admitted = %llu\n",
++            static_cast<unsigned long long>(total.oracle_l1_eligible_admitted));
++    fprintf(fout, "DTC_ORACLE_L1_events_enqueued = %llu\n",
++            static_cast<unsigned long long>(total.oracle_l1_events_enqueued));
++    fprintf(fout, "DTC_ORACLE_L1_events_delivered = %llu\n",
++            static_cast<unsigned long long>(total.oracle_l1_events_delivered));
++    fprintf(fout, "DTC_ORACLE_L1_events_pending = %llu\n",
++            static_cast<unsigned long long>(total.oracle_l1_events_pending));
+     assert(total.oo_inflight_current == 0);
+     assert(total.oo_pib_occupancy == 0);
+     assert(total.oo_lower_created == total.oo_lower_issued);
+@@ -7065,6 +7145,7 @@ bool shader_core_ctx::warp_waiting_at_barrier(unsigned warp_id) const {
+ 
+ bool shader_core_ctx::warp_waiting_at_mem_barrier(unsigned warp_id) {
+   if (!m_warp[warp_id]->get_membar()) return false;
++  if (m_ldst_unit->dtc_l1_oracle_pending_warp(warp_id)) return true;
+   if (!m_scoreboard->pendingWrites(warp_id)) {
+     m_warp[warp_id]->clear_membar();
+     if (m_gpu->get_config().flush_l1()) {
+@@ -7644,6 +7725,8 @@ simt_core_cluster::simt_core_cluster(class gpgpu_sim *gpu, unsigned cluster_id,
+   m_stats = stats;
+   m_memory_stats = mstats;
+   m_mem_config = mem_config;
++  if (mem_config->m_dtc_oracle_mode == 1)
++    m_dtc_oracle_m.set_capacity(config->dtc_l1_lower_outstanding_cap);
+ }
+ 
+ void simt_core_cluster::core_cycle() {
+@@ -7668,6 +7751,7 @@ unsigned simt_core_cluster::max_cta(const kernel_info_t &kernel) {
+ }
+ 
+ bool simt_core_cluster::dtc_l1_pending_work(unsigned kernel_uid) const {
++  if (!kernel_uid && !m_dtc_oracle_m.empty()) return true;
+   for (unsigned i = 0; i < m_config->n_simt_cores_per_cluster; ++i)
+     if (m_core[i]->dtc_l1_pending_work(kernel_uid)) return true;
+   return false;
+@@ -7786,7 +7870,24 @@ bool sst_simt_core_cluster::SST_injection_buffer_full(unsigned size, bool write,
+   }
+ }
+ 
++bool simt_core_cluster::dtc_oracle_m_intercepts(const mem_fetch *mf) const {
++  return m_mem_config->m_dtc_oracle_mode == 1 && mf->dtc_oracle_eligible();
++}
++
+ void simt_core_cluster::icnt_inject_request_packet(class mem_fetch *mf) {
++  if (dtc_oracle_m_intercepts(mf)) {
++    assert(mf->get_type() == READ_REQUEST && !mf->get_is_write() &&
++           !mf->isatomic() && mf->get_access_type() == GLOBAL_ACC_R);
++    assert(mf->dtc_oracle_parent_uid() == mf->get_request_uid());
++    // Lower-create/inject and original global credit have already succeeded.
++    // This descriptor cannot admit work beyond that unchanged credit cap.
++    mf->set_status(IN_DTC_ORACLE_M_PENDING,
++        m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);
++    m_dtc_oracle_m.enqueue(mf, mf->get_request_uid(),
++        mf->dtc_oracle_required_sector_mask(),
++        m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);
++    return;
++  }
+   // Update stats based on mf type
+   update_icnt_stats(mf);
+ 
+@@ -7892,6 +7993,50 @@ void sst_simt_core_cluster::icnt_inject_request_packet_to_SST(
+   }
+ }
+ 
++bool simt_core_cluster::dtc_oracle_m_enqueue_reply(uint64_t core_tick) {
++  if (!m_dtc_oracle_m.ready(core_tick)) return false;
++  if (m_response_fifo.size() >= m_config->n_simt_ejection_buffer_size) {
++    ++m_dtc_oracle_m_fifo_stalls;
++    return false;
++  }
++  const auto selected = m_dtc_oracle_m.next(core_tick);
++  mem_fetch *parent = selected.request;
++  mem_access_byte_mask_t bytes;
++  mem_access_sector_mask_t mask;
++  mask.set(selected.index);
++  for (unsigned byte = selected.index * 32; byte < (selected.index + 1) * 32;
++       ++byte) bytes.set(byte);
++  const uint64_t line = parent->get_addr() & ~uint64_t(127);
++  mem_access_t access(GLOBAL_ACC_R, line + selected.index * 32, 32, false,
++      parent->get_access_warp_mask(), bytes, mask, m_mem_config->gpgpu_ctx);
++  mem_fetch *child = new mem_fetch(access, &parent->get_inst(),
++      parent->get_streamID(), parent->get_ctrl_size(), parent->get_wid(),
++      parent->get_sid(), parent->get_tpc(), m_mem_config, core_tick, parent);
++  child->set_reply();
++  child->set_return_timestamp(core_tick);
++  child->set_status(IN_CLUSTER_TO_SHADER_QUEUE, core_tick);
++  m_response_fifo.push_back(child);
++  m_dtc_oracle_m.commit(core_tick, selected);
++  return true;
++}
++
++void simt_core_cluster::print_dtc_oracle_stats(FILE *fp) const {
++  fprintf(fp, "DTC_ORACLE_M_V1 mode=%u cluster=%u parents_enqueued=%llu "
++      "required_sectors=%llu sectors_enqueued=%llu parents_transferred=%llu "
++      "sectors_received=%llu parents_closed=%llu pending_parents=%zu "
++      "peak_parents=%zu fifo_stalls=%llu normal_grants=%llu\n",
++      m_mem_config->m_dtc_oracle_mode, m_cluster_id,
++      (unsigned long long)m_dtc_oracle_m.parents_enqueued,
++      (unsigned long long)m_dtc_oracle_m.required_sectors,
++      (unsigned long long)m_dtc_oracle_m.sectors_enqueued,
++      (unsigned long long)m_dtc_oracle_m.parents_transferred,
++      (unsigned long long)m_dtc_oracle_m_sectors_received,
++      (unsigned long long)m_dtc_oracle_m_parents_closed,
++      m_dtc_oracle_m.size(), m_dtc_oracle_m.peak_parents,
++      (unsigned long long)m_dtc_oracle_m_fifo_stalls,
++      (unsigned long long)m_dtc_oracle_m_normal_grants);
++}
++
+ void simt_core_cluster::icnt_cycle() {
+   if (!m_response_fifo.empty()) {
+     mem_fetch *mf = m_response_fifo.front();
+@@ -7906,14 +8051,35 @@ void simt_core_cluster::icnt_cycle() {
+       // data response
+       if (!m_core[cid]->ldst_unit_response_buffer_full()) {
+         m_response_fifo.pop_front();
+-        m_memory_stats->memlatstat_read_done(mf);
++        // Virtual M returns did not traverse ICNT/L2/DRAM and must not be
++        // inserted into ordinary measured-memory-latency histograms.
++        if (!(m_mem_config->m_dtc_oracle_mode == 1 &&
++              mf->dtc_oracle_eligible()))
++          m_memory_stats->memlatstat_read_done(mf);
+         m_core[cid]->accept_ldst_unit_response(mf);
+       }
+     }
+   }
+   if (m_response_fifo.size() < m_config->n_simt_ejection_buffer_size) {
++    const uint64_t core_tick = m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle;
++    const bool oracle_m = m_mem_config->m_dtc_oracle_mode == 1;
++    // Preserve the original one-entry ingress and all normal packet handling.
++    // When both streams can progress, alternate the shared finite FIFO slot.
++    if (oracle_m && m_dtc_oracle_m_turn &&
++        dtc_oracle_m_enqueue_reply(core_tick)) {
++      m_dtc_oracle_m_turn = false;
++      return;
++    }
+     mem_fetch *mf = (mem_fetch *)::icnt_pop(m_cluster_id);
+-    if (!mf) return;
++    if (!mf) {
++      if (oracle_m && dtc_oracle_m_enqueue_reply(core_tick))
++        m_dtc_oracle_m_turn = false;
++      return;
++    }
++    if (oracle_m) {
++      m_dtc_oracle_m_turn = true;
++      ++m_dtc_oracle_m_normal_grants;
++    }
+     assert(mf->get_tpc() == m_cluster_id);
+     assert(mf->get_type() == READ_REPLY || mf->get_type() == WRITE_ACK);
+ 
+@@ -7929,6 +8095,9 @@ void simt_core_cluster::icnt_cycle() {
+     m_response_fifo.push_back(mf);
+     m_stats->n_mem_to_simt[m_cluster_id] += mf->get_num_flits(false);
+   } else {
++    if (m_mem_config->m_dtc_oracle_mode == 1 &&
++        m_dtc_oracle_m.ready(m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle))
++      ++m_dtc_oracle_m_fifo_stalls;
+     m_gpu->gpu_stall_icnt2core++;
+   }
+ }
+diff --git a/src/gpgpu-sim/shader.h b/src/gpgpu-sim/shader.h
+index 14d7f00..af81e8f 100644
+--- a/src/gpgpu-sim/shader.h
++++ b/src/gpgpu-sim/shader.h
+@@ -32,6 +32,7 @@
+ 
+ #ifndef SHADER_H
+ #define SHADER_H
++#include "dtc-oracle-m.h"
+ 
+ #include <assert.h>
+ #include <math.h>
+@@ -58,6 +59,7 @@
+ #include "addrdec.h"
+ #include "delayqueue.h"
+ #include "dtc-l1-common.h"
++#include "dtc-oracle-l1.h"
+ #include "dtc-l1-invalidation.h"
+ #include "dram.h"
+ #include "gpu-cache.h"
+@@ -1993,6 +1995,7 @@ class ldst_unit : public pipelined_simd_unit {
+   bool response_buffer_full() const;
+   // Outstanding lifecycle work, excluding reusable valid Ref0 cache lines.
+   bool dtc_l1_pending_work(unsigned kernel_uid = 0) const;
++  bool dtc_l1_oracle_pending_warp(unsigned warp_id) const;
+   void print(FILE *fout) const;
+   void print_cache_stats(FILE *fp, unsigned &dl1_accesses,
+                          unsigned &dl1_misses);
+@@ -2295,6 +2298,8 @@ class ldst_unit : public pipelined_simd_unit {
+     dtc_l1::service_entry service;
+     active_mask_t pending_atomic_lanes;
+     unsigned owner_kernel_uid = 0;
++    // Frozen at original logical admission; local/noneligible reads stay real.
++    bool oracle_eligible = false;
+   };
+   struct dtc_l1_oo_lower_candidate {
+     unsigned inst_uid = 0;
+@@ -2311,6 +2316,8 @@ class ldst_unit : public pipelined_simd_unit {
+   };
+   dtc_l1_oo_pib_entry *dtc_l1_oo_find_entry(unsigned uid);
+   std::list<dtc_l1_oo_pib_entry> m_dtc_l1_oo_pib;
++  dtc_l1::oracle_l1_events m_dtc_l1_oracle_events;
++  uint64_t m_dtc_l1_oracle_eligible_admitted = 0;
+   std::deque<dtc_l1_oo_lower_candidate> m_dtc_l1_oo_lower_create_queue;
+   std::deque<mem_fetch *> m_dtc_l1_oo_lower_issue_queue;
+   std::unordered_map<unsigned, dtc_l1_oo_inflight> m_dtc_l1_oo_inflight;
+@@ -3587,6 +3594,13 @@ class simt_core_cluster {
+                             dtc_l1::invalidation_source::UNSPECIFIED);
+   bool icnt_injection_buffer_full(unsigned size, bool write);
+   void icnt_inject_request_packet(class mem_fetch *mf);
++  bool dtc_oracle_m_enqueue_reply(uint64_t core_tick);
++  bool dtc_oracle_m_intercepts(const mem_fetch *mf) const;
++  void dtc_oracle_m_note_response(bool parent_closed) {
++    ++m_dtc_oracle_m_sectors_received;
++    m_dtc_oracle_m_parents_closed += parent_closed;
++  }
++  void print_dtc_oracle_stats(FILE *fp) const;
+   void update_icnt_stats(class mem_fetch *mf);
+ 
+   // for perfect memory interface
+@@ -3645,6 +3659,12 @@ class simt_core_cluster {
+   unsigned m_cta_issue_next_core;
+   std::list<unsigned> m_core_sim_order;
+   std::deque<mem_fetch *> m_response_fifo;
++  dtc_oracle::finite_read_sequencer<mem_fetch> m_dtc_oracle_m;
++  bool m_dtc_oracle_m_turn = true;
++  uint64_t m_dtc_oracle_m_fifo_stalls = 0;
++  uint64_t m_dtc_oracle_m_normal_grants = 0;
++  uint64_t m_dtc_oracle_m_sectors_received = 0;
++  uint64_t m_dtc_oracle_m_parents_closed = 0;
+ };
+ 
+ class exec_simt_core_cluster : public simt_core_cluster {
+@@ -3715,7 +3735,8 @@ class shader_memory_interface : public mem_fetch_interface {
+     return m_cluster->icnt_injection_buffer_full(size, write);
+   }
+   virtual void push(mem_fetch *mf) {
+-    m_core->inc_simt_to_mem(mf->get_num_flits(true));
++    if (!m_cluster->dtc_oracle_m_intercepts(mf))
++      m_core->inc_simt_to_mem(mf->get_num_flits(true));
+     m_cluster->icnt_inject_request_packet(mf);
+   }
+ 
