@@ -1,0 +1,152 @@
+{
+  "B_frontend": "A/agents/B/cpu_shared_timeslice_entry_v1/bpf_frontend.py",
+  "B_new_absolute_entry_relative": "cpu_shared_timeslice_entry_v1/native-entry/bin/experiment",
+  "B_owner_and_observer_producer": "A/agents/B/cpu_shared_timeslice_entry_v1/strace_entry.py",
+  "actual_models": 0,
+  "configuration_requirements": {
+    "common": [
+      "qualified_sources == actual role SHA map == QA/readback map",
+      "expected_pins == QA/readback expected_pins; actual bytes all match",
+      "QA status PASS and relevant 3 flags true; readback verified true and QA SHA exact",
+      "qualification_only false; root production R; matching ACTIVE additional_operational_overlays record",
+      "source snapshots capture actual new generation; never identify new shared run as old CPU2 admission PASS"
+    ],
+    "observation": {
+      "QA_flags": [
+        "native_prefix_qualified",
+        "extra_strict_qualified",
+        "consumer_archive_qualified"
+      ],
+      "design_contract_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/coordinator/CPU_SHARED_TIMESLICE_V1/DESIGN_CONTRACT.json",
+      "design_contract_sha256": "02e9050b76f695c21d72a73bff636a415f8fe45c6a7f543874108241ae22905d",
+      "future_primary_policy": "NONE",
+      "modes": {
+        "E2-DTCL2MLP-731af5428c4b8155-DH-P0-OBSCTRL-V1": "DEFAULT_CONTROL"
+      },
+      "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/control/operational_amendments/cpu_shared_timeslice_entry_v1/ACTIVE_ENTRY.json",
+      "resource_configuration_path": "Exact independent ACTIVE_RESOURCE path",
+      "resource_configuration_sha256": "SHA of complete independent resource cfg",
+      "roles": {
+        "consumer": "consumer",
+        "entry": "entry",
+        "extra_strict": "observation_extra_strict",
+        "frontend": "frontend",
+        "producer": "producer"
+      }
+    },
+    "resource": {
+      "QA_flags": [
+        "cpu_shared_resource_qualified",
+        "native_binding_qualified",
+        "single_slot_qualified"
+      ],
+      "library_path": "Exact source_paths.library; separate immutable cfg SHA",
+      "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/control/operational_amendments/cpu_shared_timeslice_v1/ACTIVE_RESOURCE.json",
+      "roles": {
+        "consumer": "consumer",
+        "extra_strict": "resource_extra_strict",
+        "frontend": "frontend",
+        "library": "resource_library",
+        "owner": "producer"
+      }
+    }
+  },
+  "design_contract_sha256": "02e9050b76f695c21d72a73bff636a415f8fe45c6a7f543874108241ae22905d",
+  "frontend_native_chain": "unchanged fa3.adapt_io(oldIO,independentSharedCfg) -> A.install_future_native -> private observation producer",
+  "independent_resource_config_target": "R/control/operational_amendments/cpu_shared_timeslice_v1/ACTIVE_RESOURCE.json",
+  "initial_cohort": "E2-DTCL2MLP-731af5428c4b8155-DH-P0-OBSCTRL-V1",
+  "install_API": {
+    "arm": "arm_owner_dispatch(main=main)",
+    "hooks": "CPU fixture only; cfg and authority both qualification_only, root must differ from production",
+    "install": "install_owner_dispatch(frame,cfg_path,E.consumer_check,main=main,armed=False)",
+    "module": "strace_entry.py",
+    "restore": "restore_owner_dispatch(main=main)"
+  },
+  "markers": {
+    "consumer": "DTC_STRACE_CPU_SHARED_PRIVATE_CONSUMER_V1",
+    "producer": "DTC_STRACE_CPU_SHARED_DISPATCH_V1"
+  },
+  "mode": "DEFAULT_CONTROL",
+  "new_grants": 0,
+  "observation_FIELD": "additional_strace_bpf_observation_binding; schema is new shared observer ID",
+  "observation_config_target": "R/control/operational_amendments/cpu_shared_timeslice_entry_v1/ACTIVE_ENTRY.json",
+  "observation_files": [
+    "STRACE_BPF_OBSERVATION_SNAPSHOT.json",
+    "STRACE_BPF_ACTIVATION.json",
+    "STRACE_BPF_FORK_PLAN.json"
+  ],
+  "observer_ID": "DTC_STRACE_SHARED_CPU_OBSERVATION_V1",
+  "observer_roles": {
+    "consumer": "E/cpu_shared_timeslice_strict_v1/consumer_bridge.py",
+    "entry": "B newentry",
+    "extra_strict": "E/cpu_shared_timeslice_strict_v1/bpf_extra_strict.py",
+    "frontend": "B newfront",
+    "producer": "B strace_entry.py"
+  },
+  "old_CPU2_PASS_claimed": false,
+  "owner_APIs": [
+    "install_owner_dispatch(frame,observation_cfg_path,consumer_check,main=None,armed=False)",
+    "arm_owner_dispatch(main=None)",
+    "restore_owner_dispatch(main=None)"
+  ],
+  "owner_scope": "Exact1 fallback only; other decisions/current worker exactdelegate. Preserve R/credits, full original candidate RAM, original legalCPU replayer, all quotas/disk/fresh and max_shared1.",
+  "owner_sequence": [
+    "Main pre-arm exactC fence before any worker replacement; non-C exact old delegate; verify no frame/persisted claim, INTENT, consumed or DONE for C.",
+    "Source/readback/QA and both configurations verified outside authority EX; any authority callback uses passed q/files only.",
+    "Install E consumer first; install B owner with armed=False (built-in worker gate); preserve old references, same pool/claims/aging lock.",
+    "Recheck current canonical/alias/qSHA, full science, both readiness chains and both claims; Main explicit arm only after all required gates.",
+    "Failure: no silent fallback/retry/refund. Keep mandatory typed routes and exactC HOLD after exposure."
+  ],
+  "prearm": "Unarmed selected returns ZERO_START_DEFERRED before any entry/INTENT; spent preserved. Main final fresh identity/claims/source checks then explicit arm.",
+  "production_changes": 0,
+  "production_release_eligible": false,
+  "qualified_sources": {
+    "consumer": {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/E/cpu_shared_timeslice_strict_v1/consumer_bridge.py",
+      "sha256": "c24cfaa663348ea98a5f1f8cd179ef8fcb0845031ba1a0651b4e3eac29d7ea1f"
+    },
+    "entry": {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/B/cpu_shared_timeslice_entry_v1/native-entry/bin/experiment",
+      "sha256": "3c40691efc8057fa6da13f9d7cb881cf89a3ad0b146b33c024b4aa462af73f3a"
+    },
+    "frontend": {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/B/cpu_shared_timeslice_entry_v1/bpf_frontend.py",
+      "sha256": "f043a21f4e087f921bb23e1cb26181acde31d85f2bb8bc496dbac3474c07f45b"
+    },
+    "observation_extra_strict": {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/E/cpu_shared_timeslice_strict_v1/bpf_extra_strict.py",
+      "sha256": "1766aefbaf4710b876e0ed97a46bcfb91434a9f333e0a985b01864f592d1437b"
+    },
+    "producer": {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/B/cpu_shared_timeslice_entry_v1/strace_entry.py",
+      "sha256": "6d3d72e132d7c7fa65b103b4e90e685665bd4bcc2dc0ccc405878a0495ce55c6"
+    },
+    "resource_extra_strict": {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/E/cpu_shared_timeslice_strict_v1/resource_extra_strict.py",
+      "sha256": "b89910928efdd77f4686700362913fd241e12ab2256e517f1887fc8986b8fa47"
+    },
+    "resource_library": {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/cpu_shared_timeslice_v1/cpu_shared.py",
+      "sha256": "cb6f6d4c6d49e1ad944fead5fd02034ec8b159c59793540dcd9ae16ebc6394e7"
+    }
+  },
+  "reference_cycles": 8551,
+  "resource_FIELD": "additional_cpu_shared_timeslice_binding",
+  "resource_ID": "CPU_SHARED_TIMESLICE_FUTURE_MEMORY_095_V1",
+  "resource_cfg_required_fa3_alias": "library_path exactly source_paths.library, part of config identity",
+  "resource_roles": {
+    "consumer": "E/cpu_shared_timeslice_strict_v1/consumer_bridge.py",
+    "extra_strict": "E/cpu_shared_timeslice_strict_v1/resource_extra_strict.py",
+    "frontend": "B bpf_frontend.py",
+    "library": "A/cpu_shared_timeslice_v1/cpu_shared.py",
+    "owner": "B strace_entry.py"
+  },
+  "resource_snapshot": "CPU_SHARED_TIMESLICE_SNAPSHOT.json",
+  "restore_rules": {
+    "ever_armed": "Requires same UUID fully accepted RESULT, new resource and observation proofs/sidecar SHAs and archive. Unspent without terminal evidence is HOLD, not permission to route through old entry.",
+    "never_armed": "No claim/INTENT/consumed permits exact restoration to captured prior worker/chooser (which may be Main prearm fence)."
+  },
+  "schema": "SHARED_EXACT1_ENTRY_INTERFACE_FINAL_V1",
+  "status": "CPU_COMPONENTS_QUALIFIED_NOT_INSTALLED",
+  "strict_CHAIN": "pristine original physics -> new resource strict AND true oldIO -> new observation strict/ref8551 -> true archive/native restore before accepted"
+}

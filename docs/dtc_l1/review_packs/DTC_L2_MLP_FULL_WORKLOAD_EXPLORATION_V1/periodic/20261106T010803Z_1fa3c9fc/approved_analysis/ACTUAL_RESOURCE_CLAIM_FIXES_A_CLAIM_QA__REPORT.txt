@@ -1,0 +1,9 @@
+Owner claim snapshot sync（未部署）
+
+实际病因：l2_ops.py在每轮刷新claims.observed_model后未saveclaims，磁盘保存的false与live内存true长期不同。c761正确要求slot磁盘claims与allocator live claims完全相等，因此永久HOLD；不能删弱该证明。
+
+独立source bfe64ace… / overlay OWNER_CLAIM_SNAPSHOT_SYNC_V1。Main-only安装一个res.choose_dispatch外层。运行时同aging.lock下验证source、当前owner PID/start、scheduler TID、lease、同claims对象、saveclaims同一闭包与原a53f代码指纹；磁盘与live必须同keys、同所有非observed字段且两侧observed均bool。只有flags不同时调用现有saveclaims，再读回与当前内存相同后，把原pending/sample/claims/history/previous/policy/index原对象传原chooser一次。已相同不重复写；任何结构、RAM、CPU、类型、source或closure漂移先HOLD不写、不委派。不添加claim、不改原writer、c761、worker、aging/Guard链或科学身份。
+
+3组CPU通过。数据直接取实际磁盘146f1239…和diag8 liveclaims，原saveclaims AST函数体从冻结a53f提取不变，代码指纹相同；真实原put函数仅写私有根，未启动run_scheduler或线程池。验证两个bool同步，旧scan false+全RAM/CPU字段与同claims dict保留；原chooser只在读回后调用一次；重复snapshot不写；keys/cost/nonbool/source/closure负例不写；exactrestore恢复外层但不撤销已正确保存的观测flags。owner/authority/prior chooser为明确fixture，不冒实际Main。
+
+生产模板的实际scheduler ident、最终派生QA SHA、发布readback SHA待Main填写；readback verified=False不能直接安装。实际磁盘SHA仅初始证据，不能作为永恒pin，因为保存flags本来会改变它。Main负责source发布/字节核对、独立aux row零grant注册与同owner安装。0生产修改、模型、信号或新增grant。
