@@ -1,0 +1,11 @@
+  void frontend_cycle(mem_fetch *m) {
+    if(c.m_config.m_ro_pressure_epoch && !pressure_epoch_active &&
+       directory_ready(m) && candidate(m)) {
+      unsigned index=~0U;
+      const auto p=c.m_tag_array->probe(c.m_config.block_addr(m->get_addr()),index,m,false,true);
+      // The existing indexed Tag probe and maintained native LineMSHR count
+      // feed this one-bit control update. No ownership is granted here.
+      if(p!=HIT && (p==RESERVATION_FAIL || c.m_mshrs.num_entries_used()>=128)) {
+        pressure_epoch_active=true;++pressure_epoch_activations;
+      }
+    }
