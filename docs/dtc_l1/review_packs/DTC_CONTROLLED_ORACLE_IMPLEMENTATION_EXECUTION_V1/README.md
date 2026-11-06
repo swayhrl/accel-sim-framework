@@ -1,5 +1,7 @@
 # DTC-L1 Controlled Oracle Implementation & Execution V1
 
+[Final independent full32 evidence audit](independent_reviews/INITIAL8_ALL32_FULL_EVIDENCE_AUDIT_V1/README.md) is complete: all initial8 strict proofs recomputed, all true164/archive and native restored SHA verified. This closes the extra I/O audit that earlier timestamped analysis snapshots still recorded as ongoing. Full CORE32 remains incomplete.
+
 Latest scientific checkpoint: **8 frozen programs x4 modes =32 accepted cells**.
 Read [the complete initial8 scientific report and independent reviews](analysis/INITIAL8_COMPLETE32_SCIENTIFIC_RESULTS_V1/README.md)
 and its [exact execution status](analysis/INITIAL8_COMPLETE32_SCIENTIFIC_RESULTS_V1/MAIN_EXECUTION_STATUS.fixed.json).
