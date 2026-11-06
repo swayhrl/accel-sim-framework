@@ -1,0 +1,42 @@
+--- frozen-c9
++++ consumer-v2
+@@ -53,7 +53,8 @@
+ def choose_reference(original, alternate=None, link=None):
+     """Pure deterministic precedence; a rejected apparent original blocks substitution."""
+     if original.get('valid'): return dict(selected=original,reason='VALID_ORIGINAL_PRIORITY')
+-    if original.get('apparent_accepted'): return dict(selected=None,reason='ORIGINAL_ACCEPTANCE_IDENTITY_HOLD_NO_SUBSTITUTION')
++    if original.get('apparent_accepted') or original.get('acceptance_uncertain'): return dict(selected=None,reason='ORIGINAL_ACCEPTANCE_IDENTITY_HOLD_NO_SUBSTITUTION')
++    if original.get('identity_verified') is not True:return dict(selected=None,reason='ORIGINAL_IDENTITY_HOLD_NO_SUBSTITUTION')
+     if link and alternate and alternate.get('cohort')==link['alternate_cohort'] and alternate.get('scientific_role')==link['alternate_role'] and alternate.get('valid'):
+         require(original['cohort']==link['original_cohort'],'wrong original link')
+         return dict(selected=alternate,reason='EXACT_PREDECLARED_REFERENCE_ONLY_NAMED_VIEW')
+@@ -203,16 +204,26 @@
+     def measure(self,c,target,role):
+         if c in self.cache:return self.cache[c]
+         result_path=R/'analysis'/(c+'.RESULT.json');spec=self.spec(c)
+-        row=dict(cohort=c,scientific_role=role,valid=False,apparent_accepted=False,raw_state='PENDING_NO_RESULT',cycles=None,RESULT_path=str(result_path),RESULT_sha256=None,reasons=[])
++        row=dict(cohort=c,scientific_role=role,valid=False,apparent_accepted=False,acceptance_uncertain=True,identity_verified=False,raw_state='PENDING_NO_RESULT',cycles=None,RESULT_path=str(result_path),RESULT_sha256=None,reasons=[])
+         self.cache[c]=row
+         try:
++            # Read possible acceptance before any identity/role failure. An
++            # unreadable/racing RESULT stays uncertain and cannot authorize a
++            # substitute. Only a genuinely absent or known nonaccepted result
++            # may proceed to the fixed, independently verified negative link.
++            value=None
++            if result_path.exists():
++                value=self.get(result_path)
++                require(isinstance(value,dict),'RESULT object required')
++                row.update(raw_state=value.get('state'),RESULT_sha256=self.pin(result_path),uuid=value.get('uuid'),apparent_accepted=value.get('state') in (PASS,REUSE),acceptance_uncertain=value.get('state') not in (PASS,REUSE,'FAIL_L2MLP_ARCHIVED_NO_RETRY'))
++            else:row['acceptance_uncertain']=False
+             assert_identity(spec,target,self.science_keys)
+             require(spec.get('scientific_role','ORIGINAL_PRIMARY_SLOT')==role or role=='ORIGINAL_PRIMARY_SLOT' and 'scientific_role'not in spec,'source role mismatch')
++            row['identity_verified']=True
+             if role!='ORIGINAL_PRIMARY_SLOT':
+                 lineage=spec.get('incident_recovery_trial_lineage',spec.get('supplemental_trial_lineage',{}))
+                 require(lineage.get('primary_statistics_excluded') is True and lineage.get('validated_union_authorized') is False,'old exclusion flags changed')
+-            if not result_path.exists():row['reasons'].append('NO_RESULT_PENDING_OR_UNSTARTED');return row
+-            value=self.get(result_path);row.update(raw_state=value.get('state'),RESULT_sha256=self.pin(result_path),uuid=value.get('uuid'),apparent_accepted=value.get('state') in (PASS,REUSE))
++            if value is None:row['reasons'].append('NO_RESULT_PENDING_OR_UNSTARTED');return row
+             if not self.old.accepted(value):row['reasons'].append('NOT_STRICT_ACCEPTED');return row
+             require(value['cohort']==c,'RESULT cohort mismatch')
+             if role=='ORIGINAL_PRIMARY_SLOT':

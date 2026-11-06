@@ -1,0 +1,239 @@
+{
+  "schema": "STRACE_SECCOMP_BPF_FUTURE_ONLY_READONLY_ASSESSMENT_V1",
+  "status": "PASS_CPU_ONLY_CANDIDATE_NOT_DEPLOYED",
+  "utc": "2026-10-28T14:07:03Z",
+  "scope": "Only isolated CPU fixtures; current or previous science attempts untouched; no Git, registry, controller, worker, config or authority changes",
+  "production_evidence": {
+    "native_path": "/root/data/dtc_main_v100_sweep_20261025_v1/tools/sweep_native_cap1m.py",
+    "native_sha256": "fb246ce610a76a21ae86b36730283fa9fdd9f5d21e35fd76e2db17847f2b247d",
+    "native_line": 170,
+    "argv_flags": [
+      "-f",
+      "-e",
+      "trace=%file,process,network"
+    ],
+    "seccomp_bpf_enabled": false,
+    "filter_empirical_exclusions": [
+      "getpid",
+      "clock_gettime",
+      "read",
+      "write"
+    ],
+    "filter_note": "%file logs filename-oriented calls; read/write are deliberately outside existing filter. This proposal preserves that exact contract, not full byte-I/O tracing.",
+    "strace_path": "/root/data/ep_l2_dtc_l1_native_v2/tools/bin/strace",
+    "strace_sha256": "38a5c75cb29dd85ddd7780d54f5bf595554d7a1b5c42524b23065f5dc4c4b01d",
+    "strace_version": "5.16",
+    "kernel": "6.8.0-45-generic",
+    "binary_path": "/root/data/dtc_failure_repair_20261025_v1/framework-build/accel-sim.out",
+    "binary_sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d",
+    "core_path": "/root/data/dtc_failure_repair_20261025_v1/core-build/libcudart.so",
+    "core_sha256": "694f05ce97fe3e1552d94803c2202d8d037769c61624cde5f6a832622ed60c56",
+    "fw_progress_path": "/root/data/dtc_failure_repair_20261025_v1/framework/gpu-simulator/ag7_policyb_progress.h",
+    "fw_progress_sha256": "9b5b8767e7c1db2b729a6eaae91a50f56d8c6189aa415a5c36ff760f5a213201",
+    "fw_hotspot": "observe lines69-97 calls getpid and monotonic clock before10s throttle; caller accel-sim.cc SIMULATE observes per cycle. getpid is real syscall; clock_gettime may use vDSO in production, unlike explicitly forced syscall fixture."
+  },
+  "manual": {
+    "local_installed_manual_found": false,
+    "local_search_roots": [
+      "/usr/share/man",
+      "/usr/share/doc",
+      "native/tools",
+      "native/root maxdepth4",
+      "/root/workspace maxdepth4"
+    ],
+    "matched_upstream_version_url": "https://raw.githubusercontent.com/strace/strace/v5.16/doc/strace.1.in",
+    "downloaded_copy": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/strace_seccomp_bpf_v1/UPSTREAM_V5_16_MANUAL.1.in",
+    "sha256": "bd00f244b606ce660251e97fdcb4257450b0297d650183e1f35eb41aa3ea1b61",
+    "relevant_lines": [
+      1536,
+      1555
+    ],
+    "interpretation": "With -f, kernel ptrace stops only selected syscalls. Without -f, option disabled. No -p support. Setup failures may revert to normal syscall stops. Version5.16 docs used rather than current-version-only behavior."
+  },
+  "benchmark": {
+    "fixture_iterations_each": 100000,
+    "forced_getpid_calls_each": 100000,
+    "forced_clock_gettime_syscalls_each": 100000,
+    "repeats": 3,
+    "medians_seconds": {
+      "baseline": 0.11497446894645691,
+      "default": 6.68481594696641,
+      "seccomp": 0.16967255622148514
+    },
+    "default_over_seccomp_micro_ratio": 39.39833344786923,
+    "samples": [
+      {
+        "label": "default",
+        "seconds": 6.576773265376687
+      },
+      {
+        "label": "default",
+        "seconds": 6.7495809476822615
+      },
+      {
+        "label": "default",
+        "seconds": 6.68481594696641
+      },
+      {
+        "label": "seccomp",
+        "seconds": 0.21050422824919224
+      },
+      {
+        "label": "seccomp",
+        "seconds": 0.15235943160951138
+      },
+      {
+        "label": "seccomp",
+        "seconds": 0.16967255622148514
+      }
+    ],
+    "limitations": [
+      "Small sequential noisy same-host CPU fixture, no affinity change; not simulator measurement or speedup promise.",
+      "Fixture forces clock syscall whereas actual clock may use vDSO.",
+      "Fixture compiles isolated C helper with -O2 -pthread; production binaries unchanged.",
+      "No model instructions/cycles/statistics compared; science equivalence requires future engineering canary."
+    ]
+  },
+  "checks": {
+    "three_default_all_fixture_checks_pass": true,
+    "three_seccomp_all_fixture_checks_pass": true,
+    "normalized_required_event_counts_equal": true,
+    "seccomp_actual_filters_1": true,
+    "default_actual_filters_0": true,
+    "no_f_follow_warns_and_disables": true,
+    "nested_unavailable_reported_not_mislabelled_success": true,
+    "version_matched_manual_saved": true,
+    "simulator_not_executed": true,
+    "production_sources_not_modified": true,
+    "existing_processes_not_signalled_attached_or_reconfigured": true
+  },
+  "required_event_signatures": [
+    {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/strace_seccomp_bpf_v1/default_0",
+      "signature": {
+        "fixture_successful_open": 3,
+        "missing_open": 3,
+        "socketpair": 1,
+        "send": 1,
+        "recv": 1,
+        "clone_attempts": 2,
+        "exit7": 1,
+        "exit0": 2,
+        "wait_child_status7": true,
+        "excluded_getpid": true,
+        "excluded_clock_gettime": true,
+        "excluded_read_write": true
+      }
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/strace_seccomp_bpf_v1/default_1",
+      "signature": {
+        "fixture_successful_open": 3,
+        "missing_open": 3,
+        "socketpair": 1,
+        "send": 1,
+        "recv": 1,
+        "clone_attempts": 2,
+        "exit7": 1,
+        "exit0": 2,
+        "wait_child_status7": true,
+        "excluded_getpid": true,
+        "excluded_clock_gettime": true,
+        "excluded_read_write": true
+      }
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/strace_seccomp_bpf_v1/default_2",
+      "signature": {
+        "fixture_successful_open": 3,
+        "missing_open": 3,
+        "socketpair": 1,
+        "send": 1,
+        "recv": 1,
+        "clone_attempts": 2,
+        "exit7": 1,
+        "exit0": 2,
+        "wait_child_status7": true,
+        "excluded_getpid": true,
+        "excluded_clock_gettime": true,
+        "excluded_read_write": true
+      }
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/strace_seccomp_bpf_v1/seccomp_0",
+      "signature": {
+        "fixture_successful_open": 3,
+        "missing_open": 3,
+        "socketpair": 1,
+        "send": 1,
+        "recv": 1,
+        "clone_attempts": 2,
+        "exit7": 1,
+        "exit0": 2,
+        "wait_child_status7": true,
+        "excluded_getpid": true,
+        "excluded_clock_gettime": true,
+        "excluded_read_write": true
+      }
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/strace_seccomp_bpf_v1/seccomp_1",
+      "signature": {
+        "fixture_successful_open": 3,
+        "missing_open": 3,
+        "socketpair": 1,
+        "send": 1,
+        "recv": 1,
+        "clone_attempts": 2,
+        "exit7": 1,
+        "exit0": 2,
+        "wait_child_status7": true,
+        "excluded_getpid": true,
+        "excluded_clock_gettime": true,
+        "excluded_read_write": true
+      }
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/strace_seccomp_bpf_v1/seccomp_2",
+      "signature": {
+        "fixture_successful_open": 3,
+        "missing_open": 3,
+        "socketpair": 1,
+        "send": 1,
+        "recv": 1,
+        "clone_attempts": 2,
+        "exit7": 1,
+        "exit0": 2,
+        "wait_child_status7": true,
+        "excluded_getpid": true,
+        "excluded_clock_gettime": true,
+        "excluded_read_write": true
+      }
+    }
+  ],
+  "fallback": {
+    "no_follow": "CPU fixture executes successfully and explicit warning disables seccomp; child/thread tracing coverage absent as expected, so never candidate deployment mode.",
+    "kernel_support": "Positive actual fixture Seccomp2/filter1 plus debug SECCOMP events; default same fixture0/0. argv alone not accepted as activation proof.",
+    "unavailable_negative": "Nested tracer CPU test explicitly reports unavailable then fails PTRACE_TRACEME; no fixture stdout. This is a negative startup rejection, NOT proof of successful normal-mode fallback.",
+    "unproven": "No successful seccomp-install-failure→ordinary-full-run fallback induced. Do not claim it qualified. Future adapter must record activation/fallback explicitly and fail closed or preserve labelled old mode; never claim BPF based solely on argv."
+  },
+  "recommendation": {
+    "worth_future_canary": true,
+    "zero_change_live_acceleration_available": false,
+    "minimal_future_change": "Versioned private native-launch subprocess adapter inserts exactly --seccomp-bpf into exact existing -f tracer argv, otherwise byte-preserves filter, loader, simulator argv/env/config, binary/Core/FW and all source identities. New explicit operational observation binding in receipts plus strict AND existing performance/IO. No change to active or spent attempts.",
+    "engineering_canary_required": true,
+    "canary_acceptance": [
+      "Only a registered unspent identity, no new grant or repeats of accepted work.",
+      "Prove actual new tracee seccomp activation before labelling BPF; preserve birth/affinity/dispatch/maps/telemetry and exact source lineage.",
+      "All existing original performance+IO strict, terminal DONE/EXIT and true164/native_restore close unchanged.",
+      "Check fork/thread and error/fallback branch qualification, required log events/archive source proof; do not interpret different pid/timing/interleaving as science change.",
+      "Never detach/reattach existing model; only future launch uses new observation generation."
+    ]
+  },
+  "source_hashes": {
+    "fixture.c": "7fdf5fc9fd4326875d6e379b1aacea86bed2b24bb0b4a252a8eb0caab7ba705a",
+    "qualify.py": "5759fdfa7beb339705418ec0b851c0a52b12818d58ff861e94f68e8d5ff1facb",
+    "fixture": "fe0c3d4a56898c53ad288a0caf34c3486a2a551e412c08f2ee00e6a9f7801642",
+    "finish_report.py": "5badf85d9e5c0cea8703e058f1f0b14c8db11577296cc67c48b475b34e77394e"
+  }
+}

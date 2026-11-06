@@ -1,0 +1,12 @@
+--- 83e128b1
++++ nested_prearm_full_pending
+@@ -126,7 +126,8 @@
+    put(directory/'PREIMAGE.json',dict(budget=before['budget'],remaining=before['remaining'],old_UUIDs={c:r['uuid']for c,r in before['consumed'].items()},old_operational_records=before['operational_records'],canonical_shas=canonical,same_frame_object_ids=ids,matrix_sha256=before['matrix_sha256'],scope_sha256=before['scope_sha256'],CPU2_memory_active_sha256=before['memory_active_sha256']))
+    def worker(c):return held(state,c,'BROAD_MAIN_PREARM')if c in scope_ids else originals['worker'](c)
+    def choose(pending,*args,**kw):
+-    return originals['choose'](pending,*args,**kw)if state['armed']else originals['choose']([s for s in pending if s['cohort']not in scope_ids],*args,**kw)
++    decision=originals['choose'](pending,*args,**kw)
++    return None if not state['armed']and decision is not None and decision['cohort']in scope_ids else decision
+    state.update(fence=worker,prearm_choose=choose,ever_exposed=True);frame.f_globals['worker']=worker;res.choose_dispatch=choose
+    event(state,'NEW_SCOPE_PREARM_OLD_GENERATIONS_RETAINED')
+    engine.update_authority(lambda reg:append_records_locked(reg,engine.REQ,records,R,scope,canonical,before))
