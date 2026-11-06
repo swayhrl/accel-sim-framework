@@ -1,0 +1,32 @@
+"""Final readonly resource Main v2/source/config/current ten review."""
+import pathlib,json,hashlib,importlib.util,copy,datetime
+P=pathlib.Path;D=P(__file__).parent;A=P('/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1');R=P('/root/data/dtc_l2_mlp_exploration_20261027_v1');M=R/'control/operational_amendments/pending_resource_forecast_refresh_v1'
+def read(p):return json.loads(P(p).read_bytes())
+def sha(p):return hashlib.sha256(P(p).read_bytes()).hexdigest()
+def load(n,p):
+ s=importlib.util.spec_from_file_location(n,p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
+def put(p,v):
+ assert not p.exists();p.write_text(json.dumps(v,indent=2,sort_keys=True)+'\n')
+cp=M/'actual_install_v2/CONFIGURATION.json';cs='0abc73c6702fa9ec7d1c3c727f87da1f8518f8c06c295eb77c9fad2bf0de05ba';ss='f48fb251f0ec30593611d70c11a08c4292bd8b39e1b2e9677be785b5fee98351'
+assert sha(cp)==cs;cfg=read(cp);assert sha(cfg['installer_path'])==cfg['installer_sha256']==ss
+pins=[dict(path=p,sha256=sha(p),expected=h)for p,h in cfg['source_pins'].items()];assert all(x['sha256']==x['expected']for x in pins)
+binding=cp.parent/'MAIN_SOURCE_BINDING.json';assert sha(binding)=='c18dc9678af5882bcb56ba89a2c5a0b13abeba0d7a705a4c517df2d3ab0625b0';assert read(binding)['configuration_sha256']==cs and read(binding)['installer_sha256']==ss
+assert sha(cfg['helper_path'])==cfg['helper_sha256']=='c4103056c90807ee72ac550ba2886e95ff4fa15996857e713f9a9ad3d6105369'
+qa=read(D/'CPU_MAIN_V2_QUALIFICATION.json');assert qa['source_sha256']==ss and qa['status']=='PASS'and qa['count']==4
+helper=load('final_review_resource_helper',cfg['helper_path']);engine=load('final_review_native_ro',R/'tools/l2_native.py');res=load('final_review_forecast_ro',R/'tools/l2_resources.py');q=engine.registered()[2];before=copy.deepcopy(q)
+history=read(R/'control/HISTORICAL_RSS.json');policy=read(R/'control/RESOURCE_POLICY.json');claims=read(R/'control/POOL_DISPATCH_RESERVATIONS.json')['claims']
+proposal=helper.prepare(R,engine,res,history,policy,cfg['scope_contract_path'],claims);helper.validate_proposal(proposal,R);assert len(proposal['items'])==10 and sum(i['DB_present']for i in proposal['items'])==1
+rows=[]
+for i in proposal['items']:
+ old=json.loads(i['files'][0]['old_utf8']);new=json.loads(i['files'][0]['new_utf8']);assert q['admitted_specs'][i['cohort']]==i['old_spec_sha256']
+ for f in i['files']:assert P(f['path']).read_bytes()==f['old_utf8'].encode()
+ assert helper.science(old)==helper.science(new)
+ cpu=None
+ if i['DB_present']:
+  a=json.loads(i['files'][2]['old_utf8']);b=json.loads(i['files'][2]['new_utf8']);assert a['host_cpu']==b['host_cpu']==26;cpu=a['host_cpu']
+ rows.append(dict(cohort=i['cohort'],old_RAM_bytes=old['estimated_peak_model_RAM_bytes'],new_RAM_bytes=new['estimated_peak_model_RAM_bytes'],current_forecast_bytes=i['forecast']['predicted_peak_RAM_bytes'],old_RSS_cap=old['limits']['max_process_tree_rss_bytes'],new_RSS_cap=new['limits']['max_process_tree_rss_bytes'],old_AS_cap=old['limits']['max_process_tree_vms_bytes'],new_AS_cap=new['limits']['max_process_tree_vms_bytes'],science_and_IR_lineage_unchanged=True,DB_CPU_preserved=cpu))
+assert q==before
+put(D/'FRESH_CURRENT_PROPOSAL_READONLY.json',proposal)
+review=dict(schema='E_PENDING_RESOURCE_REFRESH_MAIN_V2_FINAL_REVIEW_V1',UTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),status='APPROVED_FOR_EXPLICIT_SAME_OWNER_RESOURCE_REFRESH',owner_source_sha256=ss,owner_config_sha256=cs,owner_config_path=str(cp),helper_source_sha256=cfg['helper_sha256'],actual_models_qualified=False,reviewer_applied=False,source_pin_count=len(pins),source_pin_readback=pins,actual_Main_v2_private_fault_QA_sha256=sha(D/'CPU_MAIN_V2_QUALIFICATION.json'),fresh_proposal_readonly_sha256=sha(D/'FRESH_CURRENT_PROPOSAL_READONLY.json'),actual_ten_current_valid=True,rows=rows,current_budget=q['budget'],remaining=q['remaining'],current_consumed=len(q['consumed']),findings=['Old21 Main not approved/executed. Finalf48 keeps all proposal/transaction validation/ACK writes under admission hold and restores exact previous chooser as final action only.','Actual apply private control-flow four cases PASS: success, ACK publication failure, helper BaseException and foreign newer chooser protection. Known own/predecessor references re-HOLD; unknown chooser is never overwritten.','Unchanged c410 helper prepares outside EX; under EX only passed q/file CAS/atomic local resource files. Positive resource-only changes preserve all science/IR lineage, Core/FW/binary/input/options, timeouts/result caps, budgets/UUIDs and old negatives.','Current exact10 are unconsumed/unclaimed/noINTENT and original canonical/alias/DB bytes match; fresh forecast is15212101633B while old estimate15105785857B. No estimate/cap is lowered. Nine without DB and one with CPU26 preserved; only canonical/resolved SHA changes for DB.','Per-attempt locks, immutable proposal/preimages and fsync journal support explicit same-proposal forward reconciliation of old/new byte pairs after partial commit. No new operational row, grant, model, retry/reset or scientific promotion.'],execution_constraints=['One contained existing-owner Main callback; fresh prepare/history/claims/current q must remain authoritative. No blind reapply on existing marker or partial transaction.','On failure preserve held new admission and the same immutable proposal; explicitly qualified forward reconciliation only. Existing healthy model workers are not signaled or stopped.','Successful metadata refresh is not model/physics acceptance. Native admission and strict/source/ROI/true164-native completion still required for every new run.','Root must inspect callback returned status and ERROR alongside ACK in exceptional interruption cases; do not infer success solely from file existence.'],models_started=0,new_grants=0,review_production_changes=0)
+put(D/'REVIEW.json',review);put(D/'MANIFEST.json',dict(schema='E_RESOURCE_REFRESH_FINAL_REVIEW_MANIFEST_V1',members=[dict(path=n,sha256=sha(D/n),bytes=(D/n).stat().st_size)for n in ['qualify_main.py','CPU_MAIN_V2_QUALIFICATION.json','review.py','FRESH_CURRENT_PROPOSAL_READONLY.json','REVIEW.json']],production_changes=0))
+print(json.dumps(dict(status=review['status'],REVIEW_sha256=sha(D/'REVIEW.json'),MANIFEST_sha256=sha(D/'MANIFEST.json'),QA_sha256=sha(D/'CPU_MAIN_V2_QUALIFICATION.json'),fresh_proposal_sha256=sha(D/'FRESH_CURRENT_PROPOSAL_READONLY.json'),pins=len(pins))))

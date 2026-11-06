@@ -1,0 +1,102 @@
+{
+  "Git_actions": 0,
+  "UTC": "2026-10-28T23:49:05.921149+00:00",
+  "issues": [
+    {
+      "evidence": [
+        {
+          "line_end": 140,
+          "line_start": 137,
+          "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/B/adaptive_batch_registry_v1/adaptive_batch_registry.py",
+          "sha256": "7993bc88e3e6c89784d73cf57134f56e2231ef3b2aee1f31004359bcc7ada7e6",
+          "text": "    terminal=read(r['terminal_evidence_path']);assert terminal['cohort']==r['cohort']and terminal['cycles']==r['cycles']\n    assert terminal['proof']['performance_accepted']is(r['state']=='ACCEPTED')\n    if r['state']=='ORIGINAL_TERMINAL_NEGATIVE':assert terminal['state']=='FAIL_L2MLP_ARCHIVED_NO_RETRY'\n    if r['cohort']in q['consumed']:assert terminal['uuid']==q['consumed'][r['cohort']]['uuid']"
+        }
+      ],
+      "fact": "needs_completion requires standard result-shaped cycles/proof/state FAIL_L2MLP_ARCHIVED_NO_RETRY. The exact old scan/M16 negative is a typed certificate without original RESULT/DONE/EXIT, not that standard schema.",
+      "id": "TYPED_NEGATIVE_TERMINAL_SCHEMA_INCOMPATIBLE",
+      "impact": "The initial350-complete branch and BOUNDARY_OR_COMBINATION cannot truthfully pass even after the other349 terminal. Early MATCHED_CH with explicit Main execution-order supersession bypasses this branch and is distinct.",
+      "required_fix": "Independent versioned typed terminal evidence adapter; verify exact real certificate outside authority EX using qualified historical verifier, cycles=None/performance_accepted=False and raw original provenance retained. Do not fabricate standard RESULT/DONE/EXIT, do not insert R2/IR or use Derived35 references as old accepted.",
+      "severity": "BLOCKS_ORIGINAL_COMPLETION_BRANCH_NOT_EARLY_MATCHED_CH"
+    },
+    {
+      "evidence": [
+        {
+          "line_end": 212,
+          "line_start": 211,
+          "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/B/adaptive_batch_registry_v1/adaptive_batch_registry.py",
+          "sha256": "7993bc88e3e6c89784d73cf57134f56e2231ef3b2aee1f31004359bcc7ada7e6",
+          "text": "   folder=self.folder(p);immutable(folder/'PREPARED.json',raw(p));immutable(folder/'preimages/MATRIX_INITIAL350.json',p['initial350_matrix_utf8'].encode());immutable(folder/'preimages/SCOPE_FROZEN.json',p['frozen_scope_utf8'].encode());immutable(folder/'preimages/Q_BEFORE.json',raw(q));self.checkpoint('AFTER_PREPARED')\n   for i in p['rows']:"
+        },
+        {
+          "line_end": 196,
+          "line_start": 196,
+          "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/B/adaptive_batch_registry_v1/adaptive_batch_registry.py",
+          "sha256": "7993bc88e3e6c89784d73cf57134f56e2231ef3b2aee1f31004359bcc7ada7e6",
+          "text": "    return dict(state='UNGRANTED_SAFE_TO_CONTINUE',batch_id=p['batch_id'],new_grants=0)"
+        }
+      ],
+      "fact": "Every commit attempt rewrites immutable preimages/Q_BEFORE.json from current q. A first AFTER_PREPARED/partial-spec failure leaves that initial file. A legal old model completion may then append its execution_receipt, changing current q. reconcile still says UNGRANTED_SAFE_TO_CONTINUE but commit hits immutable-file conflict before the grant.",
+      "id": "SAME_PROPOSAL_Q_BEFORE_RETRY_CONFLICTS_WITH_LEGAL_PEER_CLOSURE",
+      "required_fix": "Preserve first Q_BEFORE bytes. Add immutable per-attempt current-q snapshots for fresh CAS or explicitly validate the preserved first snapshot as history. Grant must still use fresh current q CAS and +exactN once; do not refund/reset/stop old models or require historical q to remain frozen.",
+      "severity": "BLOCKS_PARTIAL_UNGRANTED_FORWARD_RECOVERY_WITH_CONCURRENT_OLD_COMPLETION",
+      "symbolic_counterexample": [
+        "Attempt1: q0, PREPARED + Q_BEFORE=q0 persisted; AFTER_FIRST_SPEC interruption; no new grants.",
+        "Peer naturally completes: q1 differs only by an old consumed execution_receipt; budget/UUID/selection unchanged.",
+        "Sameproposal reconcile -> UNGRANTED_SAFE_TO_CONTINUE; commit tries immutable(Q_BEFORE,raw(q1)); existing raw(q0)!=raw(q1), so conflict."
+      ]
+    }
+  ],
+  "limits": [
+    "No actual Main selection/execution-order supersession exists; no production readiness sign-off.",
+    "No dispatcher/native/role-specific strict/consumer stage integration is qualified by this review.",
+    "No registrar execution, fakeauthority reproduction, new old-suite test or actual model/archive re-audit was run.",
+    "Current canonical reconciliation permits only resource increases; an independently authorized resource decrease will HOLD and needs a separately qualified lifecycle rule rather than silently changing this source."
+  ],
+  "models_started": 0,
+  "new_grants": 0,
+  "positive_findings": [
+    "Authority grant operates on passed current q with exact q CAS and twin-spec/MATRIX SHA; no engine authority reentry inside grant.",
+    "Exact uniform35 rows per vector; only CH F128/F256 in this version; phase2 general combination dispatch is not implemented by this registrar.",
+    "All original q fields are checked by subtracting only the new grant mutations; old consumed UUIDs, other requests, role flags and initial350 MATRIX are not edited.",
+    "After authority success, reconcile recognizes the existing exact batch and does not regrant; source declares no runtime activation.",
+    "Candidate source flags stay unqualified construction provenance; exact Main selection/source/readback and separately qualified runtime integration are still required. Existing CPU-only fake approvals do not authorize production."
+  ],
+  "pure_EX": {
+    "callback_line_end": 232,
+    "callback_line_start": 215,
+    "calls": [
+      "current.setdefault('authorized_parameter_batches', []).append",
+      "copy.deepcopy",
+      "stripped['authorized_parameter_batches'].remove",
+      "sha",
+      "any",
+      "current['admitted_inputs'][s['input_digest']]['specs'].append",
+      "copy.deepcopy",
+      "stripped['admitted_inputs'][i['spec']['input_digest']]['specs'].remove",
+      "sha",
+      "sha",
+      "current.setdefault",
+      "(self.root / 'control/qualification_ledger' / (c + '.INTENT.json')).exists",
+      "(self.root / 'control/dispatch_bindings' / (c + '.json')).exists",
+      "r.get",
+      "current.get"
+    ],
+    "engine_authority_or_canonical_reentry_calls_found": false,
+    "qualification": "AST/source inspection only; no execution of registrar or repeated tests"
+  },
+  "schema": "E_ADAPTIVE_BATCH_REGISTRAR_STATIC_REVIEW_V1",
+  "simulation_changes": 0,
+  "source_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/B/adaptive_batch_registry_v1/adaptive_batch_registry.py",
+  "source_sha256": "7993bc88e3e6c89784d73cf57134f56e2231ef3b2aee1f31004359bcc7ada7e6",
+  "status": "VERSIONED_FIX_REQUIRED_FOR_CLAIMED_FULL_TERMINAL_AND_FORWARD_RECOVERY_PATHS",
+  "typed_negative": {
+    "API": "verify_bundle(bundle_path, expected_self_sha) / verify_certificate(cert_path, expected_self_sha); call strictly outside authority EX",
+    "certificate_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/engineering_negative_evidence_v1/E2-DTCL2MLP-6df3a84b612086e8-DH-M16-V1/1e968456ccefd837eacee605d7ffacc712860114e8a7fea17b4633b25cecbf5f/ENGINEERING_TERMINAL_NEGATIVE.json",
+    "certificate_sha256": "37842f4191c6a0f293a01d22834c28794c3e23a477b1d657976d01bdb055c9e7",
+    "schema": "L2_MLP_ENGINEERING_TERMINAL_NEGATIVE_V1",
+    "state": "ENGINEERING_TERMINAL_NEGATIVE_ARCHIVED_NO_RETRY",
+    "verifier_executed_by_this_review": false,
+    "verifier_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/scan_m16_diagnosis_v1/terminal_verifier_v2/scan_m16_terminal_verifier_v2.py",
+    "verifier_sha256": "9a023005a1847108dfb7e05ef0bacddbadcb7558766c5847bb08d2e2f678e673"
+  }
+}
