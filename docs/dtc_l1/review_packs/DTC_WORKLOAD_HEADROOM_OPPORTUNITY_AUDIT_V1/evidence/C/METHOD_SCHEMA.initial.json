@@ -1,0 +1,34 @@
+{
+  "schema": "DTC_TRUE_HEADROOM_METHOD_SCHEMA_V1",
+  "join_key": "full input SHA + capture/ROI + sourcebuild/options + scientific role",
+  "matched_baseline_field": "C_DH_OFF_matched",
+  "historical_baseline_field": "C_DH0_historical_9eed",
+  "S_oracle": "C_DH_OFF_matched / C_Oracle",
+  "H": "(C_DH_OFF_matched-C_Oracle)/C_DH_OFF_matched = 1-1/S_oracle",
+  "unqualified_oracle_values": null,
+  "negative_oracle_H_kept": true,
+  "clipping": false,
+  "strict_upper_bound_proven": false,
+  "implementable_hardware_upper_bound_proven": false,
+  "additive_oracle_H_assumption": false,
+  "per_program_best_GM": false,
+  "CH_baseline_and_oracle_semantic_match_required_for_cross_design_claim": true,
+  "stock_oracle_status": {
+    "M": "HOLD_RESPONSE_GRANULARITY",
+    "L2": "HOLD_INERT_OPTION",
+    "L1": "HOLD_NO_IMPLEMENTATION"
+  },
+  "family_budget_if_q_modes_qualified": "initial8*(1+q), extension24*(1+q), total32*(1+q); q in1..3,OFF shared only one frozen binary",
+  "source_freeze_before_any_registration": true,
+  "phase_gate": "CPU implementation/offdiff/lifecycle independent review; actualqual rows inside approvedmatrix; fixed8 completion; semantics-only preregistered32 extension",
+  "source_manifests": [
+    {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_workload_headroom_opportunity_audit_20261106_v1/agents/A_opportunity_records_v1/MANIFEST.json",
+      "sha256": "6ac899ecf8fec1b9b7559a14399c028e173b68b9c1b547d809f4e237fedfea41"
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_workload_headroom_opportunity_audit_20261106_v1/agents/B_oracle_semantics_v1/MANIFEST.json",
+      "sha256": "e2998f8ce4001e6bd5430291f0623f24375262a8107e7bb7a15ce16d5b652222"
+    }
+  ]
+}

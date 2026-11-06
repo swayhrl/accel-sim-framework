@@ -1,0 +1,13 @@
+# Oracle semantic qualification
+
+**No stock matched Oracle is ready for scientific execution.** This phase invoked no simulator or GPU and changed no production Core. [Full source analysis](evidence/B/B_ORACLE_SEMANTICS_AND_QUALIFICATION.md), [qualification matrix](evidence/B/ORACLE_SEMANTICS_MATRIX.json), [source anchors](evidence/B/SOURCE_CALLGRAPH.json), [exact source index](evidence/B/SOURCE_INDEX.json), [isolated CPU fixture](evidence/B/cpu_fixture/perfect_interface_oo_lifecycle.cpp), and [CPU outcomes](evidence/B/cpu_fixture/CPU_RESULT.json) pin the findings to Core9eed/FW027.
+
+|Route|Actual fixed-source meaning|Current scientific eligibility|
+|---|---|---|
+|Oracle-M / `-gpgpu_perfect_mem`|Shader lower transport replaced by a bounded cluster response FIFO; original request carrier returned; Tag/physical/PIB/finite completion remain upstream. I-cache misses share this interface. This is not simply DRAM latency0.|HOLD: whole-line PAPER_OO128B expects four32B response sectors, whereas the perfect path returns the original128B carrier once.|
+|Oracle-L2 / `-l2_ideal`|Registered/declaration-only option with no consumer in this fixed tracked source.|HOLD: inert; parser acceptance cannot establish an all-hit treatment.|
+|Oracle-L1|No matched ordinary L1D/DTC all-hit implementation. Bypass, l1_latency0, or finite_service0 are different/ineligible treatments.|HOLD: implementation and semantics pending.|
+
+The CPU fixture copies actual perfect-interface/OO-consume/sector-check methods with minimal carriers and callbacks. For the reachable conditional whole-line NEW_MISS shape it observes expected mask15, received1, inflight1, no credit release or completion; four32B children close once. Wrong-address and duplicate-sector assertions, unknown UID, FIFO and atomic callback controls are preserved. This is a source/CPU protocol counterexample, not an integrated workload replay, general liveness proof or numeric certification. Full scheduler/Scoreboard/physical generations/refcounts are not instantiated. Existing historical accepted workloads are not reclassified.
+
+A future controlled implementation must preserve original instruction/coalescing/dependencies, parent UID/sector/physical-generation ownership, once-only replies/credits, write acknowledgements, atomic side effects, Fence ordering, WB and retirement, finite interfaces and termination. Stock flags cannot be silently repaired in place or used to generate “upper-bound” cycles. A new independent source/binary with matched OFF controls and qualified explicit effects is required. No mathematical performance bound or numeric Oracle headroom is established.

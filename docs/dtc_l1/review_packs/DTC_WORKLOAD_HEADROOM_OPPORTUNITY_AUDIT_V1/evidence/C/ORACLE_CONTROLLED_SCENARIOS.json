@@ -1,0 +1,138 @@
+{
+  "schema": "DTC_FUTURE_CONTROLLED_ORACLE_SCENARIOS_V1",
+  "current_executable_oracles_qualified": 0,
+  "current_simulator_authorization": false,
+  "common": {
+    "eligible": "cacheable, non-atomic global data loads on the ordinary DTC read path; mark eligibility at original logical admission, do not infer from a later ambiguous carrier alone",
+    "unchanged_request_classes": [
+      "instruction fetch",
+      "constant",
+      "texture",
+      "explicit bypass/global-skip loads",
+      "stores and writebacks",
+      "atomics/read-modify-write",
+      "fences/barriers and their ordering gates"
+    ],
+    "platform": "64SM,10MiB L2,850MHz DRAM,original other clocks,Hash/Tag512/physical640/OO_PIB128/ref13 and original270 DH-P0 fields unchanged. Finite-service settings and actually retained stages keep original behavior; explicitly bypassed eligible read lower/refill work is not falsely claimed to execute.",
+    "stock_perfect_mem": 0,
+    "stock_l2_ideal": 0,
+    "oracle_mode_option": "PROPOSED -gpgpu_dtc_oracle_mode enum0/OFF,1/M_DATAREAD,2/L2_DATAREAD,3/L1_DATAREADY; not an existing9eed runtime capability",
+    "expected_echo": "new samebuild expected271 = exact historical270 plus proposed one enum; no quiet omission of the extra option",
+    "bounds_claim": "controlled counterfactual only; neither monotonic nor strict implementable/additive upper bound"
+  },
+  "modes": [
+    {
+      "mode": "M_DATAREAD",
+      "current_status": "IMPLEMENTATION_PENDING_HOLD",
+      "treatment_boundary": "after original local lower-create/inject acceptance, replace eligible read downstream transport/L2/DRAM service with a new finite oracle return sequencer",
+      "ICache_accelerated": false,
+      "instruction_constant_texture_path": "original full path, deliberately unlike stockperfect_mem which also affects instruction cache",
+      "retained": [
+        "real issue/coalescing",
+        "PIB and exact full-reference registration",
+        "Tag bank/allocation service and512Tag/640physical generation",
+        "real lower-create queue/cap and finite inject",
+        "original finite cluster return FIFO/receiver/refill/collect/operandWB/retire",
+        "all noneligible original requests and ordering"
+      ],
+      "protocol": [
+        "Each parent retains original request UID, aligned line address, required response-sector mask and physical generation; never guess one reply is enough for128B.",
+        "Earliest oracle eligibility is one core tick after accepted parent. A finite pending-parent scheduler is bounded by the unchanged admitted lower-outstanding credits; no infinite request admission.",
+        "A fair round-robin sequencer can enqueue at most one32B eligible child reply per SIMT-cluster core tick when the existing finite return FIFO has room; normal traffic continues through its unchanged path and FIFO arbitration. Retain parent until every required child has been transferred.",
+        "Each child has a unique sector index/address and correct READ_REPLY set_reply semantics; a whole128B/expected0xF read produces4 distinct32B sectors. Other request sizes use their actual declared mask, not unconditional4.",
+        "Actual lower/global credit closes exactly once only after the last required sector closes the parent; duplicate/stale-generation replies never satisfy another lifetime.",
+        "Finite refill, notifications, collection, WB and retire are not idealized; altered overlap can make this oracle slower."
+      ],
+      "not_claimed": [
+        "DRAM=0 for all traffic",
+        "zero totalmemory latency",
+        "unlimited bandwidth",
+        "same semantics as stock flag",
+        "strict speedup bound"
+      ]
+    },
+    {
+      "mode": "L2_DATAREAD",
+      "current_status": "IMPLEMENTATION_PENDING_HOLD",
+      "treatment_boundary": "after original routing, sector breakdown and finite L2 bank/pipeline admission, eligible read requests receive virtual L2-hit service instead of read-miss/DRAM service",
+      "retained": [
+        "normal ICNT both directions/partitionmapping",
+        "actual32B sector and parent linkage",
+        "L2 configured hit timing and bank/return-port throughput",
+        "finite ingress/return queues; unchanged shared-credit backpressure for noneligible/real DRAM traffic only, with no fabricated DRAM-credit allocation for virtual read hits",
+        "all original noneligible stores/atomics/writebacks/fences",
+        "local DTC pipeline and completion services"
+      ],
+      "protocol": [
+        "Implement a real consumed source branch; -l2_ideal currently onlyregisters an inert option and must remain0.",
+        "Place forced virtual read-hit decision before real miss metadata/MSHR/DRAM allocation; do not mutate a normal miss then relabel HIT or leak reservations.",
+        "Eligible read misses do not allocate real read-miss MSHRs or DRAM work. Virtual read residency is an intentional counterfactual, not a physical L2 capacity claim. Existing cache hit port/latency and return queue reservations still govern service.",
+        "Use the original post-breakdown reply route with proper READ_REPLY, per-sector address and parent/generation; no direct wholeline response that bypasses sector completion.",
+        "Report eligible_seen/virtual_hit_served separately from actual physical cache hits/misses. Do not infer would_miss without a proven side-effect-free original tag probe.",
+        "Original cacheable writes and all atomics/writebacks retain original allocation/DRAM/order behavior. Changed read warming/overlap is part of the counterfactual and must be disclosed."
+      ],
+      "not_claimed": [
+        "all DRAM disappears",
+        "pure queuecapacity treatment",
+        "real capacity-free hardware",
+        "physical L2-hit proof"
+      ]
+    },
+    {
+      "mode": "L1_DATAREADY",
+      "current_status": "SOURCE_DESIGN_PENDING_HOLD",
+      "treatment_boundary": "data availability after original logical Tag/physical admission and complete instruction-reference registration; not a stock all-hit switch",
+      "retained": [
+        "unchanged logical512Tag/physical640 finite capacity and generation",
+        "actual bank lookup/allocation width and replacement/admission decisions",
+        "PIB128 and all next_reference/partial-dispatch registration obligations",
+        "Ref cardinality/dedup/waiter identity",
+        "finite notification/collect/WB/retire and original scoreboard",
+        "all stores/atomics/bypass/fence and source-event/initial-state semantics"
+      ],
+      "protocol": [
+        "Never force an instruction complete before all original logical references are registered. Do not bypass LDST issue/coalescing, Tag banks, physical allocation, PIB or operand WB.",
+        "For an eligible newly allocated physical line, schedule one generation-bound virtual data-availability event at the next SM core tick. Pending references to the same line share that one event; this is not one event per lane/duplicate.",
+        "Only after normal Tag admission may the event make required data sectors available. Existing Tag/allocation throughput limits event creation; no additional hardware performance guarantee is assumed.",
+        "Eligible virtual fills create no real lower-create/inject/DRAM/refill work. Their own event and readiness counters must separately conserve enqueued/delivered/drained ownership; do not counterfeit ordinary lower responses or count skipped work as zero measured latency.",
+        "Real physical allocation/Ref reclamation still follows original lifecycle and replacement; the explicit oracle event is a new counterfactual mechanism requiring new Core/binary and strictadapter.",
+        "Preserve finite waiter notifications, collection/WB/retirement after readiness. Memory-order/fence gates must include outstanding oracle events and original noneligible real operations."
+      ],
+      "not_claimed": [
+        "all L1 tags hit",
+        "removal of physical/Tag/PIB pressure",
+        "same architecture or attainablefree hardware",
+        "stock latency0/skipL1/finite_service0 equivalent"
+      ]
+    }
+  ],
+  "CH_scope": {
+    "primary_requested_design": "DH only",
+    "CH_current_scientific_budget_requested": 0,
+    "CH_modes": [
+      {
+        "mode": "OFF_MATCHED",
+        "applicability": "UNQUALIFIED_SEPARATE_CONVENTIONAL_FRONTEND_SEMANTICS",
+        "can_compare_with_DH_automatically": false
+      },
+      {
+        "mode": "M_DATAREAD",
+        "applicability": "UNQUALIFIED_SEPARATE_CONVENTIONAL_FRONTEND_SEMANTICS",
+        "can_compare_with_DH_automatically": false
+      },
+      {
+        "mode": "L2_DATAREAD",
+        "applicability": "UNQUALIFIED_SEPARATE_CONVENTIONAL_FRONTEND_SEMANTICS",
+        "can_compare_with_DH_automatically": false
+      },
+      {
+        "mode": "L1_DATAREADY",
+        "applicability": "UNQUALIFIED_SEPARATE_CONVENTIONAL_FRONTEND_SEMANTICS",
+        "can_compare_with_DH_automatically": false
+      }
+    ],
+    "future_optional_CH_amendment": "Global explicit opt-in/independent new request required; samefullinput population and commonbinary OH modes, matching logical eligible work/removed/retained stages and request-sector accounting must be CPU+actualqualified. Additional budget exactlyN*(1+q_CH) forN8or32; default0 here. No per-program cherry-picked CH subset or unannounced extra baseline. If code changes, matched OFF must be versioned too.",
+    "conditional_CH0_over_DH_oracle": "May be displayed only as unchanged-CH versus idealized-DH context, never a fair implementedDTC gain or normalized cross-design oracle advantage."
+  },
+  "stock_invalid_modes_from_B_are_not_repaired_or_run_by_this_packet": true
+}

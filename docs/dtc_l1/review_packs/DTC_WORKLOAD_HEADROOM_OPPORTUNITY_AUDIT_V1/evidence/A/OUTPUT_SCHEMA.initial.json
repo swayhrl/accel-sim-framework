@@ -1,0 +1,40 @@
+{
+  "schema": "DTC_CORE32_OPPORTUNITY_RECORD_SCHEMA_V1",
+  "join_key": "full input_digest, never program-name only",
+  "population": {
+    "primary_core": 32,
+    "frozen_ordinary_target": 35,
+    "outside_core_frozen3": "SEPARATE_IDENTITY_AND_MISSINGNESS",
+    "UNRESOLVED7": "SEPARATE_NO_PROMOTION"
+  },
+  "source_families": [
+    "STAGEI_L2_SINGLE_FACTORS_DH",
+    "STAGEII_MATCHED_CH_DH_P0_F",
+    "PERF_FIRST_STRUCTURE_DH_FIXED8",
+    "R1_PHYSICAL_PIB_COMBINATIONS_DH_FIXED8"
+  ],
+  "fields": [
+    "program",
+    "suite",
+    "input_digest",
+    "authority",
+    "baseline_and_matched_sixcells",
+    "stageI_single_factor_cells",
+    "structure_cells",
+    "R1_combination_cells",
+    "kernel_identity_cycle_instruction_CTA",
+    "observed_traffic_and_frontend_service",
+    "source_and_initial_state_limits",
+    "positive_zero_negative_missing",
+    "opportunity_hypotheses_and_falsification",
+    "best_observed_cycles_exploratory_only",
+    "evidence_refs"
+  ],
+  "rules": [
+    "accepted cycles only",
+    "negative/HOLD/pending/missing stay distinct and null",
+    "do not derive theoretical bound without oracle",
+    "no per-program best GM",
+    "no raw active reads or science/runtime mutations"
+  ]
+}

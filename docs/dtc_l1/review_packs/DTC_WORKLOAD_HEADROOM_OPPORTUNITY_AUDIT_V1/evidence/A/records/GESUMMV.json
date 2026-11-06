@@ -1,0 +1,2482 @@
+{
+  "schema": "DTC_WORKLOAD_HEADROOM_OPPORTUNITY_RECORD_V1",
+  "program": "GESUMMV",
+  "suite": "PolyBench/GPU",
+  "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+  "population_role": "FIXED_CORE32_NOT_35_OR_8",
+  "authority": {
+    "stageI": "361fa6fa0700825bb9cda43e25b9fd1f60e0b262",
+    "stageII_terminal_progress_only": "b665d5ea77b5ae022a86cd03c6c464f5b11cb15e",
+    "stageII_final_closeout": "60ccf830553425105d6d5a905e392cc403475f65",
+    "V2_preparation": "320b1365902a72502fa61ba114cb4a4a28b934bb",
+    "R1_final": "e218746921111d475c6ad8bda8023ad7fe33a33d",
+    "note": "Commits are role-specific provenance; b665 did not include final review. This packet does not alter prior scientific identities or authorize experiments."
+  },
+  "capture_identity": {
+    "program_id": "P42-16",
+    "input_binding_path": "/root/data/dtc_main_v100_sweep_20261025_v1/control/input_bindings/769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4.json",
+    "input_binding_sha256": "f10712680c21161dcf45d7a6af584ec4f60e96f9369ba324674502ae17b762b3",
+    "trace_entry": "/root/workspace/assets/traces/bundles/0620566b79b0cc21af493110e6acb6dd362e737c29671f86e8354ad4c8578827/tree/kernelslist.g",
+    "commandlist_sha256": "ed0da283145c822bb1b9fc13c78fe41088b43478b706fcb17d078d83111044a8",
+    "expected": {
+      "CTA": 16,
+      "instructions": 190918656,
+      "kernels": 1
+    },
+    "identity_freeze": {
+      "all_input_digests": [
+        "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4"
+      ],
+      "exact_capture_executable_and_original_input_linkage_newly_certified": false,
+      "input_count": 1,
+      "ordinary_main_slot": true,
+      "program": "GESUMMV",
+      "program_id": "P42-16",
+      "reason": "Only ordinary trace identity for this program in the72-input matrix; no outcome-dependent replacement. Keep its recorded source/command/content identity. Exact capture-time executable/input-content and full-application provenance are not newly certified.",
+      "scope_evidence": "REGISTERED_TRACE_COMPLETE_FULL_APPLICATION_UNCERTIFIED",
+      "selected_bundle_id": "0620566b79b0cc21af493110e6acb6dd362e737c29671f86e8354ad4c8578827",
+      "selected_input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "selected_parameters": [
+        "NO_ARGS"
+      ],
+      "selected_source_version": "GPU 1.0 source mapping; capture path 11.0 is toolchain label",
+      "selected_trace_entry": "/root/workspace/assets/traces/bundles/0620566b79b0cc21af493110e6acb6dd362e737c29671f86e8354ad4c8578827/tree/kernelslist.g",
+      "state": "IDENTITY_FROZEN",
+      "suite": "PolyBench/GPU"
+    },
+    "source_scope": "Complete declared trace,not certification of native full application/numerical values;old scientific statuses are preserved",
+    "memory_instruction_paths": {
+      "CACHEABLE_GLOBAL_LOAD": 3145856,
+      "ORDINARY_STORE": 1048704
+    },
+    "historical_repair_evidence": [
+      {
+        "cohort": "E2-AEREPAIR-LATE4-769e6d9fd5f9cd53-CH-V1",
+        "performance_eligible": false,
+        "root": "/root/data/dtc_failure_repair_20261025_v1/validation_late_failure_v1",
+        "state": "PASS_REPAIR_CORRECTNESS_STRICT_ARCHIVE_RESTORE",
+        "uuid": "a38e25bf-543f-4523-949c-9ab7757df2a2"
+      }
+    ]
+  },
+  "CH_DH_P0_F_six_cells": [
+    {
+      "program": "GESUMMV",
+      "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "design": "CH",
+      "comparison_profile": "F128",
+      "RESULT": {
+        "path": "/root/data/dtc_stage_iia_remaining48_20261104_v1/analysis/E2-DTC2A48-769e6d9fd5f9cd53-CH-F128-V1.RESULT.json",
+        "sha256": "5ea04a0be59deebfc80e2607c54853e430a2828e2eed4415a111aa205d1c5463"
+      },
+      "actual_RESULT_cohort": "E2-DTC2A48-769e6d9fd5f9cd53-CH-F128-V1",
+      "actual_RESULT_profile": "F128",
+      "actual_proof_profile": "F128",
+      "actual_scientific_role": "STAGEII_REMAINING48_AUTHORIZED_CH",
+      "state": "PASS_STAGEII48_CH_STRICT_ARCHIVE_NATIVE_RESTORE",
+      "uuid": "10edc0eb-f983-4e21-9e89-0dcb02a9d278",
+      "cycles": 106901261,
+      "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+      "binary_sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d",
+      "kernel_count": 1,
+      "counter_evidence": {
+        "whole_replay_selected_cumulative": {
+          "DTC_L1_pib_full_events": 0,
+          "DTC_L1_tag_conflicts": 38798080,
+          "gpu_stall_dramfull": 148369202,
+          "L2_total_cache_accesses": 140164464,
+          "L2_total_cache_misses": 65180919,
+          "L2_total_cache_reservation_fails": 169975161
+        },
+        "whole_replay_traffic": {
+          "DRAM_atom_bytes": 32,
+          "DRAM_issued_read_atoms": 65161203,
+          "DRAM_issued_write_atoms": 20576,
+          "DRAM_read_payload_bytes": 2085158496,
+          "DRAM_write_payload_bytes": 658432,
+          "L2_accepted_read_32B_sectors": 135969648,
+          "L2_read_payload_bytes": 4351028736,
+          "DRAM_controller_request_objects": 65166621
+        },
+        "service_cumulative_integrals_item_sums_and_counts": {},
+        "terminal_gauges_not_pressure_history": {
+          "DTC_L1_pib_occupancy": 0,
+          "DTC_L1_lower_outstanding": 0
+        },
+        "running_peaks_not_perkernel": {
+          "DTC_L1_lower_outstanding_peak": 1169,
+          "DTC_L1_pib_peak_per_sm": 21
+        },
+        "unavailable_requested_fields": [
+          "DTC_L1_oo_valid_hits",
+          "DTC_L1_oo_pending_hits",
+          "DTC_L1_oo_new_misses",
+          "DTC_L1_oo_tag_evictions",
+          "DTC_L1_oo_lower_created",
+          "DTC_L1_oo_lower_issued",
+          "DTC_L1_oo_lower_responses",
+          "DTC_L1_oo_ready_but_writeback_blocked_cycles",
+          "DTC_L1_oo_lower_create_queue_full_stalls",
+          "DTC_L1_oo_immediate_reclaims",
+          "DTC_L1_oo_deferred_reclaims",
+          "DTC_L1_oo_final_ref_reclaims",
+          "DTC_L1_oo_out_of_order_retires",
+          "DTC_L1_oo_retire_count"
+        ],
+        "per_kernel_traffic": "UNAVAILABLE_FROM_FINAL_STRICT_ENDPOINT; existing reviewed raw-derived phase references may supply explicit endpoints",
+        "latency": "Diagnostic means retain original sampling windows; missing not zero. No new mean computed."
+      },
+      "legal_source_identity": {
+        "accepted": true,
+        "cycles": 106901261,
+        "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+        "native_scientific_role": "STAGEII_REMAINING48_AUTHORIZED_CH",
+        "program": "GESUMMV",
+        "reason": null,
+        "source_RESULT_path": "/root/data/dtc_stage_iia_remaining48_20261104_v1/analysis/E2-DTC2A48-769e6d9fd5f9cd53-CH-F128-V1.RESULT.json",
+        "source_RESULT_sha256": "5ea04a0be59deebfc80e2607c54853e430a2828e2eed4415a111aa205d1c5463",
+        "source_cell": "CH",
+        "source_profile": "F128",
+        "source_registered_slot_cohort": "E2-DTC2A48-769e6d9fd5f9cd53-CH-F128-V1",
+        "source_role": "STAGEII_REMAINING48_AUTHORIZED_CH",
+        "source_state": "PASS_STAGEII48_CH_STRICT_ARCHIVE_NATIVE_RESTORE",
+        "source_uuid": "10edc0eb-f983-4e21-9e89-0dcb02a9d278",
+        "status": "PASS_STAGEII48_CH_STRICT_ARCHIVE_NATIVE_RESTORE",
+        "suite": "PolyBench/GPU"
+      },
+      "reviewed_raw_derived_cumulative": {
+        "whole_replay_selected_cumulative": {
+          "DTC_L1_pib_full_events": 0,
+          "DTC_L1_tag_conflicts": 38798080,
+          "gpu_stall_dramfull": 148369202,
+          "L2_total_cache_accesses": 140164464,
+          "L2_total_cache_misses": 65180919,
+          "L2_total_cache_reservation_fails": 169975161
+        },
+        "whole_replay_traffic": {
+          "DRAM_read_atoms32B": 65161203,
+          "DRAM_write_atoms32B": 20576,
+          "DRAM_controller_n_req": 65166621,
+          "L2_GLOBAL_read_accepted_sectors": 135969648,
+          "L2_GLOBAL_read_miss_sectors": 65161203
+        },
+        "service_cumulative_integrals_item_sums_and_counts": {},
+        "terminal_gauges_not_pressure_history": {},
+        "running_peaks_not_perkernel": {},
+        "unavailable_requested_fields": [
+          "DTC_L1_oo_valid_hits",
+          "DTC_L1_oo_pending_hits",
+          "DTC_L1_oo_new_misses",
+          "DTC_L1_oo_tag_evictions",
+          "DTC_L1_oo_lower_created",
+          "DTC_L1_oo_lower_issued",
+          "DTC_L1_oo_lower_responses",
+          "DTC_L1_oo_ready_but_writeback_blocked_cycles",
+          "DTC_L1_oo_lower_create_queue_full_stalls",
+          "DTC_L1_oo_immediate_reclaims",
+          "DTC_L1_oo_deferred_reclaims",
+          "DTC_L1_oo_final_ref_reclaims",
+          "DTC_L1_oo_out_of_order_retires",
+          "DTC_L1_oo_retire_count"
+        ],
+        "per_kernel_traffic": "UNAVAILABLE_FROM_FINAL_STRICT_ENDPOINT; existing reviewed raw-derived phase references may supply explicit endpoints",
+        "latency": "Diagnostic means retain original sampling windows; missing not zero. No new mean computed."
+      },
+      "reviewed_final24_metadata_scope": "Raw-derived selected final cumulative metrics; source identity stays original/new role. Gauge/peak/mean snapshots not differenced."
+    },
+    {
+      "program": "GESUMMV",
+      "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "design": "CH",
+      "comparison_profile": "F256",
+      "RESULT": {
+        "path": "/root/data/dtc_stage_iia_remaining48_20261104_v1/analysis/E2-DTC2A48-769e6d9fd5f9cd53-CH-F256-V1.RESULT.json",
+        "sha256": "4b2defcd2f68788d157d91e641ad21107a822141b1621b789860039db2a199e6"
+      },
+      "actual_RESULT_cohort": "E2-DTC2A48-769e6d9fd5f9cd53-CH-F256-V1",
+      "actual_RESULT_profile": "F256",
+      "actual_proof_profile": "F256",
+      "actual_scientific_role": "STAGEII_REMAINING48_AUTHORIZED_CH",
+      "state": "PASS_STAGEII48_CH_STRICT_ARCHIVE_NATIVE_RESTORE",
+      "uuid": "89c97aab-823b-446a-8d03-ea232a9c75b9",
+      "cycles": 112286106,
+      "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+      "binary_sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d",
+      "kernel_count": 1,
+      "counter_evidence": {
+        "whole_replay_selected_cumulative": {
+          "DTC_L1_pib_full_events": 0,
+          "DTC_L1_tag_conflicts": 38798080,
+          "gpu_stall_dramfull": 170060111,
+          "L2_total_cache_accesses": 140180616,
+          "L2_total_cache_misses": 68432387,
+          "L2_total_cache_reservation_fails": 197243163
+        },
+        "whole_replay_traffic": {
+          "DRAM_atom_bytes": 32,
+          "DRAM_issued_read_atoms": 68406632,
+          "DRAM_issued_write_atoms": 26511,
+          "DRAM_read_payload_bytes": 2189012224,
+          "DRAM_write_payload_bytes": 848352,
+          "L2_accepted_read_32B_sectors": 135985800,
+          "L2_read_payload_bytes": 4351545600,
+          "DRAM_controller_request_objects": 68413592
+        },
+        "service_cumulative_integrals_item_sums_and_counts": {},
+        "terminal_gauges_not_pressure_history": {
+          "DTC_L1_pib_occupancy": 0,
+          "DTC_L1_lower_outstanding": 0
+        },
+        "running_peaks_not_perkernel": {
+          "DTC_L1_lower_outstanding_peak": 1202,
+          "DTC_L1_pib_peak_per_sm": 22
+        },
+        "unavailable_requested_fields": [
+          "DTC_L1_oo_valid_hits",
+          "DTC_L1_oo_pending_hits",
+          "DTC_L1_oo_new_misses",
+          "DTC_L1_oo_tag_evictions",
+          "DTC_L1_oo_lower_created",
+          "DTC_L1_oo_lower_issued",
+          "DTC_L1_oo_lower_responses",
+          "DTC_L1_oo_ready_but_writeback_blocked_cycles",
+          "DTC_L1_oo_lower_create_queue_full_stalls",
+          "DTC_L1_oo_immediate_reclaims",
+          "DTC_L1_oo_deferred_reclaims",
+          "DTC_L1_oo_final_ref_reclaims",
+          "DTC_L1_oo_out_of_order_retires",
+          "DTC_L1_oo_retire_count"
+        ],
+        "per_kernel_traffic": "UNAVAILABLE_FROM_FINAL_STRICT_ENDPOINT; existing reviewed raw-derived phase references may supply explicit endpoints",
+        "latency": "Diagnostic means retain original sampling windows; missing not zero. No new mean computed."
+      },
+      "legal_source_identity": {
+        "accepted": true,
+        "cycles": 112286106,
+        "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+        "native_scientific_role": "STAGEII_REMAINING48_AUTHORIZED_CH",
+        "program": "GESUMMV",
+        "reason": null,
+        "source_RESULT_path": "/root/data/dtc_stage_iia_remaining48_20261104_v1/analysis/E2-DTC2A48-769e6d9fd5f9cd53-CH-F256-V1.RESULT.json",
+        "source_RESULT_sha256": "4b2defcd2f68788d157d91e641ad21107a822141b1621b789860039db2a199e6",
+        "source_cell": "CH",
+        "source_profile": "F256",
+        "source_registered_slot_cohort": "E2-DTC2A48-769e6d9fd5f9cd53-CH-F256-V1",
+        "source_role": "STAGEII_REMAINING48_AUTHORIZED_CH",
+        "source_state": "PASS_STAGEII48_CH_STRICT_ARCHIVE_NATIVE_RESTORE",
+        "source_uuid": "89c97aab-823b-446a-8d03-ea232a9c75b9",
+        "status": "PASS_STAGEII48_CH_STRICT_ARCHIVE_NATIVE_RESTORE",
+        "suite": "PolyBench/GPU"
+      },
+      "reviewed_raw_derived_cumulative": {
+        "whole_replay_selected_cumulative": {
+          "DTC_L1_pib_full_events": 0,
+          "DTC_L1_tag_conflicts": 38798080,
+          "gpu_stall_dramfull": 170060111,
+          "L2_total_cache_accesses": 140180616,
+          "L2_total_cache_misses": 68432387,
+          "L2_total_cache_reservation_fails": 197243163
+        },
+        "whole_replay_traffic": {
+          "DRAM_read_atoms32B": 68406632,
+          "DRAM_write_atoms32B": 26511,
+          "DRAM_controller_n_req": 68413592,
+          "L2_GLOBAL_read_accepted_sectors": 135985800,
+          "L2_GLOBAL_read_miss_sectors": 68406632
+        },
+        "service_cumulative_integrals_item_sums_and_counts": {},
+        "terminal_gauges_not_pressure_history": {},
+        "running_peaks_not_perkernel": {},
+        "unavailable_requested_fields": [
+          "DTC_L1_oo_valid_hits",
+          "DTC_L1_oo_pending_hits",
+          "DTC_L1_oo_new_misses",
+          "DTC_L1_oo_tag_evictions",
+          "DTC_L1_oo_lower_created",
+          "DTC_L1_oo_lower_issued",
+          "DTC_L1_oo_lower_responses",
+          "DTC_L1_oo_ready_but_writeback_blocked_cycles",
+          "DTC_L1_oo_lower_create_queue_full_stalls",
+          "DTC_L1_oo_immediate_reclaims",
+          "DTC_L1_oo_deferred_reclaims",
+          "DTC_L1_oo_final_ref_reclaims",
+          "DTC_L1_oo_out_of_order_retires",
+          "DTC_L1_oo_retire_count"
+        ],
+        "per_kernel_traffic": "UNAVAILABLE_FROM_FINAL_STRICT_ENDPOINT; existing reviewed raw-derived phase references may supply explicit endpoints",
+        "latency": "Diagnostic means retain original sampling windows; missing not zero. No new mean computed."
+      },
+      "reviewed_final24_metadata_scope": "Raw-derived selected final cumulative metrics; source identity stays original/new role. Gauge/peak/mean snapshots not differenced."
+    },
+    {
+      "program": "GESUMMV",
+      "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "design": "CH",
+      "comparison_profile": "P0",
+      "RESULT": {
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-CH-P0-V1.RESULT.json",
+        "sha256": "59fbdea7414a42db94f5bc5a67734ed4b8e2350ea44bdc4c177939b1a3c5bdb7"
+      },
+      "actual_RESULT_cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-CH-P0-V1",
+      "actual_RESULT_profile": null,
+      "actual_proof_profile": "P0",
+      "actual_scientific_role": null,
+      "state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+      "uuid": "c3c35627-b0e3-495d-b72e-3977e0eca860",
+      "cycles": 114860845,
+      "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+      "binary_sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d",
+      "kernel_count": 1,
+      "counter_evidence": {
+        "whole_replay_selected_cumulative": {
+          "DTC_L1_pib_full_events": 0,
+          "DTC_L1_tag_conflicts": 38798080,
+          "gpu_stall_dramfull": 200749905,
+          "L2_total_cache_accesses": 140193200,
+          "L2_total_cache_misses": 70185849,
+          "L2_total_cache_reservation_fails": 222964345
+        },
+        "whole_replay_traffic": {
+          "DRAM_atom_bytes": 32,
+          "DRAM_issued_read_atoms": 70163098,
+          "DRAM_issued_write_atoms": 23275,
+          "DRAM_read_payload_bytes": 2245219136,
+          "DRAM_write_payload_bytes": 744800,
+          "L2_accepted_read_32B_sectors": 135998384,
+          "L2_read_payload_bytes": 4351948288,
+          "DRAM_controller_request_objects": 70169321
+        },
+        "service_cumulative_integrals_item_sums_and_counts": {},
+        "terminal_gauges_not_pressure_history": {
+          "DTC_L1_pib_occupancy": 0,
+          "DTC_L1_lower_outstanding": 0
+        },
+        "running_peaks_not_perkernel": {
+          "DTC_L1_lower_outstanding_peak": 1195,
+          "DTC_L1_pib_peak_per_sm": 22
+        },
+        "unavailable_requested_fields": [
+          "DTC_L1_oo_valid_hits",
+          "DTC_L1_oo_pending_hits",
+          "DTC_L1_oo_new_misses",
+          "DTC_L1_oo_tag_evictions",
+          "DTC_L1_oo_lower_created",
+          "DTC_L1_oo_lower_issued",
+          "DTC_L1_oo_lower_responses",
+          "DTC_L1_oo_ready_but_writeback_blocked_cycles",
+          "DTC_L1_oo_lower_create_queue_full_stalls",
+          "DTC_L1_oo_immediate_reclaims",
+          "DTC_L1_oo_deferred_reclaims",
+          "DTC_L1_oo_final_ref_reclaims",
+          "DTC_L1_oo_out_of_order_retires",
+          "DTC_L1_oo_retire_count"
+        ],
+        "per_kernel_traffic": "UNAVAILABLE_FROM_FINAL_STRICT_ENDPOINT; existing reviewed raw-derived phase references may supply explicit endpoints",
+        "latency": "Diagnostic means retain original sampling windows; missing not zero. No new mean computed."
+      },
+      "legal_source_identity": {
+        "accepted": true,
+        "cycles": 114860845,
+        "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+        "legal_prior_P0_alias": null,
+        "native_scientific_role": null,
+        "program": "GESUMMV",
+        "source_RESULT_declared_cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-CH-P0-V1",
+        "source_RESULT_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-CH-P0-V1.RESULT.json",
+        "source_RESULT_sha256": "59fbdea7414a42db94f5bc5a67734ed4b8e2350ea44bdc4c177939b1a3c5bdb7",
+        "source_cell": "CH",
+        "source_profile": "P0",
+        "source_registered_slot_cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-CH-P0-V1",
+        "source_role": "ORIGINAL_PHASE_I_SLOT",
+        "source_state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+        "source_uuid": "c3c35627-b0e3-495d-b72e-3977e0eca860",
+        "status": "FROZEN_ACCEPTED_REFERENCE",
+        "suite": "PolyBench/GPU"
+      },
+      "reviewed_raw_derived_cumulative": {
+        "whole_replay_selected_cumulative": {
+          "DTC_L1_pib_full_events": 0,
+          "DTC_L1_tag_conflicts": 38798080,
+          "gpu_stall_dramfull": 200749905,
+          "L2_total_cache_accesses": 140193200,
+          "L2_total_cache_misses": 70185849,
+          "L2_total_cache_reservation_fails": 222964345
+        },
+        "whole_replay_traffic": {
+          "DRAM_read_atoms32B": 70163098,
+          "DRAM_write_atoms32B": 23275,
+          "DRAM_controller_n_req": 70169321,
+          "L2_GLOBAL_read_accepted_sectors": 135998384,
+          "L2_GLOBAL_read_miss_sectors": 70163098
+        },
+        "service_cumulative_integrals_item_sums_and_counts": {},
+        "terminal_gauges_not_pressure_history": {},
+        "running_peaks_not_perkernel": {},
+        "unavailable_requested_fields": [
+          "DTC_L1_oo_valid_hits",
+          "DTC_L1_oo_pending_hits",
+          "DTC_L1_oo_new_misses",
+          "DTC_L1_oo_tag_evictions",
+          "DTC_L1_oo_lower_created",
+          "DTC_L1_oo_lower_issued",
+          "DTC_L1_oo_lower_responses",
+          "DTC_L1_oo_ready_but_writeback_blocked_cycles",
+          "DTC_L1_oo_lower_create_queue_full_stalls",
+          "DTC_L1_oo_immediate_reclaims",
+          "DTC_L1_oo_deferred_reclaims",
+          "DTC_L1_oo_final_ref_reclaims",
+          "DTC_L1_oo_out_of_order_retires",
+          "DTC_L1_oo_retire_count"
+        ],
+        "per_kernel_traffic": "UNAVAILABLE_FROM_FINAL_STRICT_ENDPOINT; existing reviewed raw-derived phase references may supply explicit endpoints",
+        "latency": "Diagnostic means retain original sampling windows; missing not zero. No new mean computed."
+      },
+      "reviewed_final24_metadata_scope": "Raw-derived selected final cumulative metrics; source identity stays original/new role. Gauge/peak/mean snapshots not differenced."
+    },
+    {
+      "program": "GESUMMV",
+      "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "design": "DH",
+      "comparison_profile": "F128",
+      "RESULT": {
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-F128-V1.RESULT.json",
+        "sha256": "a1bb2fc690f7a275e511c86b5fef486b9443df561ed993834a70826e5dfa910d"
+      },
+      "actual_RESULT_cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-F128-V1",
+      "actual_RESULT_profile": null,
+      "actual_proof_profile": "F128",
+      "actual_scientific_role": null,
+      "state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+      "uuid": "00ae4082-9abc-49aa-b0db-c916e0d8d4a7",
+      "cycles": 86464623,
+      "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+      "binary_sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d",
+      "kernel_count": 1,
+      "counter_evidence": {
+        "whole_replay_selected_cumulative": {
+          "DTC_L1_oo_valid_hits": 5271223,
+          "DTC_L1_oo_pending_hits": 181860,
+          "DTC_L1_oo_new_misses": 30198629,
+          "DTC_L1_oo_tag_evictions": 30190437,
+          "DTC_L1_oo_lower_created": 30198629,
+          "DTC_L1_oo_lower_issued": 30198629,
+          "DTC_L1_oo_lower_responses": 30198629,
+          "DTC_L1_oo_ready_but_writeback_blocked_cycles": 21470,
+          "DTC_L1_oo_lower_create_queue_full_stalls": 0,
+          "DTC_L1_oo_immediate_reclaims": 5238526,
+          "DTC_L1_oo_deferred_reclaims": 24951911,
+          "DTC_L1_oo_final_ref_reclaims": 24951911,
+          "DTC_L1_oo_out_of_order_retires": 3329913,
+          "DTC_L1_oo_retire_count": 4194560,
+          "gpu_stall_dramfull": 283687590,
+          "L2_total_cache_accesses": 124989332,
+          "L2_total_cache_misses": 52549684,
+          "L2_total_cache_reservation_fails": 293860392
+        },
+        "whole_replay_traffic": {
+          "DRAM_atom_bytes": 32,
+          "DRAM_issued_read_atoms": 52528884,
+          "DRAM_issued_write_atoms": 22424,
+          "DRAM_read_payload_bytes": 1680924288,
+          "DRAM_write_payload_bytes": 717568,
+          "L2_accepted_read_32B_sectors": 120794516,
+          "L2_read_payload_bytes": 3865424512,
+          "DRAM_controller_request_objects": 52534490
+        },
+        "service_cumulative_integrals_item_sums_and_counts": {
+          "DTC_SERVICE_V1_collected_sectors": 38797824,
+          "DTC_SERVICE_V1_collection_cycles": 10552218,
+          "DTC_SERVICE_V1_fully_ready_to_complete_sum": 15386941,
+          "DTC_SERVICE_V1_map_loss_to_free_count": 30190437,
+          "DTC_SERVICE_V1_map_loss_to_free_sum": 160602674475,
+          "DTC_SERVICE_V1_physical_integral": 820620550098,
+          "DTC_SERVICE_V1_pib_integral": 8837077030,
+          "DTC_SERVICE_V1_ready_to_collect_sum": 4715007,
+          "DTC_SERVICE_V1_retired": 3145856,
+          "DTC_SERVICE_V1_samples": 5533735872,
+          "DTC_SERVICE_V1_wb_wait": 119716
+        },
+        "terminal_gauges_not_pressure_history": {
+          "DTC_L1_oo_inflight_current": 0,
+          "DTC_L1_lower_outstanding": 0,
+          "DTC_L1_oo_pib_occupancy": 0,
+          "DTC_L1_oo_physical_allocated": 8192,
+          "DTC_L1_oo_active_refs": 0
+        },
+        "running_peaks_not_perkernel": {},
+        "unavailable_requested_fields": [
+          "DTC_L1_pib_full_events",
+          "DTC_L1_tag_conflicts"
+        ],
+        "per_kernel_traffic": "UNAVAILABLE_FROM_FINAL_STRICT_ENDPOINT; existing reviewed raw-derived phase references may supply explicit endpoints",
+        "latency": "Diagnostic means retain original sampling windows; missing not zero. No new mean computed."
+      },
+      "legal_source_identity": {
+        "accepted": true,
+        "cycles": 86464623,
+        "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+        "legal_prior_P0_alias": null,
+        "native_scientific_role": null,
+        "program": "GESUMMV",
+        "source_RESULT_declared_cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-F128-V1",
+        "source_RESULT_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-F128-V1.RESULT.json",
+        "source_RESULT_sha256": "a1bb2fc690f7a275e511c86b5fef486b9443df561ed993834a70826e5dfa910d",
+        "source_cell": "DH",
+        "source_profile": "F128",
+        "source_registered_slot_cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-F128-V1",
+        "source_role": "ORIGINAL_PHASE_I_SLOT",
+        "source_state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+        "source_uuid": "00ae4082-9abc-49aa-b0db-c916e0d8d4a7",
+        "status": "FROZEN_ACCEPTED_REFERENCE",
+        "suite": "PolyBench/GPU"
+      },
+      "reviewed_raw_derived_cumulative": {
+        "whole_replay_selected_cumulative": {
+          "DTC_L1_oo_valid_hits": 5271223,
+          "DTC_L1_oo_pending_hits": 181860,
+          "DTC_L1_oo_new_misses": 30198629,
+          "DTC_L1_oo_tag_evictions": 30190437,
+          "DTC_L1_oo_lower_created": 30198629,
+          "gpu_stall_dramfull": 283687590,
+          "L2_total_cache_accesses": 124989332,
+          "L2_total_cache_misses": 52549684,
+          "L2_total_cache_reservation_fails": 293860392
+        },
+        "whole_replay_traffic": {
+          "DRAM_read_atoms32B": 52528884,
+          "DRAM_write_atoms32B": 22424,
+          "DRAM_controller_n_req": 52534490,
+          "L2_GLOBAL_read_accepted_sectors": 120794516,
+          "L2_GLOBAL_read_miss_sectors": 52528884
+        },
+        "service_cumulative_integrals_item_sums_and_counts": {
+          "DTC_SERVICE_V1_fully_ready_to_complete_sum": 15386941,
+          "DTC_SERVICE_V1_pib_integral": 8837077030,
+          "DTC_SERVICE_V1_retired": 3145856,
+          "DTC_SERVICE_V1_samples": 5533735872,
+          "DTC_SERVICE_V1_wb_wait": 119716
+        },
+        "terminal_gauges_not_pressure_history": {},
+        "running_peaks_not_perkernel": {},
+        "unavailable_requested_fields": [
+          "DTC_L1_oo_lower_issued",
+          "DTC_L1_oo_lower_responses",
+          "DTC_L1_oo_ready_but_writeback_blocked_cycles",
+          "DTC_L1_oo_lower_create_queue_full_stalls",
+          "DTC_L1_oo_immediate_reclaims",
+          "DTC_L1_oo_deferred_reclaims",
+          "DTC_L1_oo_final_ref_reclaims",
+          "DTC_L1_oo_out_of_order_retires",
+          "DTC_L1_oo_retire_count",
+          "DTC_L1_pib_full_events",
+          "DTC_L1_tag_conflicts"
+        ],
+        "per_kernel_traffic": "UNAVAILABLE_FROM_FINAL_STRICT_ENDPOINT; existing reviewed raw-derived phase references may supply explicit endpoints",
+        "latency": "Diagnostic means retain original sampling windows; missing not zero. No new mean computed."
+      },
+      "reviewed_final24_metadata_scope": "Raw-derived selected final cumulative metrics; source identity stays original/new role. Gauge/peak/mean snapshots not differenced."
+    },
+    {
+      "program": "GESUMMV",
+      "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "design": "DH",
+      "comparison_profile": "F256",
+      "RESULT": {
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-F256-V1.RESULT.json",
+        "sha256": "49323ce0527b7cb4155f0abfcbd65926cbae163dc862a560cf1d63194edbee02"
+      },
+      "actual_RESULT_cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-F256-V1",
+      "actual_RESULT_profile": null,
+      "actual_proof_profile": "F256",
+      "actual_scientific_role": null,
+      "state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+      "uuid": "9ee14c1e-a683-4642-aba4-a4ced3652c23",
+      "cycles": 90151547,
+      "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+      "binary_sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d",
+      "kernel_count": 1,
+      "counter_evidence": {
+        "whole_replay_selected_cumulative": {
+          "DTC_L1_oo_valid_hits": 5578660,
+          "DTC_L1_oo_pending_hits": 139547,
+          "DTC_L1_oo_new_misses": 29933505,
+          "DTC_L1_oo_tag_evictions": 29925313,
+          "DTC_L1_oo_lower_created": 29933505,
+          "DTC_L1_oo_lower_issued": 29933505,
+          "DTC_L1_oo_lower_responses": 29933505,
+          "DTC_L1_oo_ready_but_writeback_blocked_cycles": 21943,
+          "DTC_L1_oo_lower_create_queue_full_stalls": 0,
+          "DTC_L1_oo_immediate_reclaims": 6476343,
+          "DTC_L1_oo_deferred_reclaims": 23448970,
+          "DTC_L1_oo_final_ref_reclaims": 23448970,
+          "DTC_L1_oo_out_of_order_retires": 3334849,
+          "DTC_L1_oo_retire_count": 4194560,
+          "gpu_stall_dramfull": 265956790,
+          "L2_total_cache_accesses": 123928836,
+          "L2_total_cache_misses": 54991880,
+          "L2_total_cache_reservation_fails": 276005118
+        },
+        "whole_replay_traffic": {
+          "DRAM_atom_bytes": 32,
+          "DRAM_issued_read_atoms": 54970692,
+          "DRAM_issued_write_atoms": 22728,
+          "DRAM_read_payload_bytes": 1759062144,
+          "DRAM_write_payload_bytes": 727296,
+          "L2_accepted_read_32B_sectors": 119734020,
+          "L2_read_payload_bytes": 3831488640,
+          "DRAM_controller_request_objects": 54976375
+        },
+        "service_cumulative_integrals_item_sums_and_counts": {
+          "DTC_SERVICE_V1_collected_sectors": 38797824,
+          "DTC_SERVICE_V1_collection_cycles": 10559674,
+          "DTC_SERVICE_V1_fully_ready_to_complete_sum": 15227032,
+          "DTC_SERVICE_V1_map_loss_to_free_count": 29925313,
+          "DTC_SERVICE_V1_map_loss_to_free_sum": 162917289043,
+          "DTC_SERVICE_V1_physical_integral": 853138893880,
+          "DTC_SERVICE_V1_pib_integral": 8816168972,
+          "DTC_SERVICE_V1_ready_to_collect_sum": 4530479,
+          "DTC_SERVICE_V1_retired": 3145856,
+          "DTC_SERVICE_V1_samples": 5769699008,
+          "DTC_SERVICE_V1_wb_wait": 136879
+        },
+        "terminal_gauges_not_pressure_history": {
+          "DTC_L1_oo_inflight_current": 0,
+          "DTC_L1_lower_outstanding": 0,
+          "DTC_L1_oo_pib_occupancy": 0,
+          "DTC_L1_oo_physical_allocated": 8192,
+          "DTC_L1_oo_active_refs": 0
+        },
+        "running_peaks_not_perkernel": {},
+        "unavailable_requested_fields": [
+          "DTC_L1_pib_full_events",
+          "DTC_L1_tag_conflicts"
+        ],
+        "per_kernel_traffic": "UNAVAILABLE_FROM_FINAL_STRICT_ENDPOINT; existing reviewed raw-derived phase references may supply explicit endpoints",
+        "latency": "Diagnostic means retain original sampling windows; missing not zero. No new mean computed."
+      },
+      "legal_source_identity": {
+        "accepted": true,
+        "cycles": 90151547,
+        "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+        "legal_prior_P0_alias": null,
+        "native_scientific_role": null,
+        "program": "GESUMMV",
+        "source_RESULT_declared_cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-F256-V1",
+        "source_RESULT_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-F256-V1.RESULT.json",
+        "source_RESULT_sha256": "49323ce0527b7cb4155f0abfcbd65926cbae163dc862a560cf1d63194edbee02",
+        "source_cell": "DH",
+        "source_profile": "F256",
+        "source_registered_slot_cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-F256-V1",
+        "source_role": "ORIGINAL_PHASE_I_SLOT",
+        "source_state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+        "source_uuid": "9ee14c1e-a683-4642-aba4-a4ced3652c23",
+        "status": "FROZEN_ACCEPTED_REFERENCE",
+        "suite": "PolyBench/GPU"
+      },
+      "reviewed_raw_derived_cumulative": {
+        "whole_replay_selected_cumulative": {
+          "DTC_L1_oo_valid_hits": 5578660,
+          "DTC_L1_oo_pending_hits": 139547,
+          "DTC_L1_oo_new_misses": 29933505,
+          "DTC_L1_oo_tag_evictions": 29925313,
+          "DTC_L1_oo_lower_created": 29933505,
+          "gpu_stall_dramfull": 265956790,
+          "L2_total_cache_accesses": 123928836,
+          "L2_total_cache_misses": 54991880,
+          "L2_total_cache_reservation_fails": 276005118
+        },
+        "whole_replay_traffic": {
+          "DRAM_read_atoms32B": 54970692,
+          "DRAM_write_atoms32B": 22728,
+          "DRAM_controller_n_req": 54976375,
+          "L2_GLOBAL_read_accepted_sectors": 119734020,
+          "L2_GLOBAL_read_miss_sectors": 54970692
+        },
+        "service_cumulative_integrals_item_sums_and_counts": {
+          "DTC_SERVICE_V1_fully_ready_to_complete_sum": 15227032,
+          "DTC_SERVICE_V1_pib_integral": 8816168972,
+          "DTC_SERVICE_V1_retired": 3145856,
+          "DTC_SERVICE_V1_samples": 5769699008,
+          "DTC_SERVICE_V1_wb_wait": 136879
+        },
+        "terminal_gauges_not_pressure_history": {},
+        "running_peaks_not_perkernel": {},
+        "unavailable_requested_fields": [
+          "DTC_L1_oo_lower_issued",
+          "DTC_L1_oo_lower_responses",
+          "DTC_L1_oo_ready_but_writeback_blocked_cycles",
+          "DTC_L1_oo_lower_create_queue_full_stalls",
+          "DTC_L1_oo_immediate_reclaims",
+          "DTC_L1_oo_deferred_reclaims",
+          "DTC_L1_oo_final_ref_reclaims",
+          "DTC_L1_oo_out_of_order_retires",
+          "DTC_L1_oo_retire_count",
+          "DTC_L1_pib_full_events",
+          "DTC_L1_tag_conflicts"
+        ],
+        "per_kernel_traffic": "UNAVAILABLE_FROM_FINAL_STRICT_ENDPOINT; existing reviewed raw-derived phase references may supply explicit endpoints",
+        "latency": "Diagnostic means retain original sampling windows; missing not zero. No new mean computed."
+      },
+      "reviewed_final24_metadata_scope": "Raw-derived selected final cumulative metrics; source identity stays original/new role. Gauge/peak/mean snapshots not differenced."
+    },
+    {
+      "program": "GESUMMV",
+      "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "design": "DH",
+      "comparison_profile": "P0",
+      "RESULT": {
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-P0-V1.RESULT.json",
+        "sha256": "4be3aaaa1af5916ab001d68c59ccb7d5af8b13416c0f1e847574a97ce07170ff"
+      },
+      "actual_RESULT_cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-P0-V1",
+      "actual_RESULT_profile": null,
+      "actual_proof_profile": "P0",
+      "actual_scientific_role": null,
+      "state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+      "uuid": "7456ab3e-27e0-4e82-9d62-476cf029fa7e",
+      "cycles": 89502220,
+      "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+      "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+      "binary_sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d",
+      "kernel_count": 1,
+      "counter_evidence": {
+        "whole_replay_selected_cumulative": {
+          "DTC_L1_oo_valid_hits": 5218368,
+          "DTC_L1_oo_pending_hits": 159619,
+          "DTC_L1_oo_new_misses": 30273725,
+          "DTC_L1_oo_tag_evictions": 30265533,
+          "DTC_L1_oo_lower_created": 30273725,
+          "DTC_L1_oo_lower_issued": 30273725,
+          "DTC_L1_oo_lower_responses": 30273725,
+          "DTC_L1_oo_ready_but_writeback_blocked_cycles": 21041,
+          "DTC_L1_oo_lower_create_queue_full_stalls": 0,
+          "DTC_L1_oo_immediate_reclaims": 6375448,
+          "DTC_L1_oo_deferred_reclaims": 23890085,
+          "DTC_L1_oo_final_ref_reclaims": 23890085,
+          "DTC_L1_oo_out_of_order_retires": 3304484,
+          "DTC_L1_oo_retire_count": 4194560,
+          "gpu_stall_dramfull": 271775567,
+          "L2_total_cache_accesses": 125289716,
+          "L2_total_cache_misses": 53140444,
+          "L2_total_cache_reservation_fails": 288925236
+        },
+        "whole_replay_traffic": {
+          "DRAM_atom_bytes": 32,
+          "DRAM_issued_read_atoms": 53120556,
+          "DRAM_issued_write_atoms": 20684,
+          "DRAM_read_payload_bytes": 1699857792,
+          "DRAM_write_payload_bytes": 661888,
+          "L2_accepted_read_32B_sectors": 121094900,
+          "L2_read_payload_bytes": 3875036800,
+          "DRAM_controller_request_objects": 53125727
+        },
+        "service_cumulative_integrals_item_sums_and_counts": {
+          "DTC_SERVICE_V1_collected_sectors": 38797824,
+          "DTC_SERVICE_V1_collection_cycles": 10547363,
+          "DTC_SERVICE_V1_fully_ready_to_complete_sum": 15295954,
+          "DTC_SERVICE_V1_map_loss_to_free_count": 30265533,
+          "DTC_SERVICE_V1_map_loss_to_free_sum": 163902210861,
+          "DTC_SERVICE_V1_physical_integral": 848804046670,
+          "DTC_SERVICE_V1_pib_integral": 8955260955,
+          "DTC_SERVICE_V1_ready_to_collect_sum": 4615690,
+          "DTC_SERVICE_V1_retired": 3145856,
+          "DTC_SERVICE_V1_samples": 5728142080,
+          "DTC_SERVICE_V1_wb_wait": 132901
+        },
+        "terminal_gauges_not_pressure_history": {
+          "DTC_L1_oo_inflight_current": 0,
+          "DTC_L1_lower_outstanding": 0,
+          "DTC_L1_oo_pib_occupancy": 0,
+          "DTC_L1_oo_physical_allocated": 8192,
+          "DTC_L1_oo_active_refs": 0
+        },
+        "running_peaks_not_perkernel": {},
+        "unavailable_requested_fields": [
+          "DTC_L1_pib_full_events",
+          "DTC_L1_tag_conflicts"
+        ],
+        "per_kernel_traffic": "UNAVAILABLE_FROM_FINAL_STRICT_ENDPOINT; existing reviewed raw-derived phase references may supply explicit endpoints",
+        "latency": "Diagnostic means retain original sampling windows; missing not zero. No new mean computed."
+      },
+      "legal_source_identity": {
+        "accepted": true,
+        "cycles": 89502220,
+        "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+        "legal_prior_P0_alias": null,
+        "native_scientific_role": null,
+        "program": "GESUMMV",
+        "source_RESULT_declared_cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-P0-V1",
+        "source_RESULT_path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-P0-V1.RESULT.json",
+        "source_RESULT_sha256": "4be3aaaa1af5916ab001d68c59ccb7d5af8b13416c0f1e847574a97ce07170ff",
+        "source_cell": "DH",
+        "source_profile": "P0",
+        "source_registered_slot_cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-P0-V1",
+        "source_role": "ORIGINAL_PHASE_I_SLOT",
+        "source_state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+        "source_uuid": "7456ab3e-27e0-4e82-9d62-476cf029fa7e",
+        "status": "FROZEN_ACCEPTED_REFERENCE",
+        "suite": "PolyBench/GPU"
+      },
+      "reviewed_raw_derived_cumulative": {
+        "whole_replay_selected_cumulative": {
+          "DTC_L1_oo_valid_hits": 5218368,
+          "DTC_L1_oo_pending_hits": 159619,
+          "DTC_L1_oo_new_misses": 30273725,
+          "DTC_L1_oo_tag_evictions": 30265533,
+          "DTC_L1_oo_lower_created": 30273725,
+          "gpu_stall_dramfull": 271775567,
+          "L2_total_cache_accesses": 125289716,
+          "L2_total_cache_misses": 53140444,
+          "L2_total_cache_reservation_fails": 288925236
+        },
+        "whole_replay_traffic": {
+          "DRAM_read_atoms32B": 53120556,
+          "DRAM_write_atoms32B": 20684,
+          "DRAM_controller_n_req": 53125727,
+          "L2_GLOBAL_read_accepted_sectors": 121094900,
+          "L2_GLOBAL_read_miss_sectors": 53120556
+        },
+        "service_cumulative_integrals_item_sums_and_counts": {
+          "DTC_SERVICE_V1_fully_ready_to_complete_sum": 15295954,
+          "DTC_SERVICE_V1_pib_integral": 8955260955,
+          "DTC_SERVICE_V1_retired": 3145856,
+          "DTC_SERVICE_V1_samples": 5728142080,
+          "DTC_SERVICE_V1_wb_wait": 132901
+        },
+        "terminal_gauges_not_pressure_history": {},
+        "running_peaks_not_perkernel": {},
+        "unavailable_requested_fields": [
+          "DTC_L1_oo_lower_issued",
+          "DTC_L1_oo_lower_responses",
+          "DTC_L1_oo_ready_but_writeback_blocked_cycles",
+          "DTC_L1_oo_lower_create_queue_full_stalls",
+          "DTC_L1_oo_immediate_reclaims",
+          "DTC_L1_oo_deferred_reclaims",
+          "DTC_L1_oo_final_ref_reclaims",
+          "DTC_L1_oo_out_of_order_retires",
+          "DTC_L1_oo_retire_count",
+          "DTC_L1_pib_full_events",
+          "DTC_L1_tag_conflicts"
+        ],
+        "per_kernel_traffic": "UNAVAILABLE_FROM_FINAL_STRICT_ENDPOINT; existing reviewed raw-derived phase references may supply explicit endpoints",
+        "latency": "Diagnostic means retain original sampling windows; missing not zero. No new mean computed."
+      },
+      "reviewed_final24_metadata_scope": "Raw-derived selected final cumulative metrics; source identity stays original/new role. Gauge/peak/mean snapshots not differenced."
+    }
+  ],
+  "matched_F_metrics": {
+    "F128": {
+      "I": 0.9633989676664699,
+      "R": 1.23635837746034,
+      "R_P0": 1.283329564339298,
+      "S_CH": 1.074457344333852,
+      "S_DH": 1.03513109633289
+    },
+    "F256": {
+      "I": 0.9705426794049611,
+      "R": 1.2455261139334637,
+      "R_P0": 1.283329564339298,
+      "S_CH": 1.0229301655540535,
+      "S_DH": 0.9927973837209915
+    }
+  },
+  "stageI_original_single_factor_DH": [
+    {
+      "cell": "DH",
+      "cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-E384-V1",
+      "expected": {
+        "CTA": 16,
+        "instructions": 190918656,
+        "kernels": 1
+      },
+      "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "profile": "E384",
+      "program": "GESUMMV",
+      "suite": "PolyBench/GPU",
+      "source_family": "STAGEI_ORIGINAL_350",
+      "accepted": true,
+      "cycles": 89424572,
+      "state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+      "original_RESULT_or_engineering_evidence": {
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-E384-V1.RESULT.json",
+        "sha256": "023053d088d3f20264a6af750dc3c4a60a2b2e73a57decaccafe9fceb13c15ea"
+      },
+      "uuid": "f4f47c24-25e6-4606-b3b9-f3b36ee3909c",
+      "original_negative_not_replaced": false,
+      "proof_evidence": {
+        "program": "GESUMMV",
+        "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+        "design": "DH",
+        "comparison_profile": "E384",
+        "RESULT": {
+          "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-E384-V1.RESULT.json",
+          "sha256": "023053d088d3f20264a6af750dc3c4a60a2b2e73a57decaccafe9fceb13c15ea"
+        },
+        "actual_RESULT_cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-E384-V1",
+        "actual_RESULT_profile": null,
+        "actual_proof_profile": "E384",
+        "actual_scientific_role": null,
+        "state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+        "uuid": "f4f47c24-25e6-4606-b3b9-f3b36ee3909c",
+        "cycles": 89424572,
+        "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+        "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+        "binary_sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d",
+        "kernel_count": 1,
+        "counter_evidence": {
+          "whole_replay_selected_cumulative": {
+            "DTC_L1_oo_valid_hits": 5583355,
+            "DTC_L1_oo_pending_hits": 156919,
+            "DTC_L1_oo_new_misses": 29911438,
+            "DTC_L1_oo_tag_evictions": 29903246,
+            "DTC_L1_oo_lower_created": 29911438,
+            "DTC_L1_oo_lower_issued": 29911438,
+            "DTC_L1_oo_lower_responses": 29911438,
+            "DTC_L1_oo_ready_but_writeback_blocked_cycles": 21767,
+            "DTC_L1_oo_lower_create_queue_full_stalls": 0,
+            "DTC_L1_oo_immediate_reclaims": 6561015,
+            "DTC_L1_oo_deferred_reclaims": 23342231,
+            "DTC_L1_oo_final_ref_reclaims": 23342231,
+            "DTC_L1_oo_out_of_order_retires": 3332728,
+            "DTC_L1_oo_retire_count": 4194560,
+            "gpu_stall_dramfull": 262204250,
+            "L2_total_cache_accesses": 123840568,
+            "L2_total_cache_misses": 54290539,
+            "L2_total_cache_reservation_fails": 273248889
+          },
+          "whole_replay_traffic": {
+            "DRAM_atom_bytes": 32,
+            "DRAM_issued_read_atoms": 54267604,
+            "DRAM_issued_write_atoms": 24719,
+            "DRAM_read_payload_bytes": 1736563328,
+            "DRAM_write_payload_bytes": 791008,
+            "L2_accepted_read_32B_sectors": 119645752,
+            "L2_read_payload_bytes": 3828664064,
+            "DRAM_controller_request_objects": 54273824
+          },
+          "service_cumulative_integrals_item_sums_and_counts": {
+            "DTC_SERVICE_V1_collected_sectors": 38797824,
+            "DTC_SERVICE_V1_collection_cycles": 10555533,
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": 15324810,
+            "DTC_SERVICE_V1_map_loss_to_free_count": 29903246,
+            "DTC_SERVICE_V1_map_loss_to_free_sum": 160739989497,
+            "DTC_SERVICE_V1_physical_integral": 845005613096,
+            "DTC_SERVICE_V1_pib_integral": 8909519866,
+            "DTC_SERVICE_V1_ready_to_collect_sum": 4630725,
+            "DTC_SERVICE_V1_retired": 3145856,
+            "DTC_SERVICE_V1_samples": 5723172608,
+            "DTC_SERVICE_V1_wb_wait": 138552
+          },
+          "terminal_gauges_not_pressure_history": {
+            "DTC_L1_oo_inflight_current": 0,
+            "DTC_L1_lower_outstanding": 0,
+            "DTC_L1_oo_pib_occupancy": 0,
+            "DTC_L1_oo_physical_allocated": 8192,
+            "DTC_L1_oo_active_refs": 0
+          },
+          "running_peaks_not_perkernel": {},
+          "unavailable_requested_fields": [
+            "DTC_L1_pib_full_events",
+            "DTC_L1_tag_conflicts"
+          ],
+          "per_kernel_traffic": "UNAVAILABLE_FROM_FINAL_STRICT_ENDPOINT; existing reviewed raw-derived phase references may supply explicit endpoints",
+          "latency": "Diagnostic means retain original sampling windows; missing not zero. No new mean computed."
+        }
+      },
+      "DH_self_speedup": 1.0008683072030806,
+      "performance_direction": "POSITIVE",
+      "matching_CH_nonP0": "NOT_MEASURED_DO_NOT_INFER_FAIR_CH_RELATIVE_GAIN"
+    },
+    {
+      "cell": "DH",
+      "cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-E768-V1",
+      "expected": {
+        "CTA": 16,
+        "instructions": 190918656,
+        "kernels": 1
+      },
+      "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "profile": "E768",
+      "program": "GESUMMV",
+      "suite": "PolyBench/GPU",
+      "source_family": "STAGEI_ORIGINAL_350",
+      "accepted": true,
+      "cycles": 89424572,
+      "state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+      "original_RESULT_or_engineering_evidence": {
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-E768-V1.RESULT.json",
+        "sha256": "893bc0f8559d66fa7548b610b2d2648ea88a2897e48fc566f8defcd82fb150b0"
+      },
+      "uuid": "0938b4f2-6071-4e48-b8cd-12866f882e65",
+      "original_negative_not_replaced": false,
+      "proof_evidence": {
+        "program": "GESUMMV",
+        "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+        "design": "DH",
+        "comparison_profile": "E768",
+        "RESULT": {
+          "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-E768-V1.RESULT.json",
+          "sha256": "893bc0f8559d66fa7548b610b2d2648ea88a2897e48fc566f8defcd82fb150b0"
+        },
+        "actual_RESULT_cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-E768-V1",
+        "actual_RESULT_profile": null,
+        "actual_proof_profile": "E768",
+        "actual_scientific_role": null,
+        "state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+        "uuid": "0938b4f2-6071-4e48-b8cd-12866f882e65",
+        "cycles": 89424572,
+        "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+        "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+        "binary_sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d",
+        "kernel_count": 1,
+        "counter_evidence": {
+          "whole_replay_selected_cumulative": {
+            "DTC_L1_oo_valid_hits": 5583355,
+            "DTC_L1_oo_pending_hits": 156919,
+            "DTC_L1_oo_new_misses": 29911438,
+            "DTC_L1_oo_tag_evictions": 29903246,
+            "DTC_L1_oo_lower_created": 29911438,
+            "DTC_L1_oo_lower_issued": 29911438,
+            "DTC_L1_oo_lower_responses": 29911438,
+            "DTC_L1_oo_ready_but_writeback_blocked_cycles": 21767,
+            "DTC_L1_oo_lower_create_queue_full_stalls": 0,
+            "DTC_L1_oo_immediate_reclaims": 6561015,
+            "DTC_L1_oo_deferred_reclaims": 23342231,
+            "DTC_L1_oo_final_ref_reclaims": 23342231,
+            "DTC_L1_oo_out_of_order_retires": 3332728,
+            "DTC_L1_oo_retire_count": 4194560,
+            "gpu_stall_dramfull": 262204250,
+            "L2_total_cache_accesses": 123840568,
+            "L2_total_cache_misses": 54290539,
+            "L2_total_cache_reservation_fails": 273248889
+          },
+          "whole_replay_traffic": {
+            "DRAM_atom_bytes": 32,
+            "DRAM_issued_read_atoms": 54267604,
+            "DRAM_issued_write_atoms": 24719,
+            "DRAM_read_payload_bytes": 1736563328,
+            "DRAM_write_payload_bytes": 791008,
+            "L2_accepted_read_32B_sectors": 119645752,
+            "L2_read_payload_bytes": 3828664064,
+            "DRAM_controller_request_objects": 54273824
+          },
+          "service_cumulative_integrals_item_sums_and_counts": {
+            "DTC_SERVICE_V1_collected_sectors": 38797824,
+            "DTC_SERVICE_V1_collection_cycles": 10555533,
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": 15324810,
+            "DTC_SERVICE_V1_map_loss_to_free_count": 29903246,
+            "DTC_SERVICE_V1_map_loss_to_free_sum": 160739989497,
+            "DTC_SERVICE_V1_physical_integral": 845005613096,
+            "DTC_SERVICE_V1_pib_integral": 8909519866,
+            "DTC_SERVICE_V1_ready_to_collect_sum": 4630725,
+            "DTC_SERVICE_V1_retired": 3145856,
+            "DTC_SERVICE_V1_samples": 5723172608,
+            "DTC_SERVICE_V1_wb_wait": 138552
+          },
+          "terminal_gauges_not_pressure_history": {
+            "DTC_L1_oo_inflight_current": 0,
+            "DTC_L1_lower_outstanding": 0,
+            "DTC_L1_oo_pib_occupancy": 0,
+            "DTC_L1_oo_physical_allocated": 8192,
+            "DTC_L1_oo_active_refs": 0
+          },
+          "running_peaks_not_perkernel": {},
+          "unavailable_requested_fields": [
+            "DTC_L1_pib_full_events",
+            "DTC_L1_tag_conflicts"
+          ],
+          "per_kernel_traffic": "UNAVAILABLE_FROM_FINAL_STRICT_ENDPOINT; existing reviewed raw-derived phase references may supply explicit endpoints",
+          "latency": "Diagnostic means retain original sampling windows; missing not zero. No new mean computed."
+        }
+      },
+      "DH_self_speedup": 1.0008683072030806,
+      "performance_direction": "POSITIVE",
+      "matching_CH_nonP0": "NOT_MEASURED_DO_NOT_INFER_FAIR_CH_RELATIVE_GAIN"
+    },
+    {
+      "cell": "DH",
+      "cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-M8-V1",
+      "expected": {
+        "CTA": 16,
+        "instructions": 190918656,
+        "kernels": 1
+      },
+      "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "profile": "M8",
+      "program": "GESUMMV",
+      "suite": "PolyBench/GPU",
+      "source_family": "STAGEI_ORIGINAL_350",
+      "accepted": true,
+      "cycles": 89502220,
+      "state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+      "original_RESULT_or_engineering_evidence": {
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-M8-V1.RESULT.json",
+        "sha256": "ab5b53c0aa7f2a776df6cee09837881a49ee41be450c1419df76c5a0cb442af8"
+      },
+      "uuid": "78fb6812-8b8f-442c-a03a-7aeed9131c6f",
+      "original_negative_not_replaced": false,
+      "proof_evidence": {
+        "program": "GESUMMV",
+        "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+        "design": "DH",
+        "comparison_profile": "M8",
+        "RESULT": {
+          "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-M8-V1.RESULT.json",
+          "sha256": "ab5b53c0aa7f2a776df6cee09837881a49ee41be450c1419df76c5a0cb442af8"
+        },
+        "actual_RESULT_cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-M8-V1",
+        "actual_RESULT_profile": null,
+        "actual_proof_profile": "M8",
+        "actual_scientific_role": null,
+        "state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+        "uuid": "78fb6812-8b8f-442c-a03a-7aeed9131c6f",
+        "cycles": 89502220,
+        "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+        "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+        "binary_sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d",
+        "kernel_count": 1,
+        "counter_evidence": {
+          "whole_replay_selected_cumulative": {
+            "DTC_L1_oo_valid_hits": 5218369,
+            "DTC_L1_oo_pending_hits": 159618,
+            "DTC_L1_oo_new_misses": 30273725,
+            "DTC_L1_oo_tag_evictions": 30265533,
+            "DTC_L1_oo_lower_created": 30273725,
+            "DTC_L1_oo_lower_issued": 30273725,
+            "DTC_L1_oo_lower_responses": 30273725,
+            "DTC_L1_oo_ready_but_writeback_blocked_cycles": 21041,
+            "DTC_L1_oo_lower_create_queue_full_stalls": 0,
+            "DTC_L1_oo_immediate_reclaims": 6375448,
+            "DTC_L1_oo_deferred_reclaims": 23890085,
+            "DTC_L1_oo_final_ref_reclaims": 23890085,
+            "DTC_L1_oo_out_of_order_retires": 3304484,
+            "DTC_L1_oo_retire_count": 4194560,
+            "gpu_stall_dramfull": 271769754,
+            "L2_total_cache_accesses": 125289716,
+            "L2_total_cache_misses": 53140444,
+            "L2_total_cache_reservation_fails": 288924588
+          },
+          "whole_replay_traffic": {
+            "DRAM_atom_bytes": 32,
+            "DRAM_issued_read_atoms": 53120556,
+            "DRAM_issued_write_atoms": 20684,
+            "DRAM_read_payload_bytes": 1699857792,
+            "DRAM_write_payload_bytes": 661888,
+            "L2_accepted_read_32B_sectors": 121094900,
+            "L2_read_payload_bytes": 3875036800,
+            "DRAM_controller_request_objects": 53125727
+          },
+          "service_cumulative_integrals_item_sums_and_counts": {
+            "DTC_SERVICE_V1_collected_sectors": 38797824,
+            "DTC_SERVICE_V1_collection_cycles": 10547363,
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": 15295995,
+            "DTC_SERVICE_V1_map_loss_to_free_count": 30265533,
+            "DTC_SERVICE_V1_map_loss_to_free_sum": 163902195711,
+            "DTC_SERVICE_V1_physical_integral": 848804031506,
+            "DTC_SERVICE_V1_pib_integral": 8955202254,
+            "DTC_SERVICE_V1_ready_to_collect_sum": 4615721,
+            "DTC_SERVICE_V1_retired": 3145856,
+            "DTC_SERVICE_V1_samples": 5728142080,
+            "DTC_SERVICE_V1_wb_wait": 132911
+          },
+          "terminal_gauges_not_pressure_history": {
+            "DTC_L1_oo_inflight_current": 0,
+            "DTC_L1_lower_outstanding": 0,
+            "DTC_L1_oo_pib_occupancy": 0,
+            "DTC_L1_oo_physical_allocated": 8192,
+            "DTC_L1_oo_active_refs": 0
+          },
+          "running_peaks_not_perkernel": {},
+          "unavailable_requested_fields": [
+            "DTC_L1_pib_full_events",
+            "DTC_L1_tag_conflicts"
+          ],
+          "per_kernel_traffic": "UNAVAILABLE_FROM_FINAL_STRICT_ENDPOINT; existing reviewed raw-derived phase references may supply explicit endpoints",
+          "latency": "Diagnostic means retain original sampling windows; missing not zero. No new mean computed."
+        }
+      },
+      "DH_self_speedup": 1.0,
+      "performance_direction": "EXACT_ZERO",
+      "matching_CH_nonP0": "NOT_MEASURED_DO_NOT_INFER_FAIR_CH_RELATIVE_GAIN"
+    },
+    {
+      "cell": "DH",
+      "cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-M16-V1",
+      "expected": {
+        "CTA": 16,
+        "instructions": 190918656,
+        "kernels": 1
+      },
+      "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "profile": "M16",
+      "program": "GESUMMV",
+      "suite": "PolyBench/GPU",
+      "source_family": "STAGEI_ORIGINAL_350",
+      "accepted": true,
+      "cycles": 89502220,
+      "state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+      "original_RESULT_or_engineering_evidence": {
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-M16-V1.RESULT.json",
+        "sha256": "b0b74ae966ed45ae8c6a9f72fd4061b34ec90c66a19ce1113aea592ae63c0cc1"
+      },
+      "uuid": "e72bf360-12c5-4064-9d55-2a9bcc0e58e4",
+      "original_negative_not_replaced": false,
+      "proof_evidence": {
+        "program": "GESUMMV",
+        "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+        "design": "DH",
+        "comparison_profile": "M16",
+        "RESULT": {
+          "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-M16-V1.RESULT.json",
+          "sha256": "b0b74ae966ed45ae8c6a9f72fd4061b34ec90c66a19ce1113aea592ae63c0cc1"
+        },
+        "actual_RESULT_cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-M16-V1",
+        "actual_RESULT_profile": null,
+        "actual_proof_profile": "M16",
+        "actual_scientific_role": null,
+        "state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+        "uuid": "e72bf360-12c5-4064-9d55-2a9bcc0e58e4",
+        "cycles": 89502220,
+        "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+        "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+        "binary_sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d",
+        "kernel_count": 1,
+        "counter_evidence": {
+          "whole_replay_selected_cumulative": {
+            "DTC_L1_oo_valid_hits": 5218368,
+            "DTC_L1_oo_pending_hits": 159619,
+            "DTC_L1_oo_new_misses": 30273725,
+            "DTC_L1_oo_tag_evictions": 30265533,
+            "DTC_L1_oo_lower_created": 30273725,
+            "DTC_L1_oo_lower_issued": 30273725,
+            "DTC_L1_oo_lower_responses": 30273725,
+            "DTC_L1_oo_ready_but_writeback_blocked_cycles": 21041,
+            "DTC_L1_oo_lower_create_queue_full_stalls": 0,
+            "DTC_L1_oo_immediate_reclaims": 6375448,
+            "DTC_L1_oo_deferred_reclaims": 23890085,
+            "DTC_L1_oo_final_ref_reclaims": 23890085,
+            "DTC_L1_oo_out_of_order_retires": 3304484,
+            "DTC_L1_oo_retire_count": 4194560,
+            "gpu_stall_dramfull": 271767282,
+            "L2_total_cache_accesses": 125289716,
+            "L2_total_cache_misses": 53140444,
+            "L2_total_cache_reservation_fails": 288924407
+          },
+          "whole_replay_traffic": {
+            "DRAM_atom_bytes": 32,
+            "DRAM_issued_read_atoms": 53120556,
+            "DRAM_issued_write_atoms": 20684,
+            "DRAM_read_payload_bytes": 1699857792,
+            "DRAM_write_payload_bytes": 661888,
+            "L2_accepted_read_32B_sectors": 121094900,
+            "L2_read_payload_bytes": 3875036800,
+            "DRAM_controller_request_objects": 53125727
+          },
+          "service_cumulative_integrals_item_sums_and_counts": {
+            "DTC_SERVICE_V1_collected_sectors": 38797824,
+            "DTC_SERVICE_V1_collection_cycles": 10547363,
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": 15295982,
+            "DTC_SERVICE_V1_map_loss_to_free_count": 30265533,
+            "DTC_SERVICE_V1_map_loss_to_free_sum": 163902195774,
+            "DTC_SERVICE_V1_physical_integral": 848804031571,
+            "DTC_SERVICE_V1_pib_integral": 8955205790,
+            "DTC_SERVICE_V1_ready_to_collect_sum": 4615708,
+            "DTC_SERVICE_V1_retired": 3145856,
+            "DTC_SERVICE_V1_samples": 5728142080,
+            "DTC_SERVICE_V1_wb_wait": 132911
+          },
+          "terminal_gauges_not_pressure_history": {
+            "DTC_L1_oo_inflight_current": 0,
+            "DTC_L1_lower_outstanding": 0,
+            "DTC_L1_oo_pib_occupancy": 0,
+            "DTC_L1_oo_physical_allocated": 8192,
+            "DTC_L1_oo_active_refs": 0
+          },
+          "running_peaks_not_perkernel": {},
+          "unavailable_requested_fields": [
+            "DTC_L1_pib_full_events",
+            "DTC_L1_tag_conflicts"
+          ],
+          "per_kernel_traffic": "UNAVAILABLE_FROM_FINAL_STRICT_ENDPOINT; existing reviewed raw-derived phase references may supply explicit endpoints",
+          "latency": "Diagnostic means retain original sampling windows; missing not zero. No new mean computed."
+        }
+      },
+      "DH_self_speedup": 1.0,
+      "performance_direction": "EXACT_ZERO",
+      "matching_CH_nonP0": "NOT_MEASURED_DO_NOT_INFER_FAIR_CH_RELATIVE_GAIN"
+    },
+    {
+      "cell": "DH",
+      "cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-Q64-V1",
+      "expected": {
+        "CTA": 16,
+        "instructions": 190918656,
+        "kernels": 1
+      },
+      "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "profile": "Q64",
+      "program": "GESUMMV",
+      "suite": "PolyBench/GPU",
+      "source_family": "STAGEI_ORIGINAL_350",
+      "accepted": true,
+      "cycles": 91097040,
+      "state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+      "original_RESULT_or_engineering_evidence": {
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-Q64-V1.RESULT.json",
+        "sha256": "68f0e8bbe54ade015e86def077264d837fd4f2ac0c00c88e8abc1913b1e74215"
+      },
+      "uuid": "465ce319-401c-4a73-ab15-068e9b0c2a96",
+      "original_negative_not_replaced": false,
+      "proof_evidence": {
+        "program": "GESUMMV",
+        "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+        "design": "DH",
+        "comparison_profile": "Q64",
+        "RESULT": {
+          "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-Q64-V1.RESULT.json",
+          "sha256": "68f0e8bbe54ade015e86def077264d837fd4f2ac0c00c88e8abc1913b1e74215"
+        },
+        "actual_RESULT_cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-Q64-V1",
+        "actual_RESULT_profile": null,
+        "actual_proof_profile": "Q64",
+        "actual_scientific_role": null,
+        "state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+        "uuid": "465ce319-401c-4a73-ab15-068e9b0c2a96",
+        "cycles": 91097040,
+        "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+        "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+        "binary_sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d",
+        "kernel_count": 1,
+        "counter_evidence": {
+          "whole_replay_selected_cumulative": {
+            "DTC_L1_oo_valid_hits": 4590129,
+            "DTC_L1_oo_pending_hits": 169166,
+            "DTC_L1_oo_new_misses": 30892417,
+            "DTC_L1_oo_tag_evictions": 30884225,
+            "DTC_L1_oo_lower_created": 30892417,
+            "DTC_L1_oo_lower_issued": 30892417,
+            "DTC_L1_oo_lower_responses": 30892417,
+            "DTC_L1_oo_ready_but_writeback_blocked_cycles": 21919,
+            "DTC_L1_oo_lower_create_queue_full_stalls": 0,
+            "DTC_L1_oo_immediate_reclaims": 6333337,
+            "DTC_L1_oo_deferred_reclaims": 24550888,
+            "DTC_L1_oo_final_ref_reclaims": 24550888,
+            "DTC_L1_oo_out_of_order_retires": 3304458,
+            "DTC_L1_oo_retire_count": 4194560,
+            "gpu_stall_dramfull": 266237556,
+            "L2_total_cache_accesses": 127764484,
+            "L2_total_cache_misses": 54806720,
+            "L2_total_cache_reservation_fails": 276745794
+          },
+          "whole_replay_traffic": {
+            "DRAM_atom_bytes": 32,
+            "DRAM_issued_read_atoms": 54784260,
+            "DRAM_issued_write_atoms": 23368,
+            "DRAM_read_payload_bytes": 1753096320,
+            "DRAM_write_payload_bytes": 747776,
+            "L2_accepted_read_32B_sectors": 123569668,
+            "L2_read_payload_bytes": 3954229376,
+            "DRAM_controller_request_objects": 54790102
+          },
+          "service_cumulative_integrals_item_sums_and_counts": {
+            "DTC_SERVICE_V1_collected_sectors": 38797824,
+            "DTC_SERVICE_V1_collection_cycles": 10551060,
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": 15382558,
+            "DTC_SERVICE_V1_map_loss_to_free_count": 30884225,
+            "DTC_SERVICE_V1_map_loss_to_free_sum": 167632322261,
+            "DTC_SERVICE_V1_physical_integral": 865598923510,
+            "DTC_SERVICE_V1_pib_integral": 9250839066,
+            "DTC_SERVICE_V1_ready_to_collect_sum": 4697224,
+            "DTC_SERVICE_V1_retired": 3145856,
+            "DTC_SERVICE_V1_samples": 5830210560,
+            "DTC_SERVICE_V1_wb_wait": 134274
+          },
+          "terminal_gauges_not_pressure_history": {
+            "DTC_L1_oo_inflight_current": 0,
+            "DTC_L1_lower_outstanding": 0,
+            "DTC_L1_oo_pib_occupancy": 0,
+            "DTC_L1_oo_physical_allocated": 8192,
+            "DTC_L1_oo_active_refs": 0
+          },
+          "running_peaks_not_perkernel": {},
+          "unavailable_requested_fields": [
+            "DTC_L1_pib_full_events",
+            "DTC_L1_tag_conflicts"
+          ],
+          "per_kernel_traffic": "UNAVAILABLE_FROM_FINAL_STRICT_ENDPOINT; existing reviewed raw-derived phase references may supply explicit endpoints",
+          "latency": "Diagnostic means retain original sampling windows; missing not zero. No new mean computed."
+        }
+      },
+      "DH_self_speedup": 0.982493174311701,
+      "performance_direction": "NEGATIVE",
+      "matching_CH_nonP0": "NOT_MEASURED_DO_NOT_INFER_FAIR_CH_RELATIVE_GAIN"
+    },
+    {
+      "cell": "DH",
+      "cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-Q128-V1",
+      "expected": {
+        "CTA": 16,
+        "instructions": 190918656,
+        "kernels": 1
+      },
+      "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "profile": "Q128",
+      "program": "GESUMMV",
+      "suite": "PolyBench/GPU",
+      "source_family": "STAGEI_ORIGINAL_350",
+      "accepted": true,
+      "cycles": 89958750,
+      "state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+      "original_RESULT_or_engineering_evidence": {
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-Q128-V1.RESULT.json",
+        "sha256": "8fff80f8a7963707370bd921604e7ba9f1581600ff93b136f85cc20a95f93f01"
+      },
+      "uuid": "6be4ff29-93dd-46bd-ae19-c440f064d2e8",
+      "original_negative_not_replaced": false,
+      "proof_evidence": {
+        "program": "GESUMMV",
+        "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+        "design": "DH",
+        "comparison_profile": "Q128",
+        "RESULT": {
+          "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-Q128-V1.RESULT.json",
+          "sha256": "8fff80f8a7963707370bd921604e7ba9f1581600ff93b136f85cc20a95f93f01"
+        },
+        "actual_RESULT_cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-Q128-V1",
+        "actual_RESULT_profile": null,
+        "actual_proof_profile": "Q128",
+        "actual_scientific_role": null,
+        "state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+        "uuid": "6be4ff29-93dd-46bd-ae19-c440f064d2e8",
+        "cycles": 89958750,
+        "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+        "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+        "binary_sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d",
+        "kernel_count": 1,
+        "counter_evidence": {
+          "whole_replay_selected_cumulative": {
+            "DTC_L1_oo_valid_hits": 4063382,
+            "DTC_L1_oo_pending_hits": 172730,
+            "DTC_L1_oo_new_misses": 31415600,
+            "DTC_L1_oo_tag_evictions": 31407408,
+            "DTC_L1_oo_lower_created": 31415600,
+            "DTC_L1_oo_lower_issued": 31415600,
+            "DTC_L1_oo_lower_responses": 31415600,
+            "DTC_L1_oo_ready_but_writeback_blocked_cycles": 22380,
+            "DTC_L1_oo_lower_create_queue_full_stalls": 0,
+            "DTC_L1_oo_immediate_reclaims": 5694968,
+            "DTC_L1_oo_deferred_reclaims": 25712440,
+            "DTC_L1_oo_final_ref_reclaims": 25712440,
+            "DTC_L1_oo_out_of_order_retires": 3295450,
+            "DTC_L1_oo_retire_count": 4194560,
+            "gpu_stall_dramfull": 289701850,
+            "L2_total_cache_accesses": 129857216,
+            "L2_total_cache_misses": 54028640,
+            "L2_total_cache_reservation_fails": 302495607
+          },
+          "whole_replay_traffic": {
+            "DRAM_atom_bytes": 32,
+            "DRAM_issued_read_atoms": 54007732,
+            "DRAM_issued_write_atoms": 22096,
+            "DRAM_read_payload_bytes": 1728247424,
+            "DRAM_write_payload_bytes": 707072,
+            "L2_accepted_read_32B_sectors": 125662400,
+            "L2_read_payload_bytes": 4021196800,
+            "DRAM_controller_request_objects": 54013256
+          },
+          "service_cumulative_integrals_item_sums_and_counts": {
+            "DTC_SERVICE_V1_collected_sectors": 38797824,
+            "DTC_SERVICE_V1_collection_cycles": 10535840,
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": 15264983,
+            "DTC_SERVICE_V1_map_loss_to_free_count": 31407408,
+            "DTC_SERVICE_V1_map_loss_to_free_sum": 166158028924,
+            "DTC_SERVICE_V1_physical_integral": 854799758493,
+            "DTC_SERVICE_V1_pib_integral": 9028500555,
+            "DTC_SERVICE_V1_ready_to_collect_sum": 4605739,
+            "DTC_SERVICE_V1_retired": 3145856,
+            "DTC_SERVICE_V1_samples": 5757360000,
+            "DTC_SERVICE_V1_wb_wait": 123404
+          },
+          "terminal_gauges_not_pressure_history": {
+            "DTC_L1_oo_inflight_current": 0,
+            "DTC_L1_lower_outstanding": 0,
+            "DTC_L1_oo_pib_occupancy": 0,
+            "DTC_L1_oo_physical_allocated": 8192,
+            "DTC_L1_oo_active_refs": 0
+          },
+          "running_peaks_not_perkernel": {},
+          "unavailable_requested_fields": [
+            "DTC_L1_pib_full_events",
+            "DTC_L1_tag_conflicts"
+          ],
+          "per_kernel_traffic": "UNAVAILABLE_FROM_FINAL_STRICT_ENDPOINT; existing reviewed raw-derived phase references may supply explicit endpoints",
+          "latency": "Diagnostic means retain original sampling windows; missing not zero. No new mean computed."
+        }
+      },
+      "DH_self_speedup": 0.9949251184570707,
+      "performance_direction": "NEGATIVE",
+      "matching_CH_nonP0": "NOT_MEASURED_DO_NOT_INFER_FAIR_CH_RELATIVE_GAIN"
+    },
+    {
+      "cell": "DH",
+      "cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-F128-V1",
+      "expected": {
+        "CTA": 16,
+        "instructions": 190918656,
+        "kernels": 1
+      },
+      "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "profile": "F128",
+      "program": "GESUMMV",
+      "suite": "PolyBench/GPU",
+      "source_family": "STAGEI_ORIGINAL_350",
+      "accepted": true,
+      "cycles": 86464623,
+      "state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+      "original_RESULT_or_engineering_evidence": {
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-F128-V1.RESULT.json",
+        "sha256": "a1bb2fc690f7a275e511c86b5fef486b9443df561ed993834a70826e5dfa910d"
+      },
+      "uuid": "00ae4082-9abc-49aa-b0db-c916e0d8d4a7",
+      "original_negative_not_replaced": false,
+      "proof_evidence": {
+        "program": "GESUMMV",
+        "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+        "design": "DH",
+        "comparison_profile": "F128",
+        "RESULT": {
+          "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-F128-V1.RESULT.json",
+          "sha256": "a1bb2fc690f7a275e511c86b5fef486b9443df561ed993834a70826e5dfa910d"
+        },
+        "actual_RESULT_cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-F128-V1",
+        "actual_RESULT_profile": null,
+        "actual_proof_profile": "F128",
+        "actual_scientific_role": null,
+        "state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+        "uuid": "00ae4082-9abc-49aa-b0db-c916e0d8d4a7",
+        "cycles": 86464623,
+        "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+        "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+        "binary_sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d",
+        "kernel_count": 1,
+        "counter_evidence": {
+          "whole_replay_selected_cumulative": {
+            "DTC_L1_oo_valid_hits": 5271223,
+            "DTC_L1_oo_pending_hits": 181860,
+            "DTC_L1_oo_new_misses": 30198629,
+            "DTC_L1_oo_tag_evictions": 30190437,
+            "DTC_L1_oo_lower_created": 30198629,
+            "DTC_L1_oo_lower_issued": 30198629,
+            "DTC_L1_oo_lower_responses": 30198629,
+            "DTC_L1_oo_ready_but_writeback_blocked_cycles": 21470,
+            "DTC_L1_oo_lower_create_queue_full_stalls": 0,
+            "DTC_L1_oo_immediate_reclaims": 5238526,
+            "DTC_L1_oo_deferred_reclaims": 24951911,
+            "DTC_L1_oo_final_ref_reclaims": 24951911,
+            "DTC_L1_oo_out_of_order_retires": 3329913,
+            "DTC_L1_oo_retire_count": 4194560,
+            "gpu_stall_dramfull": 283687590,
+            "L2_total_cache_accesses": 124989332,
+            "L2_total_cache_misses": 52549684,
+            "L2_total_cache_reservation_fails": 293860392
+          },
+          "whole_replay_traffic": {
+            "DRAM_atom_bytes": 32,
+            "DRAM_issued_read_atoms": 52528884,
+            "DRAM_issued_write_atoms": 22424,
+            "DRAM_read_payload_bytes": 1680924288,
+            "DRAM_write_payload_bytes": 717568,
+            "L2_accepted_read_32B_sectors": 120794516,
+            "L2_read_payload_bytes": 3865424512,
+            "DRAM_controller_request_objects": 52534490
+          },
+          "service_cumulative_integrals_item_sums_and_counts": {
+            "DTC_SERVICE_V1_collected_sectors": 38797824,
+            "DTC_SERVICE_V1_collection_cycles": 10552218,
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": 15386941,
+            "DTC_SERVICE_V1_map_loss_to_free_count": 30190437,
+            "DTC_SERVICE_V1_map_loss_to_free_sum": 160602674475,
+            "DTC_SERVICE_V1_physical_integral": 820620550098,
+            "DTC_SERVICE_V1_pib_integral": 8837077030,
+            "DTC_SERVICE_V1_ready_to_collect_sum": 4715007,
+            "DTC_SERVICE_V1_retired": 3145856,
+            "DTC_SERVICE_V1_samples": 5533735872,
+            "DTC_SERVICE_V1_wb_wait": 119716
+          },
+          "terminal_gauges_not_pressure_history": {
+            "DTC_L1_oo_inflight_current": 0,
+            "DTC_L1_lower_outstanding": 0,
+            "DTC_L1_oo_pib_occupancy": 0,
+            "DTC_L1_oo_physical_allocated": 8192,
+            "DTC_L1_oo_active_refs": 0
+          },
+          "running_peaks_not_perkernel": {},
+          "unavailable_requested_fields": [
+            "DTC_L1_pib_full_events",
+            "DTC_L1_tag_conflicts"
+          ],
+          "per_kernel_traffic": "UNAVAILABLE_FROM_FINAL_STRICT_ENDPOINT; existing reviewed raw-derived phase references may supply explicit endpoints",
+          "latency": "Diagnostic means retain original sampling windows; missing not zero. No new mean computed."
+        }
+      },
+      "DH_self_speedup": 1.03513109633289,
+      "performance_direction": "POSITIVE",
+      "matching_CH_nonP0": "AVAILABLE_ONLY_FOR_F128_F256_FROM_STAGEII"
+    },
+    {
+      "cell": "DH",
+      "cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-F256-V1",
+      "expected": {
+        "CTA": 16,
+        "instructions": 190918656,
+        "kernels": 1
+      },
+      "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "profile": "F256",
+      "program": "GESUMMV",
+      "suite": "PolyBench/GPU",
+      "source_family": "STAGEI_ORIGINAL_350",
+      "accepted": true,
+      "cycles": 90151547,
+      "state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+      "original_RESULT_or_engineering_evidence": {
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-F256-V1.RESULT.json",
+        "sha256": "49323ce0527b7cb4155f0abfcbd65926cbae163dc862a560cf1d63194edbee02"
+      },
+      "uuid": "9ee14c1e-a683-4642-aba4-a4ced3652c23",
+      "original_negative_not_replaced": false,
+      "proof_evidence": {
+        "program": "GESUMMV",
+        "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+        "design": "DH",
+        "comparison_profile": "F256",
+        "RESULT": {
+          "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-F256-V1.RESULT.json",
+          "sha256": "49323ce0527b7cb4155f0abfcbd65926cbae163dc862a560cf1d63194edbee02"
+        },
+        "actual_RESULT_cohort": "E2-DTCL2MLP-769e6d9fd5f9cd53-DH-F256-V1",
+        "actual_RESULT_profile": null,
+        "actual_proof_profile": "F256",
+        "actual_scientific_role": null,
+        "state": "PASS_L2MLP_STRICT_ARCHIVE_NATIVE_RESTORE",
+        "uuid": "9ee14c1e-a683-4642-aba4-a4ced3652c23",
+        "cycles": 90151547,
+        "core_commit": "9eedb3131937748f0492fa83aad37d3691118d70",
+        "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+        "binary_sha256": "02a289360b42a573832698c978f21ad2125182a453067a35be60410f1eb8888d",
+        "kernel_count": 1,
+        "counter_evidence": {
+          "whole_replay_selected_cumulative": {
+            "DTC_L1_oo_valid_hits": 5578660,
+            "DTC_L1_oo_pending_hits": 139547,
+            "DTC_L1_oo_new_misses": 29933505,
+            "DTC_L1_oo_tag_evictions": 29925313,
+            "DTC_L1_oo_lower_created": 29933505,
+            "DTC_L1_oo_lower_issued": 29933505,
+            "DTC_L1_oo_lower_responses": 29933505,
+            "DTC_L1_oo_ready_but_writeback_blocked_cycles": 21943,
+            "DTC_L1_oo_lower_create_queue_full_stalls": 0,
+            "DTC_L1_oo_immediate_reclaims": 6476343,
+            "DTC_L1_oo_deferred_reclaims": 23448970,
+            "DTC_L1_oo_final_ref_reclaims": 23448970,
+            "DTC_L1_oo_out_of_order_retires": 3334849,
+            "DTC_L1_oo_retire_count": 4194560,
+            "gpu_stall_dramfull": 265956790,
+            "L2_total_cache_accesses": 123928836,
+            "L2_total_cache_misses": 54991880,
+            "L2_total_cache_reservation_fails": 276005118
+          },
+          "whole_replay_traffic": {
+            "DRAM_atom_bytes": 32,
+            "DRAM_issued_read_atoms": 54970692,
+            "DRAM_issued_write_atoms": 22728,
+            "DRAM_read_payload_bytes": 1759062144,
+            "DRAM_write_payload_bytes": 727296,
+            "L2_accepted_read_32B_sectors": 119734020,
+            "L2_read_payload_bytes": 3831488640,
+            "DRAM_controller_request_objects": 54976375
+          },
+          "service_cumulative_integrals_item_sums_and_counts": {
+            "DTC_SERVICE_V1_collected_sectors": 38797824,
+            "DTC_SERVICE_V1_collection_cycles": 10559674,
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": 15227032,
+            "DTC_SERVICE_V1_map_loss_to_free_count": 29925313,
+            "DTC_SERVICE_V1_map_loss_to_free_sum": 162917289043,
+            "DTC_SERVICE_V1_physical_integral": 853138893880,
+            "DTC_SERVICE_V1_pib_integral": 8816168972,
+            "DTC_SERVICE_V1_ready_to_collect_sum": 4530479,
+            "DTC_SERVICE_V1_retired": 3145856,
+            "DTC_SERVICE_V1_samples": 5769699008,
+            "DTC_SERVICE_V1_wb_wait": 136879
+          },
+          "terminal_gauges_not_pressure_history": {
+            "DTC_L1_oo_inflight_current": 0,
+            "DTC_L1_lower_outstanding": 0,
+            "DTC_L1_oo_pib_occupancy": 0,
+            "DTC_L1_oo_physical_allocated": 8192,
+            "DTC_L1_oo_active_refs": 0
+          },
+          "running_peaks_not_perkernel": {},
+          "unavailable_requested_fields": [
+            "DTC_L1_pib_full_events",
+            "DTC_L1_tag_conflicts"
+          ],
+          "per_kernel_traffic": "UNAVAILABLE_FROM_FINAL_STRICT_ENDPOINT; existing reviewed raw-derived phase references may supply explicit endpoints",
+          "latency": "Diagnostic means retain original sampling windows; missing not zero. No new mean computed."
+        }
+      },
+      "DH_self_speedup": 0.9927973837209915,
+      "performance_direction": "NEGATIVE",
+      "matching_CH_nonP0": "AVAILABLE_ONLY_FOR_F128_F256_FROM_STAGEII"
+    }
+  ],
+  "structure_fixed8": [],
+  "R1_combinations_fixed8": [],
+  "structure_coverage": "NOT_MEASURED_OUTSIDE_FIXED8",
+  "R1_coverage": "NOT_MEASURED_OUTSIDE_FIXED8",
+  "kernel_cycle_detail": {
+    "path": "kernel_cycles/769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4.json.gz",
+    "sha256": "92e1f811938861a3ae3f659cee11193ff66c6c0c9464fa0185dc6c74bd261754",
+    "positions": 1,
+    "source_kernel_rows": 6
+  },
+  "closed_raw_derived_counter_reference": [],
+  "registered_phase_summaries": [
+    {
+      "additive": {
+        "DRAM_controller_n_req": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 65166621
+        },
+        "DRAM_read_atoms32B": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 65161203
+        },
+        "DRAM_write_atoms32B": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 20576
+        },
+        "DTC_L1_pib_full_events": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 0
+        },
+        "DTC_L1_tag_conflicts": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 38798080
+        },
+        "L2_GLOBAL_read_accepted_sectors": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 135969648
+        },
+        "L2_GLOBAL_read_miss_sectors": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 65161203
+        },
+        "L2_total_cache_accesses": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 140164464
+        },
+        "L2_total_cache_misses": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 65180919
+        },
+        "L2_total_cache_reservation_fails": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 169975161
+        },
+        "gpu_stall_dramfull": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 148369202
+        }
+      },
+      "cell": "CH",
+      "cycles_sum": 106901261,
+      "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "kernel_count": 1,
+      "phase": {
+        "phase_evidence": "FIXED_SOURCE_CANDIDATE_AND_TRACE_SELECTOR_NOT_CAPTURE_ELF_CERTIFIED",
+        "phase_id": "P42-16-K01",
+        "source_stage": "dual matrix-vector accumulation"
+      },
+      "profile": "F128",
+      "program": "GESUMMV",
+      "scope": "Completed-kernel print intervals, not request-origin assignment. No mean/gauge/peak differencing or summation."
+    },
+    {
+      "additive": {
+        "DRAM_controller_n_req": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 68413592
+        },
+        "DRAM_read_atoms32B": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 68406632
+        },
+        "DRAM_write_atoms32B": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 26511
+        },
+        "DTC_L1_pib_full_events": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 0
+        },
+        "DTC_L1_tag_conflicts": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 38798080
+        },
+        "L2_GLOBAL_read_accepted_sectors": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 135985800
+        },
+        "L2_GLOBAL_read_miss_sectors": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 68406632
+        },
+        "L2_total_cache_accesses": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 140180616
+        },
+        "L2_total_cache_misses": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 68432387
+        },
+        "L2_total_cache_reservation_fails": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 197243163
+        },
+        "gpu_stall_dramfull": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 170060111
+        }
+      },
+      "cell": "CH",
+      "cycles_sum": 112286106,
+      "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "kernel_count": 1,
+      "phase": {
+        "phase_evidence": "FIXED_SOURCE_CANDIDATE_AND_TRACE_SELECTOR_NOT_CAPTURE_ELF_CERTIFIED",
+        "phase_id": "P42-16-K01",
+        "source_stage": "dual matrix-vector accumulation"
+      },
+      "profile": "F256",
+      "program": "GESUMMV",
+      "scope": "Completed-kernel print intervals, not request-origin assignment. No mean/gauge/peak differencing or summation."
+    },
+    {
+      "additive": {
+        "DRAM_controller_n_req": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 70169321
+        },
+        "DRAM_read_atoms32B": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 70163098
+        },
+        "DRAM_write_atoms32B": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 23275
+        },
+        "DTC_L1_pib_full_events": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 0
+        },
+        "DTC_L1_tag_conflicts": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 38798080
+        },
+        "L2_GLOBAL_read_accepted_sectors": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 135998384
+        },
+        "L2_GLOBAL_read_miss_sectors": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 70163098
+        },
+        "L2_total_cache_accesses": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 140193200
+        },
+        "L2_total_cache_misses": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 70185849
+        },
+        "L2_total_cache_reservation_fails": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 222964345
+        },
+        "gpu_stall_dramfull": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 200749905
+        }
+      },
+      "cell": "CH",
+      "cycles_sum": 114860845,
+      "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "kernel_count": 1,
+      "phase": {
+        "phase_evidence": "FIXED_SOURCE_CANDIDATE_AND_TRACE_SELECTOR_NOT_CAPTURE_ELF_CERTIFIED",
+        "phase_id": "P42-16-K01",
+        "source_stage": "dual matrix-vector accumulation"
+      },
+      "profile": "P0",
+      "program": "GESUMMV",
+      "scope": "Completed-kernel print intervals, not request-origin assignment. No mean/gauge/peak differencing or summation."
+    },
+    {
+      "additive": {
+        "DRAM_controller_n_req": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 52534490
+        },
+        "DRAM_read_atoms32B": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 52528884
+        },
+        "DRAM_write_atoms32B": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 22424
+        },
+        "DTC_L1_oo_lower_created": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 30198629
+        },
+        "DTC_L1_oo_new_misses": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 30198629
+        },
+        "DTC_L1_oo_pending_hits": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 181860
+        },
+        "DTC_L1_oo_tag_evictions": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 30190437
+        },
+        "DTC_L1_oo_valid_hits": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 5271223
+        },
+        "DTC_SERVICE_V1_fully_ready_to_complete_sum": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 15386941
+        },
+        "DTC_SERVICE_V1_pib_integral": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 8837077030
+        },
+        "DTC_SERVICE_V1_retired": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 3145856
+        },
+        "DTC_SERVICE_V1_samples": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 5533735872
+        },
+        "DTC_SERVICE_V1_wb_wait": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 119716
+        },
+        "L2_GLOBAL_read_accepted_sectors": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 120794516
+        },
+        "L2_GLOBAL_read_miss_sectors": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 52528884
+        },
+        "L2_total_cache_accesses": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 124989332
+        },
+        "L2_total_cache_misses": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 52549684
+        },
+        "L2_total_cache_reservation_fails": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 293860392
+        },
+        "gpu_stall_dramfull": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 283687590
+        }
+      },
+      "cell": "DH",
+      "cycles_sum": 86464623,
+      "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "kernel_count": 1,
+      "phase": {
+        "phase_evidence": "FIXED_SOURCE_CANDIDATE_AND_TRACE_SELECTOR_NOT_CAPTURE_ELF_CERTIFIED",
+        "phase_id": "P42-16-K01",
+        "source_stage": "dual matrix-vector accumulation"
+      },
+      "profile": "F128",
+      "program": "GESUMMV",
+      "scope": "Completed-kernel print intervals, not request-origin assignment. No mean/gauge/peak differencing or summation."
+    },
+    {
+      "additive": {
+        "DRAM_controller_n_req": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 54976375
+        },
+        "DRAM_read_atoms32B": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 54970692
+        },
+        "DRAM_write_atoms32B": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 22728
+        },
+        "DTC_L1_oo_lower_created": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 29933505
+        },
+        "DTC_L1_oo_new_misses": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 29933505
+        },
+        "DTC_L1_oo_pending_hits": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 139547
+        },
+        "DTC_L1_oo_tag_evictions": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 29925313
+        },
+        "DTC_L1_oo_valid_hits": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 5578660
+        },
+        "DTC_SERVICE_V1_fully_ready_to_complete_sum": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 15227032
+        },
+        "DTC_SERVICE_V1_pib_integral": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 8816168972
+        },
+        "DTC_SERVICE_V1_retired": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 3145856
+        },
+        "DTC_SERVICE_V1_samples": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 5769699008
+        },
+        "DTC_SERVICE_V1_wb_wait": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 136879
+        },
+        "L2_GLOBAL_read_accepted_sectors": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 119734020
+        },
+        "L2_GLOBAL_read_miss_sectors": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 54970692
+        },
+        "L2_total_cache_accesses": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 123928836
+        },
+        "L2_total_cache_misses": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 54991880
+        },
+        "L2_total_cache_reservation_fails": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 276005118
+        },
+        "gpu_stall_dramfull": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 265956790
+        }
+      },
+      "cell": "DH",
+      "cycles_sum": 90151547,
+      "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "kernel_count": 1,
+      "phase": {
+        "phase_evidence": "FIXED_SOURCE_CANDIDATE_AND_TRACE_SELECTOR_NOT_CAPTURE_ELF_CERTIFIED",
+        "phase_id": "P42-16-K01",
+        "source_stage": "dual matrix-vector accumulation"
+      },
+      "profile": "F256",
+      "program": "GESUMMV",
+      "scope": "Completed-kernel print intervals, not request-origin assignment. No mean/gauge/peak differencing or summation."
+    },
+    {
+      "additive": {
+        "DRAM_controller_n_req": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 53125727
+        },
+        "DRAM_read_atoms32B": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 53120556
+        },
+        "DRAM_write_atoms32B": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 20684
+        },
+        "DTC_L1_oo_lower_created": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 30273725
+        },
+        "DTC_L1_oo_new_misses": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 30273725
+        },
+        "DTC_L1_oo_pending_hits": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 159619
+        },
+        "DTC_L1_oo_tag_evictions": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 30265533
+        },
+        "DTC_L1_oo_valid_hits": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 5218368
+        },
+        "DTC_SERVICE_V1_fully_ready_to_complete_sum": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 15295954
+        },
+        "DTC_SERVICE_V1_pib_integral": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 8955260955
+        },
+        "DTC_SERVICE_V1_retired": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 3145856
+        },
+        "DTC_SERVICE_V1_samples": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 5728142080
+        },
+        "DTC_SERVICE_V1_wb_wait": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 132901
+        },
+        "L2_GLOBAL_read_accepted_sectors": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 121094900
+        },
+        "L2_GLOBAL_read_miss_sectors": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 53120556
+        },
+        "L2_total_cache_accesses": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 125289716
+        },
+        "L2_total_cache_misses": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 53140444
+        },
+        "L2_total_cache_reservation_fails": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 288925236
+        },
+        "gpu_stall_dramfull": {
+          "missing_kernel_intervals": 0,
+          "observed_kernel_intervals": 1,
+          "status": "COMPLETE_EXPLICIT_ENDPOINT_SUM",
+          "value": 271775567
+        }
+      },
+      "cell": "DH",
+      "cycles_sum": 89502220,
+      "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "kernel_count": 1,
+      "phase": {
+        "phase_evidence": "FIXED_SOURCE_CANDIDATE_AND_TRACE_SELECTOR_NOT_CAPTURE_ELF_CERTIFIED",
+        "phase_id": "P42-16-K01",
+        "source_stage": "dual matrix-vector accumulation"
+      },
+      "profile": "P0",
+      "program": "GESUMMV",
+      "scope": "Completed-kernel print intervals, not request-origin assignment. No mean/gauge/peak differencing or summation."
+    }
+  ],
+  "declared_HtoD_and_source_scope": {
+    "actual_P0_trace_paths": [
+      {
+        "design": "CH",
+        "path": "/root/workspace/assets/traces/bundles/0620566b79b0cc21af493110e6acb6dd362e737c29671f86e8354ad4c8578827/tree/kernelslist.g",
+        "sha256": "ed0da283145c822bb1b9fc13c78fe41088b43478b706fcb17d078d83111044a8",
+        "source_RESULT_sha256": "59fbdea7414a42db94f5bc5a67734ed4b8e2350ea44bdc4c177939b1a3c5bdb7"
+      },
+      {
+        "design": "DH",
+        "path": "/root/workspace/assets/traces/bundles/0620566b79b0cc21af493110e6acb6dd362e737c29671f86e8354ad4c8578827/tree/kernelslist.g",
+        "sha256": "ed0da283145c822bb1b9fc13c78fe41088b43478b706fcb17d078d83111044a8",
+        "source_RESULT_sha256": "4be3aaaa1af5916ab001d68c59ccb7d5af8b13416c0f1e847574a97ce07170ff"
+      }
+    ],
+    "capture_complete_native_input": "NOT_NEWLY_CERTIFIED;whole_declared_trace_only",
+    "commandlist_sha256": "ed0da283145c822bb1b9fc13c78fe41088b43478b706fcb17d078d83111044a8",
+    "copy_bytes": 134266880,
+    "copy_count": 5,
+    "count_scope": "Declared frozen commandlist order, not actual runtime hook timing/data-value change/address-read overlap",
+    "expected_kernel_count": 1,
+    "frozen_capture_extent": "NO_FRACTION_LABEL_NOT_FULL_CAPTURE_CERTIFIED",
+    "input_binding": {
+      "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/control/input_bindings/769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4.json",
+      "sha256": "f10712680c21161dcf45d7a6af584ec4f60e96f9369ba324674502ae17b762b3"
+    },
+    "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+    "kernel_count": 1,
+    "numeric_correctness": "UNPROVEN",
+    "population_origin": "AUTHORIZED_REMAINING24",
+    "positions": {
+      "AFTER_LAST_KERNEL": {
+        "copy_bytes": 0,
+        "copy_count": 0
+      },
+      "BEFORE_FIRST_KERNEL": {
+        "copy_bytes": 134266880,
+        "copy_count": 5
+      },
+      "BETWEEN_KERNELS": {
+        "copy_bytes": 0,
+        "copy_count": 0
+      }
+    },
+    "program": "GESUMMV",
+    "reporting_batch": "R2",
+    "status": "BOUND_DECLARED_COMMANDLIST_EVENTS",
+    "suite": "PolyBench/GPU",
+    "trace_entry": "/root/workspace/assets/traces/bundles/0620566b79b0cc21af493110e6acb6dd362e737c29671f86e8354ad4c8578827/tree/kernelslist.g",
+    "unknown_lines": [],
+    "unknowns": []
+  },
+  "opportunity": {
+    "testable_hypothesis": "One closed kernel exposes nonmonotone F response: DH-F128 gains while F256 regresses; source traffic and retry direction must be considered separately.",
+    "falsification_or_limiting_case": "Fewer OO misses/retries can coexist with slower execution; no isolated causal bottleneck follows from endpoint totals.",
+    "evidence_class": "OBSERVED_RESPONSE_PLUS_CONDITIONAL_MECHANISM_HYPOTHESIS_NOT_CAUSAL_PROOF",
+    "theoretical_upper_bound": "UNKNOWN_NO_ORACLE",
+    "next_scientific_starts_authorized_by_this_packet": false
+  },
+  "best_observed_DH_cycles_exploratory_only": {
+    "cycles": 86464623,
+    "self_speedup": 1.03513109633289,
+    "tied_observed_sources": [
+      {
+        "family": "STAGEII_DH",
+        "variant": "F128",
+        "cycles": 86464623,
+        "source": {
+          "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-F128-V1.RESULT.json",
+          "sha256": "a1bb2fc690f7a275e511c86b5fef486b9443df561ed993834a70826e5dfa910d"
+        }
+      },
+      {
+        "family": "STAGEI_SINGLE_FACTOR",
+        "variant": "F128",
+        "cycles": 86464623,
+        "source": {
+          "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-F128-V1.RESULT.json",
+          "sha256": "a1bb2fc690f7a275e511c86b5fef486b9443df561ed993834a70826e5dfa910d"
+        }
+      }
+    ],
+    "not_uniform_configuration_or_GM": true
+  },
+  "mandatory_limits": [
+    "Whole registered trace timing only; capture-source/ELF/macros and numerical correctness are not newly certified.",
+    "Declared HtoD order is not live hook timing, changed values or overlap proof; prefill1/flushL1=1/flushL2=0/OO-source-event-invalidate0. Coherence remains a separate question.",
+    "L2 GLOBAL reads/misses are32B sectors, DRAM issued reads/writes32B atoms; request objects differ. Write misses may not issue DRAM reads. Zero DRAM does not prove compute-bound or cold/warm state.",
+    "Retry/admission counts are not critical-path time or occupancy histories. Terminal gauges and running peaks are not phase work. Service sample/item means are not active-SM peaks or critical-path latency.",
+    "MRQ spans request construction to bank assignment, excludes later service. Diagnostic latency means retain conditional sampling/tail windows. Missing is not zero.",
+    "CH common PIB256 and DH OO128 are distinct active structures; generic DH PIB8 is inactive. Physical slots do not increase searchable512Tag. No equal-area or hardware PPA claim.",
+    "OO PIB192 also enlarges the bounded lower-create candidate queue128→192; finite create/inject widths remain1. TagService8 is a configured grant ceiling, not proven integrated8-request/cycle throughput. Both1024Tag/640physical candidates remain CPU-progress-negative safetyHOLD, not simulated performance.",
+    "FR-FCFS capacity and shared credits change together; structure/R1 use downstreamP0. source families are not concatenated into one uniform configuration.",
+    "Observed best accepted cycles are exploratory references with selected configuration identity, not theoretical upper bounds or a per-program-best suite GM."
+  ]
+}

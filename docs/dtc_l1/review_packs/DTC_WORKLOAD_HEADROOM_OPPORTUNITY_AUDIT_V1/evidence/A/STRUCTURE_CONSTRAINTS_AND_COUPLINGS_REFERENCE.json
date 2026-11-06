@@ -1,0 +1,83 @@
+{
+  "source": {
+    "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_perf_first_parallel_exploration_20261104_v1/agents/A_structure_config_v1/CONSTRAINTS_AND_COUPLINGS.json",
+    "sha256": "6594a636e7c86ee7d4a85646f93e9bf814d6d60b2a5282ea279ac858a26e0290"
+  },
+  "details": {
+    "baseline": {
+      "logical_sets": 64,
+      "logical_ways": 8,
+      "physical_lines": 640,
+      "active_oo_pib_entries": 128,
+      "tag_banks": 4,
+      "tag_req_per_bank": 1,
+      "tag_req_per_cycle": 4,
+      "allocation_width": 4,
+      "ref_count_bits": 13,
+      "finite_service": true,
+      "progressive_wakeup": false,
+      "tag_hash_bankrow": true
+    },
+    "tag_progress_requirement": {
+      "constructor_has_physical_ge_logical_assertion": false,
+      "CPU_counterexample": "640 completed and retired unique line requests, physical pool remains occupied by valid ref0 Tags; requested set has invalid Tags; invalid victim cannot reclaim a physical line; repeat NO_FREE_LINE",
+      "integration_guard": "shader.cc2745-2754 excludes unfinished CACHEABLE_LOAD from retirement; memory_cycle3430-3444 keeps next_reference unchanged on failure",
+      "scope": "Reachable allocator/retirement state and a structural progress counterexample, not a claim every selected application must reach it. No scientific launch of these configs; no implicit pool enlargement."
+    },
+    "couplings": [
+      {
+        "variant": "TAG64x16_PHYS640",
+        "changes": "Tag entries512->1024, same64sets; ways8->16, physical640 unchanged",
+        "tag_hash_mapping": "same64set bankrow map",
+        "CPU_status": "CPU_PROGRESS_NEGATIVE_HOLD"
+      },
+      {
+        "variant": "TAG128x8_PHYS640",
+        "changes": "Tag entries512->1024, sets64->128, physical640 unchanged",
+        "tag_hash_mapping": "Hash s=log2(sets):6->7; rowbits4->5; row=((line>>2)^(line>>s))&((sets/4)-1); low2bankbits unchanged. Both capacity and row mapping change.",
+        "CPU_status": "CPU_PROGRESS_NEGATIVE_HOLD"
+      },
+      {
+        "variant": "PHYS768_TAG64x8",
+        "changes": "80->96KiB nominal OO physical data perSM; +16KiB/SM, +1MiB/64SM; Tag512 and hash map unchanged",
+        "CPU_status": "CPU_ONLY_CONFIG_AND_HEADER_QUALIFIED"
+      },
+      {
+        "variant": "PHYS1024_TAG64x8",
+        "changes": "80->128KiB nominal OO physical data perSM; +48KiB/SM, +3MiB/64SM; Tag512 and hash map unchanged",
+        "CPU_status": "CPU_ONLY_CONFIG_AND_HEADER_QUALIFIED"
+      },
+      {
+        "variant": "OO_PIB192",
+        "changes": "Active OO instruction slots128->192 AND integrated lower-create-queue bound128->192 (shader.cc3384-3386/3438-3441); +64/+50% each",
+        "fixed": "finite lower-create/inject/refill/retire1; allocation4; refcount13",
+        "conservative_reference_bound": "192*32=6144 < (1<<13)-1=8191; not an observed per-line occupancy",
+        "CPU_status": "CPU_ONLY_CONFIG_AND_HEADER_QUALIFIED"
+      },
+      {
+        "variant": "TAG4BANK_PERBANK2_TOTAL8",
+        "changes": "same4Tagbanks; perbankgrants1->2 AND totalgrants4->8; coupledgrantbounds",
+        "integration_limit": "shader.cc3369-3456 processes one next_reference per memory_cycle invocation, finite Tag observation+1edge, mem_unit_ports1 fixed. Configured8/cycle is not achieved integrated throughput; physical data ports are not expanded.",
+        "CPU_status": "CPU_ONLY_CONFIG_AND_HEADER_QUALIFIED"
+      }
+    ],
+    "fixed_service": {
+      "allocation_width": 4,
+      "finite_service": 1,
+      "tag_banks": 4,
+      "OO_refcount_bits": 13,
+      "lower_outstanding_cap": 32768,
+      "lower_create_per_cycle": 1,
+      "lower_inject_per_cycle": 1,
+      "metadata_refill_per_cycle": 1,
+      "return_collection_32Bsectors_per_cycle": 4,
+      "retire_per_cycle": 1,
+      "warp_notification_per_cycle": 4,
+      "progressive_wakeup": 0,
+      "source_event_invalidate": 0,
+      "mem_unit_ports": 1
+    },
+    "hardware_boundary": "Nominal line bytes, identity counts and declared grant/queue bounds only. No physical Tag/state SRAM bit widths, timing closure, wiring, area/power or realistic data-port cost are established. Host C++ sizeof/RSS is not silicon area. CH/DH are not equal-area; DH compatcache remains eligible for fallback stores/atomics and cannot be deleted from area or added as a unified96KiB selected-load cache.",
+    "scientific_boundary": "Known host-upload/prefill/invalidation scope remains unchanged. No numerical coherence certification, no new value experiment; 5 of fixedCORE32 have interkernel HtoD as separately frozen. Absence of interkernel HtoD does not prove GPU-store/other coherence safe. No accepted identity is downgraded by this CPU packet."
+  }
+}

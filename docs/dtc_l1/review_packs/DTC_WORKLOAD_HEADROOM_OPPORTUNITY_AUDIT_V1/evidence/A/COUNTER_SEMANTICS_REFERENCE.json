@@ -1,0 +1,107 @@
+{
+  "original_scoped_catalog": {
+    "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_remaining48_execution_20261104_v1/agents/B_closed_samples_analysis_v1/CONSUMED_COUNTER_CATALOG.json",
+    "sha256": "b7bea76d9acbf7af32938ab109238c47b11784eb99f62ac26a220eea0a03f547"
+  },
+  "items": [
+    {
+      "field": "cycles / gpu_tot_sim_cycle",
+      "unit": "global simulated core cycles",
+      "scope": "Cumulative whole registered replay at final printed boundary",
+      "allowed_use": "YES: use top-level strict cycles for S_CH/S_DH/R/I",
+      "caveat": "Per-kernel cycles are separately retained in proof.kernels; summing cumulative snapshots double-counts."
+    },
+    {
+      "field": "metrics.gpu_sim_cycle / gpu_sim_insn",
+      "unit": "core cycles / active-thread instructions",
+      "scope": "Last kernel execution interval because update_stats folds/resets after each print",
+      "allowed_use": "YES only as last-kernel metric, or consume proof.kernels for all ordered kernels",
+      "caveat": "Not whole-application total; metrics is a mixed-scope dictionary."
+    },
+    {
+      "field": "traffic.L2_accepted_read_32B_sectors",
+      "unit": "32B sectors, GLOBAL_ACC_R only",
+      "scope": "Persistent per-stream cache_stats at last snapshot; all audited33 have stream0",
+      "allowed_use": "YES for whole replay in current first8 single-stream set; differences are print-boundary intervals",
+      "caveat": "HIT+HIT_RESERVED+MISS+SECTOR_MISS; exclude retry RESERVATION_FAIL and supplementary MSHR_HIT/WRITE_ALLOCATED. Not all request types."
+    },
+    {
+      "field": "metrics.L2_total_cache_accesses/misses/pending_hits/reservation_fails",
+      "unit": "cache access/miss/pending-hit/retry events across all access types",
+      "scope": "Cumulative all-stream sum across L2 subpartitions",
+      "allowed_use": "YES typed cumulative totals, same design/input/F; pending_hits means HIT_RESERVED only",
+      "caveat": "Temporary l2_stats.clear at print initializes an aggregate, not the live L2 caches. Reservation failures are retry attempts, not unique requests or wall cycles."
+    },
+    {
+      "field": "traffic.DRAM_issued_read_atoms / write atoms",
+      "unit": "32B issued data-command atoms in fixed model",
+      "scope": "Cumulative sum of20 controller counters from constructor to snapshot",
+      "allowed_use": "YES cumulative, and print-boundary differences; read_atoms=n_rd+n_rd_L2_A",
+      "caveat": "Includes L2 write-allocation reads, unlike GLOBAL_ACC_R only. Not a latency or an end-to-end real-GPU transfer count. n_ref is explicitly unavailable."
+    },
+    {
+      "field": "metrics.gpu_stall_dramfull",
+      "unit": "blocked subpartition-admission events per L2-clock tick",
+      "scope": "Cumulative gpu_stall_icnt2mem across replay; may increment40 times per tick",
+      "allowed_use": "YES as typed backpressure-event count within design/F; never percentage of GPU critical-path cycles",
+      "caveat": "Increment when subpartition full and ICNT has a waiting packet, not isolated DRAM scheduler queue-full time."
+    },
+    {
+      "field": "DTC_L1_baseline_mshr_entry_full_events / merge_full_events",
+      "unit": "failed allocation/merge attempts aggregated across SMs",
+      "scope": "Persistent L1 cache fail stats, CH PaperBase namespace",
+      "allowed_use": "YES within CH F comparisons where explicitly printed",
+      "caveat": "Distinct from L2 MSHR; reason fields absent in strict are not zero. No CH/DH mechanism equivalence from matching names."
+    },
+    {
+      "field": "raw L2_cache_stats_fail_breakdown[access][MSHR_*]",
+      "unit": "retry/failure events by reason and stream",
+      "scope": "Persistent counters, only positive reasons are printed",
+      "allowed_use": "Conditional raw-sidecar analysis after scope/type review; absent strict field stays MISSING",
+      "caveat": "A numeric-only metrics parser does not consume bracketed reason fields. Do not invent zero or infer occupancy/wait cycles."
+    },
+    {
+      "field": "DTC_L1 PIB admits/retires/full events; lower_created/issued/responses; tag_requests/conflicts/evictions; lower-credit acquired/released",
+      "unit": "typed simulator events, summed across SMs",
+      "scope": "Cumulative persistent frontend/service members until snapshot",
+      "allowed_use": "YES within the same CH or DH architecture and F; declared additive subset only",
+      "caveat": "PIB entries are logical completion bookkeeping, not L2 MSHR entries. Tag-bank service conflict is distinct from tag mapping eviction/capacity conflict. Retry and primary/nonexclusive stall categories must retain their source definitions."
+    },
+    {
+      "field": "DTC_L1_*occupancy / *_outstanding / *_active_refs / *_physical_allocated",
+      "unit": "entries, requests, references, lines",
+      "scope": "Instantaneous terminal gauges",
+      "allowed_use": "YES as drain/conservation checks, not as activity or pressure totals",
+      "caveat": "Terminal0 means drained, not no misses/queue pressure; never sum or difference gauges into work."
+    },
+    {
+      "field": "DTC_L1_*peak_per_sm / pib_peak / inflight_peak / lower_outstanding_peak",
+      "unit": "maximum entries/requests",
+      "scope": "Running peak; some aggregate via max across SMs rather than sum",
+      "allowed_use": "YES as a peak diagnostic; no per-kernel subtraction",
+      "caveat": "Nondecreasing peak differences do not produce per-kernel peaks; pib_peak is explicitly max in paper_frontend_stats::add."
+    },
+    {
+      "field": "DTC_SERVICE_V1_* integrals/sums/counts",
+      "unit": "SM-cycle samples; entry/line×cycles; summed per-item cycles; item counts",
+      "scope": "Cumulative across persistent finite-service state and SM aggregation",
+      "allowed_use": "YES within DH F where finite_service1; preserve denominator/count and event class",
+      "caveat": "No CH absent-as-zero. Integral/sample yields a defined mean occupancy, not outstanding DRAM requests; latency decomposition sums are not critical-path wall time."
+    },
+    {
+      "field": "latency_counters.avg_mrq_latency",
+      "unit": "integer-truncated global core-cycle age of DRAM request until bank assignment",
+      "scope": "Cumulative tot_mrq_latency/tot_mrq_num when printed; additionally gated by num_mfs>0",
+      "allowed_use": "Diagnostic same-design/F request-population mean, not isolated total L2-to-DRAM latency",
+      "caveat": "MRQ timestamp starts at dram_req construction; excludes service after bank assignment. Do not weight by DRAM atoms or difference means; request/atom denominators differ."
+    },
+    {
+      "field": "averagemflatency / avg_icnt2mem_latency / avg_icnt2sh_latency",
+      "unit": "integer-truncated core-cycle means over their distinct packet/response domains",
+      "scope": "Conditionally printed; num_mfs and mf_total_lat fold every500000 current-kernel cycles and after cleanup print",
+      "allowed_use": "NOT released as exact final whole-application means: sampling/fold boundary can exclude current tail and mix numerator/denominator windows",
+      "caveat": "Current33 raw has0 decimal tokens;8 sources have no mean lines at all. No regex fix is justified for these data. Missing is not0."
+    }
+  ],
+  "further_scope": "Final24 explicit single-stream metadata and checked source endpoints, not automatic promotion of first8 limits; baseline/structure/R1 per-kernel traffic remains unavailable when only strict final endpoint exists."
+}

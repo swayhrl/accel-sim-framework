@@ -1,0 +1,98 @@
+{
+  "schema": "DTC_ORACLE_CPU_SEMANTICS_MATRIX_V1",
+  "scientific_simulation_authorized": false,
+  "Core": "9eedb3131937748f0492fa83aad37d3691118d70",
+  "Framework": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+  "candidates": [
+    {
+      "id": "Oracle-M_stock",
+      "candidate_options": {
+        "-gpgpu_perfect_mem": "1"
+      },
+      "status": "HOLD_RESPONSE_GRANULARITY_FOR_PAPER_OO",
+      "implemented_path": "shader m_icnt lower-interface shortcut to finite cluster response FIFO; covers instruction-cache and LDST ports sharing it; SST_mode must be0",
+      "removed": "Normal downstream request transport/L2/DRAM service for requests entering this interface",
+      "retained": "L1/OO admission/coalescing/Tag/physical/PIB/global lower cap/finite create-inject-refill-collect-retire/responseFIFO/Scoreboard/operand WB/barrier/termination",
+      "counterexample": "An actual whole-line OO miss expects0xF but direct unsplit reply sets only sector0. Original method CPU fixture leaves inflight and lower credit pending. Conditional on a cacheable load NEW_MISS; not a claim every trace reaches it immediately.",
+      "CH_DH_comparable": false,
+      "strict_bound": false,
+      "allowed_label": "Current stock option only, not admissible paired Oracle-M result. After distinct protocol implementation and qualification may be a controlled lower-transport counterfactual, not demonstrated strict bound."
+    },
+    {
+      "id": "Oracle-L2_stock",
+      "candidate_options": {
+        "-l2_ideal": "1"
+      },
+      "status": "HOLD_INERT_REGISTERED_OPTION",
+      "implemented_path": "Registration and declaration only in exact tracked Core; no source consumer",
+      "removed": "No implemented removal established",
+      "retained": "Normal L2 tags/MSHR/miss queues/ports/DRAM/ICNT",
+      "CH_DH_comparable": false,
+      "strict_bound": false,
+      "allowed_label": "No effective Oracle-L2; do not launch or interpret parser acceptance as a treatment."
+    },
+    {
+      "id": "Oracle-L1_stock",
+      "candidate_options": null,
+      "status": "HOLD_NO_IMPLEMENTED_MATCHED_L1D_ORACLE",
+      "implemented_path": "No audited stock all-L1D-hit/zero-local-service path for both PAPER_BASE and PAPER_OO",
+      "removed": "None qualified",
+      "retained": "Full ordinary/OO distinct local frontend",
+      "CH_DH_comparable": false,
+      "strict_bound": false,
+      "allowed_label": "Source-design-only counterfactual; no result or upper bound."
+    },
+    {
+      "id": "L1_false_substitute_latency0",
+      "candidate_options": {
+        "-gpgpu_l1_latency": "0"
+      },
+      "status": "HOLD_ENABLED_L1_CONSTRUCTOR_ASSERT",
+      "implemented_path": "Ordinary-L1 constructor asserts latency>0; conventional helper zero branch does not override constructor",
+      "CH_DH_comparable": false,
+      "strict_bound": false
+    },
+    {
+      "id": "L1_false_substitute_bypass",
+      "candidate_options": {
+        "-gpgpu_gmem_skip_L1D": "1"
+      },
+      "status": "HOLD_DIFFERENT_BYPASS_IDENTITY",
+      "implemented_path": "Global skip (except explicit CACHE_L1 semantics) can bypass conventional/OO load path; not all-hit, changes treatment identity",
+      "CH_DH_comparable": false,
+      "strict_bound": false
+    },
+    {
+      "id": "Oracle-M_sector_reply_design",
+      "candidate_options": null,
+      "status": "DESIGN_ONLY_HOLD_NEW_IMPLEMENTATION_AND_LIFECYCLE_QUALIFICATION",
+      "implemented_path": "Future explicit oracle return transport, not currentCore behavior; preserve4 distinct32B responses/parent UID/physical generation/global credit exactly once and finite service",
+      "required": "New source version/binary/input-option contract, bounded response FIFO/timing, atomic/store/fence/progressive/termination qualifications and authorized tiny actual scientific qualification later",
+      "CH_DH_comparable": "UNKNOWN until matched implementation and eligibility",
+      "strict_bound": false
+    },
+    {
+      "id": "Oracle-L2_read_availability_design",
+      "candidate_options": null,
+      "status": "DESIGN_ONLY_HOLD_NEW_IMPLEMENTATION",
+      "implemented_path": "Future explicitly scoped read-return treatment at L2; retain routing/queues/ports/sector parent identity and original stores/atomics/writebacks",
+      "required": "No fabricated HIT status without event/ownership/lifetime proof; new source/binary/counterfactual contract and CPU/fullpath qualification",
+      "strict_bound": false
+    },
+    {
+      "id": "Oracle-L1_read_availability_design",
+      "candidate_options": null,
+      "status": "DESIGN_ONLY_HOLD_ARCHITECTURE_SEMANTICS_UNRESOLVED",
+      "implemented_path": "Future cacheable non-atomic global read data-availability oracle with exact instruction dependency registration and source completion",
+      "required": "Must explicitly choose local-capacity/Tag/physical treatment. Keeping local admission/finite collection yields residual-local-service reference; bypassing Tag/physical/PIB is a different local architecture, not free availability. Preserve original atomic/store/bypass/fence/WB/Scoreboard/gen/ref/waiter semantics; no LaneX invalidation substitute.",
+      "strict_bound": false
+    }
+  ],
+  "not_proved": [
+    "All runtime request classes/CH fullpath numeric semantics",
+    "Universal monotonicity/performance upper bound",
+    "Native numeric/coherence correctness",
+    "Complete-application capture semantics"
+  ],
+  "keep_historical_Tag1024_pool640_HOLD": true
+}

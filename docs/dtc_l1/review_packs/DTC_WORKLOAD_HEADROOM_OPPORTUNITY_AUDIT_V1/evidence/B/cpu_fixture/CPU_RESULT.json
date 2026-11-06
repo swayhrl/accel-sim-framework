@@ -1,0 +1,55 @@
+{
+  "status": "PASS_EXPECTED_COUNTEREXAMPLE_AND_CONTROL",
+  "perfect_whole128_response_mask": 1,
+  "expected_mask": 15,
+  "inflight_remaining": 1,
+  "lower_credit_releases": 0,
+  "four_sector_control_completed": true,
+  "atomic_callback_once": true,
+  "response_FIFO_backpressure_preserved": true,
+  "model_main_executed": false,
+  "compile_command": [
+    "nice",
+    "-n",
+    "19",
+    "g++",
+    "-std=c++17",
+    "-O0",
+    "-Wall",
+    "-Wextra",
+    "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_workload_headroom_opportunity_audit_20261106_v1/agents/B_oracle_semantics_v1/cpu_fixture/perfect_interface_oo_lifecycle.cpp",
+    "-o",
+    "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_workload_headroom_opportunity_audit_20261106_v1/agents/B_oracle_semantics_v1/cpu_fixture/cpu_fixture.private"
+  ],
+  "source_sha256": "bc1aaf0f11d216b5639d3621000f2c5d384d59914e24f9883993911789af7595",
+  "finite_test_not_general_liveness_proof": true,
+  "production_files_modified": false,
+  "scientific_simulations": 0,
+  "isolated_cases": [
+    {
+      "case": "default",
+      "expected_returncode": 0,
+      "actual_returncode": 0,
+      "passed": true
+    },
+    {
+      "case": "wrong_address",
+      "expected_returncode": -6,
+      "actual_returncode": -6,
+      "passed": true
+    },
+    {
+      "case": "duplicate_sector",
+      "expected_returncode": -6,
+      "actual_returncode": -6,
+      "passed": true
+    },
+    {
+      "case": "unknown_uid",
+      "expected_returncode": 0,
+      "actual_returncode": 0,
+      "passed": true
+    }
+  ],
+  "scope": "Exact original perfect-interface and OO-response method extraction + small FIFO/carrier/frontend callback mocks. No production scheduler, scoreboard, cache, real gen/ref bookkeeping or model main. Expected assertions are intentional negative CPU tests."
+}

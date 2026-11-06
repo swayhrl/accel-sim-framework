@@ -1,0 +1,2147 @@
+// Decoupled-Tag L1 common M1 model helpers.
+//
+// This header deliberately has no dependency on cache implementation classes.
+// It gives Base/IO/OO one definition of a 128B logical reference and of the
+// bounded paper front-end resources.  LEGACY code never constructs this model.
+
+#ifndef DTC_L1_COMMON_H
+#define DTC_L1_COMMON_H
+
+#include <algorithm>
+#include <array>
+#include <cassert>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
+#include <map>
+#include <deque>
+#include <list>
+#include <set>
+#include <vector>
+
+#include "dtc-l1-tag-index.h"
+
+namespace dtc_l1 {
+
+constexpr uint64_t kLogicalLineBytes = 128;
+constexpr unsigned kSectorsPerLogicalLine = 4;
+
+enum class mode { LEGACY, PAPER_BASE, PAPER_IO, PAPER_OO, MODERN_OO_SECTOR };
+
+struct config {
+  bool finite_service = false;
+  bool progressive_wakeup = false;
+  mode selected_mode = mode::LEGACY;
+  unsigned pib_entries = 8;
+  unsigned tag_banks = 4;
+  unsigned tag_requests_per_bank_per_cycle = 1;
+  unsigned tag_requests_per_cycle = 4;
+  unsigned coalescer_threads_per_cycle = 32;
+  unsigned logical_sets = 32;
+  unsigned logical_ways = 4;
+  unsigned physical_lines = 640;
+  unsigned allocation_width = 4;
+  unsigned io_pib_entries = 256;
+  unsigned oo_pib_entries = 128;
+  unsigned ref_count_bits = 13;
+  bool tag_hash_bankrow = false;
+};
+
+// AD is an opt-in timing optimization of the finite whole-line OO model only.
+inline void check_progressive_wakeup_mode(bool enabled, unsigned selected,
+                                          bool finite) {
+  if (enabled && (!finite || selected != static_cast<unsigned>(mode::PAPER_OO))) {
+    std::fprintf(stderr, "DTC_PROGRESSIVE_WAKE_UNSUPPORTED_MODE_STOP\n");
+    std::abort();
+  }
+}
+
+// Absolute core-cycle quota; checking availability never consumes a grant.
+// Commit only after the owning operation actually succeeds.
+class service_quota {
+ public:
+  explicit service_quota(unsigned width = 1) : m_width(width) { assert(width); }
+  bool available(uint64_t cycle) const {
+    return cycle != m_cycle || m_used < m_width;
+  }
+  void commit(uint64_t cycle) {
+    assert(available(cycle));
+    if (cycle != m_cycle) { m_cycle = cycle; m_used = 0; }
+    ++m_used;
+  }
+ private:
+  unsigned m_width;
+  unsigned m_used = 0;
+  uint64_t m_cycle = UINT64_MAX;
+};
+
+struct service_entry {
+  // AD common boundary: first LDST observation with admission complete and
+  // all real whole-line returns accepted. Independent of notification gating.
+  uint64_t admitted_returns_cycle = UINT64_MAX;
+  uint64_t tag_grant_cycle = UINT64_MAX;
+  uint64_t ready_cycle = UINT64_MAX;
+  uint64_t collect_done_cycle = UINT64_MAX;
+  uint64_t collect_start_cycle = UINT64_MAX;
+  unsigned sectors_left = 0;
+  bool tag_can_commit(uint64_t cycle) const {
+    return tag_grant_cycle != UINT64_MAX && cycle > tag_grant_cycle;
+  }
+  template <class Frontend>
+  void prefetch_next_tag(Frontend &frontend, uint64_t cycle, bool has_next,
+                         uint64_t next_address) {
+    tag_grant_cycle = UINT64_MAX;
+    if (has_next && frontend.try_serve_tag(cycle, next_address))
+      tag_grant_cycle = cycle;
+  }
+  void observe_ready(uint64_t cycle, unsigned sectors) {
+    assert(ready_cycle == UINT64_MAX && sectors);
+    ready_cycle = cycle;
+    sectors_left = sectors;
+  }
+  bool collect(uint64_t cycle, service_quota &port) {
+    assert(ready_cycle != UINT64_MAX);
+    if (cycle == ready_cycle) return false;
+    while (sectors_left && port.available(cycle)) {
+      if (collect_start_cycle == UINT64_MAX) collect_start_cycle = cycle;
+      port.commit(cycle);
+      --sectors_left;
+      if (!sectors_left) collect_done_cycle = cycle;
+    }
+    return !sectors_left && cycle > collect_done_cycle;
+  }
+};
+
+inline bool response_sector_is_new(uint8_t expected, uint8_t received,
+                                   unsigned sector) {
+  return sector < kSectorsPerLogicalLine && (expected & (1U << sector)) &&
+         !(received & (1U << sector));
+}
+
+// Completion ownership is separate from the frontend's physical-line state.
+// An LD/ST instruction may retire only after its registered 128B dependency
+// count is owned by its PIB entry and every one of those references has been
+// admitted. Closing twice, or closing a count different from registration, is
+// an architectural accounting error rather than a recoverable cache event.
+class completion_accounting {
+ public:
+  enum class lifecycle { EMPTY, REGISTERED, PIB_OWNED, READY, CLOSED };
+
+  void register_dependencies(unsigned dependencies) {
+    assert(dependencies > 0 && m_state == lifecycle::EMPTY);
+    m_registered = dependencies;
+    m_state = lifecycle::REGISTERED;
+  }
+
+  void own_pib_dependencies(unsigned dependencies) {
+    assert(m_state == lifecycle::REGISTERED);
+    assert(dependencies == m_registered);
+    m_pib = dependencies;
+    m_state = lifecycle::PIB_OWNED;
+  }
+
+  void mark_ready(unsigned admitted_dependencies) {
+    assert(m_state == lifecycle::PIB_OWNED);
+    assert(admitted_dependencies == m_pib);
+    m_state = lifecycle::READY;
+  }
+
+  unsigned close_once(unsigned dependencies) {
+    assert(m_state == lifecycle::READY);
+    assert(dependencies == m_registered && dependencies == m_pib);
+    m_closed = dependencies;
+    m_state = lifecycle::CLOSED;
+    return m_closed;
+  }
+
+  unsigned registered() const { return m_registered; }
+  unsigned pib_owned() const { return m_pib; }
+  unsigned closed() const { return m_closed; }
+  lifecycle state() const { return m_state; }
+
+ private:
+  lifecycle m_state = lifecycle::EMPTY;
+  unsigned m_registered = 0;
+  unsigned m_pib = 0;
+  unsigned m_closed = 0;
+};
+
+enum class io_access_kind { VALID_HIT, PENDING_HIT, NEW_MISS, NO_FREE_LINE };
+
+struct physical_identity {
+  unsigned id = 0;
+  uint64_t generation = 0;
+};
+
+struct io_access_result {
+  io_access_kind kind = io_access_kind::NO_FREE_LINE;
+  physical_identity physical;
+};
+
+struct lookup_invalidation_result {
+  uint64_t changed = 0;
+  uint64_t retained = 0;
+  uint64_t reclaimed = 0;
+};
+
+// Deterministic whole-line IO-DTC model used by M2 directed tests and by the
+// later LD/ST integration.  It deliberately owns no conventional MSHR state.
+class io_frontend {
+ public:
+  explicit io_frontend(config cfg) : m_cfg(cfg), m_tags(cfg.logical_sets * cfg.logical_ways), m_phys(cfg.physical_lines) {
+    check_tag_hash_bankrow(cfg.tag_hash_bankrow, false, cfg.finite_service,
+                           cfg.logical_sets, cfg.tag_banks);
+    check_progressive_wakeup_mode(cfg.progressive_wakeup,
+        static_cast<unsigned>(mode::PAPER_IO), cfg.finite_service);
+    assert(cfg.logical_sets && cfg.logical_ways && cfg.physical_lines);
+    assert(cfg.allocation_width && cfg.io_pib_entries);
+    assert(cfg.tag_banks && cfg.tag_requests_per_bank_per_cycle &&
+           cfg.tag_requests_per_cycle);
+    m_minimum_free_lines = m_phys.size();
+  }
+
+  void begin_cycle(uint64_t cycle) {
+    if (cycle == m_cycle) return;
+    m_cycle = cycle;
+    m_allocations_this_cycle = 0;
+  }
+
+  bool admit(uint64_t uid) {
+    if (find_entry(uid)) return true;
+    if (m_entries.size() >= m_cfg.io_pib_entries) return false;
+    m_entries.push_back({uid, {}, {}, false, 0});
+    return true;
+  }
+
+  // M4 sidecar dependencies represent completion on an existing
+  // architectural path (store acknowledgement/accounting, bypass return, or
+  // proxy-fence writeback). They intentionally own no Tag or physical line.
+  void add_external_dependency(uint64_t uid) {
+    entry *owner = find_entry(uid);
+    assert(owner);
+    ++owner->external_dependencies;
+  }
+  void complete_external_dependency(uint64_t uid) {
+    entry *owner = find_entry(uid);
+    assert(owner && owner->external_dependencies);
+    --owner->external_dependencies;
+  }
+
+  // IO owns its data/merge state, but it obeys the same frozen logical Tag
+  // service contract as Paper Base: one reference per bank and four total at
+  // the default configuration. This is intentionally independent of the
+  // conventional L1D Tag/MSHR implementation.
+  bool try_serve_tag(uint64_t cycle, uint64_t address) {
+    if (cycle != m_tag_cycle) {
+      m_tag_cycle = cycle;
+      std::fill(m_tag_requests_this_cycle.begin(),
+                m_tag_requests_this_cycle.end(), 0);
+      m_total_tag_requests_this_cycle = 0;
+    }
+    const unsigned logical_set = static_cast<unsigned>(
+        (address / kLogicalLineBytes) % m_cfg.logical_sets);
+    const unsigned bank = logical_set % m_cfg.tag_banks;
+    if (m_total_tag_requests_this_cycle >= m_cfg.tag_requests_per_cycle ||
+        m_tag_requests_this_cycle[bank] >=
+            m_cfg.tag_requests_per_bank_per_cycle) {
+      ++m_tag_conflicts;
+      return false;
+    }
+    ++m_total_tag_requests_this_cycle;
+    ++m_tag_requests_this_cycle[bank];
+    ++m_tag_requests;
+    ++m_tag_requests_per_bank[bank];
+    return true;
+  }
+
+  // A lower-request candidate is needed only for a tag miss.  This is a
+  // non-mutating lookahead used to reserve bounded lower-create capacity
+  // before access() commits the Tag -> physical allocation.
+  bool will_new_miss(uint64_t address) {
+    const uint64_t line = address & ~(kLogicalLineBytes - 1);
+    return find_tag(line) == nullptr;
+  }
+
+  io_access_result access(uint64_t cycle, uint64_t uid, uint64_t address) {
+    begin_cycle(cycle);
+    entry *owner = find_entry(uid);
+    assert(owner);
+    const uint64_t line = address & ~(kLogicalLineBytes - 1);
+    tag_entry *tag = find_tag(line);
+    if (tag) {
+      if (owner->has_unresolved_line && owner->unresolved_line == line)
+        owner->has_unresolved_line = false;
+      if (!has_reference(*owner, tag->physical))
+        owner->references.push_back(tag->physical);
+      const bool ready = m_phys[tag->physical.id].ready;
+      if (ready)
+        ++m_valid_hits;
+      else
+        ++m_pending_hits;
+      return {ready ? io_access_kind::VALID_HIT : io_access_kind::PENDING_HIT,
+              tag->physical};
+    }
+    if (m_allocations_this_cycle >= m_cfg.allocation_width) {
+      if (!owner->has_unresolved_line) ++m_partial_allocation_events;
+      ++m_allocation_width_limited_events;
+      owner->has_unresolved_line = true;
+      owner->unresolved_line = line;
+      sample_resource_extrema();
+      return {io_access_kind::NO_FREE_LINE, {}};
+    }
+    const int free_id = find_free_physical();
+    if (free_id < 0) {
+      if (!owner->has_unresolved_line) ++m_partial_allocation_events;
+      ++m_no_free_physical_events;
+      owner->has_unresolved_line = true;
+      owner->unresolved_line = line;
+      sample_resource_extrema();
+      return {io_access_kind::NO_FREE_LINE, {}};
+    }
+    tag_entry *victim = select_victim(line);
+    if (victim->valid) {
+      ++m_tag_evictions;
+      if (m_cfg.finite_service) m_service_map_loss[victim->physical.id] = cycle;
+      if (!m_phys[victim->physical.id].ready)
+        m_evicted_pending_lines[victim->line] = victim->physical;
+      owner->release_on_retire.push_back(victim->physical);
+    }
+    // Count a duplicate only while the original evicted allocation is still
+    // pending.  A later re-access after that response has completed is an
+    // ordinary cold reallocation, not duplicate in-flight lower traffic.
+    if (m_evicted_pending_lines.erase(line)) ++m_duplicate_after_eviction;
+    physical_identity identity{static_cast<unsigned>(free_id), ++m_phys[free_id].generation};
+    m_phys[free_id].allocated = true;
+    m_phys[free_id].ready = false;
+    *victim = {true, line, identity, ++m_lru_clock};
+    owner->references.push_back(identity);
+    if (owner->has_unresolved_line && owner->unresolved_line == line)
+      owner->has_unresolved_line = false;
+    ++m_allocations_this_cycle;
+    ++m_new_misses;
+    sample_resource_extrema();
+    return {io_access_kind::NEW_MISS, identity};
+  }
+
+  void complete(physical_identity identity) {
+    assert(identity.id < m_phys.size());
+    physical_line &line = m_phys[identity.id];
+    assert(line.allocated && line.generation == identity.generation);
+    if (m_cfg.finite_service) {
+      assert(m_service_cycle != UINT64_MAX);
+      assert(!line.ready);
+      for (const auto &pending : m_service_returns)
+        assert(pending.first.id != identity.id ||
+               pending.first.generation != identity.generation);
+      m_service_returns.push_back({identity, m_service_cycle + 1});
+      return;
+    }
+    complete_now(identity);
+  }
+
+  void advance_service(uint64_t cycle) {
+    if (!m_cfg.finite_service || cycle == m_service_cycle) return;
+    m_service_cycle = cycle;
+    while (!m_service_returns.empty() &&
+           m_service_returns.front().second <= cycle) {
+      complete_now(m_service_returns.front().first);
+      m_service_returns.pop_front();
+    }
+  }
+
+  void complete_now(physical_identity identity) {
+    physical_line &line = m_phys[identity.id];
+    assert(line.allocated && line.generation == identity.generation);
+    line.ready = true;
+    for (auto it = m_evicted_pending_lines.begin();
+         it != m_evicted_pending_lines.end();) {
+      if (it->second.id == identity.id &&
+          it->second.generation == identity.generation)
+        it = m_evicted_pending_lines.erase(it);
+      else
+        ++it;
+    }
+  }
+
+  bool head_ready() const {
+    return !m_entries.empty() && entry_ready(m_entries.front());
+  }
+  uint64_t map_loss_to_free_sum() const { return m_service_map_loss_sum; }
+  uint64_t map_loss_to_free_count() const { return m_service_map_loss_count; }
+  bool entry_ready_for(uint64_t uid) const {
+    for (const entry &owner : m_entries)
+      if (owner.uid == uid) return entry_ready(owner);
+    return false;
+  }
+
+  uint64_t head_uid() const {
+    assert(!m_entries.empty());
+    return m_entries.front().uid;
+  }
+
+  bool retire_head(uint64_t expected_uid) {
+    assert(!m_entries.empty() && m_entries.front().uid == expected_uid);
+    if (m_entries.empty() || !entry_ready(m_entries.front())) return false;
+    for (const physical_identity identity : m_entries.front().release_on_retire)
+      release(identity);
+    m_entries.pop_front();
+    ++m_retires;
+    return true;
+  }
+
+  bool retire_head() { return head_ready() && retire_head(head_uid()); }
+
+  size_t occupancy() const { return m_entries.size(); }
+  uint64_t new_misses() const { return m_new_misses; }
+  uint64_t retires() const { return m_retires; }
+  uint64_t tag_evictions() const { return m_tag_evictions; }
+  uint64_t duplicate_after_eviction() const { return m_duplicate_after_eviction; }
+  uint64_t partial_allocation_events() const { return m_partial_allocation_events; }
+  uint64_t valid_hits() const { return m_valid_hits; }
+  uint64_t pending_hits() const { return m_pending_hits; }
+  uint64_t releases() const { return m_releases; }
+  uint64_t allocation_width_limited_events() const {
+    return m_allocation_width_limited_events;
+  }
+  uint64_t no_free_physical_events() const { return m_no_free_physical_events; }
+  uint64_t tag_requests() const { return m_tag_requests; }
+  uint64_t tag_conflicts() const { return m_tag_conflicts; }
+  const std::vector<uint64_t> &tag_requests_per_bank() const {
+    return m_tag_requests_per_bank;
+  }
+  size_t allocated_lines() const { return m_phys.size() - free_lines(); }
+  size_t allocated_lines_peak() const { return m_allocated_lines_peak; }
+  size_t minimum_free_lines() const { return m_minimum_free_lines; }
+  size_t partial_entries() const {
+    size_t result = 0;
+    for (const entry &e : m_entries) result += e.has_unresolved_line;
+    return result;
+  }
+  size_t partial_entries_peak() const { return m_partial_entries_peak; }
+  size_t partial_lines_held() const {
+    size_t result = 0;
+    for (const entry &e : m_entries)
+      if (e.has_unresolved_line) result += e.references.size();
+    return result;
+  }
+  size_t partial_lines_held_peak() const { return m_partial_lines_held_peak; }
+  bool younger_ready_exists() const {
+    if (m_entries.size() < 2) return false;
+    for (size_t i = 1; i < m_entries.size(); ++i)
+      if (entry_ready(m_entries[i])) return true;
+    return false;
+  }
+  size_t ready_younger_count() const {
+    size_t result = 0;
+    for (size_t i = 1; i < m_entries.size(); ++i)
+      result += entry_ready(m_entries[i]);
+    return result;
+  }
+  size_t free_lines() const {
+    size_t result = 0;
+    for (const physical_line &line : m_phys) result += !line.allocated;
+    return result;
+  }
+
+ private:
+  struct physical_line { bool allocated = false; bool ready = false; uint64_t generation = 0; };
+  struct tag_entry { bool valid = false; uint64_t line = 0; physical_identity physical; uint64_t lru = 0; };
+  struct entry { uint64_t uid; std::vector<physical_identity> references; std::vector<physical_identity> release_on_retire; bool has_unresolved_line; uint64_t unresolved_line; unsigned external_dependencies = 0; };
+  entry *find_entry(uint64_t uid) { for (entry &e : m_entries) if (e.uid == uid) return &e; return nullptr; }
+  static bool has_reference(const entry &e, physical_identity identity) {
+    for (const physical_identity &existing : e.references)
+      if (existing.id == identity.id && existing.generation == identity.generation)
+        return true;
+    return false;
+  }
+  void sample_resource_extrema() {
+    m_allocated_lines_peak = std::max(m_allocated_lines_peak, allocated_lines());
+    m_minimum_free_lines = std::min(m_minimum_free_lines, free_lines());
+    m_partial_entries_peak = std::max(m_partial_entries_peak, partial_entries());
+    m_partial_lines_held_peak =
+        std::max(m_partial_lines_held_peak, partial_lines_held());
+  }
+  tag_entry *find_tag(uint64_t line) {
+    const unsigned set = static_cast<unsigned>((line / kLogicalLineBytes) % m_cfg.logical_sets);
+    for (unsigned way = 0; way < m_cfg.logical_ways; ++way) { tag_entry &t = m_tags[set * m_cfg.logical_ways + way]; if (t.valid && t.line == line) { t.lru = ++m_lru_clock; return &t; } }
+    return nullptr;
+  }
+  tag_entry *select_victim(uint64_t line) {
+    const unsigned set = static_cast<unsigned>((line / kLogicalLineBytes) % m_cfg.logical_sets);
+    tag_entry *victim = &m_tags[set * m_cfg.logical_ways];
+    for (unsigned way = 0; way < m_cfg.logical_ways; ++way) { tag_entry &t = m_tags[set * m_cfg.logical_ways + way]; if (!t.valid) return &t; if (t.lru < victim->lru) victim = &t; }
+    return victim;
+  }
+  int find_free_physical() {
+    for (unsigned offset = 0; offset < m_phys.size(); ++offset) { const unsigned id = (m_rr_next + offset) % m_phys.size(); if (!m_phys[id].allocated) { m_rr_next = (id + 1) % m_phys.size(); return id; } }
+    return -1;
+  }
+  bool entry_ready(const entry &e) const { if (e.has_unresolved_line || e.external_dependencies) return false; for (const physical_identity id : e.references) if (!m_phys[id.id].ready || m_phys[id.id].generation != id.generation) return false; return true; }
+  void release(physical_identity identity) {
+    physical_line &line = m_phys[identity.id];
+    assert(line.generation == identity.generation);
+    if (m_cfg.finite_service) {
+      const auto lost = m_service_map_loss.find(identity.id);
+      assert(lost != m_service_map_loss.end());
+      m_service_map_loss_sum += m_service_cycle - lost->second;
+      ++m_service_map_loss_count;
+      m_service_map_loss.erase(lost);
+    }
+    line.allocated = false; line.ready = false;
+    ++m_releases; sample_resource_extrema();
+  }
+  config m_cfg; std::vector<tag_entry> m_tags; std::vector<physical_line> m_phys; std::deque<entry> m_entries;
+  uint64_t m_service_cycle = UINT64_MAX;
+  std::map<unsigned, uint64_t> m_service_map_loss;
+  uint64_t m_service_map_loss_sum = 0, m_service_map_loss_count = 0;
+  std::deque<std::pair<physical_identity, uint64_t>> m_service_returns;
+  uint64_t m_cycle = UINT64_MAX, m_lru_clock = 0, m_new_misses = 0, m_retires = 0;
+  uint64_t m_tag_evictions = 0, m_duplicate_after_eviction = 0,
+           m_partial_allocation_events = 0, m_valid_hits = 0,
+           m_pending_hits = 0, m_releases = 0,
+           m_allocation_width_limited_events = 0,
+           m_no_free_physical_events = 0, m_tag_requests = 0,
+           m_tag_conflicts = 0, m_tag_cycle = UINT64_MAX;
+  size_t m_allocated_lines_peak = 0, m_minimum_free_lines = 0,
+         m_partial_entries_peak = 0, m_partial_lines_held_peak = 0;
+  std::map<uint64_t, physical_identity> m_evicted_pending_lines;
+  unsigned m_allocations_this_cycle = 0, m_rr_next = 0;
+  std::vector<unsigned> m_tag_requests_this_cycle =
+      std::vector<unsigned>(m_cfg.tag_banks, 0);
+  std::vector<uint64_t> m_tag_requests_per_bank =
+      std::vector<uint64_t>(m_cfg.tag_banks, 0);
+  unsigned m_total_tag_requests_this_cycle = 0;
+};
+
+// Whole-line OO-DTC model.  Unlike io_frontend, physical-line lifetime is
+// protected by one Ref per live coalesced 128B reference, and any oldest-ready
+// PIB entry may retire.  It has no dependency on conventional L1D MSHRs.
+class oo_frontend {
+ public:
+  explicit oo_frontend(config cfg)
+      : m_cfg(cfg),
+        m_tags(cfg.logical_sets * cfg.logical_ways),
+        m_phys(cfg.physical_lines),
+        m_slots(cfg.oo_pib_entries) {
+    check_tag_hash_bankrow(cfg.tag_hash_bankrow,
+                           cfg.selected_mode == mode::PAPER_OO,
+                           cfg.finite_service, cfg.logical_sets, cfg.tag_banks);
+    check_progressive_wakeup_mode(cfg.progressive_wakeup,
+        static_cast<unsigned>(cfg.selected_mode), cfg.finite_service);
+    assert(cfg.logical_sets && cfg.logical_ways && cfg.physical_lines);
+    assert(cfg.allocation_width && cfg.oo_pib_entries);
+    assert(cfg.ref_count_bits && cfg.ref_count_bits < 32);
+    assert(cfg.tag_banks && cfg.tag_requests_per_bank_per_cycle &&
+           cfg.tag_requests_per_cycle);
+  }
+
+  void begin_cycle(uint64_t cycle) {
+    if (cycle == m_cycle) return;
+    m_cycle = cycle;
+    m_allocations_this_cycle = 0;
+  }
+
+  bool admit(uint64_t uid) {
+    if (find_entry(uid)) return true;
+    if (m_entries.size() >= m_cfg.oo_pib_entries) return false;
+    unsigned slot = 0;
+    for (; slot < m_slots.size(); ++slot)
+      if (!m_slots[slot].active) break;
+    assert(slot < m_slots.size());
+    slot_state &state = m_slots[slot];
+    state.active = true;
+    state.uid = uid;
+    ++state.generation;
+    m_entries.push_back({uid, slot, state.generation, {}, 0});
+    assert_shadow_refs();
+    return true;
+  }
+
+  void add_external_dependency(uint64_t uid) {
+    entry *owner = find_entry(uid);
+    assert(owner);
+    ++owner->external_dependencies;
+  }
+  void complete_external_dependency(uint64_t uid) {
+    entry *owner = find_entry(uid);
+    assert(owner && owner->external_dependencies);
+    --owner->external_dependencies;
+  }
+
+  bool try_serve_tag(uint64_t cycle, uint64_t address) {
+    if (cycle != m_tag_cycle) {
+      m_tag_cycle = cycle;
+      std::fill(m_tag_requests_this_cycle.begin(),
+                m_tag_requests_this_cycle.end(), 0);
+      m_total_tag_requests_this_cycle = 0;
+    }
+    const unsigned set = tag_set(address);
+    const unsigned bank = set % m_cfg.tag_banks;
+    if (m_total_tag_requests_this_cycle >= m_cfg.tag_requests_per_cycle ||
+        m_tag_requests_this_cycle[bank] >=
+            m_cfg.tag_requests_per_bank_per_cycle) {
+      ++m_tag_conflicts;
+      return false;
+    }
+    ++m_total_tag_requests_this_cycle;
+    ++m_tag_requests_this_cycle[bank];
+    ++m_tag_requests;
+    return true;
+  }
+
+  // See io_frontend::will_new_miss().  Existing Valid/Pending tags need no
+  // lower candidate and must remain serviceable while that queue is full.
+  // Historical find_tag touches LRU even for this precheck. Preserve that
+  // exact recency policy in BOTH hash modes; this is not a read-only peek.
+  bool will_new_miss(uint64_t address) {
+    const uint64_t line = address & ~(kLogicalLineBytes - 1);
+    return find_tag(line) == nullptr;
+  }
+
+  // Lane X K1: atomic, zero additional simulated-cycle directory sweep at
+  // the existing LD/ST source REQUEST. Does not advance service or touch any
+  // consumer/return identity. Only a fully finished, Ref-free line can free.
+  lookup_invalidation_result invalidate_lookup(uint64_t cycle) {
+    lookup_invalidation_result result;
+    assert_shadow_refs();
+    for (tag_entry &tag : m_tags) {
+      if (!tag.valid) continue;
+      physical_line &physical = m_phys[tag.physical.id];
+      assert(fill_identity_matches(tag.physical) && physical.tag_valid);
+      tag.valid = false;
+      physical.tag_valid = false;
+      ++result.changed;
+      if (m_cfg.finite_service) {
+        const bool inserted =
+            m_service_map_loss.emplace(tag.physical.id, cycle).second;
+        assert(inserted && "one map-loss timestamp per allocated generation");
+      }
+      if (physical.ref_count) {
+        ++result.retained;
+      } else {
+        // In the read lifecycle every pending lower/service/collection owner
+        // keeps a live consumer Ref. Ref=0 may only be a finished retained hit.
+        assert(physical.ready && physical.waiters.empty());
+        for (const auto &pending : m_service_returns)
+          assert(pending.physical.id != tag.physical.id ||
+                 pending.physical.generation != tag.physical.generation);
+        release(tag.physical, cycle);
+        ++result.reclaimed;
+      }
+    }
+    assert(result.changed == result.retained + result.reclaimed);
+    assert_shadow_refs();
+    return result;
+  }
+
+  io_access_result access(uint64_t cycle, uint64_t uid, uint64_t address) {
+    begin_cycle(cycle);
+    entry *owner = find_entry(uid);
+    assert(owner);
+    const uint64_t line = address & ~(kLogicalLineBytes - 1);
+    tag_entry *tag = find_tag(line);
+    if (tag) {
+      attach_reference(*owner, tag->physical);
+      ++(m_phys[tag->physical.id].ready ? m_valid_hits : m_pending_hits);
+      assert_shadow_refs();
+      return {m_phys[tag->physical.id].ready ? io_access_kind::VALID_HIT
+                                              : io_access_kind::PENDING_HIT,
+              tag->physical};
+    }
+    if (m_allocations_this_cycle >= m_cfg.allocation_width) {
+      ++m_allocation_width_limited_events;
+      return {io_access_kind::NO_FREE_LINE, {}};
+    }
+
+    tag_entry *victim = select_victim(line);
+    int free_id = find_free_physical();
+    const bool can_reclaim_victim =
+        victim->valid && m_phys[victim->physical.id].ref_count == 0;
+    if (free_id < 0 && !can_reclaim_victim) {
+      ++m_no_free_physical_events;
+      return {io_access_kind::NO_FREE_LINE, {}};
+    }
+    if (victim->valid) {
+      physical_line &old = m_phys[victim->physical.id];
+      assert(old.allocated && old.tag_valid);
+      old.tag_valid = false;
+      if (m_cfg.finite_service) m_service_map_loss[victim->physical.id] = cycle;
+      ++m_tag_evictions;
+      if (old.ref_count == 0) {
+        release(victim->physical);
+        ++m_immediate_reclaims;
+      } else {
+        ++m_deferred_reclaims;
+      }
+    }
+    if (free_id < 0) free_id = find_free_physical();
+    assert(free_id >= 0);
+    physical_line &physical = m_phys[free_id];
+    physical.allocated = true;
+    physical.ready = false;
+    if (m_cfg.progressive_wakeup) {
+      physical.data_ready = false;
+      physical.return_cycle = UINT64_MAX;
+      physical.first_notify_cycle = physical.last_notify_cycle = UINT64_MAX;
+      physical.notified = physical.late_merges = 0;
+    }
+    physical.tag_valid = true;
+    physical.ref_count = 0;
+    physical.waiters.clear();
+    physical_identity identity{static_cast<unsigned>(free_id),
+                               ++physical.generation};
+    *victim = {true, line, identity, ++m_lru_clock};
+    attach_reference(*owner, identity);
+    ++m_allocations_this_cycle;
+    ++m_new_misses;
+    assert_shadow_refs();
+    return {io_access_kind::NEW_MISS, identity};
+  }
+
+  // Returns false for a stale/recycled physical allocation.  The consuming
+  // integration must treat false as fatal; this query also supports O13's
+  // explicit negative test without relying on process-abort test harnesses.
+  bool fill_identity_matches(physical_identity identity) const {
+    return identity.id < m_phys.size() && m_phys[identity.id].allocated &&
+           m_phys[identity.id].generation == identity.generation;
+  }
+
+  void complete(physical_identity identity) {
+    assert(fill_identity_matches(identity) &&
+           "OO fill must match the original physical generation");
+    physical_line &physical = m_phys[identity.id];
+    assert(!physical.ready && "OO fill must wake each waiter exactly once");
+    if (m_cfg.finite_service) {
+      assert(m_service_cycle != UINT64_MAX);
+      for (const auto &pending : m_service_returns)
+        assert(pending.physical.id != identity.id ||
+               pending.physical.generation != identity.generation);
+      if (m_cfg.progressive_wakeup) physical.return_cycle = m_service_cycle;
+      m_service_returns.push_back({identity, m_service_cycle + 1, 0});
+      return;
+    }
+    physical.ready = true;
+    for (const waiter &waiting : physical.waiters) {
+      entry *owner = find_entry_by_slot(waiting.slot, waiting.slot_generation);
+      assert(owner && has_reference(*owner, identity) &&
+             "stale fill cannot wake a reused OO PIB slot");
+      assert(owner->pending_dependencies);
+      --owner->pending_dependencies;
+      ++m_wakeups;
+    }
+    physical.waiters.clear();
+    assert_shadow_refs();
+  }
+
+  // ready retains its X2 meaning: broadcast finished. AD's data_ready is
+  // exposed only at this unchanged +1 metadata edge. Unnotified consumers
+  // still own a pending dependency even when the data itself is available.
+  void advance_service(uint64_t cycle) {
+    if (!m_cfg.finite_service || cycle == m_service_cycle) return;
+    m_service_cycle = cycle;
+    unsigned budget = 4;
+    while (!m_service_returns.empty() &&
+           m_service_returns.front().ready_cycle <= cycle) {
+      auto &pending = m_service_returns.front();
+      assert(fill_identity_matches(pending.physical));
+      auto &physical = m_phys[pending.physical.id];
+      if (m_cfg.progressive_wakeup) physical.data_ready = true;
+      while (budget && pending.next_waiter < physical.waiters.size()) {
+        const auto &waiting = physical.waiters[pending.next_waiter++];
+        entry *owner = find_entry_by_slot(waiting.slot, waiting.slot_generation);
+        assert(owner && has_reference(*owner, pending.physical));
+        assert(owner->pending_dependencies);
+        --owner->pending_dependencies;
+        if (m_cfg.progressive_wakeup) {
+          if (!physical.notified) physical.first_notify_cycle = cycle;
+          physical.last_notify_cycle = cycle;
+          ++physical.notified;
+        }
+        ++m_wakeups;
+        --budget;
+      }
+      if (pending.next_waiter != physical.waiters.size()) {
+        if (m_cfg.progressive_wakeup && pending.next_waiter) {
+          // Early retirement allows slot reuse and arbitrarily long merge
+          // streams. Discard only the consumed prefix; the live cursor still
+          // names the same physical generation and unnotified slot suffix.
+          physical.waiters.erase(physical.waiters.begin(),
+                                physical.waiters.begin() + pending.next_waiter);
+          pending.next_waiter = 0;
+        }
+        break;
+      }
+      if (m_cfg.progressive_wakeup) {
+        ++m_broadcasts_finished;
+        ++m_fanout_hist[std::min<uint64_t>(32, physical.notified)];
+        m_first_notify_sum += physical.first_notify_cycle;
+        m_last_notify_sum += physical.last_notify_cycle;
+        m_broadcast_span_sum += physical.last_notify_cycle - physical.first_notify_cycle;
+      }
+      physical.ready = true;
+      physical.waiters.clear();
+      m_service_returns.pop_front();
+    }
+    if (m_cfg.progressive_wakeup) {
+      for (auto &owner : m_entries) {
+        if (owner.references.empty() || !entry_ready(owner)) continue;
+        bool old_gate_blocked = false;
+        for (const auto id : owner.references) old_gate_blocked |= !m_phys[id.id].ready;
+        m_own_dep0_linewide_blocked_observations += old_gate_blocked;
+        ++m_notified_ready_entry_cycles;
+        if (!owner.ready_observed) {
+          owner.ready_observed = true;
+          ++m_notified_ready_entries;
+        }
+      }
+    }
+    assert_shadow_refs();
+  }
+
+  bool retire_one_ready(uint64_t cycle, uint64_t *retired_uid = nullptr) {
+    if (cycle == m_retire_cycle) return false;  // frozen width: one/cycle
+    auto selected = m_entries.end();
+    for (auto it = m_entries.begin(); it != m_entries.end(); ++it) {
+      if (entry_ready(*it)) {
+        selected = it;
+        break;
+      }
+    }
+    if (selected == m_entries.end()) return false;
+    bool older_unready = false;
+    for (auto it = m_entries.begin(); it != selected; ++it)
+      older_unready |= !entry_ready(*it);
+    if (older_unready) ++m_out_of_order_retires;
+    for (const physical_identity identity : selected->references) {
+      physical_line &physical = m_phys[identity.id];
+      assert(physical.allocated && physical.generation == identity.generation &&
+             physical.ref_count);
+      --physical.ref_count;
+      if (!physical.tag_valid && physical.ref_count == 0) {
+        release(identity);
+        ++m_final_ref_reclaims;
+      }
+    }
+    m_slots[selected->slot].active = false;
+    if (retired_uid) *retired_uid = selected->uid;
+    m_entries.erase(selected);
+    m_retire_cycle = cycle;
+    ++m_retires;
+    assert_shadow_refs();
+    return true;
+  }
+
+  // M4 supplies an eligibility-filtered UID when source-backed fence
+  // ordering constrains OO retirement. The frozen one-retirement/cycle width
+  // and OOO accounting remain identical to retire_one_ready().
+  bool retire_ready_uid(uint64_t cycle, uint64_t uid) {
+    if (cycle == m_retire_cycle) return false;
+    auto selected = m_entries.end();
+    for (auto it = m_entries.begin(); it != m_entries.end(); ++it)
+      if (it->uid == uid) { selected = it; break; }
+    if (selected == m_entries.end() || !entry_ready(*selected)) return false;
+    bool older_unready = false;
+    for (auto it = m_entries.begin(); it != selected; ++it)
+      older_unready |= !entry_ready(*it);
+    if (older_unready) ++m_out_of_order_retires;
+    for (const physical_identity identity : selected->references) {
+      physical_line &physical = m_phys[identity.id];
+      assert(physical.allocated && physical.generation == identity.generation &&
+             physical.ref_count);
+      --physical.ref_count;
+      if (!physical.tag_valid && physical.ref_count == 0) {
+        release(identity);
+        ++m_final_ref_reclaims;
+      }
+    }
+    m_slots[selected->slot].active = false;
+    m_entries.erase(selected);
+    m_retire_cycle = cycle;
+    ++m_retires;
+    assert_shadow_refs();
+    return true;
+  }
+
+  bool oldest_ready_uid(uint64_t *uid) const {
+    for (const entry &owner : m_entries) {
+      if (entry_ready(owner)) {
+        if (uid) *uid = owner.uid;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  size_t occupancy() const { return m_entries.size(); }
+  uint64_t new_misses() const { return m_new_misses; }
+  uint64_t valid_hits() const { return m_valid_hits; }
+  uint64_t pending_hits() const { return m_pending_hits; }
+  uint64_t retires() const { return m_retires; }
+  uint64_t out_of_order_retires() const { return m_out_of_order_retires; }
+  uint64_t wakeups() const { return m_wakeups; }
+  uint64_t map_loss_to_free_sum() const { return m_service_map_loss_sum; }
+  uint64_t map_loss_to_free_count() const { return m_service_map_loss_count; }
+  uint64_t tag_evictions() const { return m_tag_evictions; }
+  uint64_t immediate_reclaims() const { return m_immediate_reclaims; }
+  uint64_t deferred_reclaims() const { return m_deferred_reclaims; }
+  uint64_t final_ref_reclaims() const { return m_final_ref_reclaims; }
+  uint64_t no_free_physical_events() const { return m_no_free_physical_events; }
+  uint64_t allocation_width_limited_events() const {
+    return m_allocation_width_limited_events;
+  }
+  uint64_t tag_requests() const { return m_tag_requests; }
+  uint64_t tag_conflicts() const { return m_tag_conflicts; }
+  size_t allocated_lines() const {
+    size_t result = 0;
+    for (const physical_line &physical : m_phys) result += physical.allocated;
+    return result;
+  }
+  uint64_t active_refs() const {
+    uint64_t result = 0;
+    for (const physical_line &physical : m_phys) result += physical.ref_count;
+    return result;
+  }
+  uint64_t ref_count(physical_identity identity) const {
+    assert(fill_identity_matches(identity));
+    return m_phys[identity.id].ref_count;
+  }
+  bool tag_visible(physical_identity identity) const {
+    assert(fill_identity_matches(identity));
+    return m_phys[identity.id].tag_valid;
+  }
+  bool is_allocated(physical_identity identity) const {
+    return fill_identity_matches(identity);
+  }
+  bool entry_ready_for(uint64_t uid) const {
+    const entry *owner = find_entry_const(uid);
+    return owner && entry_ready(*owner);
+  }
+  bool entry_returns_complete_for(uint64_t uid) const {
+    assert(m_cfg.progressive_wakeup);
+    const entry *owner = find_entry_const(uid);
+    if (!owner || owner->references.empty()) return false;
+    for (const auto id : owner->references)
+      if (!fill_identity_matches(id) || m_phys[id.id].return_cycle == UINT64_MAX)
+        return false;
+    return true;
+  }
+  void print_progressive_summary(FILE *fp, unsigned sm) const {
+    assert(m_cfg.progressive_wakeup);
+    std::fprintf(fp, "DTC_PROGRESSIVE_WAKE_V1 sm=%u broadcasts=%llu "
+        "first_notify_cycle_sum=%llu last_notify_cycle_sum=%llu span_sum=%llu "
+        "own_dep0_linewide_blocked_entry_cycles=%llu "
+        "notified_frontend_ready_entries=%llu notified_frontend_ready_entry_cycles=%llu "
+        "late_merges=%llu\n", sm,
+        (unsigned long long)m_broadcasts_finished,
+        (unsigned long long)m_first_notify_sum, (unsigned long long)m_last_notify_sum,
+        (unsigned long long)m_broadcast_span_sum,
+        (unsigned long long)m_own_dep0_linewide_blocked_observations,
+        (unsigned long long)m_notified_ready_entries,
+        (unsigned long long)m_notified_ready_entry_cycles,
+        (unsigned long long)m_late_merges);
+    for (unsigned bin = 0; bin < m_fanout_hist.size(); ++bin)
+      std::fprintf(fp, "DTC_PROGRESSIVE_WAKE_V1_FANOUT sm=%u bin=%u count=%llu\n",
+          sm, bin, (unsigned long long)m_fanout_hist[bin]);
+    // Bounded by the configured physical pool, no unbounded event log.
+    for (unsigned id = 0; id < m_phys.size(); ++id) {
+      const auto &p = m_phys[id];
+      if (!p.allocated) continue;
+      std::fprintf(fp, "DTC_PROGRESSIVE_WAKE_V1_LINE sm=%u physical=%u generation=%llu "
+          "data_ready=%u broadcast_done=%u notified=%llu first_cycle=%llu "
+          "last_cycle=%llu late_merges=%llu refs=%llu\n", sm, id,
+          (unsigned long long)p.generation, p.data_ready, p.ready,
+          (unsigned long long)p.notified, (unsigned long long)p.first_notify_cycle,
+          (unsigned long long)p.last_notify_cycle, (unsigned long long)p.late_merges,
+          (unsigned long long)p.ref_count);
+    }
+  }
+  uint64_t entry_slot_generation(uint64_t uid) const {
+    const entry *owner = find_entry_const(uid);
+    assert(owner);
+    return owner->slot_generation;
+  }
+  unsigned entry_slot(uint64_t uid) const {
+    const entry *owner = find_entry_const(uid);
+    assert(owner);
+    return owner->slot;
+  }
+
+  void assert_shadow_refs() const {
+    std::vector<uint64_t> shadow(m_phys.size(), 0);
+    std::map<uint64_t, unsigned> pending_shadow;
+    for (const entry &owner : m_entries)
+      for (const physical_identity identity : owner.references) {
+        assert(identity.id < m_phys.size());
+        assert(m_phys[identity.id].allocated &&
+               m_phys[identity.id].generation == identity.generation);
+        ++shadow[identity.id];
+      }
+    for (size_t id = 0; id < m_phys.size(); ++id) {
+      const physical_line &physical = m_phys[id];
+      assert(physical.ref_count == shadow[id]);
+      if (!physical.allocated) {
+        assert(!physical.ready && !physical.tag_valid && !physical.ref_count);
+      }
+      if (m_cfg.progressive_wakeup) {
+        assert(!physical.data_ready ||
+               (physical.allocated && physical.return_cycle != UINT64_MAX));
+        assert(!physical.ready || (physical.data_ready && physical.waiters.empty()));
+        assert(physical.waiters.size() <= m_cfg.oo_pib_entries);
+        for (const auto &waiting : physical.waiters) {
+          assert(waiting.slot < m_slots.size());
+          const auto &slot = m_slots[waiting.slot];
+          assert(slot.active && slot.generation == waiting.slot_generation);
+          const auto *owner = find_entry_const(slot.uid);
+          assert(owner && has_reference(*owner,
+              {static_cast<unsigned>(id), physical.generation}));
+          ++pending_shadow[owner->uid];
+        }
+      }
+    }
+    if (m_cfg.progressive_wakeup)
+      for (const auto &owner : m_entries)
+        assert(pending_shadow[owner.uid] == owner.pending_dependencies);
+    for (const tag_entry &tag : m_tags)
+      if (tag.valid) {
+        assert(fill_identity_matches(tag.physical));
+        assert(m_phys[tag.physical.id].tag_valid);
+      }
+  }
+
+ private:
+  struct waiter { unsigned slot; uint64_t slot_generation; };
+  struct physical_line {
+    bool allocated = false;
+    bool ready = false; // all waiter notifications done (X2 meaning)
+    bool data_ready = false; // AD only: real full return + metadata edge
+    uint64_t return_cycle = UINT64_MAX;
+    uint64_t first_notify_cycle = UINT64_MAX, last_notify_cycle = UINT64_MAX;
+    uint64_t notified = 0, late_merges = 0;
+    bool tag_valid = false;
+    uint64_t generation = 0;
+    uint64_t ref_count = 0;
+    std::vector<waiter> waiters;
+  };
+  struct tag_entry {
+    bool valid = false;
+    uint64_t line = 0;
+    physical_identity physical;
+    uint64_t lru = 0;
+  };
+  struct entry {
+    uint64_t uid;
+    unsigned slot;
+    uint64_t slot_generation;
+    std::vector<physical_identity> references;
+    unsigned pending_dependencies;
+    unsigned external_dependencies = 0;
+    bool ready_observed = false;
+  };
+  struct slot_state { bool active = false; uint64_t uid = 0; uint64_t generation = 0; };
+
+  entry *find_entry(uint64_t uid) {
+    for (entry &owner : m_entries)
+      if (owner.uid == uid) return &owner;
+    return nullptr;
+  }
+  const entry *find_entry_const(uint64_t uid) const {
+    for (const entry &owner : m_entries)
+      if (owner.uid == uid) return &owner;
+    return nullptr;
+  }
+  entry *find_entry_by_slot(unsigned slot, uint64_t generation) {
+    if (slot >= m_slots.size() || !m_slots[slot].active ||
+        m_slots[slot].generation != generation)
+      return nullptr;
+    return find_entry(m_slots[slot].uid);
+  }
+  static bool has_reference(const entry &owner, physical_identity identity) {
+    for (const physical_identity existing : owner.references)
+      if (existing.id == identity.id && existing.generation == identity.generation)
+        return true;
+    return false;
+  }
+  void attach_reference(entry &owner, physical_identity identity) {
+    if (has_reference(owner, identity)) return;
+    physical_line &physical = m_phys[identity.id];
+    assert(physical.allocated && physical.generation == identity.generation);
+    const uint64_t max_ref_count = (1ULL << m_cfg.ref_count_bits) - 1;
+    assert(physical.ref_count < max_ref_count);
+    ++physical.ref_count;
+    owner.references.push_back(identity);
+    if (!physical.ready) {
+      if (m_cfg.progressive_wakeup && physical.data_ready) {
+        ++physical.late_merges;
+        ++m_late_merges;
+      }
+      physical.waiters.push_back({owner.slot, owner.slot_generation});
+      ++owner.pending_dependencies;
+    }
+  }
+  bool entry_ready(const entry &owner) const {
+    if (owner.pending_dependencies || owner.external_dependencies) return false;
+    for (const physical_identity identity : owner.references)
+      if (!fill_identity_matches(identity) ||
+          !(m_cfg.progressive_wakeup ? m_phys[identity.id].data_ready
+                                    : m_phys[identity.id].ready))
+        return false;
+    return true;
+  }
+  unsigned tag_set(uint64_t address) const {
+    return logical_tag_set(address, m_cfg.logical_sets, m_cfg.tag_hash_bankrow);
+  }
+  tag_entry *find_tag(uint64_t line) {
+    const unsigned set = tag_set(line);
+    for (unsigned way = 0; way < m_cfg.logical_ways; ++way) {
+      tag_entry &tag = m_tags[set * m_cfg.logical_ways + way];
+      if (tag.valid && tag.line == line) {
+        tag.lru = ++m_lru_clock;
+        return &tag;
+      }
+    }
+    return nullptr;
+  }
+  tag_entry *select_victim(uint64_t line) {
+    const unsigned set = tag_set(line);
+    tag_entry *victim = &m_tags[set * m_cfg.logical_ways];
+    for (unsigned way = 0; way < m_cfg.logical_ways; ++way) {
+      tag_entry &tag = m_tags[set * m_cfg.logical_ways + way];
+      if (!tag.valid) return &tag;
+      if (tag.lru < victim->lru) victim = &tag;
+    }
+    return victim;
+  }
+  int find_free_physical() {
+    for (unsigned offset = 0; offset < m_phys.size(); ++offset) {
+      const unsigned id = (m_rr_next + offset) % m_phys.size();
+      if (!m_phys[id].allocated) {
+        m_rr_next = (id + 1) % m_phys.size();
+        return id;
+      }
+    }
+    return -1;
+  }
+  void release(physical_identity identity, uint64_t release_cycle = UINT64_MAX) {
+    physical_line &physical = m_phys[identity.id];
+    assert(physical.allocated && physical.generation == identity.generation &&
+           !physical.tag_valid && !physical.ref_count);
+    if (m_cfg.finite_service) {
+      const auto lost = m_service_map_loss.find(identity.id);
+      assert(lost != m_service_map_loss.end());
+      const uint64_t now = release_cycle == UINT64_MAX
+                               ? m_service_cycle : release_cycle;
+      assert(now >= lost->second);
+      m_service_map_loss_sum += now - lost->second;
+      ++m_service_map_loss_count;
+      m_service_map_loss.erase(lost);
+    }
+    if (m_cfg.progressive_wakeup) {
+      assert(physical.ready && physical.data_ready && physical.waiters.empty());
+      for (const auto &pending : m_service_returns)
+        assert(pending.physical.id != identity.id ||
+               pending.physical.generation != identity.generation);
+      physical.data_ready = false;
+    }
+    physical.allocated = false;
+    physical.ready = false;
+    physical.waiters.clear();
+  }
+
+  uint64_t m_broadcasts_finished = 0, m_first_notify_sum = 0,
+           m_last_notify_sum = 0, m_broadcast_span_sum = 0,
+           m_own_dep0_linewide_blocked_observations = 0,
+           m_notified_ready_entries = 0, m_notified_ready_entry_cycles = 0,
+           m_late_merges = 0;
+  // Exact 0..31; final bin >=32. Counters are cumulative uint64_t.
+  std::array<uint64_t, 33> m_fanout_hist{};
+  config m_cfg;
+  struct service_return {
+    physical_identity physical;
+    uint64_t ready_cycle;
+    size_t next_waiter;
+  };
+  std::map<unsigned, uint64_t> m_service_map_loss;
+  uint64_t m_service_map_loss_sum = 0, m_service_map_loss_count = 0;
+  uint64_t m_service_cycle = UINT64_MAX;
+  std::deque<service_return> m_service_returns;
+  std::vector<tag_entry> m_tags;
+  std::vector<physical_line> m_phys;
+  std::vector<slot_state> m_slots;
+  std::list<entry> m_entries;
+  uint64_t m_cycle = UINT64_MAX, m_retire_cycle = UINT64_MAX,
+           m_lru_clock = 0, m_new_misses = 0, m_valid_hits = 0,
+           m_pending_hits = 0, m_retires = 0, m_out_of_order_retires = 0,
+           m_wakeups = 0, m_tag_evictions = 0, m_immediate_reclaims = 0,
+           m_deferred_reclaims = 0, m_final_ref_reclaims = 0,
+           m_no_free_physical_events = 0,
+           m_allocation_width_limited_events = 0, m_tag_cycle = UINT64_MAX,
+           m_tag_requests = 0, m_tag_conflicts = 0;
+  unsigned m_allocations_this_cycle = 0, m_rr_next = 0;
+  std::vector<unsigned> m_tag_requests_this_cycle =
+      std::vector<unsigned>(m_cfg.tag_banks, 0);
+  unsigned m_total_tag_requests_this_cycle = 0;
+};
+
+// Sector-aware continuation of the OO-DTC model.  A logical 128B Tag still
+// names exactly one physical allocation and each live instruction owns at
+// most one Ref to that allocation.  Only readiness and lower requests are
+// sector-granular: a 32B sector is INVALID, PENDING, or VALID independently.
+class sector_oo_frontend {
+ public:
+  enum class sector_state : uint8_t { INVALID, PENDING, VALID };
+
+  struct access_result {
+    io_access_kind kind = io_access_kind::NO_FREE_LINE;
+    physical_identity physical;
+    uint8_t valid_mask = 0;
+    uint8_t pending_mask = 0;
+    uint8_t new_request_mask = 0;
+  };
+
+  explicit sector_oo_frontend(config cfg)
+      : m_cfg(cfg),
+        m_tags(cfg.logical_sets * cfg.logical_ways),
+        m_phys(cfg.physical_lines),
+        m_slots(cfg.oo_pib_entries) {
+    check_tag_hash_bankrow(cfg.tag_hash_bankrow, false, cfg.finite_service,
+                           cfg.logical_sets, cfg.tag_banks);
+    check_progressive_wakeup_mode(cfg.progressive_wakeup,
+        static_cast<unsigned>(mode::MODERN_OO_SECTOR), cfg.finite_service);
+    assert(cfg.logical_sets && cfg.logical_ways && cfg.physical_lines);
+    assert(cfg.allocation_width && cfg.oo_pib_entries);
+    assert(cfg.ref_count_bits && cfg.ref_count_bits < 32);
+    assert(cfg.tag_banks && cfg.tag_requests_per_bank_per_cycle &&
+           cfg.tag_requests_per_cycle);
+  }
+
+  void begin_cycle(uint64_t cycle) {
+    if (cycle == m_cycle) return;
+    m_cycle = cycle;
+    m_allocations_this_cycle = 0;
+  }
+
+  bool admit(uint64_t uid) {
+    if (find_entry(uid)) return true;
+    if (m_entries.size() >= m_cfg.oo_pib_entries) return false;
+    unsigned slot = 0;
+    for (; slot < m_slots.size(); ++slot)
+      if (!m_slots[slot].active) break;
+    assert(slot < m_slots.size());
+    slot_state &state = m_slots[slot];
+    state.active = true;
+    state.uid = uid;
+    ++state.generation;
+    m_entries.push_back({uid, slot, state.generation, {}, 0});
+    assert_shadow_refs();
+    return true;
+  }
+
+  void add_external_dependency(uint64_t uid) {
+    entry *owner = find_entry(uid);
+    assert(owner);
+    ++owner->external_dependencies;
+  }
+  void complete_external_dependency(uint64_t uid) {
+    entry *owner = find_entry(uid);
+    assert(owner && owner->external_dependencies);
+    --owner->external_dependencies;
+  }
+
+  bool try_serve_tag(uint64_t cycle, uint64_t address) {
+    if (cycle != m_tag_cycle) {
+      m_tag_cycle = cycle;
+      std::fill(m_tag_requests_this_cycle.begin(),
+                m_tag_requests_this_cycle.end(), 0);
+      m_total_tag_requests_this_cycle = 0;
+    }
+    const unsigned set = static_cast<unsigned>(
+        (address / kLogicalLineBytes) % m_cfg.logical_sets);
+    const unsigned bank = set % m_cfg.tag_banks;
+    if (m_total_tag_requests_this_cycle >= m_cfg.tag_requests_per_cycle ||
+        m_tag_requests_this_cycle[bank] >=
+            m_cfg.tag_requests_per_bank_per_cycle) {
+      ++m_tag_conflicts;
+      return false;
+    }
+    ++m_total_tag_requests_this_cycle;
+    ++m_tag_requests_this_cycle[bank];
+    ++m_tag_requests;
+    return true;
+  }
+
+  // Return a conservative upper bound on sector lower candidates that this
+  // access can create.  It is intentionally non-mutating so the caller can
+  // reserve queue capacity before access() changes any line state.
+  size_t prospective_new_requests(uint64_t address, uint8_t sector_mask) {
+    assert(sector_mask && !(sector_mask & ~0xFU));
+    const uint64_t line = address & ~(kLogicalLineBytes - 1);
+    const tag_entry *tag = find_tag(line);
+    if (!tag) return static_cast<size_t>(__builtin_popcount(sector_mask));
+    const physical_line &physical = m_phys[tag->physical.id];
+    size_t result = 0;
+    for (unsigned sector = 0; sector < kSectorsPerLogicalLine; ++sector) {
+      const uint8_t bit = static_cast<uint8_t>(1U << sector);
+      if ((sector_mask & bit) &&
+          physical.sectors[sector] == sector_state::INVALID)
+        ++result;
+    }
+    return result;
+  }
+
+  // The mask is canonicalized to the low four sectors.  INVALID sectors on
+  // a hit are promoted to PENDING without allocating a second physical line.
+  access_result access(uint64_t cycle, uint64_t uid, uint64_t address,
+                       uint8_t sector_mask) {
+    begin_cycle(cycle);
+    assert(sector_mask && !(sector_mask & ~0xFU));
+    entry *owner = find_entry(uid);
+    assert(owner);
+    const uint64_t line = address & ~(kLogicalLineBytes - 1);
+    tag_entry *tag = find_tag(line);
+    if (!tag) {
+      if (m_allocations_this_cycle >= m_cfg.allocation_width) {
+        ++m_allocation_width_limited_events;
+        return {};
+      }
+      tag_entry *victim = select_victim(line);
+      int free_id = find_free_physical();
+      const bool can_reclaim_victim =
+          victim->valid && m_phys[victim->physical.id].ref_count == 0;
+      if (free_id < 0 && !can_reclaim_victim) {
+        ++m_no_free_physical_events;
+        return {};
+      }
+      if (victim->valid) evict_tag(*victim);
+      if (free_id < 0) free_id = find_free_physical();
+      assert(free_id >= 0);
+      physical_line &physical = m_phys[free_id];
+      physical.allocated = true;
+      physical.tag_valid = true;
+      physical.ref_count = 0;
+      physical.waiters.clear();
+      physical.sectors.fill(sector_state::INVALID);
+      physical_identity identity{static_cast<unsigned>(free_id),
+                                 ++physical.generation};
+      *victim = {true, line, identity, ++m_lru_clock};
+      ++m_allocations_this_cycle;
+      ++m_new_line_misses;
+      tag = victim;
+    }
+
+    reference &ref = attach_reference(*owner, tag->physical);
+    physical_line &physical = m_phys[tag->physical.id];
+    access_result result;
+    result.physical = tag->physical;
+    for (unsigned sector = 0; sector < kSectorsPerLogicalLine; ++sector) {
+      const uint8_t bit = static_cast<uint8_t>(1U << sector);
+      if (!(sector_mask & bit) || (ref.sector_mask & bit)) continue;
+      ref.sector_mask |= bit;
+      switch (physical.sectors[sector]) {
+        case sector_state::VALID:
+          result.valid_mask |= bit;
+          ++m_valid_sector_hits;
+          break;
+        case sector_state::PENDING:
+          result.pending_mask |= bit;
+          add_waiter(ref, sector);
+          ++m_pending_sector_hits;
+          break;
+        case sector_state::INVALID:
+          physical.sectors[sector] = sector_state::PENDING;
+          result.new_request_mask |= bit;
+          add_waiter(ref, sector);
+          ++m_new_sector_requests;
+          break;
+      }
+    }
+    result.kind = result.new_request_mask
+                      ? io_access_kind::NEW_MISS
+                      : (result.pending_mask ? io_access_kind::PENDING_HIT
+                                             : io_access_kind::VALID_HIT);
+    assert(result.valid_mask || result.pending_mask || result.new_request_mask ||
+           (ref.sector_mask & sector_mask));
+    assert_shadow_refs();
+    return result;
+  }
+
+  bool fill_identity_matches(physical_identity identity) const {
+    return identity.id < m_phys.size() && m_phys[identity.id].allocated &&
+           m_phys[identity.id].generation == identity.generation;
+  }
+
+  // A lower response identifies both original physical generation and sector.
+  // It can wake only waiters that requested that sector.
+  void complete_sector(physical_identity identity, unsigned sector) {
+    assert(sector < kSectorsPerLogicalLine);
+    assert(fill_identity_matches(identity) &&
+           "sector fill must match original physical generation");
+    physical_line &physical = m_phys[identity.id];
+    assert(physical.sectors[sector] == sector_state::PENDING &&
+           "sector response must be unique and pending");
+    physical.sectors[sector] = sector_state::VALID;
+    for (auto it = physical.waiters.begin(); it != physical.waiters.end();) {
+      if (it->sector != sector) {
+        ++it;
+        continue;
+      }
+      entry *owner = find_entry_by_slot(it->slot, it->slot_generation);
+      assert(owner);
+      reference *ref = find_reference(*owner, identity);
+      assert(ref && (ref->pending_mask & (1U << sector)) &&
+             owner->pending_dependencies);
+      ref->pending_mask &= static_cast<uint8_t>(~(1U << sector));
+      --owner->pending_dependencies;
+      ++m_wakeups;
+      it = physical.waiters.erase(it);
+    }
+    ++m_sector_responses;
+    assert_shadow_refs();
+  }
+
+  bool retire_one_ready(uint64_t cycle, uint64_t *retired_uid = nullptr) {
+    if (cycle == m_retire_cycle) return false;
+    auto selected = m_entries.end();
+    for (auto it = m_entries.begin(); it != m_entries.end(); ++it) {
+      if (entry_ready(*it)) {
+        selected = it;
+        break;
+      }
+    }
+    if (selected == m_entries.end()) return false;
+    bool older_unready = false;
+    for (auto it = m_entries.begin(); it != selected; ++it)
+      older_unready |= !entry_ready(*it);
+    if (older_unready) ++m_out_of_order_retires;
+    for (const reference &ref : selected->references) {
+      physical_line &physical = m_phys[ref.identity.id];
+      assert(fill_identity_matches(ref.identity) && physical.ref_count);
+      --physical.ref_count;
+      if (!physical.tag_valid && physical.ref_count == 0) {
+        release(ref.identity);
+        ++m_final_ref_reclaims;
+      }
+    }
+    m_slots[selected->slot].active = false;
+    if (retired_uid) *retired_uid = selected->uid;
+    m_entries.erase(selected);
+    m_retire_cycle = cycle;
+    ++m_retires;
+    assert_shadow_refs();
+    return true;
+  }
+
+  bool retire_ready_uid(uint64_t cycle, uint64_t uid) {
+    if (cycle == m_retire_cycle) return false;
+    auto selected = m_entries.end();
+    for (auto it = m_entries.begin(); it != m_entries.end(); ++it)
+      if (it->uid == uid) { selected = it; break; }
+    if (selected == m_entries.end() || !entry_ready(*selected)) return false;
+    bool older_unready = false;
+    for (auto it = m_entries.begin(); it != selected; ++it)
+      older_unready |= !entry_ready(*it);
+    if (older_unready) ++m_out_of_order_retires;
+    for (const reference &ref : selected->references) {
+      physical_line &physical = m_phys[ref.identity.id];
+      assert(fill_identity_matches(ref.identity) && physical.ref_count);
+      --physical.ref_count;
+      if (!physical.tag_valid && physical.ref_count == 0) {
+        release(ref.identity);
+        ++m_final_ref_reclaims;
+      }
+    }
+    m_slots[selected->slot].active = false;
+    m_entries.erase(selected);
+    m_retire_cycle = cycle;
+    ++m_retires;
+    assert_shadow_refs();
+    return true;
+  }
+
+  bool oldest_ready_uid(uint64_t *uid) const {
+    for (const entry &owner : m_entries)
+      if (entry_ready(owner)) {
+        if (uid) *uid = owner.uid;
+        return true;
+      }
+    return false;
+  }
+
+  size_t occupancy() const { return m_entries.size(); }
+  uint64_t ref_count(physical_identity identity) const {
+    assert(fill_identity_matches(identity));
+    return m_phys[identity.id].ref_count;
+  }
+  bool tag_visible(physical_identity identity) const {
+    assert(fill_identity_matches(identity));
+    return m_phys[identity.id].tag_valid;
+  }
+  bool is_allocated(physical_identity identity) const {
+    return fill_identity_matches(identity);
+  }
+  sector_state state(physical_identity identity, unsigned sector) const {
+    assert(fill_identity_matches(identity) && sector < kSectorsPerLogicalLine);
+    return m_phys[identity.id].sectors[sector];
+  }
+  bool entry_ready_for(uint64_t uid) const {
+    const entry *owner = find_entry_const(uid);
+    return owner && entry_ready(*owner);
+  }
+  uint64_t new_line_misses() const { return m_new_line_misses; }
+  uint64_t new_sector_requests() const { return m_new_sector_requests; }
+  uint64_t sector_responses() const { return m_sector_responses; }
+  uint64_t valid_sector_hits() const { return m_valid_sector_hits; }
+  uint64_t pending_sector_hits() const { return m_pending_sector_hits; }
+  uint64_t wakeups() const { return m_wakeups; }
+  uint64_t retires() const { return m_retires; }
+  uint64_t out_of_order_retires() const { return m_out_of_order_retires; }
+  uint64_t tag_evictions() const { return m_tag_evictions; }
+  uint64_t immediate_reclaims() const { return m_immediate_reclaims; }
+  uint64_t final_ref_reclaims() const { return m_final_ref_reclaims; }
+  size_t allocated_lines() const {
+    size_t result = 0;
+    for (const physical_line &physical : m_phys) result += physical.allocated;
+    return result;
+  }
+  uint64_t active_refs() const {
+    uint64_t result = 0;
+    for (const physical_line &physical : m_phys) result += physical.ref_count;
+    return result;
+  }
+
+  void assert_shadow_refs() const {
+    std::vector<uint64_t> shadow(m_phys.size(), 0);
+    for (const entry &owner : m_entries)
+      for (const reference &ref : owner.references) {
+        assert(fill_identity_matches(ref.identity));
+        assert(ref.sector_mask && !(ref.sector_mask & ~0xFU));
+        assert(!(ref.pending_mask & ~ref.sector_mask));
+        ++shadow[ref.identity.id];
+      }
+    for (size_t id = 0; id < m_phys.size(); ++id) {
+      const physical_line &physical = m_phys[id];
+      assert(physical.ref_count == shadow[id]);
+      if (!physical.allocated) {
+        assert(!physical.tag_valid && !physical.ref_count &&
+               physical.waiters.empty());
+      }
+    }
+    for (const tag_entry &tag : m_tags)
+      if (tag.valid) {
+        assert(fill_identity_matches(tag.physical));
+        assert(m_phys[tag.physical.id].tag_valid);
+      }
+  }
+
+ private:
+  struct waiter {
+    unsigned slot;
+    uint64_t slot_generation;
+    unsigned sector;
+  };
+  struct physical_line {
+    bool allocated = false;
+    bool tag_valid = false;
+    uint64_t generation = 0;
+    uint64_t ref_count = 0;
+    std::array<sector_state, kSectorsPerLogicalLine> sectors;
+    std::vector<waiter> waiters;
+  };
+  struct tag_entry {
+    bool valid = false;
+    uint64_t line = 0;
+    physical_identity physical;
+    uint64_t lru = 0;
+  };
+  struct reference {
+    physical_identity identity;
+    uint8_t sector_mask = 0;
+    uint8_t pending_mask = 0;
+  };
+  struct entry {
+    uint64_t uid;
+    unsigned slot;
+    uint64_t slot_generation;
+    std::vector<reference> references;
+    unsigned pending_dependencies;
+    unsigned external_dependencies = 0;
+  };
+  struct slot_state {
+    bool active = false;
+    uint64_t uid = 0;
+    uint64_t generation = 0;
+  };
+
+  entry *find_entry(uint64_t uid) {
+    for (entry &owner : m_entries)
+      if (owner.uid == uid) return &owner;
+    return nullptr;
+  }
+  const entry *find_entry_const(uint64_t uid) const {
+    for (const entry &owner : m_entries)
+      if (owner.uid == uid) return &owner;
+    return nullptr;
+  }
+  entry *find_entry_by_slot(unsigned slot, uint64_t generation) {
+    if (slot >= m_slots.size() || !m_slots[slot].active ||
+        m_slots[slot].generation != generation)
+      return nullptr;
+    return find_entry(m_slots[slot].uid);
+  }
+  static reference *find_reference(entry &owner, physical_identity identity) {
+    for (reference &ref : owner.references)
+      if (ref.identity.id == identity.id &&
+          ref.identity.generation == identity.generation)
+        return &ref;
+    return nullptr;
+  }
+  reference &attach_reference(entry &owner, physical_identity identity) {
+    if (reference *existing = find_reference(owner, identity)) return *existing;
+    physical_line &physical = m_phys[identity.id];
+    assert(fill_identity_matches(identity));
+    const uint64_t max_ref_count = (1ULL << m_cfg.ref_count_bits) - 1;
+    assert(physical.ref_count < max_ref_count);
+    ++physical.ref_count;
+    owner.references.push_back({identity, 0, 0});
+    return owner.references.back();
+  }
+  void add_waiter(reference &ref, unsigned sector) {
+    const uint8_t bit = static_cast<uint8_t>(1U << sector);
+    assert(!(ref.pending_mask & bit));
+    entry *owner = nullptr;
+    for (entry &candidate : m_entries)
+      for (reference &candidate_ref : candidate.references)
+        if (&candidate_ref == &ref) owner = &candidate;
+    assert(owner);
+    physical_line &physical = m_phys[ref.identity.id];
+    ref.pending_mask |= bit;
+    ++owner->pending_dependencies;
+    physical.waiters.push_back({owner->slot, owner->slot_generation, sector});
+  }
+  bool entry_ready(const entry &owner) const {
+    if (owner.pending_dependencies || owner.external_dependencies) return false;
+    for (const reference &ref : owner.references) {
+      if (!fill_identity_matches(ref.identity) || ref.pending_mask) return false;
+      const physical_line &physical = m_phys[ref.identity.id];
+      for (unsigned sector = 0; sector < kSectorsPerLogicalLine; ++sector)
+        if ((ref.sector_mask & (1U << sector)) &&
+            physical.sectors[sector] != sector_state::VALID)
+          return false;
+    }
+    return true;
+  }
+  tag_entry *find_tag(uint64_t line) {
+    const unsigned set = static_cast<unsigned>(
+        (line / kLogicalLineBytes) % m_cfg.logical_sets);
+    for (unsigned way = 0; way < m_cfg.logical_ways; ++way) {
+      tag_entry &tag = m_tags[set * m_cfg.logical_ways + way];
+      if (tag.valid && tag.line == line) {
+        tag.lru = ++m_lru_clock;
+        return &tag;
+      }
+    }
+    return nullptr;
+  }
+  tag_entry *select_victim(uint64_t line) {
+    const unsigned set = static_cast<unsigned>(
+        (line / kLogicalLineBytes) % m_cfg.logical_sets);
+    tag_entry *victim = &m_tags[set * m_cfg.logical_ways];
+    for (unsigned way = 0; way < m_cfg.logical_ways; ++way) {
+      tag_entry &tag = m_tags[set * m_cfg.logical_ways + way];
+      if (!tag.valid) return &tag;
+      if (tag.lru < victim->lru) victim = &tag;
+    }
+    return victim;
+  }
+  int find_free_physical() {
+    for (unsigned offset = 0; offset < m_phys.size(); ++offset) {
+      const unsigned id = (m_rr_next + offset) % m_phys.size();
+      if (!m_phys[id].allocated) {
+        m_rr_next = (id + 1) % m_phys.size();
+        return id;
+      }
+    }
+    return -1;
+  }
+  void evict_tag(tag_entry &victim) {
+    physical_line &old = m_phys[victim.physical.id];
+    assert(fill_identity_matches(victim.physical) && old.tag_valid);
+    old.tag_valid = false;
+    ++m_tag_evictions;
+    if (old.ref_count == 0) {
+      release(victim.physical);
+      ++m_immediate_reclaims;
+    }
+  }
+  void release(physical_identity identity) {
+    physical_line &physical = m_phys[identity.id];
+    assert(fill_identity_matches(identity) && !physical.tag_valid &&
+           !physical.ref_count && physical.waiters.empty());
+    physical.allocated = false;
+    physical.sectors.fill(sector_state::INVALID);
+  }
+
+  config m_cfg;
+  std::vector<tag_entry> m_tags;
+  std::vector<physical_line> m_phys;
+  std::vector<slot_state> m_slots;
+  std::list<entry> m_entries;
+  uint64_t m_cycle = UINT64_MAX, m_retire_cycle = UINT64_MAX,
+           m_lru_clock = 0, m_new_line_misses = 0,
+           m_new_sector_requests = 0, m_sector_responses = 0,
+           m_valid_sector_hits = 0, m_pending_sector_hits = 0,
+           m_wakeups = 0, m_retires = 0, m_out_of_order_retires = 0,
+           m_tag_evictions = 0, m_immediate_reclaims = 0,
+           m_final_ref_reclaims = 0, m_no_free_physical_events = 0,
+           m_allocation_width_limited_events = 0, m_tag_cycle = UINT64_MAX,
+           m_tag_requests = 0, m_tag_conflicts = 0;
+  unsigned m_allocations_this_cycle = 0, m_rr_next = 0;
+  std::vector<unsigned> m_tag_requests_this_cycle =
+      std::vector<unsigned>(m_cfg.tag_banks, 0);
+  unsigned m_total_tag_requests_this_cycle = 0;
+};
+
+// A value snapshot lets the normal SM/cluster aggregation path emit a compact
+// kernel summary without exposing mutable front-end state.
+struct paper_frontend_stats {
+  std::array<uint64_t, 11> finite_service = {};
+  uint64_t admits = 0;
+  uint64_t retires = 0;
+  uint64_t tag_requests = 0;
+  uint64_t tag_conflicts = 0;
+  uint64_t pib_full_events = 0;
+  uint64_t pib_full_stall_cycles = 0;
+  uint64_t tag_conflict_stall_cycles = 0;
+  // Kept separate from primary accounting so later stages can observe several
+  // unavailable resources in one cycle without changing the primary reason.
+  uint64_t nonexclusive_pib_full_cycles = 0;
+  uint64_t nonexclusive_tag_conflict_cycles = 0;
+  uint64_t frontend_stall_cycles = 0;
+  uint64_t pib_occupancy_cycle_sum = 0;
+  uint64_t pib_occupancy_sample_cycles = 0;
+  uint64_t pib_occupancy = 0;
+  uint64_t pib_peak = 0;
+  std::vector<uint64_t> requests_per_bank;
+  uint64_t io_lower_created = 0;
+  uint64_t io_lower_issued = 0;
+  uint64_t io_lower_responses = 0;
+  uint64_t io_lower_create_queue_full_stalls = 0;
+  uint64_t io_inflight_current = 0;
+  uint64_t io_inflight_peak = 0;
+  uint64_t io_inflight_identity_mismatch = 0;
+  uint64_t io_responses_routed_dtc = 0;
+  uint64_t io_responses_routed_conventional = 0;
+  uint64_t io_pib_occupancy = 0;
+  uint64_t io_pib_peak = 0;
+  uint64_t io_pib_head_ready_cycles = 0;
+  uint64_t io_head_not_ready_cycles = 0;
+  uint64_t io_retire_count = 0;
+  uint64_t io_ready_but_writeback_blocked_cycles = 0;
+  uint64_t io_completion_dependencies = 0;
+  uint64_t io_completion_dependencies_closed = 0;
+  uint64_t io_valid_hits = 0;
+  uint64_t io_pending_hits = 0;
+  uint64_t io_physical_allocations = 0;
+  uint64_t io_physical_releases = 0;
+  uint64_t io_tag_evictions = 0;
+  uint64_t io_duplicate_after_eviction = 0;
+  uint64_t io_partial_allocation_events = 0;
+  uint64_t io_allocation_width_limited_events = 0;
+  uint64_t io_no_free_physical_events = 0;
+  uint64_t io_physical_allocated_current = 0;
+  uint64_t io_physical_allocated_peak = 0;
+  uint64_t io_physical_free_current = 0;
+  uint64_t io_physical_free_minimum = 0;
+  uint64_t io_partial_entries_current = 0;
+  uint64_t io_partial_entries_peak = 0;
+  uint64_t io_partial_lines_held_current = 0;
+  uint64_t io_partial_lines_held_peak = 0;
+  uint64_t io_hol_ready_younger_cycles = 0;
+  uint64_t io_hol_ready_younger_count_sum = 0;
+  uint64_t io_hol_ready_younger_peak = 0;
+  uint64_t io_tag_requests = 0;
+  uint64_t io_tag_conflicts = 0;
+  std::vector<uint64_t> io_tag_requests_per_bank;
+  uint64_t oo_lower_created = 0;
+  uint64_t oo_lower_issued = 0;
+  uint64_t oo_lower_responses = 0;
+  uint64_t oo_lower_create_queue_full_stalls = 0;
+  uint64_t oo_inflight_current = 0;
+  uint64_t oo_pib_occupancy = 0;
+  uint64_t oo_retire_count = 0;
+  uint64_t oo_out_of_order_retires = 0;
+  uint64_t oo_ready_but_writeback_blocked_cycles = 0;
+  uint64_t oo_completion_dependencies = 0;
+  uint64_t oo_completion_dependencies_closed = 0;
+  uint64_t oo_valid_hits = 0;
+  uint64_t oo_pending_hits = 0;
+  uint64_t oo_new_misses = 0;
+  uint64_t oo_tag_evictions = 0;
+  uint64_t oo_immediate_reclaims = 0;
+  uint64_t oo_deferred_reclaims = 0;
+  uint64_t oo_final_ref_reclaims = 0;
+  uint64_t oo_wakeups = 0;
+  uint64_t oo_active_refs = 0;
+  uint64_t oo_physical_allocated = 0;
+  uint64_t sector_lower_created = 0;
+  uint64_t sector_lower_issued = 0;
+  uint64_t sector_lower_responses = 0;
+  uint64_t sector_inflight_current = 0;
+  uint64_t sector_pib_occupancy = 0;
+  uint64_t sector_retire_count = 0;
+  uint64_t sector_out_of_order_retires = 0;
+  uint64_t sector_completion_dependencies = 0;
+  uint64_t sector_completion_dependencies_closed = 0;
+  uint64_t sector_valid_hits = 0;
+  uint64_t sector_pending_hits = 0;
+  uint64_t sector_new_line_misses = 0;
+  uint64_t sector_new_requests = 0;
+  uint64_t sector_fill_wakeups = 0;
+  uint64_t sector_active_refs = 0;
+  uint64_t sector_physical_allocated = 0;
+  uint64_t m4_store_admits = 0;
+  uint64_t m4_atomic_admits = 0;
+  uint64_t m4_bypass_load_admits = 0;
+  uint64_t m4_proxy_fence_admits = 0;
+  uint64_t m4_source_completions = 0;
+  uint64_t m4_observation_retires = 0;
+  uint64_t m4_dynamic_loads = 0;
+  uint64_t m4_dynamic_stores = 0;
+  uint64_t m4_dynamic_atomics = 0;
+  uint64_t m4_source_reachable_fence_ops = 0;
+
+  void add(const paper_frontend_stats &other) {
+    for (size_t i = 0; i < finite_service.size(); ++i)
+      finite_service[i] += other.finite_service[i];
+    admits += other.admits;
+    retires += other.retires;
+    tag_requests += other.tag_requests;
+    tag_conflicts += other.tag_conflicts;
+    pib_full_events += other.pib_full_events;
+    pib_full_stall_cycles += other.pib_full_stall_cycles;
+    tag_conflict_stall_cycles += other.tag_conflict_stall_cycles;
+    nonexclusive_pib_full_cycles += other.nonexclusive_pib_full_cycles;
+    nonexclusive_tag_conflict_cycles += other.nonexclusive_tag_conflict_cycles;
+    frontend_stall_cycles += other.frontend_stall_cycles;
+    pib_occupancy_cycle_sum += other.pib_occupancy_cycle_sum;
+    pib_occupancy_sample_cycles += other.pib_occupancy_sample_cycles;
+    pib_occupancy += other.pib_occupancy;
+    pib_peak = std::max(pib_peak, other.pib_peak);
+    if (requests_per_bank.size() < other.requests_per_bank.size()) {
+      requests_per_bank.resize(other.requests_per_bank.size(), 0);
+    }
+    for (size_t bank = 0; bank < other.requests_per_bank.size(); ++bank) {
+      requests_per_bank[bank] += other.requests_per_bank[bank];
+    }
+    io_lower_created += other.io_lower_created;
+    io_lower_issued += other.io_lower_issued;
+    io_lower_responses += other.io_lower_responses;
+    io_lower_create_queue_full_stalls +=
+        other.io_lower_create_queue_full_stalls;
+    io_inflight_current += other.io_inflight_current;
+    io_inflight_peak = std::max(io_inflight_peak, other.io_inflight_peak);
+    io_inflight_identity_mismatch += other.io_inflight_identity_mismatch;
+    io_responses_routed_dtc += other.io_responses_routed_dtc;
+    io_responses_routed_conventional += other.io_responses_routed_conventional;
+    io_pib_occupancy += other.io_pib_occupancy;
+    io_pib_peak = std::max(io_pib_peak, other.io_pib_peak);
+    io_pib_head_ready_cycles += other.io_pib_head_ready_cycles;
+    io_head_not_ready_cycles += other.io_head_not_ready_cycles;
+    io_retire_count += other.io_retire_count;
+    io_ready_but_writeback_blocked_cycles +=
+        other.io_ready_but_writeback_blocked_cycles;
+    io_completion_dependencies += other.io_completion_dependencies;
+    io_completion_dependencies_closed +=
+        other.io_completion_dependencies_closed;
+    io_valid_hits += other.io_valid_hits;
+    io_pending_hits += other.io_pending_hits;
+    io_physical_allocations += other.io_physical_allocations;
+    io_physical_releases += other.io_physical_releases;
+    io_tag_evictions += other.io_tag_evictions;
+    io_duplicate_after_eviction += other.io_duplicate_after_eviction;
+    io_partial_allocation_events += other.io_partial_allocation_events;
+    io_allocation_width_limited_events += other.io_allocation_width_limited_events;
+    io_no_free_physical_events += other.io_no_free_physical_events;
+    io_physical_allocated_current += other.io_physical_allocated_current;
+    io_physical_allocated_peak =
+        std::max(io_physical_allocated_peak, other.io_physical_allocated_peak);
+    io_physical_free_current += other.io_physical_free_current;
+    if (!io_physical_free_minimum ||
+        (other.io_physical_free_minimum &&
+         other.io_physical_free_minimum < io_physical_free_minimum))
+      io_physical_free_minimum = other.io_physical_free_minimum;
+    io_partial_entries_current += other.io_partial_entries_current;
+    io_partial_entries_peak =
+        std::max(io_partial_entries_peak, other.io_partial_entries_peak);
+    io_partial_lines_held_current += other.io_partial_lines_held_current;
+    io_partial_lines_held_peak = std::max(io_partial_lines_held_peak,
+                                           other.io_partial_lines_held_peak);
+    io_hol_ready_younger_cycles += other.io_hol_ready_younger_cycles;
+    io_hol_ready_younger_count_sum += other.io_hol_ready_younger_count_sum;
+    io_hol_ready_younger_peak =
+        std::max(io_hol_ready_younger_peak, other.io_hol_ready_younger_peak);
+    io_tag_requests += other.io_tag_requests;
+    io_tag_conflicts += other.io_tag_conflicts;
+    if (io_tag_requests_per_bank.size() <
+        other.io_tag_requests_per_bank.size())
+      io_tag_requests_per_bank.resize(other.io_tag_requests_per_bank.size(), 0);
+    for (size_t bank = 0; bank < other.io_tag_requests_per_bank.size(); ++bank)
+      io_tag_requests_per_bank[bank] += other.io_tag_requests_per_bank[bank];
+    oo_lower_created += other.oo_lower_created;
+    oo_lower_issued += other.oo_lower_issued;
+    oo_lower_responses += other.oo_lower_responses;
+    oo_lower_create_queue_full_stalls +=
+        other.oo_lower_create_queue_full_stalls;
+    oo_inflight_current += other.oo_inflight_current;
+    oo_pib_occupancy += other.oo_pib_occupancy;
+    oo_retire_count += other.oo_retire_count;
+    oo_out_of_order_retires += other.oo_out_of_order_retires;
+    oo_ready_but_writeback_blocked_cycles +=
+        other.oo_ready_but_writeback_blocked_cycles;
+    oo_completion_dependencies += other.oo_completion_dependencies;
+    oo_completion_dependencies_closed += other.oo_completion_dependencies_closed;
+    oo_valid_hits += other.oo_valid_hits;
+    oo_pending_hits += other.oo_pending_hits;
+    oo_new_misses += other.oo_new_misses;
+    oo_tag_evictions += other.oo_tag_evictions;
+    oo_immediate_reclaims += other.oo_immediate_reclaims;
+    oo_deferred_reclaims += other.oo_deferred_reclaims;
+    oo_final_ref_reclaims += other.oo_final_ref_reclaims;
+    oo_wakeups += other.oo_wakeups;
+    oo_active_refs += other.oo_active_refs;
+    oo_physical_allocated += other.oo_physical_allocated;
+    sector_lower_created += other.sector_lower_created;
+    sector_lower_issued += other.sector_lower_issued;
+    sector_lower_responses += other.sector_lower_responses;
+    sector_inflight_current += other.sector_inflight_current;
+    sector_pib_occupancy += other.sector_pib_occupancy;
+    sector_retire_count += other.sector_retire_count;
+    sector_out_of_order_retires += other.sector_out_of_order_retires;
+    sector_completion_dependencies += other.sector_completion_dependencies;
+    sector_completion_dependencies_closed +=
+        other.sector_completion_dependencies_closed;
+    sector_valid_hits += other.sector_valid_hits;
+    sector_pending_hits += other.sector_pending_hits;
+    sector_new_line_misses += other.sector_new_line_misses;
+    sector_new_requests += other.sector_new_requests;
+    sector_fill_wakeups += other.sector_fill_wakeups;
+    sector_active_refs += other.sector_active_refs;
+    sector_physical_allocated += other.sector_physical_allocated;
+    m4_store_admits += other.m4_store_admits;
+    m4_atomic_admits += other.m4_atomic_admits;
+    m4_bypass_load_admits += other.m4_bypass_load_admits;
+    m4_proxy_fence_admits += other.m4_proxy_fence_admits;
+    m4_source_completions += other.m4_source_completions;
+    m4_observation_retires += other.m4_observation_retires;
+    m4_dynamic_loads += other.m4_dynamic_loads;
+    m4_dynamic_stores += other.m4_dynamic_stores;
+    m4_dynamic_atomics += other.m4_dynamic_atomics;
+    m4_source_reachable_fence_ops += other.m4_source_reachable_fence_ops;
+  }
+};
+
+struct sector_access {
+  uint64_t address = 0;
+  // One bit for each 32B sector touched by this existing coalesced access.
+  uint8_t sector_mask = 0;
+};
+
+struct line_reference {
+  uint64_t line_address = 0;
+  uint8_t sector_mask = 0;
+};
+
+// Groups already-coalesced accesses.  It intentionally does not inspect lanes
+// or create transactions: that remains the upstream coalescer's job.
+inline std::vector<line_reference> group_128b_references(
+    const std::vector<sector_access> &accesses) {
+  std::map<uint64_t, uint8_t> grouped;
+  for (const sector_access &access : accesses) {
+    const uint64_t line = access.address & ~(kLogicalLineBytes - 1);
+    const unsigned sector = (access.address >> 5) & (kSectorsPerLogicalLine - 1);
+    const uint8_t canonical_mask = access.sector_mask
+                                       ? access.sector_mask
+                                       : static_cast<uint8_t>(1U << sector);
+    assert((canonical_mask & ~0xFU) == 0);
+    grouped[line] |= canonical_mask;
+  }
+  std::vector<line_reference> result;
+  result.reserve(grouped.size());
+  for (const auto &entry : grouped) {
+    result.push_back({entry.first, entry.second});
+  }
+  return result;
+}
+
+// A deterministic, bounded M1 front-end model.  The caller owns dynamic
+// instruction completion; this class only owns admission and Tag scheduling.
+class paper_frontend {
+ public:
+  explicit paper_frontend(config cfg) : m_cfg(cfg) {
+    check_tag_hash_bankrow(cfg.tag_hash_bankrow, false, cfg.finite_service,
+                           cfg.logical_sets, cfg.tag_banks);
+    check_progressive_wakeup_mode(cfg.progressive_wakeup,
+        static_cast<unsigned>(mode::PAPER_BASE), cfg.finite_service);
+    assert(m_cfg.pib_entries > 0);
+    assert(m_cfg.tag_banks > 0);
+    assert(m_cfg.tag_requests_per_bank_per_cycle > 0);
+    assert(m_cfg.tag_requests_per_cycle > 0);
+  }
+
+  bool enabled() const { return m_cfg.selected_mode != mode::LEGACY; }
+
+  bool try_admit(uint64_t dynamic_instruction_id) {
+    if (!enabled()) return true;
+    if (m_live_instructions.count(dynamic_instruction_id)) return true;
+    if (m_live_instructions.size() >= m_cfg.pib_entries) {
+      ++m_pib_full_events;
+      ++m_pib_full_stall_cycles;
+      ++m_nonexclusive_pib_full_cycles;
+      ++m_frontend_stall_cycles;
+      return false;
+    }
+    m_live_instructions.insert(dynamic_instruction_id);
+    ++m_admits;
+    m_pib_peak = std::max(m_pib_peak, m_live_instructions.size());
+    return true;
+  }
+
+  void retire(uint64_t dynamic_instruction_id) {
+    if (!enabled()) return;
+    const size_t erased = m_live_instructions.erase(dynamic_instruction_id);
+    assert(erased == 1 && "DTC PIB release requires one admitted instruction");
+    ++m_retires;
+  }
+
+  void begin_cycle(uint64_t cycle) {
+    if (cycle == m_cycle) return;
+    m_cycle = cycle;
+    m_total_served_this_cycle = 0;
+    std::fill(m_served_per_bank.begin(), m_served_per_bank.end(), 0);
+  }
+
+  // Must be called once per modeled LD/ST cycle so occupancy does not depend
+  // on whether that cycle happens to contain Tag work.
+  void sample_cycle(uint64_t cycle) {
+    if (!enabled() || cycle == m_last_occupancy_sample_cycle) return;
+    m_last_occupancy_sample_cycle = cycle;
+    m_pib_occupancy_cycle_sum += m_live_instructions.size();
+    ++m_pib_occupancy_sample_cycles;
+  }
+
+  unsigned tag_bank(uint64_t line_address, unsigned logical_set_count) const {
+    assert(logical_set_count > 0);
+    const unsigned logical_set =
+        static_cast<unsigned>((line_address / kLogicalLineBytes) % logical_set_count);
+    return logical_set % m_cfg.tag_banks;
+  }
+
+  bool try_serve_tag(uint64_t cycle, uint64_t line_address,
+                     unsigned logical_set_count) {
+    if (!enabled()) return true;
+    begin_cycle(cycle);
+    const unsigned bank = tag_bank(line_address, logical_set_count);
+    if (m_total_served_this_cycle >= m_cfg.tag_requests_per_cycle ||
+        m_served_per_bank[bank] >= m_cfg.tag_requests_per_bank_per_cycle) {
+      ++m_tag_conflicts;
+      ++m_tag_conflict_stall_cycles;
+      ++m_nonexclusive_tag_conflict_cycles;
+      ++m_frontend_stall_cycles;
+      return false;
+    }
+    ++m_served_per_bank[bank];
+    ++m_requests_per_bank[bank];
+    ++m_total_served_this_cycle;
+    ++m_tag_requests;
+    return true;
+  }
+
+  size_t pib_occupancy() const { return m_live_instructions.size(); }
+  uint64_t admits() const { return m_admits; }
+  uint64_t retires() const { return m_retires; }
+  uint64_t tag_requests() const { return m_tag_requests; }
+  uint64_t tag_conflicts() const { return m_tag_conflicts; }
+  uint64_t pib_full_events() const { return m_pib_full_events; }
+  uint64_t pib_full_stall_cycles() const { return m_pib_full_stall_cycles; }
+  uint64_t tag_conflict_stall_cycles() const {
+    return m_tag_conflict_stall_cycles;
+  }
+  uint64_t nonexclusive_pib_full_cycles() const {
+    return m_nonexclusive_pib_full_cycles;
+  }
+  uint64_t nonexclusive_tag_conflict_cycles() const {
+    return m_nonexclusive_tag_conflict_cycles;
+  }
+  uint64_t frontend_stall_cycles() const { return m_frontend_stall_cycles; }
+  size_t pib_peak() const { return m_pib_peak; }
+  uint64_t pib_occupancy_cycle_sum() const {
+    return m_pib_occupancy_cycle_sum;
+  }
+  uint64_t pib_occupancy_sample_cycles() const {
+    return m_pib_occupancy_sample_cycles;
+  }
+  const std::vector<uint64_t> &requests_per_bank() const {
+    return m_requests_per_bank;
+  }
+
+  paper_frontend_stats stats() const {
+    paper_frontend_stats result;
+    result.admits = m_admits;
+    result.retires = m_retires;
+    result.tag_requests = m_tag_requests;
+    result.tag_conflicts = m_tag_conflicts;
+    result.pib_full_events = m_pib_full_events;
+    result.pib_full_stall_cycles = m_pib_full_stall_cycles;
+    result.tag_conflict_stall_cycles = m_tag_conflict_stall_cycles;
+    result.nonexclusive_pib_full_cycles = m_nonexclusive_pib_full_cycles;
+    result.nonexclusive_tag_conflict_cycles =
+        m_nonexclusive_tag_conflict_cycles;
+    result.frontend_stall_cycles = m_frontend_stall_cycles;
+    result.pib_occupancy_cycle_sum = m_pib_occupancy_cycle_sum;
+    result.pib_occupancy_sample_cycles = m_pib_occupancy_sample_cycles;
+    result.pib_occupancy = m_live_instructions.size();
+    result.pib_peak = m_pib_peak;
+    result.requests_per_bank = m_requests_per_bank;
+    return result;
+  }
+
+  void assert_accounting() const {
+    assert(m_admits >= m_retires);
+    assert(m_admits - m_retires == m_live_instructions.size());
+    assert(m_live_instructions.size() <= m_cfg.pib_entries);
+    assert(m_pib_full_stall_cycles + m_tag_conflict_stall_cycles ==
+           m_frontend_stall_cycles);
+  }
+
+  void assert_drained() const {
+    assert_accounting();
+    assert(m_live_instructions.empty());
+  }
+
+ private:
+  config m_cfg;
+  std::set<uint64_t> m_live_instructions;
+  uint64_t m_cycle = UINT64_MAX;
+  unsigned m_total_served_this_cycle = 0;
+  std::vector<unsigned> m_served_per_bank =
+      std::vector<unsigned>(m_cfg.tag_banks, 0);
+  std::vector<uint64_t> m_requests_per_bank =
+      std::vector<uint64_t>(m_cfg.tag_banks, 0);
+  uint64_t m_admits = 0;
+  uint64_t m_retires = 0;
+  uint64_t m_tag_requests = 0;
+  uint64_t m_tag_conflicts = 0;
+  uint64_t m_pib_full_events = 0;
+  uint64_t m_pib_full_stall_cycles = 0;
+  uint64_t m_tag_conflict_stall_cycles = 0;
+  uint64_t m_nonexclusive_pib_full_cycles = 0;
+  uint64_t m_nonexclusive_tag_conflict_cycles = 0;
+  uint64_t m_frontend_stall_cycles = 0;
+  size_t m_pib_peak = 0;
+  uint64_t m_last_occupancy_sample_cycle = UINT64_MAX;
+  uint64_t m_pib_occupancy_cycle_sum = 0;
+  uint64_t m_pib_occupancy_sample_cycles = 0;
+};
+
+}  // namespace dtc_l1
+
+#endif  // DTC_L1_COMMON_H
