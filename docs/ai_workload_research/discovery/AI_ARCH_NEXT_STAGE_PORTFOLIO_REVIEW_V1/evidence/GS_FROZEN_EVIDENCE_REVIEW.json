@@ -1,0 +1,1139 @@
+{
+  "schema": "GS_FROZEN_EVIDENCE_REVIEW_V1",
+  "created_utc": "2026-11-06T01:44:48.225599+00:00",
+  "review_status": "ACCEPTED_A44_A28_A45H_A46_SCOPE_RECONFIRMED; NOT_A_NEW_NATIVE_DISCOVERY",
+  "authority": {
+    "native_execution_commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+    "native_execution_tree": "c66008a9da553d06a00195c8c133c3e7ec16692d",
+    "coordination_fixed_commit": "ed365741b230718f6ffc1ccbed125fc2566aac15",
+    "coordination_tree": "e2f3c9d2d4485b0d41db6c6ceec33af0d8e35304",
+    "accepted_native_thread_review": "docs/ai_workload_research/reviews/AI_ARCH_A44_A26GR1_NATIVE_THREAD_ATTRIBUTION_REVIEW_2026-10-14_V1.md",
+    "accepted_component_review": "docs/ai_workload_research/reviews/AI_ARCH_A46_A45H_A45S_INDEPENDENT_SCIENTIFIC_REVIEW_2026-10-14_V1.md",
+    "A45H_component_execution_commit": "1936dffd204043a1ab6c0fad5e7aebf565497c1a",
+    "A45H_tree": "bf2eed65fdc6c0fe4ee2602c28c3b6e5c0a3be33",
+    "source_author_commit": "6471e958f7e318f4870234d8107e0aa91c2d6932",
+    "source_author_tree": "bc99b237b3e050ddd46392acfe7adb8dd822b2a9",
+    "supersession": "Native run authority remains cf80f6e. A44 narrows interpretation; A45H/A46 add accepted CPU component evidence. Neither a newer branch nor a source-only review is treated as another real Rubble run.",
+    "earlier_packet_readback": {
+      "commit": "d9cd6bee253e8b1e2450ab9700eb4f1f0dd6a524",
+      "tree": "3171fecb9efdc7914c77f0b69773d05114b76aa4",
+      "file_count": 77
+    }
+  },
+  "scope": {
+    "read_only_git_show": true,
+    "frozen_native_raw_only": [
+      "raw/host_late/raw_steps.jsonl",
+      "raw/host_late_verified/raw_steps.jsonl",
+      "raw/host_late_verified/gpu_event_spans.json"
+    ],
+    "other_project_active_raw_read": false,
+    "node164_access": false,
+    "GPU_CUDA_NVML_or_lock_operations": false,
+    "framework_imports": false,
+    "source_or_historical_assets_modified": false,
+    "raw_rearchival": false,
+    "writes": [
+      "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-next-stage-portfolio-review-109-v1/docs/ai_workload_research/discovery/AI_ARCH_NEXT_STAGE_PORTFOLIO_REVIEW_V1/evidence/GS_FROZEN_EVIDENCE_REVIEW.json",
+      "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-next-stage-portfolio-review-109-v1/docs/ai_workload_research/discovery/AI_ARCH_NEXT_STAGE_PORTFOLIO_REVIEW_V1/evidence/GS_FROZEN_EVIDENCE_REVIEW.md"
+    ]
+  },
+  "accepted_findings": [
+    {
+      "id": "REAL_NATIVE_SCOPE",
+      "grade": "ACCEPTED_NATIVE_BY_A44",
+      "finding": "R0/R1/R2/R4 accepted and R3 bounded real pipeline/early metrics; two host runs really continuously reached15200 from zero. No200kquality/time-to-quality equivalence.",
+      "evidence": [
+        "FINAL_REPORT.md",
+        "GATES.json",
+        "raw/host_late_verified/completed.json",
+        "docs/ai_workload_research/reviews/AI_ARCH_A44_A26GR1_NATIVE_THREAD_ATTRIBUTION_REVIEW_2026-10-14_V1.md"
+      ]
+    },
+    {
+      "id": "OBSERVER_DIRECTION",
+      "grade": "FROZEN_RECEIPT_PLUS_RAW_RECONFIRMED",
+      "finding": "Old observer assigned all copy_ calls a D2H-like label, including H2D; old directional decomposition disqualified. Corrected AST destination classification separates opacity/colors0/colorsN H2D, gradient destinations D2H, metadata/ID D2H, parameter-forwarding Adam. Old raw retained; not a model-math change.",
+      "old_diagnostic_tag_counts": {
+        "synchronize": 429,
+        "cpu_id_selection": 149,
+        "cpu_adam": 149,
+        "join": 150,
+        "ID_or_gradient_D2H_host": 1974,
+        "frustum_launch_host": 151,
+        "parameter_H2D_enqueue": 3
+      },
+      "corrected_diagnostic_tag_counts": {
+        "synchronize": 450,
+        "cpu_id_selection": 149,
+        "cpu_adam": 149,
+        "join": 150,
+        "metadata_D2H_host": 600,
+        "gradient_D2H_host": 450,
+        "frustum_launch_host": 151,
+        "ID_D2H_host": 150,
+        "cpu_parameter_forwarding_adam": 777,
+        "parameter_H2D_enqueue": 780
+      }
+    },
+    {
+      "id": "THREAD_UNION",
+      "grade": "ALREADY_ACCEPTED_A44_REPRODUCED",
+      "finding": "30.871/32.128ms is union across main and GPU worker tagged waits, not all recoverable main-thread stall. Accepted main-thread union14.084/14.746ms is reproduced by removing worker synchronize@L728. CPUAdam and worker overlap precludes adding them. Per-call means are not per-step totals.",
+      "raw_numeric_review_is_new_discovery": false
+    },
+    {
+      "id": "OMP_POLICY",
+      "grade": "NATIVE_RECEIPT_PLUS_ACCEPTED_COMPONENT_SENSITIVITY",
+      "finding": "Original C++ requests64; real training constrained by OMP_THREAD_LIMIT16. Canary proves limited numerical fixture and legal thread cap, not author64performance parity. A45H synthetic1/8/16 evidence already shows Adam sensitivity (8beats16); scans can prefer16. A46 notes terminal torch_threads64 while actual OMP limit remains1/8/16; do not claim Torch always1.",
+      "canary": {
+        "status": "PASS",
+        "scope": "CPU extension qualification only; synthetic fixture is not scene/training evidence",
+        "core_versions": {
+          "torch": "2.2.0+cu121",
+          "ipex": "2.2.0+cpu"
+        },
+        "module_sha256": "c451fda99327e5969da9f0476ef3f4915815dc9ff314c22cce002e5551379a55",
+        "original_source_not_patched": true,
+        "torch_cxx11_abi": false,
+        "dtype": "float32",
+        "max_abs_errors": {
+          "weights": 0.0,
+          "moment1": 0.0,
+          "moment2": 0.0
+        },
+        "all_outputs_finite": true,
+        "omp_get_thread_limit": 16,
+        "source_omp_set_num_threads_64_unchanged": true,
+        "max_running_threads_sampled": 17,
+        "max_resident_threads_sampled": 18,
+        "thread_samples": [
+          {
+            "monotonic": 2585767.075183746,
+            "resident_threads": 7,
+            "running_threads": 6
+          },
+          {
+            "monotonic": 2585767.077403462,
+            "resident_threads": 18,
+            "running_threads": 17
+          },
+          {
+            "monotonic": 2585767.079281092,
+            "resident_threads": 18,
+            "running_threads": 17
+          }
+        ],
+        "wall_seconds": 0.005685093346983194,
+        "peak_rss_kib": 845216,
+        "cuda_initialized": false,
+        "budget": {
+          "utc": "2026-10-14T07:27:51.515705+00:00",
+          "free_bytes": 100919517184,
+          "task_allocated_bytes_conservative": 43845050247,
+          "cpu_wall_cumulative_seconds": 10301.011817519577,
+          "http_cumulative_bytes": 14229556764,
+          "collector_rss_kib": 845216
+        }
+      },
+      "author64_real_training_counterfactual": "NOT_MEASURED"
+    },
+    {
+      "id": "SCANS_NOT_UPDATES",
+      "grade": "ACCEPTED_SOURCE_A28_AND_COMPONENT_A45H; NATURAL_COUNTS_UNKNOWN",
+      "finding": "calculate_update_ids has3full-N passes plus visible marking/output handling; update_counter incrementsN then resetsU. Deferred Adam touches selectedU, not necessarilyN. O(N+U) finite-size software explanation is accepted. GR1 logs N/camera/intervals but no natural N_visible/N_updated/U, per-Gaussian counters or selected IDs; do not equate global N with actual updates or measured DRAM.",
+      "source_hash": "f3f32bc04f61749baf57d1bd877b24379597e50cf4a94d04fdde80a11c19ce9f",
+      "A45H_scope": "Synthetic U is constructed union, optimizer fixtures U=N/counter0; neither is natural late U."
+    },
+    {
+      "id": "CAMERA_AND_REUSE",
+      "grade": "RAW_CAMERA_MATCH_RECONFIRMED; GAUSSIAN_REUSE_UNKNOWN",
+      "finding": "All15200cameraIDs match between old/corrected host trajectories; each reviewed100stepwindow has100distinctcameraIDs. This is not a stable Gaussian identity/overlap measurement. Densification finalN differs6672954vs6684932; row indices cannot serve permanentIDs.",
+      "stable_ID_and_cross_step_cache_reuse": "NOT_MEASURED"
+    },
+    {
+      "id": "SH_TRANSFER",
+      "grade": "ACCEPTED_SOURCE_MODEL_A28_PLUS_CALL_RECORDS; BYTES_UNKNOWN",
+      "finding": "A28source audit: active SHdegree ramps0..3 each1000steps, while upload prepares full45shNcoefficients; early unnecessary-upload is a software hypothesis. GR1 early diagnostic logs three gradient-copy source lines1117/1121/1125, but no payloadbytes/actual gradients/IDs. InactiveSH moment exemption does not prove no SH transfer. No measured396B/active-Gaussian or PCIe bandwidth claim.",
+      "conditional_payload_model": {
+        "CPU_appearance_param_B_per_Gaussian": 196,
+        "CPU_two_moments_B_per_Gaussian": 392,
+        "all_param_plus_two_moments_B_per_Gaussian": 708,
+        "with_all_grad_materialized_B_per_Gaussian": 944,
+        "H2D_appearance_B_per_active": 196,
+        "D2H_appearance_gradient_B_per_active": 196,
+        "nominal_total_with_int32_ID": 396,
+        "ID_dtype_native_confirmation": "UNKNOWN",
+        "traffic_grade": "SOURCE_CONDITIONAL_PAYLOAD_NOT_MEASURED_TRAFFIC"
+      }
+    },
+    {
+      "id": "OPTIMIZER_OVERLAP",
+      "grade": "ACCEPTED_A44_TIMING_RECONFIRMED",
+      "finding": "CPUAdam calls57.746/64.779ms per late diagnostic step and forwarding41.855/45.489ms already coexist with worker host envelopes;45/49and50/50GPUworker ends before CPUAdam, signed end deltas37.115/40.413ms. These are host interval relations, not pure CPU bandwidth/PCIe/SM bottleneck attribution or exactly recoverable full-path speedup."
+    },
+    {
+      "id": "SOFTWARE_NEIGHBORS",
+      "grade": "ACCEPTED_SOURCE_PAPER_A28_A44_A46",
+      "finding": "Existing GS-Scale parameter forwarding/deferred optimization and CLM camera reuse/doublebuffer/CPUAdam overlap are strong alternative software explanations. CLM4Kbatch4differentCOLMAP/algorithm cannot be silently substituted for GS-Scale1Kbatch1/200k; no cross-system hardware speedup conclusion."
+    }
+  ],
+  "recomputed_corrected_windows": [
+    {
+      "window_half_open": [
+        100,
+        200
+      ],
+      "diagnostic_steps": [
+        100,
+        149
+      ],
+      "original_body_steps": [
+        150,
+        199
+      ],
+      "diagnostic_samples": 50,
+      "original_body_samples": 50,
+      "gaussians": [
+        1694315
+      ],
+      "diagnostic_mean_cycle_ms": 47.17163359746337,
+      "original_body_mean_cycle_ms": 39.26835177466273,
+      "mean_intervals": {
+        "all_thread_wait_union_ms": 7.833564477041364,
+        "non_L728_main_thread_wait_union_ms": 6.377945635467768,
+        "GPU_worker_sync_L728_union_ms": 2.9834533855319023,
+        "worker_sync_overlap_CPU_Adam_ms": 1.2403888907283545,
+        "CPU_Adam_union_per_step_ms": 11.077618338167667,
+        "parameter_forwarding_Adam_union_per_step_ms": 8.283796524628997,
+        "GPU_event_span_ms": 10.633153915405273,
+        "ID_D2H_host_per_step_union_ms": 0.29618101194500923,
+        "cpu_adam_per_step_union_ms": 11.077618338167667,
+        "gradient_D2H_host_per_step_union_ms": 2.713226666674018,
+        "synchronize_per_step_union_ms": 3.4295345470309258,
+        "frustum_launch_host_per_step_union_ms": 0.385751323774457,
+        "cpu_id_selection_per_step_union_ms": 1.9553130865097046,
+        "join_per_step_union_ms": 0.8364236820489168,
+        "cpu_parameter_forwarding_adam_per_step_union_ms": 8.283796524628997,
+        "metadata_D2H_host_per_step_union_ms": 1.19454400613904,
+        "parameter_H2D_enqueue_per_step_union_ms": 0.2361876145005226
+      },
+      "per_call_mean_ms": {
+        "ID_D2H_host": 0.29618101194500923,
+        "cpu_adam": 11.077618338167667,
+        "gradient_D2H_host": 0.9044088888913393,
+        "synchronize": 1.4403412180642288,
+        "frustum_launch_host": 0.385751323774457,
+        "cpu_id_selection": 1.9553130865097046,
+        "join": 0.8364236820489168,
+        "cpu_parameter_forwarding_adam": 2.604967460575156,
+        "metadata_D2H_host": 0.29863600153476,
+        "parameter_H2D_enqueue": 0.07427283474859202
+      },
+      "call_count": {
+        "ID_D2H_host": 50,
+        "cpu_adam": 50,
+        "gradient_D2H_host": 150,
+        "synchronize": 150,
+        "frustum_launch_host": 50,
+        "cpu_id_selection": 50,
+        "join": 50,
+        "cpu_parameter_forwarding_adam": 159,
+        "metadata_D2H_host": 200,
+        "parameter_H2D_enqueue": 159
+      },
+      "source_line_call_counts": {
+        "synchronize@L1023": 50,
+        "cpu_id_selection@L1067": 50,
+        "cpu_adam@L1069": 50,
+        "synchronize@L1074": 50,
+        "synchronize@L728": 50,
+        "join@L1075": 50,
+        "metadata_D2H_host@L1093": 50,
+        "metadata_D2H_host@L1094": 50,
+        "metadata_D2H_host@L1095": 50,
+        "metadata_D2H_host@L1096": 50,
+        "gradient_D2H_host@L1117": 50,
+        "gradient_D2H_host@L1121": 50,
+        "gradient_D2H_host@L1125": 50,
+        "frustum_launch_host@L1148": 50,
+        "ID_D2H_host@L1242": 50,
+        "cpu_parameter_forwarding_adam@L1267": 30,
+        "parameter_H2D_enqueue@L1268": 30,
+        "cpu_parameter_forwarding_adam@L1277": 50,
+        "parameter_H2D_enqueue@L1278": 50,
+        "cpu_parameter_forwarding_adam@L1287": 50,
+        "parameter_H2D_enqueue@L1288": 50,
+        "cpu_parameter_forwarding_adam@L1257": 20,
+        "parameter_H2D_enqueue@L1258": 20,
+        "cpu_parameter_forwarding_adam@L1264": 9,
+        "parameter_H2D_enqueue@L1265": 9
+      },
+      "worker_sync_L728_contained_in_GPU_worker_envelope_count": 50,
+      "CPU_Adam_call_steps": 50,
+      "GPU_worker_host_envelope_ends_before_CPU_Adam_count": 28,
+      "mean_signed_CPU_Adam_end_minus_worker_host_end_ms": 2.458530617877841,
+      "camera_unique_in_100": 100,
+      "camera_unique_in_diagnostic50": 50,
+      "adjacent_camera_repeats_in_100": 0,
+      "step14500_outlier_ms": null,
+      "other49_diagnostic_mean_ms": null
+    },
+    {
+      "window_half_open": [
+        14500,
+        14600
+      ],
+      "diagnostic_steps": [
+        14500,
+        14549
+      ],
+      "original_body_steps": [
+        14550,
+        14599
+      ],
+      "diagnostic_samples": 50,
+      "original_body_samples": 50,
+      "gaussians": [
+        6476865
+      ],
+      "diagnostic_mean_cycle_ms": 186.43126217648387,
+      "original_body_mean_cycle_ms": 132.4795061070472,
+      "mean_intervals": {
+        "all_thread_wait_union_ms": 30.870944876223803,
+        "non_L728_main_thread_wait_union_ms": 14.084122087806463,
+        "GPU_worker_sync_L728_union_ms": 17.573013082146645,
+        "worker_sync_overlap_CPU_Adam_ms": 15.81347206607461,
+        "CPU_Adam_union_per_step_ms": 57.74591701105237,
+        "parameter_forwarding_Adam_union_per_step_ms": 41.85474146157503,
+        "GPU_event_span_ms": 27.152218322753907,
+        "ID_D2H_host_per_step_union_ms": 0.7895117811858654,
+        "cpu_adam_per_step_union_ms": 57.74591701105237,
+        "gradient_D2H_host_per_step_union_ms": 8.675839090719819,
+        "synchronize_per_step_union_ms": 17.697317991405725,
+        "frustum_launch_host_per_step_union_ms": 0.7800176087766886,
+        "cpu_id_selection_per_step_union_ms": 2.5572562124580145,
+        "join_per_step_union_ms": 0.5255087465047836,
+        "cpu_parameter_forwarding_adam_per_step_union_ms": 41.85474146157503,
+        "metadata_D2H_host_per_step_union_ms": 3.534746626392007,
+        "parameter_H2D_enqueue_per_step_union_ms": 1.2542898021638393
+      },
+      "per_call_mean_ms": {
+        "ID_D2H_host": 0.7895117811858654,
+        "cpu_adam": 58.92440511331875,
+        "gradient_D2H_host": 2.891946363573273,
+        "synchronize": 6.043842975050211,
+        "frustum_launch_host": 0.7647231458594986,
+        "cpu_id_selection": 2.609445114753076,
+        "join": 0.5255087465047836,
+        "metadata_D2H_host": 0.8836866565980017,
+        "parameter_H2D_enqueue": 0.2090483003606399,
+        "cpu_parameter_forwarding_adam": 7.046252771308928
+      },
+      "call_count": {
+        "ID_D2H_host": 50,
+        "cpu_adam": 49,
+        "gradient_D2H_host": 150,
+        "synchronize": 150,
+        "frustum_launch_host": 51,
+        "cpu_id_selection": 49,
+        "join": 50,
+        "cpu_parameter_forwarding_adam": 297,
+        "metadata_D2H_host": 200,
+        "parameter_H2D_enqueue": 300
+      },
+      "source_line_call_counts": {
+        "synchronize@L1023": 50,
+        "cpu_id_selection@L1067": 49,
+        "synchronize@L728": 50,
+        "cpu_adam@L1069": 49,
+        "synchronize@L1074": 50,
+        "join@L1075": 50,
+        "metadata_D2H_host@L1093": 50,
+        "metadata_D2H_host@L1094": 50,
+        "metadata_D2H_host@L1095": 50,
+        "metadata_D2H_host@L1096": 50,
+        "gradient_D2H_host@L1117": 50,
+        "gradient_D2H_host@L1121": 50,
+        "gradient_D2H_host@L1125": 50,
+        "frustum_launch_host@L1148": 50,
+        "frustum_launch_host@L1225": 1,
+        "ID_D2H_host@L1229": 1,
+        "parameter_H2D_enqueue@L1232": 1,
+        "parameter_H2D_enqueue@L1233": 1,
+        "parameter_H2D_enqueue@L1234": 1,
+        "ID_D2H_host@L1242": 49,
+        "cpu_parameter_forwarding_adam@L1264": 150,
+        "parameter_H2D_enqueue@L1265": 150,
+        "cpu_parameter_forwarding_adam@L1267": 49,
+        "parameter_H2D_enqueue@L1268": 49,
+        "cpu_parameter_forwarding_adam@L1277": 49,
+        "parameter_H2D_enqueue@L1278": 49,
+        "cpu_parameter_forwarding_adam@L1287": 49,
+        "parameter_H2D_enqueue@L1288": 49
+      },
+      "worker_sync_L728_contained_in_GPU_worker_envelope_count": 50,
+      "CPU_Adam_call_steps": 49,
+      "GPU_worker_host_envelope_ends_before_CPU_Adam_count": 45,
+      "mean_signed_CPU_Adam_end_minus_worker_host_end_ms": 37.11480804129827,
+      "camera_unique_in_100": 100,
+      "camera_unique_in_diagnostic50": 50,
+      "adjacent_camera_repeats_in_100": 0,
+      "step14500_outlier_ms": 2454.756827093661,
+      "other49_diagnostic_mean_ms": 140.13890370878636
+    },
+    {
+      "window_half_open": [
+        15100,
+        15200
+      ],
+      "diagnostic_steps": [
+        15100,
+        15149
+      ],
+      "original_body_steps": [
+        15150,
+        15199
+      ],
+      "diagnostic_samples": 50,
+      "original_body_samples": 50,
+      "gaussians": [
+        6684932
+      ],
+      "diagnostic_mean_cycle_ms": 147.424731599167,
+      "original_body_mean_cycle_ms": 133.80954686552286,
+      "mean_intervals": {
+        "all_thread_wait_union_ms": 32.12791324593127,
+        "non_L728_main_thread_wait_union_ms": 14.74577677436173,
+        "GPU_worker_sync_L728_union_ms": 17.382136471569538,
+        "worker_sync_overlap_CPU_Adam_ms": 17.382136471569538,
+        "CPU_Adam_union_per_step_ms": 64.77932250127196,
+        "parameter_forwarding_Adam_union_per_step_ms": 45.48865428194404,
+        "GPU_event_span_ms": 27.195146865844727,
+        "ID_D2H_host_per_step_union_ms": 0.8400785084813833,
+        "cpu_adam_per_step_union_ms": 64.77932250127196,
+        "gradient_D2H_host_per_step_union_ms": 9.54133303835988,
+        "synchronize_per_step_union_ms": 17.51747808419168,
+        "frustum_launch_host_per_step_union_ms": 0.8049735333770514,
+        "cpu_id_selection_per_step_union_ms": 2.9731226433068514,
+        "join_per_step_union_ms": 0.0272541306912899,
+        "cpu_parameter_forwarding_adam_per_step_union_ms": 45.48865428194404,
+        "metadata_D2H_host_per_step_union_ms": 4.201769484207034,
+        "parameter_H2D_enqueue_per_step_union_ms": 0.9417046327143908
+      },
+      "per_call_mean_ms": {
+        "ID_D2H_host": 0.8400785084813833,
+        "cpu_adam": 64.77932250127196,
+        "gradient_D2H_host": 3.1804443461199603,
+        "synchronize": 5.839159361397226,
+        "frustum_launch_host": 0.8049735333770514,
+        "cpu_id_selection": 2.9731226433068514,
+        "join": 0.0272541306912899,
+        "cpu_parameter_forwarding_adam": 7.085460168527108,
+        "metadata_D2H_host": 1.0504423710517585,
+        "parameter_H2D_enqueue": 0.14668296459725713
+      },
+      "call_count": {
+        "ID_D2H_host": 50,
+        "cpu_adam": 50,
+        "gradient_D2H_host": 150,
+        "synchronize": 150,
+        "frustum_launch_host": 50,
+        "cpu_id_selection": 50,
+        "join": 50,
+        "cpu_parameter_forwarding_adam": 321,
+        "metadata_D2H_host": 200,
+        "parameter_H2D_enqueue": 321
+      },
+      "source_line_call_counts": {
+        "synchronize@L1023": 50,
+        "cpu_id_selection@L1067": 50,
+        "synchronize@L728": 50,
+        "cpu_adam@L1069": 50,
+        "synchronize@L1074": 50,
+        "join@L1075": 50,
+        "metadata_D2H_host@L1093": 50,
+        "metadata_D2H_host@L1094": 50,
+        "metadata_D2H_host@L1095": 50,
+        "metadata_D2H_host@L1096": 50,
+        "gradient_D2H_host@L1117": 50,
+        "gradient_D2H_host@L1121": 50,
+        "gradient_D2H_host@L1125": 50,
+        "frustum_launch_host@L1148": 50,
+        "ID_D2H_host@L1242": 50,
+        "cpu_parameter_forwarding_adam@L1264": 171,
+        "parameter_H2D_enqueue@L1265": 171,
+        "cpu_parameter_forwarding_adam@L1267": 49,
+        "parameter_H2D_enqueue@L1268": 49,
+        "cpu_parameter_forwarding_adam@L1277": 50,
+        "parameter_H2D_enqueue@L1278": 50,
+        "cpu_parameter_forwarding_adam@L1287": 50,
+        "parameter_H2D_enqueue@L1288": 50,
+        "cpu_parameter_forwarding_adam@L1257": 1,
+        "parameter_H2D_enqueue@L1258": 1
+      },
+      "worker_sync_L728_contained_in_GPU_worker_envelope_count": 50,
+      "CPU_Adam_call_steps": 50,
+      "GPU_worker_host_envelope_ends_before_CPU_Adam_count": 50,
+      "mean_signed_CPU_Adam_end_minus_worker_host_end_ms": 40.41314150206745,
+      "camera_unique_in_100": 100,
+      "camera_unique_in_diagnostic50": 50,
+      "adjacent_camera_repeats_in_100": 0,
+      "step14500_outlier_ms": null,
+      "other49_diagnostic_mean_ms": null
+    }
+  ],
+  "comparison_limits": {
+    "same_camera_order": true,
+    "bitwise_same_Gaussian_trajectory": false,
+    "first_final_N": 6672954,
+    "corrected_final_N": 6684932,
+    "diagnostic_vs_original_body": "First50diagnostic and next50originalbody have differentcameras and observer cost; their mean difference is not exact observeroverhead.",
+    "old_vs_corrected": "Different states, observer versions and run order; cannot report paired late speedup.",
+    "early_host_vs_GPU_only": "Different optimizer math/deferred semantics; early205steps not latecapacity or matched qualitybaseline."
+  },
+  "resource_attribution": {
+    "native_budget_receipt": {
+      "process_tree_peak_RSS_bytes": 26337488896,
+      "GPU_process_peak_sampled_MiB": 3638,
+      "effective_running_threads_sampled_max": 22,
+      "sampling_limit": "discrete samples plus 13GiB Torch allocator cap/1GiB context allowance; no instantaneous perfect peak claim"
+    },
+    "interpretation": "Budget compliance, allocator peaks and host waits do not establish CPU/GPU/PCIe bandwidth, cache miss, SM occupancy or physical headroom. No causal resource sweep/NCU/NSYS was run in GR1.",
+    "still_unclosed": [
+      "Natural visible and actually updated sets/counter distribution with stableGaussianIDs.",
+      "Complete late optimizer/counter/RNG/loader state and validated resume provenance; external stop may leave pending gradients.",
+      "Author64and strong semantically matched thread/placement policy on real late fullpipeline.",
+      "Uninstrumented matched late strongsoftware baseline and quality/time-to-quality.",
+      "Measured effective transfer bytes and synchronized device/host criticalpath/resource counters."
+    ]
+  },
+  "checkpoint_boundary": {
+    "completed_receipt_pending_gradient": true,
+    "full_state_resume_authority": "ABSENT; splatsonly checkpoint not complete deferred optimizer/counter/RNG/loader state. Do not construct late-state evidence by unsupported resume.",
+    "current_permission": "CPU evidence review only; no automatic new training/profiling/cache mechanism."
+  },
+  "source_access_limit": {
+    "author_blobs_registered_not_available_as_local_gitobjects": [
+      "e37d13e3f7514aa81320994dab9853b06a9bb275",
+      "f1b40eb4283cfd95c9b26b01448d7275f5aa0958"
+    ],
+    "handling": "No fetching, private source directory search, or active raw inspection. Global-scan/SH/checkpoint source statements are attributed to accepted fixed A28/A45H/A46 source audits, not claimed as a fresh direct source-file reading."
+  },
+  "source_line_anchors": {
+    "native_runner": {
+      "region_starts={}": [
+        42
+      ],
+      "tag='synchronize'": [
+        61
+      ],
+      "bases & {'colorsN'": [
+        76
+      ],
+      "cpu_parameter_forwarding_adam": [
+        65
+      ],
+      "def gpu_event_work": [
+        96
+      ],
+      "host_worker_begin": [
+        103,
+        157
+      ],
+      "original_loop": [
+        88,
+        90
+      ],
+      "camera=current": [
+        118,
+        120
+      ],
+      "source_sha256": [
+        146
+      ]
+    },
+    "summarize_native": {
+      "def union": [
+        7
+      ],
+      "if tag in": [
+        20
+      ],
+      "statistics.mean(unhidden)": [
+        23
+      ],
+      "region_mean_host_seconds": [
+        23
+      ]
+    },
+    "A44": {
+      "????": [],
+      "GPU???": [],
+      "45?": []
+    },
+    "A28": {
+      "396 B": [
+        45
+      ],
+      "???Gaussian": [],
+      "??45?": [],
+      "checkpoint": [
+        51
+      ]
+    },
+    "A45H": {
+      "three full-N passes": [
+        49
+      ],
+      "Author64-thread performance": [
+        61
+      ],
+      "synthetic U=N": [
+        28
+      ],
+      "Nonzero deferred counters": [
+        28
+      ]
+    },
+    "A46": {
+      "torch_threads": [
+        40
+      ],
+      "??OMP16": [],
+      "??????": []
+    }
+  },
+  "source_manifest": [
+    {
+      "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/FINAL_REPORT.md",
+      "blob": "aeba830eb4f37d157027a07a77c6874209c07299",
+      "sha256": "8aaa60cf8f571d9bc6894c14aac91ea5ae1bb8e4d1d5791a22b49895d961b90e",
+      "bytes": 9236
+    },
+    {
+      "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/GATES.json",
+      "blob": "5a48d01126aa4761e3b772b73c4b08725ad7024b",
+      "sha256": "9ee644d1531d24f1ff7e8e8b04d7619e81f93dca158cade0c8389c6eeb0a8ef9",
+      "bytes": 927
+    },
+    {
+      "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/FINAL_DECISION.json",
+      "blob": "299cded1668f3b912bd9f585910d66d92288a2bc",
+      "sha256": "8f5fc0bf7cdec2df50605097cb914a7a487cb6b75747eec476f992b6d308e8e8",
+      "bytes": 1461
+    },
+    {
+      "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/MEASUREMENT_WINDOWS.json",
+      "blob": "f94fc1c3ac94ad8e782ab35658e291515e6fa4c1",
+      "sha256": "8b48aad24b393a71afa9f3f334c4873ebc2ea523193a7336908d4450ae2dcdbc",
+      "bytes": 35588
+    },
+    {
+      "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/SOURCE_PROVENANCE.json",
+      "blob": "8b09da93a2541154d16869716b0fe20e9bcf8fc2",
+      "sha256": "405b96ed7f7a2b41ecd7a0260c14a6070e1973880c0ffd9a17f751f7735e3441",
+      "bytes": 5421
+    },
+    {
+      "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/BUILD_AND_THREAD.json",
+      "blob": "39b3f0ec03dc1767450a45f885a1fd23d7f7618c",
+      "sha256": "e638984864f934a1910eb2f15fb1e4b2204ee5e13a208f2caef88d1e6994afb7",
+      "bytes": 3222
+    },
+    {
+      "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/ENGINEERING_RECEIPTS.json",
+      "blob": "fe804c38f30c300cf1544651d67f1fac9cd6714e",
+      "sha256": "b3db3fdd0d1941ed7dcb43422c5d4d993a7ebb7b0dbbf4824ef11364228d11de",
+      "bytes": 6142
+    },
+    {
+      "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/NATIVE_FUNCTIONAL_QUALITY.json",
+      "blob": "f90b81b4af95f0d2f255ad8cb5ed97421555985c",
+      "sha256": "73b1eca99b352b71b56d838e0a689e1ae09e20f0e5ab9093656c0123c28ae2ba",
+      "bytes": 13392
+    },
+    {
+      "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/BUDGET_CUMULATIVE.json",
+      "blob": "5f7adb6153b40250e6dadbd2843b903e7e2a9ae4",
+      "sha256": "8b6c7f4e33684844f2b4afed307ba4b1cdd152d6366b980e39f59d1402022109",
+      "bytes": 9223
+    },
+    {
+      "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/RUN_IDENTITY.json",
+      "blob": "5b875724c27bda4ce1ed44da1480e85ce53c2aa1",
+      "sha256": "35068d30204fa74e27ed5e01f59f6cdb19d9a287b406f86595427b07be10abcc",
+      "bytes": 1127
+    },
+    {
+      "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/PUBLICATION_READBACK.json",
+      "blob": "b22483013e32896c1bc5b929e0b5079d6a8fb532",
+      "sha256": "8e775ab350676105f37b39ecc759e568bbb340d9eceb0403af41a8ee2a1d895e",
+      "bytes": 20053
+    },
+    {
+      "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/SHA256SUMS",
+      "blob": "3314130d24e55e07c3f8d8530f732514486b94e1",
+      "sha256": "a6b9f34e63cfe19ae57a5107370a19a18b5041f29283ace6df8f238d330762e5",
+      "bytes": 11607
+    },
+    {
+      "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+      "path": "tools/aiarch_a26gr1/native_runner.py",
+      "blob": "6201c2bcce52403a8c4d500d895a3ace063c4474",
+      "sha256": "4df2de04221072417a28167323dc3cb163cffbb119c4df3c33c14d79d291cc9b",
+      "bytes": 12742
+    },
+    {
+      "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+      "path": "tools/aiarch_a26gr1/summarize_native.py",
+      "blob": "3bb9de0e981109eb6ab63c12baaf6dc8bac8bde5",
+      "sha256": "0bed5c95bca68ec25dfd9f8a1a659aa1182ab17d7ddf848819c321d84be1398a",
+      "bytes": 4302
+    },
+    {
+      "commit": "ed365741b230718f6ffc1ccbed125fc2566aac15",
+      "path": "docs/ai_workload_research/reviews/AI_ARCH_A44_A26GR1_NATIVE_THREAD_ATTRIBUTION_REVIEW_2026-10-14_V1.md",
+      "blob": "dd1746142e476f43f31b38556a69f20e494b9433",
+      "sha256": "3628368f8a34c21c0d3e0c650c1d0728a526dbd636d0599bb7cbf4db76230336",
+      "bytes": 3556
+    },
+    {
+      "commit": "ed365741b230718f6ffc1ccbed125fc2566aac15",
+      "path": "docs/ai_workload_research/literature/AI_ARCH_A28_RUBBLE_CLM_AND_GSSCALE_TRANSFER_SOURCE_AUDIT_2026-10-14_V1.md",
+      "blob": "a8176b237924b09a02b787bef86374a11d89401d",
+      "sha256": "d7d7a7ea1ccec704f69132b3ce452bf8c6cbe6bc6319df50bd328f49be0e146b",
+      "bytes": 11403
+    },
+    {
+      "commit": "ed365741b230718f6ffc1ccbed125fc2566aac15",
+      "path": "docs/ai_workload_research/reviews/AI_ARCH_A46_A45H_A45S_INDEPENDENT_SCIENTIFIC_REVIEW_2026-10-14_V1.md",
+      "blob": "e3999d92e1ce7cba4328098ee864e0020f2f0b04",
+      "sha256": "c653c515f90e68f7ebf405b079546eb49786a388d07e30176fad7e4e0e0d3c19",
+      "bytes": 10837
+    },
+    {
+      "commit": "1936dffd204043a1ab6c0fad5e7aebf565497c1a",
+      "path": "docs/ai_workload_research/reviews/AI_ARCH_A45H_CPUADAM_CPUONLY_SOFTWARE_REBUTTAL_109_V1.md",
+      "blob": "6ca6e43895f468f6de8ebb85fca12fa17e07aa2f",
+      "sha256": "c84108a8817c98be503c62ccfa5b8bca9f3a7bb783dda1d8299a2d546bf34db7",
+      "bytes": 10900
+    },
+    {
+      "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/raw/host_late_verified/config.json",
+      "blob": "9ad00754d487910b71faaf234ff1b9b442191577",
+      "sha256": "53c615ea63951aeca8e27845a6db8f2c93338ebd8ec10f680e66b0c3f039afae",
+      "bytes": 1897
+    },
+    {
+      "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/raw/host_late_verified/initialized.json",
+      "blob": "fb65c167640474b590a1aeb240ec6146af1a999d",
+      "sha256": "be1024f9f8064a6f19c4788271418fec83a0906e8affe58863894dc7db0ef14c",
+      "bytes": 519
+    },
+    {
+      "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/raw/host_late_verified/completed.json",
+      "blob": "4bbd48e0f0dcb9376a2d7c041643984392cc6a45",
+      "sha256": "90fd6c6bb52bd621df3dfe27d0ebe5160801a148acb302d6b279486b6e459284",
+      "bytes": 475
+    },
+    {
+      "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/raw/host_late_verified/gpu_event_spans.json",
+      "blob": "0258faba2c9b9cf0ade4b29efcb414a709cdd7d5",
+      "sha256": "862f1cdf3fe5c7f03de59e7e05ef9cdab90d74e7d7af0099e6f9a03b570f89e1",
+      "bytes": 44938
+    },
+    {
+      "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/raw/host_late_verified/raw_steps.jsonl",
+      "blob": "004e857d14b55c501d9303e11e4102fdef5edda3",
+      "sha256": "3b458462fa0c99fde6db7198b3b2b92903036ccd8406398fa345950817fde405",
+      "bytes": 4122403
+    },
+    {
+      "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/raw/host_late/raw_steps.jsonl",
+      "blob": "9cfb4cf1e186f20834aaff10c4afe914127133c4",
+      "sha256": "62edcd932c1d37124034354d6c2e0105e7018a6351bd27200b82cf9decfb175b",
+      "bytes": 4009025
+    }
+  ],
+  "SHA256SUMS_read_items_verified": [
+    {
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/FINAL_REPORT.md",
+      "matches_frozen_SHA256SUMS": true
+    },
+    {
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/GATES.json",
+      "matches_frozen_SHA256SUMS": true
+    },
+    {
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/FINAL_DECISION.json",
+      "matches_frozen_SHA256SUMS": true
+    },
+    {
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/MEASUREMENT_WINDOWS.json",
+      "matches_frozen_SHA256SUMS": true
+    },
+    {
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/SOURCE_PROVENANCE.json",
+      "matches_frozen_SHA256SUMS": true
+    },
+    {
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/BUILD_AND_THREAD.json",
+      "matches_frozen_SHA256SUMS": true
+    },
+    {
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/ENGINEERING_RECEIPTS.json",
+      "matches_frozen_SHA256SUMS": true
+    },
+    {
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/NATIVE_FUNCTIONAL_QUALITY.json",
+      "matches_frozen_SHA256SUMS": true
+    },
+    {
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/BUDGET_CUMULATIVE.json",
+      "matches_frozen_SHA256SUMS": true
+    },
+    {
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/RUN_IDENTITY.json",
+      "matches_frozen_SHA256SUMS": true
+    },
+    {
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/PUBLICATION_READBACK.json",
+      "matches_frozen_SHA256SUMS": true
+    },
+    {
+      "path": "tools/aiarch_a26gr1/native_runner.py",
+      "matches_frozen_SHA256SUMS": true
+    },
+    {
+      "path": "tools/aiarch_a26gr1/summarize_native.py",
+      "matches_frozen_SHA256SUMS": true
+    },
+    {
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/raw/host_late_verified/config.json",
+      "matches_frozen_SHA256SUMS": true
+    },
+    {
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/raw/host_late_verified/initialized.json",
+      "matches_frozen_SHA256SUMS": true
+    },
+    {
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/raw/host_late_verified/completed.json",
+      "matches_frozen_SHA256SUMS": true
+    },
+    {
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/raw/host_late_verified/gpu_event_spans.json",
+      "matches_frozen_SHA256SUMS": true
+    },
+    {
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/raw/host_late_verified/raw_steps.jsonl",
+      "matches_frozen_SHA256SUMS": true
+    },
+    {
+      "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/raw/host_late/raw_steps.jsonl",
+      "matches_frozen_SHA256SUMS": true
+    }
+  ],
+  "CPU_review_resource": {
+    "scope": "Final build/recompute process only; prior bounded git-show inspections read the same frozen files, not included in this exact payload total.",
+    "read_blob_count": 24,
+    "read_unique_blob_bytes": 8350396,
+    "python_threads": 1,
+    "process_status": {
+      "VmHWM": "73128 kB",
+      "VmRSS": "73128 kB",
+      "Threads": "1"
+    },
+    "peak_rusage_RSS_KiB": 72776,
+    "OMP_NUM_THREADS": "1"
+  },
+  "decision": "GS remains accepted real native evidence with software/thread confounding and resource attribution unclosed. This portfolio review reuses already accepted A44/A45H corrections; it does not authorize duplicated CPU audit, heavy retraining, GPU collection or a new hardware mechanism.",
+  "Q1_late_window_contract_supplement": {
+    "created_utc": "2026-11-06T01:52:33.723591+00:00",
+    "purpose": "Q1 minimum-contract source/evidence supplement only; no new execution authorization.",
+    "frozen_schedule": {
+      "max_steps": 200000,
+      "steps_scaler": 1.0,
+      "strategy": {
+        "prune_opa": 0.005,
+        "grow_grad2d": 0.0002,
+        "grow_scale3d": 0.01,
+        "grow_scale2d": 0.05,
+        "prune_scale3d": 0.1,
+        "prune_scale2d": 0.15,
+        "refine_scale2d_stop_iter": 0,
+        "refine_start_iter": 500,
+        "refine_stop_iter": 15000,
+        "reset_every": 3000,
+        "refine_every": 100,
+        "pause_refine_after_reset": 0,
+        "absgrad": false,
+        "revised_opacity": false,
+        "verbose": true,
+        "key_for_gradient": "means2d"
+      },
+      "interpretation": "Original schedule includes refine_stop_iter15000. No artificial early densification disable is required to target a later existing window. Config plus raw net-count evidence is preserved; this supplement does not re-read author strategy implementation or claim every state mutation stops."
+    },
+    "observed_net_N_stability": {
+      "host_late": {
+        "last_observed_net_N_change": {
+          "previous_step": 14899,
+          "previous_N": 6620888,
+          "step": 14900,
+          "N": 6672954
+        },
+        "stable_to_recorded_final_step": 15200,
+        "final_N": 6672954,
+        "windows": [
+          {
+            "half_open": [
+              15000,
+              15100
+            ],
+            "actual_rows": 100,
+            "N_counts": {
+              "6672954": 100
+            },
+            "timing_kind_counts": {
+              "outer_wall_original_train_body": 100
+            },
+            "net_N_stable": true
+          },
+          {
+            "half_open": [
+              15050,
+              15200
+            ],
+            "actual_rows": 150,
+            "N_counts": {
+              "6672954": 150
+            },
+            "timing_kind_counts": {
+              "outer_wall_original_train_body": 100,
+              "opt_in_diagnostic": 50
+            },
+            "net_N_stable": true
+          },
+          {
+            "half_open": [
+              15100,
+              15200
+            ],
+            "actual_rows": 100,
+            "N_counts": {
+              "6672954": 100
+            },
+            "timing_kind_counts": {
+              "opt_in_diagnostic": 50,
+              "outer_wall_original_train_body": 50
+            },
+            "net_N_stable": true
+          },
+          {
+            "half_open": [
+              15150,
+              15200
+            ],
+            "actual_rows": 50,
+            "N_counts": {
+              "6672954": 50
+            },
+            "timing_kind_counts": {
+              "outer_wall_original_train_body": 50
+            },
+            "net_N_stable": true
+          },
+          {
+            "half_open": [
+              15100,
+              15201
+            ],
+            "actual_rows": 101,
+            "N_counts": {
+              "6672954": 101
+            },
+            "timing_kind_counts": {
+              "opt_in_diagnostic": 50,
+              "outer_wall_original_train_body": 51
+            },
+            "net_N_stable": true
+          }
+        ]
+      },
+      "host_late_verified": {
+        "last_observed_net_N_change": {
+          "previous_step": 14899,
+          "previous_N": 6631448,
+          "step": 14900,
+          "N": 6684932
+        },
+        "stable_to_recorded_final_step": 15200,
+        "final_N": 6684932,
+        "windows": [
+          {
+            "half_open": [
+              15000,
+              15100
+            ],
+            "actual_rows": 100,
+            "N_counts": {
+              "6684932": 100
+            },
+            "timing_kind_counts": {
+              "outer_wall_original_train_body": 100
+            },
+            "net_N_stable": true
+          },
+          {
+            "half_open": [
+              15050,
+              15200
+            ],
+            "actual_rows": 150,
+            "N_counts": {
+              "6684932": 150
+            },
+            "timing_kind_counts": {
+              "outer_wall_original_train_body": 100,
+              "opt_in_diagnostic": 50
+            },
+            "net_N_stable": true
+          },
+          {
+            "half_open": [
+              15100,
+              15200
+            ],
+            "actual_rows": 100,
+            "N_counts": {
+              "6684932": 100
+            },
+            "timing_kind_counts": {
+              "opt_in_diagnostic": 50,
+              "outer_wall_original_train_body": 50
+            },
+            "net_N_stable": true
+          },
+          {
+            "half_open": [
+              15150,
+              15200
+            ],
+            "actual_rows": 50,
+            "N_counts": {
+              "6684932": 50
+            },
+            "timing_kind_counts": {
+              "outer_wall_original_train_body": 50
+            },
+            "net_N_stable": true
+          },
+          {
+            "half_open": [
+              15100,
+              15201
+            ],
+            "actual_rows": 101,
+            "N_counts": {
+              "6684932": 101
+            },
+            "timing_kind_counts": {
+              "opt_in_diagnostic": 50,
+              "outer_wall_original_train_body": 51
+            },
+            "net_N_stable": true
+          }
+        ]
+      }
+    },
+    "window_count_correction": "Existing [15050,15200) is150steps after configured refine-stop. [15100,15200) is100steps; raw has only101records from15100through15200inclusive, so150post15100samples are unavailable.",
+    "Q1_legal_late_window_conditions": [
+      "Use original frozen source/math, nominal200000schedule, refine stop15000 and all other strategy fields unchanged; do not force-disable densification or fabricate a late state.",
+      "Prefer a preregistered post-refine window such as [15100,15200), with explicit observer50/ordinary50 identities. For an existing original-body-only denominator use [15150,15200),50samples. [15050,15200) supplies150historicalrecords but mixes100ordinary and50diagnostic, so do not merge them as one homogeneous timing sample.",
+      "Require real authorized continuous progression from the accepted initial scene, or a separately validated complete-state restore. Existing splat-only checkpoint and external stop with pending gradients do not qualify a late resume.",
+      "Observe N/camera/visible U/counter distributions in any future authorized run. Stable net N alone does not establish stableGaussianidentities or unchanged membership, parameters, moments, opacity resets, counters or workload.",
+      "Across thread-policy arms, identical seed/camera order does not guarantee bitwise identical densification trajectories. Require a matched-state provenance protocol or report independent trajectories without paired-speedup claims.",
+      "Keep diagnostic and uninstrumented wall denominators separate; do not subtract different camera halves to estimate observer overhead. Keep host-thread wait attribution and GPU/host timing domains separate."
+    ],
+    "memory_contract": {
+      "historical_process_tree_sampled_RSS_peak_bytes": 26337488896,
+      "historical_RSS_GiB": 24.528697967529297,
+      "historical_host_RSS_limit_bytes": 51539607552,
+      "Qwen16GiB_bytes": 17179869184,
+      "historical_peak_exceeds16GiB": true,
+      "requirement": "Q1 must have an independent host-memory cap and qualification. Cannot inherit Qwen's16GiB cap; historical48GiB was the GR1 authorization ceiling, not automatically new permission or current free capacity. Sampled process RSS is not perfect instantaneous or cgroup-charged peak; buffers/parallel arms need explicit headroom and accounting."
+    },
+    "thread_contract": {
+      "author_request": "Original omp_set_num_threads64 unchanged.",
+      "historical_training_policy": "OMP_THREAD_LIMIT16 under24effective-thread budget; no author64training counterfactual.",
+      "accepted_component_machine_record": "A45H reported i7-13700,24logicalCPUs and defaultaffinity0-23. This is historicalfixed evidence, not a current cpuset probe.",
+      "requirements": [
+        "In any future separately authorized run bind actual allowed cpuset/logicalCPU identity and total process-tree thread budget before selecting a policy; do not equate machine24logical with alwaysallowed24.",
+        "Preserve64request versus effectiveOMPcap distinction, terminalTorchthreadstate caveat fromA46, P/Ecore/SMT/affinity/frequency/background-load confounding.",
+        "An OMPcap1/8/16counterfactual is software policy sensitivity, not author64parity or isolated memory-bandwidth evidence."
+      ]
+    },
+    "remaining_gaps": [
+      "No150samples after15100in existingarchive.",
+      "No completevalidatedlateoptimizer/counter/RNG/loadercheckpoint; pending-gradient externalstop.",
+      "NaturalN_visible/U/stableGaussianIDs and fullstatebytes absent.",
+      "Author64same-semanticsreal-latebaseline absent.",
+      "No currentasset/process/freecapacity/cpusetinspection performed; new resourcequalification remains future approval-dependent."
+    ],
+    "sources": [
+      {
+        "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+        "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/raw/host_late_verified/config.json",
+        "blob": "9ad00754d487910b71faaf234ff1b9b442191577",
+        "sha256": "53c615ea63951aeca8e27845a6db8f2c93338ebd8ec10f680e66b0c3f039afae",
+        "bytes": 1897
+      },
+      {
+        "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+        "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/BUDGET_CUMULATIVE.json",
+        "blob": "5f7adb6153b40250e6dadbd2843b903e7e2a9ae4",
+        "sha256": "8b6c7f4e33684844f2b4afed307ba4b1cdd152d6366b980e39f59d1402022109",
+        "bytes": 9223
+      },
+      {
+        "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+        "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/raw/host_late/raw_steps.jsonl",
+        "blob": "9cfb4cf1e186f20834aaff10c4afe914127133c4",
+        "sha256": "62edcd932c1d37124034354d6c2e0105e7018a6351bd27200b82cf9decfb175b",
+        "bytes": 4009025
+      },
+      {
+        "commit": "cf80f6ec07a31eccdaff264c3bce64e0511179f8",
+        "path": "docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/raw/host_late_verified/raw_steps.jsonl",
+        "blob": "004e857d14b55c501d9303e11e4102fdef5edda3",
+        "sha256": "3b458462fa0c99fde6db7198b3b2b92903036ccd8406398fa345950817fde405",
+        "bytes": 4122403
+      }
+    ],
+    "CPU_supplement_receipt": {
+      "frozen_blob_bytes_read": 8142548,
+      "threads": 1,
+      "peak_rusage_RSS_KiB": 48336,
+      "GPU_CUDA_NVML_lock_operations": false,
+      "current_assets_or_processes_inspected": false
+    }
+  }
+}

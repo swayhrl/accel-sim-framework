@@ -1,0 +1,714 @@
+{
+  "schema": "next-stage-portfolio.moe-hybrid-authority-review.v1",
+  "created_utc": "2026-11-06T01:39:16.721923+00:00",
+  "headline_zh": "Q2动态KV/Hybrid与Q3MoE均未建立新的native准入；A71/A72只接受旧source范围STOP，A30T仅H200条件性源候选，A81仍缺真实weight/activation成对authority。",
+  "question_numbering": {
+    "Q2": "动态KV/Hybrid State",
+    "Q3": "MoE自然路由"
+  },
+  "scope": {
+    "root": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-next-stage-portfolio-review-109-v1",
+    "writes_only": [
+      "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-next-stage-portfolio-review-109-v1/docs/ai_workload_research/discovery/AI_ARCH_NEXT_STAGE_PORTFOLIO_REVIEW_V1/evidence/MOE_HYBRID_AUTHORITY_REVIEW.json",
+      "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-next-stage-portfolio-review-109-v1/docs/ai_workload_research/discovery/AI_ARCH_NEXT_STAGE_PORTFOLIO_REVIEW_V1/evidence/MOE_HYBRID_AUTHORITY_REVIEW.md"
+    ],
+    "fixed_git_only": true,
+    "GPU_CUDA_NVML_device_queries_locks": false,
+    "node164_access": false,
+    "active_GPU_raw_read": false,
+    "model_asset_or_dataset_scan": false,
+    "model_runtime_import_or_execution": false,
+    "model_install_download_merge_old_output_modification": false,
+    "network_fetches": 0,
+    "reason_no_fetch": "All explicitly requested fixed objects existed locally.",
+    "current_environment_not_assessed": true
+  },
+  "authority_findings": [
+    {
+      "source_id": "A70N",
+      "source_commit": "5076223db5db0256fd0ccacec50b5347a0cab8c5",
+      "review_commits": [
+        "94f2b2f7d7def1adac47c76ee279eb78977c654a",
+        "df7e11bc1206a53e4dd28c021309baf26142a333"
+      ],
+      "source_result": "NO_SURVIVOR_IN_SEARCH_SCOPE,0primary/0backup",
+      "accepted_level": "SOURCE_SCOPE_ACCEPTED_NOT_NATIVE_NEGATIVE",
+      "native_execution_authority": false
+    },
+    {
+      "source_id": "A70O",
+      "source_commit": "94ca01df352cf4cf707cd35e5f9f63d4eff014c6",
+      "review_commits": [
+        "94f2b2f7d7def1adac47c76ee279eb78977c654a",
+        "df7e11bc1206a53e4dd28c021309baf26142a333"
+      ],
+      "source_result": "NO_SURVIVOR_IN_SEARCH_SCOPE,0primary/0backup",
+      "accepted_level": "SOURCE_SCOPE_ACCEPTED_NOT_NATIVE_NEGATIVE",
+      "native_execution_authority": false
+    },
+    {
+      "source_id": "A30T",
+      "source_commit": "1a8b9317de4c16e3dd19018f7f42cae1ebf5750e",
+      "review_commits": [
+        "53a333f2b38236632f1c371bb72119dbf52f2b14"
+      ],
+      "source_result": "SOURCE_QUALIFIED_PROBE_CANDIDATE / H200_SM90A_CONDITIONAL",
+      "accepted_level": "ACCEPT_SCOPED_H200_CONDITIONAL_SOURCE_CANDIDATE",
+      "native_execution_authority": false,
+      "SM89": "PLATFORM_NOT_QUALIFIED"
+    },
+    {
+      "source_id": "A81",
+      "source_commit": "492c7c79e130d60cb344d723c15751afe81a5a82",
+      "review_commits": [],
+      "source_result": "NO_REAL_TENSOR_AUTHORITY / G0 STOP",
+      "accepted_level": "EXECUTOR_SOURCE_RESULT_AND_PUBLICATION_READBACK;no independent later native acceptance found",
+      "native_execution_authority": false
+    }
+  ],
+  "later_authority_check": {
+    "base_HEAD_commit": "ed365741b230718f6ffc1ccbed125fc2566aac15",
+    "base_HEAD_tree": "e2f3c9d2d4485b0d41db6c6ceec33af0d8e35304",
+    "is_shallow": "false",
+    "queries": [
+      {
+        "argv": [
+          "git",
+          "log",
+          "--all",
+          "--since=2026-10-14",
+          "--format=%H %cI %s",
+          "--regexp-ignore-case",
+          "--extended-regexp",
+          "--grep=A70|A30T|A81|MoE|hybrid|KV.state|KV.cache",
+          "-100"
+        ],
+        "result": [
+          "492c7c79e130d60cb344d723c15751afe81a5a82 2026-11-04T14:16:37+08:00 docs(aiarch): record A81 publication readback receipt",
+          "d2e332af911033d3637470131d4423624696a477 2026-11-04T14:15:44+08:00 docs(aiarch): close A81 low-bit feasibility at real-weight authority gate",
+          "adf6ab9467887f74b0b509c105977128663707a5 2026-10-16T16:39:00+08:00 docs(aiarch): close all four A70 lanes in CURRENT_STATE and propose workload-first A73",
+          "df7e11bc1206a53e4dd28c021309baf26142a333 2026-10-16T16:36:56+08:00 docs(aiarch): A72 independently review M-A70 and synthesize four source-only no-survivor lanes",
+          "94f2b2f7d7def1adac47c76ee279eb78977c654a 2026-10-16T16:18:07+08:00 docs(aiarch): independently review A70 N O P no-survivor source scopes while M continues",
+          "f2d6324da298be26f39cda427f3e7db1a7e7031d 2026-10-16T16:11:20+08:00 docs(aiarch): complete M-A70 source discovery with no promoted candidate",
+          "5076223db5db0256fd0ccacec50b5347a0cab8c5 2026-10-16T08:03:43+00:00 AI_ARCH_A70N_hybrid_state_source_discovery",
+          "f2399777a30f4fdafa26858b3cd418e497538db2 2026-10-16T07:58:32+00:00 A70P-VLM-source-discovery",
+          "94ca01df352cf4cf707cd35e5f9f63d4eff014c6 2026-10-16T15:58:13+08:00 docs(aiarch): close A70 O MoE execution source discovery",
+          "5abd9245f24da230cc8f53431601a91d27254bfd 2026-10-16T15:36:38+08:00 docs(aiarch): register A70 four-lane mainstream discovery dispatch pack and independent branch boundaries",
+          "8f24af162ba37b4fa37f7a18d89b0fdb62697942 2026-10-16T15:34:36+08:00 goals(aiarch): prepare A70 four independent mainstream-model discovery lanes; source-only and isolated outputs",
+          "80c4362fbe79fc92fb82c786513153a4f7231bb7 2026-10-14T14:37:25+08:00 docs(aiarch): close A30T/N as independently reviewed source-only STOP in current state",
+          "53a333f2b38236632f1c371bb72119dbf52f2b14 2026-10-14T14:36:20+08:00 docs(aiarch): independently review A30T/N scoped source closeouts and science bounds",
+          "1a8b9317de4c16e3dd19018f7f42cae1ebf5750e 2026-10-14T03:26:42+00:00 aiarch_a30t_moe_complete_operator_source_discovery",
+          "809fd26d96ad3a947d4e26f3c06714f0b2a98f17 2026-10-14T11:22:09+08:00 docs(aiarch): A31 audit CPU-GPU MoE resource frontiers and shared-memory coexecution",
+          "4713a6689ea389516adeea18b4cc8e4ab67a01e6 2026-10-14T11:06:48+08:00 docs(aiarch): record approved A30 parallel CPU-only MoE and DiT goals",
+          "6f4cd8bc1e2c9623cbc70053eba607d8c0484ec3 2026-10-14T11:05:30+08:00 docs(aiarch): authorize A30T CPU-only MoE complete-operator source discovery goal"
+        ],
+        "sha256": "66c085e30a1bfe0cda58c7d30a3291bfe8b3a3e580cdc615dfd97ea0f640432f",
+        "not_execution_evidence": true
+      },
+      {
+        "argv": [
+          "git",
+          "log",
+          "--all",
+          "--since=2026-10-16",
+          "--format=%H %cI %s",
+          "--regexp-ignore-case",
+          "--extended-regexp",
+          "--grep=MoE|hybrid|qwen3|olmoe|GDN|Gated.Delta|KV.cache|state.authority",
+          "-140"
+        ],
+        "result": [
+          "5076223db5db0256fd0ccacec50b5347a0cab8c5 2026-10-16T08:03:43+00:00 AI_ARCH_A70N_hybrid_state_source_discovery",
+          "94ca01df352cf4cf707cd35e5f9f63d4eff014c6 2026-10-16T15:58:13+08:00 docs(aiarch): close A70 O MoE execution source discovery"
+        ],
+        "sha256": "044a0286139cae5091b9d89952458ed572582117e0839b12ea8ab169f779bb45",
+        "not_execution_evidence": true
+      },
+      {
+        "argv": [
+          "git",
+          "log",
+          "--all",
+          "--since=2026-11-04",
+          "--format=%H %T %cI %s",
+          "--regexp-ignore-case",
+          "--extended-regexp",
+          "--grep=A81|A82|low.bit|real.tensor",
+          "-40"
+        ],
+        "result": [
+          "492c7c79e130d60cb344d723c15751afe81a5a82 350b5f2b9076729243ab1afe74f276659962aeea 2026-11-04T14:16:37+08:00 docs(aiarch): record A81 publication readback receipt",
+          "d2e332af911033d3637470131d4423624696a477 94fb3c35baf5a603b309962d5e98fdf186f31f25 2026-11-04T14:15:44+08:00 docs(aiarch): close A81 low-bit feasibility at real-weight authority gate"
+        ],
+        "sha256": "941ea08fc31d6ab1525de731c27ff7234a269f6b753eb892a7fe8751161b8932",
+        "not_execution_evidence": true
+      }
+    ],
+    "explicit_acceptance_pointers": [
+      "A32@53a333f2b38236632f1c371bb72119dbf52f2b14 accepts scoped H200 conditional A30T design,not execution.",
+      "A71@94f2b2f7d7def1adac47c76ee279eb78977c654a accepts A70N/O source no-survivors; A72@df7e11bc1206a53e4dd28c021309baf26142a333 retains this scope.",
+      "CURRENT_STATE@ed365741b230718f6ffc1ccbed125fc2566aac15 preserves A70 source-only STOP; evidence index E-C02/E-C07/E-C13/E-C15 only gives selected/scoped older MoE observations."
+    ],
+    "result": "NO_NEWER_ACCEPTED_SAME_FAMILY_NATIVE_AUTHORITY_ESTABLISHED_IN_EXPLICIT_CHECKED_SCOPE",
+    "limit": "Searches cover available local objects/refs,explicit pinned reports/reviews and fixed navigation only. Not a claim that no other authority exists globally. A ref or commit presence is a locator,never proof of executed/accepted workload."
+  },
+  "Q2": {
+    "question": "动态KV/Hybrid State组织与生命周期",
+    "current_status": "NOT_NATIVE_READY / SOURCE_SCOPE_ACCEPTED_NOT_NATIVE_NEGATIVE",
+    "source_commit": "5076223db5db0256fd0ccacec50b5347a0cab8c5",
+    "review_commits": [
+      "94f2b2f7d7def1adac47c76ee279eb78977c654a",
+      "df7e11bc1206a53e4dd28c021309baf26142a333"
+    ],
+    "model_source_anchor": {
+      "repository": "Qwen/Qwen3.5-4B",
+      "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+      "scope": "Legal text path of actual general model; dense FFN,24GDN+8full-attention layers; BF16 weights and FP32 recurrent state in the historical contract. Source config is not accepted local weights/runtime.",
+      "current_asset_hardware_admission": "NOT_CHECKED_NO_DEVICE_OR_ASSET_SCAN"
+    },
+    "strong_software_required": {
+      "fixed_historical_pins": {
+        "qwen": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+        "vllm": "fa75d3456d60a5ffe923818c4b495295675b38e1",
+        "sglang": "a448fdf3161a10c059921ee1fba3c6b23b1792af",
+        "transformers": "9fb4b5a9458a83a0bb9d8ddb6d4443a7bd146a62",
+        "replayssm": "73a9592e9d8a2268620e8883a82f5cec7442ed36"
+      },
+      "counterevidence": [
+        "vLLM mixed-page packing/state-content vs page accounting, HybridKVCacheCoordinator hit intersection and legal checkpoints, fused gating/recurrent/precopy paths.",
+        "SGLang unified pool/radix/checkpoint/private-copy and ownership donation; aliases/subviews are not distinct physical allocations.",
+        "ReplaySSM checkpoint+input ring+cursor/flush directly addresses per-token state writeback; GDN fork support is not upstream Mamba2 default support."
+      ],
+      "compatibility_hard_rule": "Select one actually compatible enabled configuration. The reviewed SGLang UnifiedMambaPool disables linear ReplaySSM; never combine incompatible allocator/Replay/checkpoint options into a fictitious baseline.",
+      "freshness": "Pinned2026-10-16 source audit, not a claim of latest software on2026-11-06 or current node installation."
+    },
+    "gaps": {
+      "real_model": "Exact weight/config/tokenizer revision and legal bytes, final state dtypes/layout, runtime/backend/kernel build and memory budget not native-qualified in this scope.",
+      "natural_input": "Need frozen natural multi-turn/prefix-branch/change/eviction/session trace with actual sequence endpoints and holdout split; model config or synthetic repeated prefix is not natural workload authority. No currently accepted Q2 input bank recovered from these sources.",
+      "quality": "State orientation differs across runtimes; preserve GDN delta rule,conv+recurrent same endpoint,KV positions and mutable private state. Unflushed ring is not a complete checkpoint. Freeze reference output/token/logprob and state-restoration tolerances; no borrowed AWQ tolerance.",
+      "backend": "No actual strongest legal GDN+full-KV path has been shown to run here. Static APIs and ReplaySSM author data do not establish enabled runtime or copy/flush critical path.",
+      "hardware": "4080/SM89 capacity/ABI support were explicitly NOT_CHECKED historically; no H100 author results transfer to109. Account all weights,state slots,pages,active copies,checkpoints,rings,workspace and graph caches before a future request.",
+      "independent_validation": "Different natural sessions/context and prefix structure frozen before tuning; a second real hybrid model requires its own authority. An exploration prompt or synthetic state tensor is not independent validation."
+    },
+    "useful_future_variable": "Natural prefix-branch/checkpoint/flush pressure under one valid strong runtime, measured on complete request/decode boundaries. Separate content capacity, allocated bytes,actual traffic and exposed wall. This is a conditional future contract idea, not an accepted survivor or authorization.",
+    "minimal_reentry_gates": [
+      "One distinct falsifiable natural-workload variable beyond the already-covered allocator/prefix/replay mechanisms.",
+      "Complete model/input/quality/backend/hardware authority and a separate approved bounded discovery contract; full pre-existing residual is not required merely to propose a falsifiable discovery probe.",
+      "Observe actual copy/flush/state ownership and completewall without adding substage times across overlap; preserve independently frozen holdout."
+    ],
+    "STOP": [
+      "No legal reference/state endpoint/layout or quality equivalence.",
+      "Only allocator fragmentation/ordinary software engineering remains.",
+      "Strong compatible software absorbs effect,copy/flush not exposed on critical path or full-scope difference is within frozen noise.",
+      "Only content-byte formula/API/TODO/author-platform result supports the claim.",
+      "Hardware/ABI/capacity or independent natural input authority is absent."
+    ]
+  },
+  "Q3": {
+    "question": "MoE自然路由与专家执行组织",
+    "current_status": "A70O_NO_SURVIVOR; A30T_H200_CONDITIONAL_SOURCE_CANDIDATE_ONLY",
+    "source_commits": {
+      "A70O": "94ca01df352cf4cf707cd35e5f9f63d4eff014c6",
+      "A30T": "1a8b9317de4c16e3dd19018f7f42cae1ebf5750e"
+    },
+    "review_commits": {
+      "A70O": [
+        "94f2b2f7d7def1adac47c76ee279eb78977c654a",
+        "df7e11bc1206a53e4dd28c021309baf26142a333"
+      ],
+      "A30T": [
+        "53a333f2b38236632f1c371bb72119dbf52f2b14"
+      ]
+    },
+    "model_source_anchors": [
+      {
+        "repository": "Qwen/Qwen3.5-35B-A3B",
+        "revision": "41adbc1e50345066ac5153217957e9910204e632",
+        "role": "A70O BF16 config metadata; not full FP8 checkpoint identity"
+      },
+      {
+        "repository": "Qwen/Qwen3.5-35B-A3B-FP8",
+        "revision": "b955db3baa2e2fe51de7455fdfa08d7c29865abd",
+        "role": "A30T source-qualified H200 conditional checkpoint/config anchor; no native local acceptance"
+      }
+    ],
+    "strong_software_required": {
+      "historical_pins": {
+        "sglang": "7098ec387c9f9d9f85a0c2c16bc1233f40f1d407",
+        "vllm": "fa75d3456d60a5ffe923818c4b495295675b38e1",
+        "flashinfer": "18688d10022a183d36488858c9a3d7cd6ca03699",
+        "deepgemm": "1fc9c66975ee322d628b3288534ca0e9ce12a64d"
+      },
+      "baselines": [
+        "For compatible H200/SM90a E256/H2048/I512/M<=8 block-FP8: public FlashInfer MonoMoE and genuinely tuned supported vLLM grouped implementations, with identical representation and graph/cache boundaries.",
+        "SGLang fused/grouped expert and shared-expert overlap capabilities are strong software counterevidence; none/triton dispatch/communication choices remain deployment-specific.",
+        "DeepGEMM contiguous/masked/EP organizations cover different prefill/decode/multi-process contracts and cannot be conflated with one109 single-GPU baseline."
+      ],
+      "operator_boundary": "Public MonoMoE takes router_logits: logits->top-k/dispatch/gate-up/activation/down/weighted combine. Router projection,shared expert,residual and communication must be either included equally or explicitly outside both arms.",
+      "freshness": "Historical fixed-source qualification, not current fastest/native-executed evidence."
+    },
+    "gaps": {
+      "real_model": "Need complete exact checkpoint,FP8 scales/layout/packing and tokenizer identity; A70O BF16 config cannot stand for A30T FP8. No independent local accepted full model authority established.",
+      "natural_input": "Need frozen real requests,per-layer/per-step n_e,selected expert IDs and scores,logits and retained layer inputs,arrival/context/decode position. Old Q30 Layer24/S2/T2048 is prefill expert-loop,not Qwen3.5 B1/4/8 natural decode. Random logits/uniform/constructed hotspots are diagnostic only.",
+      "quality": "Keep original selected experts,routing score normalization/ties,quantization scales/rounding,gate-up order,shared expert and output semantics. Artificially reducing experts/token rounding changes the task. Separate future operator numeric gate and full-task quality from speed; no inherited A81 PASS/tolerance.",
+      "backend": "No native same-format/same-route strongest complete operator pair has been accepted. A70O generic fusion/grouping/overlap is already covered in software; API support is not runtime activation or novel hardware residual.",
+      "hardware": "A30T H200/SM90a path is conditional,not acquired/authorized/executed; public MonoMoE is not SM89-native. Routed FP8 payload for E256,H2048,I512,40layers is30GiB before shared/router/attention/runtime. A one-layer fit does not qualify a full16GiB model request.",
+      "independent_validation": "Freeze discovery vs held-out prompts/contexts before tuning,not based on positive routes; retain output/routing identity. Independent prompts validate input generalization,not a second-model claim; another model needs separate shape/backend/weights authority."
+    },
+    "useful_future_variable": "Natural expert-set reuse/imbalance and backend organization changes at real Prefill->Decode boundaries, evaluated after the strongest actually compatible software on the same semantic operator. This conditional question has no accepted native readiness here.",
+    "STOP": [
+      "Only109/SM89 available for the proposed SM90a-only API or full-model memory not qualified.",
+      "Route/weights/scales/precision/output identity cannot be held fixed.",
+      "Actual API boundary differs,ordinary packing/layout/tile preparation explains effect or strong software already removes exposed cost.",
+      "Natural work does not exhibit proposed region,complete operator/request effect falls within noise or held-out quality fails.",
+      "Only occupancy/padding/nominal bandwidth/semantic bytes or synthetic hotspot speedup supports alleged hardware headroom."
+    ]
+  },
+  "historical_E3_scope_check": {
+    "source_commit": "378487015e513ed666c0929ca3f6c00392ff11c3",
+    "independent_scope_review_commit": "94f2b2f7d7def1adac47c76ee279eb78977c654a",
+    "backend": "Qwen3MoeSparseMoeBlock expert loop",
+    "observed_assignments": 16384,
+    "active_experts": 93,
+    "active_min_median_max": [
+      1,
+      14,
+      1602
+    ],
+    "qualification": "DIAGNOSTIC_ONLY Qwen3-30B Layer24/S2/T2048 Prefill expert-loop; not a later strong-fused natural decode authority.",
+    "hotset": "Synthetic H changes active expert set; not a free equal-task optimization bound.",
+    "no_original_tensor_or_raw_path_reads": true
+  },
+  "A81_authority_boundary": {
+    "status": "NO_REAL_TENSOR_AUTHORITY",
+    "source_commit": "492c7c79e130d60cb344d723c15751afe81a5a82",
+    "publication_commit": "d2e332af911033d3637470131d4423624696a477",
+    "independent_later_execution_authority": "NOT_ESTABLISHED_IN_REVIEWED_SCOPE",
+    "role": "Cross-cutting authority counterexample,not Q2/Q3 model or input replacement.",
+    "facts": [
+      "Historical exact Qwen2.5-7B AWQ B0 layer0 activations authenticate8 occurrences, but exact frozen weight revision/config/index/shards were missing at the original bounded authority paths.",
+      "G1 A/B references were not admitted and not executed; numeric_pass isnull and real_weight_samples0.",
+      "Available activation digests,hashes,branches and symbolic identities cannot manufacture real tensor pair authority or transfer precision/quality to MoE/GDN."
+    ],
+    "reference_A_executed": false,
+    "reference_B_executed": false,
+    "numeric_pass": null,
+    "not_rechecked_today": "No filesystem asset lookup or old-goal resume was performed."
+  },
+  "independent_CPU_checks": {
+    "A70N_empty_candidates": true,
+    "A70O_empty_candidates": true,
+    "A30T_report_sha_matches_A32_published_sha": true,
+    "E3_histogram_sum_equals_assignments": true,
+    "E3_active_count_matches": true
+  },
+  "git_source_manifest": [
+    {
+      "id": "A70O",
+      "role": "source",
+      "commit": "94ca01df352cf4cf707cd35e5f9f63d4eff014c6",
+      "tree": "b5b3d7f8f925c50aa845cebec2cb3057fe91b261",
+      "blob": "d57490db2b9230465821568c7cf74d46f6203375",
+      "path": "docs/ai_workload_research/discovery/A70_O_MOE_EXECUTION/REPORT.md",
+      "bytes": 16059,
+      "sha256": "2ab205875d593e5fb8ac9a5dae4f7880917195ab64b1168b4bb561e2a97586ab",
+      "link": "https://github.com/swayhrl/accel-sim-framework/blob/94ca01df352cf4cf707cd35e5f9f63d4eff014c6/docs/ai_workload_research/discovery/A70_O_MOE_EXECUTION/REPORT.md",
+      "selected_line_anchors": [
+        {
+          "key": "NO_SURVIVOR_IN_SEARCH_SCOPE",
+          "line": 3,
+          "text": "执行者：Codex／O-A70；2026-10-16。终态 **NO_SURVIVOR_IN_SEARCH_SCOPE；0 主候选、0 备选、STOP**。本轮完成 CPU/source Discovery，不晋升硬件机制或 native Goal。"
+        },
+        {
+          "key": "expert loop",
+          "line": 19,
+          "text": "需明确索引与原文件的粒度差异：原 `UPSTREAM_AUTHORITY.json` 与 runner 的 STATE 路径写明 **prefill**，`NATURAL_ROUTING.json` 写明 **Qwen3MoeSparseMoeBlock expert loop**，代码逐专家 `torch.where → MLP → index_add_`。协调索引/Reset归档的 decode/fused 简称不能代替这一实际执行合同（O02—O04）。原时间和已接受科学终态均保留：N 11.577028ms、U 11.637968ms，差值在所观察波动范围；P逆排列等价且未建立顺序效应；H 6.473208ms改变激活集合，不是免费优化上界。没有重跑它，也不能将旧循环成本当作当前 fused 后端残余。"
+        }
+      ]
+    },
+    {
+      "id": "A70O_candidates",
+      "role": "source",
+      "commit": "94ca01df352cf4cf707cd35e5f9f63d4eff014c6",
+      "tree": "b5b3d7f8f925c50aa845cebec2cb3057fe91b261",
+      "blob": "fe51488c7066f6687ef680d6bfaa4f7768ef205c",
+      "path": "docs/ai_workload_research/discovery/A70_O_MOE_EXECUTION/CANDIDATES.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "link": "https://github.com/swayhrl/accel-sim-framework/blob/94ca01df352cf4cf707cd35e5f9f63d4eff014c6/docs/ai_workload_research/discovery/A70_O_MOE_EXECUTION/CANDIDATES.json",
+      "selected_line_anchors": []
+    },
+    {
+      "id": "A70O_receipt",
+      "role": "source",
+      "commit": "94ca01df352cf4cf707cd35e5f9f63d4eff014c6",
+      "tree": "b5b3d7f8f925c50aa845cebec2cb3057fe91b261",
+      "blob": "06b9ddc958f4be37d3aa04f9be9bbc59a9d1631e",
+      "path": "docs/ai_workload_research/discovery/A70_O_MOE_EXECUTION/RECEIPT.json",
+      "bytes": 12957,
+      "sha256": "edb4d1558ced3ceab7ccf6006b98838549068aabc4dace8a81c186fcf4f531de",
+      "link": "https://github.com/swayhrl/accel-sim-framework/blob/94ca01df352cf4cf707cd35e5f9f63d4eff014c6/docs/ai_workload_research/discovery/A70_O_MOE_EXECUTION/RECEIPT.json",
+      "selected_line_anchors": [
+        {
+          "key": "NO_SURVIVOR_IN_SEARCH_SCOPE",
+          "line": 5,
+          "text": "  \"status\": \"NO_SURVIVOR_IN_SEARCH_SCOPE\","
+        },
+        {
+          "key": "state",
+          "line": 30,
+          "text": "    \"current_state_at_start\": true,"
+        }
+      ]
+    },
+    {
+      "id": "A70N",
+      "role": "source",
+      "commit": "5076223db5db0256fd0ccacec50b5347a0cab8c5",
+      "tree": "592e12903c8fa029fb5108a967f8a00bb9cb9458",
+      "blob": "b9dc5846d4a251ca084514e0564cbd2bb2348db6",
+      "path": "docs/ai_workload_research/discovery/A70_N_HYBRID_STATE/REPORT.md",
+      "bytes": 13790,
+      "sha256": "9f1a4e99cc1d1d4c2015c780572b3d0a880f5c587fd8ff05a6f956083a91543e",
+      "link": "https://github.com/swayhrl/accel-sim-framework/blob/5076223db5db0256fd0ccacec50b5347a0cab8c5/docs/ai_workload_research/discovery/A70_N_HYBRID_STATE/REPORT.md",
+      "selected_line_anchors": [
+        {
+          "key": "NO_SURVIVOR_IN_SEARCH_SCOPE",
+          "line": 7,
+          "text": "**NO_SURVIVOR_IN_SEARCH_SCOPE；推荐 0、备选 0。** 本轮固定 Qwen3.5-4B 的真实 text_config，核了当前 vLLM/SGLang 状态分配、checkpoint、复制与融合入口。三类直观问题均有直接软件反证：混合页几何已有 packed/unified 分配；prefix state 已有合法 checkpoint、命中交集和私有状态复制；逐 token 大状态写回已有 ReplaySSM 原始工作及实现。它们仍有成本，源码也不证明最优，但本轮没有找到强路径之后、区别于已有工作且值得立即投入 native 的剩余变量。"
+        },
+        {
+          "key": "ReplaySSM",
+          "line": 7,
+          "text": "**NO_SURVIVOR_IN_SEARCH_SCOPE；推荐 0、备选 0。** 本轮固定 Qwen3.5-4B 的真实 text_config，核了当前 vLLM/SGLang 状态分配、checkpoint、复制与融合入口。三类直观问题均有直接软件反证：混合页几何已有 packed/unified 分配；prefix state 已有合法 checkpoint、命中交集和私有状态复制；逐 token 大状态写回已有 ReplaySSM 原始工作及实现。它们仍有成本，源码也不证明最优，但本轮没有找到强路径之后、区别于已有工作且值得立即投入 native 的剩余变量。"
+        },
+        {
+          "key": "state",
+          "line": 1,
+          "text": "# N-A70｜主流混合模型 state 组织与执行 Discovery"
+        }
+      ]
+    },
+    {
+      "id": "A70N_candidates",
+      "role": "source",
+      "commit": "5076223db5db0256fd0ccacec50b5347a0cab8c5",
+      "tree": "592e12903c8fa029fb5108a967f8a00bb9cb9458",
+      "blob": "fe51488c7066f6687ef680d6bfaa4f7768ef205c",
+      "path": "docs/ai_workload_research/discovery/A70_N_HYBRID_STATE/CANDIDATES.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "link": "https://github.com/swayhrl/accel-sim-framework/blob/5076223db5db0256fd0ccacec50b5347a0cab8c5/docs/ai_workload_research/discovery/A70_N_HYBRID_STATE/CANDIDATES.json",
+      "selected_line_anchors": []
+    },
+    {
+      "id": "A70N_receipt",
+      "role": "source",
+      "commit": "5076223db5db0256fd0ccacec50b5347a0cab8c5",
+      "tree": "592e12903c8fa029fb5108a967f8a00bb9cb9458",
+      "blob": "e5faa1ab45f7c9e0ada1fffd9132561ee47c49c7",
+      "path": "docs/ai_workload_research/discovery/A70_N_HYBRID_STATE/RECEIPT.json",
+      "bytes": 8730,
+      "sha256": "9f52475743658149e96749633b55b93560e1d3c03609831a93d0fa8a9d0e23a2",
+      "link": "https://github.com/swayhrl/accel-sim-framework/blob/5076223db5db0256fd0ccacec50b5347a0cab8c5/docs/ai_workload_research/discovery/A70_N_HYBRID_STATE/RECEIPT.json",
+      "selected_line_anchors": [
+        {
+          "key": "NO_SURVIVOR_IN_SEARCH_SCOPE",
+          "line": 14,
+          "text": "  \"terminal_status\": \"NO_SURVIVOR_IN_SEARCH_SCOPE\","
+        },
+        {
+          "key": "state",
+          "line": 8,
+          "text": "  \"branch\": \"hrl/aiarch-a70n-hybrid-state-discovery-174new-v1\","
+        }
+      ]
+    },
+    {
+      "id": "A30T",
+      "role": "source",
+      "commit": "1a8b9317de4c16e3dd19018f7f42cae1ebf5750e",
+      "tree": "11ce04902cc3b5abcda7c5c07722a898e2ec221f",
+      "blob": "886d96796b94bf5d5653aebfb9f2a6c2c06874af",
+      "path": "docs/ai_workload_research/reviews/AI_ARCH_A30T_MOE_OPERATOR_RESOURCE_DISCOVERY_174NEW_V1.md",
+      "bytes": 15383,
+      "sha256": "16496ae1fc6a98cf084a4984cccca28b1439cd5282bbcf520272035a4d897476",
+      "link": "https://github.com/swayhrl/accel-sim-framework/blob/1a8b9317de4c16e3dd19018f7f42cae1ebf5750e/docs/ai_workload_research/reviews/AI_ARCH_A30T_MOE_OPERATOR_RESOURCE_DISCOVERY_174NEW_V1.md",
+      "selected_line_anchors": [
+        {
+          "key": "PLATFORM_NOT_QUALIFIED",
+          "line": 4,
+          "text": "**主裁决：SOURCE_QUALIFIED_PROBE_CANDIDATE（仅 H200/SM90a 的自然 route 边界补证据）；SM89/RTX4080 为 PLATFORM_NOT_QUALIFIED。没有新硬件机制资格或本轮 GPU 授权。**"
+        },
+        {
+          "key": "expert-loop",
+          "line": 24,
+          "text": "| [C16 E3@378487015e513ed666c0929ca3f6c00392ff11c3 的 NATURAL_ROUTING.json](https://github.com/swayhrl/accel-sim-framework/blob/378487015e513ed666c0929ca3f6c00392ff11c3/docs/vm_tlb/review_packs/C16_E3_Q30_ROUTING_DIAGNOSTIC_109_V1/NATURAL_ROUTING.json)，blob a86f9a5cf939bf635a0aa8d1bdaa9b5b25ca38a0；[解释](https://github.com/swayhrl/accel-sim-framework/blob/378487015e513ed666c0929ca3f6c00392ff11c3/docs/vm_tlb/review_packs/C16_E3_Q30_ROUTING_DIAGNOSTIC_109_V1/SCIENTIFIC_INTERPRETATION.md) | **HISTORICAL_SCOPED**：Qwen3-30B-A3B BF16 Layer24、M=2048、k=8、16384 assignments，93 active experts，median 14/max1602；expert-loop body N 11.577ms，均匀 U 11.638ms，合成8-expert热点 H 6.473ms | 这是较大 M 的固定点和弱 expert-loop bac"
+        }
+      ]
+    },
+    {
+      "id": "A81",
+      "role": "source",
+      "commit": "492c7c79e130d60cb344d723c15751afe81a5a82",
+      "tree": "350b5f2b9076729243ab1afe74f276659962aeea",
+      "blob": "47812be0698faa30b366a5bf5af081691a73a363",
+      "path": "docs/ai_workload_research/discovery/A81_GROUPWISE_LOWBIT_FEASIBILITY/REPORT.md",
+      "bytes": 8899,
+      "sha256": "d97696a055ab9ee82c467e10958407bd2f5d2c7a47c197e3af965b824a373c4d",
+      "link": "https://github.com/swayhrl/accel-sim-framework/blob/492c7c79e130d60cb344d723c15751afe81a5a82/docs/ai_workload_research/discovery/A81_GROUPWISE_LOWBIT_FEASIBILITY/REPORT.md",
+      "selected_line_anchors": [
+        {
+          "key": "NO_REAL_TENSOR_AUTHORITY",
+          "line": 3,
+          "text": "Executor: Codex, A81-LBIT, node 109. Final scientific state: **NO_REAL_TENSOR_AUTHORITY / STOP**."
+        },
+        {
+          "key": "state",
+          "line": 3,
+          "text": "Executor: Codex, A81-LBIT, node 109. Final scientific state: **NO_REAL_TENSOR_AUTHORITY / STOP**."
+        }
+      ]
+    },
+    {
+      "id": "A81_G1",
+      "role": "source",
+      "commit": "492c7c79e130d60cb344d723c15751afe81a5a82",
+      "tree": "350b5f2b9076729243ab1afe74f276659962aeea",
+      "blob": "ceb2c530eac422a8a3e03729f59a0a96ddf5a156",
+      "path": "docs/ai_workload_research/discovery/A81_GROUPWISE_LOWBIT_FEASIBILITY/G1_REFERENCE_RESULT.json",
+      "bytes": 2070,
+      "sha256": "bf387caa126b02b37f73ed45983ad661f14124324d6b4cd761fe2f48f8d81ce9",
+      "link": "https://github.com/swayhrl/accel-sim-framework/blob/492c7c79e130d60cb344d723c15751afe81a5a82/docs/ai_workload_research/discovery/A81_GROUPWISE_LOWBIT_FEASIBILITY/G1_REFERENCE_RESULT.json",
+      "selected_line_anchors": [
+        {
+          "key": "NO_REAL_TENSOR_AUTHORITY",
+          "line": 3,
+          "text": "  \"scientific_status\": \"NO_REAL_TENSOR_AUTHORITY\","
+        },
+        {
+          "key": "NOT_ADMITTED_G0_REAL_WEIGHT_BYTES_MISSING",
+          "line": 4,
+          "text": "  \"execution_status\": \"NOT_ADMITTED_G0_REAL_WEIGHT_BYTES_MISSING\","
+        },
+        {
+          "key": "state",
+          "line": 27,
+          "text": "      \"bucket_state_bytes_max\": 64,"
+        }
+      ]
+    },
+    {
+      "id": "A81_receipt",
+      "role": "source",
+      "commit": "492c7c79e130d60cb344d723c15751afe81a5a82",
+      "tree": "350b5f2b9076729243ab1afe74f276659962aeea",
+      "blob": "ee9341f4d8bbc63c6762618a3cebce231fed913b",
+      "path": "docs/ai_workload_research/discovery/A81_GROUPWISE_LOWBIT_FEASIBILITY/RECEIPT.json",
+      "bytes": 5012,
+      "sha256": "3a8e56bddd473701b6cbd00d7a40eab183e81b09e026a114fe4a5d0ab903bbb0",
+      "link": "https://github.com/swayhrl/accel-sim-framework/blob/492c7c79e130d60cb344d723c15751afe81a5a82/docs/ai_workload_research/discovery/A81_GROUPWISE_LOWBIT_FEASIBILITY/RECEIPT.json",
+      "selected_line_anchors": [
+        {
+          "key": "NO_REAL_TENSOR_AUTHORITY",
+          "line": 7,
+          "text": "  \"status\": \"NO_REAL_TENSOR_AUTHORITY\","
+        }
+      ]
+    },
+    {
+      "id": "A71",
+      "role": "independent_review",
+      "commit": "94f2b2f7d7def1adac47c76ee279eb78977c654a",
+      "tree": "a89cb2cd64c48d7fb783f4afc84981e67e22e19a",
+      "blob": "26c547c3a51d701916dac571bd78c9da9d19e433",
+      "path": "docs/ai_workload_research/reviews/AI_ARCH_A71_A70_N_O_P_PARALLEL_DISCOVERY_INDEPENDENT_REVIEW_2026-10-16_V1.md",
+      "bytes": 10546,
+      "sha256": "af097ed5d4d4e742be73da9d60807e59dc53efe788844dbbf7f98b76f15301a2",
+      "link": "https://github.com/swayhrl/accel-sim-framework/blob/94f2b2f7d7def1adac47c76ee279eb78977c654a/docs/ai_workload_research/reviews/AI_ARCH_A71_A70_N_O_P_PARALLEL_DISCOVERY_INDEPENDENT_REVIEW_2026-10-16_V1.md",
+      "selected_line_anchors": [
+        {
+          "key": "NO_SURVIVOR_IN_SEARCH_SCOPE",
+          "line": 5,
+          "text": "**综合裁决：对 N、O、P 三条分别接受 `NO_SURVIVOR_IN_SEARCH_SCOPE / STOP`，并加明确证据后缀 `SOURCE_SCOPE_ACCEPTED_NOT_NATIVE_NEGATIVE`。** 三线0个推荐/0个备选候选，不意味着混合模型、MoE、多模态已经没有GPU体系结构问题。本轮材料主要排除了现有实现已覆盖的**具体直观思路**；对真实强后端的残余时间成本依然缺观察。Lane M为用户明确“正在执行”，没有向其发指令、没有监控进程或触碰该分支，**不要把M列为STOP**。"
+        },
+        {
+          "key": "SOURCE_SCOPE_ACCEPTED_NOT_NATIVE_NEGATIVE",
+          "line": 5,
+          "text": "**综合裁决：对 N、O、P 三条分别接受 `NO_SURVIVOR_IN_SEARCH_SCOPE / STOP`，并加明确证据后缀 `SOURCE_SCOPE_ACCEPTED_NOT_NATIVE_NEGATIVE`。** 三线0个推荐/0个备选候选，不意味着混合模型、MoE、多模态已经没有GPU体系结构问题。本轮材料主要排除了现有实现已覆盖的**具体直观思路**；对真实强后端的残余时间成本依然缺观察。Lane M为用户明确“正在执行”，没有向其发指令、没有监控进程或触碰该分支，**不要把M列为STOP**。"
+        },
+        {
+          "key": "expert loop",
+          "line": 36,
+          "text": "**O还有一项重要历史口径纠正，本审查独立证实：** C16 E3固定`NATURAL_ROUTING.json@378487015e513ed666c0929ca3f6c00392ff11c3`明确为Qwen3-30B Layer24 prefill、Qwen3MoeSparseMoeBlock **expert loop**，而非成熟fused decode。实录16384 assignments，93活跃expert、最大1602。旧11.577ms不是当前fused kernel wall，不能既拿来宣布当前强软件已经否定MoE，也不能拿loop大开销制造新机会。"
+        },
+        {
+          "key": "ReplaySSM",
+          "line": 26,
+          "text": "- ReplaySSM `arXiv:2610.13778v1`针对Qwen3.5-4B已有输入ring＋checkpoint重放、周期性写回与标准decode分母。固定作者仓库 `Johnny-Liou/ReplaySSM@73a9592e9d8a2268620e8883a82f5cec7442ed36`的README已由本独立审查再次读取：GDN Triton实现与Mamba2上游支持范围有明确区别。**不得将所有fork/上游、allocator、Replay配置拼成一个实际可共同启用的最强路径。**"
+        },
+        {
+          "key": "state",
+          "line": 13,
+          "text": "| N（174-new，混合状态） | `hrl/aiarch-a70n-hybrid-state-discovery-174new-v1` | `5076223db5db0256fd0ccacec50b5347a0cab8c5` | `592e12903c8fa029fb5108a967f8a00bb9cb9458` | ahead1/4文件 | identical |"
+        }
+      ]
+    },
+    {
+      "id": "A72",
+      "role": "independent_synthesis",
+      "commit": "df7e11bc1206a53e4dd28c021309baf26142a333",
+      "tree": "0f131d1ebd10eb460e7bd18c771ef0fe4c7d3ef5",
+      "blob": "86c588d13cfc403089cf5b5af480cb0415330f7e",
+      "path": "docs/ai_workload_research/reviews/AI_ARCH_A72_A70_M_AND_FOUR_LANE_DISCOVERY_SYNTHESIS_2026-10-16_V1.md",
+      "bytes": 12627,
+      "sha256": "118ff6deacc7571b7542f4d4b19b02dd80c59be3d4f221347f99be12ee5d230e",
+      "link": "https://github.com/swayhrl/accel-sim-framework/blob/df7e11bc1206a53e4dd28c021309baf26142a333/docs/ai_workload_research/reviews/AI_ARCH_A72_A70_M_AND_FOUR_LANE_DISCOVERY_SYNTHESIS_2026-10-16_V1.md",
+      "selected_line_anchors": [
+        {
+          "key": "NO_SURVIVOR_IN_SEARCH_SCOPE",
+          "line": 5,
+          "text": "**最终裁决：M-A70的 \\`NO_SURVIVOR_IN_SEARCH_SCOPE / STOP\\` 接受，适用后缀 \\`SOURCE_SCOPE_ACCEPTED_NOT_NATIVE_NEGATIVE\\`。A70的M/N/O/P四线均已完成，同样是限定源码/论文搜索下0主＋0备；不是主流LLM、GDN、MoE和多模态四个领域的性能负结果或已证明没有硬件机会。**"
+        },
+        {
+          "key": "SOURCE_SCOPE_ACCEPTED_NOT_NATIVE_NEGATIVE",
+          "line": 5,
+          "text": "**最终裁决：M-A70的 \\`NO_SURVIVOR_IN_SEARCH_SCOPE / STOP\\` 接受，适用后缀 \\`SOURCE_SCOPE_ACCEPTED_NOT_NATIVE_NEGATIVE\\`。A70的M/N/O/P四线均已完成，同样是限定源码/论文搜索下0主＋0备；不是主流LLM、GDN、MoE和多模态四个领域的性能负结果或已证明没有硬件机会。**"
+        },
+        {
+          "key": "expert loop",
+          "line": 55,
+          "text": "| O MoE | 仅新增sorted-token、grouped GEMM、融合/共享专家重叠 | 固定实际router与支持的最优backend的同边界route-to-combine及请求wall；旧E3是Q30 Prefill expert loop |"
+        },
+        {
+          "key": "ReplaySSM",
+          "line": 54,
+          "text": "| N 混合attention／GDN | 认为混合页无法分配/复制或每token完整state写回无人研究 | 固定合法配置下state copy/flush与slot争用的实际wall，天然并发轨迹；ReplaySSM的fork与上游区分 |"
+        },
+        {
+          "key": "state",
+          "line": 54,
+          "text": "| N 混合attention／GDN | 认为混合页无法分配/复制或每token完整state写回无人研究 | 固定合法配置下state copy/flush与slot争用的实际wall，天然并发轨迹；ReplaySSM的fork与上游区分 |"
+        }
+      ]
+    },
+    {
+      "id": "A32",
+      "role": "independent_review",
+      "commit": "53a333f2b38236632f1c371bb72119dbf52f2b14",
+      "tree": "aaddac0bad9bf5753252966797c5484695e9f2ec",
+      "blob": "a598e9ce4d41584ef37adfd2dd3ae3f8865cab0e",
+      "path": "docs/ai_workload_research/reviews/AI_ARCH_A32_A30T_A30N_INDEPENDENT_SCIENTIFIC_CLOSEOUT_2026-10-14_V1.md",
+      "bytes": 11878,
+      "sha256": "9333c28b81324e8bb3fef91ddc5791bfbf3d073581c1084f3d04dfdd8a504b2d",
+      "link": "https://github.com/swayhrl/accel-sim-framework/blob/53a333f2b38236632f1c371bb72119dbf52f2b14/docs/ai_workload_research/reviews/AI_ARCH_A32_A30T_A30N_INDEPENDENT_SCIENTIFIC_CLOSEOUT_2026-10-14_V1.md",
+      "selected_line_anchors": [
+        {
+          "key": "H200_SM90A_CONDITIONAL",
+          "line": 9,
+          "text": "- **A30T（MoE）：接受`SOURCE_QUALIFIED_PROBE_CANDIDATE / H200_SM90A_CONDITIONAL`作为有范围的发现实验设计完成和STOP。** 当前109 SM89/RTX4080不具备该MonoMoE FP8/SM90a公开API的同平台资格，不能把历史BF16 expert-loop替代强后端。**H200条件性设计不等于本机可执行任务，不构成新硬件机会已经存在。**"
+        },
+        {
+          "key": "PLATFORM_NOT_QUALIFIED",
+          "line": 65,
+          "text": "| T／MoE | `ACCEPT_SCOPED_H200_CONDITIONAL_SOURCE_CANDIDATE`；`SM89_PLATFORM_NOT_QUALIFIED` | 保留在source候选池；只有明确H200可得、同语义强后端/自然route、额外科学价值后才讨论小型实验 |"
+        },
+        {
+          "key": "expert-loop",
+          "line": 9,
+          "text": "- **A30T（MoE）：接受`SOURCE_QUALIFIED_PROBE_CANDIDATE / H200_SM90A_CONDITIONAL`作为有范围的发现实验设计完成和STOP。** 当前109 SM89/RTX4080不具备该MonoMoE FP8/SM90a公开API的同平台资格，不能把历史BF16 expert-loop替代强后端。**H200条件性设计不等于本机可执行任务，不构成新硬件机会已经存在。**"
+        }
+      ]
+    },
+    {
+      "id": "CURRENT_STATE",
+      "role": "navigation",
+      "commit": "ed365741b230718f6ffc1ccbed125fc2566aac15",
+      "tree": "e2f3c9d2d4485b0d41db6c6ceec33af0d8e35304",
+      "blob": "e65ccc1c07d724f1ad1473e2defb5e0af20fa433",
+      "path": "docs/ai_workload_research/CURRENT_STATE.md",
+      "bytes": 6453,
+      "sha256": "5de4aeb4ee2973071baa0aa995886b10a3867d06c5161293a007a90a04d2724d",
+      "link": "https://github.com/swayhrl/accel-sim-framework/blob/ed365741b230718f6ffc1ccbed125fc2566aac15/docs/ai_workload_research/CURRENT_STATE.md",
+      "selected_line_anchors": []
+    },
+    {
+      "id": "EVIDENCE_INDEX",
+      "role": "navigation",
+      "commit": "ed365741b230718f6ffc1ccbed125fc2566aac15",
+      "tree": "e2f3c9d2d4485b0d41db6c6ceec33af0d8e35304",
+      "blob": "6e1ac84ab2fe874cd815c3c6c9a6d0a7857ad19d",
+      "path": "docs/ai_workload_research/AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md",
+      "bytes": 29774,
+      "sha256": "16339e8aa0f3d973d7dbe2ad0b4756fa845ec447e6be40fb731cb5628ab1c133",
+      "link": "https://github.com/swayhrl/accel-sim-framework/blob/ed365741b230718f6ffc1ccbed125fc2566aac15/docs/ai_workload_research/AI_WORKLOAD_C16_AWMA_EVIDENCE_INDEX_V1.md",
+      "selected_line_anchors": []
+    },
+    {
+      "id": "E3_routing",
+      "role": "historical_scoped_native",
+      "commit": "378487015e513ed666c0929ca3f6c00392ff11c3",
+      "tree": "9f405bd2e90703d88b8e0a9f698a3f01be338134",
+      "blob": "a86f9a5cf939bf635a0aa8d1bdaa9b5b25ca38a0",
+      "path": "docs/vm_tlb/review_packs/C16_E3_Q30_ROUTING_DIAGNOSTIC_109_V1/NATURAL_ROUTING.json",
+      "bytes": 8583,
+      "sha256": "aab49a57d828cecfeffd271abc0e53dbdc83a2db06f0e4a99f7e5c226e5bc090",
+      "link": "https://github.com/swayhrl/accel-sim-framework/blob/378487015e513ed666c0929ca3f6c00392ff11c3/docs/vm_tlb/review_packs/C16_E3_Q30_ROUTING_DIAGNOSTIC_109_V1/NATURAL_ROUTING.json",
+      "selected_line_anchors": [
+        {
+          "key": "expert loop",
+          "line": 7,
+          "text": "  \"backend\": \"Qwen3MoeSparseMoeBlock expert loop\","
+        }
+      ]
+    },
+    {
+      "id": "E3_authority",
+      "role": "historical_scoped_native",
+      "commit": "378487015e513ed666c0929ca3f6c00392ff11c3",
+      "tree": "9f405bd2e90703d88b8e0a9f698a3f01be338134",
+      "blob": "b5abc41ac229150f38f16d7eddbd0392ca9a2e71",
+      "path": "docs/vm_tlb/review_packs/C16_E3_Q30_ROUTING_DIAGNOSTIC_109_V1/UPSTREAM_AUTHORITY.json",
+      "bytes": 271,
+      "sha256": "070f6dee69d138e0192d8c454512677fe7c89f8dd9b23bed8623cb6f99659a08",
+      "link": "https://github.com/swayhrl/accel-sim-framework/blob/378487015e513ed666c0929ca3f6c00392ff11c3/docs/vm_tlb/review_packs/C16_E3_Q30_ROUTING_DIAGNOSTIC_109_V1/UPSTREAM_AUTHORITY.json",
+      "selected_line_anchors": [
+        {
+          "key": "state",
+          "line": 2,
+          "text": "  \"branch\": \"hrl/c16-qwen3-30b-s2-state-replay-109-v1\","
+        }
+      ]
+    },
+    {
+      "id": "E3_interpretation",
+      "role": "historical_scoped_native",
+      "commit": "378487015e513ed666c0929ca3f6c00392ff11c3",
+      "tree": "9f405bd2e90703d88b8e0a9f698a3f01be338134",
+      "blob": "a5d22285732fe33fb33bd2d183f1aaa499d41cae",
+      "path": "docs/vm_tlb/review_packs/C16_E3_Q30_ROUTING_DIAGNOSTIC_109_V1/SCIENTIFIC_INTERPRETATION.md",
+      "bytes": 613,
+      "sha256": "c7e7b9dba44fbf439fe6652ad4bacc98bac61cc13ab7223f868c34c0e69a9bdd",
+      "link": "https://github.com/swayhrl/accel-sim-framework/blob/378487015e513ed666c0929ca3f6c00392ff11c3/docs/vm_tlb/review_packs/C16_E3_Q30_ROUTING_DIAGNOSTIC_109_V1/SCIENTIFIC_INTERPRETATION.md",
+      "selected_line_anchors": []
+    }
+  ],
+  "historical_external_pins_provenance": "External repository/model/paper identities above are extracted from the fixed audited reports. This task did not re-fetch those external sources or establish2026-11-06 software freshness.",
+  "cpu_resources": {
+    "method": "Sequential stdlib Python+git show/rev-parse/log/ls-tree metadata processes on109; no tensor computation",
+    "this_worker_peak_rss_KiB": 18036,
+    "git_children_peak_rss_KiB": 26632,
+    "earlier_sequential_read_worker_peak_rss_KiB": [
+      12636,
+      12556,
+      12684,
+      12452,
+      12456,
+      12748,
+      12276
+    ],
+    "write_stage_elapsed_seconds": 0.13663236238062382,
+    "whole_goal_continuous_tree_peak_measured": false,
+    "new_download_bytes": 0
+  }
+}

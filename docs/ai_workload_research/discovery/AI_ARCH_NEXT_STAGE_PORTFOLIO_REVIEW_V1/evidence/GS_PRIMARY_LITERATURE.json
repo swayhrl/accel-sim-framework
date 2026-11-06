@@ -1,0 +1,265 @@
+{
+  "schema": "AI_ARCH_NEXT_STAGE_GS_PRIMARY_LITERATURE_V1",
+  "created_utc": "2026-11-06T01:39:43.783981+00:00",
+  "scope": "CPU-onlyprimary-paperreview;noexistingactiveGPUraw;noGPU/CUDA/NVML/lock/model/dataset/install/164access;noinference/training",
+  "papers": [
+    {
+      "key": "GS_SCALE",
+      "title": "GS-Scale: Unlocking Large-Scale 3D Gaussian Splatting Training via Host Offloading",
+      "venue": "ASPLOS 2026, Volume 2; March 22-26",
+      "version": "Author final PDF; distinct from arXiv2509.15645v1 dated2025-09-19",
+      "primary_urls": [
+        "https://99dhl.github.io/assets/pdf/asplos26_gsscale.pdf",
+        "https://arxiv.org/abs/2509.15645v1",
+        "https://github.com/SNU-ARC/GS-Scale"
+      ],
+      "download": {
+        "name": "gsscale_author_asplos26",
+        "url": "https://99dhl.github.io/assets/pdf/asplos26_gsscale.pdf",
+        "pdf_bytes": 3986912,
+        "pdf_sha256": "6d437cd04eaa50a34fe9a8436c71a8871b6a800df829492409f8fbb1bb2f1dd9",
+        "pdftotext_status": 0,
+        "text_bytes": 140335,
+        "pdf_private_relative_path": ".private/papers/gsscale_author_asplos26.pdf",
+        "text_private_relative_path": ".private/papers/gsscale_author_asplos26.txt",
+        "text_sha256": "408496217d28d76835839dbb5558f9b6767ae35f59ad52bb26b51eaf00840fde",
+        "pdfinfo_pages": "16",
+        "local_verified_utc": "2026-11-06T01:40:42.261752+00:00"
+      },
+      "evidence_type": "AUTHOR_NATIVE_SOFTWARE_MEASUREMENTS_NOT_OUR_MEASUREMENTS",
+      "innovation": "Geometry stays GPU-resident; appearance offloads. Early parameter forwarding overlaps CPU Adam with GPU work; deferred zero-gradient updates reduce host traffic; balanced image splitting bounds activations.",
+      "testbeds": "Table 1/p8, section 5.1/p9: i7-13620H/4070 Mobile 8GB/32GB host; i9-13900K/4080 Super 16GB/64GB host; dual Xeon 6530/H100 PCIe 80GB/1TB host. PyTorch 2.2/CUDA 12.4/gsplat 1.5.",
+      "workload": "Table 2/p9: Mill19 Rubble/Building 1152x864; GauU LFLS/SZIIT/SZTU 1600x1064; MatrixCity Aerial 1600x900. Batch 1; densification adjusted; mem_limit 0.3.",
+      "experiment_groups": [
+        {
+          "locator": "sections 5.2-5.4/Figs 11-12,p9-10",
+          "variable": "Offload/forwarding/deferred-update variants; small/full scenes; laptop/desktop",
+          "reported": "Peak-memory geomean 3.98x reduction. Versus GPU-only throughput 1.22x/0.84x, excluding OOM; versus naive 4.47x/4.57x."
+        },
+        {
+          "locator": "section 5.5/Tables 3-4,p10",
+          "variable": "Original/deferred optimizer; epsilon/beta2",
+          "reported": "Quality evaluated; epsilon term is approximated, not bitwise-equivalent Adam."
+        },
+        {
+          "locator": "section 5.6/Fig 13,p10-11",
+          "variable": "Gaussian scale",
+          "reported": "4070 Mobile: 4M -> 18M Gaussians; 4080 Super: 9M -> 40M Gaussians."
+        },
+        {
+          "locator": "sections 5.7-5.8/Fig 14/Table 5,p11",
+          "variable": "H100 testbed; GCP Aerial singleL4 vs2/4L4 Grendel",
+          "reported": "SingleL4 7.05h;2L4 4.46h;4L4 2.46h. Cost advantage is not faster wall-clock."
+        },
+        {
+          "locator": "section 5.9/Figs 15-16,p11-12",
+          "variable": "mem_limit;resolution;GPU;CPU memory channels",
+          "reported": "Explicit memory-capacity/throughput tradeoff and NUMA sensitivity."
+        },
+        {
+          "locator": "section 5.10/Table 6/Fig 17,p12-13",
+          "variable": "CityGaussian;pruning/compression",
+          "reported": "Different quality/memory operating points; not a pure hardware-control study."
+        }
+      ],
+      "strong_software_collision": "Already absorbs host culling bottleneck via GPU geometry, CPU-optimizer overlap and zero-gradient memory suppression. OpenMP extension exists (section 5.1); exact OMP thread/affinity setting is not specified in reviewed methods.",
+      "not_established": "No our speedup; no residual CPU stall after fully qualified local replication. No permission to label optimization mathematically identical: deferred update drops epsilon.",
+      "resource_measurement_scope": "Section 5.1 footnote/p9: GPU peak is PyTorch allocated memory; reserved pools excluded, so OOM can precede allocated-capacity limit. Not directly interchangeable with our NVML cap."
+    },
+    {
+      "key": "CLM",
+      "title": "CLM: Removing the GPU Memory Barrier for 3D Gaussian Splatting",
+      "venue": "ASPLOS 2026 March 22-26",
+      "version": "17-page author final PDF; project repository title adds CPU Offloading, paper title does not",
+      "primary_urls": [
+        "https://cs.nyu.edu/~apanda/assets/papers/asplos26-cvm.pdf",
+        "https://github.com/MachineLearningSystem/25ASPLOS-CLM-GS"
+      ],
+      "download": {
+        "name": "clm_author_asplos26",
+        "url": "https://cs.nyu.edu/~apanda/assets/papers/asplos26-cvm.pdf",
+        "pdf_bytes": 3295340,
+        "pdf_sha256": "d5d976ade29b8d426f13a10da667190463d0a7ef91843a1dcc42dc198bd1559a",
+        "pdftotext_status": 0,
+        "text_bytes": 134663,
+        "pdf_private_relative_path": ".private/papers/clm_author_asplos26.pdf",
+        "text_private_relative_path": ".private/papers/clm_author_asplos26.txt",
+        "text_sha256": "3b21e8cb07c9fd5bca33d40c493710f67d222540654f922639b0af67fbe2226e",
+        "pdfinfo_pages": "17",
+        "local_verified_utc": "2026-11-06T01:40:42.267604+00:00"
+      },
+      "evidence_type": "AUTHOR_NATIVE_SOFTWARE_MEASUREMENTS_NOT_OUR_MEASUREMENTS",
+      "innovation": "Keep selection-critical10/59 attributes GPU-resident; selective pinned-memory loading; exact adjacent-microbatch Gaussian reuse; early-finalized CPU Adam; TSP scheduling and prioritized communication stream.",
+      "testbeds": "Section 6.1/p7: 5955WX 16 cores/128GB/4090 24GB/PCIe 4; E5-2660v3 listed 20 cores/256GB/2080 Ti 11GB/PCIe 3. Grendel single-GPU with gsplat CUDA.",
+      "workload": "Table3/p8:Bicycle200images4K BS4;Rubble1600/4K BS8;Alameda1700/2K BS8;Ithaca8200/1K BS16;BigCity60000/1080p BS64.",
+      "experiment_groups": [
+        {
+          "locator": "section 6.2/Figs 8-10,p8-9",
+          "variable": "Maximum trainable scale and model-state memory",
+          "reported": "Up to 6.1x enhanced-baseline capacity; BigCity 102.2M Gaussians; 500k-step quality scaling."
+        },
+        {
+          "locator": "section 6.3/Figs 11-13,p10-11",
+          "variable": "Naive,enhancedGPU-only,CLM throughput and exposed components",
+          "reported": "Throughput 86-97% of enhanced GPU baseline on 2080 Ti, 55-90% on 4090; 1.38-1.92x naive offloading. Pipeline intervals include overlapping compute+communication."
+        },
+        {
+          "locator": "section 6.3/Fig 14/Tables 4-5,p11-12",
+          "variable": "NoCache,Random,Camera,GaussianCount,TSP ordering",
+          "reported": "TSP minimizes communication;GaussianCount usually minimizes Adam tail. Faster transfer can increase visible optimizer tail; tail alone is not end-to-end benefit."
+        },
+        {
+          "locator": "section 6.4/Table 6/Fig 15,p12-13",
+          "variable": "Pinned memory;SMsActive distribution",
+          "reported": "Pinned memory up to37.8GB on4090,17.5GB on2080Ti. SMsActive sampled10kHz over>100batches."
+        },
+        {
+          "locator": "Appendix A.4/Table 7,p16-17",
+          "variable": "CPU scheduling andGPU/PCIe bandwidth utilization",
+          "reported": "CPU core occupancy from SCHED_EVENTS; bandwidth metrics10kHz. This is not a complete OMP/affinity-control experiment."
+        }
+      ],
+      "strong_software_collision": "Already includes camera/visibility reuse, reduced SH/appearance transfer, optimizer overlap, working-set selective loading and scheduling. Q1 cannot claim these broad mechanisms new.",
+      "not_established": "Paper says batch-internal reordering preserves mathematical gradient update; FP sum order still needs a local numerical contract. CPU thread count/affinity and local physical-vs-logical core mapping remain replication questions.",
+      "resource_measurement_scope": "AppendixCPU occupancy averages core scheduling time, not a frozen OMP-thread scaling experiment. Pinned-memory demand17.5/37.8GB is separate from totalhostRSS."
+    },
+    {
+      "key": "TIDEGS",
+      "title": "TideGS: Scalable Training of Over One Billion 3D Gaussian Splatting Primitives via Out-of-Core Optimization",
+      "venue": "ICML2026 Spotlight per author project/arXiv",
+      "version": "arXiv2605.20150v2,2026-05-26;18-page downloadedPDF",
+      "primary_urls": [
+        "https://arxiv.org/abs/2605.20150v2",
+        "https://arxiv.org/pdf/2605.20150v2",
+        "https://sponge-lab.github.io/TideGS/",
+        "https://github.com/sponge-lab/TideGS"
+      ],
+      "download": {
+        "name": "tidegs_arxiv_v2",
+        "url": "https://arxiv.org/pdf/2605.20150v2",
+        "pdf_bytes": 2651492,
+        "pdf_sha256": "5de86b0191a426893290a555f6483a77a28b76b3d3b85e61f27e6d49c08269c3",
+        "pdftotext_status": 0,
+        "text_bytes": 102824,
+        "pdf_private_relative_path": ".private/papers/tidegs_arxiv_v2.pdf",
+        "text_private_relative_path": ".private/papers/tidegs_arxiv_v2.txt",
+        "text_sha256": "5c081564acdb7a18b16a68188b704bc74a15eec7c6d4d1359766ade306db119d",
+        "pdfinfo_pages": "18",
+        "local_verified_utc": "2026-11-06T01:40:42.274256+00:00"
+      },
+      "evidence_type": "AUTHOR_NATIVE_SOFTWARE_MEASUREMENTS_NOT_OUR_MEASUREMENTS",
+      "innovation": "Morton4096-Gaussian blocks;SSD/CPU/GPU caches;asynchronous read,H2D,compute,D2H andlazy log-writeback;trajectory-driven differential resident-set streaming.",
+      "testbeds": "Section 4.1/p6: A5000 24GB, EPYC 7532 32 cores, 256GB DDR4, PM9A3 SSD measured 3.3GB/s, PyTorch 2.6/CUDA 12.4. Appendix adds 3090/A800.",
+      "workload": "MipNeRF360 BS4/30kiterations;MatrixCity BigCity/AerialRGB-D51623trainingimages,fixed25M/102M/1.1B initializations,no densification/pruning for scale test. Default throughputBS64/16GB CPUcache;conservativeBS16/32GB.",
+      "experiment_groups": [
+        {
+          "locator": "section 4.2/Table 1,p7",
+          "variable": "24GB scalability frontier",
+          "reported": "Native~11.5M measured;naive~50M partly extrapolated from25M/12.13GB,not all measured maximum;CLM~105M;Tide>1B."
+        },
+        {
+          "locator": "Tables 2-3,p8",
+          "variable": "In-memoryNative/naive/CLM/Tide shuffle/trajectory",
+          "reported": "253.5/305.3/304.3/309.1/285.8ms. Native remains faster;utilization is nvidia-smi1Hz,not CLM10kHz SMsActive."
+        },
+        {
+          "locator": "Table 4/Fig 4,p8-9",
+          "variable": "MatrixCity102M/1.1B",
+          "reported": "102M:CLM100.8ms,0.41GB/iter;Tide90.7ms,0.10GB/iter.1.1B:Tide525.6ms,0.97GB/iter;CLMOOM."
+        },
+        {
+          "locator": "Tables 5-6,p9",
+          "variable": "NoTide/noOverlap/noMorton,102M,1080p,500iters",
+          "reported": "Full90.7ms;noDifferential145.3;noOverlap210.5;noMorton115.8. Author ablation, not our causal result."
+        },
+        {
+          "locator": "Appendices A.2-A.3/Table 7/Figs 5-7,p14-16",
+          "variable": "Shuffle/trajectory;bicycle/bonsai fixed initialization vsdensification",
+          "reported": "Order changes latency andquality;not purely same optimization trajectory."
+        },
+        {
+          "locator": "Appendices A.4-A.5/Tables 8-10/Figs 8-9,p16-18",
+          "variable": "3090/A800;optimizer churn;single-vs4GPU capacity/cost/convergence",
+          "reported": "Additional measured hardware;resident Adam cold-restart0.6/0.9%updates at102M/1.1B. Cost operating point not universal superiority."
+        }
+      ],
+      "strong_software_collision": "Trajectory reuse, incremental cross-tier transfers, overlap and budgeted working sets directly preempt broad Q1 cache/prefetch/hide-wait novelty.",
+      "semantic_and_version_limits": "Section 3.5/p6 discards optimizer moments on eviction and cold-restarts admission; trajectory replaces random order. Current repo README says release Torch 2.4+cu124, paper 2.6. Repo BS16/32GB default differs from default paper throughput BS64/16GB; do not silently mix.",
+      "not_established": "No preserved-original-Adam numerical equivalence. Paperfrontier says CLMrasterizationOOM~105M while1.1Bcaption highlightsgeometry~45GB; record scale-specific causes rather than one universal cause.",
+      "resource_measurement_scope": "Reported GPUutilization=nvidia-smi1Hz, not a direct critical-path wait trace orSMsActive equivalence; paper machine256GBRAM, throughputcache16GB plus otherhoststate. No claim entire training fits our prior16GiBhost cap."
+    },
+    {
+      "key": "GSARCH",
+      "title": "GSArch: Breaking Memory Barriers in 3D Gaussian Splatting Training via Architectural Support",
+      "venue": "HPCA 2025 March 1-5,p366-379",
+      "version": "IEEE DOI10.1109/HPCA61900.2025.00037,record10946749",
+      "primary_urls": [
+        "https://ieeexplore.ieee.org/document/10946749/",
+        "https://hpca-conf.org/2025/main-program/",
+        "https://mxhx7199.github.io/publications/"
+      ],
+      "download": null,
+      "evidence_type": "PRIMARY_PUBLISHER_ABSTRACT_ONLY_FULLTEXT_SOURCE_INCOMPLETE",
+      "innovation": "Publisher abstract:hot/cold Gaussian onchip buffering;low-contribution gradient filtering;bank-conflict rearrangement.",
+      "experiment_groups": [
+        {
+          "locator": "IEEE abstract",
+          "variable": "A100/JetsonAGXXavier comparisons",
+          "reported": "Author maxima 6.49x/15.42x; not our measurements. Fulltext was not accessible through primary URLs, so simulator/RTL/silicon methodology, scenes, figures/tables and PPA not verified."
+        }
+      ],
+      "testbeds": "Baseline GPU names only frompublisherabstract;actualproposedhardwaremeasurementNOT_ESTABLISHED",
+      "strong_software_collision": "Training backward reuse/atomic-gradient/bank-conflict hardware design is prior art. This differs from host optimizer/CPU-GPU exposed wait;cannot transfer its speedup denominator to Q1.",
+      "not_established": "Do not call speedups silicon measurements or establish simulation details from third-party reproductions. Secondary Scribd/search snippets were excluded as evidence."
+    }
+  ],
+  "our_synthesis_not_author_result": {
+    "Q1_status": "KEEP_AS_RESOURCE_AND_CRITICAL_PATH_DIAGNOSTIC_NOT_YET_HARDWARE_IDEA",
+    "absorbed_by_strong_software": [
+      "camera/visibility ordered reuse",
+      "selective appearance/SH transfer",
+      "CPUoptimizer/GPUrender overlap",
+      "working-set budget/caching/prefetch",
+      "delta stream andlazywriteback"
+    ],
+    "required_residual": "First measure exposed critical-path CPU/GPU wait after strong software is configured, not aggregate task durations or low utilization. Keep OMP/thread count, affinity, NUMA placement, native BLAS/Torch threads, I/O workers, pinning and CPU clock policy recorded and controlled; use symmetric end-to-end samples.",
+    "confound": "Changing OMP can change CPU optimizer latency and GPUfeed timing without changing GPUhardware. Low averageutilization alone does not establish PCIe saturation or a GPUarchitectural defect. GPUcompute/transfer/CPU tails overlap; do notsum them.",
+    "minimum_next_discriminator": "Same scene,cameras,iteration window,model/optimizer semantics andresource budget;strongCLM/Tide-likebaseline vsoneprocess-local threading/affinity change with critical-path wait andtraffic observed. If software eliminates exposed wait,SOFTWARE_ABSORBED;only surviving cost may motivate explicit hardware variable.",
+    "quality_contract": "GSScaleepsilonapproximation,Tideoptimizerrestart/order/maskedcapacity andCLMbatchFPorder require independent acceptance. Author quality similarity does not authorize altering our contract.",
+    "our_new_experiments": 0,
+    "our_performance_results": "NONE",
+    "our_claim_of_hardware_gain": "NONE"
+  },
+  "gaps": [
+    "GSArchprimaryfulltextunavailable;methodologyNOT_VERIFIED",
+    "Noqualifiedlocaltrainingassetsornewexecutioninscope",
+    "NoexactOMPthread/affinitysweepdisclosedinreviewedpapers",
+    "OfficialreposcouldbereadviabrowserbutnodeGitHubAPIreturned404;nocodecommitpinned,socurrentREADMEisversioncontextonly"
+  ],
+  "source_use_policy": "Fact paraphrases with page/table references;no long quotations. Third-party paper summaries not used for technical findings.",
+  "download_total_bytes": 9933744,
+  "resource_receipt": {
+    "writer_pid": 3931976,
+    "writer_threads": 1,
+    "ru_maxrss_KiB": 15816,
+    "fulltreecontinuousRSS": "NOT_OBSERVED",
+    "GPUoperations": 0
+  },
+  "source_access_failures": [
+    {
+      "paper": "GSARCH",
+      "url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=10946749",
+      "result": "web tool inaccessible;publisherabstract accessible;noaccessbypassattempt"
+    },
+    {
+      "purpose": "officialrepositorycommitpin",
+      "method": "nodeurllibGitHubAPIrepos",
+      "repositories": [
+        "SNU-ARC/GS-Scale",
+        "MachineLearningSystem/25ASPLOS-CLM-GS",
+        "sponge-lab/TideGS"
+      ],
+      "result": "HTTP404 fornodeAPI;browserprimaryREADMEsaccessible;noimmutablecommitclaim"
+    }
+  ]
+}

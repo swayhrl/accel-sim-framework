@@ -1,0 +1,333 @@
+{
+  "schema": "KV_MOE_PRIMARY_LITERATURE_EXPERIMENT_GROUPS_V1",
+  "created_client_date": "2026-11-06",
+  "review_scope": "Only the five named works; primary papers/venue pages/author repositories; not an exhaustive novelty search.",
+  "claim_labels": {
+    "AUTHOR_REAL_GPU": "Published authors' measurements; not independently reproduced here.",
+    "AUTHOR_EVENT_DRIVEN_SIMULATION_AND_PPA_ESTIMATE": "Modeled future design; not measured chip speedup/energy.",
+    "OUR_INFERENCE": "Planning collision/exclusion; no compatible local asset or runtime qualification implied.",
+    "OUR_MEASUREMENT": "0 in this planning Goal."
+  },
+  "papers": [
+    {
+      "id": "STRATA_OSDI26",
+      "title": "Strata: Hierarchical Context Caching for Long Context Language Model Serving",
+      "publication": "OSDI 2026; official proceedings pp.1-16",
+      "source_status": "PRIMARY_FINAL_VERIFIED",
+      "primary_url": "https://www.usenix.org/system/files/osdi26-xie-zhiqiang.pdf",
+      "landing_url": "https://www.usenix.org/conference/osdi26/presentation/xie-zhiqiang",
+      "local_pdf": "strata_osdi26.pdf",
+      "version_note": "Use OSDI final. arXiv2508.18572v1 is 2025 preprint; its abstract describes a TTFT5x claim while final abstract reports throughput. Do not mix.",
+      "innovation": "GPU-assisted hierarchical KV transfer/layout plus cache-aware scheduling; existing SGLang software.",
+      "model_input_identity": "Llama3.1-8B/70B-Instruct; Qwen2.5-14B-Instruct-1M. LooGLE-Wikipedia/NarrativeQA/ReviewMT/ShareGPT; Poisson arrivals, concurrency cap128.",
+      "precision": "NOT_EXPLICITLY_PINNED_IN_REVIEWED_METHODS",
+      "identity_gaps": [
+        "No model revision or frozen input-byte SHA.",
+        "No authors' GPU-hours/complete benchmark resource receipt."
+      ],
+      "groups": [
+        {
+          "id": "S_E2E",
+          "location": "sec5.1-5.2; PDFpp9-11, Fig8-10",
+          "kind": "AUTHOR_REAL_GPU",
+          "device": "H200:8GPU platform/1.6TB CPU RAM; models8B/14B use1GPU,70B TP4. H20-storage and GH200 separate.",
+          "control": "Engine/cache policy; baselines vLLM0.8.5+LMCache0.2.1,TRT-LLM0.17,SGLang0.4.5-HiCache.",
+          "result": "Llama70B LooGLE: up to5x vs vLLM-LMCache,3.75x vs TRT-HiCache at equal TTFT.",
+          "scope": "Serving throughput/TTFT; warm hierarchy separately precomputed; not pure decode."
+        },
+        {
+          "id": "S_IO_ABLATION",
+          "location": "sec4.2/5.3; PDFpp6,11-13",
+          "kind": "AUTHOR_REAL_GPU_PLUS_SEPARATELY_LABELED_SIMULATION",
+          "device": "H200 transfer/compute co-run; H20+P5510 disk. Cache-distance study uses simulated arrivals/execution.",
+          "control": "Copy layout/pages, IO-only vs scheduling, transfer-block quota,cache distance/disk layout.",
+          "result": "2x1024-thread blocks:48GB/s, <5% prefill/<10% decode interference.",
+          "scope": "Kernel resources matter; cache-distance simulation is not a realGPU performance run."
+        },
+        {
+          "id": "S_GH200",
+          "location": "sec5.3/Fig14-15; PDFp13",
+          "kind": "AUTHOR_REAL_GPU_WITH_ORACLE_ESTIMATE",
+          "device": "GH200 H100+Grace vs H200 PCIe5; Llama8B/LooGLE.",
+          "control": "Standard DMA vs StrataIO; scheduler; infinite-bandwidth oracle.",
+          "result": "Sustained StrataIO ~40.3GB/s PCIe,150.5GB/s GH; scheduling still necessary.",
+          "scope": "Oracle is estimate; faster link alone does not establish useful app speedup."
+        }
+      ],
+      "our_inference_Q2": "Direct collision: KV placement/migration/layout and overlap already strong software. Residual must survive current HiCache, batchedDMA and IO-kernel interference controls.",
+      "our_inference_Q3": "Indirect only: KV tiering is not expert routing/weight residency.",
+      "our_measurements": 0
+    },
+    {
+      "id": "HYBRIDKV_ACL26",
+      "title": "HybridKV: Hybrid KV Cache Compression for Efficient Multimodal Large Language Model Inference",
+      "publication": "ACL2026 long.594; pp13018-13034",
+      "source_status": "PRIMARY_FINAL_WEB_VERIFIED_PREPRINT_PDF_PINNED",
+      "primary_url": "https://aclanthology.org/2026.acl-long.594.pdf",
+      "landing_url": "https://aclanthology.org/2026.acl-long.594/",
+      "local_pdf": "hybridkv_arxiv2604_05887v1.pdf",
+      "pinned_pdf_url": "https://arxiv.org/pdf/2604.05887v1",
+      "version_note": "ACL final read via web. Final PDF SSH fetch timeout; SHA pins arXivv1 only. Do not confuse with AdaptFM2026 same-name head-reconstruction paper.",
+      "innovation": "Classify heads; static pruning plus dynamic CPU-KV chunk retrieval; hierarchical budgets.",
+      "model_input_identity": "Qwen2.5-VL3B/7B,LLaVA-OneVision7B;8image+3video tasks;64frames/video.",
+      "precision": "NOT_EXPLICITLY_PINNED; pruning/retrieval changes attention contents, not bit-exact full cache.",
+      "identity_gaps": [
+        "Model/data revisions, byteSHA, GPU count/hours not disclosed in reviewed sections.",
+        "No verified author implementation snapshot."
+      ],
+      "groups": [
+        {
+          "id": "H_QUALITY",
+          "location": "sec4.1/Tables1-2; ACLpdfpp6-7; pinnedarxivpp6-7",
+          "kind": "AUTHOR_REAL_GPU",
+          "device": "NVIDIA L40S;count not stated.",
+          "control": "10%KV vs fullcache,SnapKV,LOOK-M,MadaKV,SparseMM.",
+          "result": "Quality mostly maintained; not exact output equivalence.",
+          "scope": "Multimodal task scores; not dense text decode contract."
+        },
+        {
+          "id": "H_EFFICIENCY",
+          "location": "sec4.2/Table3; pinnedarxivpp6-7; finalwebTable3",
+          "kind": "AUTHOR_REAL_GPU",
+          "device": "L40S+FlashAttention;QwenVL7B,20random VideoChatGPT entries,max128output.",
+          "control": "Full/20%/10%cache.",
+          "result": "KVGB1.73/.40/.22;ms/token58.94/42.08/38.65;quality2.93/2.88/2.85.",
+          "scope": "7.9xKV reduction/1.52xdecode;20sample selectionSHA not supplied."
+        },
+        {
+          "id": "H_ABLATION",
+          "location": "sec4.3-4.4/Tables4-5; pinnedarxivpp7-8",
+          "kind": "AUTHOR_REAL_GPU",
+          "device": "SameL40S;WebQA/VATEX,STD/NextQA.",
+          "control": "Budgets5%-40%;all-static/all-dynamic;remove head/head-type allocation.",
+          "result": "All-static34.13 vs hybrid38.65 vs all-dynamic48.15ms/token;quality differs.",
+          "scope": "Shows retrievalIO vs quality tradeoff; no full-software end-to-end residual proof."
+        }
+      ],
+      "our_inference_Q2": "Direct capacity/migration collision, but lossy semantic change needs a separate quality contract. Compare retained-KV residency,CPU traffic,index cost,not advertised memory ratio alone.",
+      "our_inference_Q3": "No expert-routing claim.",
+      "our_measurements": 0
+    },
+    {
+      "id": "MONOMOE_V1",
+      "title": "MonoMoE: An Efficient Fused Mega-kernel for Quantized MoE Decoding",
+      "publication": "arXiv2609.04244v1; submission metadata19Aug2026; no conference acceptance established",
+      "source_status": "PRIMARY_PREPRINT_VERIFIED_IMPLEMENTATION_SOURCE_UNVERIFIED",
+      "primary_url": "https://arxiv.org/pdf/2609.04244v1",
+      "landing_url": "https://arxiv.org/abs/2609.04244",
+      "local_pdf": "monomoe_arxiv2609_04244v1.pdf",
+      "version_note": "Paper claims FlashInfer integration; linked directory fetch restricted and guessed README404; do not assert installed implementation availability.",
+      "innovation": "Persistent weight-major fused routedMoE: routing/topk/quantization/two projections/activation/reduction and overlap.",
+      "model_input_identity": "Qwen3.5-35B-A3B/122B-A10B TP1;DeepSeekV3.1/GLM5.2 TP8;256experts/top8.",
+      "precision": "E4M3FP8 W/A;W128x128scales,A128element scales;BF16 inputs quantized internally.",
+      "identity_gaps": [
+        "Model revisions/checkpointSHA/runtime commit not established.",
+        "Official code snapshot not independently verified."
+      ],
+      "groups": [
+        {
+          "id": "M_SYNTHETIC",
+          "location": "sec4.1-4.3/Table2/Fig8; PDFpp10-11",
+          "kind": "AUTHOR_REAL_GPU_SYNTHETIC",
+          "device": "H200141GB,132SM,4.8TB/s;20warmup+200graph replays.",
+          "control": "Generated weights/inputs/routerlogits;B1/2/4/8;tunedvLLMTrition;FlashMoEFP8adaptation.",
+          "result": "Up to1.54x vs tunedvLLM.",
+          "scope": "Complete local operator;FlashMoE dispatch/combine disabled here;not natural-routing data."
+        },
+        {
+          "id": "M_E2E",
+          "location": "sec4.4/Fig9; PDFpp11-12",
+          "kind": "AUTHOR_REAL_GPU_NATURAL_TEXT",
+          "device": "H200TP1/8;vLLM CUDAgraphs.",
+          "control": "Sonnet50prompts,1600in/200out,200prefix;APCoff,chunkedprefillon;concurrency1/2/4/8.",
+          "result": "Qwen35B TPOT reduction18.7/13.0/12.3/9.9% vs tunedvLLM.",
+          "scope": "Natural workload;communication dilutes TP8gains;not DRAM causal partition."
+        },
+        {
+          "id": "M_ACCURACY",
+          "location": "sec4.5/Table3; PDFp12",
+          "kind": "AUTHOR_REAL_GPU_TASK_QUALITY",
+          "device": "Same modelset,B1.",
+          "control": "GSM8K5shot/HumanEval0shot;FP32same-operator synthetic validation separate.",
+          "result": "Reported score differences within combined SE when lower.",
+          "scope": "Statistical task accuracy,not token/logprob or BF16bitwise equivalence."
+        }
+      ],
+      "our_inference_Q2": "On-device expert streaming,not CPU capacity tiering.",
+      "our_inference_Q3": "Strong direct collision: lowtokenMoE fusion/padding/bandwidth recovery already software. Residual needs natural routing under compatible precision and backend; synthetic microbench cannot replace it.",
+      "our_measurements": 0
+    },
+    {
+      "id": "PATTERNS_ISCA26",
+      "title": "Patterns behind Chaos: Forecasting Data Movement for Efficient Large-Scale MoE LLM Inference",
+      "publication": "ISCA2026; DOI10.1109/ISCA66397.2026.00021;author preprintv5 12May2026",
+      "source_status": "PRIMARY_V5_AND_VENUE_VERIFIED",
+      "primary_url": "https://arxiv.org/pdf/2510.05497v5",
+      "landing_url": "https://ieeexplore.ieee.org/document/11617553/",
+      "local_pdf": "patterns_arxiv2510_05497v5.pdf",
+      "version_note": "v3 Orders in Chaos is superseded. ArtifactREADME currently names DeepSeekR1AWQ/KimiK2Thinking vs paperV3/KimiK2: identity drift,not silently equivalent.",
+      "innovation": "Natural routing/data movement characterization;predictive localHBM plus task allocation;prefill-guided expert placement.",
+      "model_input_identity": "DeepSeekV3 671B,Llama4Maverick402B,Qwen3-235B,KimiK2 1T;>24000requests;MMLU/Pro/ChineseSimpleQA/LiveCodeBench.",
+      "precision": "Simulator H100like FP16compute model;actual trace-source precision varies/unpinned;realGPU checkpoint precision not explicitly fixed here.",
+      "identity_gaps": [
+        "Model/tokenizer revisions and request-byteSHA not supplied in paper.",
+        "MutableAE trace names differ;repositoryclaim cycle-accurate conflicts with paper event-driven;paper classification retained."
+      ],
+      "groups": [
+        {
+          "id": "P_ROUTING",
+          "location": "secIII/V-A; PDFpp3-6,9-10",
+          "kind": "AUTHOR_REAL_GPU_ROUTING_COLLECTION",
+          "device": "SGLang,8H100DGX+8H200AWS.",
+          "control": "Layers,tokens,prefill/decode,tasks,languages,expertpairs.",
+          "result": "Reports temporal/spatial correlations across4models.",
+          "scope": "Trace characterization,not universal caching speedup;datasetorder matters."
+        },
+        {
+          "id": "P_SIM_PPA",
+          "location": "secIV-V/Fig12/TableI-II; PDFpp7-12",
+          "kind": "AUTHOR_EVENT_DRIVEN_SIMULATION_AND_PPA_ESTIMATE",
+          "device": "24/25H100like dies;Dojo/TSMCtopologies;Yosys+CACTI5nm.",
+          "control": "Baseline/EP/allocation/predictor/combined.",
+          "result": "Mean6.6x MoE throughput;area/power~0.04% estimated.",
+          "scope": "Not measured waferGPU/PPA;local validation<5% does not validate everyfutureinteraction."
+        },
+        {
+          "id": "P_REAL_PLACEMENT",
+          "location": "secVI/Fig17; PDFpp12-13",
+          "kind": "AUTHOR_REAL_GPU",
+          "device": "Qwen235B,8H100NVLink;SGLang+DeepEPdynamic.",
+          "control": "MMLU/GlobalMMLU,B64..16384;contiguous/default vs Remap/Dup;oracleBest/Worst separate.",
+          "result": "Remap15.5%,Dup12.5% improvement;abstract max1.25x.",
+          "scope": "Three expertlinears only;excludesattention/alltoall/topk;not fullrequest;Dup adds1slot/GPU."
+        }
+      ],
+      "official_repos": [
+        "https://github.com/zhongkaiyu/waferscale_gpu_moe_sim",
+        "https://github.com/zhongkaiyu/moe_exp_placement"
+      ],
+      "our_inference_Q2": "Expert replication/migration already contains capacity-vs-traffic tradeoff;predictor bookkeeping and replication must be charged.",
+      "our_inference_Q3": "Direct collision for prefill-derived natural expert heatmaps. Need post-strong-placement residual,not generichotexpertcache. Results are multiGPU/wafer scoped.",
+      "our_measurements": 0
+    },
+    {
+      "id": "NOTALL_ICLR26",
+      "title": "Not All Models Suit Expert Offloading: On Local Routing Consistency of Mixture-of-Expert Models",
+      "publication": "ICLR2026; arXiv2505.16056v4 28Feb2026;official repo citesOpenReview2XMAUP74ig",
+      "source_status": "PRIMARY_V4_PUBLISHED_HEADER_AND_AUTHOR_REPO_VERIFIED",
+      "primary_url": "https://arxiv.org/pdf/2505.16056v4",
+      "landing_url": "https://openreview.net/forum?id=2XMAUP74ig",
+      "local_pdf": "not_all_arxiv2505_16056v4.pdf",
+      "version_note": "OpenReview forum browserchallenge;published ICLR header and authorrepo provide venue confirmation.",
+      "innovation": "SRP/SCH quantify model routing locality;controlled training variations probe locality/loadbalance.",
+      "model_input_identity": "20baseMoEs3B-57B inclOLMoE,Qwen3-30BA3B,Mixtral;22528inputs,512tokens,11domains.",
+      "precision": "GPUtype/count/precision/hours not explicit in reviewed paper methods;do not invent.",
+      "identity_gaps": [
+        "No modelrevision/requestSHA in paper.",
+        "Natural corpuspass != exact freeze of generated autoregressive routes;naiveLRU is not strongoptimizedserving."
+      ],
+      "groups": [
+        {
+          "id": "N_REAL_ROUTES",
+          "location": "sec3-5/AppendixD1,D3; PDFpp5-10,16-18",
+          "kind": "AUTHOR_MODEL_ROUTING_OBSERVATION",
+          "device": "NOT_DISCLOSED",
+          "control": "7RedPajama+4applicationdomains;segments4/16/64/256;models/base-vs-posttrained.",
+          "result": "Model-dependentlocality;~2xactiveexpertcacheoftenknee.",
+          "scope": "Routing statistic,not actual offloading TPOTorDRAMbytes."
+        },
+        {
+          "id": "N_TOY",
+          "location": "sec3.1/3.3/AppendixD2; PDFpp5-8,17",
+          "kind": "AUTHOR_TRAINED_CONTROLLED_MODELS",
+          "device": "NOT_DISCLOSED;20Btokens/10000steps.",
+          "control": "OLMoElike1.43B;change sharedexperts/granularity/activecount/LBloss oneatime.",
+          "result": "Localbalance/localitytradeoff;sharedexpertarchitectureassociation.",
+          "scope": "Trainingintervention;not permissible runtime tweak to frozenQwen."
+        },
+        {
+          "id": "N_CACHE",
+          "location": "sec5.2/AppendixF; PDFpp10,27-29",
+          "kind": "AUTHOR_TRACE_CACHE_ANALYSIS_PLUS_NAIVE_RUNTIME",
+          "device": "NOT_DISCLOSED",
+          "control": "OracleSCH/BeladyvsLRU/LFU;TOYnaiveon-demandLRUvsfullGPU.",
+          "result": "Throughputoverhead correlation ~+0.2prefill/-0.3decode.",
+          "scope": "Oraclefuturefrequencyisnotimplementableprediction;no strongenginecausality."
+        }
+      ],
+      "official_repos": [
+        "https://github.com/ljcleo/moe-lrc"
+      ],
+      "our_inference_Q2": "Locality depends on model/domain/cache size;capacity target alone cannot predict migration costs.",
+      "our_inference_Q3": "Natural per-layer routing identity first;do not manufacture hotexperts or infer latency from repetition/SCH. Compare strongprefetch/eviction/fusion,not naiveLRU.",
+      "our_measurements": 0
+    }
+  ],
+  "global_missing_authority": [
+    "A cited paper/model name does not authorize downloading or executing that model.",
+    "No supplied source establishes an accepted second-model local tensor/input authority.",
+    "No paper result is directly substituted for RTX4080 BF16 native performance or numerical gates."
+  ],
+  "planning_collision": {
+    "Q2": "Require a real capacity transition and exact source/request/cache state, then compare current tiered-cache software and expose remaining migration/index/IO-contention cost.",
+    "Q3": "Require naturally produced routing and strong fusion/prefetch/placement baseline; charge metadata, duplicate capacity, conversion, communication and full application time. Do not synthesize expert hotspots.",
+    "hardware_candidate_status": "NO_NEW_HARDWARE_CANDIDATE_FROM_LITERATURE_ALONE"
+  },
+  "private_pdf_manifest": [
+    {
+      "paper_id": "STRATA_OSDI26",
+      "path": ".private/papers/strata_osdi26.pdf",
+      "bytes": 1624366,
+      "sha256": "c8e0f2148aada4f18d7dbb2f54dca35a1e8a782375d3dc4786a5dc66e13f1b77",
+      "url": "https://www.usenix.org/system/files/osdi26-xie-zhiqiang.pdf"
+    },
+    {
+      "paper_id": "HYBRIDKV_ACL26",
+      "path": ".private/papers/hybridkv_arxiv2604_05887v1.pdf",
+      "bytes": 4355845,
+      "sha256": "23009c0dd6b30b794fe48bb9cfc1c3c7df0a4b09aef7016278ef9813c049bfd3",
+      "url": "https://arxiv.org/pdf/2604.05887v1"
+    },
+    {
+      "paper_id": "MONOMOE_V1",
+      "path": ".private/papers/monomoe_arxiv2609_04244v1.pdf",
+      "bytes": 578855,
+      "sha256": "f559108857e46b41f41cf2b0ab93df8e768492c824da57cacc0ae7d4464de621",
+      "url": "https://arxiv.org/pdf/2609.04244v1"
+    },
+    {
+      "paper_id": "PATTERNS_ISCA26",
+      "path": ".private/papers/patterns_arxiv2510_05497v5.pdf",
+      "bytes": 17648427,
+      "sha256": "119c83d52757917421eaa21e623588630393274e159aeaa95feac768006482b4",
+      "url": "https://arxiv.org/pdf/2510.05497v5"
+    },
+    {
+      "paper_id": "NOTALL_ICLR26",
+      "path": ".private/papers/not_all_arxiv2505_16056v4.pdf",
+      "bytes": 7256623,
+      "sha256": "ab0d92df7f4066b89ec5b4cd223e58de77c7aebf443bbe161e703d991c7dae95",
+      "url": "https://arxiv.org/pdf/2505.16056v4"
+    }
+  ],
+  "resource_receipt": {
+    "scope": "Focused literature agent; short-lived CPU Python and pdftotext. Own observed RSS only, not continuous all-agent tree.",
+    "downloaded_public_paper_bytes": 31464116,
+    "failed_fetches": [
+      {
+        "url": "https://aclanthology.org/2026.acl-long.594.pdf",
+        "error": "SSH urllib timeout; final paper had been browsed via web; alternate pinned arXivv1 used for local byteSHA"
+      }
+    ],
+    "max_observed_python_ru_maxrss_KiB": 57292,
+    "writer_ru_maxrss_KiB": 40640,
+    "writer_threads": 1,
+    "model_or_dataset_download_bytes": 0,
+    "install_count": 0,
+    "GPU_or_NVML_calls": 0,
+    "other_nodes_accessed": 0,
+    "our_experiments": 0,
+    "browser_network_bytes": "NOT_MEASURED",
+    "old_assets_modified": false
+  }
+}
