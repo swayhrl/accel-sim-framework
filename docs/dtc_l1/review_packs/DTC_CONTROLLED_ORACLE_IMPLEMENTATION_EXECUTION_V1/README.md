@@ -21,3 +21,5 @@ Independently reviewed early workload analysis and conditional extension prepara
 [Independently reviewed CORE32 opportunity analyzer](analysis/CORE32_OPPORTUNITY_ANALYZER_V1/README.md): 43 CPU checks and a limited eight-accepted example; no final CORE32 performance claim.
 
 [External closed31 evidence checkpoint and operational limitations](operational_amendments/EXTERNAL_CLOSED31_EVIDENCE_CHECKPOINT_V1/README.md). Existing results only; no claim of CORE32 completion or new96 dispatch.
+
+[Independently reviewed fixed initial8 closed31 scientific preanalysis](analysis/INITIAL8_CLOSED31_SCIENTIFIC_PREANALYSIS_V1/README.md): 7 complete same-build four-cell inputs; scan OFF remains unaccepted at this immutable snapshot. Not final CORE32 science.

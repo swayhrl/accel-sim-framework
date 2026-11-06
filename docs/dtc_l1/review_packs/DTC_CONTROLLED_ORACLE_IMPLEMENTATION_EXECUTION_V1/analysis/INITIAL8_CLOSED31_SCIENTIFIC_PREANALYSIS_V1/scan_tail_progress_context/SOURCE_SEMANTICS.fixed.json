@@ -1,0 +1,59 @@
+[
+  {
+    "excerpts": [
+      {
+        "first_line": 59,
+        "last_line": 70,
+        "text": "59:   // Called only by the owning simulation thread at real parser/CTA work\n60:   // boundaries. Reuse the last coherent retirement observation; parsing is\n61:   // producer liveness, never an instruction retirement or a terminal claim.\n62:   void heartbeat() {\n63:     if (enabled_ && emitted_ && !terminal_emitted_)\n64:       observe(phase_, last_completed_, true, false);\n65:   }\n66: \n67:   // epoch=0 is the whole-input cumulative instruction epoch. phase_epoch only\n68:   // identifies phase transitions; it NEVER resets a receiver's finite deadline.\n69:   // stream_id=-1 means whole-input/multiple-or-no-active-stream, not stream zero.\n70:   void observe(const char *phase, uint64_t completed, bool semantic_valid,"
+      },
+      {
+        "first_line": 87,
+        "last_line": 114,
+        "text": "87:     if (semantic_valid) last_completed_ = completed;\n88:     if (std::strcmp(phase_, phase) != 0) {\n89:       if (std::strlen(phase) >= sizeof(phase_)) {\n90:         enabled_ = false;\n91:         return;\n92:       }\n93:       std::strcpy(phase_, phase);\n94:       ++phase_epoch_;\n95:       force = true;\n96:     }\n97:     if (!force && emitted_ && now - last_emitted_ns_ < kCadenceNs) return;\n98:     if (sequence_ >= kMaximumRecords) { enabled_ = false; return; }\n99:     char packet[kMaximumPacket];\n100:     const int bytes = std::snprintf(\n101:         packet, sizeof(packet),\n102:         \"{\\\"v\\\":1,\\\"pid\\\":%ld,\\\"start_ticks\\\":%llu,\"\n103:         \"\\\"generation\\\":\\\"%s\\\",\\\"input\\\":\\\"%s\\\",\\\"roi\\\":\\\"%s\\\",\"\n104:         \"\\\"seq\\\":%llu,\\\"mono_ns\\\":%llu,\\\"epoch\\\":0,\"\n105:         \"\\\"phase_epoch\\\":%llu,\\\"phase\\\":\\\"%s\\\",\\\"stream_id\\\":%lld,\"\n106:         \"\\\"stream_scope\\\":\\\"whole_input\\\",\\\"completed\\\":%llu,\"\n107:         \"\\\"end\\\":\\\"%s\\\"}\\n\",\n108:         static_cast<long>(pid_), static_cast<unsigned long long>(start_ticks_),\n109:         generation_, input_, roi_,\n110:         static_cast<unsigned long long>(sequence_ + 1),\n111:         static_cast<unsigned long long>(now),\n112:         static_cast<unsigned long long>(phase_epoch_), phase_,\n113:         static_cast<long long>(stream_id),\n114:         static_cast<unsigned long long>(completed), terminal);"
+      }
+    ],
+    "source": {
+      "bytes": 8867,
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build/gpu-simulator/ag7_policyb_progress.h",
+      "sha256": "9b5b8767e7c1db2b729a6eaae91a50f56d8c6189aa415a5c36ff760f5a213201"
+    }
+  },
+  {
+    "excerpts": [
+      {
+        "first_line": 65,
+        "last_line": 100,
+        "text": "65:   while (commandlist_index < commandlist.size() || !kernels_info.empty()) {\n66:     if (ag7_progress.enabled()) ag7_progress.observe(\"PARSE\",\n67:         m_gpgpu_sim->gpu_tot_sim_insn + m_gpgpu_sim->gpu_sim_insn, true, true);\n68:     parse_commandlist();\n69:     if (ag7_progress.enabled()) ag7_progress.observe(\"BOUNDARY\",\n70:         m_gpgpu_sim->gpu_tot_sim_insn + m_gpgpu_sim->gpu_sim_insn, true, true);\n71: \n72:     // Launch all kernels within window that are on a stream that isn't already\n73:     // running\n74:     for (auto k : kernels_info) {\n75:       bool stream_busy = false;\n76:       for (auto s : busy_streams) {\n77:         if (s == k->get_cuda_stream_id()) stream_busy = true;\n78:       }\n79:       if (!stream_busy && m_gpgpu_sim->can_start_kernel() &&\n80:           !k->was_launched()) {\n81:         std::cout << \"launching kernel name: \" << k->get_name()\n82:                   << \" uid: \" << k->get_uid()\n83:                   << \" cuda_stream_id: \" << k->get_cuda_stream_id()\n84:                   << std::endl;\n85:         m_gpgpu_sim->launch(k);\n86:         k->set_launched();\n87:         busy_streams.push_back(k->get_cuda_stream_id());\n88:         if (ag7_progress.enabled()) ag7_progress.observe(\"BOUNDARY\",\n89:             m_gpgpu_sim->gpu_tot_sim_insn + m_gpgpu_sim->gpu_sim_insn,\n90:             true, true, \"NONE\", static_cast<int64_t>(k->get_cuda_stream_id()));\n91:       }\n92:     }\n93: \n94:     unsigned finished_kernel_uid = simulate();\n95:     // cleanup finished kernel\n96:     if (finished_kernel_uid || m_gpgpu_sim->cycle_insn_cta_max_hit() ||\n97:         !m_gpgpu_sim->active()) {\n98:       cleanup(finished_kernel_uid);\n99:       if (ag7_progress.enabled()) ag7_progress.observe(\"BOUNDARY\",\n100:           m_gpgpu_sim->gpu_tot_sim_insn + m_gpgpu_sim->gpu_sim_insn, true, true);"
+      },
+      {
+        "first_line": 117,
+        "last_line": 124,
+        "text": "117:   if (ag7_progress.enabled()) {\n118:     const bool complete_candidate = !ag7_limit_seen &&\n119:         commandlist_index == commandlist.size() && kernels_info.empty() &&\n120:         !m_gpgpu_sim->cycle_insn_cta_max_hit();\n121:     ag7_progress.observe(\"BOUNDARY\",\n122:         m_gpgpu_sim->gpu_tot_sim_insn + m_gpgpu_sim->gpu_sim_insn, true, true,\n123:         ag7_limit_seen ? \"LIMIT\" :\n124:             (complete_candidate ? \"NATURAL\" : \"ERROR\"));"
+      },
+      {
+        "first_line": 186,
+        "last_line": 201,
+        "text": "186: unsigned accel_sim_framework::simulate() {\n187:   unsigned finished_kernel_uid = 0;\n188:   do {\n189:     if (!m_gpgpu_sim->active()) break;\n190: \n191:     // performance simulation\n192:     if (m_gpgpu_sim->active()) {\n193:       m_gpgpu_sim->cycle();\n194:       sim_cycles = true;\n195:       // Same-thread post-cycle observation; no queue pops, model writes or\n196:       // unsynchronized timer reads. Long blocking phases fail freshness upstream.\n197:       if (ag7_progress.enabled()) ag7_progress.observe(\"SIMULATE\",\n198:           m_gpgpu_sim->gpu_tot_sim_insn + m_gpgpu_sim->gpu_sim_insn, true, false,\n199:           \"NONE\", busy_streams.size() == 1 ?\n200:               static_cast<int64_t>(busy_streams.front()) : -1);\n201:       m_gpgpu_sim->deadlock_check();"
+      }
+    ],
+    "source": {
+      "bytes": 10792,
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build/gpu-simulator/accel-sim.cc",
+      "sha256": "36e11eb6aa8975b208d3f5e65f2a389bc93809483c17a15d3743c8fe272a37d8"
+    }
+  },
+  {
+    "excerpts": [
+      {
+        "first_line": 2364,
+        "last_line": 2380,
+        "text": "2364:   else if (inst.op_pipe == SFU__OP)\n2365:     m_stats->m_num_sfu_committed[m_sid]++;\n2366:   else if (inst.op_pipe == MEM__OP)\n2367:     m_stats->m_num_mem_committed[m_sid]++;\n2368: \n2369:   if (m_config->gpgpu_clock_gated_lanes == false)\n2370:     m_stats->m_num_sim_insn[m_sid] += m_config->warp_size;\n2371:   else\n2372:     m_stats->m_num_sim_insn[m_sid] += inst.active_count();\n2373: \n2374:   m_stats->m_num_sim_winsn[m_sid]++;\n2375:   m_gpu->gpu_sim_insn += inst.active_count();\n2376:   inst.completed(m_gpu->gpu_tot_sim_cycle + m_gpu->gpu_sim_cycle);\n2377: }\n2378: \n2379: void shader_core_ctx::writeback() {\n2380:   unsigned max_committed_thread_instructions ="
+      }
+    ],
+    "source": {
+      "bytes": 355295,
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/integration-core/src/gpgpu-sim/shader.cc",
+      "sha256": "2c3694ff196b31adeef7cd86153ddf29c5be6592a8c033d17c0f69bc4ba4f99f"
+    }
+  }
+]
