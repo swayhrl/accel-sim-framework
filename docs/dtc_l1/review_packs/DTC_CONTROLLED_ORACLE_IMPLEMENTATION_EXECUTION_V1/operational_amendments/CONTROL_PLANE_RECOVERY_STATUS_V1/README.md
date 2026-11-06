@@ -1,0 +1,13 @@
+# Control-plane recovery status, not final scientific closeout
+
+All32 initial scientific identities have started exactly once. The attached timestamped table distinguishes accepted results from natural closures awaiting strict/archive/native-restore processing and from started rows without DONE. Remaining24 is still an unregistered96-row draft. No historical cycles replace the new same-build OFF.
+
+An expected resource HOLD escaped the original dispatch loop and caused its executors to unwind. A separately reviewed same-owner operational generation retained the continuous same-OFD dispatch lock, adopted existing futures and preserved all27 previously consumed UUIDs. It then legitimately started the five remaining identities; the source-bound CPU review and actual postinstall review are attached. That postinstall review is time-specific and precedes the later observation incident.
+
+The coordinator subsequently attempted an optional Python-level read-only observation through GDB inferior calls. That intrusive observation timed out inside nested PyRun. Native-only backtraces then showed shared GIL pthread-condvar quiescence/cancellation waits and controller progress stopped. This is a coordinator-induced control-plane incident, not a simulated-performance failure. The Python-level observation has not been repeated. The raw models and their independent frontend capture processes continue; there has been no model retry, budget refund, UUID replacement, Core/binary/config/input change or invented acceptance.
+
+Recovery preparation now considers a truthful same-PID operational-image transition preserving original PID/start, lease/shared OFDs, healthy child identities and every scoped frontend read pipe. No such exec or FD change has been performed at this snapshot. Technical source/pipe/trigger qualification and independent review are still required. Authority review distinguishes ordinary engineering from changes to lease meanings or scientific guards; the latter remain a user-decision boundary. A file-name substring alone is not proof of original executing source, and no old thread/frame markers may be fabricated.
+
+The independent closed-result publication watcher was separately repaired by preserving an orphan dedicated Git index lock; its original PID resumed and published commit0c73683 with byte-verified remote manifest44150a9b. That reporting watcher does not dispatch models. Its status is not a substitute for the science registry, PID/start or DONE.
+
+This package is an honest intermediate engineering checkpoint. CORE32 Oracle statistics and final independent scientific review remain incomplete. EnglishLaTeXv0.23 and all historical scientific ledgers remain unchanged.

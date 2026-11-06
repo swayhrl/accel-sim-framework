@@ -1,0 +1,81 @@
+{
+  "schema": "DTC_ORACLE_BACKGROUND_PUBLICATION_DIAGNOSIS_RECOVERY_V1",
+  "created_utc": "2026-11-06T11:52:38.981851+00:00",
+  "watcher": {
+    "pid": 340280,
+    "start_ticks": 1070422329,
+    "source_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/agents/L1_background_publication_v1/watch_publish_oracle_results.py",
+    "source_sha256": "a6da7d0e0904daaa41593058836f3ad640ea23b6c5057b3c74e232e6ea38a5ef",
+    "poll_seconds": 60,
+    "actual_observed_wait": "do_select with no child, consistent with time.sleep; log/error/current-scope continued advancing"
+  },
+  "root_cause": {
+    "first_error": "git commit exceeded per-command60sec timeout; subprocess was terminated and left BACKGROUND_INDEX.lock sentinel",
+    "first_orphan_lock_utc": "2026-11-06T10:14:23Z",
+    "orphan_lock_bytes": 0,
+    "orphan_lock_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "orphan_lock_inode": 155805726,
+    "actual_open_FD_holders_before_recovery": 0,
+    "related_live_Git_writers_before_recovery": 0,
+    "unrelated_git_observed": {
+      "pid": 403240,
+      "operation": "diff --name-only",
+      "worktree": "dtc_l2_mlp_full_workload_exploration_v1/docs-worktree"
+    },
+    "why_WATCH_STATE_looked_stale": "cycle only writes WATCH_STATE after successful publication or ordinary collect. A publication exception bypasses that write and main only updates LAST_WATCH_ERROR; CURRENT_SCOPE and new result consumption still advance.",
+    "source_line_anchors": {
+      "timeout=60": [
+        124
+      ],
+      "receipt=publisher.commit_snapshot": [
+        186
+      ],
+      "last_poll_epoch": [
+        190
+      ],
+      "LAST_WATCH_ERROR.json": [
+        206
+      ],
+      "time.sleep(a.poll)": [
+        210
+      ]
+    }
+  },
+  "pre_recovery_git": {
+    "local_HEAD": "2237e312f0d8704af0d91a615eaa320670fe88dc",
+    "origin_exact_SHA": "2237e312f0d8704af0d91a615eaa320670fe88dc",
+    "local_ahead_commit": false,
+    "dedicated_index_sha256": "a39e4e90f9b7f3912d1385ce73e379d7fa9ef4fb4a116e118292508509140700",
+    "dedicated_index_bytes": 7388539,
+    "staging_report": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/agents/S_background_publisher_diagnosis_v1/STAGED_INDEX_READONLY_REPORT.json",
+    "stale_index_warning": "Its38 staged paths include21 apparent deletions relative to later Main analysis commit; these are a stale-index view, not proof of physical deletion. Do not commit/reset this old index blindly."
+  },
+  "Main_recovery": {
+    "receipt_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/control/publication_v1/orphan_lock_recovery_20261106T113211Z/RECEIPT.fixed.json",
+    "receipt_sha256": "95a00066fc4799abc3d67d2ddfec23c3bf2880854575c0f1cd47c9919eb75ddb",
+    "action": "Under the unique publication LOCK, fresh-verified no index users and exact local/remote HEAD; preserved index/staging evidence and atomically renamed only the orphan index.lock. No watcher restart, reset, force or scientific mutation.",
+    "dedicated_index_preimage_not_in_this_report_package": true,
+    "default_index_not_copied": true
+  },
+  "recovered_publication": {
+    "commit": "0c73683dd4310705f8d9b0e841efee143581fa3a",
+    "original_watcher_PID_and_start_unchanged": true,
+    "closed_results_in_snapshot": 8,
+    "readback_report_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/agents/S_background_publisher_diagnosis_v1/RECOVERY_READBACK_READONLY.json",
+    "github_content_readback_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/agents/S_background_publisher_diagnosis_v1/GITHUB_CONTENT_READBACK.json"
+  },
+  "engineering_followups_not_installed": [
+    "Persist poll/attempt heartbeat and failure state separately from last successful publish; do not use WATCH_STATE as scientific model progress.",
+    "Evaluate larger command-specific timeout for commit/index operations on true164 FUSE, with isolated CPU fixture for timeout/child reap. Never auto-remove a Git lock without unique publication lock, fresh writer/FD proof and preimage preservation.",
+    "If local HEAD becomes ahead after failed push, preserve the exact commit and retry/check remote fast-forward; never reset/force to hide a failed publication."
+  ],
+  "current_watcher_source_changed": false,
+  "S_diagnostic_actions": {
+    "read_only_process_and_FD_checks": true,
+    "read_only_Git_and_GitHub_fetch": true,
+    "wrote_only_own_diagnostic_reports": true,
+    "watcher_restart_or_stop_or_new_watcher": 0,
+    "controller_model_registry_or_Git_mutations": 0
+  },
+  "science_progress_boundary": "Use immutable runtime DONE/strict/archive evidence and current matrix for scientific execution. A stale publication WATCH_STATE, retained historical LAST_WATCH_ERROR or sleeping publisher is not evidence of stopped/failed science."
+}

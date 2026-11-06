@@ -1,0 +1,72 @@
+[
+  {
+    "new": "def recovery_dispatch_loop():",
+    "old": "def run_scheduler():"
+  },
+  {
+    "new": "assert state['thread_ident']==_RECOVERY['cap']['original_thread_ident'];state[_RECOVERY['generation']]['thread_ident']=threading.get_ident()",
+    "old": "assert state['thread_ident']is None,'SECOND_SCIENTIFIC_DISPATCH_POOL_FORBIDDEN';state['thread_ident']=threading.get_ident()"
+  },
+  {
+    "new": "running=dict(_RECOVERY['cap']['running']);post=dict(_RECOVERY['cap']['post']);reviews=dict(_RECOVERY['cap']['reviews']);dispatch_index=_RECOVERY['cap']['dispatch_index']",
+    "old": "running={};post={};reviews={};dispatch_index=0"
+  },
+  {
+    "new": " def saveclaims():\n  state[_RECOVERY['generation']]['reservation_sync_pending']=True\n  with state['lock']:",
+    "old": " def saveclaims():\n  with state['lock']:"
+  },
+  {
+    "new": "for ctx in state['contexts'].values():sync_stage_reservation(ctx,{v['cohort']:v for v in state['claims'].values()if v['request']==ctx['request']})\n  state[_RECOVERY['generation']]['reservation_sync_pending']=False",
+    "old": "for ctx in state['contexts'].values():sync_stage_reservation(ctx,{v['cohort']:v for v in state['claims'].values()if v['request']==ctx['request']})"
+  },
+  {
+    "kind": "REUSE_EXACT_EXISTING_WORK_REVIEW_CLOSURES"
+  },
+  {
+    "new": " with _RECOVERY['cap']['held_duplicate']as held:\n  state[_RECOVERY['generation']]['reservation_sync_pending']=True",
+    "old": " with(BASE/'control/SHARED_DISPATCH_OWNER.lock').open('a+b')as held:\n  fcntl.flock(held,fcntl.LOCK_EX|fcntl.LOCK_NB);put(BASE/'control/SHARED_DISPATCH_STARTED.json',dict(UTC=stamp(),pid=os.getpid(),start_ticks=977758783,thread_ident=threading.get_ident(),CPU_allowance=sorted(mask),single_dispatcher=True),True);saveclaims()"
+  },
+  {
+    "new": "with _PlainPool(max_workers=min(128,len(mask)),thread_name_prefix='DTC_ORACLE_RECOVERY_MODEL')as workers,_PlainPool(max_workers=1,thread_name_prefix='DTC_ORACLE_RECOVERY_ARCHIVE')as archives,_PlainPool(max_workers=1,thread_name_prefix='DTC_ORACLE_RECOVERY_REVIEW')as review_pool:",
+    "old": "with concurrent.futures.ThreadPoolExecutor(max_workers=min(128,len(mask)),thread_name_prefix='DTC_ORACLE_SHARED_MODEL')as workers,concurrent.futures.ThreadPoolExecutor(max_workers=1,thread_name_prefix='DTC_ORACLE_ARCHIVE')as archives,concurrent.futures.ThreadPoolExecutor(max_workers=1,thread_name_prefix='DTC_ORACLE_INDEPENDENT_CPU_REVIEW')as review_pool:"
+  },
+  {
+    "new": "value=_RECOVERY['harvest'](future,running,ctx,c,'MODEL')\n     if value is None:continue\n     event(ctx,'MODEL_WORKER_RETURN',cohort=c,result=value)",
+    "old": "value=future.result();running.pop(future);event(ctx,'MODEL_WORKER_RETURN',cohort=c,result=value)"
+  },
+  {
+    "new": "value=_RECOVERY['harvest'](future,post,ctx,c,'POST')\n     if value is None:continue\n     event(ctx,'RESULT_CONSUMED',cohort=c,state=value['state']);saveclaims()",
+    "old": "value=future.result();post.pop(future);event(ctx,'RESULT_CONSUMED',cohort=c,state=value['state']);saveclaims()"
+  },
+  {
+    "new": "if value['state']=='EXECUTION_CLOSED':\n      _closed_receipt(ctx,c)\n      with state['lock']:",
+    "old": "if value['state']=='EXECUTION_CLOSED':\n      with state['lock']:"
+  },
+  {
+    "new": "elif c not in ctx['e'].registered()[2]['consumed']:\n      _unused_identity(ctx,c)\n      with state['lock']:",
+    "old": "elif c not in ctx['e'].registered()[2]['consumed']:\n      with state['lock']:"
+  },
+  {
+    "new": "if state[_RECOVERY['generation']].get('reservation_sync_pending')or not _launch_phase_ready(running):all_pending=[]\n    for _ in range(min(1,max(0,min(128,len(mask))-len(running)))):",
+    "old": "for _ in range(min(128,len(mask))-len(running)):"
+  },
+  {
+    "new": "ctx,spec=next((k,s)for k,s in all_pending if s['cohort']==decision['cohort']);c=spec['cohort'];fresh=_RECOVERY['resource'](ctx,spec,False)\n     if fresh is None:continue",
+    "old": "ctx,spec=next((k,s)for k,s in all_pending if s['cohort']==decision['cohort']);c=spec['cohort'];fresh=ctx['res'].resources(spec,True)"
+  },
+  {
+    "new": "charged=_RECOVERY['resource'](ctx,spec,True)\n     if charged is None:\n      _unused_identity(ctx,c)\n      with state['lock']:state['claims'].pop(key(ctx,c),None);saveclaims()\n      continue",
+    "old": "charged=ctx['res'].resources(spec,True)"
+  },
+  {
+    "new": "if not all(charged[k]for k in ['physical_RAM_pass','physical_disk_pass','admission_disk_pass','admission_pressure_pass']):\n      _unused_identity(ctx,c)\n      with state['lock']:",
+    "old": "if not all(charged[k]for k in ['physical_RAM_pass','physical_disk_pass','admission_disk_pass','admission_pressure_pass']):\n      with state['lock']:"
+  },
+  {
+    "new": "_unused_identity(ctx,c);running[workers.submit(work,ctx,c)]=(ctx,c)",
+    "old": "running[workers.submit(work,ctx,c)]=(ctx,c)"
+  },
+  {
+    "kind": "CYCLE_ERROR_ISOLATION_TYPED_DEFER_OTHER_FAIL_CLOSED"
+  }
+]

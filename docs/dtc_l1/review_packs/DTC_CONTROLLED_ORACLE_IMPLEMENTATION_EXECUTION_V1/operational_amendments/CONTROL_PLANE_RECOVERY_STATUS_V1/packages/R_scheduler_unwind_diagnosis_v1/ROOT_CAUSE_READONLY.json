@@ -1,0 +1,117 @@
+{
+  "actual_exception_ref": {
+    "path": "/root/data/dtc_controlled_oracle_20261106_v1/control/owner_unwind_exception_readonly_v1/EXCEPTION_AND_LOCALS.fixed.json",
+    "sha256": "ae8f32a17f17558f5c9b19e8d1b176dfb4f5952e56c9041f36fdc3c22c581c22"
+  },
+  "actual_flow_ref": {
+    "path": "/root/data/dtc_controlled_oracle_20261106_v1/control/owner_live_flow_readonly_diagnostic_v1/ACTUAL_OWNER_FLOW.fixed.json",
+    "sha256": "9581bde595cf9360caf0e59a11052c7e9db2a2afa8208526221706030dcbbd72"
+  },
+  "cause": "EXPECTED_RESOURCE_HOLD_NOT_CAUGHT_IN_DISPATCH_LOOP",
+  "dispatch_binding_assertion_ruled_out": true,
+  "failure": "RESOURCE_HOLD_PEER_RESERVATION -> REGISTRY_CHANGED_DURING_ADMISSION_PAUSE_NEW",
+  "healthy_model_signals": 0,
+  "mechanism": "Exception crosses ThreadPoolExecutor context-manager; review/archive pools shut down, model pool shutdown(wait=True) waits healthy model futures before outer OWNER_THREAD_ERROR writer runs.",
+  "minimal_engineering_direction": [
+    "Catch only typed expected RESOURCE_HOLD at preclaim resource call: record defer/cooldown, do not consume or change frozen binding.",
+    "At postclaim typed resource HOLD: remove never-submitted claim, sync reservation and defer without UUID/model.",
+    "Preserve non-resource/schema/identity exceptions as fail-closed engineering events.",
+    "Already unwinding old scheduler cannot simply resume. Any same-owner transfer must independently prove no competing admission loop, continuous lease/flock, unchanged healthy futures/UUIDs and exactly one archive worker; no shutdown-flag reset or model retry."
+  ],
+  "model_starts": 0,
+  "owner_registry_source_identity_writes": 0,
+  "pending_unused": [
+    {
+      "INTENT_exists": false,
+      "binding": {
+        "canonical_spec_sha256": "1d14030451725f56e7ac846465abfbd9984141895dcc89240ada13232f9c293b",
+        "cohort": "E2-DTCORACLE-I8-4114a3dc0d06b55b-DH-L2_DATAREAD-V1",
+        "host_cpu": 138,
+        "resolved_spec_sha256": "9448f4e73dd60b6482cc3d9f1fca02dffe037796bc6cc076e2775a0c1ae9444b"
+      },
+      "binding_path": "/root/data/dtc_controlled_oracle_20261106_v1/initial8/control/dispatch_bindings/E2-DTCORACLE-I8-4114a3dc0d06b55b-DH-L2_DATAREAD-V1.json",
+      "binding_sha256": "9782117f62fa0be900b4932c5d410aa656be868e56c1dde42747b65931cfb2c0",
+      "canonical_match": true,
+      "canonical_sha256": "1d14030451725f56e7ac846465abfbd9984141895dcc89240ada13232f9c293b",
+      "cohort": "E2-DTCORACLE-I8-4114a3dc0d06b55b-DH-L2_DATAREAD-V1",
+      "program": "convolutionSeparable",
+      "resolved_match": true
+    },
+    {
+      "INTENT_exists": false,
+      "binding": {
+        "canonical_spec_sha256": "a2a354508f8d17a906d13afd45dd9a556e340007306474b3fe4a962949fd2b21",
+        "cohort": "E2-DTCORACLE-I8-ae34174fbbdf83b2-DH-L2_DATAREAD-V1",
+        "host_cpu": 142,
+        "resolved_spec_sha256": "300831b9615e77b41ece150bc5d343d7995e30dfe2f13dd25748a36e24bc999e"
+      },
+      "binding_path": "/root/data/dtc_controlled_oracle_20261106_v1/initial8/control/dispatch_bindings/E2-DTCORACLE-I8-ae34174fbbdf83b2-DH-L2_DATAREAD-V1.json",
+      "binding_sha256": "51532363c9503f677343d8235378486c748c6d644081e7a8aeabbc364a7e6586",
+      "canonical_match": true,
+      "canonical_sha256": "a2a354508f8d17a906d13afd45dd9a556e340007306474b3fe4a962949fd2b21",
+      "cohort": "E2-DTCORACLE-I8-ae34174fbbdf83b2-DH-L2_DATAREAD-V1",
+      "program": "BICG",
+      "resolved_match": true
+    },
+    {
+      "INTENT_exists": false,
+      "binding": {
+        "canonical_spec_sha256": "203faa915f55b2a784ea35efbcc8341cf4f6fa7dc031b5f412704625c8030cef",
+        "cohort": "E2-DTCORACLE-I8-d984ea5475a581ad-DH-L2_DATAREAD-V1",
+        "host_cpu": 141,
+        "resolved_spec_sha256": "54eeb3d7e71c713ff4fa526e1117d4007346ff339d74b396b42fdf37a518cff2"
+      },
+      "binding_path": "/root/data/dtc_controlled_oracle_20261106_v1/initial8/control/dispatch_bindings/E2-DTCORACLE-I8-d984ea5475a581ad-DH-L2_DATAREAD-V1.json",
+      "binding_sha256": "4e9181f0232367914f8cfc0b7c4b4a7532346f2ee28d837c38f34405c5097357",
+      "canonical_match": true,
+      "canonical_sha256": "203faa915f55b2a784ea35efbcc8341cf4f6fa7dc031b5f412704625c8030cef",
+      "cohort": "E2-DTCORACLE-I8-d984ea5475a581ad-DH-L2_DATAREAD-V1",
+      "program": "2DCONV",
+      "resolved_match": true
+    },
+    {
+      "INTENT_exists": false,
+      "binding": {
+        "canonical_spec_sha256": "89d0583952142cb698210cb56f5b22146225b6c713605d456967b1f13033e924",
+        "cohort": "E2-DTCORACLE-I8-e7bb67e63e3c3847-DH-L2_DATAREAD-V1",
+        "host_cpu": 133,
+        "resolved_spec_sha256": "b93bcacf6766cef4b647c00beaf064c750831676b214e7f56aaa0531cca35480"
+      },
+      "binding_path": "/root/data/dtc_controlled_oracle_20261106_v1/initial8/control/dispatch_bindings/E2-DTCORACLE-I8-e7bb67e63e3c3847-DH-L2_DATAREAD-V1.json",
+      "binding_sha256": "88103a914ca3742152650519ee8ba6a15936dfd8d7625144958d47b0e4a78e5c",
+      "canonical_match": true,
+      "canonical_sha256": "89d0583952142cb698210cb56f5b22146225b6c713605d456967b1f13033e924",
+      "cohort": "E2-DTCORACLE-I8-e7bb67e63e3c3847-DH-L2_DATAREAD-V1",
+      "program": "vectorAdd",
+      "resolved_match": true
+    },
+    {
+      "INTENT_exists": false,
+      "binding": {
+        "canonical_spec_sha256": "b2b8e771ab079af6927a6a13776b7b85ff348eed36bc83cd1067663aa85577da",
+        "cohort": "E2-DTCORACLE-I8-f437190767aaed49-DH-L2_DATAREAD-V1",
+        "host_cpu": 73,
+        "resolved_spec_sha256": "e7f752be17e17fe3429380ea4afa9581a16f50a236e9ed10a268dc24a905b472"
+      },
+      "binding_path": "/root/data/dtc_controlled_oracle_20261106_v1/initial8/control/dispatch_bindings/E2-DTCORACLE-I8-f437190767aaed49-DH-L2_DATAREAD-V1.json",
+      "binding_sha256": "b0be8f57ae04a25091bf8b7a8aaf87a849f9ed07fd19a24113e3be492141d5c4",
+      "canonical_match": true,
+      "canonical_sha256": "b2b8e771ab079af6927a6a13776b7b85ff348eed36bc83cd1067663aa85577da",
+      "cohort": "E2-DTCORACLE-I8-f437190767aaed49-DH-L2_DATAREAD-V1",
+      "program": "MVT",
+      "resolved_match": true
+    }
+  ],
+  "schema": "DTC_ORACLE_SCHEDULER_UNWIND_ROOT_CAUSE_READONLY_V1",
+  "source": {
+    "context_manager_unwind_line": 108,
+    "path": "/root/data/dtc_controlled_oracle_20261106_v1/initial8/tools/oracle_ops.py",
+    "sha256": "29a97d55dc2acc4e84c3fa228025f7d2f619ef7d1fbc1af867645ec279047fb4",
+    "uncaught_sites": [
+      175,
+      185
+    ]
+  },
+  "status": "EXACT_EXCEPTION_IDENTIFIED_NO_MUTATION",
+  "triggering_cohort": "E2-DTCORACLE-I8-4114a3dc0d06b55b-DH-L2_DATAREAD-V1"
+}

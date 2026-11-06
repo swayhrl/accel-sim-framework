@@ -1,0 +1,117 @@
+{
+  "schema": "DTC_RECOVERY_OFD_SHUTDOWN_HANDOFF_CPU_FIXTURE_V1",
+  "status": "PASS",
+  "checks": {
+    "actual_TPE_shutdown_joins_healthy_worker": true,
+    "old_future_still_healthy_running": true,
+    "old_review_archive_threads_drained_stopped": true,
+    "foreign_EX_denied_before_handoff": true,
+    "same_OFD_dup_foreign_EX_still_denied": true,
+    "original_fd_still_valid_while_unwinding": true,
+    "duplicate_handoff_rejected": true,
+    "old_generation_cannot_admit": true,
+    "new_generation_admission_token_only": true,
+    "original_started_flag_not_reset": true,
+    "old_executor_cannot_submit_after_shutdown": true,
+    "spent_UUID_PID_adopted_without_respawn": true,
+    "healthy_completion_allows_old_shutdown_return": true,
+    "old_scheduler_body_never_resumes_admission": true,
+    "original_file_closed_after_old_context_exit": true,
+    "dup_keeps_OFD_lock_after_original_close": true,
+    "adopted_original_future_returns_once": true,
+    "second_dup_still_holds_lock": true,
+    "last_dup_close_releases_lock_to_foreign_EX": true,
+    "explicit_LOCK_UN_would_break_dup_handoff": true,
+    "short_admission_serial_max1": true,
+    "running_jobs_still_high_parallel": true,
+    "adopted_spent_identity_never_relaunched": true,
+    "typed_HOLD_only_defers_unused_identity": true,
+    "unexpected_error_fail_closed_without_pool_unwind": true,
+    "unexpected_stop_cannot_be_reset_by_next_admission": true,
+    "healthy_jobs_finish_after_fail_closed": true
+  },
+  "check_count": 27,
+  "actual_old_thread_shutdown_stack": [
+    {
+      "function": "_wait_for_tstate_lock",
+      "file": "/usr/lib/python3.10/threading.py",
+      "line": 1116
+    },
+    {
+      "function": "join",
+      "file": "/usr/lib/python3.10/threading.py",
+      "line": 1096
+    },
+    {
+      "function": "shutdown",
+      "file": "/usr/lib/python3.10/concurrent/futures/thread.py",
+      "line": 235
+    },
+    {
+      "function": "__exit__",
+      "file": "/usr/lib/python3.10/concurrent/futures/_base.py",
+      "line": 649
+    },
+    {
+      "function": "old_scheduler",
+      "file": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/agents/P_recovery_OFD_cpu_v1/qualify_ofd_shutdown_handoff_cpu.py",
+      "line": 43
+    },
+    {
+      "function": "run",
+      "file": "/usr/lib/python3.10/threading.py",
+      "line": 953
+    },
+    {
+      "function": "_bootstrap_inner",
+      "file": "/usr/lib/python3.10/threading.py",
+      "line": 1016
+    },
+    {
+      "function": "_bootstrap",
+      "file": "/usr/lib/python3.10/threading.py",
+      "line": 973
+    }
+  ],
+  "actual_source_reference_pins": [
+    {
+      "path": "/root/data/dtc_controlled_oracle_20261106_v1/initial8/tools/oracle_ops.py",
+      "sha256": "29a97d55dc2acc4e84c3fa228025f7d2f619ef7d1fbc1af867645ec279047fb4"
+    }
+  ],
+  "CPU_fixture_events": [
+    {
+      "monotonic": 10716299.53915872,
+      "event": "CPU_HEALTHY_WORKER_STARTED"
+    },
+    {
+      "monotonic": 10716299.540382665,
+      "event": "CPU_TYPED_HOLD_RAISED"
+    },
+    {
+      "monotonic": 10716299.591817092,
+      "event": "CPU_HEALTHY_WORKER_FINISHED"
+    },
+    {
+      "monotonic": 10716299.59201564,
+      "event": "CPU_OLD_CONTEXTS_CLOSED"
+    }
+  ],
+  "new_admission_state_machine_counts": {
+    "admit": 0,
+    "admit_peak": 1,
+    "running": 0,
+    "running_peak": 4,
+    "deferred": 1,
+    "unexpected": true,
+    "healthy_completed": 4
+  },
+  "CPU_fixture_native_path_removed": "/root/data/dtc_oracle_cpu_recovery_ofd_5fu4yegh",
+  "fixture_pid": 403181,
+  "actual_owner_installed": false,
+  "real_model_invocations": 0,
+  "actual_science_UUIDs_consumed": 0,
+  "registered_runtime_source_mutations": 0,
+  "registry_plan_mutations": 0,
+  "scope": "Actual native fcntl/OFD + actual TPE shutdown/join behavior; generation/adoption/admission policy is isolated fixture state, not qualification of R recovery implementation."
+}

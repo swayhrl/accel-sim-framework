@@ -15,3 +15,5 @@ Accepted baseline and reproducible archive compatibility: [first Gate1 checkpoin
 First accepted Oracle pair and strict sparse-statistics proof: [checkpoint](checkpoints/FIRST_ORACLE_PAIRS_AND_SOURCE_PROVEN_SPARSE_20261106_V1/README.md).
 
 Independently reviewed early workload analysis and conditional extension preparation: [analysis bundle](analysis/EARLY_ACCEPTED_OPPORTUNITY_AND_EXTENSION_READINESS_V1/README.md).
+
+[Control-plane recovery and observation incident status](operational_amendments/CONTROL_PLANE_RECOVERY_STATUS_V1/README.md). This checkpoint does not declare scientific completion.
