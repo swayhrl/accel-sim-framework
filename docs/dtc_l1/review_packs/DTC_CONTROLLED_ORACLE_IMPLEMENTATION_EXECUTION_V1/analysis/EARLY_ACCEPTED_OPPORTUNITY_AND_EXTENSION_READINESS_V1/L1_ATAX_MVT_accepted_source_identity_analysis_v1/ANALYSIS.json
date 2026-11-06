@@ -1,0 +1,845 @@
+{
+  "schema": "DTC_L1_ATAX_MVT_ACTUAL_IDENTITY_AND_SHAPE_ANALYSIS_V1",
+  "authority_commit": "18b1ee9d339902e555fc2e04ef51c84f77dfe1b1",
+  "frozen_oracle_core": "e6b41ab8992e7d41651501c4d34cfe24195c4f96",
+  "generated_utc": "2026-11-06T10:20:55.625741+00:00",
+  "scope": "Only existing two accepted L1_DATAREADY runs; no science execution/source/ledger/controller changes",
+  "programs": {
+    "MVT": {
+      "program": "MVT",
+      "input_digest": "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+      "plan_id": "PLAN-ORACLECF-f437190767aaed49-DH-L1_DATAREADY",
+      "cohort": "E2-DTCORACLE-I8-f437190767aaed49-DH-L1_DATAREADY-V1",
+      "uuid": "6a524b3c-d4c9-43f2-862f-52aa1c294c31",
+      "state": "PASS_CONTROLLED_ORACLE_DH_STRICT_ARCHIVE_NATIVE_RESTORE",
+      "cycles": 1714624,
+      "instructions": 145666048,
+      "CTA": 32,
+      "kernels": [
+        {
+          "active_instructions": 71380992,
+          "cumulative_CTA": 16,
+          "cycles": 1185017,
+          "kernel": "_Z11mvt_kernel1PfS_S_",
+          "ordinal": 1,
+          "total_cycles": 1185017
+        },
+        {
+          "active_instructions": 74285056,
+          "cumulative_CTA": 32,
+          "cycles": 529607,
+          "kernel": "_Z11mvt_kernel2PfS_S_",
+          "ordinal": 2,
+          "total_cycles": 1714624
+        }
+      ],
+      "actual_process": {
+        "pid": 364916,
+        "start_ticks": 1070781648,
+        "host_cpu_affinity_actual": [
+          132
+        ],
+        "cmdline": "/root/data/dtc_controlled_oracle_20261106_v1/initial8/common-lib/ld-linux-x86-64.so.2 --inhibit-cache --library-path /root/data/dtc_controlled_oracle_20261106_v1/initial8/DTC/env/lib /root/data/dtc_controlled_oracle_20261106_v1/shared/bin/accel-sim.out -trace /root/workspace/assets/traces/bundles/460901d4173352b272caa6876db2119b88a9e0471c6f6fa2f8f8477edef9c5a0/tree/kernelslist.g -config /root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/env/DH_P0/config-0.config -config /root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/env/DH_P0/config-1.config -config /root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/env/DH_P0/config-2.config -config /root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/env/DH_P0/config-3.config -config /root/data/dtc_controlled_oracle_20261106_v1/shared/configs/L1_DATAREADY/oracle.config "
+      },
+      "natural_terminal": {
+        "launcher_wait_returncode": 0,
+        "native_simulator_observed": true,
+        "stop_reason": null,
+        "elapsed_seconds": 674.8396485932171
+      },
+      "common_build": {
+        "core_commit": "e6b41ab8992e7d41651501c4d34cfe24195c4f96",
+        "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+        "binary_sha256": "3f8e547d87893aaf7319e337883a2bcc1f5717138296e3e6d1425cc75d055283",
+        "actual_libcudart_sha256": "174f53a02223ae69e4a549e60a310f7e69a9334748e719fd48c40640c2a0af43"
+      },
+      "option_count": 271,
+      "trace_entry": "/root/workspace/assets/traces/bundles/460901d4173352b272caa6876db2119b88a9e0471c6f6fa2f8f8477edef9c5a0/tree/kernelslist.g",
+      "trace_bundle_id": "460901d4173352b272caa6876db2119b88a9e0471c6f6fa2f8f8477edef9c5a0",
+      "trace_commandlist_sha256": "f3f1e934a86753827094baaf935235d056d88241aec50ba7ccff99425c869944",
+      "declared_commands": [
+        "MemcpyHtoD,0x00007fab98000000,67108864",
+        "MemcpyHtoD,0x00007fabab700000,16384",
+        "MemcpyHtoD,0x00007fabab704000,16384",
+        "MemcpyHtoD,0x00007fabab708000,16384",
+        "MemcpyHtoD,0x00007fabab70c000,16384",
+        "kernel-1.traceg",
+        "kernel-2.traceg"
+      ],
+      "declared_HtoD_count": 5,
+      "declared_HtoD_bytes": 67174400,
+      "source_body_qualification": [
+        {
+          "ordinal": 1,
+          "kernel": "_Z11mvt_kernel1PfS_S_",
+          "path": "/root/workspace/assets/traces/bundles/460901d4173352b272caa6876db2119b88a9e0471c6f6fa2f8f8477edef9c5a0/tree/kernel-1.traceg",
+          "sha256": "5a892efc9ccf25d201be82496f375cb8dce08b09800b4c05a1f219fb821fc2e6",
+          "active_thread_instructions": 71380992,
+          "complete_ctas": 16,
+          "complete_warps": 128,
+          "warp_instruction_records": 2231040,
+          "global_reference_histogram": {
+            "1": 524416,
+            "32": 524288
+          },
+          "max_global_128b_line_references": 32,
+          "memory_instruction_paths": {
+            "CACHEABLE_GLOBAL_LOAD": 1048704,
+            "ORDINARY_STORE": 524288
+          },
+          "opcodes": {
+            "BRA": 13056,
+            "EXIT": 256,
+            "FFMA": 524288,
+            "IADD3": 39552,
+            "IADD3.X": 26496,
+            "IMAD": 256,
+            "IMAD.WIDE": 13440,
+            "ISETP.GT.AND": 128,
+            "ISETP.NE.AND": 13056,
+            "LDG.E.SYS": 1048704,
+            "MOV": 27008,
+            "S2R": 256,
+            "SHF.L.U32": 128,
+            "SHFL.IDX": 128,
+            "STG.E.SYS": 524288
+          },
+          "width_counts": [
+            {
+              "opcode": "LDG.E.SYS",
+              "parser_width": 4,
+              "records": 1048704,
+              "trace_width": 4
+            },
+            {
+              "opcode": "STG.E.SYS",
+              "parser_width": 4,
+              "records": 524288,
+              "trace_width": 4
+            }
+          ],
+          "coverage": "ALL_DECLARED_WARPS_AND_FULL_GRID_WITH_TERMINAL_EXIT",
+          "binary_version": 70,
+          "trace_version": 3
+        },
+        {
+          "ordinal": 2,
+          "kernel": "_Z11mvt_kernel2PfS_S_",
+          "path": "/root/workspace/assets/traces/bundles/460901d4173352b272caa6876db2119b88a9e0471c6f6fa2f8f8477edef9c5a0/tree/kernel-2.traceg",
+          "sha256": "4ac7709cfe774c3200192fe97dcd8948ff692f6cf97765a5098d4438fc057151",
+          "active_thread_instructions": 74285056,
+          "complete_ctas": 16,
+          "complete_warps": 128,
+          "warp_instruction_records": 2321792,
+          "global_reference_histogram": {
+            "1": 1048704
+          },
+          "max_global_128b_line_references": 1,
+          "memory_instruction_paths": {
+            "CACHEABLE_GLOBAL_LOAD": 1048704,
+            "ORDINARY_STORE": 524288
+          },
+          "opcodes": {
+            "BRA": 13056,
+            "EXIT": 256,
+            "FFMA": 524288,
+            "IADD3": 91776,
+            "IADD3.X": 13184,
+            "IMAD": 128,
+            "IMAD.WIDE": 65664,
+            "ISETP.GT.AND": 128,
+            "ISETP.NE.AND": 13056,
+            "LDG.E.SYS": 1048704,
+            "MOV": 26880,
+            "S2R": 256,
+            "SHFL.IDX": 128,
+            "STG.E.SYS": 524288
+          },
+          "width_counts": [
+            {
+              "opcode": "LDG.E.SYS",
+              "parser_width": 4,
+              "records": 1048704,
+              "trace_width": 4
+            },
+            {
+              "opcode": "STG.E.SYS",
+              "parser_width": 4,
+              "records": 524288,
+              "trace_width": 4
+            }
+          ],
+          "coverage": "ALL_DECLARED_WARPS_AND_FULL_GRID_WITH_TERMINAL_EXIT",
+          "binary_version": 70,
+          "trace_version": 3
+        }
+      ],
+      "raw_kernel_endpoint_blocks": [
+        {
+          "ordinal": 1,
+          "kernel_name": "_Z11mvt_kernel1PfS_S_",
+          "raw_start_line": 360,
+          "raw_end_line": 2628,
+          "numeric_scalar_keys": 143,
+          "selected_as_printed_counters": {
+            "gpu_sim_cycle": 1185017,
+            "gpu_sim_insn": 71380992,
+            "gpu_tot_sim_cycle": 1185017,
+            "gpu_tot_sim_insn": 71380992,
+            "gpu_stall_dramfull": 0,
+            "gpu_stall_icnt2sh": 0,
+            "DTC_SERVICE_V1_samples": 75841088,
+            "DTC_SERVICE_V1_pib_integral": 34058912,
+            "DTC_SERVICE_V1_physical_integral": 9411966484,
+            "DTC_SERVICE_V1_collected_sectors": 17302016,
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": 9642352,
+            "DTC_SERVICE_V1_retired": 1048704,
+            "DTC_SERVICE_V1_ready_to_collect_sum": 4923312,
+            "DTC_SERVICE_V1_collection_cycles": 4718720,
+            "DTC_SERVICE_V1_wb_wait": 320,
+            "DTC_SERVICE_V1_map_loss_to_free_sum": 0,
+            "DTC_SERVICE_V1_map_loss_to_free_count": 11368624,
+            "DTC_ORACLE_L1_eligible_admitted": 1048704,
+            "DTC_ORACLE_L1_events_enqueued": 11376816,
+            "DTC_ORACLE_L1_events_delivered": 11376816,
+            "DTC_ORACLE_L1_events_pending": 0,
+            "DTC_L1_oo_lower_created": 0,
+            "DTC_L1_oo_lower_issued": 0,
+            "DTC_L1_oo_lower_responses": 0,
+            "DTC_L1_oo_lower_create_queue_full_stalls": 0,
+            "DTC_L1_oo_inflight_current": 0,
+            "DTC_L1_oo_pib_occupancy": 0,
+            "DTC_L1_oo_retire_count": 1572992,
+            "DTC_L1_oo_out_of_order_retires": 0,
+            "DTC_L1_oo_ready_but_writeback_blocked_cycles": 320,
+            "DTC_L1_oo_completion_dependency_count": 17301632,
+            "DTC_L1_oo_completion_dependency_closed": 17301632,
+            "DTC_L1_oo_valid_hits": 5924816,
+            "DTC_L1_oo_pending_hits": 0,
+            "DTC_L1_oo_new_misses": 11376816,
+            "DTC_L1_oo_tag_evictions": 11368624,
+            "DTC_L1_oo_immediate_reclaims": 11368624,
+            "DTC_L1_oo_deferred_reclaims": 0,
+            "DTC_L1_oo_final_ref_reclaims": 0,
+            "DTC_L1_oo_wakeups": 11376816,
+            "DTC_L1_oo_active_refs": 0,
+            "DTC_L1_oo_physical_allocated": 8192,
+            "DTC_L1_lower_credit_acquired": 0,
+            "DTC_L1_lower_credit_released": 0,
+            "DTC_L1_lower_outstanding": 0,
+            "DTC_L1_lower_cap_full_events": 0,
+            "gpgpu_n_stall_shd_mem": 17301632,
+            "gpgpu_n_mem_write_global": 2097152
+          },
+          "counter_scope": "As-printed endpoint values; generally cumulative retained counters, never silently converted to per-kernel event deltas."
+        },
+        {
+          "ordinal": 2,
+          "kernel_name": "_Z11mvt_kernel2PfS_S_",
+          "raw_start_line": 2629,
+          "raw_end_line": 4851,
+          "numeric_scalar_keys": 143,
+          "selected_as_printed_counters": {
+            "gpu_sim_cycle": 529607,
+            "gpu_sim_insn": 74285056,
+            "gpu_tot_sim_cycle": 1714624,
+            "gpu_tot_sim_insn": 145666048,
+            "gpu_stall_dramfull": 0,
+            "gpu_stall_icnt2sh": 0,
+            "DTC_SERVICE_V1_samples": 109735936,
+            "DTC_SERVICE_V1_pib_integral": 44960700,
+            "DTC_SERVICE_V1_physical_integral": 17318228066,
+            "DTC_SERVICE_V1_collected_sectors": 19923968,
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": 12330296,
+            "DTC_SERVICE_V1_retired": 2097408,
+            "DTC_SERVICE_V1_ready_to_collect_sum": 6551484,
+            "DTC_SERVICE_V1_collection_cycles": 5767424,
+            "DTC_SERVICE_V1_wb_wait": 11388,
+            "DTC_SERVICE_V1_map_loss_to_free_sum": 0,
+            "DTC_SERVICE_V1_map_loss_to_free_count": 11886896,
+            "DTC_ORACLE_L1_eligible_admitted": 2097408,
+            "DTC_ORACLE_L1_events_enqueued": 11903280,
+            "DTC_ORACLE_L1_events_delivered": 11903280,
+            "DTC_ORACLE_L1_events_pending": 0,
+            "DTC_L1_oo_lower_created": 0,
+            "DTC_L1_oo_lower_issued": 0,
+            "DTC_L1_oo_lower_responses": 0,
+            "DTC_L1_oo_lower_create_queue_full_stalls": 0,
+            "DTC_L1_oo_inflight_current": 0,
+            "DTC_L1_oo_pib_occupancy": 0,
+            "DTC_L1_oo_retire_count": 3145984,
+            "DTC_L1_oo_out_of_order_retires": 0,
+            "DTC_L1_oo_ready_but_writeback_blocked_cycles": 11388,
+            "DTC_L1_oo_completion_dependency_count": 18350336,
+            "DTC_L1_oo_completion_dependency_closed": 18350336,
+            "DTC_L1_oo_valid_hits": 6447056,
+            "DTC_L1_oo_pending_hits": 0,
+            "DTC_L1_oo_new_misses": 11903280,
+            "DTC_L1_oo_tag_evictions": 11886896,
+            "DTC_L1_oo_immediate_reclaims": 11886896,
+            "DTC_L1_oo_deferred_reclaims": 0,
+            "DTC_L1_oo_final_ref_reclaims": 0,
+            "DTC_L1_oo_wakeups": 11903280,
+            "DTC_L1_oo_active_refs": 0,
+            "DTC_L1_oo_physical_allocated": 16384,
+            "DTC_L1_lower_credit_acquired": 0,
+            "DTC_L1_lower_credit_released": 0,
+            "DTC_L1_lower_outstanding": 0,
+            "DTC_L1_lower_cap_full_events": 0,
+            "gpgpu_n_stall_shd_mem": 22001160,
+            "gpgpu_n_mem_write_global": 4194304
+          },
+          "counter_scope": "As-printed endpoint values; generally cumulative retained counters, never silently converted to per-kernel event deltas."
+        }
+      ],
+      "actual_mechanism_exposure": 11903280,
+      "archive": {
+        "status": "ARCHIVE_VERIFIED_AND_RESTORE_VERIFIED_NATIVE_TARGET",
+        "target_mount_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/scientific_execution/initial8/results/E2-DTCORACLE-I8-f437190767aaed49-DH-L1_DATAREADY-V1/0975840c3dfda3b29348aa8b2d4f55f8ca56fbb106389d48953fb5de5ddb3561",
+        "archive_sha256": "b3e1cc540c6cfe9923b83d175fee492584ee545da78017b59f55545d37eca174",
+        "manifest_sha256": "dfc95caed7b4e9fc5f283e880cd36a1df70a8ef8bdc1c8b0c94c2576695f473a",
+        "native_restore": "/root/data/dtc_controlled_oracle_20261106_v1/initial8/DTC/run/recovery/0975840c3dfda3b29348aa8b2d4f55f8ca56fbb106389d48953fb5de5ddb3561",
+        "source_disposition": "SOURCE_KEEP",
+        "source_release_bytes": 0
+      },
+      "native_archive_independently_verified_entries": 22,
+      "traffic_summary": {
+        "DRAM_issued_read_atoms": 0,
+        "DRAM_issued_write_atoms": 0,
+        "L2_accepted_read_32B_sectors": null,
+        "L2_derived_accepted_read_32B_sectors": 0,
+        "L2_read_statistics_status": "RAW_TOTAL_UNPRINTED_SOURCE_PROVEN_SPARSE_ZERO",
+        "L2_reported_GLOBAL_ACC_R_TOTAL_ACCESS": null,
+        "reporting_compatibility": {
+          "missing_values_are_null": true,
+          "original_lifecycle_and_oracle_checks_unchanged": true,
+          "original_traffic_partition_proven_by_source_and_independent_counters": true,
+          "schema": "DTC_ORACLE_SOURCE_PROVEN_SPARSE_L2_REPORTING_V1",
+          "source_sha256": "dc00fb7a0435c85dd0b377ead470df58ce9127d6bc1ef32b7ec69ad5a5885c6d"
+        }
+      },
+      "samebuild_OFF": {
+        "RESULT_path": "/root/data/dtc_controlled_oracle_20261106_v1/initial8/analysis/E2-DTCORACLE-I8-f437190767aaed49-DH-OFF_MATCHED-V1.RESULT.json",
+        "closed_at_analysis": false,
+        "S_oracle": null,
+        "H": null,
+        "historical_DH0_used_as_OFF": false
+      },
+      "source_and_numerical_scope": "Atlas source is exact fixed git candidate dad09cb; capture-time ELF/source/value equivalence remains unproven. Declared trace complete, not native full-application numerical certification."
+    },
+    "ATAX": {
+      "program": "ATAX",
+      "input_digest": "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+      "plan_id": "PLAN-ORACLECF-eededb785179fc04-DH-L1_DATAREADY",
+      "cohort": "E2-DTCORACLE-I8-eededb785179fc04-DH-L1_DATAREADY-V1",
+      "uuid": "249ab5a6-5659-464b-9d78-2ef35c7b0f88",
+      "state": "PASS_CONTROLLED_ORACLE_DH_STRICT_ARCHIVE_NATIVE_RESTORE",
+      "cycles": 1714624,
+      "instructions": 145666048,
+      "CTA": 32,
+      "kernels": [
+        {
+          "active_instructions": 71380992,
+          "cumulative_CTA": 16,
+          "cycles": 1185017,
+          "kernel": "_Z12atax_kernel1PfS_S_",
+          "ordinal": 1,
+          "total_cycles": 1185017
+        },
+        {
+          "active_instructions": 74285056,
+          "cumulative_CTA": 32,
+          "cycles": 529607,
+          "kernel": "_Z12atax_kernel2PfS_S_",
+          "ordinal": 2,
+          "total_cycles": 1714624
+        }
+      ],
+      "actual_process": {
+        "pid": 382071,
+        "start_ticks": 1071036187,
+        "host_cpu_affinity_actual": [
+          73
+        ],
+        "cmdline": "/root/data/dtc_controlled_oracle_20261106_v1/initial8/common-lib/ld-linux-x86-64.so.2 --inhibit-cache --library-path /root/data/dtc_controlled_oracle_20261106_v1/initial8/DTC/env/lib /root/data/dtc_controlled_oracle_20261106_v1/shared/bin/accel-sim.out -trace /root/workspace/assets/traces/bundles/2d610fb9d5b893ee16a8af0e178214d8a19715efb7709949ff6c89a57ce60561/tree/kernelslist.g -config /root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/env/DH_P0/config-0.config -config /root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/env/DH_P0/config-1.config -config /root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/env/DH_P0/config-2.config -config /root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/env/DH_P0/config-3.config -config /root/data/dtc_controlled_oracle_20261106_v1/shared/configs/L1_DATAREADY/oracle.config "
+      },
+      "natural_terminal": {
+        "launcher_wait_returncode": 0,
+        "native_simulator_observed": true,
+        "stop_reason": null,
+        "elapsed_seconds": 652.7969418186694
+      },
+      "common_build": {
+        "core_commit": "e6b41ab8992e7d41651501c4d34cfe24195c4f96",
+        "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+        "binary_sha256": "3f8e547d87893aaf7319e337883a2bcc1f5717138296e3e6d1425cc75d055283",
+        "actual_libcudart_sha256": "174f53a02223ae69e4a549e60a310f7e69a9334748e719fd48c40640c2a0af43"
+      },
+      "option_count": 271,
+      "trace_entry": "/root/workspace/assets/traces/bundles/2d610fb9d5b893ee16a8af0e178214d8a19715efb7709949ff6c89a57ce60561/tree/kernelslist.g",
+      "trace_bundle_id": "2d610fb9d5b893ee16a8af0e178214d8a19715efb7709949ff6c89a57ce60561",
+      "trace_commandlist_sha256": "b6dcd0e3807bd71449d2283f97ba43a91868cb761e7b4924dd3d3063340a94ba",
+      "declared_commands": [
+        "MemcpyHtoD,0x00007fe6e2000000,67108864",
+        "MemcpyHtoD,0x00007fe6f5700000,16384",
+        "MemcpyHtoD,0x00007fe6f5704000,16384",
+        "MemcpyHtoD,0x00007fe6f5708000,16384",
+        "kernel-1.traceg",
+        "kernel-2.traceg"
+      ],
+      "declared_HtoD_count": 4,
+      "declared_HtoD_bytes": 67158016,
+      "source_body_qualification": [
+        {
+          "ordinal": 1,
+          "kernel": "_Z12atax_kernel1PfS_S_",
+          "path": "/root/workspace/assets/traces/bundles/2d610fb9d5b893ee16a8af0e178214d8a19715efb7709949ff6c89a57ce60561/tree/kernel-1.traceg",
+          "sha256": "05d421c2a2833dda877e67b399ba14ebd1d54841ba68295c40953d704651820d",
+          "active_thread_instructions": 71380992,
+          "complete_ctas": 16,
+          "complete_warps": 128,
+          "warp_instruction_records": 2231040,
+          "global_reference_histogram": {
+            "1": 524416,
+            "32": 524288
+          },
+          "max_global_128b_line_references": 32,
+          "memory_instruction_paths": {
+            "CACHEABLE_GLOBAL_LOAD": 1048704,
+            "ORDINARY_STORE": 524288
+          },
+          "opcodes": {
+            "BRA": 13056,
+            "EXIT": 256,
+            "FFMA": 524288,
+            "IADD3": 39552,
+            "IADD3.X": 26496,
+            "IMAD": 256,
+            "IMAD.WIDE": 13440,
+            "ISETP.GT.AND": 128,
+            "ISETP.NE.AND": 13056,
+            "LDG.E.SYS": 1048704,
+            "MOV": 27008,
+            "S2R": 256,
+            "SHF.L.U32": 128,
+            "SHFL.IDX": 128,
+            "STG.E.SYS": 524288
+          },
+          "width_counts": [
+            {
+              "opcode": "LDG.E.SYS",
+              "parser_width": 4,
+              "records": 1048704,
+              "trace_width": 4
+            },
+            {
+              "opcode": "STG.E.SYS",
+              "parser_width": 4,
+              "records": 524288,
+              "trace_width": 4
+            }
+          ],
+          "coverage": "ALL_DECLARED_WARPS_AND_FULL_GRID_WITH_TERMINAL_EXIT",
+          "binary_version": 70,
+          "trace_version": 3
+        },
+        {
+          "ordinal": 2,
+          "kernel": "_Z12atax_kernel2PfS_S_",
+          "path": "/root/workspace/assets/traces/bundles/2d610fb9d5b893ee16a8af0e178214d8a19715efb7709949ff6c89a57ce60561/tree/kernel-2.traceg",
+          "sha256": "ca18ed113fcf55069b5303b5a631e9345432204667ae46ddb5bbe57751970f13",
+          "active_thread_instructions": 74285056,
+          "complete_ctas": 16,
+          "complete_warps": 128,
+          "warp_instruction_records": 2321792,
+          "global_reference_histogram": {
+            "1": 1048704
+          },
+          "max_global_128b_line_references": 1,
+          "memory_instruction_paths": {
+            "CACHEABLE_GLOBAL_LOAD": 1048704,
+            "ORDINARY_STORE": 524288
+          },
+          "opcodes": {
+            "BRA": 13056,
+            "EXIT": 256,
+            "FFMA": 524288,
+            "IADD3": 91776,
+            "IADD3.X": 13184,
+            "IMAD": 128,
+            "IMAD.WIDE": 65664,
+            "ISETP.GT.AND": 128,
+            "ISETP.NE.AND": 13056,
+            "LDG.E.SYS": 1048704,
+            "MOV": 26880,
+            "S2R": 256,
+            "SHFL.IDX": 128,
+            "STG.E.SYS": 524288
+          },
+          "width_counts": [
+            {
+              "opcode": "LDG.E.SYS",
+              "parser_width": 4,
+              "records": 1048704,
+              "trace_width": 4
+            },
+            {
+              "opcode": "STG.E.SYS",
+              "parser_width": 4,
+              "records": 524288,
+              "trace_width": 4
+            }
+          ],
+          "coverage": "ALL_DECLARED_WARPS_AND_FULL_GRID_WITH_TERMINAL_EXIT",
+          "binary_version": 70,
+          "trace_version": 3
+        }
+      ],
+      "raw_kernel_endpoint_blocks": [
+        {
+          "ordinal": 1,
+          "kernel_name": "_Z12atax_kernel1PfS_S_",
+          "raw_start_line": 359,
+          "raw_end_line": 2627,
+          "numeric_scalar_keys": 143,
+          "selected_as_printed_counters": {
+            "gpu_sim_cycle": 1185017,
+            "gpu_sim_insn": 71380992,
+            "gpu_tot_sim_cycle": 1185017,
+            "gpu_tot_sim_insn": 71380992,
+            "gpu_stall_dramfull": 0,
+            "gpu_stall_icnt2sh": 0,
+            "DTC_SERVICE_V1_samples": 75841088,
+            "DTC_SERVICE_V1_pib_integral": 34058912,
+            "DTC_SERVICE_V1_physical_integral": 9411966228,
+            "DTC_SERVICE_V1_collected_sectors": 17302016,
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": 9642352,
+            "DTC_SERVICE_V1_retired": 1048704,
+            "DTC_SERVICE_V1_ready_to_collect_sum": 4923312,
+            "DTC_SERVICE_V1_collection_cycles": 4718720,
+            "DTC_SERVICE_V1_wb_wait": 320,
+            "DTC_SERVICE_V1_map_loss_to_free_sum": 0,
+            "DTC_SERVICE_V1_map_loss_to_free_count": 11368624,
+            "DTC_ORACLE_L1_eligible_admitted": 1048704,
+            "DTC_ORACLE_L1_events_enqueued": 11376816,
+            "DTC_ORACLE_L1_events_delivered": 11376816,
+            "DTC_ORACLE_L1_events_pending": 0,
+            "DTC_L1_oo_lower_created": 0,
+            "DTC_L1_oo_lower_issued": 0,
+            "DTC_L1_oo_lower_responses": 0,
+            "DTC_L1_oo_lower_create_queue_full_stalls": 0,
+            "DTC_L1_oo_inflight_current": 0,
+            "DTC_L1_oo_pib_occupancy": 0,
+            "DTC_L1_oo_retire_count": 1572992,
+            "DTC_L1_oo_out_of_order_retires": 0,
+            "DTC_L1_oo_ready_but_writeback_blocked_cycles": 320,
+            "DTC_L1_oo_completion_dependency_count": 17301632,
+            "DTC_L1_oo_completion_dependency_closed": 17301632,
+            "DTC_L1_oo_valid_hits": 5924816,
+            "DTC_L1_oo_pending_hits": 0,
+            "DTC_L1_oo_new_misses": 11376816,
+            "DTC_L1_oo_tag_evictions": 11368624,
+            "DTC_L1_oo_immediate_reclaims": 11368624,
+            "DTC_L1_oo_deferred_reclaims": 0,
+            "DTC_L1_oo_final_ref_reclaims": 0,
+            "DTC_L1_oo_wakeups": 11376816,
+            "DTC_L1_oo_active_refs": 0,
+            "DTC_L1_oo_physical_allocated": 8192,
+            "DTC_L1_lower_credit_acquired": 0,
+            "DTC_L1_lower_credit_released": 0,
+            "DTC_L1_lower_outstanding": 0,
+            "DTC_L1_lower_cap_full_events": 0,
+            "gpgpu_n_stall_shd_mem": 17301632,
+            "gpgpu_n_mem_write_global": 2097152
+          },
+          "counter_scope": "As-printed endpoint values; generally cumulative retained counters, never silently converted to per-kernel event deltas."
+        },
+        {
+          "ordinal": 2,
+          "kernel_name": "_Z12atax_kernel2PfS_S_",
+          "raw_start_line": 2628,
+          "raw_end_line": 4850,
+          "numeric_scalar_keys": 143,
+          "selected_as_printed_counters": {
+            "gpu_sim_cycle": 529607,
+            "gpu_sim_insn": 74285056,
+            "gpu_tot_sim_cycle": 1714624,
+            "gpu_tot_sim_insn": 145666048,
+            "gpu_stall_dramfull": 0,
+            "gpu_stall_icnt2sh": 0,
+            "DTC_SERVICE_V1_samples": 109735936,
+            "DTC_SERVICE_V1_pib_integral": 44960700,
+            "DTC_SERVICE_V1_physical_integral": 17318227775,
+            "DTC_SERVICE_V1_collected_sectors": 19923968,
+            "DTC_SERVICE_V1_fully_ready_to_complete_sum": 12330296,
+            "DTC_SERVICE_V1_retired": 2097408,
+            "DTC_SERVICE_V1_ready_to_collect_sum": 6551484,
+            "DTC_SERVICE_V1_collection_cycles": 5767424,
+            "DTC_SERVICE_V1_wb_wait": 11388,
+            "DTC_SERVICE_V1_map_loss_to_free_sum": 0,
+            "DTC_SERVICE_V1_map_loss_to_free_count": 11886896,
+            "DTC_ORACLE_L1_eligible_admitted": 2097408,
+            "DTC_ORACLE_L1_events_enqueued": 11903280,
+            "DTC_ORACLE_L1_events_delivered": 11903280,
+            "DTC_ORACLE_L1_events_pending": 0,
+            "DTC_L1_oo_lower_created": 0,
+            "DTC_L1_oo_lower_issued": 0,
+            "DTC_L1_oo_lower_responses": 0,
+            "DTC_L1_oo_lower_create_queue_full_stalls": 0,
+            "DTC_L1_oo_inflight_current": 0,
+            "DTC_L1_oo_pib_occupancy": 0,
+            "DTC_L1_oo_retire_count": 3145984,
+            "DTC_L1_oo_out_of_order_retires": 0,
+            "DTC_L1_oo_ready_but_writeback_blocked_cycles": 11388,
+            "DTC_L1_oo_completion_dependency_count": 18350336,
+            "DTC_L1_oo_completion_dependency_closed": 18350336,
+            "DTC_L1_oo_valid_hits": 6447056,
+            "DTC_L1_oo_pending_hits": 0,
+            "DTC_L1_oo_new_misses": 11903280,
+            "DTC_L1_oo_tag_evictions": 11886896,
+            "DTC_L1_oo_immediate_reclaims": 11886896,
+            "DTC_L1_oo_deferred_reclaims": 0,
+            "DTC_L1_oo_final_ref_reclaims": 0,
+            "DTC_L1_oo_wakeups": 11903280,
+            "DTC_L1_oo_active_refs": 0,
+            "DTC_L1_oo_physical_allocated": 16384,
+            "DTC_L1_lower_credit_acquired": 0,
+            "DTC_L1_lower_credit_released": 0,
+            "DTC_L1_lower_outstanding": 0,
+            "DTC_L1_lower_cap_full_events": 0,
+            "gpgpu_n_stall_shd_mem": 22001160,
+            "gpgpu_n_mem_write_global": 4194304
+          },
+          "counter_scope": "As-printed endpoint values; generally cumulative retained counters, never silently converted to per-kernel event deltas."
+        }
+      ],
+      "actual_mechanism_exposure": 11903280,
+      "archive": {
+        "status": "ARCHIVE_VERIFIED_AND_RESTORE_VERIFIED_NATIVE_TARGET",
+        "target_mount_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/scientific_execution/initial8/results/E2-DTCORACLE-I8-eededb785179fc04-DH-L1_DATAREADY-V1/8a4a27dbda0d33ee34797187e8fd3ce76f6ca53ebd55a5f6ad6fa7a29f5ee37f",
+        "archive_sha256": "ae176c2a1092fec61d70a0424b6af0c1e3e5b317f172ec12148f69719117f39c",
+        "manifest_sha256": "54e75728abaaa0eb1ab8dcf80414a444d6ec54c90269872615d063c5bf6878d3",
+        "native_restore": "/root/data/dtc_controlled_oracle_20261106_v1/initial8/DTC/run/recovery/8a4a27dbda0d33ee34797187e8fd3ce76f6ca53ebd55a5f6ad6fa7a29f5ee37f",
+        "source_disposition": "SOURCE_KEEP",
+        "source_release_bytes": 0
+      },
+      "native_archive_independently_verified_entries": 22,
+      "traffic_summary": {
+        "DRAM_issued_read_atoms": 0,
+        "DRAM_issued_write_atoms": 0,
+        "L2_accepted_read_32B_sectors": null,
+        "L2_derived_accepted_read_32B_sectors": 0,
+        "L2_read_statistics_status": "RAW_TOTAL_UNPRINTED_SOURCE_PROVEN_SPARSE_ZERO",
+        "L2_reported_GLOBAL_ACC_R_TOTAL_ACCESS": null,
+        "reporting_compatibility": {
+          "missing_values_are_null": true,
+          "original_lifecycle_and_oracle_checks_unchanged": true,
+          "original_traffic_partition_proven_by_source_and_independent_counters": true,
+          "schema": "DTC_ORACLE_SOURCE_PROVEN_SPARSE_L2_REPORTING_V1",
+          "source_sha256": "dc00fb7a0435c85dd0b377ead470df58ce9127d6bc1ef32b7ec69ad5a5885c6d"
+        }
+      },
+      "samebuild_OFF": {
+        "RESULT_path": "/root/data/dtc_controlled_oracle_20261106_v1/initial8/analysis/E2-DTCORACLE-I8-eededb785179fc04-DH-OFF_MATCHED-V1.RESULT.json",
+        "closed_at_analysis": false,
+        "S_oracle": null,
+        "H": null,
+        "historical_DH0_used_as_OFF": false
+      },
+      "source_and_numerical_scope": "Atlas source is exact fixed git candidate dad09cb; capture-time ELF/source/value equivalence remains unproven. Declared trace complete, not native full-application numerical certification."
+    }
+  },
+  "independence_checks": {
+    "different_full_input_SHA": true,
+    "different_plan_id_and_cohort": true,
+    "different_one_use_UUID": true,
+    "different_actual_PID_and_start": true,
+    "different_trace_bundle_and_command_SHA": true,
+    "distinct_perkernel_trace_body_SHA": true,
+    "equal_cycles_not_identity_failure": true,
+    "original_RESULT_equals_native_STRICT_payload_verified": true,
+    "two_closed_raw_gzip_and_uncompressed_SHA_verified": true
+  },
+  "source_candidate_alpha_equivalence": {
+    "MVT": [
+      {
+        "ordinal": 1,
+        "kernel": "mvt_kernel1",
+        "source_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_preparation_20261103_v1/agents/B/atlas/contributions/polybench/source_snapshot/MVT/mvt.cu",
+        "source_start_line": 109,
+        "source_end_line": 121,
+        "alpha_mapping": {
+          "N": "4096",
+          "NX": "4096",
+          "NY": "4096",
+          "A": "mat",
+          "a": "mat",
+          "i": "out",
+          "j": "inner",
+          "x1": "acc",
+          "x2": "acc",
+          "y_1": "vec",
+          "y_2": "vec"
+        },
+        "canonical_tokens": "{ int out = blockIdx . x * blockDim . x + threadIdx . x ; if ( out < 4096 ) { int inner ; for ( inner = 0 ; inner < 4096 ; inner + + ) { acc [ out ] + = mat [ out * 4096 + inner ] * vec [ inner ] ; } } }",
+        "canonical_sha256": "604e39c33e395ce8e9381bf32b85e1b8ed597c2432b9ea5400f30c3b47c4be71"
+      },
+      {
+        "ordinal": 2,
+        "kernel": "mvt_kernel2",
+        "source_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_preparation_20261103_v1/agents/B/atlas/contributions/polybench/source_snapshot/MVT/mvt.cu",
+        "source_start_line": 124,
+        "source_end_line": 136,
+        "alpha_mapping": {
+          "N": "4096",
+          "NX": "4096",
+          "NY": "4096",
+          "A": "mat",
+          "a": "mat",
+          "i": "out",
+          "j": "inner",
+          "x1": "acc",
+          "x2": "acc",
+          "y_1": "vec",
+          "y_2": "vec"
+        },
+        "canonical_tokens": "{ int out = blockIdx . x * blockDim . x + threadIdx . x ; if ( out < 4096 ) { int inner ; for ( inner = 0 ; inner < 4096 ; inner + + ) { acc [ out ] + = mat [ inner * 4096 + out ] * vec [ inner ] ; } } }",
+        "canonical_sha256": "bb2b6037fe909d235ffd8e785351e9ee24b09db64dae74b8dbfe8e0ea66f406c"
+      }
+    ],
+    "ATAX": [
+      {
+        "ordinal": 1,
+        "kernel": "atax_kernel1",
+        "source_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_preparation_20261103_v1/agents/B/atlas/contributions/polybench/source_snapshot/ATAX/atax.cu",
+        "source_start_line": 84,
+        "source_end_line": 96,
+        "alpha_mapping": {
+          "N": "4096",
+          "NX": "4096",
+          "NY": "4096",
+          "A": "mat",
+          "a": "mat",
+          "i": "out",
+          "j": "inner",
+          "tmp": "acc",
+          "x": "vec"
+        },
+        "canonical_tokens": "{ int out = blockIdx . x * blockDim . x + threadIdx . x ; if ( out < 4096 ) { int inner ; for ( inner = 0 ; inner < 4096 ; inner + + ) { acc [ out ] + = mat [ out * 4096 + inner ] * vec [ inner ] ; } } }",
+        "canonical_sha256": "604e39c33e395ce8e9381bf32b85e1b8ed597c2432b9ea5400f30c3b47c4be71"
+      },
+      {
+        "ordinal": 2,
+        "kernel": "atax_kernel2",
+        "source_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_stage_iia_preparation_20261103_v1/agents/B/atlas/contributions/polybench/source_snapshot/ATAX/atax.cu",
+        "source_start_line": 98,
+        "source_end_line": 110,
+        "alpha_mapping": {
+          "N": "4096",
+          "NX": "4096",
+          "NY": "4096",
+          "A": "mat",
+          "a": "mat",
+          "j": "out",
+          "i": "inner",
+          "y": "acc",
+          "tmp": "vec"
+        },
+        "canonical_tokens": "{ int out = blockIdx . x * blockDim . x + threadIdx . x ; if ( out < 4096 ) { int inner ; for ( inner = 0 ; inner < 4096 ; inner + + ) { acc [ out ] + = mat [ inner * 4096 + out ] * vec [ inner ] ; } } }",
+        "canonical_sha256": "bb2b6037fe909d235ffd8e785351e9ee24b09db64dae74b8dbfe8e0ea66f406c"
+      }
+    ]
+  },
+  "frozen_trace_shape_comparison": [
+    {
+      "ordinal": 1,
+      "all_selected_shape_fields_equal": true,
+      "compared_fields": [
+        "active_thread_instructions",
+        "complete_ctas",
+        "complete_warps",
+        "warp_instruction_records",
+        "global_reference_histogram",
+        "max_global_128b_line_references",
+        "memory_instruction_paths",
+        "opcodes",
+        "width_counts",
+        "binary_version",
+        "trace_version"
+      ],
+      "logical_128B_reference_count": 17301632
+    },
+    {
+      "ordinal": 2,
+      "all_selected_shape_fields_equal": true,
+      "compared_fields": [
+        "active_thread_instructions",
+        "complete_ctas",
+        "complete_warps",
+        "warp_instruction_records",
+        "global_reference_histogram",
+        "max_global_128b_line_references",
+        "memory_instruction_paths",
+        "opcodes",
+        "width_counts",
+        "binary_version",
+        "trace_version"
+      ],
+      "logical_128B_reference_count": 1048704
+    }
+  ],
+  "perkernel_work_checked_against_frozen_body_qualification": true,
+  "perkernel_raw_integer_scalar_comparison": [
+    {
+      "ordinal": 1,
+      "MVT_scalar_key_count": 143,
+      "ATAX_scalar_key_count": 143,
+      "different_scalar_values": {
+        "DTC_SERVICE_V1_physical_integral": {
+          "MVT": 9411966484,
+          "ATAX": 9411966228
+        },
+        "gpu_total_sim_rate": {
+          "MVT": 149960,
+          "ATAX": 158624
+        }
+      }
+    },
+    {
+      "ordinal": 2,
+      "MVT_scalar_key_count": 143,
+      "ATAX_scalar_key_count": 143,
+      "different_scalar_values": {
+        "DTC_SERVICE_V1_physical_integral": {
+          "MVT": 17318228066,
+          "ATAX": 17318227775
+        },
+        "gpu_total_sim_rate": {
+          "MVT": 216121,
+          "ATAX": 223414
+        }
+      }
+    }
+  ],
+  "facts": [
+    "Two independent actual natural terminal identities and original source proofs survive all identity checks.",
+    "Both applications have the same two actual per-kernel cycles and active-instruction/CTA geometry, not merely equal total cycles.",
+    "Each kernel has143 scalar integer key/value observations; only physical-integral and wall-clock simulation-rate keys differ across applications.",
+    "No ordinary DTC lower read parent is created in these mode3 workloads; virtual generation events and finite completion lifecycle remain conserved.",
+    "The source candidates have alpha-equivalent GEMV kernel bodies at4096 with256x1 blocks; application vector identity/dataflow/initialization still differs."
+  ],
+  "inferences": [
+    "Removing eligible lower/refill service can make address-dependent downstream miss/queue differences disappear while preserving the common instruction/reference/finite-completion schedule. This is a plausible explanation of matching phase cycles, not a uniqueness proof or hardware bound.",
+    "K1 still costs more than K2 with idealized data availability; its observed32-line/warp shape versus K2 one-line/warp shape is consistent with greater retained logical-reference/Tag/physical/service work. Counters alone do not prove the active critical path."
+  ],
+  "unknown": [
+    "No valid per-program samebuild OFF speedup/headroom is reported in this identity-only audit.",
+    "Exact captured ELF provenance/numerical inputs and native full-application correctness remain unproven.",
+    "Exact normalized SASS/address stream equality is not established; no four large trace bodies were reread or canonicalized.",
+    "The291 cumulative physical-line-cycle difference has no demonstrated critical-path/cycle impact; no causal source is assigned.",
+    "Counter correlation cannot apportion remaining cycles among Tag bank, physical replacement, collection, store traffic, dependency/issue or WB."
+  ],
+  "engineering_context": "The continuation documents same-UUID postprocess approval-key alias and source-proven sparse-zero L2 reporting repairs only. This audit does not rerun or alter those fixes and verifies raw/native/RESULT pins independently.",
+  "actual_new_model_starts": 0,
+  "historical_records_modified": false
+}
