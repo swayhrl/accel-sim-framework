@@ -17,3 +17,5 @@ First accepted Oracle pair and strict sparse-statistics proof: [checkpoint](chec
 Independently reviewed early workload analysis and conditional extension preparation: [analysis bundle](analysis/EARLY_ACCEPTED_OPPORTUNITY_AND_EXTENSION_READINESS_V1/README.md).
 
 [Control-plane recovery and observation incident status](operational_amendments/CONTROL_PLANE_RECOVERY_STATUS_V1/README.md). This checkpoint does not declare scientific completion.
+
+[Independently reviewed CORE32 opportunity analyzer](analysis/CORE32_OPPORTUNITY_ANALYZER_V1/README.md): 43 CPU checks and a limited eight-accepted example; no final CORE32 performance claim.

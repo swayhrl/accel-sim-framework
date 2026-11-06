@@ -1,0 +1,32 @@
+{
+  "schema": "DTC_CORE32_ORACLE_ANALYZER_API_V1",
+  "input_consumer_schema": "DTC_ORACLE_LIVE_READONLY_SNAPSHOT_V1",
+  "accepted_source_status": "ACCEPTED_RUNTIME_CLOSER",
+  "accepted_source_classification": "accepted",
+  "population_inputs": 32,
+  "modes": [
+    "OFF_MATCHED",
+    "M_DATAREAD",
+    "L2_DATAREAD",
+    "L1_DATAREADY"
+  ],
+  "kernel_input": "dict[plan_id] -> S flat KERNEL_FACTS object, bytes SHA-verified by caller",
+  "required_settings": [
+    "expected_build_identity",
+    "expected_configs_by_mode"
+  ],
+  "output_schema": "DTC_CORE32_CONTROLLED_ORACLE_OPPORTUNITY_ANALYSIS_V1",
+  "runtime_acceptance_not_final_review": true,
+  "raw_log_reads": 0,
+  "scientific_starts": 0,
+  "consumer_or_watch_installation_performed": false,
+  "response_statistics": [
+    "per-mode accepted-matched subset GM",
+    "fixed32/fixed8/suite coverage",
+    "pairwise mode same-input intersections",
+    "four-cell accepted intersection"
+  ],
+  "C1_context_separate": true,
+  "counters_scope": "as printed; explicit missingnull and source-derivedproof kept; no guessed per-kernel counterdelta",
+  "integration_owner": "Main/S after independent review, no self-installation"
+}
