@@ -1,0 +1,55 @@
+{
+  "binding_key": "additional_cpu_shared_timeslice_binding",
+  "cfg_new_fields": [
+    "broad_approval_path",
+    "broad_approval_sha256",
+    "scope_contract_path",
+    "scope_contract_sha256"
+  ],
+  "dynamic_reservation": "all other ownclaims plus unclosed shared consumptions reserve one future thread each; candidate adds1; visible quota used+reserved <=.75quota; no static shared-jobcap",
+  "freshFalse": "exact original resources(spec,False)",
+  "functions": [
+    "validate(cfg,q)",
+    "record(cfg)",
+    "eligible_cohort(cfg,q,c,stage,claims=None)",
+    "sample_cpu_evidence(selected_cpu=None,sample_seconds=.5,prospective_cpu_threads=1)",
+    "verify_cpu_evidence(e,selected_cpu=None,prospective_cpu_threads=1)",
+    "capture_slot_evidence(cfg,q,c,selected_cpu=None,root=None,proc_reader=None)",
+    "verify_slot_evidence(e,cfg,c,selected_cpu=None)",
+    "capture_legal_cpu_evidence(cfg,claims,c,selected_cpu=None)",
+    "project_for_candidate(base,cfg,c,selected_cpu=None,evidence=None,slot_evidence=None,context=None,legal_cpu_evidence=None)",
+    "verify_proof(p,require_native=False)",
+    "install_future_native(native,cfg,padding=False,invocation_cohort=None)"
+  ],
+  "library_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/broad_shared_cpu_v1/cpu_shared.py",
+  "max_shared_running": null,
+  "mode": "CPU_SHARED_DYNAMIC_PER_COHORT",
+  "old_generations": "all frozen paths/bytes remain; new schema only",
+  "owner_frame_api": "install_on_frame(frame,cfg,lib,owner_assert,main=None) -> retained state; restore_owner_frame(state,owner_assert)",
+  "owner_frame_source_path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_l2_mlp_full_workload_exploration_v1/agents/A/broad_shared_cpu_v1/owner_frame.py",
+  "owner_frame_source_sha256": "94dd822a5cacb1b68b7c17ea98945f024cd351d263954eb7b20c8de850900760",
+  "production_actions": 0,
+  "proof_key": "additional_cpu_shared_timeslice_proof",
+  "prospective_sample_api": "sample_cpu_evidence(selected_cpu=None,sample_seconds=.5,prospective_cpu_threads=N); N must equal slot.prospective_cpu_threads; raw CPU2 sampler remains honest prospective1 counter source; new wrapper explicitly binds reserved N",
+  "qualification_stage": "AFTER_REAL_ENGINEERING4_GATE",
+  "resource_ID": "CPU_SHARED_DYNAMIC_FUTURE_MEMORY_095_V1",
+  "resource_roles": [
+    "library",
+    "owner",
+    "frontend",
+    "extra_strict",
+    "consumer"
+  ],
+  "schema": "CPU_SHARED_DYNAMIC_RESOURCE_INTERFACE_DRAFT_V1",
+  "scope_mode": "ALL_ALLOWED_ADMITTED_UNSPENT",
+  "snapshot_filename": "CPU_SHARED_TIMESLICE_SNAPSHOT.json",
+  "snapshot_new_fields": [
+    "broad_approval_utf8",
+    "broad_gate_utf8",
+    "broad_source_artifacts_utf8",
+    "scope_contract_utf8"
+  ],
+  "source_freeze": true,
+  "source_sha256": "c761f23333a0cb1d95a4926cc671b13f827dfecc10a434d0a3249c97cbba5d41",
+  "status": "A_RESOURCE_AND_OWNER_FRAME_CPU_QUALIFIED_NOT_INSTALLED"
+}
