@@ -6,6 +6,13 @@
 
 研究范围：AI训练与推理；LLM、MoE、多模态、推荐、GNN、科学计算/3DGS等非LLM应用；单GPU、多GPU、CPU–GPU协同；计算、调度、数据就绪、片上资源、Cache/TLB、通信、存储、状态生命周期与可靠性。
 
+
+## 当前组合入口（2026-11-06）
+
+- [当前状态](CURRENT_STATE.md)与[固定authority索引V2](AI_ARCH_RESEARCH_AUTHORITY_INDEX_V2.md)：Qwen V11完成并保留NO_HARDWARE_CANDIDATE_PROMOTED；3DGS PRIMARY、Hybrid/KV SECONDARY、MoE H200 CONDITIONAL。
+- [已接受研究组合与三个问题](https://github.com/swayhrl/accel-sim-framework/tree/f88e40123f4060328aa50a16d22fa328cee51cfe/docs/ai_workload_research/discovery/AI_ARCH_NEXT_STAGE_PORTFOLIO_REVIEW_V1)：NO_GPU_PROBE_READY。Q1一次性合同与新资源批准独立办理；本次导航更新不启动GPU。
+- [A80原完整快照](https://github.com/swayhrl/accel-sim-framework/blob/ed365741b230718f6ffc1ccbed125fc2566aac15/docs/ai_workload_research/CURRENT_STATE.md)：保留A79锁冲突STOP、formal0及全部旧边界；不是当前任务监控。
+
 ## 从这里开始
 
 - [统一问题图谱 V1](AI_WORKLOAD_ARCHITECTURE_PROBLEM_ATLAS_V1.md)：按负载/约束组织问题、已知现象、未知前提和潜在架构研究方向。
@@ -20,7 +27,7 @@
 - 研究图谱中的科学状态不覆盖原实验`PASS/FAIL/STOP`；新的上层研究优先级也不改变任何已冻结模型、输入、容差、源码或模拟器参数。
 - 两个项目可只`git fetch`并阅读此分支的Markdown，无需人工转发文件或切换现有执行worktree。
 
-## 固定状态入口（2026-10-13）
+## 固定状态入口（2026-10-13，历史非实时）
 
 - C16最新Problem Discovery Reset：[`635b2f22cbe1bed5ac45de04b258a5f5e9bc6d4f`](https://github.com/swayhrl/accel-sim-framework/commit/635b2f22cbe1bed5ac45de04b258a5f5e9bc6d4f)，目前无获准的C16 native任务。
 - C16 Stage A收口：[`ccd6928bfb420d1e4c554ec0e377bb8fbe377501`](https://github.com/swayhrl/accel-sim-framework/commit/ccd6928bfb420d1e4c554ec0e377bb8fbe377501)，`TERMINAL_PARTIAL`，不得解释为AI没有新瓶颈。

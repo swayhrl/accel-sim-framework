@@ -1,38 +1,47 @@
 # AI-ARCH｜当前科研协调状态
 
-**最新快照：2026-10-26 / Round A80：A79新Native-only Qwen2.5-3B Goal已在109完成CPU预资格和冻结，但唯一一次非阻塞GPU锁获取冲突，合法`GPU_RESOURCE_DEFERRED / STOP`。本次G1/G2原生实验**没有启动、GPU用时0秒、正式样本0；不是主流大模型性能负结果。** A80独立Git/证据/17份SHA256核验已接受。**目前无A79续行或新GPU任务授权，需新的明确用户派发。**
+**最新导航：2026-11-06，Q1 3DGS 主线接续。** 用户已接受研究组合包 f88e40123f4060328aa50a16d22fa328cee51cfe（tree 03274c2ddb7c45aff4bd7ad1f7d48fca94e4a48f）及其更新提案，授权本次协调导航更新与一次性 Q1 Goal 定稿。**本轮 CPU-only；没有新 GPU 授权、GPU 初始化或取锁。** 组合审查结论仍为 **NO_GPU_PROBE_READY**，Q1 合同需新的明确资源批准后才能执行。
 
-**[A80完整独立科学审查](reviews/AI_ARCH_A80_A79_GPU_LOCK_DEFERRED_INDEPENDENT_REVIEW_2026-10-26_V1.md)**，首次审查提交`d4caca68d16c5db8a3707eb96f0613928c84fbd1`。冻结历史导航：[A79事前科研协调状态](https://github.com/swayhrl/accel-sim-framework/blob/21ed1cdf4f0c4b2a52fcfab441b2e9e060279f08/docs/ai_workload_research/CURRENT_STATE.md)、[A78 Native↔Sim配对NO_GO](reviews/AI_ARCH_A78_A77_W_S_RESOURCE_PAIRING_INDEPENDENT_REVIEW_2026-10-16_V1.md)；早于2026-10-26的`READY_FOR_USER_DISPATCH`只是历史快照，不能覆盖本次已完成STOP。
+协调分支是科研导航，不是统一实验代码主干。此次只选择性登记已接受 authority 和研究决策，没有合并历史执行分支，没有改写 raw、数值 FAIL、旧 STOP 或其它项目合同。分支存在不表示任务在运行。
 
-## 1. A79最终执行权威与科学状态
+## 当前研究组合
 
-| 项 | 当前经过回读的事实 |
-|---|---|
-| 执行分支 | `hrl/aiarch-a79-qwen25-3b-native-workload-sensitivity-109-v1` |
-| Goal发布起点 | `7094d4b2d29980c2d2d8d97a9abb6fddb3283c9f` |
-| **执行最终commit** | `1ad28dbe2fe7280aea46a24f6ba9a97c021b08b7`，tree `9ed5906e445923e6ac8ee600093c23acbf0b987b`；remote branch final identical |
-| 变更范围 | Goal→final ahead2、仅19个新增的A79工具与结果文件；第一次`4213330a...`提交19文件，第二次只改FINAL_REPORT/RECEIPT/SHA256SUMS以修PowerShell中文输送乱码；无代码/实验修改 |
-| 原始交付 | [A79 FINAL_REPORT](https://github.com/swayhrl/accel-sim-framework/blob/1ad28dbe2fe7280aea46a24f6ba9a97c021b08b7/docs/ai_workload_research/runs/AI_ARCH_A79_QWEN25_3B_NATIVE_WORKLOAD_SENSITIVITY_109_V1/FINAL_REPORT.md)、[GPU_RESOURCE_RECEIPT](https://github.com/swayhrl/accel-sim-framework/blob/1ad28dbe2fe7280aea46a24f6ba9a97c021b08b7/docs/ai_workload_research/runs/AI_ARCH_A79_QWEN25_3B_NATIVE_WORKLOAD_SENSITIVITY_109_V1/GPU_RESOURCE_RECEIPT.json)、[raw/ADMISSION](https://github.com/swayhrl/accel-sim-framework/blob/1ad28dbe2fe7280aea46a24f6ba9a97c021b08b7/docs/ai_workload_research/runs/AI_ARCH_A79_QWEN25_3B_NATIVE_WORKLOAD_SENSITIVITY_109_V1/raw/ADMISSION.json) |
-| **CPU G0** | `COMPLETE_AND_FROZEN`。本机模型12/12发布SHA含两片权重全流式验证（执行者收据）；vLLM 0.30.0源码身份与旧C16固定文件一致；原WikiText A00/A01各512-token ID与历史匹配，新两份2048-token连续自然原文本前缀完整资格，已记录SHA/长度，不提交原文本 |
-| **GPU Admission** | `SINGLE_NONBLOCKING_LOCK_CONFLICT`，一次`LOCK_EX|LOCK_NB`，无等待/轮询/重试；当场`GPU_RESOURCE_DEFERRED`并STOP |
-| **G1/G2与数值** | `NOT_ADMITTED`。CUDA init=0、NVML init=0、模型初始化=0、GPU持锁0秒、formal samples=0；`NUMERIC_RESULT=NOT_MEASURED`、`HARDWARE_HEADROOM_CLAIMS=0` |
-| 资源披露 | 总Goal约24分钟；监督器截至冲突约873秒，不能误读为整体耗时；CPU全任务进程树RSS不是连续测量的峰，不宣称严格实测RAM PASS。原执行者报告GPU/新下载/安装/清理/164/模拟器/Profiler均0。 |
-| **独立审查** | Git final/tree与19文件scope核完；从GitHub读取manifest独立SHA256计算**17/17 PASS**（不含自引用SHA256SUMS、RECEIPT本身）；验证监督器取锁路径在任何nvmlInit/model subprocess之前，formal TSV只有表头。旧Codex本机clean按执行者收据保留，不冒称本窗口SSH复测。 |
+| 优先级 | 对象与科学状态 | 下一步及边界 |
+|---|---|---|
+| PRIMARY | 3DGS GS-Scale/Rubble，A26GR1 真实训练和 A44/A45H/A46 限定解释；旧 Goal 已完成 STOP | 一份连续 Q1 Goal：合法完整 state 检查；没有则在未来获准窗口从真实初始状态连续推进并建立 checkpoint/恢复资格；同状态线程/流水、observer OFF/ON、完整更新及 drain、独立 camera 验证。不是本轮训练授权 |
+| SECONDARY | 动态 KV/Hybrid State；A70N SOURCE_ONLY，NO_SURVIVOR_IN_SEARCH_SCOPE，审查范围 STOP | 缺真实自然会话、完整模型/运行时/质量资格，不因 config 或代码存在恢复 |
+| CONDITIONAL | MoE A30T：SOURCE_QUALIFIED_PROBE_CANDIDATE / H200_SM90A_CONDITIONAL；A70O 源范围 NO_SURVIVOR | H200 与真实同格式 FP8/natural route/强软件都需资格；109 SM89 不替代，没有设备预约 |
+| PARKED | Qwen V8–V11 已完成，V11 NO_HARDWARE_CANDIDATE_PROMOTED | 成熟负载分析基点；保留真实性能、机制计数、局部因果边界和原数值负例，不自动 V12 |
+| PARKED | Low-bit A81、VLM、DiT、GNN 储备、source serving/iso-PPA/RL | 各自 source/native/条件/STOP 范围不变；不凭模型已下载或旧工程投入自动复开 |
 
-没有锁owner或外部GPU PID观察；**只能说当时锁冲突，不能声称现在109 GPU仍被占用、也不能声称排他运行PASS**。发布二次push只纠正文档编码，不构成GPU第二次尝试。CPU仅复现旧512-token身份，新2048-token尚未通过GPU数值检查；cache isolation只静态检查，未经过运行态资格。WikiText许可元数据与正文版本声明不一致仍披露，不擅自作全面许可法律判定。
+完整固定来源见 [authority 索引](AI_ARCH_RESEARCH_AUTHORITY_INDEX_V2.md)；[已接受组合包](https://github.com/swayhrl/accel-sim-framework/tree/f88e40123f4060328aa50a16d22fa328cee51cfe/docs/ai_workload_research/discovery/AI_ARCH_NEXT_STAGE_PORTFOLIO_REVIEW_V1)。
 
-## 2. 当前科研问题、可保留资产与下一步
+## Qwen：已完成的 native 证据与不可外推处
 
-**科学主问题仍是Qwen2.5-3B-Instruct BF16在同一强vLLM compiled Mode A环境中，512/2048自然上下文与1/32输出长度之间的完整GPU请求时间响应；不是物理L2/TC/DRAM资源改变。** 目前原生新数据为0，无法判断长上下文敏感度、算力瓶颈、加速潜力或计算资源饱和规律。
+最终执行 authority：339559f6972f25ac1aec78fb3577b7bd2640410e，tree c8c8391a6a0c83294ae4b6441e8c8d130180ffd2。[V11 报告](https://github.com/swayhrl/accel-sim-framework/blob/339559f6972f25ac1aec78fb3577b7bd2640410e/docs/ai_workload_research/runs/QWEN_DENSE_MEMORY_MECHANISM_CONVERGENCE_109_V11/FINAL_REPORT.md)。
 
-- 本轮G0提供了明确可复用的**冻结source SHA、token identities、H0＋C01—C08点阵、CPU脚本、独立锁监控工具、数据来源说明、校验方式及新cache隔离计划**。未来如另获批准的新续行Goal，应只在固定本地资产/路径/版本身份再核一致后复用，不因本次资源延期重做所有科学文献、重设长度/采样/容差或重复审全A70—A78。
-- **旧Goal已经STOP，不允许Codex后台轮询或自动重新抢锁**，720秒原GPU预算未使用也不意味着可以无新许可重新执行。若用户明确允许A79R1，在可用资源窗口发新有界Goal，一次非阻塞独占取锁、原模型/强软件/冻结inputs/数值门保持，合格后再执行G1历史512+32和条件G2八点；锁仍冲突则可再次合法DEFER；不能干扰其它AWMA/C16/ISCAS作业。
-- 不自动启动NCU/NSYS/NVBit、Accel-Sim、重新抓trace、B4/旧Stage A、改变Cache/模型、请求更大GPU、更新显存/时间限制或设计新硬件机制。即便未来完成，也只能生成`NATIVE_WORKLOAD_SENSITIVITY`而非资源轴因果或直接芯片设计。
+V9 有18点90 formal，B1/B2约10.125/10.448ms每额外 token，R约1.0318448。V10/V11 测得对应 Dense 节点实际读取接近一份权重 payload，B2并未翻倍；不能把节点乘层数叫整应用 DRAM，也不能把条件191.31GB模型当 counter。V11局部只读数据状态反事实仅部分归因 B2；B1 reuse 失败、写驱逐混杂、共享桌面遥测和 trace 覆盖限制均保留。
 
-## 3. 其他历史科学结果与权限不变
+原 logprob 阈值 FAIL 不改成 PASS；V8分离数值敏感性与性能有效性，LP_NONE不能标作数值通过。altered eager 的边界不等于 native 最早分歧层。最终 NO_HARDWARE_CANDIDATE_PROMOTED，不新增硬件机制。
 
-- A77 W77保留两个原生请求计时参考（Qwen2.5-3B），S77资源轴0／Native↔Simulator`PAIRING_NOT_ESTABLISHED`，旧AWMA资格仅面向有范围的内存翻译。
-- A70 M/N/O/P、A73 W/H、A74-C、A75 R/D所有SOURCE-only结果/停用范围维持。A74-C同面积TC↔SFU路线因SM100性能模型和PPA缺口`PARKED`；A67 IGB-small GraphSAGE FULL GPU resident软件反证继续有效。
-- C16 Stage A四DQ不完整、B4和Observer旧STOP，AWMA/ISCAS及164数据／其它项目的实际资源授权完全独立。本轮A80审查只更新协调文档，不merge A79执行HEAD。
+## 3DGS：真实证据与接续条件
 
-**最新AI-ARCH执行结论：A79科学输入准备完成，真实GPU执行因锁资源延期而STOP；A80独立接受此终态，当前新native样本0，新的GPU续行需要单独明确批准。**
+执行 authority cf80f6ec07a31eccdaff264c3bce64e0511179f8，tree c66008a9da553d06a00195c8c133c3e7ec16692d。[报告](https://github.com/swayhrl/accel-sim-framework/blob/cf80f6ec07a31eccdaff264c3bce64e0511179f8/docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/FINAL_REPORT.md)。两次真实 Rubble 从零至15200步，不同 Gaussian 轨迹不能当配对速度试验，未证明长期收敛。
+
+A44已将旧跨线程30.871/32.128ms收窄为主线程候选并集14.084/14.746ms，不能当纯GPU等待或硬件加速上界。A45H/A46是已接受 CPU/source 反证，不是新训练。OMP16不是作者64线程性能复现；实际Torch、OMP、cpuset与P/E/SMT需在获准执行内核验。
+
+现存 splat-only 不具有完整 optimizer/counter/RNG/camera/deferred-state 恢复资格。新用户指令明确允许把“无完整状态时从合法初始状态连续推进到晚期”纳入**未来一次性 Goal 的待批准分支**，更新上一版仅缺状态即停的规划，不改变旧 A26GR1 终态。完整状态生产、恢复验证和实验不再人为拆成小 Goal。
+
+历史 sampled RSS约24.53GiB，累计持锁3734.497s覆盖两次推进及其它步骤；Qwen16GiB/30分钟草案不能直接套用。历史48GiB也不是新授权。新的主机、存储、连续GPU窗口和CPU placement申请以独立Q1合同为准。
+
+## 历史入口与负结果保留
+
+- **[A80 原始完整快照（固定 commit，不变）](https://github.com/swayhrl/accel-sim-framework/blob/ed365741b230718f6ffc1ccbed125fc2566aac15/docs/ai_workload_research/CURRENT_STATE.md)**。其中“新 native=0”和“主问题仍为Qwen”只代表2026-10-26状态，已被后续执行更新，不能覆盖 V8–V11。
+- A79 final 1ad28dbe2fe7280aea46a24f6ba9a97c021b08b7 / tree9ed5906e445923e6ac8ee600093c23acbf0b987b：CPU预资格通过，唯一非阻塞锁冲突，GPU_RESOURCE_DEFERRED / STOP，formal0；A80独立接受。**不是性能负例**，也不证明今天GPU占用或空闲。
+- [A80独立审查](reviews/AI_ARCH_A80_A79_GPU_LOCK_DEFERRED_INDEPENDENT_REVIEW_2026-10-26_V1.md)、[A78 Native↔Sim NO_GO](reviews/AI_ARCH_A78_A77_W_S_RESOURCE_PAIRING_INDEPENDENT_REVIEW_2026-10-16_V1.md)保留；A77资源轴0、Native↔Simulator未配对不变。
+- A70 M/N/O/P、A73 W/H、A74-C、A75 R/D 的 source STOP；A30T条件设计；A81 NO_REAL_TENSOR_AUTHORITY；GNN A61数值STOP、A65 compiled不对齐、A67/A68 scoped eager FULL软件反证和后续 PARKED_BY_USER，详见索引。
+- C16 Stage A TERMINAL_PARTIAL、四DQ不完整、B4/Observer旧STOP与AWMA原数值/复现负例全部不变。协调更新不覆盖独立项目 authority。
+
+## 权限与运行状态
+
+EP-L2、DTC-L1、AWMA、C16活动任务均 **NOT_QUERIED**。本轮不查询GPU活动raw、不访问164、不操作Image-Lab，不作实时空闲断言。本导航和Q1合同发布都不自动授权GPU、训练、Profiler、下载、安装、时钟/功率更改、模拟器、RTL或旧Goal恢复。完成本轮Git回读后STOP。
