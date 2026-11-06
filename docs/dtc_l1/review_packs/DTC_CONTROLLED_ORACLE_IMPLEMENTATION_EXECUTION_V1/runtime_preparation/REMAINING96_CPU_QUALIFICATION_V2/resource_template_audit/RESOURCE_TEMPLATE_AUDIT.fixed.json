@@ -1,0 +1,991 @@
+{
+  "dynamic_admission": {
+    "memory_fraction": 0.88,
+    "native_floor_bytes": 5368709120,
+    "physical_and_cgroup": "available=min(host MemAvailable,cgroup headroom if bounded); prediction + outstanding forecast-not-yet-RSS claims <=0.88*max(0,available-8GiB); PSI holds new admissions",
+    "real_native_reservations_required": true,
+    "resource_cap_not_admission_preallocation": true,
+    "true164_fresh_mount_and_bounded_capacity_check_required": true
+  },
+  "limitations": [
+    "Historical RSS is sampled process-tree peak from native exit, not a mathematical exact peak or same-Oracle guarantee. New actual RSS may exceed it; guard and live pressure remain necessary.",
+    "4GiB minimum per-process guard cap is conservative for small inputs but is not reserved per worker, hence does not itself force low concurrency. No fixed16GiB global cap remains; sgemm exceeds32GiB cap.",
+    "128 workers exceeds96 authorized cells and cannot limit this matrix; real CPU availability, RAM forecasts/pressure, output reservations and scientific per-mode gates can limit admission.",
+    "No current resource sample or grant was made; actual owner availability remains independently blocked as stated in primary CPU_READY_VS_BLOCKED audit.",
+    "Do not modify old Q32 or treat Q96 DRAFT reserved bytes/technical maximum as actual registered budget."
+  ],
+  "observed_UTC": "2026-11-06T17:54:49.646527+00:00",
+  "recent_history_wiring": {
+    "forecast_API": "Exact input_digest matching peak_RSS_bytes; max(frozen estimate,1.20*max same-input peaks)",
+    "frozen_ops_actual_call": "choose_dispatch(...policy...,dispatch_index...) has no history argument at oracle_ops.py173; resources(spec,True) calls forecast(spec) without history at oracle_resources.py160",
+    "observation": "Recent history feature exists but is not wired into frozen scheduler; actual baseline prediction remains historical-DH-P0 estimate. This is a disclosed template limitation; B96 is independently reviewed elsewhere.",
+    "unknown_fallback": "All24 have exact-input observed history. Runtime forecast requires estimated_peak_model_RAM_bytes>0 and returns this explicit frozen estimate if no supplied recent history; no generic4GiB fallback was used or silently inferred. Unknown future inputs would require explicit conservative prediction/CPU resource policy qualification; not authorized here."
+  },
+  "request_resource_write_boundaries": {
+    "Q96_DRAFT": {
+      "budget": 96,
+      "consumed": 0,
+      "maximum_source_plus_restore_lifetime_bytes": 72477573120,
+      "ready_for_registration": false,
+      "remaining": 96,
+      "reserved_write_bytes": 805306368,
+      "sealed": 0
+    },
+    "Q96_registered": false,
+    "actual_writes_this_audit": 0,
+    "existing_Q32": {
+      "budget": 32,
+      "consumed": 32,
+      "maximum_source_plus_restore_lifetime_bytes": 72477573120,
+      "remaining": 0,
+      "request": "DTC_ORACLE_INITIAL8_20261106_V1",
+      "reserved_write_bytes": 4155880420,
+      "sealed": 0
+    },
+    "reserve_equation": "sum(actual claimed/unarchived source remaining)+max(one required native restore window)+256MiB metadata; no unclaimed future matrix charge; archive_workers=1",
+    "write_contract": "Per-stage sync writes only its own reserved_write_bytes from captured projection; assert own budget/admitted_specs/technical ceiling unchanged. No grant, reset, refund, new UUID or other request write by this audit."
+  },
+  "rows": [
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 1489232896,
+      "expected_max4GiB_or_2peak_plus_2GiB": 4294967296,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 976637952,
+      "historical_source_exit": {
+        "bytes": 1115,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/58f9d8a9-72eb-4e9c-a140-244ddcfe963b/NATIVE_EXIT.json",
+        "sha256": "9e123b2495675027db7463974303090c990bdf9975b45e88a3389a639f2335c5"
+      },
+      "historical_source_result": {
+        "bytes": 143703,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-0e62c67daa020853-DH-P0-V1.RESULT.json",
+        "sha256": "290dd058a8155b69170b3f8c4b30f9936b84dd671980a1f7161357a5f1d5e340"
+      },
+      "input_digest": "0e62c67daa020853cf8a90b9f20a42d7e960e4d6c6e1db09173de1a58af199c4",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 4294967296,
+      "prediction_formula_match": true,
+      "program": "srad_v1",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 17179869184,
+      "spec_prediction_bytes": 1489232896,
+      "suite": "Rodinia"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 834666496,
+      "expected_max4GiB_or_2peak_plus_2GiB": 4294967296,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 452984832,
+      "historical_source_exit": {
+        "bytes": 1113,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/4e0b7234-d5bc-40a6-8d71-0c7b85be7475/NATIVE_EXIT.json",
+        "sha256": "0daddf662e75611c3fb89c75ea025a5b205132b6a7364c9e0477f4b19d1350f0"
+      },
+      "historical_source_result": {
+        "bytes": 59225,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-16f4c42373e4961e-DH-P0-V1.RESULT.json",
+        "sha256": "2d4cd72fe067dcc235562f095f29bd11a721487f0771775af013d5d08e2b12ea"
+      },
+      "input_digest": "16f4c42373e4961eac6b16178237f1de2bbdf21d5e08bf669c4b6102bab2c6b3",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 4294967296,
+      "prediction_formula_match": true,
+      "program": "gaussian",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 17179869184,
+      "spec_prediction_bytes": 834666496,
+      "suite": "Rodinia"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 3623878656,
+      "expected_max4GiB_or_2peak_plus_2GiB": 7516192768,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 2684354560,
+      "historical_source_exit": {
+        "bytes": 1112,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/75363e6f-35a8-43b4-85b2-eb7417aa3bea/NATIVE_EXIT.json",
+        "sha256": "742ff565826bf79e4f7bb26856626d5b2916f0cbf2d94531611ee2a1712d714c"
+      },
+      "historical_source_result": {
+        "bytes": 36865,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-1df9d5479504d9c7-DH-P0-V1.RESULT.json",
+        "sha256": "656cd84e4b4e308d987dd2085952629cb20e9a5d1f666b6cd42590466ed2480a"
+      },
+      "input_digest": "1df9d5479504d9c7c5f5ef176e9604ce1b43421c7b6be440597259607d3971c0",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 7516192768,
+      "prediction_formula_match": true,
+      "program": "bfs",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 23622320128,
+      "spec_prediction_bytes": 3623878656,
+      "suite": "Parboil"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 12704546816,
+      "expected_max4GiB_or_2peak_plus_2GiB": 22045261824,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 9948889088,
+      "historical_source_exit": {
+        "bytes": 1113,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/5cf7eef7-a28b-4e92-b3c0-9439ddf1d729/NATIVE_EXIT.json",
+        "sha256": "919e287837ce892bd3ae499adafb93d3e6deed7238fc467af5d342b70c7c09dc"
+      },
+      "historical_source_result": {
+        "bytes": 38855,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-2b93f70cd0666c51-DH-P0-V1.RESULT.json",
+        "sha256": "fd553c2c1bf01b772e8b7a6ffef3f7cc1ae97f61e2feec6d2e7768b5f0a3e3b5"
+      },
+      "input_digest": "2b93f70cd0666c5112f5550aae7b3a8d0565de1de40604d494bdc36c503f6954",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 22045261824,
+      "prediction_formula_match": true,
+      "program": "scalarProd",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 52680458240,
+      "spec_prediction_bytes": 12704546816,
+      "suite": "CUDA Samples"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 3193414656,
+      "expected_max4GiB_or_2peak_plus_2GiB": 6827450368,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 2339983360,
+      "historical_source_exit": {
+        "bytes": 1113,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/7ab17acd-1fec-43a8-904c-e7d0db7fe677/NATIVE_EXIT.json",
+        "sha256": "dcb295d463393e1f20f79b3a99ad690bb21d94f45f5a347efd4abf8752029866"
+      },
+      "historical_source_result": {
+        "bytes": 53333,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-2c506bf13c81ff5d-DH-P0-V1.RESULT.json",
+        "sha256": "1248c957cb8e672487a27ea10f9a802e04c95b45386d914b37ed536b157576b3"
+      },
+      "input_digest": "2c506bf13c81ff5dd4c286fa2f6d7a9edea513a5c8f38c60cfc746e36e9c5f64",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 6827450368,
+      "prediction_formula_match": true,
+      "program": "histo",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 22244835328,
+      "spec_prediction_bytes": 3193414656,
+      "suite": "Parboil"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 1510998016,
+      "expected_max4GiB_or_2peak_plus_2GiB": 4294967296,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 994050048,
+      "historical_source_exit": {
+        "bytes": 1111,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/cbc3c4d9-9506-4738-b669-91bd49465214/NATIVE_EXIT.json",
+        "sha256": "1b8c7643a5bd0d304b95554289024ca540023dc9936bab479c7c83ac94ac2dac"
+      },
+      "historical_source_result": {
+        "bytes": 35799,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-3722a5c85d91a948-DH-P0-V1.RESULT.json",
+        "sha256": "3ef7b9b076636a9d839c298ce2365f69632da7a8c6736b3656118953dd0e5bc0"
+      },
+      "input_digest": "3722a5c85d91a9482233c2bf128a6721e3fb194db3e5e54be6cbec9598518a58",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 4294967296,
+      "prediction_formula_match": true,
+      "program": "histogram",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 17179869184,
+      "spec_prediction_bytes": 1510998016,
+      "suite": "CUDA Samples"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 1301282816,
+      "expected_max4GiB_or_2peak_plus_2GiB": 4294967296,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 826277888,
+      "historical_source_exit": {
+        "bytes": 1110,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/a661a364-ca9c-4e89-b5eb-3b5fec052b5c/NATIVE_EXIT.json",
+        "sha256": "f5f945885f5dd0515a535985f714f487e577b22f6efeb973d617e6d1a3688c8a"
+      },
+      "historical_source_result": {
+        "bytes": 35946,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-3f85d1878aba9f04-DH-P0-V1.RESULT.json",
+        "sha256": "aff055d8d21fd4443c6dcbd19441ec7fdc39f6e196dc42dd7b2ed304fee311da"
+      },
+      "input_digest": "3f85d1878aba9f04916ec52cc1162b37673f92a88be07c4db815240c9564755e",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 4294967296,
+      "prediction_formula_match": true,
+      "program": "particlefilter_naive",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 17179869184,
+      "spec_prediction_bytes": 1301282816,
+      "suite": "Rodinia"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 1206910976,
+      "expected_max4GiB_or_2peak_plus_2GiB": 4294967296,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 750780416,
+      "historical_source_exit": {
+        "bytes": 1112,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/942d6db5-9cd9-4d21-9b4a-0fe05c1c4a27/NATIVE_EXIT.json",
+        "sha256": "1fdb538cfef18e734c2688ad7858acded0b7276f423d5362cb7269ea8a06fb73"
+      },
+      "historical_source_result": {
+        "bytes": 39356,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-65151d2c661f88f3-DH-P0-V1.RESULT.json",
+        "sha256": "075f2b8b680a38aed13ed943ec871f330dc0882af3ee82da068d773e549459fd"
+      },
+      "input_digest": "65151d2c661f88f3b463dba9a3ce49d98848affabe19a36ccf23295f3b1e8fdc",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 4294967296,
+      "prediction_formula_match": true,
+      "program": "transpose",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 17179869184,
+      "spec_prediction_bytes": 1206910976,
+      "suite": "CUDA Samples"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 929038336,
+      "expected_max4GiB_or_2peak_plus_2GiB": 4294967296,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 528482304,
+      "historical_source_exit": {
+        "bytes": 1111,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/8c03a83b-0ea4-4b90-8dab-e82ffeb73949/NATIVE_EXIT.json",
+        "sha256": "08b262d419fc655077042ad46acc6ab2f3a504205537c1c5c0a5cf89be2bf94b"
+      },
+      "historical_source_result": {
+        "bytes": 33913,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-731af5428c4b8155-DH-P0-V1.RESULT.json",
+        "sha256": "5c18b6dd2ce866c6042db1588632a1862e1315b95f2a9635e6aad8ff600d651d"
+      },
+      "input_digest": "731af5428c4b81552d8750c8edf9eeb609b71bd4f3651ca378a4dd73b194d980",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 4294967296,
+      "prediction_formula_match": true,
+      "program": "heartwall",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 17179869184,
+      "spec_prediction_bytes": 929038336,
+      "suite": "Rodinia"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 4158652416,
+      "expected_max4GiB_or_2peak_plus_2GiB": 8371830784,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 3112173568,
+      "historical_source_exit": {
+        "bytes": 1112,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/7456ab3e-27e0-4e82-9d62-476cf029fa7e/NATIVE_EXIT.json",
+        "sha256": "cb39e93d86efcafc278544c3e0a48d6d3bb0b6f7c1168cdce1ff8a077628da28"
+      },
+      "historical_source_result": {
+        "bytes": 35191,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-769e6d9fd5f9cd53-DH-P0-V1.RESULT.json",
+        "sha256": "4be3aaaa1af5916ab001d68c59ccb7d5af8b13416c0f1e847574a97ce07170ff"
+      },
+      "input_digest": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 8371830784,
+      "prediction_formula_match": true,
+      "program": "GESUMMV",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 25333596160,
+      "spec_prediction_bytes": 4158652416,
+      "suite": "PolyBench/GPU"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 1023410176,
+      "expected_max4GiB_or_2peak_plus_2GiB": 4294967296,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 603979776,
+      "historical_source_exit": {
+        "bytes": 1115,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/667439d4-bbb6-4b50-9fa7-7630027b4b85/NATIVE_EXIT.json",
+        "sha256": "458cd5975c114d0d6ae2c9975dcda615e162314a15b76d29be339b90a0fb5c06"
+      },
+      "historical_source_result": {
+        "bytes": 90722,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-79f8ab6241faeed6-DH-P0-V1.RESULT.json",
+        "sha256": "88bc6cfbb5e434119633441069719f1eaf8717fc8c754e3b7022aa690eff2733"
+      },
+      "input_digest": "79f8ab6241faeed64b49d05deecb1ad239fac5f123c4ceec75f7e0f6a9c5166d",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 4294967296,
+      "prediction_formula_match": true,
+      "program": "3DCONV",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 17179869184,
+      "spec_prediction_bytes": 1023410176,
+      "suite": "PolyBench/GPU"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 6077546496,
+      "expected_max4GiB_or_2peak_plus_2GiB": 11442061312,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 4647288832,
+      "historical_source_exit": {
+        "bytes": 1112,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/ceb75630-ca66-4633-a417-b7e6fc248e27/NATIVE_EXIT.json",
+        "sha256": "e5dec5ab66f2b4398fd133beedf213c2998b061f5f57b2762b388eb1876ca22c"
+      },
+      "historical_source_result": {
+        "bytes": 39234,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-977a2f7007cb1f96-DH-P0-V1.RESULT.json",
+        "sha256": "f4d3cd7f2fc6389f494817e132a52b74a34e3a84f86232b29ce6da686d8f9b7d"
+      },
+      "input_digest": "977a2f7007cb1f9673fe3a5c17cdbb469335c619c172a0a882eb18410049eb3d",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 11442061312,
+      "prediction_formula_match": true,
+      "program": "3MM",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 31474057216,
+      "spec_prediction_bytes": 6077546496,
+      "suite": "PolyBench/GPU"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 897581056,
+      "expected_max4GiB_or_2peak_plus_2GiB": 4294967296,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 503316480,
+      "historical_source_exit": {
+        "bytes": 1117,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/72219f8d-4454-407f-a460-9a74ac656a00/NATIVE_EXIT.json",
+        "sha256": "cd29e06f8480fb5165255d388b307efaaa3aa89bf0ed58e52d785caed63a20a0"
+      },
+      "historical_source_result": {
+        "bytes": 1287497,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-977e34578994c3d2-DH-P0-V1.RESULT.json",
+        "sha256": "c50008ceccbddb4e6f974afddcea0331a2f53ae54845ba388439db2a03e19dec"
+      },
+      "input_digest": "977e34578994c3d2d1cbd1a8ecf13e09efc43b03bcb8615a141cf2a24c9d5992",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 4294967296,
+      "prediction_formula_match": true,
+      "program": "myocyte",
+      "result_cap_bytes": 603979776,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 17179869184,
+      "spec_prediction_bytes": 897581056,
+      "suite": "Rodinia"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 18078155776,
+      "expected_max4GiB_or_2peak_plus_2GiB": 30643036160,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 14247776256,
+      "historical_source_exit": {
+        "bytes": 1114,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/6e0fa166-80d7-484b-b922-983f9703501c/NATIVE_EXIT.json",
+        "sha256": "50307a88e423a343658d6484c5e3bf9517ea01aa790e94b59a29babf7abdc7e6"
+      },
+      "historical_source_result": {
+        "bytes": 36921,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-af7320f9d9dc6629-DH-P0-V1.RESULT.json",
+        "sha256": "3d631c5f71a466969764cea19bfe45c861785fdb45d024b5c707fba38d47b4ee"
+      },
+      "input_digest": "af7320f9d9dc662971b1856cac87f29f9b8e4b2a65a7f9d4223bb7a74803fef8",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 30643036160,
+      "prediction_formula_match": true,
+      "program": "cutcp",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 69876006912,
+      "spec_prediction_bytes": 18078155776,
+      "suite": "Parboil"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 1039138816,
+      "expected_max4GiB_or_2peak_plus_2GiB": 4294967296,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 616562688,
+      "historical_source_exit": {
+        "bytes": 1111,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/8af29f6f-8c8c-4c3f-b541-c86b50798e2b/NATIVE_EXIT.json",
+        "sha256": "8fbc2aac14663c59a57e824cb66065e3fe4887915eadf08efee6498dc90f45d4"
+      },
+      "historical_source_result": {
+        "bytes": 33930,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-b31a85e4eb8d32ef-DH-P0-V1.RESULT.json",
+        "sha256": "81ccd85d831c67931d22f939897247d66b805cf7dcd67050bb6093adafb8ffb0"
+      },
+      "input_digest": "b31a85e4eb8d32ef5d706c2a84c999f6e3af598b1df43c85e149d03fa1568ac0",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 4294967296,
+      "prediction_formula_match": true,
+      "program": "BlackScholes",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 17179869184,
+      "spec_prediction_bytes": 1039138816,
+      "suite": "CUDA Samples"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 986710016,
+      "expected_max4GiB_or_2peak_plus_2GiB": 4294967296,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 574619648,
+      "historical_source_exit": {
+        "bytes": 1113,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/e62295c7-b5a9-41aa-813c-4f1631d2ee84/NATIVE_EXIT.json",
+        "sha256": "383c4015c04feb8401bbfb90276e4a5f10f4d28fa669867fa00ee54516fe8af1"
+      },
+      "historical_source_result": {
+        "bytes": 43607,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-b33381cf25d44359-DH-P0-V1.RESULT.json",
+        "sha256": "4fe4f49e527be4294fd324edfb0e30fcee097791e8e987fffb8c23b6406b8fd7"
+      },
+      "input_digest": "b33381cf25d443599aea5253936c13914acb0a2e7c22478496025c5234aef1f8",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 4294967296,
+      "prediction_formula_match": true,
+      "program": "lud",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 17179869184,
+      "spec_prediction_bytes": 986710016,
+      "suite": "Rodinia"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 1689255936,
+      "expected_max4GiB_or_2peak_plus_2GiB": 4420796416,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 1136656384,
+      "historical_source_exit": {
+        "bytes": 1112,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/ea290deb-69d7-4fb5-b333-afd53ef84e36/NATIVE_EXIT.json",
+        "sha256": "953e48e7ffc3dd7d0d51aa027517429f4d0b84a46aa25d993b9a38b5426ce085"
+      },
+      "historical_source_result": {
+        "bytes": 42397,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-b41cc74c66ca6ed4-DH-P0-V1.RESULT.json",
+        "sha256": "9fed62c4c4f877139d1b021b5ab1de913ab766aca34338ed78017ea1aeb0191b"
+      },
+      "input_digest": "b41cc74c66ca6ed4975948bdce35825381473e5cf44c53f9dc9740ac3e0115b4",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 4420796416,
+      "prediction_formula_match": true,
+      "program": "particlefilter_float",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 17431527424,
+      "spec_prediction_bytes": 1689255936,
+      "suite": "Rodinia"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 1159725056,
+      "expected_max4GiB_or_2peak_plus_2GiB": 4294967296,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 713031680,
+      "historical_source_exit": {
+        "bytes": 1112,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/d243b2ed-d16e-49d4-8643-a177e4c36312/NATIVE_EXIT.json",
+        "sha256": "565e8921d23c0069b254dbff4fe334b1043f5d0da5ca347d1be1af23ebc1879e"
+      },
+      "historical_source_result": {
+        "bytes": 57302,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-c885293ad99e21ee-DH-P0-V1.RESULT.json",
+        "sha256": "aae6f491b95c930b921ed15adff05b6b542b75feba1e360b5a2d6c880222827c"
+      },
+      "input_digest": "c885293ad99e21ee6f270647dc47f1e6b214c71856b189cd011266ce4ae21266",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 4294967296,
+      "prediction_formula_match": true,
+      "program": "stencil",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 17179869184,
+      "spec_prediction_bytes": 1159725056,
+      "suite": "Parboil"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 1956642816,
+      "expected_max4GiB_or_2peak_plus_2GiB": 4848615424,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 1350565888,
+      "historical_source_exit": {
+        "bytes": 1112,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/13d289c8-b23c-470c-9d7f-8e1ea7499348/NATIVE_EXIT.json",
+        "sha256": "dcf2daf8e33ecbe510914853d478d6f73c92c6fc67d2e9de5a13a974a415b3eb"
+      },
+      "historical_source_result": {
+        "bytes": 34847,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-db89be14146b9163-DH-P0-V1.RESULT.json",
+        "sha256": "527a707de22bcdb7bba0631728c636093d648014a53247d1e1fe53a3f48fae1b"
+      },
+      "input_digest": "db89be14146b916373c1adb28803767aa725a592119901ffd78d9c223e1611a9",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 4848615424,
+      "prediction_formula_match": true,
+      "program": "sad",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 18287165440,
+      "spec_prediction_bytes": 1956642816,
+      "suite": "Parboil"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 5647630336,
+      "expected_max4GiB_or_2peak_plus_2GiB": 10754195456,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 4303355904,
+      "historical_source_exit": {
+        "bytes": 1111,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/223283e6-e416-452a-a3ef-49e8c582becb/NATIVE_EXIT.json",
+        "sha256": "3ba83c2b956d6aaa06254ba7b416a671f81570dd2e2c2ee57626dea1708af170"
+      },
+      "historical_source_result": {
+        "bytes": 35083,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-dc7a91531846c113-DH-P0-V1.RESULT.json",
+        "sha256": "f2fa4ee84f97c70e5735d0eb7e1b63ac0ca5cf6c365f2e186690330a5d4d3d8f"
+      },
+      "input_digest": "dc7a91531846c1134c197a6e83509c91b2768151692a7b1286f6be9c431cabd4",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 10754195456,
+      "prediction_formula_match": true,
+      "program": "mri-q",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 30098325504,
+      "spec_prediction_bytes": 5647630336,
+      "suite": "Parboil"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 918552576,
+      "expected_max4GiB_or_2peak_plus_2GiB": 4294967296,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 520093696,
+      "historical_source_exit": {
+        "bytes": 1111,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/7b7d633d-f431-4f67-80fb-a468dfd96981/NATIVE_EXIT.json",
+        "sha256": "5908d6e031e73354710e8ec261ad2314e669bd9cdb2b3fc96151874e64ad099f"
+      },
+      "historical_source_result": {
+        "bytes": 36954,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-dd9f695c4f53b083-DH-P0-V1.RESULT.json",
+        "sha256": "7ff810be923c6f06c3f9e746991419e5aa97aa7540d2df800f550c4620658e27"
+      },
+      "input_digest": "dd9f695c4f53b08394e7fd53a9eecedfd8372aa5cda7aae047f8a70162a40c48",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 4294967296,
+      "prediction_formula_match": true,
+      "program": "mergeSort",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 17179869184,
+      "spec_prediction_bytes": 918552576,
+      "suite": "CUDA Samples"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 881852416,
+      "expected_max4GiB_or_2peak_plus_2GiB": 4294967296,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 490733568,
+      "historical_source_exit": {
+        "bytes": 1111,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/8d91167e-f749-4c2e-90a4-caa6220e2949/NATIVE_EXIT.json",
+        "sha256": "c10ba3fd3029279aa77dbe809062a1287d69cf653c0dbc50b986e236942f1bf4"
+      },
+      "historical_source_result": {
+        "bytes": 36291,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-e5638b94095098ac-DH-P0-V1.RESULT.json",
+        "sha256": "6c6e3c0a1f09ac958c730914cc9301c18f06c57fd848b86a58827085601e08c7"
+      },
+      "input_digest": "e5638b94095098acf5186be97210cb371bb3f88dcc8ceefb7609b454ef5ce008",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 4294967296,
+      "prediction_formula_match": true,
+      "program": "dwt2d",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 17179869184,
+      "spec_prediction_bytes": 881852416,
+      "suite": "Rodinia"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 1448083456,
+      "expected_max4GiB_or_2peak_plus_2GiB": 4294967296,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 943718400,
+      "historical_source_exit": {
+        "bytes": 1112,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/7bab5015-4df4-4632-b6a3-727b3324e1da/NATIVE_EXIT.json",
+        "sha256": "8dc97c36f83d45a833aa5329e48f55a2fcae7f6623e690e91e1e97f03b5562d6"
+      },
+      "historical_source_result": {
+        "bytes": 37904,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-f7f22a2ccc836a8a-DH-P0-V1.RESULT.json",
+        "sha256": "5018a7c116f04d79801e28ecc48747c7f009456002594c2c1e3ec1552326c36e"
+      },
+      "input_digest": "f7f22a2ccc836a8a9b2096d4df50caf00a2c4bcebc7b16d064b8b0287ce593d3",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 4294967296,
+      "prediction_formula_match": true,
+      "program": "fastWalshTransform",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 17179869184,
+      "spec_prediction_bytes": 1448083456,
+      "suite": "CUDA Samples"
+    },
+    {
+      "RSS_observation_scope": "OBSERVED_NATIVE_EXIT_SAMPLE_PEAK_NOT_EXACT_KERNEL_MAXIMUM",
+      "cold_start_fallback_used": false,
+      "exact_input_UUID_identity_match": true,
+      "exit_sample_peak_matches": true,
+      "expected_1p25_peak_plus_256MiB": 20731396096,
+      "expected_max4GiB_or_2peak_plus_2GiB": 34888220672,
+      "guard_cap_formula_match": true,
+      "guard_cap_is_not_reserved_RAM": true,
+      "historical_peak_RSS_bytes": 16370368512,
+      "historical_source_exit": {
+        "bytes": 1114,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/DTC/run/results/fb21b6ea-fcf3-4024-b179-88b1915e37ec/NATIVE_EXIT.json",
+        "sha256": "e4d601a7919b7bb810cf44980922124c6cbaa6615c7bbc894d5720fdd02d1d02"
+      },
+      "historical_source_result": {
+        "bytes": 38756,
+        "path": "/root/data/dtc_l2_mlp_exploration_20261027_v1/analysis/E2-DTCL2MLP-ffc8a89493c8a211-DH-P0-V1.RESULT.json",
+        "sha256": "6a7a6cf1c1f5b150a0bd9dbad049c723dd255bdc6f6bea2744fc999c18e4c136"
+      },
+      "input_digest": "ffc8a89493c8a21151320d1cfdaccbfca2706eb1c395fcb58e94a1b01e6ea453",
+      "modes": [
+        "L1_DATAREADY",
+        "L2_DATAREAD",
+        "M_DATAREAD",
+        "OFF_MATCHED"
+      ],
+      "per_process_guard_RSS_cap_bytes": 34888220672,
+      "prediction_formula_match": true,
+      "program": "sgemm",
+      "result_cap_bytes": 268435456,
+      "source_pins_match": true,
+      "spec_VMS_cap_bytes": 78366375936,
+      "spec_prediction_bytes": 20731396096,
+      "suite": "Parboil"
+    }
+  ],
+  "schema": "DTC_REMAINING96_RESOURCE_TEMPLATE_READONLY_AUDIT_V1",
+  "scope": "No owner/tracer/debugger/process control, registration, model, canary, profile/q or875f changes.",
+  "status": "READONLY_RESOURCE_TEMPLATE_VERIFIED_NOT_A_RESOURCE_GRANT",
+  "summary": {
+    "all24_exact_input_history_and_formulas_verified": true,
+    "fixed16GiB_global_RSS_cap": false,
+    "guard_RSS_caps_above4GiB": [
+      {
+        "cap_bytes": 7516192768,
+        "historical_peak_RSS_bytes": 2684354560,
+        "prediction_bytes": 3623878656,
+        "program": "bfs"
+      },
+      {
+        "cap_bytes": 22045261824,
+        "historical_peak_RSS_bytes": 9948889088,
+        "prediction_bytes": 12704546816,
+        "program": "scalarProd"
+      },
+      {
+        "cap_bytes": 6827450368,
+        "historical_peak_RSS_bytes": 2339983360,
+        "prediction_bytes": 3193414656,
+        "program": "histo"
+      },
+      {
+        "cap_bytes": 8371830784,
+        "historical_peak_RSS_bytes": 3112173568,
+        "prediction_bytes": 4158652416,
+        "program": "GESUMMV"
+      },
+      {
+        "cap_bytes": 11442061312,
+        "historical_peak_RSS_bytes": 4647288832,
+        "prediction_bytes": 6077546496,
+        "program": "3MM"
+      },
+      {
+        "cap_bytes": 30643036160,
+        "historical_peak_RSS_bytes": 14247776256,
+        "prediction_bytes": 18078155776,
+        "program": "cutcp"
+      },
+      {
+        "cap_bytes": 4420796416,
+        "historical_peak_RSS_bytes": 1136656384,
+        "prediction_bytes": 1689255936,
+        "program": "particlefilter_float"
+      },
+      {
+        "cap_bytes": 4848615424,
+        "historical_peak_RSS_bytes": 1350565888,
+        "prediction_bytes": 1956642816,
+        "program": "sad"
+      },
+      {
+        "cap_bytes": 10754195456,
+        "historical_peak_RSS_bytes": 4303355904,
+        "prediction_bytes": 5647630336,
+        "program": "mri-q"
+      },
+      {
+        "cap_bytes": 34888220672,
+        "historical_peak_RSS_bytes": 16370368512,
+        "prediction_bytes": 20731396096,
+        "program": "sgemm"
+      }
+    ],
+    "guard_RSS_caps_below_or_equal4GiB": 14,
+    "input_count": 24,
+    "point_count": 96,
+    "predicted_RAM_max_bytes": 20731396096,
+    "predicted_RAM_min_bytes": 834666496,
+    "unknown_history_inputs": [],
+    "worker_ceiling": 128,
+    "worker_ceiling_limits_this96_matrix": false
+  }
+}

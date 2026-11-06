@@ -1,5 +1,7 @@
 # DTC-L1 Controlled Oracle Implementation & Execution V1
 
+[Remaining96 CPU runtime qualification V2](runtime_preparation/REMAINING96_CPU_QUALIFICATION_V2/README.md) records conditional engineering fixes and input/resource audits. Actual96 execution remains HOLD: no registered request/new model, and CPU qualification cannot replace genuine owner/transition evidence.
+
 [Final independent full32 evidence audit](independent_reviews/INITIAL8_ALL32_FULL_EVIDENCE_AUDIT_V1/README.md) is complete: all initial8 strict proofs recomputed, all true164/archive and native restored SHA verified. This closes the extra I/O audit that earlier timestamped analysis snapshots still recorded as ongoing. Full CORE32 remains incomplete.
 
 Latest scientific checkpoint: **8 frozen programs x4 modes =32 accepted cells**.
