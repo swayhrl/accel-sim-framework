@@ -11,3 +11,5 @@ The original pending-only bootstrap negative is preserved. A readonly actual-own
 Latest execution checkpoint: [first actual matched OFF launch](checkpoints/FIRST_ACTUAL_OFF_20261106_V1/STATUS.json). This records a running model and preserved pre-start engineering repairs; it is not a completed or accepted performance result.
 
 Accepted baseline and reproducible archive compatibility: [first Gate1 checkpoint](checkpoints/FIRST_GATE1_ACCEPTED_AND_ARCHIVE_COMPATIBILITY_20261106_V1/README.md). Automatic closed-result updates are under [live_results](live_results/). The scientific Goal remains active.
+
+First accepted Oracle pair and strict sparse-statistics proof: [checkpoint](checkpoints/FIRST_ORACLE_PAIRS_AND_SOURCE_PROVEN_SPARSE_20261106_V1/README.md).
