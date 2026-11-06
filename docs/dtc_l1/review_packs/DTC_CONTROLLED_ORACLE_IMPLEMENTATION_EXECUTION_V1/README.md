@@ -19,3 +19,5 @@ Independently reviewed early workload analysis and conditional extension prepara
 [Control-plane recovery and observation incident status](operational_amendments/CONTROL_PLANE_RECOVERY_STATUS_V1/README.md). This checkpoint does not declare scientific completion.
 
 [Independently reviewed CORE32 opportunity analyzer](analysis/CORE32_OPPORTUNITY_ANALYZER_V1/README.md): 43 CPU checks and a limited eight-accepted example; no final CORE32 performance claim.
+
+[External closed31 evidence checkpoint and operational limitations](operational_amendments/EXTERNAL_CLOSED31_EVIDENCE_CHECKPOINT_V1/README.md). Existing results only; no claim of CORE32 completion or new96 dispatch.
