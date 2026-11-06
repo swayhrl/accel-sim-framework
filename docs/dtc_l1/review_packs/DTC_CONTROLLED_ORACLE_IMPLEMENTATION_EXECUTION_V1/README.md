@@ -9,3 +9,5 @@ See [implementation and CPU qualification](IMPLEMENTATION_AND_CPU_QUALIFICATION.
 The original pending-only bootstrap negative is preserved. A readonly actual-owner observation and exact-lifetime CPU replay support the direct-Main GIL bootstrap and existing executor lifecycle without resetting private flags. EnglishLaTeXv0.23 remains frozen.
 
 Latest execution checkpoint: [first actual matched OFF launch](checkpoints/FIRST_ACTUAL_OFF_20261106_V1/STATUS.json). This records a running model and preserved pre-start engineering repairs; it is not a completed or accepted performance result.
+
+Accepted baseline and reproducible archive compatibility: [first Gate1 checkpoint](checkpoints/FIRST_GATE1_ACCEPTED_AND_ARCHIVE_COMPATIBILITY_20261106_V1/README.md). Automatic closed-result updates are under [live_results](live_results/). The scientific Goal remains active.
