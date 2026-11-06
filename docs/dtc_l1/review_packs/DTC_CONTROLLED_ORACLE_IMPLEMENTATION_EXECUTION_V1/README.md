@@ -1,25 +1,39 @@
 # DTC-L1 Controlled Oracle Implementation & Execution V1
 
-This is an implementation, qualification and actual execution snapshot under user-approved Authority `18b1ee9d339902e555fc2e04ef51c84f77dfe1b1`. Read [stage status](STAGE_STATUS.json) and [actual request receipts](CURRENT_REQUEST_RECEIPTS.json) for the publication-time state. CPU qualification is separate from actual accepted performance. Consumed identities may include engineering failures; they are never silently retried.
+Latest scientific checkpoint: **8 frozen programs x4 modes =32 accepted cells**.
+Read [the complete initial8 scientific report and independent reviews](analysis/INITIAL8_COMPLETE32_SCIENTIFIC_RESULTS_V1/README.md)
+and its [exact execution status](analysis/INITIAL8_COMPLETE32_SCIENTIFIC_RESULTS_V1/MAIN_EXECUTION_STATUS.fixed.json).
+All32 naturally ended, passed strict, true164 SHA and native restore; all three
+actual ModeGate2 reviews passed. Same-build OFF GM speedups on the fixed8 set:
+M 3.4463x, L2 2.1034x, L1 5.1061x. Zero and non-monotonic responses are retained.
 
-The isolated Oracle Core is [e6b41ab8992e7d41651501c4d34cfe24195c4f96](https://github.com/swayhrl/gpgpu-sim/commit/e6b41ab8992e7d41651501c4d34cfe24195c4f96). Framework027 and the original270 non-Oracle options, input identities and scientific boundaries remain fixed. A single new binary supplies matched OFF, M, L2 and L1 modes.
+**The full Goal is unfinished:** CORE32 coverage is8/32 programs and32/128 cells.
+The remaining96 cells are unregistered/unstarted. Scientific extension conditions
+passed, but the sole legal owner's operational image handoff remains unresolved.
+No second dispatcher, model retry or budget reset is used. The process-control
+recovery branch rejected by automatic content review has stopped. Existing-result
+data postprocessing was separately qualified and completed without owner/tracer
+actions. See [engineering checkpoint](operational_amendments/EXTERNAL_CLOSED31_EVIDENCE_CHECKPOINT_V1/README.md).
 
-See [implementation and CPU qualification](IMPLEMENTATION_AND_CPU_QUALIFICATION.md), [source identity](SOURCE_IDENTITY.md), [scientific boundaries](SCIENTIFIC_BOUNDARIES.md), frozen [authority](authority/NEXT_ORACLE_EXECUTION_GOAL_PENDING_APPROVAL.md), and [evidence index](EVIDENCE_INDEX.json). Execution identities and CPU layout evidence are under `execution/`; reviewed runtime source is under `runtime/`. The remaining24 program cohort is conditionally released only by actual per-mode fixed8 gates in the same owner, without another dispatcher. No Oracle performance is inferred from CPU fixtures or historical DH-P0.
+Authority is18b1ee9d339902e555fc2e04ef51c84f77dfe1b1. The isolated Oracle Core is
+[e6b41ab8992e7d41651501c4d34cfe24195c4f96](https://github.com/swayhrl/gpgpu-sim/commit/e6b41ab8992e7d41651501c4d34cfe24195c4f96),
+based on frozen9eed; Framework027, the original270 options, inputs and scientific
+boundaries remain fixed. One frozen binary supplies matched OFF/M/L2/L1. These
+are controlled counterfactuals, not mathematical bounds or equal-area achievable
+DTC gains. EnglishLaTeXv0.23 and historical scientific records remain frozen.
 
-The original pending-only bootstrap negative is preserved. A readonly actual-owner observation and exact-lifetime CPU replay support the direct-Main GIL bootstrap and existing executor lifecycle without resetting private flags. EnglishLaTeXv0.23 remains frozen.
+Reproducibility: [implementation/CPU qualification](IMPLEMENTATION_AND_CPU_QUALIFICATION.md),
+[source identity](SOURCE_IDENTITY.md), [scientific boundaries](SCIENTIFIC_BOUNDARIES.md),
+[frozen contract](authority/NEXT_ORACLE_EXECUTION_GOAL_PENDING_APPROVAL.md), and
+[CORE32 fixed-population analyzer qualification](analysis/CORE32_OPPORTUNITY_ANALYZER_V1/README.md).
+Automatic independently manifested closed-result snapshots remain under [live_results](live_results/).
 
-Latest execution checkpoint: [first actual matched OFF launch](checkpoints/FIRST_ACTUAL_OFF_20261106_V1/STATUS.json). This records a running model and preserved pre-start engineering repairs; it is not a completed or accepted performance result.
-
-Accepted baseline and reproducible archive compatibility: [first Gate1 checkpoint](checkpoints/FIRST_GATE1_ACCEPTED_AND_ARCHIVE_COMPATIBILITY_20261106_V1/README.md). Automatic closed-result updates are under [live_results](live_results/). The scientific Goal remains active.
-
-First accepted Oracle pair and strict sparse-statistics proof: [checkpoint](checkpoints/FIRST_ORACLE_PAIRS_AND_SOURCE_PROVEN_SPARSE_20261106_V1/README.md).
-
-Independently reviewed early workload analysis and conditional extension preparation: [analysis bundle](analysis/EARLY_ACCEPTED_OPPORTUNITY_AND_EXTENSION_READINESS_V1/README.md).
-
-[Control-plane recovery and observation incident status](operational_amendments/CONTROL_PLANE_RECOVERY_STATUS_V1/README.md). This checkpoint does not declare scientific completion.
-
-[Independently reviewed CORE32 opportunity analyzer](analysis/CORE32_OPPORTUNITY_ANALYZER_V1/README.md): 43 CPU checks and a limited eight-accepted example; no final CORE32 performance claim.
-
-[External closed31 evidence checkpoint and operational limitations](operational_amendments/EXTERNAL_CLOSED31_EVIDENCE_CHECKPOINT_V1/README.md). Existing results only; no claim of CORE32 completion or new96 dispatch.
-
-[Independently reviewed fixed initial8 closed31 scientific preanalysis](analysis/INITIAL8_CLOSED31_SCIENTIFIC_PREANALYSIS_V1/README.md): 7 complete same-build four-cell inputs; scan OFF remains unaccepted at this immutable snapshot. Not final CORE32 science.
+Historical checkpoints are timestamped and are not the latest execution state:
+[original implementation status](STAGE_STATUS.json), [original request receipt snapshot](CURRENT_REQUEST_RECEIPTS.json),
+[first OFF launch](checkpoints/FIRST_ACTUAL_OFF_20261106_V1/STATUS.json),
+[first Gate1/metadata compatibility](checkpoints/FIRST_GATE1_ACCEPTED_AND_ARCHIVE_COMPATIBILITY_20261106_V1/README.md),
+[source-proven sparse reporting](checkpoints/FIRST_ORACLE_PAIRS_AND_SOURCE_PROVEN_SPARSE_20261106_V1/README.md),
+[early analysis](analysis/EARLY_ACCEPTED_OPPORTUNITY_AND_EXTENSION_READINESS_V1/README.md),
+[coordinator observation incident](operational_amendments/CONTROL_PLANE_RECOVERY_STATUS_V1/README.md),
+and [immutable31-cell/7-complete-input preanalysis](analysis/INITIAL8_CLOSED31_SCIENTIFIC_PREANALYSIS_V1/README.md).
+Historical intrusive observation experiments are not a current management interface.
