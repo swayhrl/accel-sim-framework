@@ -42,6 +42,14 @@ def main():
   ticks=int(P('/proc/self/stat').read_text().rsplit(')',1)[1].split()[19])
   put(C/'METADATA_WATCH_STARTED.json',dict(pid=os.getpid(),start_ticks=ticks,code_ref=ref(__file__),metadata_only=True,automatic_model_retry=False))
   m=read(C/'EXACT_EXECUTION_MANIFEST.json');expiry=time.monotonic()+14*86400;published=None;nexttry=0
+  if (C/'REMOTE_PROGRESS_PUBLICATION_RECEIPT.json').exists():
+   previous=read(C/'REMOTE_PROGRESS_PUBLICATION_RECEIPT.json');reg=read(REG)
+   rows=[r for z in m['groups'].values()for r in reg['registered_future_requests'][z['request_id']]['consumed'].values()]
+   actual={'accepted':sum(r.get('state')=='CLOSED_ACCEPTED'for r in rows),'technical_failure':sum(r.get('state')=='CLOSED_UNACCEPTED'for r in rows),'pending':4-sum(r.get('state')in ['CLOSED_ACCEPTED','CLOSED_UNACCEPTED']for r in rows)}
+   if previous.get('counts')==actual and read(C/'PUBLICATION_EXPECTED_HEAD.json')['head']==previous['head']:
+    summary=[(z['request_id'],q['state'],[(co,r['state'],r.get('accepted_point_ref'),r.get('archive_receipt_ref'))for co,r in sorted(q['consumed'].items())if r['state']in ['CLOSED_ACCEPTED','CLOSED_UNACCEPTED']])for z in m['groups'].values()for q in [reg['registered_future_requests'][z['request_id']]]]
+    published=hashlib.sha256(json.dumps(summary,sort_keys=True).encode()).hexdigest()
+    put(C/'METADATA_WATCH_STATE.json',dict(status='EXISTING_MAIN_PROGRESS_PUBLICATION_REUSED',signature=published,published_signature=published,publication_ref=ref(C/'REMOTE_PROGRESS_PUBLICATION_RECEIPT.json'),metadata_only=True,models_started_here=0))
   while time.monotonic()<expiry:
    try:
     close_ready(m)
