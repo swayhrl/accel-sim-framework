@@ -1,5 +1,7 @@
 # DTC-L1 Controlled Oracle Implementation & Execution V1
 
+[Current actual serial recovery and continued execution](operational_amendments/ACTUAL_SERIAL_RECOVERY_AND_UNIFIED_PUBLICATION_20261107_V1/README.md): the new sole owner holds all four original locks; exact96 request is registered and real models have started. Original32 remain preserved. Full128 completion remains pending; earlier blocked/CPU-only leaves are historical checkpoints.
+
 [Passive-FD guard forward fix](operational_amendments/CLEAN_SERIAL_SUCCESSOR_PASSIVE_FD_FORWARD_20261107_V2/README.md): first clean entry failed before science; the reviewed forward guard distinguishes passive open FDs from actual lock ownership while preserving all four kernel EX locks. This publication itself starts no experiment.
 
 [Clean serial successor source and CPU qualification](operational_amendments/CLEAN_SERIAL_SUCCESSOR_SOURCE_QUALIFICATION_20261107_V1/README.md): final source, independent53-check replay and480 native asset pins are frozen. Actual new96 execution still requires Main release and genuine live-entry guards.
