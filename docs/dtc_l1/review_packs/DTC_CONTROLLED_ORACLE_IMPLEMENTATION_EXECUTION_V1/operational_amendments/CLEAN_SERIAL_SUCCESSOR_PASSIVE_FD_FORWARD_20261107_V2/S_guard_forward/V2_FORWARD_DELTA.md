@@ -1,0 +1,9 @@
+# Narrow passive-reference engineering forward V2
+
+Source authority is V1 f0651c; it and the first actual pre-lease HOLD remain unchanged. Exactly one runtime source changes: oracle_clean_owner_guard.py. Controller/Main, private engine/ops adapter, runtime, finalizer, original96 cohort/input/Core/binary/config/resource/model lifecycle are unchanged.
+
+A foreign open FD is not an acquired FLOCK. Before/after bootstrap scans now audit any unlocked passive FD, without declaring its process retired or permanently inactive. Any foreign lock record (SH/EX/FLOCK or unclassified/waiting/POSIX record) still causes HOLD. No PID whitelist is used. Permission/unknown scan errors still fail closed. The four ORIGINAL path/device/inodes, r+b no-create, nonblocking actual exclusive acquisitions, current-owner full-file WRITE fdinfo checks, real PID/start/Main/source/private lease/ancestry and unique dispatcher remain mandatory. The kernel lock acquisition closes the scan/acquire race. Passive peers cannot acquire SH or EX through their preexisting other OFDs while this owner holds EX. No F_GETLK substitute is used. Failure cleans only this candidate's own acquired FDs.
+
+The new lease adds an actual bootstrap reference audit; it conveys no authority to passive peers. Current legacy1112475 was only read: two FD opens, no lock lines or matching /proc/locks records, no child processes. It was not signalled/stopped/modified. Its future behavior is not assumed. Entry still must acquire all four true EX locks. Main alone releases the next normal operation; CPU59 PASS is not actual science acceptance.
+
+Six new real temporary multi-process positive/negative checks plus the unchanged53 CPU source/schema checks all pass. All fixture targets are temporary, not production locks. No live target process, scientific identity, registry, model, native route or historical artifact was changed.

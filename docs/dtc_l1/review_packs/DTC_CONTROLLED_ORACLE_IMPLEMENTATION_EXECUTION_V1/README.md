@@ -1,5 +1,7 @@
 # DTC-L1 Controlled Oracle Implementation & Execution V1
 
+[Passive-FD guard forward fix](operational_amendments/CLEAN_SERIAL_SUCCESSOR_PASSIVE_FD_FORWARD_20261107_V2/README.md): first clean entry failed before science; the reviewed forward guard distinguishes passive open FDs from actual lock ownership while preserving all four kernel EX locks. This publication itself starts no experiment.
+
 [Clean serial successor source and CPU qualification](operational_amendments/CLEAN_SERIAL_SUCCESSOR_SOURCE_QUALIFICATION_20261107_V1/README.md): final source, independent53-check replay and480 native asset pins are frozen. Actual new96 execution still requires Main release and genuine live-entry guards.
 
 [Normal retirement and serial successor preparation](operational_amendments/NORMAL_RETIREMENT_AND_SERIAL_SUCCESSOR_20261107_V1/README.md): old owner/helper are terminal and original lock inodes were probed available. Same-PID was an engineering design, not a frozen scientific requirement. Clean successor source/CPU/native/layout qualification is in progress; no new model is released by this checkpoint.

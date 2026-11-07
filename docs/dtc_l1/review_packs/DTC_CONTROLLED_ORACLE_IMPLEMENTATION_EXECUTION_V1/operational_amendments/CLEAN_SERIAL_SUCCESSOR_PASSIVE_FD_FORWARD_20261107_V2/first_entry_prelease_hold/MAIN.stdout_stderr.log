@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/root/data/dtc_oracle_clean_successor_20261107_v1/remaining24/tools/oracle_clean_main.py", line 52, in <module>
+    print(json.dumps(main(),sort_keys=True))
+  File "/root/data/dtc_oracle_clean_successor_20261107_v1/remaining24/tools/oracle_clean_main.py", line 45, in main
+    with guard.CleanMainLocks(release['lock_paths'])as locks:
+  File "/root/data/dtc_oracle_clean_successor_20261107_v1/remaining24/tools/oracle_clean_owner_guard.py", line 170, in __enter__
+    need(not all_references(self.paths.values()),'LOCK_REFERENCES_EXIST_BEFORE_CLEAN_SUCCESSION')
+  File "/root/data/dtc_oracle_clean_successor_20261107_v1/remaining24/tools/oracle_clean_owner_guard.py", line 22, in need
+    if not value:raise Hold(reason)
+CLEAN_MAIN_ACTUAL_GUARD.Hold: LOCK_REFERENCES_EXIST_BEFORE_CLEAN_SUCCESSION

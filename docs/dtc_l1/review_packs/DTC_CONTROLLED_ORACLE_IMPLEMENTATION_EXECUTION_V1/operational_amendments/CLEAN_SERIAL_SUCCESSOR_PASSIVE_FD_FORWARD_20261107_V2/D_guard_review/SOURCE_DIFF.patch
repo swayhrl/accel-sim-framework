@@ -1,0 +1,51 @@
+--- 
++++ 
+@@ -97,6 +97,20 @@
+ def require_exclusive_references(references,allowed_pid):
+  need(all(r['pid']==allowed_pid for r in references),'FOREIGN_PROCESS_HAS_GLOBAL_OR_SHARED_LOCK_REFERENCE')
+  return True
++def classify_open_references(references,allowed_pid=None):
++ """An open FD is not an acquired FLOCK. Kernel EX acquisition is decisive.
++
++ Foreign SH/EX or unclassified lock/wait records fail closed. Passive unlocked
++ opens are audited, never treated as a scientific lease or permission.
++ """
++ passive=[];own=[]
++ for row in references:
++  if row['pid']==allowed_pid:own.append(row);continue
++  records=[line for line in row['fdinfo'].splitlines()if line.startswith('lock:')]
++  need(not records,'FOREIGN_ACTUAL_OR_UNCLASSIFIED_LOCK_RECORD_HOLD')
++  passive.append(row)
++ return dict(passive_unlocked_open_references=passive,current_owner_references=own,
++             passive_FDs_confer_no_scientific_permission=True)
+ def require_fixed_lock_identities(references):
+  need({x['role']:(x['device'],x['inode'])for x in references}==FIXED_LOCK_IDENTITIES,
+       'ORIGINAL_GLOBAL_LOCK_DEVICE_INODES_REQUIRED_NO_NEW_FILE_SUBSTITUTES')
+@@ -167,7 +181,7 @@
+  def __enter__(self):
+   retired_processes();need(set(self.paths)=={'governance','owner','qualification','shared'},'EXACT_LOCK_SCOPES')
+   need(self.paths==FIXED_LOCK_PATHS,'PRODUCTION_BOOTSTRAP_MUST_ACQUIRE_REAL_GLOBAL_SCOPES')
+-  need(not all_references(self.paths.values()),'LOCK_REFERENCES_EXIST_BEFORE_CLEAN_SUCCESSION')
++  before=classify_open_references(all_references(self.paths.values()))
+   try:
+    for role in ['governance','owner','qualification','shared']:
+     p=Path(self.paths[role]);st=p.stat()
+@@ -181,7 +195,9 @@
+     st=os.fstat(h.fileno());row=dict(role=role,path=str(Path(h.name)),fd=h.fileno(),device=st.st_dev,inode=st.st_ino)
+     verify_lock(row,os.getpid());self.references.append(row)
+    require_fixed_lock_identities(self.references)
+-   retired_processes();require_exclusive_references(all_references(self.paths.values()),os.getpid())
++   retired_processes();after=classify_open_references(all_references(self.paths.values()),os.getpid())
++   self.bootstrap_open_reference_evidence=dict(before=before,after=after,
++      all_four_actual_EX_acquisitions_verified=True,external_passive_FDs_not_owners=True)
+    return self
+   except BaseException:self.__exit__(None,None,None);raise
+  def __exit__(self,*unused):
+@@ -202,6 +218,7 @@
+     controller=controller,request=REQUEST,budget=96,old32_new_starts=0,
+     locks=locks.references,guard_sha256=sha(__file__),authority_commit=AUTHORITY,
+     retired_old_processes=retired_processes(),original32_closure_sha256=hashlib.sha256(encoded(closed32_proof)).hexdigest(),
++    bootstrap_open_reference_evidence=locks.bootstrap_open_reference_evidence,
+     identity_statement='New serial operational owner; never old PID/lease/frame continuation')
+ 
+ if __name__=='__main__':print(json.dumps(dict(status='CPU_CANDIDATE_ONLY',actual_lock_acquisitions=0,models=0,registrations=0)))
