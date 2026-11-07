@@ -1,5 +1,7 @@
 # DTC-L1 Controlled Oracle Implementation & Execution V1
 
+[127-cell checkpoint and native-index publisher recovery](operational_amendments/NATIVE_INDEX_PUBLICATION_RECOVERY_20261107_V3/README.md): 127 runtime closures are published and content-read back; only GESUMMV/OFF remains running. Final43-check publisher source, actual recovery and live/ETA evidence are included. Full128 final scientific review is pending.
+
 [Current background recovery handoff](operational_amendments/BACKGROUND_RECOVERY_HANDOFF_20261107_V1/README.md): actual scientific execution continues under the sole new owner; the unified publisher has successfully pushed/read back and follows the30-minute interval. This is operational recovery, not completion of the128-cell scientific Goal.
 
 [Current actual serial recovery and continued execution](operational_amendments/ACTUAL_SERIAL_RECOVERY_AND_UNIFIED_PUBLICATION_20261107_V1/README.md): the new sole owner holds all four original locks; exact96 request is registered and real models have started. Original32 remain preserved. Full128 completion remains pending; earlier blocked/CPU-only leaves are historical checkpoints.
