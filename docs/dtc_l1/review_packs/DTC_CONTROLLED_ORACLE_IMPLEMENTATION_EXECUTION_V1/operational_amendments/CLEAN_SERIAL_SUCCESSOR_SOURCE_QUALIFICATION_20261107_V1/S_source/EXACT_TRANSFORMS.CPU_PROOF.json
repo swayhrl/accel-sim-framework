@@ -1,0 +1,229 @@
+{
+  "native": {
+    "derived_sha256": "a69dfd8e19dc5d7852232c0147f35a4d2a4164e69b67f039d9f0c08742aef783",
+    "edits": [
+      {
+        "function": "assert_parent_lease",
+        "original_sha256": "980bd8ee981621e89b1b3b8a9903ae0166c5fc618e9e85692fe24e0b2810ddd2",
+        "replacement_sha256": "948c0ec329cc78cdf02eed30ac782fefac597ade7ed02b0b42eaff38550a472c"
+      }
+    ],
+    "old_lease_read_replaced_not_spoofed": true,
+    "original_run_native_explicitly_sets_n_assert_batch_lease_to_new_function": true,
+    "original_sha256": "5f978c77586f3be030ca0295adb6eec09d8152254df1f88f85becb45588850d9",
+    "schema": "DTC_CLEAN_MAIN_NATIVE_EXACT_TRANSFORM_V1",
+    "unchanged_original_model_loop": true
+  },
+  "ops": {
+    "qualified_B2_transform": {
+      "anchors": [
+        {
+          "anchor_sha256": "ccf1bc955600aceb2f86eac1f5e815627a40c55a40b47437797cc14a508283ad",
+          "count": 1,
+          "semantic_delta": true
+        },
+        {
+          "anchor_sha256": "1d7041198b40679f7c61b885cf6cae0e417986e4ef77f8f7c4d93889af3d1b78",
+          "count": 1,
+          "semantic_delta": true
+        },
+        {
+          "anchor_sha256": "761d547668685260a169ebf6ec7d90b382d92e9d92b32274fdc09b59ed325ac6",
+          "count": 1,
+          "semantic_delta": true
+        },
+        {
+          "anchor_sha256": "ce7dae35b93638d8eeccec160762f2e7b6d03e944672b34acafc2b04cd844a60",
+          "count": 1,
+          "semantic_delta": true
+        },
+        {
+          "anchor_sha256": "de9cd3e145c05db71b46223b041f5c0e6ee1b815462701a3f14835c0bbe7a6f7",
+          "count": 1,
+          "semantic_delta": true
+        },
+        {
+          "anchor_sha256": "1d8d24cec59327b6e91f1bf4490dcb9f98f73d2ada42a2fb25ecd1a173552813",
+          "count": 1,
+          "semantic_delta": false
+        },
+        {
+          "anchor_sha256": "e33094129dcebfc0a991f53459c1ee2aeb8d8340cd4a0d2760965af132870656",
+          "count": 1,
+          "purpose": "Shared CPU-review-only job lock; no model semantics change",
+          "semantic_delta": true
+        },
+        {
+          "anchor_sha256": "037425d0bc2fac97f95215b1d1a9342001b352e42831216534c08a0e68929424",
+          "count": 1,
+          "purpose": "Mark reservation sync pending before any control writes",
+          "semantic_delta": true
+        },
+        {
+          "anchor_sha256": "e584dff3a95eeecab6d4ba2a34ed0b5920b1957277d7609b75643dd9b9636835",
+          "count": 1,
+          "purpose": "Clear pending only after successful new96 qsync",
+          "semantic_delta": true
+        },
+        {
+          "anchor_sha256": "c82ec3a77f2cef66df6b6c8fa2aa67d86a4f12aa86e270fcf4d817d8faae52a9",
+          "count": 1,
+          "purpose": "First reservation sync inside guarded cycle, not outside executor lifetime",
+          "semantic_delta": true
+        },
+        {
+          "anchor_sha256": "69a2c615764fb3965990a8bc3dd6768e55041d7320c8bd6c85b11f35582a34ab",
+          "count": 1,
+          "purpose": "Harvest model exceptions without losing healthy futures",
+          "semantic_delta": true
+        },
+        {
+          "anchor_sha256": "ce6c90b16f6642a2bbc8f15b3320f3fb4adf8ca071d38d0a746ee8e3eb89e56c",
+          "count": 1,
+          "purpose": "Harvest postprocess exceptions without executor unwind",
+          "semantic_delta": true
+        },
+        {
+          "anchor_sha256": "be076058fe02f529acd18618462723394046efd31030822f5b8f0ef07a8be597",
+          "count": 1,
+          "purpose": "Only real closed proof may retire model claim",
+          "semantic_delta": true
+        },
+        {
+          "anchor_sha256": "dedc6ac2ed09b77e6bb9d7a7b3615c961fb4ee3d96ed38551be1b576bafca8fa",
+          "count": 1,
+          "purpose": "Never release uncertain intent on worker error",
+          "semantic_delta": true
+        },
+        {
+          "anchor_sha256": "4492ae69bb2b72a3f6ebaa1deeb4159b525062f52a32c813a641baed5759c70c",
+          "count": 1,
+          "purpose": "One admission per cycle; real consumed PID/maps launch phase barrier",
+          "semantic_delta": true
+        },
+        {
+          "anchor_sha256": "1ae8206e538068fab094a0107b2d79c6457fea9e9851e3c81212a9996aaaabf0",
+          "count": 1,
+          "purpose": "Typed preclaim resource hold is defer, not pool unwind",
+          "semantic_delta": true
+        },
+        {
+          "anchor_sha256": "db3b68ee78a2bfb4538f3faf9b821d59a550f06fdc01f2ae59881bd312335ba0",
+          "count": 1,
+          "purpose": "Typed postclaim hold cleans only proved-unused claim and resynchronizes",
+          "semantic_delta": true
+        },
+        {
+          "anchor_sha256": "74b338249414f35793683d79c558ed034bd7f2d3ab4263ef03a996e3ecd76abf",
+          "count": 1,
+          "purpose": "Postclaim false admission cannot erase consumed/uncertain identity",
+          "semantic_delta": true
+        },
+        {
+          "anchor_sha256": "6d2ff4a0d72fffe84f4cd45e55c5f1b70a0f2f76eb98fd042ef3b311e112a5b0",
+          "count": 1,
+          "purpose": "Final unused identity check before real frontend submission",
+          "semantic_delta": true
+        },
+        {
+          "anchor_sha256": "ad4cd3214371fa087dcda89d659b370aef0bbb334e47b437537cc4d8dd4bb31f",
+          "count": 1,
+          "purpose": "In-memory failclosed latch gates candidate admission even when pause-file logging fails",
+          "semantic_delta": true
+        },
+        {
+          "anchor_sha256": "14691ef10ca89d4c7b54d68618c5ea3140cb7a5c7d11d91089314fc90c2abcc3",
+          "count": 1,
+          "purpose": "In-memory failclosed latch gates actual submit loop",
+          "semantic_delta": true
+        },
+        {
+          "anchor_sha256": "2c3f762753f0e41eb7600eaed6bafc6480b031c7020bf336fb23b5c0275b36eb",
+          "count": 1,
+          "purpose": "Capture closed exact-input RSS snapshot outside registry EX and before admission",
+          "semantic_delta": true
+        },
+        {
+          "anchor_sha256": "337d1bbdfd34214e909ce0061150a3a91b60940090a66cb561e8848adda16a00",
+          "count": 1,
+          "purpose": "Picker consumes the same immutable snapshot as fresh and claimed forecast",
+          "semantic_delta": true
+        },
+        {
+          "anchor_sha256": "f5be3a0a220c5a5b469bc4a3525f2c72f1a942fe9da5cfdb7d69f3c1e16c3180",
+          "count": 1,
+          "purpose": "Actual RAM claim records exact history snapshot provenance",
+          "semantic_delta": true
+        },
+        {
+          "kind": "Guard full scheduler cycle: expected typed defer, unexpected no-new pause, retain executors"
+        }
+      ],
+      "derived_source_sha256": "b0b7010b2ab0d0956f5d408659a316bbb9199bd396f516fef217a83d73889172",
+      "lifecycle_modes_and_resource_admission_original_bytes_preserved": true,
+      "original_source_sha256": "29a97d55dc2acc4e84c3fa228025f7d2f619ef7d1fbc1af867645ec279047fb4"
+    },
+    "qualified_HOLD_latch_serial_launch_RSS_anchors_retained": true,
+    "schema": "DTC_CLEAN_MAIN_OPS_EXACT_TRANSFORM_V1",
+    "serial_successor_edits": [
+      {
+        "function": "owner",
+        "original_sha256": "59fd40d64640f6605205acb7683441002fc340211326106b4481efc2c2ccee2e",
+        "replacement_sha256": "552551b52d7e38ed46bd09e1b135a3445d7d36b32c545d7a3a1ef2cd3477a919"
+      },
+      {
+        "count": 1,
+        "new_sha256": "5b70e6d0e5b24df22eecf8ceb77974925dfab38c808d63ab77f2ecbf81c14191",
+        "original_sha256": "48fdf36d88a7bd992bdef193b71c9cbf32e3ac83b699d49fc34bbea9757c19d5"
+      },
+      {
+        "count": 1,
+        "new_sha256": "f68df032d07abdb2a0aa249657987b9a3e723e6c82474cf7aa3ce8bb500eeedc",
+        "original_sha256": "2e10611dd84b1e6884c090abdb03c52bace22dbc6cc1f0dd7cd8d2bcdb2f0bf8"
+      },
+      {
+        "count": 1,
+        "new_sha256": "74d9a7aece698e774d517bcc659639b5281d2a90cfd0784a9acab40a4b871000",
+        "original_sha256": "60128d20993b75260be887a503a9c611df4c0e97121fd1565d63b225560a9ece"
+      },
+      {
+        "count": 2,
+        "new_sha256": "5404879fddb2c31c23a439a048d49d85360d0c4a39bfc5683beb18d195354999",
+        "original_sha256": "d36fce65e40285180f655e40d12de48fe02b0a602d08820495099dd8942c9043"
+      },
+      {
+        "function": "install_extension_callback",
+        "original_sha256": "213a281ac64a4804a04e1a0e3637e99a11bfec1179dc93fa2e901d4290b664b1",
+        "replacement_sha256": "7f2b90a12dcf03d3b576ac14c7bc533c07be5c9c7f757201e0f9fedaafe3ce31"
+      },
+      {
+        "count": 2,
+        "new_sha256": "8de4948d201a722c12652e555b902de4944283b9588c167d11199c4c3a6b0045",
+        "original_sha256": "b6a32eec4b93a7363a8027935be0c6f42703d57b52ad5bb9db17b3db6c5b9532"
+      },
+      {
+        "count": 1,
+        "new_sha256": "f6e9f53fec74523157cfdac884af6ff5f3bc15dfc05c2c21765bf03cd08b311a",
+        "original_sha256": "f6f29e8d08bb3ef03ee71593d687aa8757307f40f971d8f999343370d6bdc35f"
+      },
+      {
+        "count": 1,
+        "new_sha256": "e42c4693a4d98ac561a0e31545d744cf7c58a521660f058dc8bbde61ec82b32f",
+        "original_sha256": "80dafdf9168169c0905da9276282f75b11cc676eae66a15f744e81492f6998fc"
+      },
+      {
+        "count": 1,
+        "new_sha256": "76e4cc00dcfdb5ec768758b706d3739f3fd6ed6e8e64de41c38d9c7fbe775165",
+        "original_sha256": "8f9783167bee3f5c3534a1f5963abdf67991580907c5144f34a1f7f2818db1d9"
+      },
+      {
+        "count": 1,
+        "new_sha256": "206e11b21bac92bf353f5475bdec3175dd6e072765d730c1b93a000231926dab",
+        "original_sha256": "70fa95b9d5ede3ea8cfe64f5a7a46e3ff4930a3df159d1fefa504030c0494b8d"
+      }
+    ],
+    "single_archive_worker_retained": true,
+    "single_context_new96": true,
+    "source_sha256": "28df29835b4fcc75b0cb01129e636f851c1be06bd10f38820b364423ebc7b64d"
+  }
+}

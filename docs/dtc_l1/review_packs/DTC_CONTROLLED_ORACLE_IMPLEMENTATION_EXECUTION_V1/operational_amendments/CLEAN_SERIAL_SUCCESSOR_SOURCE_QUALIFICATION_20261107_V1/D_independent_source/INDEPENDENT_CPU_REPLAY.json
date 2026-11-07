@@ -1,0 +1,60 @@
+{
+  "status": "HOLD",
+  "reports": [
+    {
+      "argv": [
+        "test_clean_successor.py"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "......F.....\n======================================================================\nFAIL: test_real_four_temp_locks_child_ancestry_and_foreign_scope (__main__.GuardTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/agents/D_independent_review_v1/clean_serial_successor_source_review_v1/cpu_replay/test_clean_successor.py\", line 71, in test_real_four_temp_locks_child_ancestry_and_foreign_scope\n    self.assertEqual(completed.returncode,0,completed.stderr)\nAssertionError: 1 != 0 : Traceback (most recent call last):\n  File \"/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/agents/D_independent_review_v1/clean_serial_successor_source_review_v1/cpu_replay/test_clean_successor.py\", line 21, in <module>\n    value=g.verify_parent_lease(plan,allow_cpu_fixture=True)\n  File \"/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/agents/D_independent_review_v1/clean_serial_successor_source_review_v1/cpu_replay/oracle_clean_owner_guard.py\", line 147, in verify_parent_lease\n    need(str(source).encode()in s['cmdline'],'NEW_OWNER_CMDLINE_SOURCE')\n  File \"/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/agents/D_independent_review_v1/clean_serial_successor_source_review_v1/cpu_replay/oracle_clean_owner_guard.py\", line 22, in need\n    if not value:raise Hold(reason)\nfixture_clean_guard.Hold: NEW_OWNER_CMDLINE_SOURCE\n\n\n----------------------------------------------------------------------\nRan 12 tests in 0.121s\n\nFAILED (failures=1)\n"
+    },
+    {
+      "argv": [
+        "test_clean_runtime.py"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ".........\n----------------------------------------------------------------------\nRan 9 tests in 0.016s\n\nOK\n"
+    },
+    {
+      "argv": [
+        "qualify_clean_actual_loop_cpu.py"
+      ],
+      "returncode": 0,
+      "stdout": "{\n  \"status\": \"PASS\",\n  \"source_sha256\": \"d3ad4b880753a9bf42e91858743bdae9f657a63e578be4bc5180d8b3b44c6bc1\",\n  \"transformed_source_sha256\": \"28df29835b4fcc75b0cb01129e636f851c1be06bd10f38820b364423ebc7b64d\",\n  \"checks\": [\n    {\n      \"name\": \"ACTUAL_DERIVED_LOOP_RETURNS_WITHOUT_NATIVE_MODEL\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"OLD_CONSUMED_UUID_NEVER_RESTARTED\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"ONLY_TWO_UNUSED_CPU_IDENTITIES_ONCE\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"ALL_THREE_MOCK_CLOSED_BACKLOG_CONSUMED_ONCE\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"SINGLE_ARCHIVE_WORKER\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"PRE_POST_TYPED_RESOURCE_HOLDS_BOTH_EXERCISED\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"INITIAL_BUSY_QSYNC_RETRIED_WITHOUT_TPE_UNWIND\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"NO_CLAIM_STUCK_AND_PENDING_SYNC_CLEARED\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"INHERITED_SHARED_OFD_STILL_LOCKED\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"POST_FUTURE_EXCEPTION_REMOVED_FROM_BUSY\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"UNEXPECTED_ERROR_PAUSES_ONLY_NEW_ADMISSION\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"UNCERTAIN_INTENT_RETAINED_OTHER_UNUSED_CLAIM_CLEANED\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"PENDING_QSYNC_RETRIED_WITHOUT_ANOTHER_MODEL_RETURN\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"RESOURCE_HOLD_CLASSIFICATION_NARROW\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"FINISHED_UNCLOSED_FRONTEND_PREVENTS_NEXT_LAUNCH\",\n      \"status\": \"PASS\"\n    }\n  ],\n  \"actual_scientific_models_started\": 0,\n  \"actual_requests_registered\": 0,\n  \"actual_reviewer_children\": 0,\n  \"actual_owner_operations\": 0,\n  \"mock_work_calls\": [\n    \"MOCK_A\",\n    \"MOCK_B\"\n  ],\n  \"mock_finish_calls\": [\n    \"MOCK_OLD\",\n    \"MOCK_A\",\n    \"MOCK_B\"\n  ],\n  \"all_identifiers_are_explicit_MOCK_NOT_SCIENCE\": true\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "qualify_clean_actual_loop_cpu.py",
+        "--latch-io"
+      ],
+      "returncode": 0,
+      "stdout": "{\n  \"status\": \"PASS\",\n  \"source_sha256\": \"d3ad4b880753a9bf42e91858743bdae9f657a63e578be4bc5180d8b3b44c6bc1\",\n  \"checks\": [\n    {\n      \"name\": \"ACTUAL_DERIVED_LOOP_DRAINS_HEALTHY_WORK_BEFORE_CPU_HARNESS_STOP\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"UNEXPECTED_ERROR_MEMORY_LATCH_SET_BEFORE_FAILED_LOGS\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"NO_PAUSE_FILE_AVAILABLE_IN_FAULT_CASE\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"NO_FURTHER_MODEL_ADMISSION_WITHOUT_PAUSE_FILE\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"OLD_AND_HEALTHY_NEW_MODEL_ARCHIVES_CONTINUE\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"SOLE_ARCHIVE_WORKER_STILL_ONE\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"SHARED_OFD_RETAINED_DURING_LOGGING_FAILURE\",\n      \"status\": \"PASS\"\n    }\n  ],\n  \"actual_scientific_models_started\": 0,\n  \"actual_requests_registered\": 0,\n  \"actual_owner_or_tracer_actions\": 0,\n  \"all_identifiers_are_explicit_MOCK_NOT_SCIENCE\": true,\n  \"work_calls\": [\n    \"MOCK_A\"\n  ],\n  \"finish_calls\": [\n    \"MOCK_OLD\",\n    \"MOCK_A\"\n  ]\n}\n",
+      "stderr": ""
+    }
+  ],
+  "source_pins": [
+    {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/agents/S_clean_main_successor_preparation_v1/oracle_clean_main.py",
+      "sha256": "22e9ded0515d87ec507c4b70bea6c9d25fe2ac667fd61d8b4db3849e7a723329"
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/agents/S_clean_main_successor_preparation_v1/oracle_clean_owner_guard.py",
+      "sha256": "dce5b58ec6b2fb6c1711db969beeff72134fe290fd6fa3ad1fb96f64115901fd"
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/agents/S_clean_main_successor_preparation_v1/oracle_clean_finalizer.py",
+      "sha256": "1b954d06f2947c8071e45dbfa9721bf31f0294f696fd88d7020e909b663492fd"
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/agents/S_clean_main_successor_preparation_v1/oracle_successor_engine.py",
+      "sha256": "43793cb39d7b5f857473fd8d5b43f7d0c06cc47f84e8f68b09b1c26c9d40a43a"
+    },
+    {
+      "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/agents/S_clean_main_successor_preparation_v1/oracle_clean_runtime.py",
+      "sha256": "89da09db41a2f60e78cbadb6acadb4ddfcd4db6f7d0d5bf1e096a302c483ca23"
+    }
+  ]
+}

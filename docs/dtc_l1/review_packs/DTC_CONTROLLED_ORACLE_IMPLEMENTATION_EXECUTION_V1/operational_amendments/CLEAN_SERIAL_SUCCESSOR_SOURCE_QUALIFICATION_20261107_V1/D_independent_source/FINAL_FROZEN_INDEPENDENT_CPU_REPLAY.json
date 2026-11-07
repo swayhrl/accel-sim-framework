@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "frozen_S_manifest_sha256": "f0651cd5eddf6aae1dd68617525618d6075e507363c3b2231edfdc0d10789c05",
+  "rows": [
+    {
+      "argv": [
+        "test_clean_successor.py"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "............\n----------------------------------------------------------------------\nRan 12 tests in 0.209s\n\nOK\n"
+    },
+    {
+      "argv": [
+        "test_clean_runtime.py"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ".........\n----------------------------------------------------------------------\nRan 9 tests in 0.014s\n\nOK\n"
+    },
+    {
+      "argv": [
+        "qualify_clean_actual_loop_cpu.py"
+      ],
+      "returncode": 0,
+      "stdout": "{\n  \"status\": \"PASS\",\n  \"source_sha256\": \"d3ad4b880753a9bf42e91858743bdae9f657a63e578be4bc5180d8b3b44c6bc1\",\n  \"transformed_source_sha256\": \"28df29835b4fcc75b0cb01129e636f851c1be06bd10f38820b364423ebc7b64d\",\n  \"checks\": [\n    {\n      \"name\": \"ACTUAL_DERIVED_LOOP_RETURNS_WITHOUT_NATIVE_MODEL\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"OLD_CONSUMED_UUID_NEVER_RESTARTED\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"ONLY_TWO_UNUSED_CPU_IDENTITIES_ONCE\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"ALL_THREE_MOCK_CLOSED_BACKLOG_CONSUMED_ONCE\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"SINGLE_ARCHIVE_WORKER\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"PRE_POST_TYPED_RESOURCE_HOLDS_BOTH_EXERCISED\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"INITIAL_BUSY_QSYNC_RETRIED_WITHOUT_TPE_UNWIND\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"NO_CLAIM_STUCK_AND_PENDING_SYNC_CLEARED\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"INHERITED_SHARED_OFD_STILL_LOCKED\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"POST_FUTURE_EXCEPTION_REMOVED_FROM_BUSY\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"UNEXPECTED_ERROR_PAUSES_ONLY_NEW_ADMISSION\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"UNCERTAIN_INTENT_RETAINED_OTHER_UNUSED_CLAIM_CLEANED\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"PENDING_QSYNC_RETRIED_WITHOUT_ANOTHER_MODEL_RETURN\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"RESOURCE_HOLD_CLASSIFICATION_NARROW\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"FINISHED_UNCLOSED_FRONTEND_PREVENTS_NEXT_LAUNCH\",\n      \"status\": \"PASS\"\n    }\n  ],\n  \"actual_scientific_models_started\": 0,\n  \"actual_requests_registered\": 0,\n  \"actual_reviewer_children\": 0,\n  \"actual_owner_operations\": 0,\n  \"mock_work_calls\": [\n    \"MOCK_A\",\n    \"MOCK_B\"\n  ],\n  \"mock_finish_calls\": [\n    \"MOCK_OLD\",\n    \"MOCK_A\",\n    \"MOCK_B\"\n  ],\n  \"all_identifiers_are_explicit_MOCK_NOT_SCIENCE\": true\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "qualify_clean_actual_loop_cpu.py",
+        "--latch-io"
+      ],
+      "returncode": 0,
+      "stdout": "{\n  \"status\": \"PASS\",\n  \"source_sha256\": \"d3ad4b880753a9bf42e91858743bdae9f657a63e578be4bc5180d8b3b44c6bc1\",\n  \"checks\": [\n    {\n      \"name\": \"ACTUAL_DERIVED_LOOP_DRAINS_HEALTHY_WORK_BEFORE_CPU_HARNESS_STOP\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"UNEXPECTED_ERROR_MEMORY_LATCH_SET_BEFORE_FAILED_LOGS\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"NO_PAUSE_FILE_AVAILABLE_IN_FAULT_CASE\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"NO_FURTHER_MODEL_ADMISSION_WITHOUT_PAUSE_FILE\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"OLD_AND_HEALTHY_NEW_MODEL_ARCHIVES_CONTINUE\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"SOLE_ARCHIVE_WORKER_STILL_ONE\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"SHARED_OFD_RETAINED_DURING_LOGGING_FAILURE\",\n      \"status\": \"PASS\"\n    }\n  ],\n  \"actual_scientific_models_started\": 0,\n  \"actual_requests_registered\": 0,\n  \"actual_owner_or_tracer_actions\": 0,\n  \"all_identifiers_are_explicit_MOCK_NOT_SCIENCE\": true,\n  \"work_calls\": [\n    \"MOCK_A\"\n  ],\n  \"finish_calls\": [\n    \"MOCK_OLD\",\n    \"MOCK_A\"\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "qualify_clean_finalizer_cpu.py"
+      ],
+      "returncode": 0,
+      "stdout": "{\n  \"status\": \"PASS_CPU_COMPLETE_FINALIZER_DISPOSABLE_TREE\",\n  \"source_sha256\": \"646310aea21a56b039e487b803ced937d0a2fae4555d62e0372cfa9a3e3bf9bd\",\n  \"checks\": [\n    {\n      \"name\": \"ACTUAL_FINALIZER_FULL_CALL_COMPLETES_ON_DISPOSABLE_TREE\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"TRUE_METADATA_BINDING_WITHOUT_FAKE_OLD_PARENT\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"NORMAL_AUTH_EXACT96_AND_THREE_RATIFICATIONS\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"CANDIDATE_PLAN_SOURCE_CLOSURE\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"ACTUAL_REGISTRATION_RELEASE_SCHEMA_SOURCE_AND_GATES_WITH_CPU_PHYSICAL_BACKEND\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"CPU_PREIMAGES_PRESERVED\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"FINALIZER_DOES_NOT_INSTALL_OR_MODIFY_NATIVE_ROUTE\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"PURE_CALLBACK_ACCEPTS_COMPLETE_SCHEMA_NO_REAL_REGISTRY_WRITE\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"TEMP_ONLY_ADDITIVE_NATIVE_ROUTE_CLOSED\",\n      \"status\": \"PASS\"\n    },\n    {\n      \"name\": \"ALL_OLD875F_BYTES_UNCHANGED\",\n      \"status\": \"PASS\"\n    }\n  ],\n  \"original_report_context\": {\n    \"path\": \"/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/agents/R_clean_successor_cpu_preparation_v1/CPU_PREPARATION_REPORT.fixed.json\",\n    \"sha256\": \"2c217d6fb899435b4970d5c2807489b3f92a674d9b3c3bb755cd8e1fb0e60959\"\n  },\n  \"actual_registry_writes\": 0,\n  \"actual_native_route_writes\": 0,\n  \"actual_science_starts\": 0,\n  \"actual_production_locks\": 0,\n  \"actual_owner_or_tracer_actions\": 0,\n  \"explicit_MOCK_PARENT_GUARD_BACKEND\": true,\n  \"original_spec_and_native_layout_checks_unmocked\": true,\n  \"explicit_MOCK_PHYSICAL_RESOURCE_BACKEND_only_terminal_probe\": true,\n  \"mock_status_fields_never_a_real_execution_authority\": true\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "oracle_clean_main.py"
+      ],
+      "returncode": 0,
+      "stdout": "{\"models\": 0, \"production_locks_acquired\": 0, \"registrations\": 0, \"status\": \"CPU_PREPARATION_ONLY_UNARMED\"}\n",
+      "stderr": ""
+    }
+  ]
+}

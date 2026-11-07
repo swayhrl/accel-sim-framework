@@ -1,0 +1,134 @@
+{
+  "actual_sources_unchanged": true,
+  "archive_fixture": {
+    "CPU_only_not_a_scientific_archive_or_restore_receipt": true,
+    "SOURCE_KEEP": true,
+    "archive_sha256": "b5c4174f81c1d96f1d2c0b83f1c27e970b6ff177e645414a6b2dc557f199e75b",
+    "restored_native": "/root/data/dtc_oracle_clean_successor_20261107_v1/remaining24/engineering_cpu/archive_qualification/restored",
+    "source": "/root/data/dtc_oracle_clean_successor_20261107_v1/remaining24/engineering_cpu/archive_qualification/source",
+    "target_true164": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/agents/R_clean_successor_cpu_preparation_v1/CPU_NATIVE_TRUE164_NATIVE_FIXTURE.tar",
+    "typed_checks": [
+      {
+        "match": true,
+        "path": "payload.bin",
+        "restored_sha256": "7daca2095d0438260fa849183dfc67faa459fdf4936e1bc91eec6b281b27e4c2",
+        "source_sha256": "7daca2095d0438260fa849183dfc67faa459fdf4936e1bc91eec6b281b27e4c2",
+        "type": "regular"
+      },
+      {
+        "match": true,
+        "path": "meta.json",
+        "restored_sha256": "0e04567332176df04780f12067b031a899e1bb928e3096fd8d6afd8f00af86ab",
+        "source_sha256": "0e04567332176df04780f12067b031a899e1bb928e3096fd8d6afd8f00af86ab",
+        "type": "regular"
+      },
+      {
+        "match": true,
+        "path": "nested/payload_link",
+        "restored_target": "../payload.bin",
+        "source_target": "../payload.bin",
+        "type": "symlink"
+      }
+    ]
+  },
+  "models_started": 0,
+  "peer_source_sha256": "454747ea5e169acf5af741b956d47eba64ff7a006d31d573399b17ce29e999a5",
+  "production_locks_acquired": 0,
+  "schema": "DTC_CLEAN_SUCCESSOR_CPU_PEER_AND_ARCHIVE_QUALIFICATION_V1",
+  "scientific_UUIDs": 0,
+  "scientific_registrations": 0,
+  "status": "PASS",
+  "tests": [
+    {
+      "detail": "EXPLICIT_CLEAN_CPU_RESOURCE_EVIDENCE_ONLY",
+      "expected_PASS": true,
+      "observed_PASS": true,
+      "test": "explicit_CPU_resource_only",
+      "test_PASS": true
+    },
+    {
+      "detail": "RuntimeError('CLEAN_CPU_RESOURCE_PINS')",
+      "expected_PASS": false,
+      "observed_PASS": false,
+      "test": "manifest_candidate_sha_drift",
+      "test_PASS": true
+    },
+    {
+      "detail": "RuntimeError('CLEAN_CPU_RESOURCE_PHASE')",
+      "expected_PASS": false,
+      "observed_PASS": false,
+      "test": "phase_science_without_auth",
+      "test_PASS": true
+    },
+    {
+      "detail": "RuntimeError('CLEAN_CPU_RESOURCE_PINS')",
+      "expected_PASS": false,
+      "observed_PASS": false,
+      "test": "CPU_ready_true_not_authority",
+      "test_PASS": true
+    },
+    {
+      "detail": "RuntimeError('CLEAN_CPU_RESOURCE_PINS')",
+      "expected_PASS": false,
+      "observed_PASS": false,
+      "test": "spent_CPU_identity_reject",
+      "test_PASS": true
+    },
+    {
+      "detail": "FileNotFoundError(2, 'No such file or directory')",
+      "expected_PASS": false,
+      "observed_PASS": false,
+      "test": "CPU_candidate_renamed_normal_reject",
+      "test_PASS": true
+    },
+    {
+      "detail": "RuntimeError('NO_NORMAL_AUTH_IN_CLEAN_CPU_STAGE')",
+      "expected_PASS": false,
+      "observed_PASS": false,
+      "test": "normal_authorization_in_CPU_reject",
+      "test_PASS": true
+    },
+    {
+      "detail": "RuntimeError('CLEAN_CPU_NO_CLAIMS')",
+      "expected_PASS": false,
+      "observed_PASS": false,
+      "test": "CPU_claim_reject",
+      "test_PASS": true
+    },
+    {
+      "detail": "RuntimeError('CLEAN_CPU_NO_LIFECYCLE')",
+      "expected_PASS": false,
+      "observed_PASS": false,
+      "test": "INTENT_reject",
+      "test_PASS": true
+    },
+    {
+      "detail": "RuntimeError('CLEAN_CPU_NO_LIFECYCLE')",
+      "expected_PASS": false,
+      "observed_PASS": false,
+      "test": "DONE_reject",
+      "test_PASS": true
+    },
+    {
+      "detail": "RuntimeError('CLEAN_CPU_NO_RESULT_UUID')",
+      "expected_PASS": false,
+      "observed_PASS": false,
+      "test": "result_member_reject",
+      "test_PASS": true
+    },
+    {
+      "detail": "RuntimeError('CLEAN_CPU_MANIFEST_STATE')",
+      "expected_PASS": false,
+      "observed_PASS": false,
+      "test": "manifest_model_state_reject",
+      "test_PASS": true
+    },
+    {
+      "detail": "NORMAL_UNREGISTERED_CLEAN_CANDIDATE",
+      "expected_PASS": true,
+      "observed_PASS": true,
+      "test": "normal_final_guard_mock_only",
+      "test_PASS": true
+    }
+  ]
+}

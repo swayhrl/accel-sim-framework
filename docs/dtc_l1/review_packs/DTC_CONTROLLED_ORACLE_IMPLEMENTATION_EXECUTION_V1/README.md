@@ -1,5 +1,7 @@
 # DTC-L1 Controlled Oracle Implementation & Execution V1
 
+[Clean serial successor source and CPU qualification](operational_amendments/CLEAN_SERIAL_SUCCESSOR_SOURCE_QUALIFICATION_20261107_V1/README.md): final source, independent53-check replay and480 native asset pins are frozen. Actual new96 execution still requires Main release and genuine live-entry guards.
+
 [Normal retirement and serial successor preparation](operational_amendments/NORMAL_RETIREMENT_AND_SERIAL_SUCCESSOR_20261107_V1/README.md): old owner/helper are terminal and original lock inodes were probed available. Same-PID was an engineering design, not a frozen scientific requirement. Clean successor source/CPU/native/layout qualification is in progress; no new model is released by this checkpoint.
 
 [Remaining96 CPU runtime qualification V2](runtime_preparation/REMAINING96_CPU_QUALIFICATION_V2/README.md) records conditional engineering fixes and input/resource audits. Actual96 execution remains HOLD: no registered request/new model, and CPU qualification cannot replace genuine owner/transition evidence.
