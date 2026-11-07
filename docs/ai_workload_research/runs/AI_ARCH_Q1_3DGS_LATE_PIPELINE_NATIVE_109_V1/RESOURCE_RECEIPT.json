@@ -1,0 +1,446 @@
+{
+  "status": "INPUT_OR_RUNTIME_NO_GO",
+  "lock_attempt_count": 1,
+  "lock_acquired": true,
+  "lock_released": true,
+  "reservation_created": true,
+  "NVML_initialized": true,
+  "jobs": [
+    {
+      "job": {
+        "id": "EARLY",
+        "mode": "EARLY",
+        "OMP_cap": 16,
+        "stop_next": 8
+      },
+      "pid": 4135665,
+      "identity": {
+        "pid": 4135665,
+        "uid": 1004,
+        "start_ticks": "464157406",
+        "boot_id": "35425a62-1268-4560-a3cb-b674371cd7aa",
+        "executable": "/usr/bin/taskset"
+      },
+      "started_epoch": 1794018678.0965874,
+      "worker_sha256": "32b343ea1f6be7ddbbe066efc11906dcd26cb585aa6caa91a7251d87bc1dad8f",
+      "returncode": -15,
+      "finished_epoch": 1794018929.3162017,
+      "result": null,
+      "error": null
+    },
+    {
+      "job": {
+        "id": "EARLY_R1",
+        "mode": "EARLY",
+        "OMP_cap": 16,
+        "stop_next": 8
+      },
+      "pid": 4137849,
+      "identity": {
+        "pid": 4137849,
+        "uid": 1004,
+        "start_ticks": "464197093",
+        "boot_id": "35425a62-1268-4560-a3cb-b674371cd7aa",
+        "executable": "/usr/bin/taskset"
+      },
+      "started_epoch": 1794019074.9722662,
+      "worker_sha256": "5e688b1f3a3cdab7c12d0cfb9071e700c76c9fad7905aa91a0239134456ca78f"
+    }
+  ],
+  "monitor_gaps": [],
+  "samples_count": 271,
+  "peak_own_NVML_bytes": 1201668096,
+  "peak_sampled_RSS_bytes": 11835879424,
+  "peak_charged_bytes": 9008693248,
+  "worker_launches": 2,
+  "reservation": {
+    "request_id": "bcefc1b004c54e2d87cd9fdb460350c3",
+    "owner": {
+      "pid": 4135645,
+      "uid": 1004,
+      "start_ticks": "464157041",
+      "boot_id": "35425a62-1268-4560-a3cb-b674371cd7aa",
+      "executable": "/usr/bin/python3.12"
+    },
+    "expires_unix": 1794020474.795107,
+    "ownership_granted": false,
+    "pause_new_work": true
+  },
+  "lease_events": [
+    {
+      "kind": "RESERVED",
+      "unix": 1794018674.7968926,
+      "request_id": "bcefc1b004c54e2d87cd9fdb460350c3",
+      "expires_unix": 1794020474.795107
+    },
+    {
+      "kind": "RELEASED",
+      "unix": 1794019113.4770072,
+      "released": true,
+      "ownership_granted": false
+    }
+  ],
+  "lock_acquired_epoch": 1794018674.7971108,
+  "device": {
+    "name": "NVIDIA GeForce RTX 4080",
+    "UUID": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59"
+  },
+  "latest_snapshot": {
+    "wall_time": 1794019112.0635903,
+    "held_seconds": 437.26648062467575,
+    "goal_elapsed_seconds": 4135.063591241837,
+    "phase": "FINAL_OBSERVATION",
+    "state": "EXTERNAL_GPU_PID",
+    "live_own_pids": [
+      4135645
+    ],
+    "known_own_pids": [
+      4135645,
+      4135665,
+      4135883,
+      4135884,
+      4135885,
+      4135886,
+      4137849,
+      4138009,
+      4138012,
+      4138013,
+      4138014
+    ],
+    "gpu_processes": [
+      {
+        "pid": 3518111,
+        "kinds": [
+          "compute"
+        ],
+        "usedGpuMemory": 390070272,
+        "memory_observation_consistent": true
+      },
+      {
+        "pid": 1760,
+        "kinds": [
+          "graphics"
+        ],
+        "usedGpuMemory": 10248192,
+        "memory_observation_consistent": true
+      },
+      {
+        "pid": 2035,
+        "kinds": [
+          "graphics"
+        ],
+        "usedGpuMemory": 6758400,
+        "memory_observation_consistent": true
+      }
+    ],
+    "external_gpu_pids": [
+      1760,
+      2035,
+      3518111
+    ],
+    "unknown_gpu_pids": [],
+    "invalid_pid_rows": [],
+    "monitor_gaps": [],
+    "own_NVML_bytes": 0,
+    "own_NVML_MiB": 0.0,
+    "own_tree_RSS_bytes": 57225216,
+    "own_new_disk_bytes": 3561277493,
+    "rss_censored_observations": [],
+    "rss_observed_processes": [
+      {
+        "pid": 4135645,
+        "creation_time": 1794018674.41,
+        "rss_bytes": 57225216
+      }
+    ],
+    "rss_sample_complete": true,
+    "rss_lifecycle_rule": "V7_NARROW_EXITED_CHILD",
+    "desktop_identity_matched_pids": [
+      1760,
+      2035
+    ],
+    "unqualified_external_gpu_pids": [],
+    "external_NVML_bytes": 407076864,
+    "external_identity_evidence": [
+      {
+        "pid": 3518111,
+        "desktop_identity_match": false,
+        "reason": "No desktop-service identity evidence",
+        "category": "IDENTITY_UNKNOWN",
+        "current_fingerprints": []
+      },
+      {
+        "pid": 1760,
+        "desktop_identity_match": true,
+        "reason": "Verified GDM/service ancestry fingerprints unchanged",
+        "category": "VERIFIED_DESKTOP_SERVICE_IDENTITY_ACTIVITY_PENDING",
+        "current_fingerprints": [
+          {
+            "pid": 1760,
+            "ppid": 1751,
+            "uids": [
+              120,
+              120,
+              120,
+              120
+            ],
+            "comm": "Xorg",
+            "cgroup": "0::/user.slice/user-120.slice/session-c1.scope",
+            "start_ticks": 614
+          },
+          {
+            "pid": 1751,
+            "ppid": 1644,
+            "uids": [
+              120,
+              120,
+              120,
+              120
+            ],
+            "comm": "gdm-x-session",
+            "cgroup": "0::/user.slice/user-120.slice/session-c1.scope",
+            "start_ticks": 613
+          },
+          {
+            "pid": 1644,
+            "ppid": 1623,
+            "uids": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "comm": "gdm-session-wor",
+            "cgroup": "0::/user.slice/user-120.slice/session-c1.scope",
+            "start_ticks": 602
+          },
+          {
+            "pid": 1623,
+            "ppid": 1,
+            "uids": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "comm": "gdm3",
+            "cgroup": "0::/system.slice/gdm.service",
+            "start_ticks": 597
+          }
+        ]
+      },
+      {
+        "pid": 2035,
+        "desktop_identity_match": true,
+        "reason": "Verified GDM/service ancestry fingerprints unchanged",
+        "category": "VERIFIED_DESKTOP_SERVICE_IDENTITY_ACTIVITY_PENDING",
+        "current_fingerprints": [
+          {
+            "pid": 2035,
+            "ppid": 2015,
+            "uids": [
+              120,
+              120,
+              120,
+              120
+            ],
+            "comm": "gnome-shell",
+            "cgroup": "0::/user.slice/user-120.slice/session-c1.scope",
+            "start_ticks": 771
+          },
+          {
+            "pid": 2015,
+            "ppid": 2013,
+            "uids": [
+              120,
+              120,
+              120,
+              120
+            ],
+            "comm": "gnome-session-b",
+            "cgroup": "0::/user.slice/user-120.slice/session-c1.scope",
+            "start_ticks": 755
+          },
+          {
+            "pid": 2013,
+            "ppid": 1751,
+            "uids": [
+              120,
+              120,
+              120,
+              120
+            ],
+            "comm": "dbus-run-sessio",
+            "cgroup": "0::/user.slice/user-120.slice/session-c1.scope",
+            "start_ticks": 755
+          },
+          {
+            "pid": 1751,
+            "ppid": 1644,
+            "uids": [
+              120,
+              120,
+              120,
+              120
+            ],
+            "comm": "gdm-x-session",
+            "cgroup": "0::/user.slice/user-120.slice/session-c1.scope",
+            "start_ticks": 613
+          },
+          {
+            "pid": 1644,
+            "ppid": 1623,
+            "uids": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "comm": "gdm-session-wor",
+            "cgroup": "0::/user.slice/user-120.slice/session-c1.scope",
+            "start_ticks": 602
+          },
+          {
+            "pid": 1623,
+            "ppid": 1,
+            "uids": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "comm": "gdm3",
+            "cgroup": "0::/system.slice/gdm.service",
+            "start_ticks": 597
+          }
+        ]
+      }
+    ],
+    "verified_gated_resident_pids": [
+      3518111
+    ],
+    "shared_gate": {
+      "state": "GPU_RESERVED_FOR_AI_ARCH",
+      "run_nonce": "cf9c42d7fb6e4ed19509f02a847267e3",
+      "owner": {
+        "pid": 3518111,
+        "uid": 1004,
+        "start_ticks": "442348560",
+        "boot_id": "35425a62-1268-4560-a3cb-b674371cd7aa",
+        "executable": "/usr/bin/python3.12",
+        "process_state": "R"
+      },
+      "claimant": {
+        "pid": 4135645,
+        "uid": 1004,
+        "start_ticks": "464157041",
+        "boot_id": "35425a62-1268-4560-a3cb-b674371cd7aa",
+        "executable": "/usr/bin/python3.12"
+      },
+      "reservation_id": "bcefc1b004c54e2d87cd9fdb460350c3",
+      "in_flight_scopes": 0,
+      "completed_scopes": 122,
+      "last_quiescence": {
+        "finished_unix": 1793856425.9169118,
+        "proof": {
+          "all_models_unloaded": true,
+          "cuda_synchronized": true,
+          "children_drained": true
+        }
+      },
+      "queue_counts": [
+        0,
+        0
+      ],
+      "profile_monitor_alive": true,
+      "last_profile_checked_unix": 1794019112.5754774,
+      "challenge_verified": true,
+      "loaded_function_count": 18,
+      "loaded_module_count": 691,
+      "kernel_holder_pids": [
+        4135645
+      ]
+    },
+    "session_memory": {
+      "path": "/sys/fs/cgroup/user.slice/user-1004.slice/session-97744.scope",
+      "device": 30,
+      "inode": 15733385,
+      "initial_members": [
+        4135600,
+        4135644,
+        4135645
+      ],
+      "current_bytes": 3571679232,
+      "kernel_charged_peak_bytes": 9008693248,
+      "configured_memory_max": "max",
+      "current_member_pids": [
+        4135600,
+        4135644,
+        4135645
+      ],
+      "scope": "Root-owned SSH session with only supervisor/ancestors initially; descendants inherit. Charged-memory peak retains exited tasks but is not summed RSS. No writable hard limit."
+    },
+    "filesystem_available_bytes": 145451507712,
+    "MemAvailable_bytes": 59567345664,
+    "own_VmSwap_bytes": 0,
+    "affinity_violations": [],
+    "charged_scope_child_groups": []
+  },
+  "admission_activity_samples": [
+    {
+      "index": 0,
+      "wall": 1794018676.2199442,
+      "gpu_utilization_pct": 0,
+      "memory_utilization_pct": 0,
+      "elapsed": 0.5362877072766423,
+      "external_pids": [
+        1760,
+        2035,
+        3518111
+      ]
+    },
+    {
+      "index": 1,
+      "wall": 1794018677.0218112,
+      "gpu_utilization_pct": 0,
+      "memory_utilization_pct": 0,
+      "elapsed": 1.338154822587967,
+      "external_pids": [
+        1760,
+        2035,
+        3518111
+      ]
+    },
+    {
+      "index": 2,
+      "wall": 1794018678.086576,
+      "gpu_utilization_pct": 0,
+      "memory_utilization_pct": 0,
+      "elapsed": 2.4029193026944995,
+      "external_pids": [
+        1760,
+        2035,
+        3518111
+      ]
+    }
+  ],
+  "environment_classification": "QUALIFIED_DESKTOP_CO_RESIDENT",
+  "measurement_condition": "VERIFIED_GATED_RESIDENT_SHARED_NATIVE_OBSERVATION",
+  "baseline_activity_window_seconds": 2.4058025665581226,
+  "desktop_activity_attribution_gap": true,
+  "desktop_per_process_activity_gap": "Inherited gap, shared native observation only; no exclusive claim.",
+  "last_process_util_timestamp": 1794019108177763,
+  "reason": "",
+  "traceback": "Traceback (most recent call last):\n  File \"/home/huangrulin/workspace/worktrees/accel-sim-aiarch-q1-3dgs-late-pipeline-native-109-v1/util/ai_workload_research/q1_3dgs_late_pipeline_v1/q1_supervisor.py\", line 184, in run\n    self.run_job(command)\n  File \"/home/huangrulin/workspace/worktrees/accel-sim-aiarch-q1-3dgs-late-pipeline-native-109-v1/util/ai_workload_research/q1_3dgs_late_pipeline_v1/q1_supervisor.py\", line 119, in run_job\n    try:self.snapshot(\"WORKER\")\n        ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/huangrulin/workspace/worktrees/accel-sim-aiarch-q1-3dgs-late-pipeline-native-109-v1/util/ai_workload_research/q1_3dgs_late_pipeline_v1/q1_supervisor.py\", line 45, in snapshot\n    swap+=int(next(l.split()[1] for l in fields if l.startswith(\"VmSwap:\")))*1024\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nStopIteration\n",
+  "own_GPU_contexts_cleared": true,
+  "GPU_lock_held_seconds": 437.8034826023504,
+  "lock_closed": true,
+  "NVML_shutdown": true,
+  "reservation_cleanup": {
+    "kind": "RELEASED",
+    "unix": 1794019113.4770072,
+    "released": true,
+    "ownership_granted": false
+  },
+  "whole_Goal_elapsed_seconds": 4136.477050065994
+}

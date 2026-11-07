@@ -1,0 +1,61 @@
+{
+  "affinity": [
+    22,
+    23
+  ],
+  "child_ru_maxrss_KiB": 402448,
+  "elapsed_seconds": 2.752851969562471,
+  "files": {
+    "state_store.py": {
+      "bytes": 14777,
+      "sha256": "7fb0107d0f11e5e8a318e2aacedb7b070807078a265837a788d103512f80b47d"
+    },
+    "test_state_store.py": {
+      "bytes": 11692,
+      "sha256": "f409c3321497a6a3ebf854f51a1ec75b4ac68ae54322362e9d4cb8399d65b511"
+    }
+  },
+  "gpu_storage_validation": "Static code inspection only; no real GPU save/restore executed",
+  "scope": "CPU-only; no CUDA/NVML calls and no GPU/shared-lock operations",
+  "static_gpu_storage_boundary": [
+    "uint8 view created directly on original device over original untyped storage",
+    "narrow <= configured chunk <=256MiB; default64MiB",
+    "blocking device-to-CPU copy, memoryview disk write, bounded 4MiB SHA verification read",
+    "restore allocates final original storage plus one bytearray chunk staging; no full-storage torch.save",
+    "caller must drain concurrent tensor mutation/streams before capture; autograd graph not serialized"
+  ],
+  "test_exit_code": 0
+}
+
+test_atomic_failure_does_not_publish (test_state_store.StateStoreTests) ... ok
+test_bfloat16_float16_and_bool (test_state_store.StateStoreTests) ... ok
+test_chunk_bound_and_hashes (test_state_store.StateStoreTests) ... ok
+test_corrupt_chunk_rejected_before_unpickle (test_state_store.StateStoreTests) ... ok
+test_empty_tensor_zero_storage (test_state_store.StateStoreTests) ... ok
+test_empty_view_retains_nonempty_storage (test_state_store.StateStoreTests) ... ok
+test_existing_target_never_overwritten (test_state_store.StateStoreTests) ... ok
+test_fingerprint_preserves_raw_content_alias_and_layout (test_state_store.StateStoreTests) ... ok
+test_incomplete_directory_rejected (test_state_store.StateStoreTests) ... ok
+test_incomplete_manifest_rejected (test_state_store.StateStoreTests) ... ok
+test_invalid_chunk_bounds (test_state_store.StateStoreTests) ... ok
+test_load_size_cap (test_state_store.StateStoreTests) ... ok
+test_metadata_hash_rejected (test_state_store.StateStoreTests) ... ok
+test_missing_chunk_rejected (test_state_store.StateStoreTests) ... ok
+test_mixed_dtype_storage_alias (test_state_store.StateStoreTests) ... ok
+test_nested_numpy_rng_and_scalars (test_state_store.StateStoreTests) ... ok
+test_numpy_and_torch_rng_replay (test_state_store.StateStoreTests) ... ok
+test_parameter_and_explicit_gradient (test_state_store.StateStoreTests) ... ok
+test_publication_race_does_not_replace_empty_directory (test_state_store.StateStoreTests) ... ok
+test_raw_nan_signedzero_and_inf_bytes (test_state_store.StateStoreTests) ... ok
+test_save_size_cap_before_publication (test_state_store.StateStoreTests) ... ok
+test_scalar_tensor (test_state_store.StateStoreTests) ... ok
+test_sparse_tensor_rejected_explicitly (test_state_store.StateStoreTests) ... ok
+test_symlink_chunk_rejected (test_state_store.StateStoreTests) ... ok
+test_tensor_object_repeated_reference (test_state_store.StateStoreTests) ... ok
+test_tensor_requires_grad_and_device (test_state_store.StateStoreTests) ... ok
+test_views_strides_offsets_and_aliases (test_state_store.StateStoreTests) ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 0.640s
+
+OK

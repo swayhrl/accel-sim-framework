@@ -1,0 +1,159 @@
+{
+  "classification": "SOURCE_REVIEW_AND_CPU_LOADER_FIXTURE_ONLY_NOT_RESTORE_QUALIFICATION",
+  "source_manifest": [
+    {
+      "path": "/data/c16/aiarch_a26gr1_gsscale_rubble_109_20261014/software_sources/gsscale/examples/simple_trainer_hybrid_optimized.py",
+      "sha256": "17e70b6466f7e33a24d1610aa7deb69316cd177dc2c212cd8b717b9884f4808a",
+      "bytes": 78141
+    },
+    {
+      "path": "/data/c16/aiarch_a26gr1_gsscale_rubble_109_20261014/software_sources/gsscale/cpu_adam/src/cpu_adam.cpp",
+      "sha256": "f3f32bc04f61749baf57d1bd877b24379597e50cf4a94d04fdde80a11c19ce9f",
+      "bytes": 20824
+    },
+    {
+      "path": "/data/c16/aiarch_a26gr1_gsscale_rubble_109_20261014/software_sources/gsscale/cpu_adam/src/cpu_adam_api.cpp",
+      "sha256": "1d4791b399783fb33ee5b7040ede0eb31d82d65ad19ff596a2be056804b08a44",
+      "bytes": 1065
+    },
+    {
+      "path": "/data/c16/aiarch_a26gr1_gsscale_rubble_109_20261014/software_sources/gsscale/cpu_adam/src/cpu_adam.h",
+      "sha256": "1cd0d10d8e0d0212a75306535f1d2c42ff53a759a8fb87a2fc2604d02508393e",
+      "bytes": 1534
+    },
+    {
+      "path": "/data/c16/aiarch_a26gr1_gsscale_rubble_109_20261014/software_sources/gsscale/examples/datasets/colmap.py",
+      "sha256": "4fc7470867b659f87f08f402dbc96a212cbff047e500e576e2524cd93bcdd781",
+      "bytes": 18897
+    },
+    {
+      "path": "/data/c16/aiarch_a26gr1_gsscale_rubble_109_20261014/software_sources/gsscale/examples/utils.py",
+      "sha256": "11d79a0fee8774968844e4112140e35472488564e3f3c219f56b08b7418ca977",
+      "bytes": 7522
+    },
+    {
+      "path": "/data/c16/aiarch_a26gr1_gsscale_rubble_109_20261014/software_sources/gsscale/gsplat/strategy/default.py",
+      "sha256": "ebc68496cb8052f497409e137f795ff05059fca53f2e3d484ead5a38de5a7964",
+      "bytes": 19849
+    }
+  ],
+  "original_checkpoint": {
+    "lines": [
+      1308,
+      1327
+    ],
+    "keys": [
+      "step",
+      "splats"
+    ],
+    "complete_training_state": false
+  },
+  "safe_point": {
+    "name": "PIPELINE_PREPARED",
+    "after_source_line": 1293,
+    "before_next_loop_start_line": 1023,
+    "worker_join_line": 1075,
+    "requires_extra_sync_of_inflight_h2d_before_serialization": true,
+    "force_drain_at_checkpoint": false,
+    "next_step": "just_completed_step + 1"
+  },
+  "minimal_cross_step_locals": [
+    "next_step",
+    "is_densify",
+    "counter",
+    "valid_ids",
+    "valid_ids_cpu",
+    "valid_ids_cpu_prev",
+    "camtoworlds",
+    "Ks",
+    "pixels",
+    "image_ids",
+    "masks",
+    "height",
+    "width",
+    "opacities",
+    "colors0",
+    "colorsN"
+  ],
+  "runner_state": [
+    "splats data and .grad with dtype/device/shape/stride/requires_grad",
+    "optimizers_gpu state_dict, param_groups and mapping by parameter name",
+    "optimizers_cpu state_dict, param_groups and mapping by parameter name",
+    "strategy_state all keys plus strategy dataclass config",
+    "schedulers state_dict",
+    "config and scene scale, source/extension/environment identities",
+    "model row order/Gaussian lineage identity"
+  ],
+  "rng": [
+    "Python random.getstate",
+    "NumPy random.get_state",
+    "Torch CPU get_rng_state",
+    "all owned Torch CUDA generator states (owner only during authorized GPU run)",
+    "recorded original DataLoader initial base_seed RNG state",
+    "each epoch full RandomSampler permutation plus delivered sample/batch cursor"
+  ],
+  "loader": {
+    "source_lines": [
+      985,
+      993
+    ],
+    "workers": 4,
+    "persistent_workers": true,
+    "shuffle": true,
+    "pin_memory": true,
+    "dataset_random_condition": "patch_size is not None, colmap.py411-418",
+    "qualified_deterministic_requirement": "patch_size=None and unchanged source/input transforms; random background and any other training random state separately preserved",
+    "image_id_semantics": "Dataset item index, not parser index; Dataset.indices mapping must be hashed",
+    "prologue_consumption": "first camera rendered at step0; second camera preloaded for step1; consumer cursor includes both",
+    "resume_prefetch": "reconstruct dispatched-but-unconsumed deterministic samples from recorded permutation and delivered cursor; no new permutation",
+    "base_seed": "new loader draw isolated via private generator initialized from original initial base_seed RNG state; explicit sampler retains main-global RNG at future epochs",
+    "worker_rng_scope": "NOT_CAPTURED_DETERMINISTIC_GETITEM_REQUIRED; stochastic Dataset requires a different qualified design"
+  },
+  "cpp": {
+    "persistent_static_or_thread_local_weight_state_found": false,
+    "all_adam_and_counter_state_explicit_tensors": true,
+    "execution_environment": [
+      "omp_set_num_threads(64) occurs in six operations; OMP_THREAD_LIMIT/affinity cap remains necessary",
+      "FTZ/DAZ flags are per executing thread and must be consistent",
+      "pybind calls release GIL; pause only after worker join and completed CPU calls"
+    ],
+    "update_ids_order": "ascending partitions concatenated by omp thread index; validate real row identity and count",
+    "counter": "int8 per Gaussian; ordinary steps increment all N and reset selected U; deferred lookup expects 0..15; never zero on ordinary checkpoint"
+  },
+  "pending_semantics": {
+    "after_prepared": "CPU .grad contains just-completed camera gradients not yet committed; already-forwarded GPU CPU-parameter leaves predict next step from those gradients",
+    "restore": "load actual prepared leaf values; do not recompute from CPU weights or rerun prologue",
+    "closure": "GPU steps and CPU credit can differ by one; ledger must track completed forward/backward, CPU applied gradient, per-optimizer steps, counter ages, prepared next camera",
+    "terminal": "original last configured max_steps-1 forces is_densify=True and all-N deferred update; continuing from an artificial intermediate drain changes trajectory. Preserve undrained checkpoint; report separate explicit terminal drain only."
+  },
+  "cpu_tests": {
+    "tests": 14,
+    "result": "PASS",
+    "elapsed_s": 52.44443988800049,
+    "unittest_elapsed_s": 49.518,
+    "children_ru_maxrss_kib": 387520,
+    "peak_scope": "getrusage(RUSAGE_CHILDREN), not sum or Goal-wide peak",
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "LD_LIBRARY_PATH": "/data/c16/env/cpython-3.10.12/lib",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "affinity": [
+        22,
+        23
+      ],
+      "fixture_pin_memory": false
+    },
+    "gpu_or_nvml_calls": 0,
+    "log": "raw/LOADER_CPU_TEST.log",
+    "warning": "4 original workers under 2 helper-affinity CPUs; expected suggested-worker warning retained; training cpuset qualification is owner responsibility"
+  },
+  "not_yet_proven": [
+    "real GPU full-state save/load and exact next camera/grad/optimizer equality",
+    "independent reloaded continuous-vs-restored trajectory and frozen numerical threshold",
+    "actual pending-gradient final drain equivalence and end-to-end timing",
+    "real extension runtime hash and FTZ/OMP runtime settings",
+    "full dataset byte identity and absence of stochastic transforms in actual selected config"
+  ]
+}

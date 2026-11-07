@@ -1,0 +1,63 @@
+{
+  "affinity": [
+    22,
+    23
+  ],
+  "api": "observe_processes(ps,row,identities,root_pid,worker_pid,training_affinity,supervisor_affinity=None,normal_worker_exit=None,proc_read=None,task_ids=None,affinity_get=None) -> dict; persist dict then enforce_observation(dict). normal_worker_exit={pid,creation_time,returncode:0}.",
+  "child_ru_maxrss_KiB": 16672,
+  "coverage": [
+    "normal VmSwap subtotal and CPU affinity",
+    "missing live VmSwap rejected; terminal zombie and natural S-to-Z transition double-rechecked and censored None",
+    "double disappearance with actual /proc stat absence; false disappearance and PID/create_time/start_ticks reuse rejected",
+    "root/worker health and exact normal-exit identity; worker abnormal exit rejected",
+    "AccessDenied, malformed units, unenumerated PID and independent GPU/monitor gap rejected",
+    "partial observations retained; later error invalidates earlier censored candidate; no RSS mutation"
+  ],
+  "elapsed_seconds": 0.04814502689987421,
+  "files": {
+    "process_observation.py": {
+      "bytes": 13155,
+      "sha256": "11ed774633925fa8f9747733a8a74793e434a0e975a85fabb258d200e3f3a21a"
+    },
+    "test_process_observation.py": {
+      "bytes": 12571,
+      "sha256": "ed25acd91044652cd589cd717a1a1743545f354b1e561bbccbb4fdab62412e7d"
+    }
+  },
+  "historical_failure_scope": "Original VmSwap StopIteration did not persist the offending PID. Exit-state race is compatible with evidence, not proven; no historical FAIL reclassified.",
+  "policy": "VmSwap missing is None/censored only with valid current own enumeration+creation identity, terminal ps/proc identity recheck or double ps/proc disappearance, healthy root and healthy/verified-normal-exit worker, and no independent gaps. RSS lifecycle rules unchanged; sampled RSS/cgroup limits remain mandatory independent checks.",
+  "scope": "Post-STOP CPU mock engineering regression only. No GPU, NVML, flock, API, signal, reservation or training operations.",
+  "test_exit_code": 0
+}
+
+test_abnormal_worker_exit_blocks_censorship (test_process_observation.ProcessObservationTests.test_abnormal_worker_exit_blocks_censorship) ... ok
+test_access_denied_is_not_censored (test_process_observation.ProcessObservationTests.test_access_denied_is_not_censored) ... ok
+test_child_affinity_violation (test_process_observation.ProcessObservationTests.test_child_affinity_violation) ... ok
+test_child_pid_reuse_is_gap (test_process_observation.ProcessObservationTests.test_child_pid_reuse_is_gap) ... ok
+test_double_disappearance_is_censored_and_proofs_retained (test_process_observation.ProcessObservationTests.test_double_disappearance_is_censored_and_proofs_retained) ... ok
+test_false_absence_when_actual_proc_exists_stops (test_process_observation.ProcessObservationTests.test_false_absence_when_actual_proc_exists_stops) ... ok
+test_later_independent_failure_invalidates_candidate (test_process_observation.ProcessObservationTests.test_later_independent_failure_invalidates_candidate) ... ok
+test_missing_field_inconsistent_zombie_state_stops (test_process_observation.ProcessObservationTests.test_missing_field_inconsistent_zombie_state_stops) ... ok
+test_missing_swap_alive_is_gap_not_zero (test_process_observation.ProcessObservationTests.test_missing_swap_alive_is_gap_not_zero) ... ok
+test_missing_swap_confirmed_zombie_is_censored (test_process_observation.ProcessObservationTests.test_missing_swap_confirmed_zombie_is_censored) ... ok
+test_non_kilobyte_swap_unit_is_gap (test_process_observation.ProcessObservationTests.test_non_kilobyte_swap_unit_is_gap) ... ok
+test_normal_live_swap_and_affinity (test_process_observation.ProcessObservationTests.test_normal_live_swap_and_affinity) ... ok
+test_partial_observation_retained_after_malformed_swap (test_process_observation.ProcessObservationTests.test_partial_observation_retained_after_malformed_swap) ... ok
+test_prior_independent_monitor_gap_blocks_censorship (test_process_observation.ProcessObservationTests.test_prior_independent_monitor_gap_blocks_censorship) ... ok
+test_proc_access_denied_is_not_censored (test_process_observation.ProcessObservationTests.test_proc_access_denied_is_not_censored) ... ok
+test_proc_start_ticks_change_is_gap (test_process_observation.ProcessObservationTests.test_proc_start_ticks_change_is_gap) ... ok
+test_root_disappearance_is_never_censored (test_process_observation.ProcessObservationTests.test_root_disappearance_is_never_censored) ... ok
+test_rss_values_are_not_modified_or_reclassified (test_process_observation.ProcessObservationTests.test_rss_values_are_not_modified_or_reclassified) ... ok
+test_supervisor_affinity_violation (test_process_observation.ProcessObservationTests.test_supervisor_affinity_violation) ... ok
+test_thread_disappearance_during_affinity_is_gap (test_process_observation.ProcessObservationTests.test_thread_disappearance_during_affinity_is_gap) ... ok
+test_transition_to_zombie_is_independently_rechecked (test_process_observation.ProcessObservationTests.test_transition_to_zombie_is_independently_rechecked) ... ok
+test_unenumerated_pid_is_not_owned_by_whitelist (test_process_observation.ProcessObservationTests.test_unenumerated_pid_is_not_owned_by_whitelist) ... ok
+test_unknown_gpu_observation_blocks_censorship (test_process_observation.ProcessObservationTests.test_unknown_gpu_observation_blocks_censorship) ... ok
+test_unproven_normal_exit_is_rejected (test_process_observation.ProcessObservationTests.test_unproven_normal_exit_is_rejected) ... ok
+test_verified_normal_worker_exit_can_support_censorship (test_process_observation.ProcessObservationTests.test_verified_normal_worker_exit_can_support_censorship) ... ok
+test_worker_pid_reuse_does_not_count_as_normal_exit (test_process_observation.ProcessObservationTests.test_worker_pid_reuse_does_not_count_as_normal_exit) ... ok
+
+----------------------------------------------------------------------
+Ran 26 tests in 0.002s
+
+OK
