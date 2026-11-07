@@ -1,0 +1,36 @@
+{
+  "rows": [
+    {
+      "stage": "CONFIGURE",
+      "cmd": [
+        "cmake",
+        "-S",
+        "/root/data/ep_l2_multiworkload_event_timeline_20261027_v1/framework/gpu-simulator",
+        "-B",
+        "/root/share/mnt164/huangrulin/ep_l2_next_cost_aware_20261107_v1/agent_a/build",
+        "-DCUDAToolkit_ROOT=/root/data/dtc_main_20261023_v1/ae_fair_v1/toolchain",
+        "-DCMAKE_CXX_COMPILER_LAUNCHER=/usr/bin/python3;/root/data/ep_l2_full_workload_performance_20261027_v1/research/next_cost_aware_architecture_20261107_v1/agent_a/compiler_launcher.py",
+        "-DCMAKE_C_COMPILER_LAUNCHER=/usr/bin/python3;/root/data/ep_l2_full_workload_performance_20261027_v1/research/next_cost_aware_architecture_20261107_v1/agent_a/compiler_launcher.py"
+      ],
+      "returncode": 0,
+      "seconds": 4.997204542160034
+    },
+    {
+      "stage": "BUILD",
+      "cmd": [
+        "cmake",
+        "--build",
+        "/root/share/mnt164/huangrulin/ep_l2_next_cost_aware_20261107_v1/agent_a/build",
+        "--target",
+        "accel-sim.out",
+        "ep_l2_optional128",
+        "ep_l2_optional128_constructor",
+        "-j",
+        "2"
+      ],
+      "returncode": 0,
+      "seconds": 38.97294235229492
+    }
+  ],
+  "application_models_started": 0
+}

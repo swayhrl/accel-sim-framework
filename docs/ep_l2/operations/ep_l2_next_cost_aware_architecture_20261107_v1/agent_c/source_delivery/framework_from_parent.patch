@@ -1,0 +1,42 @@
+diff --git a/gpu-simulator/accel-sim.cc b/gpu-simulator/accel-sim.cc
+index 7a520f7..9b03677 100644
+--- a/gpu-simulator/accel-sim.cc
++++ b/gpu-simulator/accel-sim.cc
+@@ -92,6 +92,8 @@ void accel_sim_framework::simulation_loop() {
+       fflush(stdout);
+       break;
+     }
++    if(commandlist_index==commandlist.size()&&kernels_info.empty())
++      m_gpgpu_sim->quota_request_terminal_cleanup();
+   }
+ 
+   // cleanup() reports a completed kernel as soon as its CTA work retires.
+@@ -102,6 +104,7 @@ void accel_sim_framework::simulation_loop() {
+     m_gpgpu_sim->ro_end_epoch();
+     printf("EPL2ROV1|COMMANDLIST_END|complete=1|commands=%zu\n", commandlist.size());
+   }
++  if(!m_gpgpu_sim->cycle_insn_cta_max_hit())m_gpgpu_sim->quota_print_terminal_contract();
+   if (sim_cycles && !m_gpgpu_sim->cycle_insn_cta_max_hit())
+     m_gpgpu_sim->print_stats(~0ULL);
+ }
+diff --git a/gpu-simulator/accel-sim.h b/gpu-simulator/accel-sim.h
+index 61b7e4e..0ab0cf2 100644
+--- a/gpu-simulator/accel-sim.h
++++ b/gpu-simulator/accel-sim.h
+@@ -40,6 +40,16 @@ class accel_sim_framework {
+                       : 1;
+     assert(window_size > 0);
+     commandlist = tracer.parse_commandlist_file();
++    if(m_gpgpu_sim->quota_timing_enabled()) {
++      bool seen_kernel=false;
++      for(const auto&command:commandlist) {
++        if(command.m_type==command_type::kernel_launch)seen_kernel=true;
++        else if(command.m_type==command_type::cpu_gpu_mem_copy) {
++          if(seen_kernel)throw std::invalid_argument("timed CLEAN profile forbids memcpy after first kernel");
++        } else throw std::invalid_argument("unknown command in timed CLEAN profile");
++      }
++      if(!seen_kernel)throw std::invalid_argument("timed CLEAN profile requires a kernel command");
++    }
+     // Bind the actual whole commandlist bytes, before any RO epoch is opened.
+     m_gpgpu_sim->ro_bind_commandlist(tconfig.get_traces_filename());
+ 

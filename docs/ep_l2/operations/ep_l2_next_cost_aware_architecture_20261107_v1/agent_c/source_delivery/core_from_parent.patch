@@ -1,0 +1,1503 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 86eb0f3..b6c473d 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -365,3 +365,10 @@ target_include_directories(ep_l2_quota_handshake_v5 PRIVATE ${CUDAToolkit_INCLUD
+ target_link_libraries(ep_l2_quota_handshake_v5 PRIVATE -Wl,--start-group
+   entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group
+   ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
++
++# Finite CLEAN lifecycle-V2 production CPU qualification; no automatic execution.
++add_executable(ep_l2_clean_lifecycle_v2 EXCLUDE_FROM_ALL tests/ep_l2/test_clean_lifecycle_v2.cc)
++target_include_directories(ep_l2_clean_lifecycle_v2 PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
++target_link_libraries(ep_l2_clean_lifecycle_v2 PRIVATE -Wl,--start-group
++ entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group
++ ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
+diff --git a/src/gpgpu-sim/ep-l2-ft-cache.inc b/src/gpgpu-sim/ep-l2-ft-cache.inc
+index b960de2..79c92f0 100644
+--- a/src/gpgpu-sim/ep-l2-ft-cache.inc
++++ b/src/gpgpu-sim/ep-l2-ft-cache.inc
+@@ -46,6 +46,7 @@ bool l2_cache::ft_try_force_tag_access(new_addr_type addr, unsigned time,
+   const auto alias = m_tvd ? m_tvd->find(owner) : tvd_directory::ticket();
+   const bool has_alias = m_tvd && m_tvd->live(alias);
+   ep_l2::PayloadHandle alias_payload;
++  if(has_alias&&quota_timed())return false; // timed profile permits initialization-only memcpy
+   if (has_alias) {
+     const auto &entry = m_tvd->at(alias.index);
+     alias_payload = entry.payload;
+@@ -271,7 +272,8 @@ void l2_cache::commit_next_access() {
+ void l2_cache::ft_rollback() {
+   ft_replacement &p = m_ft_pending;
+   assert(p.request && !p.bound);
+-  m_quota_row_port.cancel_owner(4,p.request->get_request_uid());
++  m_quota_row_port.cancel_frontend(p.request->get_request_uid());
++  tvd_selector_cancel(p.request->get_request_uid());
+   m_ep_l2_payload.cancel_transaction(p.request->get_request_uid());
+   if (p.quota_reserved) {
+     assert(m_ft_quota.reserved == 1); --m_ft_quota.reserved;
+@@ -279,7 +281,9 @@ void l2_cache::ft_rollback() {
+   }
+   if (p.wad) {
+     if (m_tvd) {
+-      assert(m_tvd->rollback_staged(p.wad_ticket, ft_physical_cycle())==tvd_directory::OK);
++      if(quota_timed())throw std::logic_error("unexpected visible unbound timed WAD during rollback");
++      const auto rolled=m_tvd->rollback_staged(p.wad_ticket,ft_physical_cycle());
++      if(rolled!=tvd_directory::OK)throw std::logic_error("legacy WAD rollback failed");
+       ++m_tvd_indexed_rollbacks;
+     }
+     else assert(m_ep_l2_wad_entries_live.erase(p.victim_address)==1);
+@@ -385,7 +389,7 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+       ++slots;
+     }
+     if (!miss_queue_has_slots(slots)) { ++m_ft_stats.issue_block; return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_missq)); }
+-    if (dirty && (m_tvd ? m_tvd->preview_install(m_tag_array->get_block(index)->m_block_addr,true,true).status != tvd_directory::OK : m_ep_l2_wad_entries_live.size() >= m_config.m_ep_l2_wad_entries)) {
++    if (dirty && !quota_timed() && (m_tvd ? m_tvd->preview_install(m_tag_array->get_block(index)->m_block_addr,true,true).status != tvd_directory::OK : m_ep_l2_wad_entries_live.size() >= m_config.m_ep_l2_wad_entries)) {
+       ++m_ep_l2_wad_full_block_count; return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_wad_full));
+     }
+     ep_l2::PayloadHandle staging, landing;
+@@ -396,7 +400,8 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+     bool retain_clean = false;
+     if (m_tvd && m_config.m_ep_l2_tvd_clean && live && !dirty &&
+         m_ep_l2_payload.inspect(victim).ready_sector_mask.any() &&
+-        m_tvd->preview_install(m_ep_l2_payload.inspect(victim).owner,false,true).status==tvd_directory::OK) {
++        (quota_timed()?m_tvd->clean_limit()!=0:
++         m_tvd->preview_install(m_ep_l2_payload.inspect(victim).owner,false,true).status==tvd_directory::OK)) {
+       bool reserved=true;
+       if(m_ep_l2_payload.fixed_victim_entries()) {
+         reserved=m_ep_l2_payload.reserve_fixed_retention(victim);
+@@ -433,21 +438,24 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+         (m_config.m_ep_l2_ft_mode == 2 && live ? victim.payload_id : index);
+     if (live) p.saved = m_ep_l2_payload.inspect(victim);
+     if (dirty) {
++      p.dirty_mask=m_tag_array->get_block(index)->get_dirty_sector_mask().to_ulong();
+       if (m_config.m_ep_l2_wb_local_cap) {
+         assert(!m_ft_quota.reserved); ++m_ft_quota.reserved; p.quota_reserved = true;
+         m_ft_quota.reserved_peak = std::max(m_ft_quota.reserved_peak, m_ft_quota.reserved);
+         m_ft_quota.total_peak = std::max(m_ft_quota.total_peak, m_ft_quota.reserved + m_ft_quota.live);
+       }
+       p.victim_address = m_tag_array->get_block(index)->m_block_addr;
+-      if (m_tvd) {
++      if (m_tvd && !quota_timed()) {
+         const auto dirty_mask=m_tag_array->get_block(index)->get_dirty_sector_mask().to_ulong();
+         const auto ready_mask=p.saved.ready_sector_mask.to_ulong();
+         const bool retain=m_config.m_ep_l2_tvd_dirty && (dirty_mask & ~ready_mask)==0;
+         assert(tvd_install_victim(p.victim_address,retain?victim:ep_l2::PayloadHandle(),
+             retain?ready_mask:dirty_mask,dirty_mask,true,physical_cycle,&p.wad_ticket));
+-      } else assert(m_ep_l2_wad_entries_live.insert(p.victim_address).second);
+-      assert(m_ep_l2_wad_birth_cycle.insert(std::make_pair(p.victim_address, physical_cycle)).second);
+-      p.wad = true;
++      } else if(!m_tvd)assert(m_ep_l2_wad_entries_live.insert(p.victim_address).second);
++      if(!quota_timed()) {
++        assert(m_ep_l2_wad_birth_cycle.insert(std::make_pair(p.victim_address,physical_cycle)).second);
++        p.wad=true;
++      }
+       if (m_config.m_ep_l2_ft_mode == 1)
+         p.staging = m_ep_l2_payload.reserve(staging.payload_id,
+             ep_l2_payload_store::WB, p.victim_address, ep_l2_payload_store::WB_RESERVED);
+@@ -472,6 +480,8 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+       if(!tvd_prepare_clean_install(mf,clean_plan,clean_key,clean_can_install))
+         return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_directory));
+     }
++    if(p.dirty&&quota_timed()&&!tvd_prepare_dirty_install(mf))
++      return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_directory));
+     if (p.dirty && m_config.m_ep_l2_ft_mode == 1) {
+       // A shared, explicitly costed 128B copy-pipeline latch bridges same-bank
+       // read and write cycles. Both compared organizations include this latch.
+@@ -569,6 +579,7 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+   if (m_tag_array->block_is_modified(index)) slot.status = ep_l2_payload_store::RESIDENT_DIRTY;
+   else if (slot.pending_sector_mask.none() && slot.allocation_role!=ep_l2_payload_store::RO) slot.status = ep_l2_payload_store::RESIDENT_VALID;
+   if (!mf->get_is_write()) mf->set_ft_wb_data(slot.versions);
++  if(quota_timed()){m_quota_row_port.cancel_frontend(mf->get_request_uid());tvd_selector_cancel(mf->get_request_uid());}
+   if (replacement) m_ft_pending = ft_replacement();
+   if (m_tvd_lookup==mf) m_tvd_lookup=NULL;
+   ++m_ft_stats.accepted;
+@@ -581,16 +592,40 @@ void l2_cache::send_write_request(mem_fetch *mf, cache_event event, unsigned tim
+     std::list<cache_event> &events) {
+   if (ft_enabled() && mf->get_access_type() == L2_WRBK_ACC) {
+     ft_replacement &p = m_ft_pending;
+-    assert(p.request && p.dirty && p.wad && !p.bound);
++    assert(p.request && p.dirty && (p.wad||p.dirty_plan_ready) && !p.bound);
+     assert(m_config.block_addr(mf->get_addr()) == p.victim_address);
+     ft_wb_record r; r.handle = p.staging; r.born = p.born;
++    if(m_tvd&&quota_timed()&&!p.wad) {
++      if(!p.dirty_plan_ready)throw std::logic_error("WB enqueue without prepared metadata");
++      const auto token=m_quota_row_port.token(p.dirty_key,m_quota_l2_tick);
++      const auto ready=p.saved.ready_sector_mask.to_ulong();
++      const auto dirty=mf->get_access_sector_mask().to_ulong();
++      if(dirty!=p.dirty_mask)throw std::logic_error("WB packet dirty sectors differ from reservation");
++      const bool retain=m_config.m_ep_l2_tvd_dirty&&(dirty&~ready)==0;
++      const auto status=m_tvd->commit_install(p.dirty_plan,p.victim_address,
++          retain?p.victim:ep_l2::PayloadHandle(),retain?ready:dirty,dirty,0,true,
++          ft_physical_cycle(),p.wad_ticket,&token,mf->get_request_uid(),true);
++      if(status!=tvd_directory::OK)throw std::logic_error("prepared WAD install invalid at enqueue");
++      m_quota_row_port.commit(p.dirty_key,m_quota_l2_tick);
++      ++m_tvd_native_installs;
++      if(p.dirty_plan.displaced.valid())m_ep_l2_payload.release(p.dirty_plan.displaced);
++      if(!m_ep_l2_wad_birth_cycle.insert(std::make_pair(p.victim_address,ft_physical_cycle())).second)
++        throw std::logic_error("WAD birth identity duplicate");
++      p.wad=true;p.dirty_plan_ready=false;tvd_selector_cancel(p.request->get_request_uid());
++    }
+     if (m_tvd) {
+       assert(m_tvd->live(p.wad_ticket) &&
+              m_tvd->at(p.wad_ticket.index).line == p.victim_address);
+       r.wad_ticket = p.wad_ticket;
+       // Reuse the packet's existing UID. No directory ticket/header bits are
+       // transmitted through the frozen ICNT/DRAM model.
+-      assert(m_tvd->bind_writeback(p.wad_ticket,mf->get_request_uid())==tvd_directory::OK);
++      if(quota_timed()) {
++        if(!m_tvd->writeback_matches(p.wad_ticket,p.victim_address,mf->get_request_uid()))
++          throw std::logic_error("atomic WAD UID binding missing");
++      } else {
++        const auto bound=m_tvd->bind_writeback(p.wad_ticket,mf->get_request_uid());
++        if(bound!=tvd_directory::OK)throw std::logic_error("legacy WAD binding failed");
++      }
+     }
+     r.expected = m_ep_l2_payload.inspect(p.staging).versions;
+     assert(m_ft_wb.size() < m_config.m_ep_l2_wad_entries);
+@@ -672,8 +707,10 @@ void l2_cache::lower_accepted(mem_fetch *mf, unsigned long long cycle) {
+     assert(m_tvd->live(t) && m_tvd->at(t.index).line==m_config.block_addr(mf->get_addr()));
+     assert(m_tvd->writeback_matches(t,m_config.block_addr(mf->get_addr()),mf->get_request_uid()));
+     const auto qkey=quota_key(1,mf->get_request_uid(),t);
+-    assert(m_tvd->lower_accept(t,true,cycle)==tvd_directory::OK);
+-    if(m_config.m_ep_l2_quota_row_lanes)m_quota_row_port.commit(qkey,m_quota_l2_tick);
++    const auto token=m_quota_row_port.token(qkey,m_quota_l2_tick);
++    const auto accepted=m_tvd->lower_accept(t,true,cycle,quota_timed()?&token:NULL);
++    if(accepted!=tvd_directory::OK)throw std::logic_error("lower enqueue without valid row service");
++    if(quota_timed())m_quota_row_port.commit(qkey,m_quota_l2_tick);
+     ++m_tvd_indexed_accepts;
+     if (m_tvd->at(t.index).payload.valid()) {
+       if (!m_ep_l2_payload.inspect(it->second.handle).pins)
+diff --git a/src/gpgpu-sim/ep-l2-quota-row-port.h b/src/gpgpu-sim/ep-l2-quota-row-port.h
+index 20a9199..42abe6d 100644
+--- a/src/gpgpu-sim/ep-l2-quota-row-port.h
++++ b/src/gpgpu-sim/ep-l2-quota-row-port.h
+@@ -1,16 +1,22 @@
+-// New private V5 production prototype: bounded metadata reservation only.
+-// This does not complete frontend/cleanup integration; see Track C README.
++// C lifecycle V2: six bounded producer heads, registered arbitration,
++// explicit READ then COMMIT, no same-row pair and no cancellation refund.
++// This is a timing protocol model, not a physical port/PPA qualification.
+ #ifndef EP_L2_QUOTA_ROW_PORT_H
+ #define EP_L2_QUOTA_ROW_PORT_H
+ #include <array>
+ #include <cstdint>
+ #include <stdexcept>
+ #include <limits>
++struct ep_l2_row_service_token {
++ bool valid=false;
++ unsigned index=128,producer=0,uid=0;
++ std::uint64_t incarnation=0,tick=0;
++};
+ class ep_l2_quota_row_port {
+  public:
+   struct key {
+-    unsigned producer, uid, row, payload_id, state;
+-    std::uint64_t incarnation, generation;
++    unsigned producer,uid,row,payload_id,state;
++    std::uint64_t incarnation,generation;
+     key(unsigned p=0,unsigned u=0,unsigned r=128,std::uint64_t i=0,
+         unsigned h=~0u,std::uint64_t g=0,unsigned st=0):
+       producer(p),uid(u),row(r),payload_id(h),state(st),incarnation(i),generation(g){}
+@@ -19,95 +25,115 @@ class ep_l2_quota_row_port {
+   };
+   struct counters {
+     std::uint64_t read_beats=0,commit_beats=0,acks=0,holds=0,row_conflicts=0,
+-      port_conflicts=0,cancellations=0;
++      port_conflicts=0,cancellations=0,ingress_refusals=0,arbitration_ticks=0,wait_ticks=0;
+   };
+-  explicit ep_l2_quota_row_port(unsigned k=2): lanes_(k) {
+-    if(k!=1&&k!=2)throw std::invalid_argument("row lanes must be1 or2");
++  explicit ep_l2_quota_row_port(unsigned k=1):lanes_(k) {
++    if(k!=1&&k!=2)throw std::invalid_argument("row lanes1/2");
+   }
+   void configure(unsigned k) {
+-    if(pending())throw std::logic_error("configure busy row port");
+-    if(k!=1&&k!=2)throw std::invalid_argument("row lanes must be1 or2");lanes_=k;
++    if(pending()||queued())throw std::logic_error("configure busy metadata fabric");
++    if(k!=1&&k!=2)throw std::invalid_argument("row lanes1/2");lanes_=k;
+   }
+-  // Time is an explicit L2 service tick, not core-cycle or DRAM-call count.
+-  // First same-tick requests form READ; subsequent ticks expose COMMIT.
+-  // No new READ while any prepared entry remains. All repeated polls are free
+-  // of new mutation, but each failed poll is diagnostic only, not a clock.
+-  bool ready(const key&k,std::uint64_t tick) {
+-    monotonic(tick);
+-    for(unsigned i=0;i<2;++i)if(slots_[i].live&&slots_[i].identity==k) {
+-      if(tick<=read_tick_){++stats_.holds;return false;}
+-      commit_tick_=tick;return true;
+-    }
+-    if(pending()&&tick!=read_tick_){++stats_.port_conflicts;return false;}
+-    if(!pending()&&(commit_tick_==tick || (stats_.read_beats&&read_tick_==tick))) {
+-      ++stats_.port_conflicts;return false;
+-    }
+-    for(unsigned i=0;i<2;++i)if(slots_[i].live&&slots_[i].identity.row==k.row) {
+-      ++stats_.row_conflicts;return false;
+-    }
+-    unsigned n=pending();if(n>=lanes_){++stats_.port_conflicts;return false;}
+-    // Retained identity marks a physical READ claim even after cancellation.
+-    // No extra register/slot is added, and no third row may reuse a cancelled
+-    // K2 lane during the same READ beat.
+-    if(n) {
+-      unsigned claims=0;for(const auto&s:slots_)claims+=s.identity.row<128;
+-      if(claims>=lanes_){++stats_.port_conflicts;return false;}
+-    }
+-    if(!n) {
+-      read_tick_=tick;commit_tick_=unset();++stats_.read_beats;
+-      for(auto&s:slots_)s.identity=key();
++  static unsigned group(unsigned p) {
++    if(p==2)return 0;                     // completion origin
++    if(p==1)return 1;                     // lower enqueue
++    if(p==3||p==4||p==5||p==6||p==7||p==12||p==13)return 2; // one frontend head
++    if(p==8)return 3;                     // read-lease begin
++    if(p==9||p==14)return 4;               // response/cancel retirement
++    if(p==10||p==11)return 5;              // rollback/terminal cleanup (exclusive)
++    throw std::invalid_argument("unknown metadata producer");
++  }
++  // One call at the real L2 service boundary; callbacks cannot mint a new
++  // tick. The six head records are finite, explicit metadata ingress.
++  void tick(std::uint64_t now) {
++    if(now<observed_tick_)throw std::logic_error("metadata clock regressed");
++    if(now==observed_tick_)return;
++    if(pending())stats_.wait_ticks+=now-observed_tick_;
++    observed_tick_=now;++stats_.arbitration_ticks;
++    for(auto&h:heads_)if(h.active)h.eligible=true;
++    if(pending()||last_commit_tick_==now||read_tick_==now)return;
++    unsigned n=0,last=rr_;
++    for(unsigned a=0;a<6&&n<lanes_;++a) {
++      unsigned g=(rr_+a)%6;auto&h=heads_[g];
++      if(!h.active||!h.eligible||h.selected)continue;
++      bool clash=false;for(unsigned i=0;i<n;++i)clash|=slots_[i].identity.row==h.identity.row;
++      if(clash){++stats_.row_conflicts;continue;}
++      slots_[n].live=true;slots_[n].identity=h.identity;slots_[n].head=g;
++      h.selected=true;++n;last=g;
+     }
+-    for(unsigned i=0;i<2;++i)if(!slots_[i].live && slots_[i].identity.row==128) {
+-      slots_[i].live=true;slots_[i].identity=k;break;
++    if(n){read_tick_=now;++stats_.read_beats;rr_=(last+1)%6;}
++  }
++  bool ready(const key&k,std::uint64_t now) {
++    tick(now);
++    if(k.row>=128)throw std::invalid_argument("metadata row out of range");
++    unsigned g=group(k.producer);auto&h=heads_[g];
++    if(!h.active){h.active=true;h.eligible=false;h.selected=false;h.identity=k;}
++    else if(!(h.identity==k)){++stats_.ingress_refusals;return false;}
++    for(const auto&slot:slots_)if(slot.live&&slot.identity==k) {
++      if(now>read_tick_)return true;
++      ++stats_.holds;return false;
+     }
+     ++stats_.holds;return false;
+   }
+-  void commit(const key&k,std::uint64_t tick) {
+-    monotonic(tick);
+-    if(commit_tick_!=tick||tick<=read_tick_)throw std::logic_error("commit without paid reservation");
+-    for(unsigned i=0;i<2;++i)if(slots_[i].live&&slots_[i].identity==k) {
+-      if(last_count_commit_!=tick){++stats_.commit_beats;last_count_commit_=tick;}
+-      slots_[i].live=false;++stats_.acks;return;
+-    }
+-    throw std::logic_error("unowned row commit");
++  ep_l2_row_service_token token(const key&k,std::uint64_t now)const {
++    ep_l2_row_service_token t;
++    if(now!=observed_tick_||now<=read_tick_)return t;
++    for(const auto&s:slots_)if(s.live&&s.identity==k) {
++      t.valid=true;t.index=k.row;t.incarnation=k.incarnation;t.tick=now;
++      t.producer=k.producer;t.uid=k.uid;return t;
++    }return t;
+   }
+-  // Reservation cancellation never refunds an occupied READ/COMMIT beat.
+-  // No allocator, packet, row or count has changed at this preflight stage.
+-  bool cancel(const key&k) {
+-    for(auto&slot:slots_)if(slot.live&&slot.identity==k){slot.live=false;++stats_.cancellations;return true;}
+-    return false;
++  void commit(const key&k,std::uint64_t now) {
++    tick(now);
++    if(!token(k,now).valid)throw std::logic_error("COMMIT without paid row token");
++    for(auto&slot:slots_)if(slot.live&&slot.identity==k) {
++      auto&h=heads_[slot.head];
++      if(!h.active||!(h.identity==k))throw std::logic_error("metadata ingress identity lost");
++      slot.live=false;h.active=false;h.selected=false;h.eligible=false;
++      if(last_commit_tick_!=now){++stats_.commit_beats;last_commit_tick_=now;}
++      ++stats_.acks;return;
++    }throw std::logic_error("unowned metadata commit");
+   }
+-  // Bounded owner cancellation before any visible row/payload mutation.
+-  // Cancelling cannot refund the paid READ beat or steal another producer.
+-  bool owns(const key&k) const {
+-    for(const auto&s:slots_)if(s.live&&s.identity==k)return true;
+-    return false;
++  bool owns(const key&k)const {
++    for(const auto&h:heads_)if(h.active&&h.identity==k)return true;return false;
++  }
++  bool cancel(const key&k) {
++    if(!owns(k))return false;cancel_owner(k.producer,k.uid);return true;
+   }
+   unsigned cancel_owner(unsigned producer,unsigned uid) {
+-    unsigned n=0;for(auto&slot:slots_)if(slot.live&&slot.identity.producer==producer&&slot.identity.uid==uid) {
+-      slot.live=false;++stats_.cancellations;++n;
++    unsigned n=0;
++    for(unsigned g=0;g<6;++g) {
++      auto&h=heads_[g];if(!h.active||h.identity.producer!=producer||h.identity.uid!=uid)continue;
++      for(auto&s:slots_)if(s.live&&s.head==g)s.live=false;
++      h.active=false;h.selected=false;h.eligible=false;++stats_.cancellations;++n;
+     }return n;
+   }
++  unsigned cancel_frontend(unsigned uid) {
++    unsigned n=0;for(unsigned p: {3u,4u,5u,6u,7u,12u,13u})n+=cancel_owner(p,uid);return n;
++  }
+   unsigned pending()const{unsigned n=0;for(const auto&s:slots_)n+=s.live;return n;}
++  unsigned queued()const{unsigned n=0;for(const auto&h:heads_)n+=h.active;return n;}
++  bool producer_active(unsigned p)const {
++    for(const auto&h:heads_)if(h.active&&h.identity.producer==p)return true;return false;
++  }
++  bool producer_selected(unsigned p)const {
++    for(const auto&s:slots_)if(s.live&&s.identity.producer==p)return true;return false;
++  }
+   unsigned lanes()const{return lanes_;}
+   const counters&stats()const{return stats_;}
+-  // Explicit one-count-write arithmetic helper. Caller must preflight all row
+-  // transitions and publish atomically; production count mutations are not yet
+-  // routed here. This helper is NOT a claim of completed quota integration.
+-  static unsigned merged_count(unsigned count,unsigned cap,const int*delta,unsigned n,unsigned k) {
+-    if(k!=1&&k!=2)throw std::invalid_argument("row lanes");
+-    if(n>k||cap>128||count>cap)throw std::invalid_argument("count contract");
+-    int projected=count;
+-    for(unsigned i=0;i<n;++i){if(delta[i]<-1||delta[i]>1)throw std::invalid_argument("row delta");
+-      projected+=delta[i];if(projected<0||projected>int(cap))throw std::overflow_error("ordered quota block");}
+-    return unsigned(projected);
++  static unsigned merged_count(unsigned count,unsigned cap,const int*d,unsigned n,unsigned k) {
++    if((k!=1&&k!=2)||n>k||cap>128||count>cap)throw std::invalid_argument("count contract");
++    int value=count;for(unsigned i=0;i<n;++i){if(d[i]<-1||d[i]>1)throw std::invalid_argument("delta");
++      value+=d[i];if(value<0||value>int(cap))throw std::overflow_error("ordered quota block");}
++    return unsigned(value);
+   }
+  private:
+-  struct slot{bool live=false;key identity;};
+-  static std::uint64_t unset(){return std::numeric_limits<std::uint64_t>::max();}
+-  void monotonic(std::uint64_t tick){if(tick<observed_tick_)throw std::logic_error("row clock regressed");observed_tick_=tick;}
+-  unsigned lanes_;std::array<slot,2>slots_;
+-  std::uint64_t observed_tick_=0,read_tick_=0,commit_tick_=unset(),last_count_commit_=unset();
++  struct head{bool active=false,eligible=false,selected=false;key identity;};
++  struct slot{bool live=false;unsigned head=6;key identity;};
++  unsigned lanes_,rr_=0;
++  std::array<head,6>heads_;
++  std::array<slot,2>slots_;
++  std::uint64_t observed_tick_=0,read_tick_=~std::uint64_t(0),last_commit_tick_=~std::uint64_t(0);
+   counters stats_;
+ };
+ #endif
+diff --git a/src/gpgpu-sim/ep-l2-tvd-cache.inc b/src/gpgpu-sim/ep-l2-tvd-cache.inc
+index 8805b31..857aa4d 100644
+--- a/src/gpgpu-sim/ep-l2-tvd-cache.inc
++++ b/src/gpgpu-sim/ep-l2-tvd-cache.inc
+@@ -21,6 +21,102 @@ bool l2_cache::tvd_install_victim(new_addr_type address, ep_l2::PayloadHandle h,
+   return true;
+ }
+ 
++void l2_cache::tvd_selector_cancel(unsigned uid) {
++  if(m_selector.active&&m_selector.uid==uid) {
++    m_quota_row_port.cancel_owner(13,uid);m_selector=quota_selector();
++  }
++}
++
++bool l2_cache::tvd_selector_step(unsigned uid,unsigned purpose,new_addr_type line,
++    bool dirty,unsigned bank) {
++  if(!m_selector.active) {
++    m_selector=quota_selector();m_selector.active=true;m_selector.uid=uid;
++    m_selector.purpose=purpose;m_selector.line=line;m_selector.dirty=dirty;
++    m_selector.bank=bank;m_selector.clean_count=m_tvd->clean_occupancy();
++  }
++  auto&c=m_selector;
++  if(c.uid!=uid||c.purpose!=purpose||c.line!=line||c.dirty!=dirty||c.bank!=bank)
++    throw std::logic_error("overlapping serialized frontend selector");
++  if(c.done)return true;
++  if(c.clean_count!=m_tvd->clean_occupancy()) {
++    tvd_selector_cancel(uid);return false;
++  }
++  const auto&e=m_tvd->at(c.cursor);
++  const ep_l2_quota_row_port::key key(13,uid,c.cursor,e.incarnation,
++      e.payload.payload_id,e.payload.generation,unsigned(e.status));
++  if(!quota_ready(key))return false;
++  const auto service=m_quota_row_port.token(key,m_quota_l2_tick);
++  if(!service.valid)throw std::logic_error("selector without paid indexed READ");
++  ++m_selector_probes;
++  const bool limited=!dirty&&c.clean_count>=m_tvd->clean_limit();
++  if(purpose==1&&e.status==tvd_directory::EMPTY&&(!limited||dirty)) {
++    c.best=c.cursor;c.done=true;
++  } else {
++    bool candidate=e.reclaimable();
++    if(purpose==1&&limited&&e.status!=tvd_directory::CLEAN)candidate=false;
++    if(purpose==2&&(!e.payload.valid()||
++        (bank!=~0u&&e.payload.payload_id%4!=bank)))candidate=false;
++    if(candidate) {
++      const bool prefer_clean=dirty||purpose==2;
++      if(c.best==128||
++         (prefer_clean&&e.status==tvd_directory::CLEAN&&c.best_state!=unsigned(tvd_directory::CLEAN))||
++         ((!prefer_clean||unsigned(e.status)==c.best_state)&&e.age<c.best_age)) {
++        c.best=c.cursor;c.best_age=e.age;c.best_state=unsigned(e.status);
++      }
++    }
++  }
++  m_quota_row_port.commit(key,m_quota_l2_tick);
++  ++c.cursor;if(c.cursor==m_tvd->capacity())c.done=true;
++  return c.done;
++}
++
++bool l2_cache::tvd_select_install(mem_fetch*mf,new_addr_type line,bool dirty,
++    tvd_directory::install_plan&plan) {
++  if(!quota_timed()){plan=m_tvd->preview_install(line,dirty,true);return true;}
++  if(!dirty&&!m_tvd->clean_limit()){plan=tvd_directory::install_plan();plan.status=tvd_directory::DISABLED;return true;}
++  if(!tvd_selector_step(mf->get_request_uid(),1,line,dirty,~0u))return false;
++  if(m_selector.best>=m_tvd->capacity()) {
++    tvd_selector_cancel(mf->get_request_uid());return false;
++  }
++  plan=m_tvd->selected_install(line,dirty,m_selector.best,true);
++  if(plan.status!=tvd_directory::OK){tvd_selector_cancel(mf->get_request_uid());return false;}
++  return true;
++}
++
++bool l2_cache::tvd_prepare_dirty_install(mem_fetch*mf) {
++  auto&p=m_ft_pending;
++  if(p.request!=mf||!p.dirty||p.wad||p.bound)
++    throw std::logic_error("invalid deferred DIRTY install state");
++  p.dirty_plan_ready=false;
++  if(!m_ep_l2_payload.handle_live(p.victim)||
++     !m_ep_l2_payload.handle_owner_matches(p.victim,p.saved.owner)||
++     !m_ep_l2_payload.handle_owner_matches(p.landing,m_config.block_addr(mf->get_addr())))
++    throw std::logic_error("DIRTY source/landing identity changed");
++  const auto&source=m_ep_l2_payload.inspect(p.victim);
++  if(source.pins||source.pending_sector_mask.any())return false;
++  if(source.versions!=p.saved.versions||source.generation!=p.saved.generation)
++    throw std::logic_error("DIRTY data identity changed before enqueue");
++  if(!tvd_select_install(mf,p.victim_address,true,p.dirty_plan))return false;
++  const auto&old=m_tvd->at(p.dirty_plan.index);
++  if(p.dirty_plan.displaced.valid()) {
++    if(!m_ep_l2_payload.handle_owner_matches(p.dirty_plan.displaced,old.line))
++      throw std::logic_error("DIRTY displaced identity changed");
++    const auto&slot=m_ep_l2_payload.inspect(p.dirty_plan.displaced);
++    if(slot.pins||slot.pending_sector_mask.any())return false;
++    if(slot.generation==std::numeric_limits<unsigned>::max())
++      throw std::overflow_error("DIRTY displaced generation exhausted");
++  }
++  const unsigned ready=p.saved.ready_sector_mask.to_ulong();
++  const bool retain=m_config.m_ep_l2_tvd_dirty&&(p.dirty_mask&~ready)==0;
++  const auto valid=m_tvd->validate_install(p.dirty_plan,p.victim_address,
++      retain?p.victim:ep_l2::PayloadHandle(),retain?ready:p.dirty_mask,p.dirty_mask,0,true);
++  if(valid!=tvd_directory::OK)return false;
++  p.dirty_key=ep_l2_quota_row_port::key(5,mf->get_request_uid(),p.dirty_plan.index,
++      old.incarnation,old.payload.payload_id,old.payload.generation,unsigned(old.status));
++  if(!quota_ready(p.dirty_key))return false;
++  p.dirty_plan_ready=true;return true;
++}
++
+ bool l2_cache::tvd_prepare_clean_install(mem_fetch *mf,tvd_directory::install_plan&plan,
+     ep_l2_quota_row_port::key&key,bool&can_install) {
+   auto&p=m_ft_pending;const unsigned uid=mf->get_request_uid();
+@@ -56,10 +152,8 @@ bool l2_cache::tvd_prepare_clean_install(mem_fetch *mf,tvd_directory::install_pl
+     if(m_mshrs.needs_lower_read(line,mf->get_access_sector_mask()))++lower_slots;
+   }
+   if(!miss_queue_has_slots(lower_slots))return refuse();
+-  plan=m_tvd->preview_install(p.saved.owner,false,true);
+-  if(plan.status!=tvd_directory::OK) {
+-    return refuse(); // selected retention transaction must HOLD without touching old row/payload
+-  }
++  if(!tvd_select_install(mf,p.saved.owner,false,plan))return false;
++  if(plan.status!=tvd_directory::OK)return refuse();
+   const auto&row=m_tvd->at(plan.index);
+   if(plan.displaced.valid()) {
+     if(!m_ep_l2_payload.handle_owner_matches(plan.displaced,row.line))
+@@ -89,13 +183,15 @@ void l2_cache::tvd_commit_clean_install(const tvd_directory::install_plan&plan,
+   // Only the just-qualified clean Native path reaches this. No directory
+   // producer callback occurs inside that path between preflight and here.
+   tvd_directory::ticket installed;
+-  const auto r=m_tvd->commit_install(plan,plan.line,incoming,valid,0,0,false,now,installed);
++  const auto service=m_quota_row_port.token(key,m_quota_l2_tick);
++  const auto r=m_tvd->commit_install(plan,plan.line,incoming,valid,0,0,false,now,installed,&service);
+   if(r!=tvd_directory::OK)
+     throw std::logic_error("prepared CLEAN install invalidated after Native commit");
+   m_quota_row_port.commit(key,m_quota_l2_tick);
+   ++m_tvd_native_installs;
+   if(plan.displaced.valid())m_ep_l2_payload.release(plan.displaced);
+   m_ep_l2_payload.transfer(incoming,ep_l2_payload_store::TVD,ep_l2_payload_store::TVD_VALID);
++  tvd_selector_cancel(key.uid);
+ }
+ 
+ bool l2_cache::tvd_cached_wad_contains(mem_fetch *mf, new_addr_type address) const {
+@@ -113,7 +209,32 @@ bool l2_cache::tvd_cached_wad_contains(mem_fetch *mf, new_addr_type address) con
+   return false;
+ }
+ 
+-bool l2_cache::tvd_reclaim_one(unsigned bank, unsigned long long now) {
++bool l2_cache::tvd_reclaim_one(unsigned bank,unsigned long long now) {
++  if(quota_timed()) {
++    if(!m_tvd_lookup)throw std::logic_error("general reclaim without serialized frontend owner");
++    const unsigned uid=m_tvd_lookup->get_request_uid();
++    if(!tvd_selector_step(uid,2,0,false,bank))return false;
++    if(m_selector.best>=m_tvd->capacity()){tvd_selector_cancel(uid);return false;}
++    const auto index=m_selector.best;const auto&e=m_tvd->at(index);
++    const tvd_directory::ticket ticket(index,e.incarnation);
++    const auto plan=m_tvd->preview_reserved_reclaim(ticket);
++    if(plan.status!=tvd_directory::OK){tvd_selector_cancel(uid);return false;}
++    if(!plan.payload.valid()||!m_ep_l2_payload.handle_owner_matches(plan.payload,e.line))
++      throw std::logic_error("general reclaim payload identity");
++    const auto&slot=m_ep_l2_payload.inspect(plan.payload);
++    if(slot.pins||slot.pending_sector_mask.any())return false;
++    if(slot.generation==std::numeric_limits<unsigned>::max())
++      throw std::overflow_error("general reclaim generation exhausted");
++    const auto key=quota_key(12,uid,ticket);
++    if(!quota_ready(key))return false;
++    const auto service=m_quota_row_port.token(key,m_quota_l2_tick);
++    ep_l2::PayloadHandle released;
++    const auto r=m_tvd->commit_reserved_reclaim(plan,released,now,&service);
++    if(r==tvd_directory::COUNTER_BUSY)return false;
++    if(r!=tvd_directory::OK){m_quota_row_port.cancel_owner(12,uid);tvd_selector_cancel(uid);return false;}
++    m_quota_row_port.commit(key,m_quota_l2_tick);m_ep_l2_payload.release(released);
++    tvd_selector_cancel(uid);return true;
++  }
+   // Mandatory space first reclaims optional clean, then completed WB data.
+   // Pinned reads and pending/inflight WB are never eligible victims.
+   for (auto state : {tvd_directory::CLEAN, tvd_directory::WB_COMPLETE}) {
+@@ -161,7 +282,9 @@ bool l2_cache::tvd_frontend_reclaim(mem_fetch *mf,tvd_directory::ticket t,
+     if(!m_quota_row_port.ready(key,m_quota_l2_tick))return false;
+   }
+   ep_l2::PayloadHandle released;
+-  const auto result=m_tvd->commit_reserved_reclaim(plan,released,now);
++  const auto service=m_quota_row_port.token(key,m_quota_l2_tick);
++  const auto result=m_tvd->commit_reserved_reclaim(plan,released,now,timed?&service:NULL);
++  if(result==tvd_directory::COUNTER_BUSY)return false;
+   if(result!=tvd_directory::OK) {cancel();return false;}
+   if(timed)m_quota_row_port.commit(key,m_quota_l2_tick);
+   if(released!=h)throw std::logic_error("frontend reclaim release identity mismatch");
+@@ -234,12 +357,30 @@ l2_cache::tvd_frontend_result l2_cache::tvd_frontend(mem_fetch *mf,
+   m_quota_row_port.cancel_owner(3,mf->get_request_uid());
+   if (observation.status != tvd_directory::READ_READY) return TVD_NORMAL;
+   known |= 1ULL << M::RESPONSE_QUEUE_FULL;
+-  if (!response_space) { ++m_tvd_resp_wait; return wait(M::RESPONSE_QUEUE_FULL); }
++  if (!response_space) {
++    if(quota_timed()) {
++      m_quota_row_port.cancel_owner(8,mf->get_request_uid());
++      m_quota_row_port.cancel_owner(9,mf->get_request_uid());
++    }
++    ++m_tvd_resp_wait;return wait(M::RESPONSE_QUEUE_FULL);
++  }
+   if (!m_tvd_read) {
+-    assert(m_ep_l2_payload.handle_owner_matches(observation.payload, address));
+-    m_tvd_read.reset(new tvd_directory::read_lease());
+-    assert(m_tvd->begin_read(observation, mf->get_access_sector_mask().to_ulong(), *m_tvd_read) == tvd_directory::OK);
+-    m_ep_l2_payload.pin(observation.payload);
++    if(!m_ep_l2_payload.handle_owner_matches(observation.payload,address))
++      throw std::logic_error("reader payload identity before begin");
++    if(m_ep_l2_payload.inspect(observation.payload).pins==std::numeric_limits<unsigned>::max())
++      throw std::overflow_error("reader pin exhausted before lifetime begin");
++    const auto key=quota_key(8,mf->get_request_uid(),ticket);
++    if(quota_timed()&&!quota_ready(key))return wait(M::VICTIM_LOOKUP);
++    const auto service=m_quota_row_port.token(key,m_quota_l2_tick);
++    std::unique_ptr<tvd_directory::read_lease> lease(new tvd_directory::read_lease());
++    const auto begin=m_tvd->begin_read(observation,mf->get_access_sector_mask().to_ulong(),
++        *lease,quota_timed()?&service:NULL);
++    if(begin!=tvd_directory::OK) {
++      if(quota_timed())m_quota_row_port.cancel_owner(8,mf->get_request_uid());
++      return wait(M::VICTIM_LOOKUP);
++    }
++    if(quota_timed())m_quota_row_port.commit(key,m_quota_l2_tick);
++    m_ep_l2_payload.pin(observation.payload);m_tvd_read=std::move(lease);
+   }
+   const auto h = m_tvd_read->handle();
+   if (m_ep_l2_payload.request(h, false, now, (unsigned long long)-1,
+@@ -248,15 +389,25 @@ l2_cache::tvd_frontend_result l2_cache::tvd_frontend(mem_fetch *mf,
+   }
+   mf->set_ep_l2_payload_identity(h.payload_id, h.generation);
+   mf->set_ft_wb_data(m_ep_l2_payload.inspect(h).versions);
++  // The response/cancel head is prepaid BEFORE ICNT enqueue. Payload and
++  // reader lifetime remain pinned until the successful enqueue callback.
++  if(quota_timed()) {
++    const auto key=quota_key(9,mf->get_request_uid(),ticket);
++    if(!quota_ready(key))return wait(M::VICTIM_LOOKUP);
++  }
+   return TVD_RESPONSE;
+ }
+ 
+ void l2_cache::tvd_response_commit(mem_fetch *mf, unsigned long long now) {
+   assert(m_tvd_read && mf == m_tvd_lookup);
+   const auto h = m_tvd_read->handle();
+-  assert(m_tvd->response_commit(*m_tvd_read, now) == tvd_directory::OK);
+-  m_ep_l2_payload.unpin(h);
+   const auto ticket=m_tvd_lookup_ticket;
++  const auto key=quota_key(9,mf->get_request_uid(),ticket);
++  const auto service=m_quota_row_port.token(key,m_quota_l2_tick);
++  const auto retired=m_tvd->response_commit(*m_tvd_read,now,quota_timed()?&service:NULL);
++  if(retired!=tvd_directory::OK)throw std::logic_error("response enqueue without paid retirement");
++  if(quota_timed())m_quota_row_port.commit(key,m_quota_l2_tick);
++  m_ep_l2_payload.unpin(h);
+   assert(m_tvd->live(ticket) && m_tvd->at(ticket.index).payload==h);
+   const auto &e=m_tvd->at(ticket.index);
+   const auto &slot=m_ep_l2_payload.inspect(h);
+@@ -276,6 +427,29 @@ void l2_cache::tvd_response_commit(mem_fetch *mf, unsigned long long now) {
+   ms_observe_frontend(mf, now, 0, true, 0); // Actual response enqueue, exactly once.
+ }
+ 
++bool l2_cache::tvd_cancel_frontend_read(mem_fetch*mf,unsigned long long now) {
++  if(!m_tvd_read||m_tvd_lookup!=mf)return false;
++  const auto ticket=m_tvd_lookup_ticket;const auto h=m_tvd_read->handle();
++  if(!m_tvd->live(ticket)||!m_ep_l2_payload.handle_live(h)||
++      m_tvd->at(ticket.index).payload!=h)
++    throw std::logic_error("cancel reader identity");
++  const auto key=quota_key(14,mf->get_request_uid(),ticket);
++  if(quota_timed()) {
++    m_quota_row_port.cancel_owner(9,mf->get_request_uid());
++    if(!quota_ready(key))return false;
++  }
++  const auto service=m_quota_row_port.token(key,m_quota_l2_tick);
++  const auto result=m_tvd->cancel_read(*m_tvd_read,quota_timed()?&service:NULL);
++  if(result!=tvd_directory::OK)return false;
++  if(quota_timed())m_quota_row_port.commit(key,m_quota_l2_tick);
++  m_ep_l2_payload.unpin(h);
++  const auto&e=m_tvd->at(ticket.index);const auto&slot=m_ep_l2_payload.inspect(h);
++  if(!slot.pins&&(e.status==tvd_directory::WB_INFLIGHT||e.status==tvd_directory::WB_COMPLETE))
++    m_ep_l2_payload.transfer(h,ep_l2_payload_store::TVD,
++      e.status==tvd_directory::WB_COMPLETE?ep_l2_payload_store::TVD_VALID:ep_l2_payload_store::TVD_INFLIGHT);
++  m_tvd_read.reset();m_tvd_lookup=NULL;return true;
++}
++
+ bool l2_cache::tvd_promote(mem_fetch *mf, unsigned time, std::list<cache_event> &events) {
+   const auto physical_cycle = m_gpu_cycle_for_tvd();
+   const auto address = m_config.block_addr(mf->get_addr());
+@@ -325,24 +499,42 @@ bool l2_cache::tvd_promote(mem_fetch *mf, unsigned time, std::list<cache_event>
+     evicted_block_info evicted;
+     evicted.set_info(block->m_block_addr, block->get_modified_size(),
+         block->get_dirty_byte_mask(), block->get_dirty_sector_mask());
+-    assert(m_tvd->commit_dirty_promotion(plan, physical_cycle, promoted, wb_ticket) == tvd_directory::OK);
++    const auto key=quota_key(7,mf->get_request_uid(),t);
++    if(quota_timed()&&!quota_ready(key))return false;
++    mem_fetch *packet=m_memfetch_creator->alloc(evicted.m_block_addr,L2_WRBK_ACC,
++        mf->get_access_warp_mask(),evicted.m_byte_mask,evicted.m_sector_mask,
++        evicted.m_modified_size,true,time,-1,-1,-1,NULL,mf->get_streamID());
++    const auto service=m_quota_row_port.token(key,m_quota_l2_tick);
++    const auto result=m_tvd->commit_dirty_promotion(plan,physical_cycle,promoted,wb_ticket,
++        quota_timed()?&service:NULL,packet->get_request_uid(),quota_timed());
++    if(result!=tvd_directory::OK) {
++      delete packet;
++      if(quota_timed())m_quota_row_port.cancel_owner(7,mf->get_request_uid());
++      return false;
++    }
++    if(quota_timed())m_quota_row_port.commit(key,m_quota_l2_tick);
+     ++m_tvd_native_promotions;
+-    assert(m_ep_l2_wad_birth_cycle.insert(std::make_pair(evicted.m_block_addr, physical_cycle)).second);
+-    m_ep_l2_payload.transfer(victim, ep_l2_payload_store::WB, ep_l2_payload_store::WB_STAGED);
+-    auto &p = m_ft_pending; p.request = mf; p.dirty = p.wad = true;
+-    p.tag_index = index; p.victim = p.staging = victim;
+-    p.victim_address = evicted.m_block_addr; p.born = physical_cycle;
+-    p.wad_ticket = wb_ticket;
+-    mem_fetch *packet = m_memfetch_creator->alloc(evicted.m_block_addr, L2_WRBK_ACC,
+-        mf->get_access_warp_mask(), evicted.m_byte_mask, evicted.m_sector_mask,
+-        evicted.m_modified_size, true, time, -1, -1, -1, NULL, mf->get_streamID());
+-    packet->set_chip(mf->get_tlx_addr().chip); packet->set_partition(mf->get_tlx_addr().sub_partition);
+-    send_write_request(packet, cache_event(WRITE_BACK_REQUEST_SENT, evicted), time, events);
+-    assert(p.bound); p = ft_replacement();
++    if(!m_ep_l2_wad_birth_cycle.insert(std::make_pair(evicted.m_block_addr,physical_cycle)).second)
++      throw std::logic_error("promotion WAD birth duplicate");
++    m_ep_l2_payload.transfer(victim,ep_l2_payload_store::WB,ep_l2_payload_store::WB_STAGED);
++    auto&p=m_ft_pending;p.request=mf;p.dirty=p.wad=true;
++    p.tag_index=index;p.victim=p.staging=victim;p.victim_address=evicted.m_block_addr;
++    p.born=physical_cycle;p.wad_ticket=wb_ticket;
++    packet->set_chip(mf->get_tlx_addr().chip);packet->set_partition(mf->get_tlx_addr().sub_partition);
++    send_write_request(packet,cache_event(WRITE_BACK_REQUEST_SENT,evicted),time,events);
++    if(!p.bound)throw std::logic_error("promotion packet not bound");
++    p=ft_replacement();
+   } else {
+-    assert(m_tvd->promote(t, promoted, physical_cycle) == tvd_directory::OK);
++    if(live&&m_ep_l2_payload.inspect(victim).generation==std::numeric_limits<unsigned>::max())
++      throw std::overflow_error("promotion native victim generation exhausted");
++    const auto key=quota_key(6,mf->get_request_uid(),t);
++    if(quota_timed()&&!quota_ready(key))return false;
++    const auto service=m_quota_row_port.token(key,m_quota_l2_tick);
++    const auto result=m_tvd->promote(t,promoted,physical_cycle,quota_timed()?&service:NULL);
++    if(result!=tvd_directory::OK)return false;
++    if(quota_timed())m_quota_row_port.commit(key,m_quota_l2_tick);
+     ++m_tvd_native_promotions;
+-    if (live) m_ep_l2_payload.release(victim);
++    if(live)m_ep_l2_payload.release(victim);
+   }
+   m_ep_l2_payload.transfer(promoted, ep_l2_payload_store::RESIDENT, ep_l2_payload_store::RESIDENT_VALID);
+   m_tag_array->tvd_bind(index, address, time, old.valid_sectors);
+@@ -351,19 +543,80 @@ bool l2_cache::tvd_promote(mem_fetch *mf, unsigned time, std::list<cache_event>
+   return true;
+ }
+ 
++void l2_cache::quota_request_epoch_cleanup() {
++  if(!quota_timed()||!m_tvd||m_cleanup_requested)return;
++  if(m_cleanup_epoch==std::numeric_limits<unsigned long long>::max())
++    throw std::overflow_error("cleanup epoch exhausted");
++  ++m_cleanup_epoch;m_cleanup_requested=true;m_cleanup_done=false;
++  m_cleanup_cursor=0;m_cleanup_requested_at=ft_physical_cycle();
++}
++
++void l2_cache::quota_cleanup_tick(bool origins_empty) {
++  if(!quota_timed()||!m_tvd||!m_cleanup_requested||m_cleanup_done||!origins_empty)return;
++  if(m_ft_pending.request||!m_ft_wb.empty()||!m_ft_read_refs.empty()||m_tvd_read||
++     !m_ep_l2_wad_birth_cycle.empty())return;
++  if(m_selector.active)throw std::logic_error("stale frontend selector at terminal cleanup");
++  if(m_cleanup_cursor>=m_tvd->capacity())throw std::logic_error("cleanup cursor");
++  const auto&e=m_tvd->at(m_cleanup_cursor);
++  const ep_l2_quota_row_port::key key(11,unsigned(m_cleanup_epoch),m_cleanup_cursor,
++      e.incarnation,e.payload.payload_id,e.payload.generation,unsigned(e.status));
++  if(!quota_ready(key))return;
++  const auto service=m_quota_row_port.token(key,m_quota_l2_tick);
++  if(e.status!=tvd_directory::EMPTY) {
++    const tvd_directory::ticket ticket(m_cleanup_cursor,e.incarnation);
++    const auto plan=m_tvd->preview_reserved_reclaim(ticket);
++    if(plan.status!=tvd_directory::OK)throw std::logic_error("terminal mandatory/reader ownership not drained");
++    if(!plan.payload.valid()||!m_ep_l2_payload.handle_owner_matches(plan.payload,e.line))
++      throw std::logic_error("cleanup payload identity");
++    const auto&slot=m_ep_l2_payload.inspect(plan.payload);
++    if(slot.pins||slot.pending_sector_mask.any())throw std::logic_error("cleanup pin/pending ownership");
++    if(slot.generation==std::numeric_limits<unsigned>::max())
++      throw std::overflow_error("cleanup payload generation exhausted");
++    ep_l2::PayloadHandle released;
++    const auto r=m_tvd->commit_reserved_reclaim(plan,released,ft_physical_cycle(),&service);
++    if(r==tvd_directory::COUNTER_BUSY)return;
++    if(r!=tvd_directory::OK)throw std::logic_error("cleanup row grant invalid");
++    m_ep_l2_payload.release(released);
++  }
++  m_quota_row_port.commit(key,m_quota_l2_tick);++m_cleanup_cursor;
++  if(m_cleanup_cursor==m_tvd->capacity()) {
++    if(m_tvd->occupied()||m_quota_row_port.queued())throw std::logic_error("cleanup terminal ownership leak");
++    m_cleanup_done=true;m_cleanup_done_at=ft_physical_cycle();m_tvd_lookup=NULL;
++  }
++}
++
++void l2_cache::quota_print_terminal(FILE*fp,unsigned slice,unsigned long long app_cycles)const {
++  if(!quota_timed())return;
++  fprintf(fp,"EPL2CLEANV2|EPOCH_END|slice=%u|complete=%u|cleanup_requested_at=%llu|cleanup_done_at=%llu|app_after_cleanup_cycles=%llu|cleanup_rows=%u|row_pending=%u|ingress_pending=%u|clean_live=%u\n",
++      slice,m_cleanup_done?1u:0u,m_cleanup_requested_at,m_cleanup_done_at,app_cycles,
++      m_cleanup_cursor,m_quota_row_port.pending(),m_quota_row_port.queued(),m_tvd->clean_occupancy());
++}
++
+ void l2_cache::tvd_epoch_cleanup(unsigned long long now) {
+   if (!m_tvd) return;
+   assert(m_tvd->epoch_ready() && !m_tvd_read);
++  if(quota_timed()) {
++    if(!m_cleanup_done||m_tvd->occupied()||m_quota_row_port.queued())
++      throw std::logic_error("timed flush before clocked terminal cleanup");
++    m_tvd_lookup=NULL;return;
++  }
+   while (tvd_reclaim_one((unsigned)-1, now)) {}
+   assert(m_tvd->occupied() == 0); m_tvd_lookup = NULL;
+ }
+ 
+ void l2_cache::tvd_print(FILE *fp, unsigned slice) {
+   m_tvd->advance(m_gpu_cycle_for_tvd()); const auto &s = m_tvd->stats();
++  if(quota_timed()) {
++    const auto&p=m_quota_row_port.stats();
++    fprintf(fp,"EPL2CLEANV2|METADATA_COST|slice=%u|logical_control_read_views=3|update_execution=SHARED_TOKEN_GATED|row_service_lanes=%u|count_commit_lanes=1|registered_ingress_heads=6|ingress_depth_per_head=1|selector=indexed_paid_scan|selection_probes=%llu|row_read_beats=%llu|row_commit_beats=%llu|row_acks=%llu|counter_writes=%llu|clean_limit=%u|clean_live=%u|PPA=UNKNOWN|metadata_clock_closure=UNKNOWN\n",
++      slice,m_config.m_ep_l2_quota_row_lanes,m_selector_probes,p.read_beats,p.commit_beats,
++      p.acks,m_tvd->counter_writes(),m_tvd->clean_limit(),m_tvd->clean_occupancy());
++  } else {
+   fprintf(fp,"EPL2TVDV3|METADATA_COST|slice=%u|frontend_cam_queries=%llu|frontend_cam_ports=1|completion_cam_queries=%llu|completion_cam_ports=1|indexed_wb_accept=%llu|indexed_rollback=%llu|native_install_commits=%llu|native_promotion_commits=%llu|extra_packet_identity_bits=0|directory_bound_wb_uid_bits=32|indexed_control_read_views=3|indexed_control_update_lanes=3|clean_limit=%u|clean_live=%u|clean_limit_counter_bits=8|metadata_PPA=UNKNOWN|metadata_clock_closure=UNKNOWN\n",
+       slice,m_tvd_lookup_queries,m_tvd_indexed_completions,m_tvd_indexed_accepts,
+       m_tvd_indexed_rollbacks,m_tvd_native_installs,m_tvd_native_promotions,
+       m_tvd->clean_limit(),m_tvd->clean_occupancy());
++  }
+   fprintf(fp, "EPL2TVDV2|SUMMARY|slice=%u|clean_installs=%llu|dirty_installs=%llu|"
+       "read_responses=%llu|dirty_forward_responses=%llu|served_sectors=%llu|served_sector_bytes=%llu|"
+       "promotions=%llu|live=%u|mandatory=%u|role_tvd=%u|retention_slot_cycles=%llu|"
+diff --git a/src/gpgpu-sim/ep-l2-tvd-directory.h b/src/gpgpu-sim/ep-l2-tvd-directory.h
+index 394e65d..75b8f49 100644
+--- a/src/gpgpu-sim/ep-l2-tvd-directory.h
++++ b/src/gpgpu-sim/ep-l2-tvd-directory.h
+@@ -10,17 +10,19 @@
+ #include <stdexcept>
+ #include <utility>
+ #include "ep-l2-ft-interface.h"
++#include "ep-l2-quota-row-port.h"
+ 
+ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+  public:
+   typedef std::uint64_t address_type;
+   typedef std::uint64_t cycle_type;
++  typedef ep_l2_row_service_token service_token;
+   enum state { EMPTY, CLEAN, WB_STAGED, WB_INFLIGHT, WB_COMPLETE };
+   enum operation { READ_OP, WRITE_OP, ATOMIC_OP };
+   enum result {
+     DISABLED, ABSENT, LOOKUP_DELAY, READ_READY, PROMOTE_REQUIRED,
+     WAIT_WRITEBACK, MISSING_SECTOR, PINNED, DIRECTORY_FULL,
+-    INVALID_INPUT, STALE, DATA_TRANSFER_UNPROVEN, OK
++    INVALID_INPUT, STALE, DATA_TRANSFER_UNPROVEN, ROW_PORT_BUSY, COUNTER_BUSY, OK
+   };
+   struct ticket {
+     unsigned index;
+@@ -133,6 +135,14 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+   }
+   ep_l2_tvd_directory(const ep_l2_tvd_directory &) = delete;
+   ep_l2_tvd_directory &operator=(const ep_l2_tvd_directory &) = delete;
++  void enable_timed_service(bool on) {m_service_timed=on;}
++  void service_tick(cycle_type tick) {
++    if(tick<m_service_tick)throw std::logic_error("directory service tick regressed");
++    m_service_tick=tick;
++  }
++  bool timed_service()const{return m_service_timed;}
++  std::uint64_t counter_writes()const{return m_count_writes;}
++  cycle_type counter_last_write_tick()const{return m_count_last_tick;}
+   unsigned capacity() const { return m_capacity; }
+   unsigned clean_limit() const { return m_clean_limit; }
+   unsigned clean_occupancy() const { return m_clean_count; }
+@@ -190,6 +200,22 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+     if (p.index != 128) { p.status = OK; p.displaced = m_entries[p.index].payload; }
+     return p;
+   }
++  install_plan selected_install(address_type line,bool dirty,unsigned index,
++      bool native_owner_proven_unique=false)const {
++    install_plan p;p.revision=m_revision;p.line=line;p.writeback=dirty;
++    p.native_owner_proven_unique=native_owner_proven_unique;
++    if((line&127)||index>=m_capacity){p.status=INVALID_INPUT;return p;}
++    if(!dirty&&(!m_clean||!m_clean_limit)){p.status=DISABLED;return p;}
++    const entry&e=m_entries[index];
++    const bool limited=!dirty&&m_clean_count>=m_clean_limit;
++    if(e.status==EMPTY) {
++      if(limited){p.status=DIRECTORY_FULL;return p;}
++    } else if(!e.reclaimable()||(limited&&e.status!=CLEAN)) {
++      p.status=DIRECTORY_FULL;return p;
++    }
++    p.status=OK;p.index=index;
++    if(e.status!=EMPTY)p.displaced=e.payload;return p;
++  }
+   // Caller pre-reserves landing/control/lower credit and releases displaced
+   // payload only when this commit succeeds. On failure nothing changes.
+   result validate_install(const install_plan &p,address_type line,Handle handle,
+@@ -219,11 +245,15 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+       throw std::logic_error("install old CLEAN count inconsistent before publication");
+     const int target=int(m_clean_count)+(writeback?0:1)-(e.status==CLEAN?1:0);
+     if(target<0||target>int(m_clean_limit))return DIRECTORY_FULL;
++    if(!counter_ready())return COUNTER_BUSY;
+     return OK;
+   }
+   result commit_install(const install_plan &p,address_type line,Handle handle,
+                         unsigned valid,unsigned dirty,unsigned pending,
+-                        bool writeback,cycle_type now,ticket&installed) {
++                        bool writeback,cycle_type now,ticket&installed,
++                        const service_token*service=NULL,unsigned wb_uid=0,bool bind_uid=false) {
++    if(bind_uid&&!writeback)return INVALID_INPUT;
++    if(p.index>=m_capacity||!row_ready(service,p.index,m_entries[p.index].incarnation))return ROW_PORT_BUSY;
+     const result qualified=validate_install(p,line,handle,valid,dirty,pending,writeback);
+     if(qualified!=OK)return qualified;
+     entry&e=m_entries[p.index];
+@@ -233,10 +263,10 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+     bump(e.incarnation);
+     e.status=writeback?WB_STAGED:CLEAN;
+     // One signed-delta commit: CLEAN->CLEAN is one net0 count publication.
+-    m_clean_count=count_target;
++    publish_count(count_target);
+     e.line = line; e.payload = handle;
+     e.valid_sectors = valid; e.dirty_sectors = dirty; e.readers = 0;
+-    e.wb_request_uid = 0; e.wb_uid_bound = false;
++    e.wb_request_uid = bind_uid?wb_uid:0; e.wb_uid_bound = bind_uid;
+     e.age = ++m_age; e.born = now; e.lower_accepted = 0;
+     installed = ticket(p.index, e.incarnation);
+     ++m_revision;
+@@ -271,10 +301,12 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+     o.status = READ_READY;
+     return o;
+   }
+-  result begin_read(const observation &o, unsigned sectors, read_lease &lease) {
++  result begin_read(const observation &o,unsigned sectors,read_lease &lease,
++                    const service_token*service=NULL) {
+     if (lease.active) return INVALID_INPUT;
+     if (o.status != READ_READY || !live(o.identity)) return STALE;
+     entry &e = m_entries[o.identity.index];
++    if(!row_ready(service,o.identity.index,e.incarnation))return ROW_PORT_BUSY;
+     if (!sectors || (sectors & ~e.valid_sectors) ||
+         !same(e.payload, o.payload)) return STALE;
+     if (e.readers == std::numeric_limits<unsigned>::max()) return DIRECTORY_FULL;
+@@ -284,9 +316,11 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+     return OK;
+   }
+   // Invoke ONLY after real payload bank service and successful response enqueue.
+-  result response_commit(read_lease &lease, cycle_type now) {
++  result response_commit(read_lease &lease,cycle_type now,const service_token*service=NULL) {
+     if (!lease.active || lease.owner != this || !live(lease.identity)) return STALE;
+-    advance(now); entry &e = m_entries[lease.identity.index];
++    entry &e=m_entries[lease.identity.index];
++    if(!row_ready(service,lease.identity.index,e.incarnation))return ROW_PORT_BUSY;
++    advance(now);
+     assert(e.readers && same(e.payload, lease.payload));
+     --e.readers; e.age = ++m_age; lease.active = false; ++m_revision;
+     ++m_stats.read_responses;
+@@ -296,19 +330,23 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+     m_stats.served_sectors += count; m_stats.served_sector_bytes += 32 * count;
+     return OK;
+   }
+-  result cancel_read(read_lease &lease) {
++  result cancel_read(read_lease &lease,const service_token*service=NULL) {
+     if (!lease.active || lease.owner != this || !live(lease.identity)) return STALE;
+     entry &e = m_entries[lease.identity.index]; assert(e.readers);
++    if(!row_ready(service,lease.identity.index,e.incarnation))return ROW_PORT_BUSY;
+     --e.readers; lease.active = false; ++m_revision; ++m_stats.cancelled_reads;
+     return OK;
+   }
+   // Caller atomically installs the resident tag using this SAME handle;
+   // prepare all promotion victim/WB resources before calling. No data copy.
+-  result promote(ticket t, Handle &transferred, cycle_type now) {
++  result promote(ticket t,Handle &transferred,cycle_type now,const service_token*service=NULL) {
+     if (!live(t)) return STALE;
+     entry &e = m_entries[t.index];
+     if (e.mandatory()) return WAIT_WRITEBACK;
+     if (e.readers) return PINNED;
++    if(!row_ready(service,t.index,e.incarnation))return ROW_PORT_BUSY;
++    if(e.status==CLEAN&&!counter_ready())return COUNTER_BUSY;
++    preflight_erase(e);
+     advance(now); transferred = e.payload; erase(e); ++m_stats.promotions;
+     return OK;
+   }
+@@ -335,22 +373,29 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+       if (native_owner_proven_unique) assert(!duplicate);
+       else if (duplicate) return p;
+     }
++    if(e.status==CLEAN&&!counter_ready()){p.status=COUNTER_BUSY;return p;}
++    if(e.incarnation==std::numeric_limits<std::uint64_t>::max())
++      throw std::overflow_error("promotion incarnation exhausted before mutation");
+     p.status = OK; p.source = source; p.revision = m_revision;
+     p.victim_line = victim_line; p.victim = victim; p.valid = valid; p.dirty = dirty;
+     p.retain_payload = m_dirty && retain;
+     return p;
+   }
+   result commit_dirty_promotion(const promotion_plan &p, cycle_type now,
+-                                Handle &promoted, ticket &writeback) {
++                                Handle&promoted,ticket&writeback,
++                                const service_token*service=NULL,unsigned wb_uid=0,bool bind_uid=false) {
+     if (p.status != OK) return p.status;
+     if (p.revision != m_revision || !live(p.source)) return STALE;
+     entry &e = m_entries[p.source.index];
+-    assert(!e.mandatory() && !e.readers);
++    if(e.mandatory()||e.readers)return PINNED;
++    if(!row_ready(service,p.source.index,e.incarnation))return ROW_PORT_BUSY;
++    if(e.status==CLEAN&&!counter_ready())return COUNTER_BUSY;
++    preflight_erase(e);
+     advance(now); promoted = e.payload;
+-    if (e.status == CLEAN) { assert(m_clean_count); --m_clean_count; }
++    if(e.status==CLEAN)publish_count(m_clean_count-1);
+     bump(e.incarnation); e.status = WB_STAGED; e.line = p.victim_line;
+     e.payload = p.retain_payload ? p.victim : Handle(); e.valid_sectors = p.valid; e.dirty_sectors = p.dirty;
+-    e.wb_request_uid = 0; e.wb_uid_bound = false;
++    e.wb_request_uid=bind_uid?wb_uid:0;e.wb_uid_bound=bind_uid;
+     e.age = ++m_age; e.born = now; e.lower_accepted = 0;
+     writeback = ticket(p.source.index, e.incarnation);
+     ++m_revision; ++m_stats.promotions; ++m_stats.dirty_installs;
+@@ -373,7 +418,8 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+     p.status=OK;p.payload=e.payload;p.old_state=e.status;
+     p.valid=e.valid_sectors;p.dirty=e.dirty_sectors;return p;
+   }
+-  result commit_reserved_reclaim(const reclaim_plan&p,Handle&released,cycle_type now) {
++  result commit_reserved_reclaim(const reclaim_plan&p,Handle&released,cycle_type now,
++                                const service_token*service=NULL) {
+     if(p.status!=OK)return p.status;
+     if(!live(p.source))return STALE;
+     const entry&e=m_entries[p.source.index];
+@@ -389,29 +435,35 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+     const unsigned count_target=count_before-(e.status==CLEAN?1:0);
+     // One selected-row erase and one actual signed-count update are published
+     // in the caller's paid COMMIT beat. No callback/enqueue occurs in between.
+-    const result r=reclaim(p.source,released,now);
++    const result r=reclaim(p.source,released,now,service);
+     if(r!=OK)return r;
+     if(m_clean_count!=count_target)
+       throw std::logic_error("reserved reclaim count publication mismatch");
+     return OK;
+   }
+-  result reclaim(ticket t, Handle &released, cycle_type now) {
++  result reclaim(ticket t,Handle&released,cycle_type now,const service_token*service=NULL) {
+     if (!live(t)) return STALE;
+     entry &e = m_entries[t.index];
+     if (e.mandatory()) return WAIT_WRITEBACK;
+     if (e.readers) return PINNED;
+-    advance(now); released = e.payload; erase(e); ++m_stats.reclaimed;
++    if(!row_ready(service,t.index,e.incarnation))return ROW_PORT_BUSY;
++    if(e.status==CLEAN&&!counter_ready())return COUNTER_BUSY;
++    preflight_erase(e);
++    advance(now); released=e.payload;erase(e);++m_stats.reclaimed;
+     return OK;
+   }
+-  result rollback_staged(ticket t, cycle_type now) {
++  result rollback_staged(ticket t,cycle_type now,const service_token*service=NULL) {
+     if (!live(t) || m_entries[t.index].status != WB_STAGED) return STALE;
+     if (m_entries[t.index].readers) return PINNED;
+-    advance(now); erase(m_entries[t.index]); return OK;
++    if(!row_ready(service,t.index,m_entries[t.index].incarnation))return ROW_PORT_BUSY;
++    preflight_erase(m_entries[t.index]);
++    advance(now);erase(m_entries[t.index]);return OK;
+   }
+-  result bind_writeback(ticket t, unsigned request_uid) {
++  result bind_writeback(ticket t,unsigned request_uid,const service_token*service=NULL) {
+     if (!live(t) || m_entries[t.index].status != WB_STAGED) return STALE;
+     entry &e = m_entries[t.index];
+     if (e.wb_uid_bound) return INVALID_INPUT;
++    if(!row_ready(service,t.index,e.incarnation))return ROW_PORT_BUSY;
+     e.wb_request_uid = request_uid; e.wb_uid_bound = true; ++m_revision;
+     return OK;
+   }
+@@ -419,16 +471,21 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+     return live(t) && m_entries[t.index].line == line &&
+         m_entries[t.index].wb_uid_bound && m_entries[t.index].wb_request_uid == request_uid;
+   }
+-  result lower_accept(ticket t, bool lower_has_independent_data, cycle_type now) {
++  result lower_accept(ticket t,bool lower_has_independent_data,cycle_type now,
++                      const service_token*service=NULL) {
+     if (!live(t) || m_entries[t.index].status != WB_STAGED) return STALE;
+     if (!lower_has_independent_data) return DATA_TRANSFER_UNPROVEN;
++    if(!row_ready(service,t.index,m_entries[t.index].incarnation))return ROW_PORT_BUSY;
+     advance(now); entry &e = m_entries[t.index];
+     e.status = WB_INFLIGHT; e.lower_accepted = now;
+     ++m_revision; ++m_stats.lower_accepts; return OK;
+   }
+-  result set_done(ticket t, cycle_type now) {
++  result set_done(ticket t,cycle_type now,const service_token*service=NULL) {
+     if (!live(t) || m_entries[t.index].status != WB_INFLIGHT) return STALE;
+-    advance(now); entry &e = m_entries[t.index];
++    entry&e=m_entries[t.index];
++    if(!row_ready(service,t.index,e.incarnation))return ROW_PORT_BUSY;
++    if(!e.payload.valid())preflight_erase(e);
++    advance(now);
+     if (e.payload.valid()) {
+       e.status = WB_COMPLETE; e.dirty_sectors = 0; e.age = ++m_age; ++m_revision;
+     } else { assert(!e.readers); erase(e); }
+@@ -464,13 +521,30 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+       throw std::overflow_error("TVD generation exhausted: drain epoch");
+     ++v;
+   }
+-  void erase(entry &e) {
+-    assert(!e.readers);
+-    if (e.status == CLEAN) { assert(m_clean_count); --m_clean_count; }
++  bool row_ready(const service_token*t,unsigned i,std::uint64_t incarnation)const {
++    return !m_service_timed || (t&&t->valid&&t->index==i&&t->incarnation==incarnation&&t->tick==m_service_tick);
++  }
++  bool counter_ready()const{return !m_service_timed||m_count_last_tick!=m_service_tick;}
++  void publish_count(unsigned target) {
++    if(target>m_clean_limit||!counter_ready())throw std::logic_error("single count lane violated");
++    m_clean_count=target;++m_count_writes;
++    if(m_service_timed)m_count_last_tick=m_service_tick;
++  }
++  void preflight_erase(const entry&e)const {
++    if(e.incarnation==std::numeric_limits<std::uint64_t>::max())
++      throw std::overflow_error("directory incarnation exhausted before erase");
++    if(e.status==CLEAN&&!m_clean_count)throw std::logic_error("CLEAN count underflow before erase");
++  }
++  void erase(entry&e) {
++    assert(!e.readers);preflight_erase(e);
++    if(e.status==CLEAN)publish_count(m_clean_count-1);
+     bump(e.incarnation); e.status = EMPTY;
+     e.payload = Handle(); e.valid_sectors = e.dirty_sectors = 0; ++m_revision;
+     e.wb_uid_bound = false;
+   }
++  bool m_service_timed=false;
++  cycle_type m_service_tick=0,m_count_last_tick=~cycle_type(0);
++  std::uint64_t m_count_writes=0;
+   unsigned m_capacity, m_clean_limit, m_clean_count;
+   bool m_clean, m_dirty;
+   std::uint64_t m_revision;
+diff --git a/src/gpgpu-sim/gpu-cache.cc b/src/gpgpu-sim/gpu-cache.cc
+index d65577b..c491b72 100644
+--- a/src/gpgpu-sim/gpu-cache.cc
++++ b/src/gpgpu-sim/gpu-cache.cc
+@@ -2774,7 +2774,8 @@ void l2_cache::ep_l2_wad_complete(new_addr_type block_addr,
+     assert(m_tvd->live(t) && m_tvd->at(t.index).line==normalized);
+     const auto h=m_tvd->at(t.index).payload;
+     const auto qkey=quota_key(2,completing_request_uid,t);
+-    const auto completion_status = m_tvd->set_done(t,cycle);
++    const auto service=m_quota_row_port.token(qkey,m_quota_l2_tick);
++    const auto completion_status=m_tvd->set_done(t,cycle,quota_timed()?&service:NULL);
+     assert(completion_status==tvd_directory::OK);
+     (void)completion_status;
+     if(m_config.m_ep_l2_quota_row_lanes) {
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index 9b30839..a6a5ad7 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -905,6 +905,7 @@ class cache_config {
+   bool ep_l2_m0a_stats_enabled() const { return m_ep_l2_m0a_stats; }
+   bool ro_requested() const { return m_ro_tag_detach||m_ro_line_mshr_bypass; }
+   unsigned ep_l2_ft_mode() const { return m_ep_l2_ft_mode; }
++  unsigned quota_row_lanes()const{return m_ep_l2_quota_row_lanes;}
+   // ALL_DATA is an independent reference scope on the B16 OFF background.
+   // Expose a read-only compatibility query, never protected mutable fields.
+   bool ep_l2_all_data_config_compatible() const {
+@@ -2965,6 +2966,8 @@ class l2_cache : public data_cache {
+     m_tvd_lookup_wait = m_tvd_wb_wait = m_tvd_bank_wait = m_tvd_resp_wait = m_tvd_lookup_queries = 0;
+     if (config.m_ep_l2_tvd_clean || config.m_ep_l2_tvd_dirty)
+       m_tvd.reset(new ep_l2_tvd_directory<>(128, config.m_ep_l2_tvd_clean, config.m_ep_l2_tvd_dirty, config.m_ep_l2_tvd_clean_limit));
++    if(m_tvd)m_tvd->enable_timed_service(config.m_ep_l2_quota_row_lanes!=0);
++    if(config.m_ep_l2_quota_row_lanes)m_quota_row_port.configure(config.m_ep_l2_quota_row_lanes);
+     if (ft_enabled()) m_tag_array->bind_ft_replacement(&m_ft_pending.request, &m_ft_pending.tag_index);
+   }
+ 
+@@ -3084,6 +3087,8 @@ class l2_cache : public data_cache {
+ 
+   typedef ep_l2_tvd_directory<> tvd_directory;
+   bool tvd_enabled() const { return bool(m_tvd); }
++  bool quota_reader_active_for_test()const{return bool(m_tvd_read);}
++
+   bool tvd_write_candidate(mem_fetch *mf) const {
+     return m_tvd && m_tvd_lookup == mf && m_tvd_lookup_done &&
+         m_tvd->live(m_tvd_lookup_ticket) && (mf->get_is_write() || mf->isatomic());
+@@ -3198,10 +3203,27 @@ class l2_cache : public data_cache {
+   bool ft_drained() const { return ro_drained() && (!ft_enabled() || (!m_ft_pending.request &&
+       m_ft_wb.empty() && m_ft_read_refs.empty() && !m_ep_l2_payload.wb_used() &&
+       !m_ft_quota.reserved && !m_ft_quota.live &&
+-      (!m_tvd || (m_tvd->epoch_ready() && !m_tvd_read)))); }
++       (!m_tvd || (!m_tvd_read && (quota_timed()?
++        (m_ep_l2_wad_birth_cycle.empty()&&!m_quota_row_port.queued()&&!m_selector.active):
++        m_tvd->epoch_ready()))))); }
+   // One tick at the actual L2-domain service boundary. DRAM polls cannot mint
+   // a new READ/COMMIT beat by invoking ready repeatedly in one core cycle.
+-  void quota_l2_tick_begin() {++m_quota_l2_tick;}
++  void quota_l2_tick_begin() {
++    if(m_quota_l2_tick==std::numeric_limits<unsigned long long>::max())
++      throw std::overflow_error("metadata L2 tick exhausted");
++    ++m_quota_l2_tick;m_quota_row_port.tick(m_quota_l2_tick);
++    if(m_tvd)m_tvd->service_tick(m_quota_l2_tick);
++  }
++  bool quota_timed()const{return m_config.m_ep_l2_quota_row_lanes!=0;}
++  void quota_request_epoch_cleanup();
++  void quota_cleanup_tick(bool origins_empty);
++  bool quota_cleanup_busy()const{return quota_timed()&&m_cleanup_requested&&!m_cleanup_done;}
++  bool quota_cleanup_done()const{return !quota_timed()||m_cleanup_done;}
++  void quota_print_terminal(FILE*,unsigned,unsigned long long)const;
++  unsigned quota_cleanup_cursor_for_test()const{return m_cleanup_cursor;}
++  unsigned long long quota_scan_probes_for_test()const{return m_selector_probes;}
++  bool tvd_cancel_frontend_read(mem_fetch*,unsigned long long);
++
+   const ep_l2_quota_row_port&quota_row_port_for_test()const{return m_quota_row_port;}
+   unsigned long long quota_l2_tick_for_test()const{return m_quota_l2_tick;}
+   bool ep_l2_wad_completion_ready(mem_fetch *);
+@@ -3295,6 +3317,14 @@ class l2_cache : public data_cache {
+   bool tvd_cached_wad_contains(mem_fetch *, new_addr_type) const;
+   bool tvd_reclaim_one(unsigned, unsigned long long);
+   bool tvd_frontend_reclaim(mem_fetch *,tvd_directory::ticket,unsigned long long);
++  bool tvd_select_install(mem_fetch*,new_addr_type,bool,tvd_directory::install_plan&);
++  bool tvd_selector_step(unsigned uid,unsigned purpose,new_addr_type line,bool dirty,unsigned bank);
++  void tvd_selector_cancel(unsigned uid);
++  bool quota_ready(const ep_l2_quota_row_port::key&key) {
++    if(!m_quota_row_port.owns(key))m_quota_row_port.cancel_owner(key.producer,key.uid);
++    return m_quota_row_port.ready(key,m_quota_l2_tick);
++  }
++  bool tvd_prepare_dirty_install(mem_fetch*);
+   bool tvd_prepare_clean_install(mem_fetch*,tvd_directory::install_plan&,
+       ep_l2_quota_row_port::key&,bool&);
+   void tvd_commit_clean_install(const tvd_directory::install_plan&,
+@@ -3317,6 +3347,18 @@ class l2_cache : public data_cache {
+   tvd_directory::ticket m_quota_completion_ticket;
+   unsigned long long m_quota_completion_cam_tick=(unsigned long long)-1;
+   unsigned long long m_quota_completion_cam_queries=0;
++  struct quota_selector {
++    bool active=false,done=false,dirty=false;
++    unsigned uid=0,purpose=0,cursor=0,best=128,bank=~0u,clean_count=0;
++    new_addr_type line=0;
++    unsigned best_state=0;
++    unsigned long long best_age=0;
++  } m_selector;
++  unsigned long long m_selector_probes=0;
++  bool m_cleanup_requested=false,m_cleanup_done=false;
++  unsigned m_cleanup_cursor=0;
++  unsigned long long m_cleanup_epoch=0,m_cleanup_requested_at=0,m_cleanup_done_at=0;
++
+   ep_l2_quota_row_port::key quota_key(unsigned producer,unsigned uid,tvd_directory::ticket t) const {
+     assert(m_tvd && m_tvd->live(t));const auto&e=m_tvd->at(t.index);
+     return ep_l2_quota_row_port::key(producer,uid,t.index,t.incarnation,
+@@ -3331,6 +3373,10 @@ class l2_cache : public data_cache {
+     ep_l2_payload_store::slot saved;
+     std::array<unsigned long long,4> copy_versions;
+     tvd_directory::ticket wad_ticket;
++    tvd_directory::install_plan dirty_plan;
++    ep_l2_quota_row_port::key dirty_key;
++    bool dirty_plan_ready=false;
++    unsigned dirty_mask=0;
+     unsigned long long born;
+     bool dirty, wad, landing_reserved, bound, quota_reserved, retain_clean;
+     ft_replacement() : request(NULL), tag_index(0), phase(0), landing_id((unsigned)-1), victim_address(0),
+@@ -3369,7 +3415,9 @@ class l2_cache : public data_cache {
+   void validate_ep_l2_mode_config() const {
+     if(m_config.m_ep_l2_quota_row_lanes>2 || (m_config.m_ep_l2_quota_row_lanes &&
+       (!m_config.m_ep_l2_tvd_clean || !m_config.m_ep_l2_tvd_dirty || m_config.ro_requested() ||
+-       m_config.m_ep_l2_tvd_fixed_entries))) {
++       m_config.m_ep_l2_tvd_fixed_entries || m_config.m_ep_l2_ft_mode!=2 ||
++       m_config.m_ep_l2_wbuf_entries!=16 || m_config.m_ep_l2_bank_ops!=1 ||
++       m_config.m_ep_l2_wb_local_cap || m_config.m_ep_l2_mq2 || m_config.m_ep_l2_rg1))) {
+       fprintf(stderr,"PRIVATE quota row prototype requires WV both classes, ROoff, K1/2\\n");abort();
+     }
+     if (m_config.m_ep_l2_tvd_clean_limit > 128 ||
+diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
+index a144be8..e893286 100644
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -1358,6 +1358,8 @@ bool sst_gpgpu_sim::active() {
+ }
+ 
+ void gpgpu_sim::init() {
++  if(quota_timing_enabled()&&m_config.gpgpu_flush_l2_cache)
++    throw std::invalid_argument("timed CLEAN profile requires flush_l2_cache0 and terminal clocked cleanup");
+   // run a CUDA grid on the GPU microarchitecture simulator
+   gpu_sim_cycle = 0;
+   gpu_sim_insn = 0;
+@@ -2418,6 +2420,26 @@ void shader_core_ctx::dump_warp_state(FILE *fout) const {
+     m_warp[w]->print(fout);
+ }
+ 
++bool gpgpu_sim::quota_timing_enabled()const {
++  return m_memory_config->m_L2_config.quota_row_lanes()!=0;
++}
++void gpgpu_sim::quota_request_terminal_cleanup() {
++  if(!quota_timing_enabled())return;
++  for(unsigned i=0;i<m_memory_config->m_n_mem_sub_partition;++i)
++    m_memory_sub_partition[i]->quota_request_cleanup();
++}
++void gpgpu_sim::quota_print_terminal_contract()const {
++  if(!quota_timing_enabled())return;
++  const auto cycles=gpu_tot_sim_cycle+gpu_sim_cycle;
++  for(unsigned i=0;i<m_memory_config->m_n_mem_sub_partition;++i) {
++    if(!m_memory_sub_partition[i]->quota_cleanup_done())
++      throw std::logic_error("terminal snapshot before paid cleanup");
++    m_memory_sub_partition[i]->quota_print_terminal(stdout,cycles);
++  }
++  printf("EPL2CLEANV2|COMMANDLIST_END|complete=1|app_after_cleanup_cycles=%llu|slices=%u\n",
++    cycles,m_memory_config->m_n_mem_sub_partition);
++}
++
+ bool gpgpu_sim::ro_enabled() const {
+   return m_memory_config->m_L2_config.ro_requested();
+ }
+diff --git a/src/gpgpu-sim/gpu-sim.h b/src/gpgpu-sim/gpu-sim.h
+index 86ba806..dda348e 100644
+--- a/src/gpgpu-sim/gpu-sim.h
++++ b/src/gpgpu-sim/gpu-sim.h
+@@ -645,6 +645,9 @@ class gpgpu_sim : public gpgpu_t {
+   void gpu_print_stat(unsigned long long streamID);
+   void dump_pipeline(int mask, int s, int m) const;
+ 
++  bool quota_timing_enabled()const;
++  void quota_request_terminal_cleanup();
++  void quota_print_terminal_contract()const;
+   bool ro_enabled() const;
+   void ro_bind_commandlist(const char *path);
+   void ro_begin_epoch();
+diff --git a/src/gpgpu-sim/l2cache.cc b/src/gpgpu-sim/l2cache.cc
+index d7e61d1..7de44e0 100644
+--- a/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/l2cache.cc
+@@ -1777,6 +1777,12 @@ void memory_sub_partition::cache_cycle(unsigned cycle) {
+     ep_l2_m0a_sample(m_gpu->gpu_sim_cycle + m_gpu->gpu_tot_sim_cycle);
+     m_L2cache->lifetime_tick_end();
+   }
++  if(!m_config->m_L2_config.disabled()) {
++    const bool origins_empty=m_request_tracker.empty()&&m_icnt_L2_queue->empty()&&
++      m_L2_icnt_queue->empty()&&m_dram_L2_queue->empty()&&m_L2_dram_queue->empty();
++    m_L2cache->quota_cleanup_tick(origins_empty);
++  }
++
+ }
+ 
+ bool memory_sub_partition::full() const { return m_icnt_L2_queue->full(); }
+@@ -2621,7 +2627,14 @@ unsigned memory_sub_partition::invalidateL2() {
+   return 0;
+ }
+ 
+-bool memory_sub_partition::busy() const { return !m_request_tracker.empty(); }
++bool memory_sub_partition::busy()const {
++  // A timed promotion WB can be queued in the cache before the partition
++  // request tracker sees it. Its finite metadata/packet ownership must keep
++  // real L2 clocks running until enqueue/completion, not just at epoch cleanup.
++  return !m_request_tracker.empty()||(!m_config->m_L2_config.disabled()&&
++      (m_L2cache->quota_cleanup_busy()||
++       (m_L2cache->quota_timed()&&!m_L2cache->ft_drained())));
++}
+ 
+ std::vector<mem_fetch *>
+ memory_sub_partition::breakdown_request_to_sector_requests(mem_fetch *mf) {
+diff --git a/src/gpgpu-sim/l2cache.h b/src/gpgpu-sim/l2cache.h
+index b7b1212..38a50a5 100644
+--- a/src/gpgpu-sim/l2cache.h
++++ b/src/gpgpu-sim/l2cache.h
+@@ -304,6 +304,15 @@ class memory_sub_partition {
+   unsigned get_id() const { return m_id; }
+ 
+   bool busy() const;
++  void quota_request_cleanup() {
++    if(!m_config->m_L2_config.disabled())m_L2cache->quota_request_epoch_cleanup();
++  }
++  bool quota_cleanup_done()const {
++    return m_config->m_L2_config.disabled()||m_L2cache->quota_cleanup_done();
++  }
++  void quota_print_terminal(FILE*fp,unsigned long long app_cycles)const {
++    if(!m_config->m_L2_config.disabled())m_L2cache->quota_print_terminal(fp,m_id,app_cycles);
++  }
+ 
+   // One epoch for the entire trace commandlist, never per-kernel.
+   void ro_bind_commandlist(const char *path) { if (m_config->m_L2_config.ro_requested()) m_L2cache->ro_bind_commandlist(path); }
+diff --git a/tests/ep_l2/test_clean_lifecycle_v2.cc b/tests/ep_l2/test_clean_lifecycle_v2.cc
+new file mode 100644
+index 0000000..8445d61
+--- /dev/null
++++ b/tests/ep_l2/test_clean_lifecycle_v2.cc
+@@ -0,0 +1,167 @@
++// New lifecycle-V2 production CPU cases. Frozen old selectors are not run.
++#define main frozen_old_test_main_not_executed
++#include "test_tvd_production.cc"
++#undef main
++using D=l2_cache::tvd_directory;
++static void terminal(scenario&f) {
++ auto before=f.gpu->gpu_sim_cycle;
++ auto reads=f.cache()->quota_row_port_for_test().stats().read_beats;
++ auto commits=f.cache()->quota_row_port_for_test().stats().commit_beats;
++ f.sp->quota_request_cleanup();assert(f.part->busy());
++ for(unsigned i=0;i<200000&&f.part->busy();++i)f.step();
++ assert(!f.part->busy()&&f.sp->quota_cleanup_done());
++ assert(f.cache()->quota_cleanup_cursor_for_test()==128);
++ assert(f.cache()->tvd_for_test()->occupied()==0);
++ assert(f.cache()->ep_l2_payload_for_test().tvd_used()==0);
++ assert(f.cache()->quota_row_port_for_test().queued()==0);
++ assert(f.cache()->quota_row_port_for_test().pending()==0);
++ const auto ticks=f.gpu->gpu_sim_cycle-before;
++ assert(f.cache()->quota_row_port_for_test().stats().read_beats-reads==128);
++ assert(f.cache()->quota_row_port_for_test().stats().commit_beats-commits==128);
++ assert(ticks==384); // registered ingress1 + READ1 + COMMIT1 for every indexed row
++ f.cache()->quota_print_terminal(stdout,0,f.gpu->gpu_sim_cycle);
++ printf("PASS CLOCKED_EPOCH128 ticks=%llu includes_empty_rows_no_free_scan\n",(unsigned long long)ticks);
++}
++static void clean(const char*b,const char*o) {
++ scenario f(b,o,true,true,false,1,2,1,16);
++ for(unsigned i=0;i<6;++i){auto uid=f.push(i*128);f.await(uid);}
++ f.drain();auto*d=f.cache()->tvd_for_test();
++ assert(d->clean_occupancy()>0);
++ auto uid=f.push(0);f.await(uid);f.drain();
++ terminal(f);puts("PASS CLEAN_INSTALL_NET0_READ_LEASE_RETIRED_REAL_QUEUE");
++}
++static void dirty(const char*b,const char*o,bool real) {
++ scenario f(b,o,true,true,false,1,2,1,16);
++ auto step=[&](){
++  f.part->cache_cycle(f.gpu->gpu_sim_cycle);
++  if(real){f.part->dram_cycle();f.part->dram_cycle();f.part->dram_cycle();}
++  else{f.part->simple_dram_model_cycle();f.part->simple_dram_model_cycle();f.part->simple_dram_model_cycle();}
++  ++f.gpu->gpu_sim_cycle;f.collect();
++ };
++ auto wait=[&](unsigned uid){for(unsigned i=0;i<300000&&!f.responses.count(uid);++i)step();assert(f.responses.count(uid));};
++ auto a=f.push(0,true);wait(a);
++ auto z=f.push(128,true);wait(z);
++ auto r=f.push(0);wait(r);
++ assert(f.responses.at(r)==(unsigned long long)a+1);
++ for(unsigned i=0;i<300000&&f.part->busy();++i)step();
++ assert(!f.part->busy()&&f.cache()->ft_drained()&&f.sp->l2_char_no_resource_leak());
++ assert(f.cache()->tvd_for_test()->stats().lower_accepts>0&&f.cache()->tvd_for_test()->stats().wb_completions>0);
++ f.sp->quota_request_cleanup();unsigned n=0;
++ for(;n<300000&&f.part->busy();++n)step();
++ assert(!f.part->busy()&&f.sp->quota_cleanup_done()&&f.cache()->tvd_for_test()->occupied()==0);
++ printf("PASS DIRTY_ATOMIC_WAD_UID_LOWER_COMPLETION_READER path=%s terminal_ticks=%u\n",real?"real_DRAM3_per_L2":"simple3_per_L2",n);
++}
++static void promotion(const char*b,const char*o,bool dirty_victim) {
++ scenario f(b,o,true,true,false,1,2,1,16);
++ auto a=f.push(0);f.await(a);
++ auto z=f.push(128,dirty_victim);f.await(z);f.drain();
++ assert(f.cache()->tvd_for_test()->live(f.cache()->tvd_for_test()->find(0)));
++ auto w=f.push(0,true);f.await(w);auto r=f.push(0);f.await(r);f.drain();
++ assert(f.responses.at(r)==(unsigned long long)w+1);
++ assert(f.cache()->tvd_for_test()->stats().promotions>0);
++ terminal(f);printf("PASS PAID_PROMOTION dirty_native_victim=%u data_identity_preserved\n",dirty_victim?1:0);
++}
++static void rollback(const char*b,const char*o,bool dirty_victim) {
++ scenario f(b,o,true,true,false,1,2,1,16);
++ auto a=f.push(0,dirty_victim);f.await(a);f.drain();
++ auto h=f.cache()->ep_l2_tag_payload_handle_for_test(0);
++ auto mf=f.make(128);auto uid=mf->get_request_uid();f.sp->push(mf,f.gpu->gpu_sim_cycle);
++ const unsigned producer=dirty_victim?5:4;
++ for(unsigned i=0;i<100000&&!f.cache()->quota_row_port_for_test().producer_selected(producer);++i)f.step();
++ assert(f.cache()->quota_row_port_for_test().producer_selected(producer));
++ assert(f.cache()->ft_reservation_active());
++ assert(f.cache()->tvd_for_test()->mandatory()==0);
++ auto counter=f.cache()->tvd_for_test()->clean_occupancy();
++ auto reads=f.cache()->quota_row_port_for_test().stats().read_beats;
++ f.cache()->quota_cancel_pending_clean_for_test();
++ assert(!f.cache()->ft_reservation_active());
++ assert(f.cache()->tvd_for_test()->mandatory()==0&&f.cache()->tvd_for_test()->clean_occupancy()==counter);
++ assert(f.cache()->ep_l2_tag_payload_handle_for_test(0)==h&&f.cache()->ep_l2_payload_for_test().handle_live(h));
++ assert(f.cache()->quota_row_port_for_test().stats().read_beats==reads);
++ f.await(uid);f.drain();terminal(f);
++ printf("PASS PRE_NATIVE_ROLLBACK dirty=%u no_visible_WAD_no_credit_or_payload_loss\n",dirty_victim?1:0);
++}
++static void reader_hold(const char*b,const char*o,bool cancel) {
++ scenario f(b,o,true,true,false,1,2,1,16);
++ auto a=f.push(0);f.await(a);auto z=f.push(128);f.await(z);f.drain();
++ auto*d=f.cache()->tvd_for_test();auto ticket=d->find(0);auto h=d->at(ticket.index).payload;
++ auto mf=f.make(0);auto uid=mf->get_request_uid();
++ auto front=[&](bool space){return f.cache()->tvd_frontend(mf,f.gpu->gpu_sim_cycle,true&&space);};
++ for(unsigned i=0;i<100000&&!f.cache()->quota_reader_active_for_test();++i){front(true);f.step();}
++ assert(f.cache()->quota_reader_active_for_test());
++ assert(d->at(ticket.index).readers==1&&f.cache()->ep_l2_payload_for_test().inspect(h).pins==1);
++ auto retired=d->stats().read_responses;
++ for(unsigned i=0;i<5;++i){assert(front(false)==l2_cache::TVD_WAIT);f.step();}
++ assert(d->at(ticket.index).readers==1&&f.cache()->ep_l2_payload_for_test().inspect(h).pins==1&&d->stats().read_responses==retired);
++ if(cancel) {
++  bool done=false;
++  for(unsigned i=0;i<100000&&!done;++i){done=f.cache()->tvd_cancel_frontend_read(mf,f.gpu->gpu_sim_cycle);if(!done)f.step();}
++  assert(done&&!f.cache()->quota_reader_active_for_test());
++  assert(d->at(ticket.index).readers==0&&f.cache()->ep_l2_payload_for_test().inspect(h).pins==0);
++  delete mf;f.drain();terminal(f);puts("PASS OWNED_READER_CANCEL_PAYS_RETIRE_LIFETIME_RELEASE_ONCE");return;
++ }
++ bool ready=false;
++ for(unsigned i=0;i<100000&&!ready;++i){ready=front(true)==l2_cache::TVD_RESPONSE;if(!ready)f.step();}
++ assert(ready&&d->at(ticket.index).readers==1&&f.cache()->ep_l2_payload_for_test().inspect(h).pins==1);
++ // Model the caller declining enqueue after readiness: no callback is made.
++ assert(front(false)==l2_cache::TVD_WAIT);
++ assert(d->at(ticket.index).readers==1&&f.cache()->ep_l2_payload_for_test().inspect(h).pins==1&&d->stats().read_responses==retired);
++ f.sp->push(mf,f.gpu->gpu_sim_cycle);f.await(uid);f.drain();
++ assert(d->at(ticket.index).readers==0&&f.cache()->ep_l2_payload_for_test().inspect(h).pins==0&&d->stats().read_responses==retired+1);
++ terminal(f);puts("PASS ICNT_REJECTION_NEVER_RELEASES_PAYLOAD_OR_LIFETIME_BEFORE_ENQUEUE");
++}
++static void early_flush(const char*b,const char*o) {
++ scenario f(b,o,true,true,false,1,2,1,16);
++ auto a=f.push(0);f.await(a);auto z=f.push(128);f.await(z);f.drain();
++ auto count=f.cache()->tvd_for_test()->clean_occupancy();
++ bool rejected=false;try{f.sp->flushL2();}catch(const std::logic_error&){rejected=true;}
++ assert(rejected&&f.cache()->tvd_for_test()->clean_occupancy()==count);
++ terminal(f);f.sp->flushL2();puts("PASS UNTICKED_FLUSH_REJECTED_WITHOUT_ROW_LOSS");
++}
++static void general_pressure(const char*b,const char*o) {
++ scenario f(b,o,true,true,false,64,2,16,16);
++ std::array<std::vector<new_addr_type>,64>addresses;
++ const auto&cfg=f.gpu->getMemoryConfig()->m_L2_config;
++ unsigned complete=0;
++ for(new_addr_type a=0x400000;complete<64*16;a+=128) {
++  const auto set=cfg.set_index(a);assert(set<64);
++  if(addresses[set].size()<16){addresses[set].push_back(a);++complete;}
++ }
++ for(unsigned set=0;set<64;++set)for(auto a:addresses[set])f.warm(a);
++ assert(f.cache()->ep_l2_payload_for_test().resident_used()==1024);
++ new_addr_type next=0x10000000,current=addresses[0][0];
++ auto cold=[&](){while(cfg.set_index(next)!=0)next+=128;auto x=next;next+=128;return x;};
++ for(unsigned i=0;i<38;++i) {
++  current=cold();auto uid=f.push(current);f.await(uid);
++  for(unsigned way=1;way<16;++way){auto hit=f.push(addresses[0][way]);f.await(hit);}
++ }
++ f.drain();auto clean=f.cache()->tvd_for_test()->clean_occupancy();assert(clean>0);
++ auto w=f.push(current,true);f.await(w);f.drain();
++ // Restore this modified Native way to actual LRU after the write made it MRU.
++ for(unsigned way=1;way<16;++way){auto hit=f.push(addresses[0][way]);f.await(hit);}
++ f.drain();
++ auto before=f.cache()->quota_scan_probes_for_test();
++ auto uid=f.push(cold());f.await(uid);f.drain();
++ auto probes=f.cache()->quota_scan_probes_for_test()-before;
++ assert(probes>=129);
++ assert(f.cache()->tvd_for_test()->clean_occupancy()<clean);
++ assert(f.cache()->ft_drained()&&f.sp->l2_char_no_resource_leak());
++ terminal(f);
++ printf("PASS GENERAL_RECLAIM_BANK0_PRESSURE paid_probes=%llu clean_before=%u cost_reference_not_performance_optimization\n",
++   (unsigned long long)probes,clean);
++}
++int main(int argc,char**argv) {
++ assert(argc==4);std::string k=argv[3];
++ if(k=="clean")clean(argv[1],argv[2]);
++ else if(k=="dirty")dirty(argv[1],argv[2],false);
++ else if(k=="real_dirty")dirty(argv[1],argv[2],true);
++ else if(k=="promote")promotion(argv[1],argv[2],false);
++ else if(k=="dirty_promote")promotion(argv[1],argv[2],true);
++ else if(k=="rollback")rollback(argv[1],argv[2],false);
++ else if(k=="dirty_rollback")rollback(argv[1],argv[2],true);
++ else if(k=="reader_hold")reader_hold(argv[1],argv[2],false);
++ else if(k=="reader_cancel")reader_hold(argv[1],argv[2],true);
++ else if(k=="early_flush")early_flush(argv[1],argv[2]);
++ else if(k=="general_pressure")general_pressure(argv[1],argv[2]);
++ else return 77;
++}

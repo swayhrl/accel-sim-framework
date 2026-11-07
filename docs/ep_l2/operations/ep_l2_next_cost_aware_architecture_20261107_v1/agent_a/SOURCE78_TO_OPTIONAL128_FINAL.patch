@@ -1,0 +1,1138 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 48cd8c6..eb19800 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -357,3 +357,15 @@ add_executable(ep_l2_tag_capacity_geometry EXCLUDE_FROM_ALL tests/ep_l2/test_tag
+ target_compile_options(ep_l2_tag_capacity_geometry PRIVATE -UNDEBUG)
+ target_include_directories(ep_l2_tag_capacity_geometry PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
+ target_link_libraries(ep_l2_tag_capacity_geometry PRIVATE -Wl,--start-group entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
++
++add_executable(ep_l2_optional128 EXCLUDE_FROM_ALL tests/ep_l2/test_optional128.cc)
++target_include_directories(ep_l2_optional128 PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
++target_link_libraries(ep_l2_optional128 PRIVATE -Wl,--start-group
++  entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group
++  ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
++
++add_executable(ep_l2_optional128_constructor EXCLUDE_FROM_ALL tests/ep_l2/test_optional128_constructor.cc)
++target_include_directories(ep_l2_optional128_constructor PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
++target_link_libraries(ep_l2_optional128_constructor PRIVATE -Wl,--start-group
++  entrypoint cuda ptxsim gpgpusim intersim accelwattch -Wl,--end-group
++  ZLIB::ZLIB OpenGL::GL ${CMAKE_DL_LIBS} pthread)
+diff --git a/src/gpgpu-sim/ep-l2-ft-cache.inc b/src/gpgpu-sim/ep-l2-ft-cache.inc
+index 9b8c8c9..fdb7d4d 100644
+--- a/src/gpgpu-sim/ep-l2-ft-cache.inc
++++ b/src/gpgpu-sim/ep-l2-ft-cache.inc
+@@ -17,6 +17,7 @@ void l2_cache::force_tag_access(new_addr_type addr, unsigned time,
+ bool l2_cache::ft_try_force_tag_access(new_addr_type addr, unsigned time,
+                                       mem_access_sector_mask_t mask) {
+   ep_l2_life::untimed_scope lifetime_untimed;
++  if(m_tvd_optional && m_optional_ever_populated)return false; // explicit initial-only host profile
+   if(m_ro && !m_ro->prefill_allowed(m_config.block_addr(addr)))return false;
+   // This is untimed host initialization, not a source of GPU bank grants or
+   // free WB service. Fail BEFORE changing Tag, generation, owner or offset.
+@@ -337,6 +338,8 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+   }
+   if(probe==RESERVATION_FAIL && m_ro){m_ro->relieve(addr);probe=m_tag_array->probe(owner,index,mf,mf->is_write(),true);if(diagnostic.d)diagnostic.d->add(probe>=0&&probe<=WRITE_ALLOCATED?field(post_relief_hit+probe):post_relief_unknown);}
+   if (probe == RESERVATION_FAIL) return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_tag));
++  if(m_tvd_optional && probe==MISS && !optional_absence_current(mf,physical_cycle))
++    return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_directory));
+   if (m_tvd && probe == MISS &&
+       !(m_tvd_lookup == mf && m_tvd_lookup_done)) return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_directory));
+   // Capture each original short-circuit result without extra modeled checks.
+@@ -384,7 +387,10 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+       ++slots;
+     }
+     if (!miss_queue_has_slots(slots)) { ++m_ft_stats.issue_block; return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_missq)); }
+-    if (dirty && (m_tvd ? m_tvd->preview_install(m_tag_array->get_block(index)->m_block_addr,true,true).status != tvd_directory::OK : m_ep_l2_wad_entries_live.size() >= m_config.m_ep_l2_wad_entries)) {
++    if(m_tvd_optional && live &&
++       !optional_base_selector(mf,m_ep_l2_payload.inspect(victim).owner,dirty,physical_cycle))
++      return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_directory));
++    if (dirty && (m_tvd ? (m_tvd_optional?m_optional_base_plan:m_tvd->preview_install(m_tag_array->get_block(index)->m_block_addr,true,true)).status != tvd_directory::OK : m_ep_l2_wad_entries_live.size() >= m_config.m_ep_l2_wad_entries)) {
+       ++m_ep_l2_wad_full_block_count; return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_wad_full));
+     }
+     ep_l2::PayloadHandle staging, landing;
+@@ -395,7 +401,7 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+     bool retain_clean = false;
+     if (m_tvd && m_config.m_ep_l2_tvd_clean && live && !dirty &&
+         m_ep_l2_payload.inspect(victim).ready_sector_mask.any() &&
+-        m_tvd->preview_install(m_ep_l2_payload.inspect(victim).owner,false,true).status==tvd_directory::OK) {
++        (m_tvd_optional?m_optional_base_plan:m_tvd->preview_install(m_ep_l2_payload.inspect(victim).owner,false,true)).status==tvd_directory::OK) {
+       bool reserved=true;
+       if(m_ep_l2_payload.fixed_victim_entries()) {
+         reserved=m_ep_l2_payload.reserve_fixed_retention(victim);
+@@ -411,8 +417,12 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+     }
+     if (m_config.m_ep_l2_ft_mode == 2 && (dirty || !live)) {
+       landing = m_ep_l2_payload.preview_free(ep_l2_payload_store::RESIDENT, index % 4);
+-      if (!landing.valid() && m_tvd && tvd_reclaim_one(index%4,physical_cycle))
++      if (!landing.valid() && m_tvd && tvd_reclaim_one(index%4,physical_cycle)) {
++        // Paid reclaim changed Base revision: reacquire the install selector on
++        // the next head attempt before creating any replacement transaction.
++        if(m_tvd_optional)return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_landing));
+         landing=m_ep_l2_payload.preview_free(ep_l2_payload_store::RESIDENT,index%4);
++      }
+       if (!landing.valid()) { ++m_ft_stats.pool_full; return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_landing)); }
+       if (dirty) staging = victim;
+     }
+@@ -463,6 +473,15 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+   if (replacement) {
+     ft_replacement &p = m_ft_pending;
+     assert(p.tag_index == index && probe == MISS);
++    if(m_tvd_optional && p.retain_clean) {
++      if(!optional_base_selector(mf,p.saved.owner,false,physical_cycle))
++        return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_directory));
++      assert(m_optional_base_plan.status==tvd_directory::OK);
++      const auto ready=optional_spill_prepare(mf,physical_cycle);
++      if(ready==OPTIONAL_WAIT)
++        return cache_request_status(diagnostic.finish(RESERVATION_FAIL,false,denied_directory));
++      p.retain_extension=ready==OPTIONAL_READY;
++    }
+     if (p.dirty && m_config.m_ep_l2_ft_mode == 1) {
+       // A shared, explicitly costed 128B copy-pipeline latch bridges same-bank
+       // read and write cycles. Both compared organizations include this latch.
+@@ -542,7 +561,9 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+   if (replacement && m_ft_pending.dirty) assert(m_ft_pending.bound);
+   if (replacement && m_ft_pending.retain_clean) {
+     auto &p=m_ft_pending;
+-    if (tvd_install_victim(p.saved.owner,p.victim,p.saved.ready_sector_mask.to_ulong(),0,false,physical_cycle))
++    if (p.retain_extension ?
++        optional_commit_spill(mf,p.saved.owner,p.victim,p.saved.ready_sector_mask.to_ulong(),physical_cycle) :
++        tvd_install_victim(p.saved.owner,p.victim,p.saved.ready_sector_mask.to_ulong(),0,false,physical_cycle))
+       m_ep_l2_payload.transfer(p.victim,ep_l2_payload_store::TVD,ep_l2_payload_store::TVD_VALID);
+     else m_ep_l2_payload.release(p.victim);
+   }
+@@ -558,6 +579,7 @@ enum cache_request_status l2_cache::ft_access(new_addr_type addr, mem_fetch *mf,
+   if (!mf->get_is_write()) mf->set_ft_wb_data(slot.versions);
+   if (replacement) m_ft_pending = ft_replacement();
+   if (m_tvd_lookup==mf) m_tvd_lookup=NULL;
++  m_optional_base_done=false;m_optional_lookup_segment=false;optional_forget_plan();
+   ++m_ft_stats.accepted;
+   m_tag_array->l2_char_tracking_refresh_line(index);
+   assert(m_ep_l2_payload.ownership_consistent());
+diff --git a/src/gpgpu-sim/ep-l2-optional-segment-port.h b/src/gpgpu-sim/ep-l2-optional-segment-port.h
+new file mode 100644
+index 0000000..4a12383
+--- /dev/null
++++ b/src/gpgpu-sim/ep-l2-optional-segment-port.h
+@@ -0,0 +1,27 @@
++#pragma once
++#include <cstdint>
++#include <limits>
++#include "ep-l2-ft-interface.h"
++struct ep_l2_optional_segment_port {
++ enum op { BEGIN_READ=1, END_READ=2, CANCEL_READ=4, INSTALL=8, DROP=16 };
++ std::uint64_t cycle=std::numeric_limits<std::uint64_t>::max(),incarnation=0;
++ unsigned row=128,uid=0,mask=0,count=0;
++ ep_l2::PayloadHandle payload;
++ std::uint64_t grants=0,merges=0,busy=0;
++ bool reserve(unsigned r,std::uint64_t g,unsigned u,ep_l2::PayloadHandle h,
++              op operation,std::uint64_t now) {
++  if(now!=cycle){cycle=now;row=r;incarnation=g;uid=u;payload=h;
++   mask=operation;count=1;++grants;return true;}
++  const bool pair=count==1 && mask==BEGIN_READ &&
++      (operation==END_READ || operation==CANCEL_READ);
++  if(pair && row==r && incarnation==g && uid==u && payload==h) {
++   mask|=operation;++count;++merges;return true;
++  }
++  ++busy;return false;
++ }
++ bool reserved(unsigned r,std::uint64_t g,unsigned u,op operation,
++               std::uint64_t now)const {
++  return cycle==now && row==r && incarnation==g && uid==u && (mask&operation);
++ }
++ // No release/refund API. One clock consumed even after cancellation.
++};
+diff --git a/src/gpgpu-sim/ep-l2-tvd-cache.inc b/src/gpgpu-sim/ep-l2-tvd-cache.inc
+index c6da475..d213682 100644
+--- a/src/gpgpu-sim/ep-l2-tvd-cache.inc
++++ b/src/gpgpu-sim/ep-l2-tvd-cache.inc
+@@ -4,10 +4,165 @@ unsigned long long l2_cache::m_gpu_cycle_for_tvd() const {
+   return ft_physical_cycle();
+ }
+ 
++
++// OPTIONAL128 has one shared 128-row query/selector read fabric.  The legacy
++// base selector is a 128-way state+age reduction, now explicitly two pipeline
++// cycles (127 64-bit age comparisons; physical timing/PPA remains unclosed).
++// Ext replacement is one fixed RR row, never a 128-row min scan.
++// One additional indexed Ext read view (not an address CAM). Same-row
++// fanout can serve read/RCW checks; two different rows in one tick cannot.
++bool l2_cache::optional_read_row(unsigned row,unsigned long long now) {
++  if(m_optional_read_cycle==now) {
++    if(m_optional_read_row!=row || m_optional_read_uid!=m_optional_query_uid ||
++       m_optional_read_fanouts>=2)return false;
++    ++m_optional_read_fanouts;return true;
++  }
++  m_optional_read_cycle=now;m_optional_read_row=row;
++  m_optional_read_uid=m_optional_query_uid;m_optional_read_fanouts=1;
++  ++m_optional_reads;return true;
++}
++// Paid existing Base bank-compatible reduction, used only for landing pressure.
++// No unlimited Ext scan. With <=512 resident tags (<=128/bank), Ext128 alone
++// cannot fill292 physical slots/bank. If no reclaimable Base row exists, a full
++// bank must include finite mandatory/pinned traffic, whose original completion
++// paths remain independent of the frontend and eventually permit this reclaim.
++bool l2_cache::optional_bank_reclaim(unsigned bank,unsigned long long now) {
++  if(!m_optional_reclaim_live || m_optional_reclaim_bank!=bank ||
++     m_optional_reclaim_revision!=m_tvd->revision()) {
++    if(m_tvd_query_cycle==now)return false;
++    m_tvd_query_cycle=now;++m_optional_selector_reads;
++    m_optional_reclaim_row=128;
++    for(auto state:{tvd_directory::CLEAN,tvd_directory::WB_COMPLETE}) {
++      for(unsigned i=0;i<128;++i) {
++        const auto &e=m_tvd->at(i);
++        if(e.status!=state || !e.reclaimable() || !e.payload.valid() ||
++           e.payload.payload_id%4!=bank)continue;
++        if(m_optional_reclaim_row==128 ||
++           e.age<m_tvd->at(m_optional_reclaim_row).age)m_optional_reclaim_row=i;
++      }
++      if(m_optional_reclaim_row!=128)break;
++    }
++    m_optional_reclaim_bank=bank;m_optional_reclaim_revision=m_tvd->revision();
++    m_optional_reclaim_ready=now+2;m_optional_reclaim_live=true;
++    if(m_optional_reclaim_row!=128)
++      m_optional_reclaim_incarnation=m_tvd->at(m_optional_reclaim_row).incarnation;
++    return false;
++  }
++  if(now<m_optional_reclaim_ready || m_optional_reclaim_row==128 ||
++     m_optional_base_front_write==now)return false;
++  const auto t=tvd_directory::ticket(m_optional_reclaim_row,m_optional_reclaim_incarnation);
++  assert(m_tvd->live(t));
++  const auto &e=m_tvd->at(t.index);assert(e.reclaimable() && e.payload.payload_id%4==bank);
++  m_optional_base_front_write=now;ep_l2::PayloadHandle h;
++  assert(m_tvd->reclaim(t,h,now)==tvd_directory::OK);
++  assert(m_ep_l2_payload.inspect(h).pins==0);m_ep_l2_payload.release(h);
++  m_optional_reclaim_live=false;++m_optional_reclaims;optional_forget_plan();
++  return true;
++}
++void l2_cache::optional_forget_plan() {
++  m_optional_base_plan_live=false;m_optional_spill_phase=0;
++}
++bool l2_cache::optional_base_selector(mem_fetch *mf,new_addr_type line,
++    bool wb,unsigned long long now) {
++  if(!m_tvd_optional)return true;
++  if(m_optional_base_plan_live && m_optional_base_uid==mf->get_request_uid() &&
++     m_optional_base_plan.line==line && m_optional_base_plan.writeback==wb &&
++     m_optional_base_plan.revision==m_tvd->revision())
++    return now>=m_optional_base_ready;
++  optional_forget_plan();
++  if(m_tvd_query_cycle==now)return false;
++  m_tvd_query_cycle=now;++m_optional_selector_reads;
++  m_optional_base_plan=m_tvd->preview_install(line,wb,true);
++  m_optional_base_uid=mf->get_request_uid();
++  m_optional_base_ready=now+2;m_optional_base_plan_live=true;
++  return false;
++}
++bool l2_cache::optional_absence_current(mem_fetch *mf,unsigned long long now) {
++  if(!m_tvd_optional || !m_optional_base_done ||
++     m_optional_absence_epoch==m_tvd->creation_epoch())return true;
++  // A producer cannot publish another Base owner while this single frontend
++  // lease exists.  Do not silently cancel a live reader if violated.
++  assert(!m_tvd_read && "unqualified concurrent Base creator with Ext reader");
++  m_optional_base_done=false;m_optional_lookup_segment=false;
++  m_tvd_lookup_done=false;m_tvd_lookup_cycle=now;
++  ++m_optional_replays;optional_forget_plan();
++  return false;
++}
++l2_cache::optional_prepare l2_cache::optional_spill_prepare(mem_fetch *mf,
++    unsigned long long now) {
++  if(!m_tvd_optional || m_config.m_ep_l2_victim_extension!=2 ||
++     !m_optional_base_plan_live ||
++     m_optional_base_plan.status!=tvd_directory::OK ||
++     !m_optional_base_plan.displaced.valid())return OPTIONAL_FALLBACK;
++  const auto &source=m_tvd->at(m_optional_base_plan.index);
++  if(source.status!=tvd_directory::CLEAN || !source.reclaimable())
++    return OPTIONAL_FALLBACK; // Never migrate WB_COMPLETE or mandatory.
++  if(m_optional_spill_phase==0 || m_optional_spill_uid!=mf->get_request_uid()) {
++    if(m_tvd_query_cycle==now)return OPTIONAL_WAIT;
++    m_tvd_query_cycle=now;++m_optional_selector_reads;
++    if(!optional_read_row(m_optional_rr,now))return OPTIONAL_WAIT;
++    const auto &target=m_tvd_optional->at(m_optional_rr);
++    if(target.status!=tvd_directory::EMPTY &&
++       (target.status!=tvd_directory::CLEAN || !target.reclaimable())) {
++      ++m_optional_fallback;return OPTIONAL_FALLBACK; // bounded, no scan
++    }
++    m_optional_target_inc=target.incarnation;
++    m_optional_spill_source=source.payload;
++    m_optional_spill_cycle=now;m_optional_spill_phase=1;
++    m_optional_spill_uid=mf->get_request_uid();
++    return OPTIONAL_WAIT;
++  }
++  if(now<=m_optional_spill_cycle || m_tvd_query_cycle==now)return OPTIONAL_WAIT;
++  m_tvd_query_cycle=now;++m_optional_selector_reads; // actual indexed recheck
++  if(!optional_read_row(m_optional_rr,now))return OPTIONAL_WAIT;
++  const auto &target=m_tvd_optional->at(m_optional_rr);
++  if(target.incarnation!=m_optional_target_inc || target.readers ||
++     !(source.payload==m_optional_spill_source)) {
++    m_optional_spill_phase=0;++m_optional_fallback;return OPTIONAL_FALLBACK;
++  }
++  m_optional_ext_plan=m_tvd_optional->preview_clean_slot(m_optional_rr,source.line,true);
++  if(!m_tvd->spill_ready(m_optional_base_plan,*m_tvd_optional,m_optional_ext_plan,now)) {
++    m_optional_spill_phase=0;++m_optional_fallback;return OPTIONAL_FALLBACK;
++  }
++  if(m_optional_base_front_write==now)return OPTIONAL_WAIT;
++  if(!m_optional_write.reserve(m_optional_rr,m_optional_target_inc,
++       mf->get_request_uid(),source.payload,ep_l2_optional_segment_port::INSTALL,now))
++    return OPTIONAL_WAIT;
++  m_optional_base_front_write=now;
++  return OPTIONAL_READY;
++}
++bool l2_cache::optional_commit_spill(mem_fetch *mf,new_addr_type line,
++    ep_l2::PayloadHandle h,unsigned valid,unsigned long long now) {
++  assert(m_optional_base_front_write==now);
++  assert(m_optional_write.reserved(m_optional_rr,m_optional_target_inc,
++      mf->get_request_uid(),ep_l2_optional_segment_port::INSTALL,now));
++  ep_l2::PayloadHandle displaced;tvd_directory::ticket installed;
++  const auto r=m_tvd->commit_clean_spill(m_optional_base_plan,*m_tvd_optional,
++       m_optional_ext_plan,line,h,valid,now,installed,displaced);
++  assert(r==tvd_directory::OK);
++  if(displaced.valid()) {
++    assert(m_ep_l2_payload.inspect(displaced).pins==0);
++    m_ep_l2_payload.release(displaced);
++  }
++  ++m_tvd_native_installs;++m_optional_spills;
++  m_optional_ever_populated=true;m_optional_rr=(m_optional_rr+1)%128;
++  // Sole head evicts Y while allocating X. Y != X by native tag MISS proof.
++  assert(line!=m_optional_query_line);
++  m_optional_absence_epoch=m_tvd->creation_epoch();
++  optional_forget_plan();return true;
++}
++
+ bool l2_cache::tvd_install_victim(new_addr_type address, ep_l2::PayloadHandle h,
+     unsigned valid, unsigned dirty, bool wb, unsigned long long now,
+     tvd_directory::ticket *installed) {
+-  auto plan = m_tvd->preview_install(address, wb, true);
++  auto plan = m_tvd_optional ? m_optional_base_plan :
++      m_tvd->preview_install(address, wb, true);
++  if(m_tvd_optional) {
++    assert(m_optional_base_plan_live && plan.line==address && plan.writeback==wb);
++    assert(now>=m_optional_base_ready && plan.revision==m_tvd->revision());
++    assert(m_optional_base_front_write!=now);
++    m_optional_base_front_write=now;
++  }
+   if (plan.status != tvd_directory::OK) return false;
+   tvd_directory::ticket ticket;
+   if (m_tvd->commit_install(plan, address, h, valid, dirty, 0, wb, now, ticket) != tvd_directory::OK)
+@@ -18,12 +173,16 @@ bool l2_cache::tvd_install_victim(new_addr_type address, ep_l2::PayloadHandle h,
+     assert(m_ep_l2_payload.inspect(plan.displaced).pins == 0);
+     m_ep_l2_payload.release(plan.displaced);
+   }
++  if(m_tvd_optional) {
++    assert(address!=m_optional_query_line);
++    m_optional_absence_epoch=m_tvd->creation_epoch();optional_forget_plan();
++  }
+   return true;
+ }
+ 
+ bool l2_cache::tvd_cached_wad_contains(mem_fetch *mf, new_addr_type address) const {
+   assert(m_tvd);
+-  if (m_tvd_lookup == mf && m_tvd_lookup_done) {
++  if (m_tvd_lookup == mf && m_tvd_lookup_done && !m_optional_lookup_segment) {
+     const auto t = m_tvd_lookup_ticket;
+     return m_tvd->live(t) && m_tvd->at(t.index).line == address &&
+         m_tvd->at(t.index).mandatory();
+@@ -37,6 +196,9 @@ bool l2_cache::tvd_cached_wad_contains(mem_fetch *mf, new_addr_type address) con
+ }
+ 
+ bool l2_cache::tvd_reclaim_one(unsigned bank, unsigned long long now) {
++  // The segmented candidate pays the same shared reduction fabric for a
++  // bank-compatible Base reclaim. No unpriced all-row fallback is used.
++  if(m_tvd_optional)return optional_bank_reclaim(bank,now);
+   // Mandatory space first reclaims optional clean, then completed WB data.
+   // Pinned reads and pending/inflight WB are never eligible victims.
+   for (auto state : {tvd_directory::CLEAN, tvd_directory::WB_COMPLETE}) {
+@@ -78,28 +240,44 @@ l2_cache::tvd_frontend_result l2_cache::tvd_frontend(mem_fetch *mf,
+     ms_observe_frontend(mf, now, 1ULL << reason, false, known | (1ULL << reason));
+     return TVD_WAIT;
+   };
+-  if (m_tvd_lookup != mf) {
++  if (m_tvd_lookup != mf || (m_tvd_optional && m_optional_query_uid!=mf->get_request_uid())) {
+     assert(!m_tvd_read);
+     m_tvd_lookup = mf; m_tvd_lookup_cycle = now;
+     m_tvd_lookup_done = false;
++    m_optional_base_done=false;m_optional_lookup_segment=false;
++    m_optional_query_uid=mf->get_request_uid();m_optional_query_line=address;
++    optional_forget_plan();
+     ++m_tvd_lookup_wait; return wait(M::VICTIM_LOOKUP);
+   }
+   if (now <= m_tvd_lookup_cycle) return wait(M::VICTIM_LOOKUP);
++  if(!optional_absence_current(mf,now))return wait(M::VICTIM_LOOKUP);
+   if (!m_tvd_lookup_done) {
+     if (m_tvd_query_cycle == now) return wait(M::VICTIM_LOOKUP);
+-    m_tvd_query_cycle = now; ++m_tvd_lookup_queries;
+-    m_tvd_lookup_ticket = m_tvd->find(address);
++    m_tvd_query_cycle = now;
++    if(!m_tvd_optional || !m_optional_base_done) {
++      ++m_tvd_lookup_queries;m_tvd_lookup_ticket=m_tvd->find(address);
++      if(m_tvd_optional && !m_tvd->live(m_tvd_lookup_ticket)) {
++        m_optional_base_done=true;m_optional_absence_epoch=m_tvd->creation_epoch();
++        return wait(M::VICTIM_LOOKUP);
++      }
++    } else {
++      ++m_optional_queries;m_optional_lookup_segment=true;
++      m_tvd_lookup_ticket=m_tvd_optional->find(address);
++    }
+     m_tvd_lookup_done = true;
+   }
++  tvd_directory *directory=m_optional_lookup_segment?m_tvd_optional.get():m_tvd.get();
+   const auto ticket = m_tvd_lookup_ticket;
+-  if (!m_tvd->live(ticket)) return TVD_NORMAL;
++  if(m_optional_lookup_segment && ticket.index<128 &&
++     !optional_read_row(ticket.index,now))return wait(M::VICTIM_LOOKUP);
++  if (!directory->live(ticket)) return TVD_NORMAL;
+   // Dirty pending/inflight reads use a distinct client+UID+generation key
+   // in the existing bank scoreboard. The public r2 adapter delays WB->TVD
+   // role transitions while the reader is pinned. CLEAN_ONLY WAD records have
+   // no retained handle and still return WAIT_WRITEBACK below.
+   auto op = mf->isatomic() ? tvd_directory::ATOMIC_OP :
+             mf->get_is_write() ? tvd_directory::WRITE_OP : tvd_directory::READ_OP;
+-  auto observation = m_tvd->preview_ticket(ticket, mf->get_access_sector_mask().to_ulong(), op);
++  auto observation = directory->preview_ticket(ticket, mf->get_access_sector_mask().to_ulong(), op);
+   known |= 1ULL << M::SAME_ADDRESS_WB;
+   if (observation.status == tvd_directory::WAIT_WRITEBACK) {
+     ++m_tvd_wb_wait; return wait(M::SAME_ADDRESS_WB);
+@@ -109,23 +287,50 @@ l2_cache::tvd_frontend_result l2_cache::tvd_frontend(mem_fetch *mf,
+   if (observation.status == tvd_directory::PINNED) {
+     ++m_tvd_wb_wait; return wait(M::PINNED_PAYLOAD);
+   }
+-  if (op != tvd_directory::READ_OP) return TVD_NORMAL; // ft_access commits promotion
++  if(m_optional_lookup_segment &&
++     (op!=tvd_directory::READ_OP || observation.status==tvd_directory::MISSING_SECTOR)) {
++    // No ext->dirty promotion. Destroy the clean alias before Native fill/write.
++    const auto &e=directory->at(ticket.index);
++    if(e.readers || m_ep_l2_payload.inspect(e.payload).pins)
++      return wait(M::PINNED_PAYLOAD);
++    if(!m_optional_write.reserve(ticket.index,ticket.incarnation,mf->get_request_uid(),
++         e.payload,ep_l2_optional_segment_port::DROP,now))return wait(M::VICTIM_LOOKUP);
++    ep_l2::PayloadHandle released;
++    assert(directory->reclaim(ticket,released,now)==tvd_directory::OK);
++    m_ep_l2_payload.release(released);++m_optional_invalidations;
++    // This head paid the address query and its own DROP just proved absence.
++    // Keep the Base epoch proof, but retire the dead row token. Re-reading that
++    // old row on every retry would monopolize the sole Ext indexed view and
++    // starve a different RR row required by Native replacement.
++    m_tvd_lookup_ticket=tvd_directory::ticket();
++    return TVD_NORMAL;
++  }
++  if (op != tvd_directory::READ_OP) return TVD_NORMAL; // base promotion
+   if (observation.status == tvd_directory::MISSING_SECTOR) {
+     ep_l2::PayloadHandle released;
+-    if (m_tvd->reclaim(ticket, released, now) == tvd_directory::PINNED)
++    if (directory->reclaim(ticket, released, now) == tvd_directory::PINNED)
+       return wait(M::PINNED_PAYLOAD);
+     m_ep_l2_payload.release(released); return TVD_NORMAL;
+   }
+   if (observation.status != tvd_directory::READ_READY) return TVD_NORMAL;
+   known |= 1ULL << M::RESPONSE_QUEUE_FULL;
+   if (!response_space) { ++m_tvd_resp_wait; return wait(M::RESPONSE_QUEUE_FULL); }
++  if(m_optional_lookup_segment && !m_tvd_read &&
++     !m_optional_write.reserve(ticket.index,ticket.incarnation,mf->get_request_uid(),
++        observation.payload,ep_l2_optional_segment_port::BEGIN_READ,now))
++    return wait(M::VICTIM_LOOKUP);
+   if (!m_tvd_read) {
+     assert(m_ep_l2_payload.handle_owner_matches(observation.payload, address));
+     m_tvd_read.reset(new tvd_directory::read_lease());
+-    assert(m_tvd->begin_read(observation, mf->get_access_sector_mask().to_ulong(), *m_tvd_read) == tvd_directory::OK);
++    assert(directory->begin_read(observation, mf->get_access_sector_mask().to_ulong(), *m_tvd_read) == tvd_directory::OK);
+     m_ep_l2_payload.pin(observation.payload);
+   }
+   const auto h = m_tvd_read->handle();
++  // Reserve retire metadata before bank service and response enqueue. A failed
++  // bank grant consumes the port cycle, but retains the single exact lease.
++  if(m_optional_lookup_segment &&
++     !m_optional_write.reserve(ticket.index,ticket.incarnation,mf->get_request_uid(),
++       h,ep_l2_optional_segment_port::END_READ,now))return wait(M::VICTIM_LOOKUP);
+   if (m_ep_l2_payload.request(h, false, now, (unsigned long long)-1,
+       ep_l2_payload_store::TVD_READ, ep_l2_payload_store::FRONTEND, mf->get_request_uid()) != ep_l2_payload_store::GRANTED) {
+     ++m_tvd_bank_wait; return wait(M::DATA_SERVICE);
+@@ -138,11 +343,14 @@ l2_cache::tvd_frontend_result l2_cache::tvd_frontend(mem_fetch *mf,
+ void l2_cache::tvd_response_commit(mem_fetch *mf, unsigned long long now) {
+   assert(m_tvd_read && mf == m_tvd_lookup);
+   const auto h = m_tvd_read->handle();
+-  assert(m_tvd->response_commit(*m_tvd_read, now) == tvd_directory::OK);
++  tvd_directory *directory=m_optional_lookup_segment?m_tvd_optional.get():m_tvd.get();
++  if(m_optional_lookup_segment)assert(m_optional_write.reserved(m_tvd_lookup_ticket.index,
++      m_tvd_lookup_ticket.incarnation,mf->get_request_uid(),ep_l2_optional_segment_port::END_READ,now));
++  assert(directory->response_commit(*m_tvd_read, now) == tvd_directory::OK);
+   m_ep_l2_payload.unpin(h);
+   const auto ticket=m_tvd_lookup_ticket;
+-  assert(m_tvd->live(ticket) && m_tvd->at(ticket.index).payload==h);
+-  const auto &e=m_tvd->at(ticket.index);
++  assert(directory->live(ticket) && directory->at(ticket.index).payload==h);
++  const auto &e=directory->at(ticket.index);
+   const auto &slot=m_ep_l2_payload.inspect(h);
+   // A reader may pin either a WB-role pending victim OR a TVD-role already
+   // accepted victim. Completion while either is pinned must eventually
+@@ -155,6 +363,7 @@ void l2_cache::tvd_response_commit(mem_fetch *mf, unsigned long long now) {
+         e.status==tvd_directory::WB_COMPLETE?ep_l2_payload_store::TVD_VALID:ep_l2_payload_store::TVD_INFLIGHT);
+   }
+   m_tvd_read.reset(); m_tvd_lookup = NULL;
++  m_optional_base_done=false;m_optional_lookup_segment=false;optional_forget_plan();
+   if(m_ro)m_ro->record_accepted(mf);
+   ++m_ft_stats.accepted;
+   ms_observe_frontend(mf, now, 0, true, 0); // Actual response enqueue, exactly once.
+@@ -163,7 +372,7 @@ void l2_cache::tvd_response_commit(mem_fetch *mf, unsigned long long now) {
+ bool l2_cache::tvd_promote(mem_fetch *mf, unsigned time, std::list<cache_event> &events) {
+   const auto physical_cycle = m_gpu_cycle_for_tvd();
+   const auto address = m_config.block_addr(mf->get_addr());
+-  assert(m_tvd_lookup == mf && m_tvd_lookup_done);
++  assert(m_tvd_lookup == mf && m_tvd_lookup_done && !m_optional_lookup_segment);
+   auto t = m_tvd_lookup_ticket;
+   if (!m_tvd->live(t)) return true;
+   const auto old = m_tvd->at(t.index);
+@@ -237,6 +446,8 @@ bool l2_cache::tvd_promote(mem_fetch *mf, unsigned time, std::list<cache_event>
+ 
+ void l2_cache::tvd_epoch_cleanup(unsigned long long now) {
+   if (!m_tvd) return;
++  if(m_tvd_optional && m_optional_ever_populated)
++    throw std::logic_error("OPTIONAL128 runtime cleanup profile is not qualified");
+   assert(m_tvd->epoch_ready() && !m_tvd_read);
+   while (tvd_reclaim_one((unsigned)-1, now)) {}
+   assert(m_tvd->occupied() == 0); m_tvd_lookup = NULL;
+@@ -244,6 +455,22 @@ void l2_cache::tvd_epoch_cleanup(unsigned long long now) {
+ 
+ void l2_cache::tvd_print(FILE *fp, unsigned slice) {
+   m_tvd->advance(m_gpu_cycle_for_tvd()); const auto &s = m_tvd->stats();
++  if(m_tvd_optional) {
++    m_tvd_optional->advance(m_gpu_cycle_for_tvd());
++    fprintf(fp,"EPL2TVDX1|SEGMENT|slice=%u|mode=%u|base_capacity=128|ext_capacity=128|base_live=%u|ext_live=%u|mandatory=%u|ext_mandatory=%u|ext_queries=%llu|base_replays=%llu|spills=%llu|fallback=%llu|invalidations=%llu|selector_reads=%llu|ext_write_grants=%llu|ext_write_merges=%llu|shared_query_ports=1|base_selector_cycles=2|indexed_ext_read_recheck_cycles=2|ext_write_ports=1|ext_indexed_read_views=1|base_reclaim_cycles=2|payload_slots=1168|bank_count=4|bank_ports=1|PPA=UNKNOWN\n",
++      slice,m_config.m_ep_l2_victim_extension,m_tvd->occupied(),m_tvd_optional->occupied(),
++      m_tvd->mandatory(),m_tvd_optional->mandatory(),m_optional_queries,m_optional_replays,
++      m_optional_spills,m_optional_fallback,m_optional_invalidations,m_optional_selector_reads,
++      (unsigned long long)m_optional_write.grants,(unsigned long long)m_optional_write.merges);
++  }
++  if(m_tvd_optional) {
++    const auto &x=m_tvd_optional->stats();
++    fprintf(fp,"EPL2TVDX1|CONTROL|slice=%u|ext_indexed_reads=%llu|paid_base_bank_reclaims=%llu|old_indexed_read_views=3|added_ext_indexed_read_views=1|old_update_lanes=3|added_ext_update_lanes=1|ext_read_responses=%llu|ext_served_sectors=%llu|ext_served_sector_bytes=%llu|ext_clean_installs=%llu|ext_reclaimed=%llu|ext_clean_slot_cycles=%llu|unexported_ext_waits=UNKNOWN\n",
++      slice,m_optional_reads,m_optional_reclaims,
++      (unsigned long long)x.read_responses,(unsigned long long)x.served_sectors,
++      (unsigned long long)x.served_sector_bytes,(unsigned long long)x.clean_installs,
++      (unsigned long long)x.reclaimed,(unsigned long long)x.clean_retention_slot_cycles);
++  }
+   fprintf(fp,"EPL2TVDV3|METADATA_COST|slice=%u|frontend_cam_queries=%llu|frontend_cam_ports=1|completion_cam_queries=%llu|completion_cam_ports=1|indexed_wb_accept=%llu|indexed_rollback=%llu|native_install_commits=%llu|native_promotion_commits=%llu|extra_packet_identity_bits=0|directory_bound_wb_uid_bits=32|indexed_control_read_views=3|indexed_control_update_lanes=3|metadata_PPA=UNKNOWN|metadata_clock_closure=UNKNOWN\n",
+       slice,m_tvd_lookup_queries,m_tvd_indexed_completions,m_tvd_indexed_accepts,
+       m_tvd_indexed_rollbacks,m_tvd_native_installs,m_tvd_native_promotions);
+diff --git a/src/gpgpu-sim/ep-l2-tvd-directory.h b/src/gpgpu-sim/ep-l2-tvd-directory.h
+index 3ce1b89..c1205a7 100644
+--- a/src/gpgpu-sim/ep-l2-tvd-directory.h
++++ b/src/gpgpu-sim/ep-l2-tvd-directory.h
+@@ -115,11 +115,55 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+   explicit ep_l2_tvd_directory(unsigned capacity = 128, bool clean = false,
+                                bool dirty = false)
+       : m_capacity(capacity), m_clean(clean), m_dirty(dirty), m_revision(0),
+-        m_clock(0), m_age(0) {
++        m_clock(0), m_age(0), m_creation_epoch(0) {
+     if (!capacity || capacity > 128) throw std::invalid_argument("WAD/TVD capacity");
+   }
+   ep_l2_tvd_directory(const ep_l2_tvd_directory &) = delete;
+   ep_l2_tvd_directory &operator=(const ep_l2_tvd_directory &) = delete;
++  std::uint64_t creation_epoch() const { return m_creation_epoch; }
++  std::uint64_t revision() const { return m_revision; }
++  // An indexed optional target, not an associative/LRU search.
++  install_plan preview_clean_slot(unsigned index,address_type line,
++                                  bool unique=false) const {
++    install_plan p;p.revision=m_revision;p.line=line;p.writeback=false;
++    p.native_owner_proven_unique=unique;
++    if(index>=m_capacity || (line&127) || !m_clean || m_dirty)return p;
++    const entry &e=m_entries[index];
++    if(e.status!=EMPTY && (!e.reclaimable() || e.status!=CLEAN))return p;
++    if(unique)assert(!live(find(line)));else if(live(find(line)))return p;
++    p.status=OK;p.index=index;if(e.status!=EMPTY)p.displaced=e.payload;return p;
++  }
++  bool spill_ready(const install_plan &p,const ep_l2_tvd_directory &ext,
++                   const install_plan &q,cycle_type now) const {
++    if(p.status!=OK || q.status!=OK || p.writeback || q.writeback ||
++       p.revision!=m_revision || q.revision!=ext.m_revision ||
++       p.index>=m_capacity || q.index>=ext.m_capacity || ext.m_dirty ||
++       now<m_clock || now<ext.m_clock)return false;
++    const entry &a=m_entries[p.index],&b=ext.m_entries[q.index];
++    return a.status==CLEAN && a.reclaimable() && a.payload.valid() &&
++      (b.status==EMPTY || (b.status==CLEAN && b.reclaimable())) &&
++      a.line==q.line && same(a.payload,p.displaced) &&
++      a.incarnation!=std::numeric_limits<std::uint64_t>::max() &&
++      b.incarnation!=std::numeric_limits<std::uint64_t>::max() &&
++      m_creation_epoch!=std::numeric_limits<std::uint64_t>::max() &&
++      ext.m_creation_epoch!=std::numeric_limits<std::uint64_t>::max();
++  }
++  // Both distinct segment write lanes must be reserved by caller BEFORE any
++  // native mutation. No client/query is invoked between these two writes;
++  // hardware publishes them on the same commit edge.
++  result commit_clean_spill(const install_plan &p,ep_l2_tvd_directory &ext,
++       const install_plan &q,address_type line,Handle h,unsigned valid,
++       cycle_type now,ticket &installed,Handle &ext_displaced) {
++    if(!spill_ready(p,ext,q,now) || !h.valid() || !valid || (valid&~15u) ||
++       p.line!=line)return STALE;
++    const entry source=m_entries[p.index];
++    ext_displaced=q.displaced;ticket extra;
++    const result a=commit_install(p,line,h,valid,0,0,false,now,installed);
++    assert(a==OK);
++    const result b=ext.commit_install(q,source.line,source.payload,
++                                    source.valid_sectors,0,0,false,now,extra);
++    assert(b==OK);return OK;
++  }
+   unsigned capacity() const { return m_capacity; }
+   unsigned occupied() const {
+     unsigned n = 0;
+@@ -194,11 +238,15 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+       if (p.native_owner_proven_unique) assert(!duplicate);
+       else if (duplicate) return INVALID_INPUT;
+     }
++    if(m_creation_epoch==std::numeric_limits<std::uint64_t>::max() ||
++       m_entries[p.index].incarnation==std::numeric_limits<std::uint64_t>::max())
++      return INVALID_INPUT;
+     advance(now);
+     entry &e = m_entries[p.index];
+     assert(e.status == EMPTY || e.reclaimable());
+     if (e.status != EMPTY) ++m_stats.reclaimed;
+     bump(e.incarnation);
++    ++m_creation_epoch; // checked, before publishing any new address owner
+     e.status = writeback ? WB_STAGED : CLEAN;
+     e.line = line; e.payload = handle;
+     e.valid_sectors = valid; e.dirty_sectors = dirty; e.readers = 0;
+@@ -312,7 +360,10 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+     if (p.revision != m_revision || !live(p.source)) return STALE;
+     entry &e = m_entries[p.source.index];
+     assert(!e.mandatory() && !e.readers);
++    if(m_creation_epoch==std::numeric_limits<std::uint64_t>::max() ||
++       e.incarnation==std::numeric_limits<std::uint64_t>::max())return INVALID_INPUT;
+     advance(now); promoted = e.payload;
++    ++m_creation_epoch; // dirty promotion publishes a different address
+     bump(e.incarnation); e.status = WB_STAGED; e.line = p.victim_line;
+     e.payload = p.retain_payload ? p.victim : Handle(); e.valid_sectors = p.valid; e.dirty_sectors = p.dirty;
+     e.wb_request_uid = 0; e.wb_uid_bound = false;
+@@ -401,7 +452,7 @@ template <class Handle = ep_l2::PayloadHandle> class ep_l2_tvd_directory {
+   bool m_clean, m_dirty;
+   std::uint64_t m_revision;
+   cycle_type m_clock;
+-  std::uint64_t m_age;
++  std::uint64_t m_age, m_creation_epoch;
+   std::array<entry, 128> m_entries;
+   counters m_stats;
+ };
+diff --git a/src/gpgpu-sim/gpu-cache.h b/src/gpgpu-sim/gpu-cache.h
+index 49f9298..b27f033 100644
+--- a/src/gpgpu-sim/gpu-cache.h
++++ b/src/gpgpu-sim/gpu-cache.h
+@@ -42,6 +42,7 @@
+ #include "ep-l2-ft-interface.h"
+ #include "ep-l2-mechanism-observer.h"
+ #include "ep-l2-tvd-directory.h"
++#include "ep-l2-optional-segment-port.h"
+ #include "ep-l2-tvd-bank-identity.h"
+ 
+ #include <iostream>
+@@ -597,6 +598,7 @@ enum cache_type { NORMAL = 0, SECTOR };
+ class cache_config {
+   friend class ep_l2_ro_runtime;
+  public:
++  unsigned optional_segment_mode()const{return m_ep_l2_victim_extension;}
+   cache_config() {
+     m_valid = false;
+     m_disabled = false;
+@@ -628,6 +630,7 @@ class cache_config {
+     m_ep_l2_feature_ro_pending_state = false;
+     m_ep_l2_feature_tvd = false;
+     m_ep_l2_tvd_clean = m_ep_l2_tvd_dirty = false;
++    m_ep_l2_victim_extension = 0;
+     m_ep_l2_tvd_fixed_entries=0;
+     m_ep_l2_feature_adaptive_policy = false;
+     m_ep_l2_b0_stats = true;
+@@ -911,7 +914,7 @@ class cache_config {
+         !m_ep_l2_ideal_wb && !m_ep_l2_ideal_meta && !m_ep_l2_ideal_read_hit &&
+         !m_ep_l2_mq2 && !m_ep_l2_rg1 && !m_ep_l2_diag_copy_free &&
+         !m_ep_l2_diag_l2_data_free && !m_ep_l2_ms_observer &&
+-        !m_ep_l2_tvd_clean && !m_ep_l2_tvd_dirty && !m_ep_l2_tvd_fixed_entries && !ro_requested();
++        !m_ep_l2_tvd_clean && !m_ep_l2_tvd_dirty && !m_ep_l2_victim_extension && !m_ep_l2_tvd_fixed_entries && !ro_requested();
+   }
+   enum mshr_config_t get_mshr_type() const { return m_mshr_type; }
+   void set_assoc(unsigned n) {
+@@ -1017,6 +1020,7 @@ class cache_config {
+   bool m_ep_l2_feature_ro_pending_state;
+   bool m_ep_l2_feature_tvd;
+   bool m_ep_l2_tvd_clean, m_ep_l2_tvd_dirty;
++  unsigned m_ep_l2_victim_extension;
+   unsigned m_ep_l2_tvd_fixed_entries;
+   bool m_ep_l2_feature_adaptive_policy;
+   // Observational only. Disabling it must not change simulator timing.
+@@ -2960,6 +2964,8 @@ class l2_cache : public data_cache {
+     m_tvd_lookup_wait = m_tvd_wb_wait = m_tvd_bank_wait = m_tvd_resp_wait = m_tvd_lookup_queries = 0;
+     if (config.m_ep_l2_tvd_clean || config.m_ep_l2_tvd_dirty)
+       m_tvd.reset(new ep_l2_tvd_directory<>(128, config.m_ep_l2_tvd_clean, config.m_ep_l2_tvd_dirty));
++    if(config.m_ep_l2_victim_extension)
++      m_tvd_optional.reset(new tvd_directory(128,true,false));
+     if (ft_enabled()) m_tag_array->bind_ft_replacement(&m_ft_pending.request, &m_ft_pending.tag_index);
+   }
+ 
+@@ -3078,9 +3084,17 @@ class l2_cache : public data_cache {
+   }
+ 
+   typedef ep_l2_tvd_directory<> tvd_directory;
++  unsigned get_num_lines_for_optional_test() const { return m_config.get_num_lines(); }
++  const tvd_directory *optional_for_test()const{return m_tvd_optional.get();}
++  unsigned long long optional_queries_for_test()const{return m_optional_queries;}
++  unsigned long long optional_replays_for_test()const{return m_optional_replays;}
++  unsigned long long optional_spills_for_test()const{return m_optional_spills;}
++  unsigned long long optional_reclaims_for_test()const{return m_optional_reclaims;}
++  bool optional_read_row_for_test(unsigned row,unsigned long long now){return optional_read_row(row,now);}
++  unsigned long long optional_write_grants_for_test()const{return m_optional_write.grants;}
+   bool tvd_enabled() const { return bool(m_tvd); }
+   bool tvd_write_candidate(mem_fetch *mf) const {
+-    return m_tvd && m_tvd_lookup == mf && m_tvd_lookup_done &&
++    return m_tvd && !m_optional_lookup_segment && m_tvd_lookup == mf && m_tvd_lookup_done &&
+         m_tvd->live(m_tvd_lookup_ticket) && (mf->get_is_write() || mf->isatomic());
+   }
+   enum tvd_frontend_result { TVD_NORMAL, TVD_WAIT, TVD_RESPONSE };
+@@ -3190,7 +3204,8 @@ class l2_cache : public data_cache {
+   bool ft_drained() const { return ro_drained() && (!ft_enabled() || (!m_ft_pending.request &&
+       m_ft_wb.empty() && m_ft_read_refs.empty() && !m_ep_l2_payload.wb_used() &&
+       !m_ft_quota.reserved && !m_ft_quota.live &&
+-      (!m_tvd || (m_tvd->epoch_ready() && !m_tvd_read)))); }
++      (!m_tvd || (m_tvd->epoch_ready() && !m_tvd_read)) &&
++      (!m_tvd_optional || m_tvd_optional->epoch_ready()))); }
+   bool lower_ready(mem_fetch *mf, unsigned long long cycle) override;
+   bool lower_mq2_safe(mem_fetch *head, mem_fetch *next) override;
+   void lower_accepted(mem_fetch *mf, unsigned long long cycle) override;
+@@ -3281,7 +3296,38 @@ class l2_cache : public data_cache {
+   bool tvd_cached_wad_contains(mem_fetch *, new_addr_type) const;
+   bool tvd_reclaim_one(unsigned, unsigned long long);
+   unsigned long long m_gpu_cycle_for_tvd() const;
++  enum optional_prepare { OPTIONAL_WAIT, OPTIONAL_READY, OPTIONAL_FALLBACK };
++  bool optional_read_row(unsigned,unsigned long long);
++  bool optional_bank_reclaim(unsigned,unsigned long long);
++  bool optional_base_selector(mem_fetch *,new_addr_type,bool,unsigned long long);
++  optional_prepare optional_spill_prepare(mem_fetch *,unsigned long long);
++  bool optional_commit_spill(mem_fetch *,new_addr_type,ep_l2::PayloadHandle,unsigned,unsigned long long);
++  void optional_forget_plan();
++  bool optional_absence_current(mem_fetch *,unsigned long long);
+   std::unique_ptr<tvd_directory> m_tvd;
++  std::unique_ptr<tvd_directory> m_tvd_optional;
++  bool m_optional_base_done=false,m_optional_lookup_segment=false,m_optional_ever_populated=false;
++  unsigned long long m_optional_absence_epoch=0,m_optional_ext_begin=0;
++  unsigned m_optional_query_uid=0;new_addr_type m_optional_query_line=0;
++  ep_l2_optional_segment_port m_optional_write;
++  unsigned m_optional_rr=0;
++  unsigned m_optional_read_row=128,m_optional_read_uid=0,m_optional_read_fanouts=0;
++  unsigned long long m_optional_read_cycle=(unsigned long long)-1,m_optional_reads=0;
++  bool m_optional_reclaim_live=false;
++  unsigned m_optional_reclaim_bank=4,m_optional_reclaim_row=128;
++  unsigned long long m_optional_reclaim_revision=0,m_optional_reclaim_ready=0,
++      m_optional_reclaim_incarnation=0,m_optional_reclaims=0;
++  unsigned m_optional_base_uid=0;unsigned long long m_optional_base_ready=0;
++  bool m_optional_base_plan_live=false;
++  tvd_directory::install_plan m_optional_base_plan;
++  unsigned m_optional_spill_phase=0,m_optional_spill_uid=0;
++  unsigned long long m_optional_spill_cycle=0,m_optional_target_inc=0;
++  ep_l2::PayloadHandle m_optional_spill_source;
++  tvd_directory::install_plan m_optional_ext_plan;
++  unsigned long long m_optional_base_front_write=(unsigned long long)-1;
++  unsigned long long m_optional_queries=0,m_optional_replays=0,
++      m_optional_spills=0,m_optional_fallback=0,m_optional_invalidations=0,
++      m_optional_selector_reads=0,m_optional_read_waits=0;
+   std::unique_ptr<tvd_directory::read_lease> m_tvd_read;
+   mem_fetch *m_tvd_lookup;
+   bool m_tvd_lookup_done;
+@@ -3300,9 +3346,9 @@ class l2_cache : public data_cache {
+     std::array<unsigned long long,4> copy_versions;
+     tvd_directory::ticket wad_ticket;
+     unsigned long long born;
+-    bool dirty, wad, landing_reserved, bound, quota_reserved, retain_clean;
++    bool dirty, wad, landing_reserved, bound, quota_reserved, retain_clean, retain_extension;
+     ft_replacement() : request(NULL), tag_index(0), phase(0), landing_id((unsigned)-1), victim_address(0),
+-        born(0), dirty(false), wad(false), landing_reserved(false), bound(false), quota_reserved(false), retain_clean(false) { copy_versions.fill(0); }
++        born(0), dirty(false), wad(false), landing_reserved(false), bound(false), quota_reserved(false), retain_clean(false), retain_extension(false) { copy_versions.fill(0); }
+   };
+   struct ft_wb_record {
+     ep_l2_payload_store::payload_handle handle;
+@@ -3335,6 +3381,13 @@ class l2_cache : public data_cache {
+   ep_l2_ro_runtime *m_ro;
+   void ro_init();
+   void validate_ep_l2_mode_config() const {
++    if(m_config.m_ep_l2_victim_extension &&
++       (m_config.m_ep_l2_victim_extension>2 || m_config.get_num_lines()>512 || !m_config.m_ep_l2_tvd_clean ||
++        !m_config.m_ep_l2_tvd_dirty || m_config.ro_requested() ||
++        m_config.m_ep_l2_tvd_fixed_entries || m_config.m_ep_l2_diag_copy_free ||
++        m_config.m_ep_l2_diag_l2_data_free)) {
++      fprintf(stderr,"OPTIONAL128 requires exact finite WV/noRO/unpartitioned profile\n");abort();
++    }
+     if ((m_config.m_ep_l2_tvd_clean || m_config.m_ep_l2_tvd_dirty) &&
+         (m_config.m_ep_l2_diag_copy_free || m_config.m_ep_l2_payload_mode != 2 ||
+          m_config.m_ep_l2_descriptor_pool_size != 512 || m_config.m_mshr_entries != 128 ||
+diff --git a/src/gpgpu-sim/gpu-sim.cc b/src/gpgpu-sim/gpu-sim.cc
+index 683b7c8..734be16 100644
+--- a/src/gpgpu-sim/gpu-sim.cc
++++ b/src/gpgpu-sim/gpu-sim.cc
+@@ -343,6 +343,7 @@ void memory_config::reg_options(class OptionParser *opp) {
+   option_parser_register(opp,"-gpgpu_ep_l2_tvd_fixed_entries",OPT_UINT32,
+       &m_L2_config.m_ep_l2_tvd_fixed_entries,"Fixed victim/non-victim bank quotas:0 dynamic,64 fixed (1168 total)","0");
+   option_parser_register(opp,"-gpgpu_ep_l2_tvd_clean",OPT_BOOL,&m_L2_config.m_ep_l2_tvd_clean,"study CLEAN_ONLY", "0");
++  option_parser_register(opp,"-gpgpu_ep_l2_victim_extension",OPT_UINT32,&m_L2_config.m_ep_l2_victim_extension,"0 legacy;1 costed empty128 segment;2 clean cascade128 segment", "0");
+   option_parser_register(opp,"-gpgpu_ep_l2_tvd_dirty",OPT_BOOL,&m_L2_config.m_ep_l2_tvd_dirty,"study DIRTY_PENDING_INFLIGHT (new source, native qualification required)", "0");
+   option_parser_register(opp, "-gpgpu_ep_l2_feature_tvd", OPT_BOOL,
+                          &m_L2_config.m_ep_l2_feature_tvd,
+diff --git a/src/gpgpu-sim/gpu-sim.h b/src/gpgpu-sim/gpu-sim.h
+index 86ba806..afa7217 100644
+--- a/src/gpgpu-sim/gpu-sim.h
++++ b/src/gpgpu-sim/gpu-sim.h
+@@ -436,6 +436,9 @@ class gpgpu_sim_config : public power_config,
+     m_shader_config.init();
+     ptx_set_tex_cache_linesize(m_shader_config.m_L1T_config.get_line_sz());
+     m_memory_config.init();
++    if(m_memory_config.m_L2_config.optional_segment_mode() && gpgpu_flush_l2_cache) {
++      fprintf(stderr,"OPTIONAL128 runtime L2 flush profile is not qualified\n");abort();
++    }
+     init_clock_domains();
+     power_config::init();
+     Trace::init();
+diff --git a/src/gpgpu-sim/l2cache.cc b/src/gpgpu-sim/l2cache.cc
+index fc7f70d..058c6c2 100644
+--- a/src/gpgpu-sim/l2cache.cc
++++ b/src/gpgpu-sim/l2cache.cc
+@@ -2613,7 +2613,14 @@ unsigned memory_sub_partition::invalidateL2() {
+   return 0;
+ }
+ 
+-bool memory_sub_partition::busy() const { return !m_request_tracker.empty(); }
++bool memory_sub_partition::busy() const {
++  // Segmented profiles own finite WB/lease state before a packet necessarily
++  // reaches memport's tracker. Keep ticking until that real owned work drains.
++  // Mode0 preserves the frozen legacy scheduling behavior.
++  return !m_request_tracker.empty() ||
++      (m_config->m_L2_config.optional_segment_mode() && m_L2cache &&
++       !m_L2cache->ft_drained());
++}
+ 
+ std::vector<mem_fetch *>
+ memory_sub_partition::breakdown_request_to_sector_requests(mem_fetch *mf) {
+diff --git a/tests/ep_l2/test_optional128.cc b/tests/ep_l2/test_optional128.cc
+new file mode 100644
+index 0000000..7ca8279
+--- /dev/null
++++ b/tests/ep_l2/test_optional128.cc
+@@ -0,0 +1,299 @@
++// Actual memory_sub_partition/cache/memport/response producers. Version labels
++// are symbolic complete-sector labels; dataless SASS is not full-byte evidence.
++#include <cassert>
++#include <cstdio>
++#include <map>
++#include <set>
++#include "../../libcuda/gpgpu_context.h"
++#include "../../src/gpgpu-sim/gpu-sim.h"
++#include "../../src/gpgpu-sim/icnt_wrapper.h"
++#include "../../src/gpgpu-sim/l2cache.h"
++#include "../../src/gpgpu-sim/mem_latency_stat.h"
++#include "../../src/option_parser.h"
++
++struct scenario {
++  gpgpu_context context; gpgpu_sim_config cfg;
++  exec_gpgpu_sim *gpu; memory_stats_t *stats; memory_partition_unit *part;
++  memory_sub_partition *sp; partition_mf_allocator *alloc;
++  std::map<unsigned, unsigned long long> responses;
++  std::set<unsigned> bypass_responses;
++  // Observe actual lower FIFO removals without replacing the DRAM producer.
++  std::map<unsigned, unsigned> issued_lower_reads;
++  unsigned long long audited_cycles = 0;
++  unsigned max_physical_bank_grants = 0;
++  explicit scenario(const char *base, const char *overlay, bool dirty=false, bool tvd=true, bool hold=false, unsigned sets=1, unsigned ft_mode=2, unsigned ways=1, unsigned wbuf=16, bool texture_only=false, unsigned extension=0)
++      : cfg(&context) {
++    option_parser_t p=option_parser_create(); context.ptx_reg_options(p);
++    context.func_sim->ptx_opcocde_latency_options(p); icnt_reg_options(p); cfg.reg_options(p);
++    option_parser_cfgfile(p,base); option_parser_cfgfile(p,overlay);
++    const std::string mode=std::to_string(ft_mode);
++    const std::string entries=std::to_string(wbuf);
++    const char *args[]={"tvd-test", "-gpgpu_ep_l2_ft_mode",mode.c_str(), "-gpgpu_ep_l2_wbuf_entries",entries.c_str(),
++      "-gpgpu_dram_partition_queues","64:128:64:1", "-gpgpu_ep_l2_tvd_clean",tvd?"1":"0",
++      "-gpgpu_ep_l2_tvd_dirty",dirty?"1":"0"};
++    option_parser_cmdline(p,11,args);
++    if(texture_only) {
++      const char *routing[]={"tvd-test","-gpgpu_cache:dl2_texture_only","1"};
++      option_parser_cmdline(p,3,routing);
++    }
++    std::string geometry="S:"+std::to_string(sets)+":128:"+std::to_string(ways)+",L:B:m:L:L,A:128:1,256:0,32";
++    const char *geo[]={"tvd-test","-gpgpu_cache:dl2",geometry.c_str()}; option_parser_cmdline(p,3,geo);
++    if (hold) {
++      const char *block[]={"tvd-test","-gpgpu_dram_partition_queues","2048:2:64:1",
++        "-gpgpu_l2_char_dram_issue_hold_after_issues","0", "-gpgpu_l2_char_dram_issue_hold_cycles","1000000"};
++      option_parser_cmdline(p,7,block);
++    }
++    const std::string ext=std::to_string(extension);
++    const char *ea[]={"optional-test","-gpgpu_ep_l2_victim_extension",ext.c_str()};
++    option_parser_cmdline(p,3,ea);
++    cfg.init(); option_parser_destroy(p);
++    gpu=new exec_gpgpu_sim(cfg,&context); const memory_config *mc=gpu->getMemoryConfig();
++    stats=new memory_stats_t(cfg.num_shader(),gpu->getShaderCoreConfig(),mc,gpu);
++    part=new memory_partition_unit(0,mc,stats,gpu); sp=part->get_sub_partition(0);
++    alloc=new partition_mf_allocator(mc);
++  }
++  // Real host prefill hook, with actual memcpy offset accumulation. It may
++  // initialize one declared sector only and must not perform a GPU bank op.
++  void warm(new_addr_type address, unsigned repeats=1) {
++    mem_access_sector_mask_t mask; mask.set((address>>5)&3);
++    const auto physical_cycle=gpu->gpu_tot_sim_cycle+gpu->gpu_sim_cycle;
++    unsigned long long before[4];
++    for(unsigned b=0;b<4;++b) before[b]=sp->ft_bank_grants_for_test(b);
++    for(unsigned i=0;i<repeats;++i) sp->force_l2_tag_update(address,physical_cycle,mask);
++    assert(gpu->gpu_tot_sim_cycle+gpu->gpu_sim_cycle==physical_cycle);
++    for(unsigned b=0;b<4;++b) assert(sp->ft_bank_grants_for_test(b)==before[b]);
++  }
++  bool try_warm(new_addr_type address) {
++    mem_access_sector_mask_t mask;mask.set((address>>5)&3);
++    const auto offset=sp->ft_memcpy_offset_for_test();
++    unsigned long long before[4];
++    for(unsigned b=0;b<4;++b)before[b]=sp->ft_bank_grants_for_test(b);
++    const bool accepted=sp->ft_try_force_l2_tag_update(address,
++        gpu->gpu_tot_sim_cycle+gpu->gpu_sim_cycle,mask);
++    assert(sp->ft_memcpy_offset_for_test()==offset+(accepted?1:0));
++    for(unsigned b=0;b<4;++b)assert(sp->ft_bank_grants_for_test(b)==before[b]);
++    return accepted;
++  }
++  ~scenario() { delete alloc; delete part; delete stats; delete gpu; }
++  l2_cache *cache() { return sp->ft_cache_for_test(); }
++  mem_fetch *make(new_addr_type address, bool write=false, bool texture=false) {
++    active_mask_t active; active.set(0); mem_access_byte_mask_t bytes;
++    const unsigned sector=(address>>5)&3;
++    for(unsigned i=sector*32;i<sector*32+32;++i) bytes.set(i);
++    mem_access_sector_mask_t sectors; sectors.set(sector);
++    assert(!texture || !write);
++    if(texture) {
++      // istexture() reads the instruction's space, not the access-type enum.
++      warp_inst_t instruction(gpu->getShaderCoreConfig());instruction.initiation_interval=1;
++      instruction.space=memory_space_t(tex_space);
++      instruction.issue(active,0,gpu->gpu_sim_cycle,0,0,0);
++      mem_access_t access(TEXTURE_ACC_R,address,32,false,active,bytes,sectors,&context);
++      auto mf=new mem_fetch(access,&instruction,0,8,0,0,0,gpu->getMemoryConfig(),gpu->gpu_sim_cycle);
++      assert(mf->istexture());return mf;
++    }
++    return alloc->alloc(address,write?GLOBAL_ACC_W:GLOBAL_ACC_R,active,bytes,sectors,32,write,
++        gpu->gpu_sim_cycle,0,0,0,NULL,0);
++  }
++  unsigned push_partial_write(new_addr_type address) {
++    active_mask_t active; active.set(0); mem_access_byte_mask_t bytes;
++    unsigned sector=(address>>5)&3;
++    for(unsigned b=sector*32;b<sector*32+4;++b) bytes.set(b);
++    mem_access_sector_mask_t mask; mask.set(sector);
++    auto mf=alloc->alloc(address,GLOBAL_ACC_W,active,bytes,mask,32,true,gpu->gpu_sim_cycle,0,0,0,NULL,0);
++    unsigned uid=mf->get_request_uid();sp->push(mf,gpu->gpu_sim_cycle);return uid;
++  }
++  unsigned push_atomic(new_addr_type address) {
++    active_mask_t active; active.set(0); mem_access_byte_mask_t bytes;
++    unsigned sector=(address>>5)&3;
++    for(unsigned b=sector*32;b<sector*32+32;++b) bytes.set(b);
++    mem_access_sector_mask_t mask; mask.set(sector);
++    warp_inst_t instruction(gpu->getShaderCoreConfig()); instruction.initiation_interval=1;
++    instruction.space = memory_space_t(global_space);
++    instruction.issue(active,0,gpu->gpu_sim_cycle,0,0,0);
++    instruction.add_callback(0,NULL,NULL,NULL,true);
++    mem_access_t access(GLOBAL_ACC_R,address,32,false,active,bytes,mask,&context);
++    auto mf=new mem_fetch(access,&instruction,0,8,0,0,0,gpu->getMemoryConfig(),gpu->gpu_sim_cycle);
++    assert(mf->isatomic()); unsigned uid=mf->get_request_uid();
++    sp->push(mf,gpu->gpu_sim_cycle); return uid;
++  }
++  unsigned push(new_addr_type address, bool write=false) {
++    auto mf=make(address,write); unsigned uid=mf->get_request_uid();
++    sp->push(mf,gpu->gpu_sim_cycle); return uid;
++  }
++  void collect() {
++    while(auto mf=sp->pop()) {
++      assert(!responses.count(mf->get_request_uid()));
++      assert(!bypass_responses.count(mf->get_request_uid()));
++      // Zero is an explicit sector-version label. A missing read payload must
++      // not silently become zero and make warmed/clean read assertions pass.
++      assert((mf->get_is_write() || mf->has_ft_wb_data()) &&
++             "FT/TVD read response requires explicit sector-version backing");
++      unsigned sector=(mf->get_addr()>>5)&3;
++      responses[mf->get_request_uid()]=mf->has_ft_wb_data()?mf->get_ft_wb_data()[sector]:0;
++      delete mf;
++    }
++  }
++  void step(bool drain=true) {
++    unsigned long long before[4];
++    for(unsigned b=0;b<4;++b) before[b]=sp->ft_bank_grants_for_test(b);
++    part->cache_cycle(gpu->gpu_sim_cycle);
++    const auto lower=sp->L2_dram_queue_empty()?nullptr:sp->L2_dram_queue_top();
++    const bool pending_read=lower && !lower->get_is_write();
++    const auto lower_uid=lower?lower->get_request_uid():0;
++    part->simple_dram_model_cycle();
++    // A real accepted DRAM issue removes this exact FIFO head. The cache
++    // memport counter intentionally excludes the direct texture-only bypass.
++    const auto next=sp->L2_dram_queue_empty()?nullptr:sp->L2_dram_queue_top();
++    if(pending_read && next!=lower)
++      ++issued_lower_reads[lower_uid];
++    for(unsigned b=0;b<4;++b) {
++      const auto grants=sp->ft_bank_grants_for_test(b)-before[b];
++      assert(grants<=1 && "at most one grant per bank per physical GPU cycle");
++      max_physical_bank_grants=std::max(max_physical_bank_grants,(unsigned)grants);
++    }
++    ++audited_cycles;
++    ++gpu->gpu_sim_cycle; if(drain) collect();
++  }
++  void await(unsigned uid) {
++    for(unsigned n=0;n<10000&&!responses.count(uid);++n) step();
++    assert(responses.count(uid));
++  }
++  void drain() {
++    for(unsigned n=0;n<200000 && part->busy();++n) step();
++    assert(!part->busy() && !sp->ep_l2_wad_occupancy());
++    assert(sp->l2_char_no_resource_leak());
++  }
++  void clock_report() {
++    assert(audited_cycles && max_physical_bank_grants==1);
++    printf("TVD_REPAIR_CLOCK|cycles=%llu|max_grants_per_physical_bank_cycle=%u\n",
++        audited_cycles,max_physical_bank_grants);
++  }
++};
++
++
++#include "../../src/gpgpu-sim/ep-l2-optional-segment-port.h"
++static unsigned owners(scenario &f,new_addr_type line) {
++  unsigned n=0;
++  for(auto dir:{f.cache()->tvd_for_test(),f.cache()->optional_for_test()})
++    if(dir)for(unsigned i=0;i<dir->capacity();++i)
++      if(dir->at(i).status!=l2_cache::tvd_directory::EMPTY && dir->at(i).line==line)++n;
++  for(unsigned i=0;i<f.cache()->get_num_lines_for_optional_test();++i) {
++    const auto h=f.cache()->ep_l2_tag_payload_handle_for_test(i);
++    if(f.cache()->ep_l2_payload_for_test().handle_live(h) &&
++       f.cache()->ep_l2_payload_for_test().inspect(h).owner==line)++n;
++  }
++  return n;
++}
++static void capacity_and_alias(const char *base,const char *overlay,unsigned mode) {
++  scenario f(base,overlay,true,true,false,1,2,1,16,false,mode);
++  auto b=f.cache()->tvd_for_test();auto x=f.cache()->optional_for_test();
++  for(unsigned i=0;i<257;++i){
++    auto u=f.push(new_addr_type(i)*128);f.await(u);
++    // Inject distinct symbolic clean sector labels only in this CPU fixture.
++    // This tests preserving an existing clean handle, not an application oracle.
++    auto h=f.cache()->ep_l2_tag_payload_handle_for_test(0);
++    const_cast<ep_l2_payload_store&>(f.cache()->ep_l2_payload_for_test()).inspect_mutable(h).versions[0]=i+1000;
++  }
++  f.drain();assert(b->occupied()==128 && !b->mandatory());
++  if(mode==2) {
++    assert(x && x->occupied()==128 && !x->mandatory());
++    for(unsigned i=0;i<257;++i)assert(owners(f,new_addr_type(i)*128)==1);
++    for(auto d:{b,x})for(unsigned i=0;i<128;++i) {
++      const auto &e=d->at(i);
++      assert(f.cache()->ep_l2_payload_for_test().inspect(e.payload).versions[0]==e.line/128+1000);
++    }
++    const auto q0=f.cache()->tvd_lookup_queries_for_test(),q1=f.cache()->optional_queries_for_test();
++    auto u=f.push(128*200);f.await(u);assert(f.responses.at(u)==1200);
++    assert(f.cache()->tvd_lookup_queries_for_test()==q0+1 &&
++           f.cache()->optional_queries_for_test()==q1);
++    const auto extline=x->at(0).line;auto q2=f.cache()->optional_queries_for_test();
++    u=f.push(extline);f.await(u);assert(f.responses.at(u)==extline/128+1000);
++    assert(f.cache()->optional_queries_for_test()==q2+1);
++    u=f.push(extline+32);f.await(u);assert(f.responses.at(u)==0);
++    assert(owners(f,extline)==1 && !x->live(x->find(extline)));
++    auto w=f.push(extline+32,true);f.await(w);
++    u=f.push(extline+32);f.await(u);assert(f.responses.at(u)==(unsigned long long)w+1);
++    assert(owners(f,extline)==1);
++    const auto extwrite=x->at(1).line;w=f.push(extwrite,true);f.await(w);
++    u=f.push(extwrite);f.await(u);assert(f.responses.at(u)==(unsigned long long)w+1);
++    assert(owners(f,extwrite)==1 && !f.try_warm(999999*128ULL));
++    for(unsigned i=257;i<270;++i){u=f.push(new_addr_type(i)*128);f.await(u);}
++    f.drain();assert(b->occupied()+x->occupied()<=256 && b->mandatory()<=128);
++    assert(f.cache()->ep_l2_payload_for_test().physical_slots()==1168);
++    assert(f.cache()->ep_l2_payload_for_test().ownership_consistent());
++    assert(f.cache()->optional_spills_for_test()>=128);
++  } else {
++    assert(!x || !x->occupied());assert(f.cache()->optional_spills_for_test()==0);
++    if(mode==1)assert(f.cache()->optional_queries_for_test()>=257);
++  }
++  f.cache()->tvd_print(stdout,0);
++  printf("PASS optional_capacity_alias_mode_%u|base=%u|extra=%u\n",mode,b->occupied(),x?x->occupied():0);
++}
++static void epoch_interleaving(const char *base,const char *overlay) {
++  scenario f(base,overlay,true,true,false,1,2,1,16,false,2);
++  auto mf=f.make(4096);auto cache=f.cache();auto now=f.gpu->gpu_sim_cycle;
++  assert(cache->optional_read_row_for_test(0,now));
++  assert(cache->optional_read_row_for_test(0,now));
++  assert(!cache->optional_read_row_for_test(1,now));
++  assert(!cache->optional_read_row_for_test(0,now)); // bounded same-row fanout
++
++  assert(cache->tvd_frontend(mf,now,true)==l2_cache::TVD_WAIT);++f.gpu->gpu_sim_cycle;
++  assert(cache->tvd_frontend(mf,++now,true)==l2_cache::TVD_WAIT);
++  auto b=const_cast<l2_cache::tvd_directory*>(cache->tvd_for_test());
++  auto &store=const_cast<ep_l2_payload_store&>(cache->ep_l2_payload_for_test());
++  auto free=store.preview_free(ep_l2_payload_store::TVD);
++  auto h=store.reserve(free.payload_id,ep_l2_payload_store::TVD,8192,ep_l2_payload_store::TVD_VALID);
++  auto plan=b->preview_install(8192,false,true);l2_cache::tvd_directory::ticket t;
++  assert(b->commit_install(plan,8192,h,1,0,0,false,now,t)==l2_cache::tvd_directory::OK);
++  ++f.gpu->gpu_sim_cycle;
++  assert(cache->tvd_frontend(mf,++now,true)==l2_cache::TVD_WAIT);
++  assert(cache->optional_replays_for_test()==1 && cache->optional_queries_for_test()==0);
++  ++f.gpu->gpu_sim_cycle;assert(cache->tvd_frontend(mf,++now,true)==l2_cache::TVD_WAIT);
++  ++f.gpu->gpu_sim_cycle;assert(cache->tvd_frontend(mf,++now,true)==l2_cache::TVD_NORMAL);
++  assert(cache->optional_queries_for_test()==1);
++  ep_l2::PayloadHandle out;assert(b->reclaim(t,out,now)==l2_cache::tvd_directory::OK);
++  store.release(out);delete mf;
++  puts("PASS optional_interstage_base_creation_replays_paid_base_not_dual_cam");
++}
++static void mandatory_bank_progress(const char *base,const char *overlay) {
++  scenario f(base,overlay,true,true,false,256,2,1,16,false,2);
++  // 64 prefilled bank0 resident tags, then concentrate optional clean in bank0.
++  for(unsigned i=0;i<256;i+=4)f.warm(new_addr_type(i)*128);
++  for(unsigned i=1;i<250;++i) {auto u=f.push(new_addr_type(i)*256*128);f.await(u);}
++  auto &store=f.cache()->ep_l2_payload_for_test();
++  assert(!store.preview_free(ep_l2_payload_store::RESIDENT,0).valid());
++  auto w=f.push(new_addr_type(249)*256*128,true);f.await(w);
++  const auto before=f.cache()->optional_reclaims_for_test();
++  auto u=f.push(new_addr_type(250)*256*128);f.await(u);f.drain();
++  assert(f.cache()->optional_reclaims_for_test()>before);
++  assert(!f.sp->ep_l2_wad_occupancy() && store.ownership_consistent());
++  assert(store.physical_slots()==1168);
++  puts("PASS optional_full_bank_paid_reclaim_then_mandatory_WB_complete");
++}
++static void ports_and_atomic_directory() {
++  ep_l2_optional_segment_port p;ep_l2::PayloadHandle h(7,2);
++  assert(p.reserve(1,3,4,h,p.BEGIN_READ,9));assert(!p.reserve(2,3,4,h,p.INSTALL,9));
++  assert(p.reserve(1,3,4,h,p.END_READ,9));assert(!p.reserve(1,3,4,h,p.CANCEL_READ,9));
++  assert(p.reserve(2,3,4,h,p.INSTALL,10));assert(!p.reserve(2,3,4,h,p.DROP,10));
++  typedef ep_l2_tvd_directory<> D;D b(128,true,true),x(128,true,false);
++  for(unsigned i=0;i<128;++i){auto plan=b.preview_install(i*128,false,true);D::ticket t;
++    assert(b.commit_install(plan,i*128,ep_l2::PayloadHandle(i,1),1,0,0,false,0,t)==D::OK);}
++  auto plan=b.preview_install(128*128,false,true);auto q=x.preview_clean_slot(0,b.at(plan.index).line,true);
++  auto obs=b.preview_ticket(D::ticket(plan.index,b.at(plan.index).incarnation),1,D::READ_OP);
++  D::read_lease lease;assert(b.begin_read(obs,1,lease)==D::OK);
++  const auto epoch=b.creation_epoch();const auto occ=b.occupied();D::ticket t;ep_l2::PayloadHandle out;
++  assert(b.commit_clean_spill(plan,x,q,128*128,ep_l2::PayloadHandle(128,1),1,1,t,out)!=D::OK);
++  assert(b.creation_epoch()==epoch && b.occupied()==occ && !x.occupied());
++  assert(b.cancel_read(lease)==D::OK);
++  plan=b.preview_install(128*128,false,true);q=x.preview_clean_slot(0,b.at(plan.index).line,true);
++  assert(b.commit_clean_spill(plan,x,q,128*128,ep_l2::PayloadHandle(128,1),1,1,t,out)==D::OK);
++  assert(b.occupied()==128 && x.occupied()==1 && !out.valid());
++  printf("PASS optional_bounded_port_atomic_transfer|entry_size=%zu|plan_size=%zu|port_size=%zu\n",
++      sizeof(D::entry),sizeof(D::install_plan),sizeof(p));
++}
++int main(int argc,char **argv) {
++  assert(argc==4);const unsigned mode=std::stoul(argv[3]);ports_and_atomic_directory();
++  capacity_and_alias(argv[1],argv[2],mode);
++  if(mode==2){epoch_interleaving(argv[1],argv[2]);mandatory_bank_progress(argv[1],argv[2]);}
++  puts("PASS OPTIONAL128_PRODUCTION_CPU_BOUNDED_NO_APPLICATION");
++}
+diff --git a/tests/ep_l2/test_optional128_constructor.cc b/tests/ep_l2/test_optional128_constructor.cc
+new file mode 100644
+index 0000000..1a1a0de
+--- /dev/null
++++ b/tests/ep_l2/test_optional128_constructor.cc
+@@ -0,0 +1,22 @@
++
++#include <cstdio>
++#include <cassert>
++#include "../../libcuda/gpgpu_context.h"
++#include "../../src/gpgpu-sim/gpu-sim.h"
++#include "../../src/gpgpu-sim/icnt_wrapper.h"
++#include "../../src/gpgpu-sim/l2cache.h"
++#include "../../src/gpgpu-sim/mem_latency_stat.h"
++#include "../../src/option_parser.h"
++int main(int argc,char**argv) {
++ assert(argc==3);gpgpu_context context;gpgpu_sim_config cfg(&context);
++ option_parser_t p=option_parser_create();context.ptx_reg_options(p);
++ context.func_sim->ptx_opcocde_latency_options(p);icnt_reg_options(p);cfg.reg_options(p);
++ option_parser_cfgfile(p,argv[1]);option_parser_cfgfile(p,argv[2]);
++ option_parser_print(p,stdout);cfg.init();option_parser_destroy(p);
++ exec_gpgpu_sim gpu(cfg,&context);const auto mc=gpu.getMemoryConfig();
++ memory_stats_t stats(cfg.num_shader(),gpu.getShaderCoreConfig(),mc,&gpu);
++ memory_partition_unit part(0,mc,&stats,&gpu);
++ printf("OPTIONAL128_CONSTRUCTOR_PASS|mode=%u|cycles=%llu|applications_started=0\n",
++      mc->m_L2_config.optional_segment_mode(),gpu.gpu_sim_cycle);
++ assert(gpu.gpu_sim_cycle==0);
++}
