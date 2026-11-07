@@ -1,0 +1,32 @@
+{
+  "CPU_evidence_boundary": "Reported15 temporary snapshot mutation tests cover errors visible in sampled snapshots, but do not prove absence of the unsynchronized producer/last-read/remove window. They do not grant activation.",
+  "Main_disposition": "Main explicitly accepted HOLD/no-start and instructed freezing the current inert candidate; science525725 and publisher continue independently.",
+  "actual_owner_ops_source": {
+    "path": "/root/data/dtc_oracle_clean_successor_20261107_v1/remaining24/tools/oracle_ops.py",
+    "sha256": "28df29835b4fcc75b0cb01129e636f851c1be06bd10f38820b364423ebc7b64d"
+  },
+  "actual_pause_method": "def pause(ctx,c,value):\n  p=BASE/'control/ENGINEERING_PAUSE_NEW.json'\n  if not p.exists():\n   try:put(p,dict(request=ctx['request'],cohort=c,UTC=stamp(),result=value,no_healthy_model_signals=True,model_retries=0),True)\n   except FileExistsError:pass",
+  "actual_pause_method_sha256": "c8a98ed874e59dfc1a8e4419c70675f7bd490ccff14cb7dcb4c04614350c66a7",
+  "allowed": "Keep current default-inert source/CPU evidence and readonly diagnosis as preparation material; no automatic repair start.",
+  "concrete_interleaving": [
+    "Helper holds its own standard admission pause and obtains a valid unused-target ACK.",
+    "Another healthy worker naturally returns an unexpected state; owner updates ctx.errors then its pause() sees the helper file and writes no independent stop marker.",
+    "Helper last filesystem snapshot can still contain prior BATCH.errors, or the new error can arrive just after that read. Existing no_hidden_errors comparison passes.",
+    "Helper renames away its own pause; existing owner file guard can now admit new work despite its just-produced engineering-stop reason. There is no shared atomic pause-cause handoff between helper and owner."
+  ],
+  "prohibited_by_this_review": [
+    "Do not start this helper automatic repair loop or issue its actual_administrative_helper_authorized release.",
+    "Do not modify live owner source/mechanism or extend a control/recovery route to resolve this optional-tool issue in this turn.",
+    "Do not reinterpret this HOLD as failed scientific experiment, consume a UUID or change input/config/budget/accepted results."
+  ],
+  "qualification_scope": "Fixedowner96 host-binding administrative tool only. The previously completed one-off manual repair and current science/publication operation are not revoked or blocked by this optional-tool HOLD.",
+  "reason": "Existing owner pause() skips writing a new engineering-stop reason while helper self-pause exists. Persisted BATCH.errors can lag live owner errors, and even a fresh read is not atomic with subsequent pause rename. A new unexpected worker error after the helper last snapshot or before the next owner flush can be hidden when helper removes its own pause.",
+  "review_UTC": "2026-11-07T03:20:02.545110+00:00",
+  "schema": "DTC_UNUSED_BINDING_AUTOMATIC_ADMIN_METHOD_HOLD_REVIEW_V1",
+  "source": {
+    "path": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/agents/S_unused_binding_admin_helper_preparation_v1/unused_binding_admin_helper.py",
+    "sha256": "90026cec6afa823292a315488d32c7e6d69dca4ea865894b77572d2a95243a3c"
+  },
+  "source_or_process_or_registry_or_model_changes_by_reviewer": 0,
+  "status": "HOLD_AUTOMATIC_MUTATION_DO_NOT_START"
+}
