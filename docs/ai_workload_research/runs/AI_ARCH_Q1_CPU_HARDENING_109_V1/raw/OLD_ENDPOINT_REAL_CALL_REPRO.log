@@ -1,0 +1,16 @@
+test_exact_semantic_endpoint_branch_computes_hash_without_save (test_worker_full_flow_cpu.Flow) ... ERROR
+
+======================================================================
+ERROR: test_exact_semantic_endpoint_branch_computes_hash_without_save (test_worker_full_flow_cpu.Flow)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-q1-cpu-hardening-109/docs/ai_workload_research/runs/AI_ARCH_Q1_CPU_HARDENING_109_V1/.private/OLD_WORKER_REPRO/test_worker_full_flow_cpu.py", line 122, in test_exact_semantic_endpoint_branch_computes_hash_without_save
+    with self.assertRaises(w.BlockDone):c.after(r,5,live)
+  File "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-q1-cpu-hardening-109/docs/ai_workload_research/runs/AI_ARCH_Q1_CPU_HARDENING_109_V1/.private/OLD_WORKER_REPRO/worker.py", line 222, in after
+    numeric=("EXACT" if expected_semantic==semantic else "NOT_ESTABLISHED") if expected_semantic else ("EXACT" if expected==fp else "NOT_ESTABLISHED" if expected else "NOT_COMPARED")
+NameError: name 'semantic' is not defined
+
+----------------------------------------------------------------------
+Ran 1 test in 0.017s
+
+FAILED (errors=1)

@@ -1,0 +1,24 @@
+test_exact_semantic_endpoint_branch_computes_hash_without_save (test_worker_full_flow_cpu.Flow) ... ok
+test_final_checkpoint_keeps_canonical_discovery_state (test_worker_full_flow_cpu.Flow) ... CHECKPOINT_COMPLETE C_D 5 0.038
+CHECKPOINT_COMPLETE C_FINAL 6 0.034
+ok
+test_full_capture_save_real_store_restore_continue_resave_and_endpoint (test_worker_full_flow_cpu.Flow) ... CHECKPOINT_COMPLETE C_E 5 0.034
+ERROR
+test_orphan_after_save_write_failure_not_published_success (test_worker_full_flow_cpu.Flow) ... ok
+
+======================================================================
+ERROR: test_full_capture_save_real_store_restore_continue_resave_and_endpoint (test_worker_full_flow_cpu.Flow)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-q1-cpu-hardening-109/util/ai_workload_research/q1_3dgs_cpu_hardening/test_worker_full_flow_cpu.py", line 87, in test_full_capture_save_real_store_restore_continue_resave_and_endpoint
+    c2,r2,live2=self.resume(path,dict(id="continue",mode="CONTINUE",restore="C_E",
+  File "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-q1-cpu-hardening-109/util/ai_workload_research/q1_3dgs_cpu_hardening/test_worker_full_flow_cpu.py", line 78, in resume
+    w.restore_runner(c,r,path)
+  File "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-q1-cpu-hardening-109/util/ai_workload_research/q1_3dgs_cpu_hardening/worker.py", line 283, in restore_runner
+    iter(loader.inner);loader.prestarted=True
+TypeError: iter() returned non-iterator of type 'Inner'
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.180s
+
+FAILED (errors=1)

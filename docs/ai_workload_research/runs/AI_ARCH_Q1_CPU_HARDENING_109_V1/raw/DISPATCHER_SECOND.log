@@ -1,0 +1,18 @@
+test_serial_success_failure_next_job_and_final_cleanup_with_real_CPU_children (test_dispatcher_real_cpu.DispatcherCPU) ... FAIL
+test_monitor_failure_still_persists_observed_nonzero_exit_and_error (test_dispatcher_real_cpu.DispatcherCPU) ... ok
+
+======================================================================
+FAIL: test_serial_success_failure_next_job_and_final_cleanup_with_real_CPU_children (test_dispatcher_real_cpu.DispatcherCPU)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-q1-cpu-hardening-109/util/ai_workload_research/q1_3dgs_cpu_hardening/test_dispatcher_real_cpu.py", line 37, in test_serial_success_failure_next_job_and_final_cleanup_with_real_CPU_children
+    self.assertEqual(result["status"],"CPU_INTEGRATION_COMPLETE",str(result))
+AssertionError: 'INPUT_OR_RUNTIME_NO_GO' != 'CPU_INTEGRATION_COMPLETE'
+- INPUT_OR_RUNTIME_NO_GO
++ CPU_INTEGRATION_COMPLETE
+ : {'status': 'INPUT_OR_RUNTIME_NO_GO', 'lock_attempt_count': 1, 'lock_acquired': True, 'lock_released': True, 'reservation_created': True, 'NVML_initialized': True, 'jobs': [], 'monitor_gaps': [], 'samples_count': 2, 'peak_own_NVML_bytes': 104857600, 'peak_sampled_RSS_bytes': 1073741824, 'peak_charged_bytes': 2147483648, 'worker_launches': 0, 'reservation': {'request_id': 'MOCK'}, 'lease_events': [], 'lock_acquired_epoch': 1000, 'device': {'name': 'NVIDIA GeForce RTX 4080', 'UUID': 'MOCK-4080'}, 'latest_snapshot': {'phase': 'WORKER', 'own_NVML_bytes': 104857600, 'own_tree_RSS_bytes': 1073741824, 'own_new_disk_bytes': 123, 'held_seconds': 50, 'goal_elapsed_seconds': 50, 'unknown_gpu_pids': [], 'invalid_pid_rows': [], 'monitor_gaps': [], 'external_gpu_pids': [], 'unqualified_external_gpu_pids': [], 'gpu_processes': [], 'live_own_pids': [153090], 'shared_gate': {'verified': True}, 'session_memory': {'current_bytes': 1073741824, 'kernel_charged_peak_bytes': 2147483648}, 'filesystem_available_bytes': 107374182400, 'MemAvailable_bytes': 107374182400, 'own_process_observation': {'observed_live_VmSwap_subtotal_bytes': 0, 'censored': [], 'affinity_violations': [], 'gaps': [], 'process_observations': [], 'swap_observation_complete': True}, 'own_VmSwap_bytes': 0, 'own_VmSwap_observation_complete': True, 'own_VmSwap_censored': [], 'VmSwap_scope': 'Observed live subtotal; terminated process missing fields are explicit censored None, never0; not a whole-tree peak claim.', 'affinity_violations': [], 'charged_scope_child_groups': []}, 'reason': "'types.SimpleNamespace' object has no attribute 'mono'", 'traceback': 'Traceback (most recent call last):\n  File "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-q1-cpu-hardening-109/util/ai_workload_research/q1_3dgs_cpu_hardening/q1_supervisor.py", line 241, in run\n    self.r["device"]={"name":name,"UUID":uuid};self.snapshot("PRE_MODEL_ADMISSION");admit_low_activity(self)\n  File "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-q1-cpu-hardening-109/util/ai_workload_research/q1_3dgs_cpu_hardening/desktop_policy.py", line 40, in admit_low_activity\n    cfg=supervisor.cfg;s=supervisor.s;began=s.mono()\nAttributeError: \'types.SimpleNamespace\' object has no attribute \'mono\'\n', 'own_GPU_contexts_cleared': True, 'GPU_lock_held_seconds': 0, 'lock_closed': True, 'NVML_shutdown': True, 'reservation_cleanup': {'released': True}, 'whole_Goal_elapsed_seconds': 50}
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.018s
+
+FAILED (failures=1)
