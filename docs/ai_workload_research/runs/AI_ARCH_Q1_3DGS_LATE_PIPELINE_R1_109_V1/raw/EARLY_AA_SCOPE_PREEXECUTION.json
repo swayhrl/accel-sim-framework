@@ -1,0 +1,39 @@
+{
+  "epoch": 1794107411.5138316,
+  "reason": "Use same C_E5..7 twice, so history C_R_E comparison and same-state A/A share exact endpoint/work; removes redundant C_R_E8..10 pair, no numerical threshold change.",
+  "jobs": [
+    {
+      "id": "RESTORE_C_R_E",
+      "mode": "RESTORE_ONLY",
+      "restore": "C_R_E",
+      "stop_next": 8,
+      "OMP_cap": 16,
+      "diagnostic": false
+    },
+    {
+      "id": "C_E_CONTINUE_A1",
+      "mode": "CONTINUE",
+      "restore": "C_E",
+      "stop_next": 8,
+      "window_start": 5,
+      "window_end": 8,
+      "OMP_cap": 16,
+      "diagnostic": false,
+      "final_checkpoint_name": "C_E_CONTINUE_A1",
+      "sample_pool": "EARLY_RESTORE_DIAGNOSTIC_NOT_FORMAL"
+    },
+    {
+      "id": "C_E_CONTINUE_A2",
+      "mode": "CONTINUE",
+      "restore": "C_E",
+      "stop_next": 8,
+      "window_start": 5,
+      "window_end": 8,
+      "OMP_cap": 16,
+      "diagnostic": false,
+      "final_checkpoint_name": "C_E_CONTINUE_A2",
+      "sample_pool": "EARLY_RESTORE_DIAGNOSTIC_NOT_FORMAL"
+    }
+  ],
+  "before_these_actual_executions": true
+}

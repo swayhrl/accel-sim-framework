@@ -1,0 +1,68 @@
+{
+  "scope": "EARLY_FAILED_JOBS_COMPLETE_STORAGE_CPU_ANALYSIS_ONLY_NOT_LATE_OR_PERFORMANCE_QUALIFICATION",
+  "states_provenance": [
+    {
+      "name": "C_R_E",
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-q1-3dgs-late-pipeline-native-109-v1/docs/ai_workload_research/runs/AI_ARCH_Q1_3DGS_LATE_PIPELINE_NATIVE_109_V1/.private/STATES/C_R_E",
+      "manifest_sha256": "1b2509da52d6837d55b2a74e79b5df0c892c38a6732f1ba9943fc7eb0951ac14",
+      "next_step": 8,
+      "provenance_class": "HISTORICAL_SAVED_STATE",
+      "sidecar_present": true
+    },
+    {
+      "name": "C_E_CONTINUE_A1",
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-q1-3dgs-late-pipeline-r1-109/docs/ai_workload_research/runs/AI_ARCH_Q1_3DGS_LATE_PIPELINE_R1_109_V1/.private/STATES/C_E_CONTINUE_A1",
+      "manifest_sha256": "fc2f011f5b5b9763f74bc05812eeee95134960cfb4e6b2bfaebcf372ddf1e910",
+      "next_step": 8,
+      "provenance_class": "FAILED_JOB_ORPHANED_COMPLETE_STORAGE_NOT_RESTORE_QUALIFIED",
+      "sidecar_present": false
+    },
+    {
+      "name": "C_E_CONTINUE_A2",
+      "path": "/home/huangrulin/workspace/worktrees/accel-sim-aiarch-q1-3dgs-late-pipeline-r1-109/docs/ai_workload_research/runs/AI_ARCH_Q1_3DGS_LATE_PIPELINE_R1_109_V1/.private/STATES/C_E_CONTINUE_A2",
+      "manifest_sha256": "d9ea1b344646606e416748e24a7ec4962a7589737bd3794e087e3ced49a4ed3a",
+      "next_step": 8,
+      "provenance_class": "FAILED_JOB_ORPHANED_COMPLETE_STORAGE_NOT_RESTORE_QUALIFIED",
+      "sidecar_present": false
+    }
+  ],
+  "comparisons": [
+    {
+      "left": "C_R_E",
+      "right": "C_E_CONTINUE_A1",
+      "classification": "CAPTURED_STATE_DIFFERENCES_OBSERVED",
+      "alias_topology_equal": true,
+      "scalar_field_difference_count": 0,
+      "tensor_fields_compared": 44,
+      "tensor_fields_different": 20,
+      "layout_equal_all": true,
+      "floating_fields_finite": true,
+      "largest_parameter_maxabs": 0.0028901100158691406
+    },
+    {
+      "left": "C_E_CONTINUE_A1",
+      "right": "C_E_CONTINUE_A2",
+      "classification": "CAPTURED_STATE_DIFFERENCES_OBSERVED",
+      "alias_topology_equal": true,
+      "scalar_field_difference_count": 0,
+      "tensor_fields_compared": 44,
+      "tensor_fields_different": 20,
+      "layout_equal_all": true,
+      "floating_fields_finite": true,
+      "largest_parameter_maxabs": 0.0030135512351989746
+    }
+  ],
+  "interpretation": "Real numerical endpoint differences are present in historical-vs-restored and same-restored-state A/A. This does not identify a restore defect or a GPU kernel root cause; no tolerance or continuation Numeric PASS is invented. Initial actual Runner exact restoration is a separate observed result.",
+  "orphan_completion_receipts_synthesized": false,
+  "gpu_retest_after_save_fix": "NOT_EXECUTED",
+  "cpu_helper_resource_scope": {
+    "elapsed_seconds": 11.019267059862614,
+    "self_ru_maxrss_kib": 112356,
+    "affinity": [
+      22,
+      23
+    ],
+    "scope": "THIS_SINGLE_CPU_PROCESS_HWM_NOT_GOAL_TREE_OR_CGROUP_PEAK",
+    "buffer": "4MiB raw per stream; NumPy comparison temporaries bounded to stream blocks"
+  }
+}

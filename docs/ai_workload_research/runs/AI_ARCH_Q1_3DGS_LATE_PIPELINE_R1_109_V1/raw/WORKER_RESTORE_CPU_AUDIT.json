@@ -1,0 +1,56 @@
+{
+  "scope": "R1_CPU_ONLY_WORKER_RESTORE_CONTROL_ENGINEERING",
+  "author_math_changed": false,
+  "gpu_calls": 0,
+  "nvml_calls": 0,
+  "api_calls": 0,
+  "lock_calls": 0,
+  "helper_affinity": [
+    22,
+    23
+  ],
+  "tests": {
+    "count": 12,
+    "result": "PASS",
+    "elapsed_unittest_seconds": 0.015,
+    "log": "WORKER_RESTORE_CPU_TEST.log"
+  },
+  "changes": [
+    "Separate read-only external C_E/C_R_E resolver from new-owned write/delete state_dir",
+    "RESTORE_ONLY exits after actual Runner capture qualification in author resume branch; no resumed mathematical step",
+    "New checkpoint has legacy and exact canonical semantic fingerprints",
+    "Preserve legacy mismatch as metadata observation; tensor/alias/dtype/counter/RNG semantic mismatch still fails",
+    "expected_semantic_fingerprint endpoint comparison and arbitrary safe final_checkpoint_name for AA",
+    "Do not copy, modify or delete V1 state payloads"
+  ],
+  "qualification_scope": "CPU controls only; no actual GPU restore or continuation claim",
+  "request_fields": {
+    "external_state_cfg": "external_readonly_state_root",
+    "restore_only_job": {
+      "id": "ROUNDTRIP_C_R_E",
+      "mode": "RESTORE_ONLY",
+      "restore": "C_R_E",
+      "stop_next": 8
+    },
+    "continuation_job": {
+      "id": "AA_1",
+      "mode": "CONTINUE",
+      "restore": "C_E",
+      "stop_next": 8,
+      "final_checkpoint_name": "C_AA_E1",
+      "expected_semantic_fingerprint": "ACTUAL_ROUNDTRIP_C_R_E_RESULT.final_semantic_fingerprint"
+    }
+  },
+  "resource_risks": [
+    "Real restored storage allocation remains unavoidable; pre-fork four loader workers before large state load retained",
+    "Fingerprint read/hash latency is outside formal timing; no cuda synchronization is executed by CPU tests",
+    "Semantic mismatch on actual reconstructed Runner must STOP qualification, never fabricated tolerance",
+    "Natural continuation repeatability is not established by static/fixture tests"
+  ],
+  "sources": {
+    "worker.py": "69c3e318fc1733e3a415e42fdc1cf61b04d6c2eb4f6a84f989f7d90a7fd00012",
+    "test_worker_r1_restore.py": "4826f088d0f18f893b2eb940a774268dafdf91afc11c0ee0db16802f8a3318d8",
+    "source_transform.py": "739609b3e811aef54d7a9b193dda01a6a5c4c59a2e6337931724dafc9f2d7af6",
+    "state_store.py": "f6c4de36c379afcdd4160aaac16c5d5432c92c8e690c870bb64dd874667c544c"
+  }
+}
