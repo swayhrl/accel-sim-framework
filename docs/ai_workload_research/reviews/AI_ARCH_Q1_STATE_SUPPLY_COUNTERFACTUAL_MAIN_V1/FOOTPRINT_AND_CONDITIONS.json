@@ -1,0 +1,79 @@
+{
+  "authority": {
+    "Q1_execution_commit": "5787826ca21f7af958e6e1c1f828d62fd58a1ec4",
+    "accepted_review_commit": "06355f73caaa6f38697d9acac94ac81a47c27e62"
+  },
+  "scope": "late T16, N fixed; dense storage arithmetic only, not a measured live peak",
+  "units": {
+    "bytes": "B",
+    "gib": "2^30 B",
+    "time": "seconds per 51-camera ON diagnostic"
+  },
+  "N": 6720398,
+  "fp32_bytes": 4,
+  "dense_unique_storage_bytes": {
+    "gpu_existing_param": 268815920,
+    "gpu_existing_moments": 537631840,
+    "gpu_existing_grad_if_live": 268815920,
+    "cpu_param": 1317198008,
+    "cpu_moments": 2634396016,
+    "cpu_grad": 1317198008,
+    "shN_param": 1209671640,
+    "shN_moments": 2419343280,
+    "shN_grad": 1209671640
+  },
+  "dense_unique_storage_GiB": {
+    "gpu_existing_param": 0.250354,
+    "gpu_existing_moments": 0.500709,
+    "gpu_existing_grad_if_live": 0.250354,
+    "cpu_param": 1.226736,
+    "cpu_moments": 2.453472,
+    "cpu_grad": 1.226736,
+    "shN_param": 1.126595,
+    "shN_moments": 2.253189,
+    "shN_grad": 1.126595
+  },
+  "cpu_state_param_moments_grad_bytes": 5268792032,
+  "shN_resident_param_moments_bytes": 3629014920,
+  "shN_resident_with_dense_grad_bytes": 4838686560,
+  "counter_int8_bytes": 6720398,
+  "existing_observed_own_GPU_peak_MiB": [
+    3778.0,
+    3482.0
+  ],
+  "candidate_live_capacity_condition": "max_t [sum(bytes of distinct simultaneously live GPU storages at t) + allocator/framework reserve(t)] <= GPU capacity available under the current shared gate at t",
+  "candidate_live_peak_bytes": null,
+  "available_GPU_bytes_at_future_window": null,
+  "old_CPU_and_new_GPU_copies_overlap_bytes": null,
+  "pending_sparse_gradient_bytes": null,
+  "raster_and_other_workspace_bytes": null,
+  "allocator_reserve_bytes": null,
+  "net_benefit_condition": "removed critical-path CPU/shN forwarding and required transfer service > new GPU deferred-update/forward work + index/metadata/conversion transfer + lost overlap + capacity side-effects",
+  "removed_OFF_critical_path_seconds": null,
+  "new_GPU_work_seconds": null,
+  "lost_overlap_seconds": null,
+  "ON_diagnostic_host_intervals": [
+    {
+      "job": "DISCOVERY_DIAGNOSTIC_T16",
+      "ON_seconds": 7.880493639968336,
+      "shN_forward_host_seconds": 2.1425274843350053,
+      "all_forward_host_seconds": 2.5410182178020477,
+      "cpu_adam_host_seconds": 3.4155874997377396
+    },
+    {
+      "job": "DISCOVERY_DIAGNOSTIC_T8",
+      "ON_seconds": 8.810134096071124,
+      "shN_forward_host_seconds": 2.4864657670259476,
+      "all_forward_host_seconds": 2.930807774886489,
+      "cpu_adam_host_seconds": 3.8968607606366277
+    },
+    {
+      "job": "VALIDATION_FINAL_STATE_T16",
+      "ON_seconds": 7.684451791457832,
+      "shN_forward_host_seconds": 2.0461671063676476,
+      "all_forward_host_seconds": 2.4346434250473976,
+      "cpu_adam_host_seconds": 3.305582226254046
+    }
+  ],
+  "interpretation": "ON host intervals bound candidate work location only; no subtraction from OFF, no cross-clock subtraction, no PCIe estimate from logical bytes"
+}

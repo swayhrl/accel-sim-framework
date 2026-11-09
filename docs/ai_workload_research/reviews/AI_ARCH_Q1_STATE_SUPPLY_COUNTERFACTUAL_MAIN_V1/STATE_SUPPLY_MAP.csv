@@ -1,0 +1,9 @@
+state_object,owner,version,producer,consumer,update_set,storage_alias_payload,candidate_change,fixed_source,unknown
+means/scales/quats,GPU,current step,GPU optimizer.step,next GPU camera,all N,10 fp32/N params; 20 moments; grad conditional,full resident,"trainer:314-340,716-719",GPU grad lifetime
+opacities/sh0/shN,CPU,applied through t-1 + pending t,deferred CPUAdam,forward next visible V(t+1),during GPU t: U=V(t-1) union counter==15,49 fp32/N params; 98 moments; 49 grad,shN residency only,"trainer:1036-1069,1241-1288; cpu_adam.cpp:208-297,300-379",GPU numerical qualification
+CPU moment step/counter,CPU,global step; per-ID int8 age,step increment; update_counter,deferred/forward correction,U and all N counter,3 scalar steps; N int8 counter,must preserve,"trainer:1044-1067; cpu_adam.cpp:277-297,314-342",counter GPU placement
+pending gradients,GPU then CPU,camera t pending until t+1,D2H and scatter after join,deferred update t+1,V(t),GPU leaf grad; pinned subset; dense CPU grad,retain exactly once,trainer:1113-1157; state frontier,sparse alternative bytes
+forwarded shN,CPU pinned then GPU,prepared camera t+1,adam_for_next_with_counter + H2D,raster t+1,V(t+1),45 fp32/visible; pinned staging; GPU leaf,candidate removed CPU staging,trainer:1241-1268; cpu_adam.cpp:382-460,GPU arithmetic/ordering
+forwarded sh0/opacity,CPU pinned then GPU,prepared camera t+1,adam_for_next_with_counter + sigmoid opacity + H2D,raster t+1,V(t+1),4 fp32/visible plus temporary,unchanged in candidate,trainer:1270-1292,temporary alias peaks
+visible IDs/metadata,GPU and CPU,camera dependent,frustum + D2H + strategy metadata,next forwarding/densification,visible; all N scan for U,ID and metadata buffers,preserve,"trainer:1093-1106,1147-1157; cpu_adam.cpp:208-273",natural ID trace missing
+raster/workspace,GPU,camera dependent,renderer,loss/backward,visible,distinct temporary storage unknown,capacity liability,trainer:669-728,live storage peak unknown
