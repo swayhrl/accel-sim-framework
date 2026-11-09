@@ -1,0 +1,147 @@
+{
+  "schema": "EP_L2_NODE109_READONLY_TAKEOVER_CURRENT_STATE_V1",
+  "timezone": "Asia/Shanghai",
+  "fixed_takeover_package_commit": "420c84671579a80ee0a8cc696f0e8db7bcaf9a86",
+  "takeover_verdict": "COMPLETE_READONLY_NODE109_ENDPOINT",
+  "verdict_limits": [
+    "exact36_full_batch_terminal_receipt_UNKNOWN",
+    "catalog_versions_are_not_queue_terminal_or_science_acceptance",
+    "Main_five_point_runtime_not_observed_by_this_window"
+  ],
+  "roles": {
+    "node109_ep_endpoint": "109-EP-L2: historical capture, tools, assets, future contact under new task",
+    "sole_scientific_main": "EP-L2交接-1 on 174-new",
+    "shared_gpu_and_other_projects": "existing owners retained; no authority transfer"
+  },
+  "observations": [
+    {
+      "item": "node109_identity",
+      "observed_at": "2026-11-09T21:32:40+08:00",
+      "status": "PRESENT",
+      "hostname": "PC",
+      "account": "huangrulin",
+      "uid": 1004,
+      "boot_id": "35425a62-1268-4560-a3cb-b674371cd7aa",
+      "gpu_name": "NVIDIA GeForce RTX 4080",
+      "gpu_uuid": "GPU-ce6cba36-415b-4e27-40e2-bded6bc1ee59",
+      "driver_version": "580.178.04",
+      "method": "existing SSH; hostname/id/boot_id; read-only nvidia-smi query"
+    },
+    {
+      "item": "shared_gpu_owner_initial",
+      "observed_at": "2026-11-09T21:33:02+08:00",
+      "status": "OTHER_OWNER_ACTIVE",
+      "lock_path": "/data/c16/locks/c16_gpu_campaign.lock",
+      "lock_holder_pid": 480098,
+      "lock_holder_start_ticks": 485140027,
+      "lock_holder_script_role": "AI-ARCH q1 supervisor",
+      "compute_pid": 504807,
+      "other_resident_service": "ComfyUI",
+      "method": "lslocks, /proc identity and nvidia-smi compute-app query"
+    },
+    {
+      "item": "shared_gpu_owner_targeted_recheck",
+      "observed_at": "2026-11-09T21:40:51+08:00",
+      "status": "NO_LOCK_HOLDER_OBSERVED_AT_THIS_INSTANT",
+      "prior_aiarch_pids": "ABSENT",
+      "compute_apps_observed": ["ComfyUI"],
+      "does_not_grant_gpu_access": true
+    },
+    {
+      "item": "node109_shared_rtx_processes",
+      "observed_at": "2026-11-09T21:40:51+08:00",
+      "status": "NO_RTX_GPU_PRODUCER_OR_FINITE_DISPATCHER_OBSERVED",
+      "remaining_related_processes": [
+        {"pid": 426875, "start_ticks": 345266062, "role": "nas_rtx4080 SSHFS"},
+        {"pid": 1470456, "start_ticks": 379699610, "role": "nas_fast_sc_copy_st_20261029_v2 SSHFS"},
+        {"pid": 3398091, "start_ticks": 437957991, "role": "SSH rate bridge"}
+      ],
+      "historical_pids_checked_absent": [1219372, 1362061]
+    },
+    {
+      "item": "node109_roots",
+      "observed_at": "2026-11-09T21:33:55+08:00",
+      "status": "PRESENT",
+      "directories": [
+        "/data/c16/rtx4080_suite_fill_20261024_v1",
+        "/data/c16/rtx4080_asset_pilot_20261024_v1",
+        "/data/c16/ada_trace_semantics_20261024_v1",
+        "/data/c16/ada_trace_extensions_v8_20261024_v1",
+        "/home/huangrulin/workspace/rtx4080_cuda_polybench_20261024_v1",
+        "/home/huangrulin/workspace/worktrees/accel-sim-awma-simcompat-v1/util/tracer_nvbit/tracer_tool"
+      ],
+      "root_redirects_observed": 0
+    },
+    {
+      "item": "mount_chain",
+      "observed_at": "2026-11-09T21:37:18+08:00",
+      "status": "PRESENT",
+      "node109_mount_source": "hrl174new:/root/share/mnt164/huangrulin/traces/rtx4080_sm89/bulk_20261024_v1",
+      "node109_mounts_same_source": ["nas_rtx4080", "nas_fast_sc_copy_st_20261029_v2"],
+      "node174_mount_source": "admin-wcx@10.208.130.164:/home/shared",
+      "node174_mount_fstype": "fuse.sshfs",
+      "canonical_root_view": "/root/share/mnt164/huangrulin/traces/rtx4080_sm89",
+      "canonical_remote_root": "/home/shared/huangrulin/traces/rtx4080_sm89"
+    },
+    {
+      "item": "finite_shared_rtx_queue",
+      "evidence_file": "/root/data/shared_rtx4080_trace_library_20261024_v1/control/QUEUE.json",
+      "evidence_mtime": "2026-10-27T06:15:24+08:00",
+      "read_date": "2026-11-09 Asia/Shanghai; exact read second not recorded",
+      "status": "PARTIAL_TERMINAL_WITH_PENDING_RETAINED",
+      "rows": 242,
+      "counts": {
+        "COMMITTED_VERIFIED": 41,
+        "PENDING": 33,
+        "PENDING_SPECIALIST_EXTENSION": 161,
+        "FAILED_RETAINED": 5,
+        "SUPERSEDED_INPUT_CLOSURE": 1,
+        "SUPERSEDED_BY_EXACT_C8_FULL_COLD_QUALIFIED": 1
+      },
+      "transpose_committed_ids": [
+        "ORD_CUDA_SDK_transpose_636b2ab3ab5e_A001",
+        "ORD_EXT_transpose_32c9f7dc72fe_A001",
+        "ORD_EXT_transpose_cab8f027e949_A001"
+      ],
+      "streamcluster_failed_retained_id": "ORD_Rodinia_streamcluster_1be5fda1aa60_A001",
+      "exact36_full_batch_terminal": "UNKNOWN"
+    },
+    {
+      "item": "true164_catalog",
+      "read_date": "2026-11-09 Asia/Shanghai; exact read second not recorded",
+      "full_catalog_pointer_mtime": "2026-11-09T21:39:53+08:00",
+      "status": "ARCHIVED_WITH_RECEIPT",
+      "full_versions": 82,
+      "derived_versions": 82,
+      "full_catalog_sha256_small_version_file_checked": "88ee027f8c2ecfc4058f9884f566a3a03e1bbe78c79b89849d1b711bed385364",
+      "derived_catalog_sha256_small_version_file_checked": "ab4ab8b05dc91a299bfcd354f5c9e799c252f995ea241944ace705966b09765b",
+      "qualification_scope": "version/catalog metadata; no fresh full payload SHA, restore, consumer or timing qualification"
+    },
+    {
+      "item": "node174_public_catalog_publisher",
+      "observed_on": "2026-11-09 Asia/Shanghai; exact process-query second not recorded",
+      "status": "PRESENT",
+      "pid": 951008,
+      "user": "root",
+      "role": "catalog pointer publisher, not node109 GPU producer"
+    }
+  ],
+  "historical_snapshot": {
+    "evidence": "E16",
+    "time": "2026-10-26T09:40:00+08:00 to 2026-10-26T09:48:00+08:00",
+    "counts": {"COMMITTED_VERIFIED": 38, "RUNNING": 1, "PENDING": 36, "PENDING_SPECIALIST_EXTENSION": 161, "FAILED_RETAINED": 4, "SUPERSEDED": 2},
+    "is_current_runtime_evidence": false
+  },
+  "this_turn_actions": {
+    "gpu_native_nvbit_ncu_capture": 0,
+    "simulator_runs": 0,
+    "scientific_budget_registration": 0,
+    "scientific_budget_consumption": 0,
+    "queue_resume_or_retry": 0,
+    "lock_changes": 0,
+    "service_restarts": 0,
+    "asset_migration": 0,
+    "asset_deletion": 0,
+    "read_only_nvidia_smi_queries": 3
+  }
+}
