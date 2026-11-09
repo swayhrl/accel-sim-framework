@@ -1,0 +1,35 @@
+# DTC-L1 finite service and completion mechanism V1: CPU-qualified closeout
+
+## Decision
+
+**CPU_QUALIFIED_ONLY / STOP_AFTER_GOAL.** The sole candidate is a bounded short-collect-first choice among already ready PAPER_OO ordinary cacheable loads. Gate A and the directed, independent Gate B CPU qualification passed. Gate C science admission is **HOLD**: the exact new native request, single-use UUID/sole dispatcher, runtime guard, mechanism-specific strict verification, true164 SOURCE_KEEP archive, and typed restore route have not been implemented and independently accepted for this Goal. No scientific request was registered; no new simulator model, GPU call or capture was started; budget consumption is **0**. There are no new application cycles, paired speedups, kernel results, GM or measured mechanism exposures.
+
+This is a terminal conditional outcome under the fixed contract, not a failed performance result and not a claim that the mechanism cannot help. The remaining 16 cells were not admitted. The static four-row file is marked `DRAFT_NO_SCIENCE_ADMISSION`; it must never be treated as a scientific result.
+
+## Fixed authority and scope
+
+Contract: swayhrl/accel-sim-framework commit `32cbe43f6975ff6a11cfd1210f88026771656b48`, directory `docs/dtc_l1/plans/DTC_FINITE_SERVICE_COMPLETION_MECHANISM_V1_20261109/`; its manifest 8/8 members and 9/9 Git blobs including manifest were verified. Main used the already accepted CORE32 Oracle and historical real-structure evidence; no 128-cell re-audit or new trace capture was performed. Candidate Core is `9a0de9b9f97144f481b3e3637e329ebab01acb74` on independent branch `dtc/finite-service-completion-v1-20261109`; the original DH Core `9eedb3131937748f0492fa83aad37d3691118d70` remains frozen. Candidate Core GitHub `ls-remote` returned the exact commit. Framework source stayed at `02775fd795cde5aae1480d81cee6eb481d0a08f4`.
+
+## Evidence separation
+
+- **E1, controlled Oracle:** accepted fixed CORE32 has GM M/L2/L1 of about 1.676759/1.280649/1.939912. GESUMMV has a strong L1 Oracle response (89,502,220 to 2,496,495 cycles). These are controlled counterfactuals and do not predict realizable short-collect gains.
+- **E2, historical real structures:** physical640→768 improved MVT K1 by 4,076,476 cycles but regressed BICG K2 by 2,207,029 cycles; their recorded lower-create-queue-full and global-credit-full counters were zero. These are distinct identities and counterevidence against a capacity or request-count shortcut.
+- **E3, present hypothesis:** within a four-position PIB prefix, ON may choose a ready younger load needing at most four sectors ahead of a ready older load needing more than four sectors, if the older ready age is below eight cycles and no sidecar/fence boundary intervenes. OFF retains the frozen oldest-ready selection. The genuine finite collect quota, retire port, WB grant/backpressure, sector/parent/generation/Ref/credit and noneligible paths remain. CPU proves this source-backed branch can select differently; natural application trace exposure and benefit remain unknown.
+
+GESUMMV was preregistered as the first four-cell opportunity witness before any new science result, paired with vectorAdd as a structural negative control. GESUMMV's frozen OFF has 3,145,856 retired loads, 38,797,824 collected sectors and 132,901 WB wait events. These aggregate values do **not** establish two simultaneous legal ready candidates or candidate exposure. The actual ON `eligible_choice_different` must be positive in a future admissible natural run; zero would falsify this witness and stop the remaining 16.
+
+## Gate A and B
+
+The candidate changes one normal finite service decision and adds no new queue, free port, capacity, clock, L2 or DRAM behavior. Its source diff SHA256 is `7af7e4afadb16cf5b377a77690225572a264de858f5bdbfc0cc401675f949969`. Independent clean build and 17/17 CTest passed; `git diff --check` passed. The directed test used separate OFF and ON processes of the same CPU binary at the actual LDST frontend ready choice: OFF selected UID 201 (six sectors), ON selected UID 202 (one sector). ON retained Ref and ledger across RF WB refusal and counted an effective different choice only after legal retire. OFF aggregate decision/effective counters were 0/0; ON were 4/1. The eight-cycle age retreat and unsupported mode rejection passed. Existing qualified lifecycle fixtures and negative controls were reused; the CPU fixture did not run an application trace or prove native values.
+
+An isolated Framework build with the candidate Core produced binary SHA256 `a9ec6f231d9491690eb913d1cb69d7d2dae0f769f8854efc4df0512b5f1fd00c` and `libcudart.so` SHA256 `43b3dc2f3e04d577e6c682f632691aca637b2670aee52c18b809f4d4c4e64860`. The first attempt lacked the generated version header; the corrected build receipt records all commands, exit codes and log hashes. Ordinary `ldd` cannot find the library; with `LD_LIBRARY_PATH` fixed to the isolated Core build, it resolves to this exact library. No build step invoked the simulator.
+
+## Gate C admission and stop
+
+The static source route verified GESUMMV/vectorAdd input digests, historical DH-P0 spec SHA, fixed kernel/CTA/instruction declarations, 270 base options plus the single new strategy option (271 total), and OFF/ON equality of all other options. A later dry-run pinned the new binary/lib and source config copies with candidate OFF/ON overlays. These are reproducible source and configuration checks only.
+
+The available native and Oracle frontends accept old exact cohorts, requests, owners, binary lineage and launcher gates. Their old `oracle_strict.py`, archive bindings and UUIDs cannot be reused for this new mechanism. A safe route requires a new Goal-specific request appended under the shared native registry lock without changing old entries or budgets, one-use UUIDs from the sole dispatcher, exact config/argv/PID/start/maps/loader and resource guard, a mechanism-specific natural-completion strict verifier, true164 chunk/index/COMMIT SOURCE_KEEP archive, typed native restore, and independent review. Those components were not closed. Both source-route assessment and independent Gate C review therefore rejected admission before any science start. No old owner, controller, publisher, registry history, HOLD or consumed point was reset.
+
+## Limits and next decision
+
+PPA remains unknown: the proposed search examines at most four PIB positions with up to three younger comparisons and a fixed age threshold, but no RTL, timing, Liberty or SRAM evidence exists. No claim is made about numerical application correctness, capture-time ELF/content linkage, coherence, equal-area CH comparison, generalization beyond the frozen traces, or DTC-specific causal advantage. A new explicit task should first complete and independently review the new native route; only then could the preregistered four cells be considered under a fresh exact admission decision. The remaining 16, other CORE32 22/44, CH, second candidates, Tag/SM89 HOLD, 109 GPU work and English LaTeX v0.23 remain outside this delivery.

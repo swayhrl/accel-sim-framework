@@ -1,0 +1,257 @@
+{
+  "schema": "DTC_FINITE_SERVICE_COMPLETION_CPU_BUILD_V1",
+  "core_commit": "9a0de9b9f97144f481b3e3637e329ebab01acb74",
+  "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+  "core_source": "/root/data/dtc_finite_service_completion_v1_20261109/core",
+  "framework_source": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build",
+  "build_root": "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9",
+  "steps": [
+    {
+      "label": "compiler_version",
+      "argv": [
+        "/usr/bin/g++",
+        "--version"
+      ],
+      "started_utc": "2026-11-09T14:16:00.286208+00:00",
+      "returncode": 0,
+      "log": "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/logs/compiler_version.log",
+      "log_SHA256": "9eaf9b7f4b11c2e84e2478c2ceb0e4f48f4ba88565bcfc832b3bce49847dda6d"
+    },
+    {
+      "label": "cmake_version",
+      "argv": [
+        "cmake",
+        "--version"
+      ],
+      "started_utc": "2026-11-09T14:16:00.288334+00:00",
+      "returncode": 0,
+      "log": "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/logs/cmake_version.log",
+      "log_SHA256": "6c08f840b67782da73a6fe113b64712615441722b15cd2723062dd4cc00a10d8"
+    },
+    {
+      "label": "core_configure",
+      "argv": [
+        "cmake",
+        "-S",
+        "/root/data/dtc_finite_service_completion_v1_20261109/core",
+        "-B",
+        "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/core",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCUDAToolkit_ROOT=/root/data/dtc_main_20261023_v1/ae_fair_v1/toolchain",
+        "-DGPGPUSIM_BUILD_DTC_L1_TESTS=ON",
+        "-DGPGPUSIM_BUILD_AEFAIR_TESTS=ON",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+      ],
+      "started_utc": "2026-11-09T14:16:00.302241+00:00",
+      "returncode": 0,
+      "log": "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/logs/core_configure.log",
+      "log_SHA256": "46b17e7e57a83096acce323eed7a1af6df1ed2f607277ea4f3101c34a3f306a0"
+    },
+    {
+      "label": "core_build",
+      "argv": [
+        "cmake",
+        "--build",
+        "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/core",
+        "-j",
+        "8"
+      ],
+      "started_utc": "2026-11-09T14:16:00.670669+00:00",
+      "returncode": 0,
+      "log": "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/logs/core_build.log",
+      "log_SHA256": "17ae37751a4d6c4d7a7ef0b671b8899b338fba264a7d4429e15d2a7e35f3a31d"
+    },
+    {
+      "label": "framework_compile_0",
+      "argv": [
+        "/usr/bin/g++",
+        "-O3",
+        "-std=c++17",
+        "-fPIC",
+        "-DDEBUG=0",
+        "-DTRACING_ON=1",
+        "-DCUDART_VERSION=12040",
+        "-I/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build/gpu-simulator/trace-driven",
+        "-I/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build/gpu-simulator/trace-parser",
+        "-I/root/data/dtc_finite_service_completion_v1_20261109/core/libcuda",
+        "-I/root/data/dtc_finite_service_completion_v1_20261109/core/src",
+        "-I/root/data/dtc_main_20261023_v1/ae_fair_v1/toolchain/include",
+        "-I/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/framework",
+        "-I/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build/gpu-simulator/ISA_Def",
+        "-I/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build/util/tracer_nvbit/tracer_tool",
+        "-c",
+        "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build/gpu-simulator/trace-driven/trace_driven.cc",
+        "-o",
+        "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/framework/trace_driven.o"
+      ],
+      "started_utc": "2026-11-09T14:16:02.579764+00:00",
+      "returncode": 0,
+      "log": "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/logs/framework_compile_0.log",
+      "log_SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "framework_compile_1",
+      "argv": [
+        "/usr/bin/g++",
+        "-O3",
+        "-std=c++17",
+        "-fPIC",
+        "-DDEBUG=0",
+        "-DTRACING_ON=1",
+        "-DCUDART_VERSION=12040",
+        "-I/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build/gpu-simulator/trace-driven",
+        "-I/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build/gpu-simulator/trace-parser",
+        "-I/root/data/dtc_finite_service_completion_v1_20261109/core/libcuda",
+        "-I/root/data/dtc_finite_service_completion_v1_20261109/core/src",
+        "-I/root/data/dtc_main_20261023_v1/ae_fair_v1/toolchain/include",
+        "-I/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/framework",
+        "-I/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build/gpu-simulator/ISA_Def",
+        "-I/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build/util/tracer_nvbit/tracer_tool",
+        "-c",
+        "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build/gpu-simulator/trace-parser/trace_parser.cc",
+        "-o",
+        "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/framework/trace_parser.o"
+      ],
+      "started_utc": "2026-11-09T14:16:10.143284+00:00",
+      "returncode": 0,
+      "log": "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/logs/framework_compile_1.log",
+      "log_SHA256": "290857b512c2cd1d5944cfcf604b4efca2d0bfd5cc00157209333f4b3585ab71"
+    },
+    {
+      "label": "framework_compile_2",
+      "argv": [
+        "/usr/bin/g++",
+        "-O3",
+        "-std=c++17",
+        "-fPIC",
+        "-DDEBUG=0",
+        "-DTRACING_ON=1",
+        "-DCUDART_VERSION=12040",
+        "-I/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build/gpu-simulator/trace-driven",
+        "-I/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build/gpu-simulator/trace-parser",
+        "-I/root/data/dtc_finite_service_completion_v1_20261109/core/libcuda",
+        "-I/root/data/dtc_finite_service_completion_v1_20261109/core/src",
+        "-I/root/data/dtc_main_20261023_v1/ae_fair_v1/toolchain/include",
+        "-I/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/framework",
+        "-I/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build/gpu-simulator/ISA_Def",
+        "-I/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build/util/tracer_nvbit/tracer_tool",
+        "-c",
+        "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build/gpu-simulator/accel-sim.cc",
+        "-o",
+        "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/framework/accel-sim.o"
+      ],
+      "started_utc": "2026-11-09T14:16:14.167128+00:00",
+      "returncode": 0,
+      "log": "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/logs/framework_compile_2.log",
+      "log_SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "framework_compile_3",
+      "argv": [
+        "/usr/bin/g++",
+        "-O3",
+        "-std=c++17",
+        "-fPIC",
+        "-DDEBUG=0",
+        "-DTRACING_ON=1",
+        "-DCUDART_VERSION=12040",
+        "-I/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build/gpu-simulator/trace-driven",
+        "-I/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build/gpu-simulator/trace-parser",
+        "-I/root/data/dtc_finite_service_completion_v1_20261109/core/libcuda",
+        "-I/root/data/dtc_finite_service_completion_v1_20261109/core/src",
+        "-I/root/data/dtc_main_20261023_v1/ae_fair_v1/toolchain/include",
+        "-I/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/framework",
+        "-I/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build/gpu-simulator/ISA_Def",
+        "-I/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build/util/tracer_nvbit/tracer_tool",
+        "-c",
+        "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build/gpu-simulator/main.cc",
+        "-o",
+        "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/framework/main.o"
+      ],
+      "started_utc": "2026-11-09T14:16:19.155771+00:00",
+      "returncode": 0,
+      "log": "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/logs/framework_compile_3.log",
+      "log_SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "framework_link",
+      "argv": [
+        "g++",
+        "-O3",
+        "-std=c++17",
+        "-o",
+        "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/framework/accel-sim.out",
+        "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/framework/trace_driven.o",
+        "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/framework/trace_parser.o",
+        "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/framework/accel-sim.o",
+        "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/framework/main.o",
+        "-L/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/core",
+        "-lcudart",
+        "-lm",
+        "-lz",
+        "-lGL",
+        "-lzstd",
+        "-pthread"
+      ],
+      "started_utc": "2026-11-09T14:16:23.206299+00:00",
+      "returncode": 0,
+      "log": "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/logs/framework_link.log",
+      "log_SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "binary_linkage",
+      "argv": [
+        "ldd",
+        "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/framework/accel-sim.out"
+      ],
+      "started_utc": "2026-11-09T14:16:23.289784+00:00",
+      "returncode": 0,
+      "log": "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/logs/binary_linkage.log",
+      "log_SHA256": "33a904dcebce2dfeaf0c7e19acf623e7c5d0d880aaa9a9441b40549297637fa9"
+    },
+    {
+      "label": "binary_linkage_with_local_lib",
+      "argv": [
+        "env",
+        "LD_LIBRARY_PATH=/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/core",
+        "ldd",
+        "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/framework/accel-sim.out"
+      ],
+      "started_utc": "2026-11-09T14:16:23.304269+00:00",
+      "returncode": 0,
+      "log": "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/logs/binary_linkage_with_local_lib.log",
+      "log_SHA256": "d048114a15844713454bc0d2bde7991f363e9f339c98413654d38bd5aa9af456"
+    },
+    {
+      "label": "libcudart_linkage",
+      "argv": [
+        "ldd",
+        "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/core/libcudart.so"
+      ],
+      "started_utc": "2026-11-09T14:16:23.319769+00:00",
+      "returncode": 0,
+      "log": "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/logs/libcudart_linkage.log",
+      "log_SHA256": "75688452309309c722d6afbf58baa0f742d4a09c9803ca6737f1d9fa3127d370"
+    }
+  ],
+  "simulator_calls": 0,
+  "GPU_calls": 0,
+  "framework_generated_version_header": {
+    "source": "/root/share/mnt164/huangrulin/host174_storage_recovery/dtc_controlled_oracle_implementation_execution_20261106_v1/build/framework/accelsim_version.h",
+    "artifact": {
+      "path": "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/framework/accelsim_version.h",
+      "bytes": 98,
+      "SHA256": "2645c2e0e2d4d6f0cd72d8c0725b0d03bd175353baf703a98d16791d8aade8cf"
+    }
+  },
+  "binary": {
+    "path": "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/framework/accel-sim.out",
+    "bytes": 309880,
+    "SHA256": "a9ec6f231d9491690eb913d1cb69d7d2dae0f769f8854efc4df0512b5f1fd00c"
+  },
+  "libcudart": {
+    "path": "/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9/core/libcudart.so",
+    "bytes": 5004064,
+    "SHA256": "43b3dc2f3e04d577e6c682f632691aca637b2670aee52c18b809f4d4c4e64860"
+  }
+}

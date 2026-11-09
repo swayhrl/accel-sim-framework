@@ -1,0 +1,11 @@
+# Gate C: isolated CPU build identity (Main input)
+
+- Core: `/root/data/dtc_finite_service_completion_v1_20261109/core`, clean commit `9a0de9b9f97144f481b3e3637e329ebab01acb74`.
+- Framework: frozen read-only `.../dtc_controlled_oracle_implementation_execution_20261106_v1/source/framework-build`, clean commit `02775fd795cde5aae1480d81cee6eb481d0a08f4`.
+- Build root: `/root/data/dtc_finite_service_completion_v1_20261109/build/frozen_candidate_9a0de9b9`. CMake Release, DTC and AEFAIR tests ON, `/usr/bin/g++ -O3 -std=c++17`; all compile and link steps passed. Source and logs remain separate from historical binary and `cpu_review_build`.
+- Binary: `framework/accel-sim.out`, 309880 bytes, SHA256 `a9ec6f231d9491690eb913d1cb69d7d2dae0f769f8854efc4df0512b5f1fd00c`.
+- Library: `core/libcudart.so`, 5004064 bytes, SHA256 `43b3dc2f3e04d577e6c682f632691aca637b2670aee52c18b809f4d4c4e64860`.
+- Receipt: `BUILD_RECEIPT.json`, SHA256 `4f3b3b768157a2210844a2e3e3a524d2e55b4b933a41a0f775429ad91e0fbcb4`; local copy `FINITE_SERVICE_CPU_BUILD_RECEIPT.json` and 44 KB logs. First compile attempt lacked the fixed Framework generated `accelsim_version.h`; the successful attempt copied the header from that same frozen Framework build and recorded source/path/hash. Failed attempt receipt retained separately.
+- Linkage: plain `ldd` reports `libcudart.so => not found` because the isolated library is outside the system search path. With `LD_LIBRARY_PATH=<build root>/core`, `ldd` resolves exactly to this new isolated `libcudart.so`; see `logs/binary_linkage_with_local_lib.log`. The launch environment must pin this path.
+- Candidate options seen in source: `-gpgpu_dtc_l1_finite_service` and `-gpgpu_dtc_l1_short_collect_first` each default to 0. The short-collect switch requires finite service and PAPER_OO mode; `dtc_l1_finite_service_active()` is true only in PAPER_IO or PAPER_OO. The ON callsite is `ldst_unit::dtc_l1_oo_select_ready` and permits a four-PIB-position lookahead for eligible ready cacheable loads, with quota 4 sectors and age limit 8 cycles. These are source facts; the build alone does not establish model exposure or science qualification.
+- Simulator/model invocations: 0. GPU calls: 0. Request/UUID registrations: 0.

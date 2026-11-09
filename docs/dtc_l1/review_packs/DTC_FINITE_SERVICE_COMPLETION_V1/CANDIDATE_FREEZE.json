@@ -1,0 +1,48 @@
+{
+  "schema": "DTC_FINITE_SERVICE_CANDIDATE_FREEZE_V1",
+  "goal_contract_commit": "32cbe43f6975ff6a11cfd1210f88026771656b48",
+  "gate_a": "PASS",
+  "gate_b": "PASS_CPU_ONLY",
+  "candidate_count": 1,
+  "candidate": "PAPER_OO bounded short collect first for ready ordinary cacheable loads",
+  "baseline_core": "9eedb3131937748f0492fa83aad37d3691118d70",
+  "candidate_core": "9a0de9b9f97144f481b3e3637e329ebab01acb74",
+  "diff_sha256": "7af7e4afadb16cf5b377a77690225572a264de858f5bdbfc0cc401675f949969",
+  "decision_rule": {
+    "search_positions_max": 4,
+    "older_remaining_sectors_gt": 4,
+    "younger_remaining_sectors_lte": 4,
+    "older_ready_age_cycles_lt": 8,
+    "scope": "PAPER_OO finite service ordinary cacheable load, both independently ready, no fence or sidecar ordering boundary",
+    "off": "frozen oldest ready choice",
+    "on": "choose eligible shorter younger collect when exact rule holds"
+  },
+  "unchanged": [
+    "finite collect quota and retire port",
+    "sector and parent masks",
+    "physical generation and Ref",
+    "global credit and downstream queues",
+    "RF writeback grant and backpressure",
+    "fence, store, atomic and noneligible paths",
+    "clock, L2, DRAM, Tag and physical capacity"
+  ],
+  "first_four_preregistered_opportunity_witness": "GESUMMV",
+  "negative_control": "vectorAdd",
+  "first_four_order": ["GESUMMV_OFF", "GESUMMV_ON", "vectorAdd_OFF", "vectorAdd_ON"],
+  "witness_basis": "Frozen CORE32 GESUMMV has one kernel, 16 CTA, 190918656 active instructions; historical OFF 89502220 cycles, L1 Oracle 2496495 cycles; OFF finite-service retired 3145856 loads, collected 38797824 sectors, WB wait 132901. This supports a high-opportunity preregistration only and does not prove actual new-policy exposure.",
+  "strong_counterevidence": [
+    "MVT physical640-to768 K1 improved 4076476 cycles while BICG K2 regressed 2207029 cycles",
+    "MVT and BICG lower-create-queue-full and global-credit-full counters were zero",
+    "Oracle gains are controlled counterfactuals and cannot promise finite mechanism gains",
+    "Old aggregate sector/load and WB wait counters do not establish two simultaneous legal ready choices"
+  ],
+  "falsifiers": [
+    "natural ON trace has zero eligible_choice_different",
+    "same binary OFF and ON differ in any noncandidate option or input",
+    "lifecycle, credit, Ref, completion or fairness invariant fails",
+    "positive candidate event does not survive strict, true164 archive and typed restore",
+    "candidate costs or timing invalidate bounded finite implementation"
+  ],
+  "cost_model": "Four PIB positions inspected at most, at most three younger comparisons per decision, one fixed age threshold, no new queue, port or free service. Timing and area remain PPA_UNKNOWN without RTL/Liberty/SRAM evidence.",
+  "science_status": "NOT_STARTED_GATE_C_HOLD"
+}
