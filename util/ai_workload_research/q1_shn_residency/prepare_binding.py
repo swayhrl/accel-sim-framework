@@ -1,5 +1,6 @@
 """Create private new-Goal binding from verified frozen Q1 gate identity."""
 import json
+import subprocess
 import shutil
 import time
 import urllib.request
@@ -10,6 +11,8 @@ Q=Path('/home/huangrulin/workspace/worktrees/accel-sim-aiarch-q1-completion-109/
 OUT=W/'docs/ai_workload_research/runs/AI_ARCH_Q1_SHN_GPU_RESIDENCY_NATIVE_V1'
 SOURCE=Q/'windows/W2/EXECUTION_BINDING.json'
 cfg=json.loads(SOURCE.read_text())
+cfg['contract_commit']=subprocess.check_output(['git','-C',str(W),'rev-parse','HEAD'],text=True).strip()
+cfg['contract_tree']=subprocess.check_output(['git','-C',str(W),'rev-parse','HEAD^{tree}'],text=True).strip()
 url=cfg['shared_resident']['status_url']+'?challenge=aiarch_q1_shn_preflight'
 with urllib.request.urlopen(urllib.request.Request(url,headers={'Cache-Control':'no-cache'}),timeout=4) as r:
     current=json.load(r)
