@@ -25,14 +25,26 @@ for actual,expect in [('run_nonce','run_nonce'),('build_commit','source_commit')
     assert a==s[expect], actual
 assert current['state']=='IMAGE_LAB_IDLE' and not current.get('reservation') and not current.get('kernel_holders')
 assert current['live_ready'] and current['profile_monitor_alive'] and current['in_flight_scopes']==0
-now=int(time.time())
+existing=OUT/'EXECUTION_BINDING.json'
+old=json.loads(existing.read_text()) if existing.exists() else None
+if old:
+    receipt=json.loads((OUT/'RESOURCE_RECEIPT.json').read_text())
+    assert old['window_id']=='W1' and receipt['lock_released'] and receipt['own_GPU_contexts_cleared']
+    assert receipt['reservation_cleanup']['released']
+    (OUT/'.private/RESOURCE_RECEIPT_WINDOW1.json').write_text(json.dumps(receipt,indent=2)+'\n')
+    now=old['goal_start_epoch']
+    remaining=5400-receipt['GPU_lock_held_seconds']
+    assert remaining>600
+else:
+    now=int(time.time())
+    remaining=5400
 cfg.update(goal_start_epoch=now,root=str(W),out=str(OUT),tool=str(W/'util/ai_workload_research/q1_shn_residency'),
            branch='hrl/aiarch-q1-shn-gpu-residency-109-v1',
-           GPU_seconds_max=5400,held_seconds_max=5400,goal_seconds_max=43200,
+           GPU_seconds_max=5400,held_seconds_max=remaining,goal_seconds_max=43200,
            own_vram_bytes_max=14*1024**3,RSS_bytes_max=40*1024**3,rss_bytes_max=40*1024**3,
            charged_bytes_max=48*1024**3,disk_bytes_max=16*1024**3,
            free_bytes_min=32*1024**3,mem_available_bytes_min=10*1024**3,
-           window_id='W1',terminal_handoff=True,
+           window_id='W2' if old else 'W1',terminal_handoff=True,
            current_goal='AI_ARCH_Q1_SHN_GPU_RESIDENCY_NATIVE_V1',
            authorization='User-pasted new complete Goal, 2026-11-09; bounded 109 RTX4080 and gate protocol')
 cfg.pop('external_readonly_state_root',None)
