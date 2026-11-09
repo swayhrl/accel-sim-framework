@@ -31,3 +31,9 @@
 `documents/SOURCE5_NATIVE22_CLOSURE.json`、`SOURCE5_HOST_TRACE_CHILD_DEPENDENCIES.json` 和 `RUNTIME_FULL43_CONTRACT.json` 已按当前节点文件建立。五份草案 Source5 相同，均含严格 43 字段和 283 项；Native22 与草案中 22 个路径的 SHA 相符。Host-child 五条为当前身份 pin；历史接受身份仍未知。这些是静态依赖资料，不是 Host 工程资格、正式 Spec、Native 安装或启动准入。
 
 旧 UMT1 Host 仍硬编码 Source812、旧请求/两 cohort、F 模式和旧阶段门槛；旧 `ep_perf_common_v2.py` 只支持单请求事务。当前必须做本批两个独立请求的运行时适配、Source5 Host 验证和 scoped Native 安装，并对接 `exact5_consumer.py`。在正式入口通过前，五点继续登记 0、消费 0、启动 0；授权有效，无需再次请求同一五点许可。
+
+## 12:54 UTC 后增量
+
+发现原五份草案 `eligibility_ref` 仍指向旧 Source78 输入资格，且 `scientific_option_contract.complete_282=true`；不能直接正式释放。现用原输入绑定/历史输入身份作为**输入证据**，与 Source5 CPU/构建资格显式接合，形成 GEMM 和 Stencil 两份 `SOURCE5_INPUT_ELIGIBILITY_*.json`。它们声明旧 Source 资格与应用接受均不继承。`exact5_mode_contract.py` 已逐项核对五份草案与固定申请的 Source、输入、283 项、点位、资源和命令人口。
+
+五份 `BOUND_SPEC_CANDIDATE.json` 只修正上述资格引用、283 声明和 Source5 consumer/mode 引用，且保持 `launch_permission=false`、Host/Native 未绑定。候选不是不可变正式 Spec，不能提交给 Native 执行。旧模板的 Source812 Host、双族 registry 事务、正式 Native 路由和完整应用 consumer 接线仍未完成。当前仍无模型结果或科学 cycles。
