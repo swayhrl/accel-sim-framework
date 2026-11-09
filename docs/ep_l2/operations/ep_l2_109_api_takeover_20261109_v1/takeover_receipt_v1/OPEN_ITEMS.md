@@ -4,7 +4,7 @@
 
 | 未决字段 | 最后可证明证据与缺口 | 影响 | 后续责任方与最小动作 |
 |---|---|---|---|
-| exact36全批自然终态及剩余33个PENDING | E16在10月26日记录切换控制器等待；174-new `QUEUE.json` 最后mtime 10月27日06:15+08:00，41已提交、33待处理、5失败保留；旧PID已不存在。限定control/receipt中未找到整个exact36的终态回执 | 不能把旧RUNNING改成整个批次CLOSED，也不能从catalog82推断队列全部完成 | 共享RTX资产/队列原owner如需关闭历史账本，提供已封的控制器terminal、逐项COMMIT/失败收据；只读核账，任何续跑需新任务 |
+| exact36剩余33项的后续处置 | 真164私有 `phase_run/STATE.json` 证明控制器完成切换；新dispatcher `run_1792982115925796665/STATE.json` 于10月27日06:15:24+08:00记录 `FAILED_STOP`，streamcluster因worker/guard exit 75失败保留。冻结36项的末次队列为2已提交、1失败、33待处理 | 旧批次可确认为失败停机，但33项不可写成完成；catalog82也不证明其逐项终结 | 共享RTX资产/队列原owner仅在需要历史账本关闭时提供33项后续已封凭据或单独决定处置；任何续跑须新任务 |
 | catalog82与有限队列242的成员映射 | 真164当前普通/派生catalog各82版本，有限队列41已提交；本轮没有对82个版本逐项与242行做完整join | 82不是独立程序数或队列终态；EP consumer资格不可按目录数量推定 | 共享资产owner按需要给出已发布小型join索引；Main仅在实际消费某对象时核精确asset/Source/input |
 | 早期EP三个路径的109 producer链 | `decoupled-l2-pretraces`、`decoupled-l2-extract`、`c2p-polybench-full-20260821` 只有E20/E24小线索，未在本轮限定小manifest闭合109 producer身份 | 不把早期模拟器native DRAM或旧路径误列为109真实GPU证据 | EP Main若将某旧对象纳入新消费者，给精确object/manifest；109窗口再定向查已存小索引，不重采 |
 | 专项161行及旧失败 | E16与10月27 `QUEUE.json` 仍列161专项、5失败保留；Ada/C8/Ada9资格仅有限profile | 不能将其统称已支持、已捕获或可直接模拟 | 共享资产owner保留原失败与pending；未来单独科学/工程合同决定精确扩展，不属于本轮 |

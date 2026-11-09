@@ -4,7 +4,7 @@
   "fixed_takeover_package_commit": "420c84671579a80ee0a8cc696f0e8db7bcaf9a86",
   "takeover_verdict": "COMPLETE_READONLY_NODE109_ENDPOINT",
   "verdict_limits": [
-    "exact36_full_batch_terminal_receipt_UNKNOWN",
+    "exact36_dispatcher_FAILED_STOP_33_pending_disposition_UNKNOWN",
     "catalog_versions_are_not_queue_terminal_or_science_acceptance",
     "Main_five_point_runtime_not_observed_by_this_window"
   ],
@@ -104,7 +104,8 @@
         "ORD_EXT_transpose_cab8f027e949_A001"
       ],
       "streamcluster_failed_retained_id": "ORD_Rodinia_streamcluster_1be5fda1aa60_A001",
-      "exact36_full_batch_terminal": "UNKNOWN"
+      "exact36_dispatcher_terminal": "FAILED_STOP; see later private receipt observation",
+      "exact36_33_pending_disposition": "UNKNOWN"
     },
     {
       "item": "true164_catalog",
@@ -126,6 +127,36 @@
       "role": "catalog pointer publisher, not node109 GPU producer"
     }
   ],
+  "followup_private_exact36_receipts": {
+    "observed_at": "2026-11-09T22:40:25+08:00 to 2026-11-09T22:41:00+08:00",
+    "root_on_verified_true164_mount": "/root/share/mnt164/huangrulin/traces/rtx4080_sm89/bulk_20261024_v1/private_candidates/cpu_post_parallel_20261026_v1",
+    "controller_status": "EXACT36_BATCH_STARTED_CONTROLLER_COMPLETE",
+    "controller_state_sha256_small_file": "be3eb7454fa989f8d692a4cf90f2a70a15c6617e1cc5b4089d5dc5fafe013742",
+    "switch_closed_sha256_small_file": "84fc06464fc53f16d484e05cf52259cb7b34e7e970c813a279259365009d9a98",
+    "new_batch_started_sha256_small_file": "fe7b4bc823f25ca30270729b382d5f93628ec99cc54b4e655db764659ff6e59e",
+    "dispatcher_run_directory": "run_1792982115925796665",
+    "dispatcher_terminal_status": "FAILED_STOP",
+    "dispatcher_terminal_at": "2026-10-27T06:15:24+08:00",
+    "dispatcher_terminal_cause": "ORD_Rodinia_streamcluster_1be5fda1aa60_A001 worker/guard exit 75",
+    "dispatcher_state_sha256_small_file": "048833f3e484aedd645d2e32d4eea995541a00e4beace0cad9a5a45866339068",
+    "failure_receipt_sha256_small_file": "5037751c5fbd38970765278a2e28ace6d4bfc1d4c945308ea8dd22f36117bcf1",
+    "queue_sha256_small_file": "e3a71147fe9edf2314ea6808cd49e8c9deea7882ed5a36de988fbda9a5f96b16",
+    "frozen_36_queue_counts": {"COMMITTED_VERIFIED": 2, "FAILED_RETAINED": 1, "PENDING": 33},
+    "remaining_33_later_disposition": "UNKNOWN",
+    "interpretation": "controller switch completed; new finite dispatcher stopped on failure; entire 36-item scope not complete"
+  },
+  "followup_node109_process_check": {
+    "observed_at": "2026-11-09T22:43:59+08:00",
+    "method": "targeted /proc cmdline path match with PID, UID, start_ticks and executable only; no raw contents",
+    "matched_pids": [
+      {"pid": 426875, "uid": 1004, "start_ticks": 345266062, "role": "existing sshfs mount"},
+      {"pid": 1470456, "uid": 1004, "start_ticks": 379699610, "role": "existing sshfs mount"},
+      {"pid": 3398091, "uid": 1004, "start_ticks": 437957991, "role": "existing bridge process; same identity as initial observation"}
+    ],
+    "historical_dispatcher_and_controller_pids_absent": [1219372, 1362061, 1376608],
+    "targeted_gpu_producer_or_finite_dispatcher_observed": false,
+    "scope_limit": "targeted process match only, not a new GPU lock or compute-app ownership claim"
+  },
   "historical_snapshot": {
     "evidence": "E16",
     "time": "2026-10-26T09:40:00+08:00 to 2026-10-26T09:48:00+08:00",

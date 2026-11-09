@@ -3,7 +3,7 @@
   "timezone": "Asia/Shanghai",
   "observation_date": "2026-11-09",
   "status_vocabulary": ["PRESENT", "ARCHIVED_WITH_RECEIPT", "REDIRECTED", "MISSING_AT_OBSERVED_PATH", "ACCESS_DENIED", "NOT_CHECKED"],
-  "hash_policy": "historical_receipt_reused for payloads; only two small immutable catalog version files freshly SHA-checked",
+  "hash_policy": "historical_receipt_reused for payloads; small catalog version and exact36 control/receipt files freshly SHA-checked; no payload rehash",
   "mount_authority": {
     "node109_nas_rtx4080": "hrl174new:/root/share/mnt164/huangrulin/traces/rtx4080_sm89/bulk_20261024_v1",
     "node109_second_mount": "nas_fast_sc_copy_st_20261029_v2 points to the same source, not an independent backup",
@@ -35,7 +35,8 @@
       "canonical_remote": "/home/shared/huangrulin/traces/rtx4080_sm89/bulk_20261024_v1",
       "canonical_status": "ARCHIVED_WITH_RECEIPT",
       "current_catalog_observation": {"full_versions": 82, "derived_versions": 82, "full_version_sha256_fresh_small_file": "88ee027f8c2ecfc4058f9884f566a3a03e1bbe78c79b89849d1b711bed385364", "derived_version_sha256_fresh_small_file": "ab4ab8b05dc91a299bfcd354f5c9e799c252f995ea241944ace705966b09765b"},
-      "finite_queue_last_evidence": "2026-10-27 06:15:24+08:00 QUEUE.json: 41 committed, 33 pending, 161 specialist pending, 5 failed retained, 2 superseded; exact36 full terminal UNKNOWN",
+      "finite_queue_last_evidence": "2026-10-27 06:15:24+08:00 QUEUE.json: 41 committed, 33 pending, 161 specialist pending, 5 failed retained, 2 superseded; private exact36 controller switch complete, dispatcher FAILED_STOP after 2 commits and 1 failure; 33 pending later disposition UNKNOWN",
+      "finite_exact36_private_receipts": "true164 bulk_20261024_v1/private_candidates/cpu_post_parallel_20261026_v1/phase_run/{STATE,SWITCH_CLOSED}.json and run_1792982115925796665/{STATE,ORD_Rodinia_streamcluster_1be5fda1aa60_A001_FAILURE}.json; small-file hashes in CURRENT_STATE.json",
       "identity": "source/input/binary/tool/GPU per immutable asset and queue metadata; ordinary ADA7 producer SHA 55c6f4829e8c92e11e0ab54496bf8f507f6cfa3a10cd01a857c6de147ee68b73 is historical, not every specialty producer",
       "qualification": {"native_exit": "PER_ASSET", "numerical_oracle": "PER_ASSET", "actual_input_bytes": "PER_ASSET; random cases require observed bytes", "full_record_producer": "PER_ASSET", "consumer": "PER_PROFILE_NOT_BLANKET_GRANTED", "hardware_timing": "NOT_GRANTED_BY_CATALOG", "archive_restore": "immutable COMMIT and catalog metadata located; no fresh full SHA/restore this turn"},
       "parent_derived_rule": "each derived complete-CTA version retains parent ID/manifest, stride policy and its own hash; not historical crop or a new program",
