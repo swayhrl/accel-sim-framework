@@ -15,6 +15,8 @@ for case in sorted((ROOT / 'cases').glob('EP_PERF_CLEAN128_STENCIL_*')):
 for name in ('stage_review_package.py', 'complete_review_configs.py'):
     source = ROOT / 'runtime' / name
     shutil.copyfile(source, DEST / source.relative_to(ROOT))
+source = ROOT / 'documents/RESOURCE_HOLD_REPORT_20261109.md'
+shutil.copyfile(source, DEST / source.relative_to(ROOT))
 
 index = []
 for target in sorted(DEST.rglob('*')):
