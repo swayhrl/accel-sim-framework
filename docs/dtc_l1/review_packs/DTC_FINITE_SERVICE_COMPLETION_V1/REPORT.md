@@ -6,6 +6,8 @@
 
 This is a terminal conditional outcome under the fixed contract, not a failed performance result and not a claim that the mechanism cannot help. The remaining 16 cells were not admitted. The static four-row file is marked `DRAFT_NO_SCIENCE_ADMISSION`; it must never be treated as a scientific result.
 
+The initial published package at commit `2aae3ec374b5796a7ab3125c6b29fdc6c5907ad8` was fetched into an independent shallow Git repository. Its 30 manifest members and 31 Git tree files matched the local source byte for byte; `GITHUB_READBACK_PRE_FINAL.json` preserves that receipt. The final publication commit is separately read back by Main after this receipt is included.
+
 ## Fixed authority and scope
 
 Contract: swayhrl/accel-sim-framework commit `32cbe43f6975ff6a11cfd1210f88026771656b48`, directory `docs/dtc_l1/plans/DTC_FINITE_SERVICE_COMPLETION_MECHANISM_V1_20261109/`; its manifest 8/8 members and 9/9 Git blobs including manifest were verified. Main used the already accepted CORE32 Oracle and historical real-structure evidence; no 128-cell re-audit or new trace capture was performed. Candidate Core is `9a0de9b9f97144f481b3e3637e329ebab01acb74` on independent branch `dtc/finite-service-completion-v1-20261109`; the original DH Core `9eedb3131937748f0492fa83aad37d3691118d70` remains frozen. Candidate Core GitHub `ls-remote` returned the exact commit. Framework source stayed at `02775fd795cde5aae1480d81cee6eb481d0a08f4`.
