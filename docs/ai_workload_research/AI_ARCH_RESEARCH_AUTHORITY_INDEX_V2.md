@@ -1,12 +1,14 @@
 # AI-ARCH｜研究 authority 索引 V2
 
-日期2026-11-06。仅登记用户指定/已接受的固定执行和审查来源；不是分支合并或新增科学复现。完整文件级 commit/tree/blob/SHA见 [已接受62文件索引](https://github.com/swayhrl/accel-sim-framework/blob/f88e40123f4060328aa50a16d22fa328cee51cfe/docs/ai_workload_research/discovery/AI_ARCH_NEXT_STAGE_PORTFOLIO_REVIEW_V1/EVIDENCE_INDEX.json)。
+更新2026-11-09。区分固定执行、已接受有限审阅与待审 Main 报告；不是分支合并或新增科学复现。旧组合包的完整文件级 commit/tree/blob/SHA见 [已接受62文件索引](https://github.com/swayhrl/accel-sim-framework/blob/f88e40123f4060328aa50a16d22fa328cee51cfe/docs/ai_workload_research/discovery/AI_ARCH_NEXT_STAGE_PORTFOLIO_REVIEW_V1/EVIDENCE_INDEX.json)。
 
 | 对象 | execution/source authority | review/decision authority及层级 |
 |---|---|---|
 | 研究组合决策 | f88e40123f4060328aa50a16d22fa328cee51cfe / tree03274c2ddb7c45aff4bd7ad1f7d48fca94e4a48f | 用户本次采用CURRENT_STATE_UPDATE_PROPOSAL；NO_GPU_PROBE_READY；排序接受不等于执行授权 |
 | Qwen V8–V11 | V8 b3e0adf450a563997717126fd1c1985e884855a3；V9 b8456ce48d8ac4939a8586bc1450239cf4d344fc；V10 94cbc8197cc3a5ec22669a55e7ccfb1a3df16962；V11 339559f6972f25ac1aec78fb3577b7bd2640410e | V11 tree c8c8391a6a0c83294ae4b6441e8c8d130180ffd2；真实native/局部profile/独立重算，成熟基点；NO_HARDWARE_CANDIDATE_PROMOTED；原数值FAIL与监控缺口保留 |
 | GS-Scale A26GR1 | cf80f6ec07a31eccdaff264c3bce64e0511179f8 / tree c66008a9da553d06a00195c8c133c3e7ec16692d | A44线程归因、A28 source、A46独审位于固定旧协调ed365741；A45H 1936dffd204043a1ab6c0fad5e7aebf565497c1a仅CPU/source；PRIMARY，非完整恢复/收敛PASS |
+| Q1 3DGS 完成 | `5787826ca21f7af958e6e1c1f828d62fd58a1ec4` / tree `a070243a93fee5594dd88d515f08e228677ebf75`；完整交接 `00abf55d44ad02a18d529eb0afe4d02dc0ceadfe` / tree `37023a6d5f5966463d9ec1f2c01f2a167f81f516` | 独立审阅 `06355f73caaa6f38697d9acac94ac81a47c27e62` / tree `a085e4183a88e01705c395b0ed00297740c6c6b4`；20 正式样本、晚期有限窗口结论获科学窗口接受；T16 原基线，数值敏感，`NO_HARDWARE_CANDIDATE_PROMOTED` |
+| Q1 状态供给反事实 Main 报告 | `be7fe374c1402498eeab3d3f3be97a9eb01667ab` / tree `c745726b3f5fcd97635da0174069302149e9abcf` | CPU-only 源码与关闭记录研究；`shN` 驻留为唯一待判别方案，容量与净收益未实测；**待 AI-ARCH-5 科学审查**，未授权下一 GPU Goal |
 | Hybrid State A70N | 5076223db5db0256fd0ccacec50b5347a0cab8c5 | A71 94f2b2f7d7def1adac47c76ee279eb78977c654a / A72 df7e11bc1206a53e4dd28c021309baf26142a333；SOURCE_SCOPE_ACCEPTED_NOT_NATIVE_NEGATIVE；SECONDARY |
 | MoE A70O | 94ca01df352cf4cf707cd35e5f9f63d4eff014c6 | A71/A72；NO_SURVIVOR_IN_SEARCH_SCOPE，非完整MoE性能否定 |
 | MoE A30T | 1a8b9317de4c16e3dd19018f7f42cae1ebf5750e | A32 53a333f2b38236632f1c371bb72119dbf52f2b14；H200_SM90A_CONDITIONAL，未native |
@@ -19,4 +21,4 @@
 | RL | A75R 8e53641295068cdef653362d0f8d7f441c636b11 | A76 source STOP；作者资源不是本机实测 |
 | A79/A80历史 | A79 1ad28dbe2fe7280aea46a24f6ba9a97c021b08b7；A80旧协调ed365741b230718f6ffc1ccbed125fc2566aac15 | 锁冲突合法STOP，GPU0/formal0，不是性能负例。旧[完整状态快照](https://github.com/swayhrl/accel-sim-framework/blob/ed365741b230718f6ffc1ccbed125fc2566aac15/docs/ai_workload_research/CURRENT_STATE.md)保留全部细节 |
 
-本次没有重新审查旧raw或论文，不为原作者/源发现补造native acceptance。旧文件、执行环境、数据缓存保持只读；其它项目活动状态NOT_QUERIED。新Q1合同与资源申请独立发布，批准前不得派发训练。
+本次没有重新审查旧 raw 或论文，不为原作者/源发现补造 native acceptance。旧文件、执行环境、数据缓存保持只读；其它项目活动状态 NOT_QUERIED。Q1 已 STOP，新反事实仅报告待审；未来 GPU 需新的具体合同与当前资源窗口。

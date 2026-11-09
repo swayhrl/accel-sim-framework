@@ -7,10 +7,11 @@
 研究范围：AI训练与推理；LLM、MoE、多模态、推荐、GNN、科学计算/3DGS等非LLM应用；单GPU、多GPU、CPU–GPU协同；计算、调度、数据就绪、片上资源、Cache/TLB、通信、存储、状态生命周期与可靠性。
 
 
-## 当前组合入口（2026-11-06）
+## 当前组合入口（2026-11-09）
 
-- [当前状态](CURRENT_STATE.md)与[固定authority索引V2](AI_ARCH_RESEARCH_AUTHORITY_INDEX_V2.md)：Qwen V11完成并保留NO_HARDWARE_CANDIDATE_PROMOTED；3DGS PRIMARY、Hybrid/KV SECONDARY、MoE H200 CONDITIONAL。
-- [已接受研究组合与三个问题](https://github.com/swayhrl/accel-sim-framework/tree/f88e40123f4060328aa50a16d22fa328cee51cfe/docs/ai_workload_research/discovery/AI_ARCH_NEXT_STAGE_PORTFOLIO_REVIEW_V1)：NO_GPU_PROBE_READY。Q1一次性合同与新资源批准独立办理；本次导航更新不启动GPU。
+- [当前状态](CURRENT_STATE.md)与[固定 authority 索引 V2](AI_ARCH_RESEARCH_AUTHORITY_INDEX_V2.md)：Q1 已完成且有限结论经独审与科学窗口接受；T16 是原基线，数值敏感性保留，未晋升硬件候选。3DGS PRIMARY、Hybrid/KV SECONDARY、MoE H200 CONDITIONAL、Qwen PARKED。
+- 固定入口：[Q1 执行](https://github.com/swayhrl/accel-sim-framework/tree/5787826ca21f7af958e6e1c1f828d62fd58a1ec4/docs/ai_workload_research/runs/AI_ARCH_Q1_COMPLETION_109_V1)、[完整交接](https://github.com/swayhrl/accel-sim-framework/tree/00abf55d44ad02a18d529eb0afe4d02dc0ceadfe/docs/ai_workload_research/handoff/AI_ARCH_FULL_HANDOFF_20261109_V1)、[已接受有限独审](https://github.com/swayhrl/accel-sim-framework/tree/06355f73caaa6f38697d9acac94ac81a47c27e62/docs/ai_workload_research/reviews/AI_ARCH_Q1_INDEPENDENT_REVIEW_20261109_V1)。[状态供给反事实 Main 报告](https://github.com/swayhrl/accel-sim-framework/blob/be7fe374c1402498eeab3d3f3be97a9eb01667ab/docs/ai_workload_research/reviews/AI_ARCH_Q1_STATE_SUPPLY_COUNTERFACTUAL_MAIN_V1/REPORT.md)待科学窗口审查，单一 `shN` 驻留实验只是设计、未执行。
+- [已接受研究组合历史入口](https://github.com/swayhrl/accel-sim-framework/tree/f88e40123f4060328aa50a16d22fa328cee51cfe/docs/ai_workload_research/discovery/AI_ARCH_NEXT_STAGE_PORTFOLIO_REVIEW_V1)保留；当前 `NO_GPU_PROBE_READY`。本协调更新不启动 GPU。
 - [A80原完整快照](https://github.com/swayhrl/accel-sim-framework/blob/ed365741b230718f6ffc1ccbed125fc2566aac15/docs/ai_workload_research/CURRENT_STATE.md)：保留A79锁冲突STOP、formal0及全部旧边界；不是当前任务监控。
 
 ## 从这里开始

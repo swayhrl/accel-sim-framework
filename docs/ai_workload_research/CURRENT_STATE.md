@@ -1,6 +1,6 @@
 # AI-ARCH｜当前科研协调状态
 
-**最新导航：2026-11-06，Q1 3DGS 主线接续。** 用户已接受研究组合包 f88e40123f4060328aa50a16d22fa328cee51cfe（tree 03274c2ddb7c45aff4bd7ad1f7d48fca94e4a48f）及其更新提案，授权本次协调导航更新与一次性 Q1 Goal 定稿。**本轮 CPU-only；没有新 GPU 授权、GPU 初始化或取锁。** 组合审查结论仍为 **NO_GPU_PROBE_READY**，Q1 合同需新的明确资源批准后才能执行。
+**最新导航：2026-11-09，Q1 已完成且有限结论获科学窗口接受。** Q1 执行固定于 `5787826ca21f7af958e6e1c1f828d62fd58a1ec4`，完整交接固定于 `00abf55d44ad02a18d529eb0afe4d02dc0ceadfe`，独立审阅固定于 `06355f73caaa6f38697d9acac94ac81a47c27e62`。科学窗口接受的是晚期原生窗口、20 样本独立复算及已声明的有限收据范围；不升级完整训练质量或硬件因果。新 [状态供给反事实 Main 报告](https://github.com/swayhrl/accel-sim-framework/blob/be7fe374c1402498eeab3d3f3be97a9eb01667ab/docs/ai_workload_research/reviews/AI_ARCH_Q1_STATE_SUPPLY_COUNTERFACTUAL_MAIN_V1/REPORT.md) **待科学窗口审查**，尚未执行新 GPU 实验。当前仍为 `NO_GPU_PROBE_READY / NO_HARDWARE_CANDIDATE_PROMOTED`。
 
 协调分支是科研导航，不是统一实验代码主干。此次只选择性登记已接受 authority 和研究决策，没有合并历史执行分支，没有改写 raw、数值 FAIL、旧 STOP 或其它项目合同。分支存在不表示任务在运行。
 
@@ -8,8 +8,8 @@
 
 | 优先级 | 对象与科学状态 | 下一步及边界 |
 |---|---|---|
-| PRIMARY | 3DGS GS-Scale/Rubble，A26GR1 真实训练和 A44/A45H/A46 限定解释；旧 Goal 已完成 STOP | 一份连续 Q1 Goal：合法完整 state 检查；没有则在未来获准窗口从真实初始状态连续推进并建立 checkpoint/恢复资格；同状态线程/流水、observer OFF/ON、完整更新及 drain、独立 camera 验证。不是本轮训练授权 |
-| SECONDARY | 动态 KV/Hybrid State；A70N SOURCE_ONLY，NO_SURVIVOR_IN_SEARCH_SCOPE，审查范围 STOP | 缺真实自然会话、完整模型/运行时/质量资格，不因 config 或代码存在恢复 |
+| PRIMARY | 3DGS GS-Scale/Rubble；Q1 完成，有限晚期 T16 窗口已获独审及科学窗口接受 | 当前 CPU-only 状态供给研究已由 Main 发布、待科学窗口审查；`shN` 驻留仅为一个未执行的判别方案，不自动启动 GPU |
+| SECONDARY | 动态 KV/Hybrid State；A70N SOURCE_ONLY，NO_SURVIVOR_IN_SEARCH_SCOPE，审查范围 STOP | 真实模型、自然会话、运行时与质量资格仍缺；资格调查不自动成为下一首选 |
 | CONDITIONAL | MoE A30T：SOURCE_QUALIFIED_PROBE_CANDIDATE / H200_SM90A_CONDITIONAL；A70O 源范围 NO_SURVIVOR | H200 与真实同格式 FP8/natural route/强软件都需资格；109 SM89 不替代，没有设备预约 |
 | PARKED | Qwen V8–V11 已完成，V11 NO_HARDWARE_CANDIDATE_PROMOTED | 成熟负载分析基点；保留真实性能、机制计数、局部因果边界和原数值负例，不自动 V12 |
 | PARKED | Low-bit A81、VLM、DiT、GNN 储备、source serving/iso-PPA/RL | 各自 source/native/条件/STOP 范围不变；不凭模型已下载或旧工程投入自动复开 |
@@ -26,11 +26,15 @@ V9 有18点90 formal，B1/B2约10.125/10.448ms每额外 token，R约1.0318448。
 
 ## 3DGS：真实证据与接续条件
 
+**2026-11-09 当前更新。** Q1 `5787826c` 已从真实连续生产取得 C_D、C_V、C_FINAL，完成 8 个预热、20 个正式样本、T8/T16 OFF/ON 分池和自然 camera 独立验证并 STOP。独立审阅 `06355f73` 的有限结论已获科学窗口接受：T16 相对 T8 的两个闭合窗口时延分别低 `12.1397%/12.1350%`，但 T16 本来就是原基线；ON 主线程 CPU Adam 加参数转发约占窗口 `75%`，不能替代 OFF 归因。状态末端保留下一步 pending；数值敏感、共享资源和终止 RSS 缺口保留。新 Main `be7fe374` 将 `shN` 驻留列为唯一待判别方案，但容量、GPU 新增工作、完整 OFF 收益与数值资格均未实测，待科学窗口审查。
+
+以下 A26GR1 和 Q1 执行前缺状态／规划说明是**2026-11-06 历史导航**，固定旧报告保持原义；不能再作为当前 Q1 未执行判断。
+
 执行 authority cf80f6ec07a31eccdaff264c3bce64e0511179f8，tree c66008a9da553d06a00195c8c133c3e7ec16692d。[报告](https://github.com/swayhrl/accel-sim-framework/blob/cf80f6ec07a31eccdaff264c3bce64e0511179f8/docs/ai_workload_research/runs/AI_ARCH_A26GR1_GSSCALE_RUBBLE_109_V1/FINAL_REPORT.md)。两次真实 Rubble 从零至15200步，不同 Gaussian 轨迹不能当配对速度试验，未证明长期收敛。
 
 A44已将旧跨线程30.871/32.128ms收窄为主线程候选并集14.084/14.746ms，不能当纯GPU等待或硬件加速上界。A45H/A46是已接受 CPU/source 反证，不是新训练。OMP16不是作者64线程性能复现；实际Torch、OMP、cpuset与P/E/SMT需在获准执行内核验。
 
-现存 splat-only 不具有完整 optimizer/counter/RNG/camera/deferred-state 恢复资格。新用户指令明确允许把“无完整状态时从合法初始状态连续推进到晚期”纳入**未来一次性 Goal 的待批准分支**，更新上一版仅缺状态即停的规划，不改变旧 A26GR1 终态。完整状态生产、恢复验证和实验不再人为拆成小 Goal。
+当时现存 splat-only 不具有完整 optimizer/counter/RNG/camera/deferred-state 恢复资格；后续 Q1 已按独立合同实际生产完整 late state，详见本节当前更新。旧 A26GR1 终态不变。
 
 历史 sampled RSS约24.53GiB，累计持锁3734.497s覆盖两次推进及其它步骤；Qwen16GiB/30分钟草案不能直接套用。历史48GiB也不是新授权。新的主机、存储、连续GPU窗口和CPU placement申请以独立Q1合同为准。
 
