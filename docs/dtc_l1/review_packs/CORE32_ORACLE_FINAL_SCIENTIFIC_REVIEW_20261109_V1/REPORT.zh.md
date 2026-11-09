@@ -61,3 +61,5 @@ D 独审重新读 5572 个文件、约 2.748 GB 唯一源字节并重新解析�
 在冻结 trace 性能范围，D 独审、M 完整分析、Main 交叉核对与正式包整合已经闭合。后续结构方向和待批准最小实验合同草案见 `NEXT_STRUCTURE_DRAFT.md`，其中 E1/E2/E3 分开标注，**没有取得科学启动授权**。真正未决的是原生完整应用数值/capture 绑定、成本与等面积公平性、结构机制因果及未来输入覆盖；这些不影响本次受控 Oracle 收尾，但限制外推。两个 request 均已消费完且 remaining=0，旧 `RUNNING`/应用层 `blocked` 只是历史静态状态；不为界面美观改 registry、重启 owner、重置预算或补跑。当前只读 publisher 原位保留。下一科学执行授权前 STOP。
 
 本轮正式总签署及 GitHub 发布前回读见 [`FINAL_SIGNOFF.md`](FINAL_SIGNOFF.md) 和 [`GITHUB_READBACK_PRE_SIGNOFF.json`](GITHUB_READBACK_PRE_SIGNOFF.json)。
+
+供 DTC-L1-11 使用的完整审查交接见 [`DTC_L1_11_REVIEW_BRIEF.md`](DTC_L1_11_REVIEW_BRIEF.md)。
