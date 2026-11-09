@@ -31,7 +31,7 @@ for family in ('gemm', 'stencil'):
 for case in sorted((ROOT / 'cases').glob('EP_PERF_CLEAN128_*')):
     files += sorted((case / 'control').glob('FROZEN_SPEC*.json'))
     files += sorted((case / 'control').glob('NATIVE_PRELAUNCH_QUALIFICATION*.json'))
-    files += sorted((case / 'env').glob('config-4.config'))
+    files += sorted((case / 'env').glob('config-*.config'))
 
 index = []
 for source in files:
