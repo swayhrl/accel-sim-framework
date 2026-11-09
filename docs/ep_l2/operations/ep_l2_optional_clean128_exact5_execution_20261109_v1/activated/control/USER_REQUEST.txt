@@ -1,0 +1,293 @@
+任务名：EP_L2_OPTIONAL_CLEAN128_EXACT5_EXECUTION_V1
+
+## 0. 接受接管，正式授权本轮执行
+
+接管回执固定提交：
+
+eb41e43b814d5b67267b8b2b00c143e625da6f20
+
+接管回执及五点接收模板已审阅接受。项目资料、唯一Main职责和执行端接管完成；今后默认称你为“EP-L2 Main”，原Main仅在历史查询时专门指明。无须再次执行一轮接管任务。
+
+**现正式批准并授权以下两个独立范围，共五个新完整应用点，每点一次：**
+
+- GEMM EXT0、EXT1、EXT2，共3点；
+- Stencil EXT0、EXT2，共2点。
+
+本条是这五点的新明确科学启动授权。请在冻结的Source、输入、配置和资源合同内，连续完成必要正式绑定、预算登记、实时准入、执行、验收、归档、双恢复、科学汇总及发布，推进至本范围终结。
+
+**不再停在“准备完成、等待批准”阶段，不需要逐点或逐个正常实现步骤重新请示。** 首次消费前的必要绑定和防重复检查属于本授权内的执行工作。
+
+接管回执中的零批准、零登记、零消费，是本授权给入前的历史状态；请保留原记录，按实际发生时间记录本次授权及后续状态，不回写历史。
+
+## 1. 项目目录、角色与固定来源
+
+执行会话：EP-L2交接-1
+
+本机项目根：
+D:/Codex/Token-API/workspaces/EP-L2
+
+持久知识入口：
+D:/Codex/Token-API/workspaces/EP-L2/CONTEXT.md
+
+小型交付目录：
+D:/Codex/Token-API/workspaces/EP-L2/deliveries/EP_L2_OPTIONAL_CLEAN128_EXACT5_EXECUTION_V1/
+
+节点沿用现有ssh hrl-174-new环境，不重装或搬迁环境。
+
+科研根J：
+/root/data/ep_l2_full_workload_performance_20261027_v1
+
+现有工程根L：
+/root/data/ep_l2_full_workload_performance_20261027_v1/research/next_cost_aware_architecture_20261107_v1
+
+共享Native根N：
+/root/data/ep_l2_dtc_l1_native_v2
+
+本批实际执行目录由Main在J下建立并登记到activation manifest；不得把提案point_id直接当成已有cohort，也不得复用旧cohort冒充本批。
+
+固定资料：
+
+1. 已接受接管回执及更新后的EP_L2_INTAKE.md：
+
+https://github.com/swayhrl/accel-sim-framework/blob/eb41e43b814d5b67267b8b2b00c143e625da6f20/docs/ep_l2/operations/ep_main_full_handoff_20261109_v1/EP_L2_MAIN_TAKEOVER_20261109.md
+
+2. 完整交接，尤其第4、6、8、10、11节：
+
+https://github.com/swayhrl/accel-sim-framework/blob/08fc797a44d24906e8e8b08ef8a95cb25a288e64/docs/ep_l2/operations/ep_main_full_handoff_20261109_v1/EP_L2_FULL_HANDOFF.md
+
+同目录SOURCE_LINEAGES.json、NEXT_FIVE_POINT_REQUEST_INDEX.json继续提供身份和申请索引。
+
+3. 精确申请JSON：
+
+https://github.com/swayhrl/accel-sim-framework/blob/ea480a05fb32eeb6b88dd1d8be1b0b9c89eb8526/docs/ep_l2/operations/ep_l2_next_cost_aware_architecture_20261107_v1/agent_d/FINAL_EXACT_EXPERIMENT_REQUEST.json
+
+4. 精确申请说明：
+
+https://github.com/swayhrl/accel-sim-framework/blob/ea480a05fb32eeb6b88dd1d8be1b0b9c89eb8526/docs/ep_l2/operations/ep_l2_next_cost_aware_architecture_20261107_v1/agent_d/FINAL_EXACT_EXPERIMENT_REQUEST.md
+
+现场最终申请为：
+L/agent_d/FINAL_EXACT_EXPERIMENT_REQUEST.json
+
+接管时已核SHA256：
+646e6b5c718f68de6c1f12fd5c3fc2f0f73b07761757d009d0c773ac790c7247
+
+区分本地最终申请、固定Git副本和实际activation Spec。按已经闭合的索引和科学字段对齐；若有实质性身份或语义差异，明确报告，不能只凭同名文件视为一致。
+
+## 2. 科学背景、假设和本轮目标
+
+主线为Performance-First：评价完整应用绝对cycles，以及为收益实际付出的硬件和服务成本。
+
+已有Stencil、GEMM和3MM的Victim服务，以及部分终态“目录接近或达到容量、共享Data仍有余量”的现象，支持检验以下假设：
+
+**Victim目录的身份容量可能先于共享Data容量限制可保留数据；增加optional CLEAN身份容量，可能产生足以覆盖查询、选择和更新代价的应用净收益。**
+
+该假设尚未得到本轮应用验证。终态满目录不等于运行期阻塞比例、错误淘汰率或预期加速比。
+
+当前A结构：
+
+- 保留Base128和mandatory/WAD128责任。
+- 增加128项optional CLEAN元数据。
+- Base淘汰CLEAN时迁移已有Payload handle到Ext，不复制或增加Data，不把dirty/WB责任转给Ext。
+- Base先查1周期，真实miss后Ext再查1周期，复用一个128项地址比较结构。
+- 真实计入Base选择、同Bank回收、有限Ext indexed读视图、更新lane和重查代价；Ext采用固定RR目标，没有免费LRU扫描或额外免费端口。
+
+需要保留的背景与反例：
+
+- 历史同Source W→WV的Stencil约9.00%、GEMM约1.49%条件收益，只是选点依据，不替代本轮新Source参考。
+- 扩Tag曾同时改善S并压缩部分WV增量，不能只看EP/S比值或把容量收益全部归EP。
+- FWT cold方案有query减少、cycles反而增加的正式负结果；计数改善不能替代性能改善。
+- Transpose的低机会/负WV背景保留，但本轮不增加其启动。
+- UMT1已关闭，RO为辅助；独立C的18/18生产CPU结论保留，但不进入本轮Source或科学预算。
+
+本轮必须回答：
+
+1. 新付费结构本身带来多少周期代价？
+2. 相同扩展硬件下，CLEAN保留带来多少周期收益？
+3. 两者合起来，完整应用是否真正变快？
+4. 已测净收益应如何结合明确成本和未知物理成本解释？
+
+## 3. 授权范围：严格3＋2，每点一次
+
+| Family | 精确point_id | extension | 用途 |
+|---|---|---:|---|
+| A_GEMM_OPTIONAL128_CONTROL3_V1 | NEXT_A_OPTIONAL128_GEMM_WV_EXT0_V1 | 0 | 新Source的Base128参考 |
+| 同上 | NEXT_A_OPTIONAL128_GEMM_WV_EXT1_V1 | 1 | 扩展硬件及时序付费，Ext保留关闭 |
+| 同上 | NEXT_A_OPTIONAL128_GEMM_WV_EXT2_V1 | 2 | 同扩展硬件，开启CLEAN保留 |
+| A_STENCIL_OPTIONAL128_NET2_V1 | NEXT_A_OPTIONAL128_STENCIL_WV_EXT0_V1 | 0 | 新Source参考 |
+| 同上 | NEXT_A_OPTIONAL128_STENCIL_WV_EXT2_V1 | 2 | 完整结构净效果 |
+
+分别登记两个fresh scoped范围，GEMM预算3、Stencil预算2，各点once-consumed。不得借用旧余额或把一个点的失败余额转给另一个点。
+
+五点独立准入与释放；不存在GEMM全部完成后才能启动Stencil，或EXT0归档恢复后才能启动EXT2的门槛。最终性能比较仍须对应两端均正式接受。
+
+首次消费前按真实台账防重。若发现同一授权范围已经合法登记或消费，核清身份后复用相应记录，不再新增第二份预算或重复fork。这是正常防重步骤，不要求重新做接管或再等一轮批准。
+
+## 4. 冻结Source5、配置和输入
+
+五点共同使用以下A Source5：
+
+Core：
+3d3887bb2e8d5073d13b0792ff9116834e89fe2f
+
+Framework：
+9dd1ee57a83d83b56b7874bc7c716185ab52c8f7
+
+vendor pybind11：
+f90c430c3a1ce8f08c09942a5a1c3a797bb2295b
+
+ELF SHA256：
+9db48c06ca64e441b5824071f52e0aa0be50374045fbdcef6cdf5d4469182f86
+
+静态libgpgpusim.a SHA256：
+7199f3dd5bdba2167186ca6858cd15603997f560660b54e8a1457761f115f48b
+
+Source5中的archive_sha256指静态库，不是结果归档tar。
+
+共同背景：
+
+WV_ZERO_RO、G32×8、64 slices、128B line、DRAM850MHz、L100、FR-FCFS128、Data1168/slice、四Bank/P1、Base/WAD128、descriptor512、Line-MSHR128、per-address32、完整283项配置。
+
+按精确申请直接消费五份配置及canonical指纹，唯一按矩阵改变的扩展选项为：
+
+-gpgpu_ep_l2_victim_extension = 0 / 1 / 2
+
+observer环境沿用固定申请，不额外开启事件时间线或其他诊断。
+
+GEMM：
+
+- input SHA256：
+  140f6ed3a5cdb1d7183cd4d2acc37b086224a054893ef12d990fdb2d5ea3659b
+- 3次initial HtoD＋1 kernel。
+- 739,246,080 instructions，1,024 CTA。
+
+Stencil：
+
+- input SHA256：
+  bd0309dfeec5745ba97400978c2c5f1413fa9c604376b3dd97e1dd3d5c8cc146
+- 1次initial HtoD＋100 kernels。
+- 2,193,446,000 instructions，6,400 CTA。
+
+完整literal/canonical ordered commands、逐kernel SHA/name/人口、输入binding和五份配置指纹以固定申请及实际正式绑定为准。两个输入均无首kernel后的Host copy。
+
+旧Source78 WV不能替代本轮EXT0。不合入元数据精简、独立C或其他Core改动。元数据精简建议不是本轮前置任务。
+
+## 5. 授权后连续完成的必要绑定
+
+请在首次消费前完成以下必要工作，然后直接进入执行，不停下来再申请同一五点的启动许可：
+
+1. 将本条精确授权固化为本批authority记录，登记两族fresh scoped预算。遵守共享registry/epoch锁与更新规则，保留其他owner、旧请求和历史记录，不整体覆盖共享JSON。
+
+2. 形成逐点不可变Spec，绑定Source5、输入、完整命令与kernel人口、五份实际283项配置、observer、运行与consumer身份。
+
+3. 完成已接受的最小Source-specific X1 consumer正式接线，按各模式适用ABI核Base/Ext记录与全局Payload role守恒。沿用已审数学主体与真实记录语义，不把mode0强行套成必须存在Ext硬件记录。
+
+4. 闭合43字段Host合同、22项Native依赖及实际Host/Trace-child依赖pins、当前boot/mount、runtime/postprocessor和完整执行图。
+
+5. 安装真正精确的scoped Native入口及安全路由，通过正式入口消费和启动，不直接运行ELF绕过Native。
+
+6. 使用当时的epoch/registry、进程/claim和资源状态完成防重与准入。接管时资源数字只作历史记录，不作为本轮启动保证。
+
+已有A生产CPU、Main独立复放、283项parser/constructor映射、有限X1资格及输入证据直接复用。除非出现具体身份、依赖变化或真实新增风险，不重做整套CPU、旧124套、全NI、全PPA、大Trace扫描或115项迁移。
+
+你是唯一预算、科学调度、验收、归档和Git集成owner。内部临时Agent可并行辅助互不冲突的绑定或分析，不建立第二个dispatcher或竞争发布者。
+
+## 6. 资源、并行与墙钟合同
+
+批准按以下合同冻结正式Spec：
+
+| 每点资源 | GEMM | Stencil |
+|---|---:|---:|
+| 绑定逻辑CPU | 1 | 1 |
+| RAM估计 | 5 GiB | 1 GiB |
+| RSS硬上限 | 10 GiB | 3 GiB |
+| AS硬上限 | 24 GiB | 10 GiB |
+| Native结果估计 | 8 MiB | 48 MiB |
+| Native结果硬界 | 64 MiB | 64 MiB |
+| 真164归档上界 | 128 MiB | 128 MiB |
+| 每次Native恢复上界 | 128 MiB | 128 MiB |
+| hard wall | 24 h | 48 h |
+
+全局EP cap10是并发上限，实际并发由当前CPU/RAM/cgroup/SSD/真164及其他owner剩余承诺决定。允许三短两长独立释放，不承诺固定五路同时运行，不要求凑满cap。
+
+Native实际floor5GiB保持。AS上限不当作实际RAM占用；不重复扣除已写历史空间，不把同一任务现占与剩余增长重复计费，不降低其他owner已有保证。
+
+历史GEMM约1.257h、Stencil约3.714h仅为软背景，不用于提前杀模型。运行中不热改已冻结安全合同。
+
+两次完整Native恢复使用两个独立目标，在一个全局串行恢复窗口内依次完成；不双重预留并发恢复窗口。
+
+大Trace、大结果和长期归档留真164，174保留必要热工作集；不复制完整Trace到Windows或重复搬运大输入。Source KEEP，不删除科学源或其他owner资产。
+
+## 7. 范围内自主处理与停止边界
+
+允许Main在保持冻结科学语义的前提下，自主完成本批Host、pins、scoped route、consumer绑定和输出适配中的具体接口修复，并对新增真实风险补最小CPU验证。
+
+允许对自然完成结果的纯metadata或路由HOLD作有界补审、补绑定，保留原Source、Spec/raw、UUID和历史记录，不为此重新运行模型，也不能通过放宽检查把失败包装成通过。
+
+以下情形按实际影响范围HOLD并报告：
+
+- 必须改变Core/ELF、输入、模式或冻结科学配置；
+- 必须改变已批准资源安全合同；
+- 需要扩大点集、增加启动次数或重跑已消费点；
+- 正确性、所有权或身份问题无法在原合同内闭合。
+
+技术失败保留一次消费、失败原因、raw/DONE和negative archive，不自动重试、退款或转移预算。一个点HOLD、失败或资源排队，不拖停其他独立合格点。
+
+本轮不增加Stencil EXT1、S、CLEAN C、RO/NI、3MM、Transpose、Tag/频率扫描、元数据精简、GPU采集、Trace采集或论文任务。
+
+## 8. 正式验收与科学判断
+
+每点沿原合同完成：
+
+自然结束 → 完整身份/配置/人口/协议/drain验收 → 真164归档full SHA及关闭重开核验 → 两个独立完整Native目标恢复 → 正式接受或失败关闭。
+
+小工程包的tar恢复不能替代应用Native恢复。exit0不单独等于接受，恢复成功也不能把模型失败改成接受。
+
+结果必须同时报告完整应用cycles、适用的Base/Ext安装/查询/响应/等待记录、全局Payload角色守恒和必要资源指标。最终累计记录按每slice正确取值，不重复累加中间快照。
+
+GEMM设完整cycles为G0/G1/G2：
+
+- 付费结构周期代价：G1−G0。
+- 同扩展硬件下保留减少的cycles：G1−G2。
+- 完整结构净减少：G0−G2。
+- 净cycles降低比例：(G0−G2)/G0。
+- 加速比：G0/G2。
+
+Stencil仅计算S0/S2的完整结构净效果、降低比例及加速比，不拆分独立保留贡献，不补EXT1。
+
+若G2<G1但G2≥G0，结论为保留有条件收益、尚未覆盖结构代价。只增加响应、降低query或其他计数而cycles未改善，不能判为性能成功。正、负、零结果全部保留。
+
+成本方面：
+
+- Ext128共460KiB只是保守row逻辑存储。
+- 端口、控制、选择器、MUX和服务周期另计。
+- 物理PPA、关键路径和最高频率未证明。
+- 不声称扩展比加Tag更便宜，或EXT0→EXT2是等硬件纯策略比较。
+
+继续保留原未证明性质：无数值输出oracle时numeric validation为UNKNOWN；应用NI、capture完整性及物理实现等按实际证据范围说明，不把工程PASS或完整Trace模拟接受扩大为通用证明。
+
+## 9. 回报、发布与CONTEXT.md
+
+授权、正式激活、登记、消费、排队、运行、自然完成和接受分别记录，不以“授权五点”写成“五点同时运行”。
+
+完成正式激活后给出简短真实回执，包含实际执行目录、入口/激活身份、两族登记情况及逐点当前状态；随后继续执行，不等待科学窗口再次批准。
+
+最终至少交付：
+
+1. 五点point_id到实际request/cohort/UUID/执行目录的映射，实际消费与终结状态。
+2. 正式Spec和Source5、输入、ordered commands、actual283、observer、Host/Native/consumer绑定。
+3. 完整cycles、命令/kernel/CTA/instructions、协议/drain及适用Base/Ext成本与服务统计。
+4. 真164归档路径/full SHA、Source KEEP、两次独立完整Native恢复回执。
+5. GEMM三种比较、Stencil净效果、成本解释、正负零结果及未证明性质。
+6. 两族预算和本范围最终关闭情况；有真实HOLD时列出准确阻塞原因及已完成的独立范围。
+
+小型源码、执行合同、报告、CSV/JSON及必要回执发布到正常项目仓库的明确本批分支，返回固定commit，并回读远端HEAD及关键文件。大raw、Trace、模型和私有state留原资产位置。
+
+本机CONTEXT.md在本条接收时更新授权范围，在执行和交付时维护：
+
+- 唯一Main已完成接管的状态；
+- 本Goal及固定来源；
+- 真实登记、消费、运行、接受、失败、HOLD计数；
+- 实际激活Source/Spec/入口和发布commit；
+- 五点科学结果、成本边界、负例和剩余未决项。
+
+不要把尚未发生的动作预填为完成。科学窗口与本机聊天不自动同步，必要新知识和结果须随交付明确带回。
