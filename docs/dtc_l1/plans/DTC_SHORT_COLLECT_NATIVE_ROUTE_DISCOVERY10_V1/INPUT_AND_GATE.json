@@ -1,0 +1,141 @@
+{
+  "schema": "DTC_SHORT_COLLECT_NATIVE_SCIENCE_DISCOVERY10_V1",
+  "status": "DRAFT_NO_NEW_REQUEST_OR_UUID",
+  "source_contract_commit": "32cbe43f6975ff6a11cfd1210f88026771656b48",
+  "source_matrix_path": "docs/dtc_l1/plans/DTC_FINITE_SERVICE_COMPLETION_MECHANISM_V1_20261109/INPUT_MATRIX10.json",
+  "candidate_core": "9a0de9b9f97144f481b3e3637e329ebab01acb74",
+  "binary_sha256": "a9ec6f231d9491690eb913d1cb69d7d2dae0f769f8854efc4df0512b5f1fd00c",
+  "libcudart_sha256": "43b3dc2f3e04d577e6c682f632691aca637b2670aee52c18b809f4d4c4e64860",
+  "option": "-gpgpu_dtc_l1_short_collect_first",
+  "effective_options_total": 271,
+  "authorization": {
+    "user_transfer_required": true,
+    "max_new_cells": 20,
+    "stage_first4": 4,
+    "stage_remaining16": 16,
+    "ch": 0,
+    "core32_other22": 0,
+    "old_goal_consumed": 0,
+    "other_model_starts": 0
+  },
+  "stage1": [
+    {
+      "program": "GESUMMV",
+      "input_sha256": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "suite": "PolyBench/GPU",
+      "kernels": 1,
+      "CTA": 16,
+      "active_thread_instructions": 190918656,
+      "modes": [
+        "OFF",
+        "ON"
+      ],
+      "role": "frozen natural ON exposure witness"
+    },
+    {
+      "program": "vectorAdd",
+      "input_sha256": "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+      "suite": "CUDA Samples",
+      "kernels": 1,
+      "CTA": 23438,
+      "active_thread_instructions": 84000768,
+      "modes": [
+        "OFF",
+        "ON"
+      ],
+      "role": "structural negative control; effect not predetermined"
+    }
+  ],
+  "stage2_conditional": [
+    {
+      "program": "MVT",
+      "input_sha256": "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+      "kernels": 2,
+      "CTA": 32,
+      "modes": [
+        "OFF",
+        "ON"
+      ]
+    },
+    {
+      "program": "ATAX",
+      "input_sha256": "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+      "kernels": 2,
+      "CTA": 32,
+      "modes": [
+        "OFF",
+        "ON"
+      ]
+    },
+    {
+      "program": "BICG",
+      "input_sha256": "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+      "kernels": 2,
+      "CTA": 32,
+      "modes": [
+        "OFF",
+        "ON"
+      ]
+    },
+    {
+      "program": "scan",
+      "input_sha256": "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+      "kernels": 33,
+      "CTA": 166608,
+      "modes": [
+        "OFF",
+        "ON"
+      ]
+    },
+    {
+      "program": "3MM",
+      "input_sha256": "977a2f7007cb1f9673fe3a5c17cdbb469335c619c172a0a882eb18410049eb3d",
+      "kernels": 3,
+      "CTA": 3072,
+      "modes": [
+        "OFF",
+        "ON"
+      ]
+    },
+    {
+      "program": "GEMM",
+      "input_sha256": "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318",
+      "kernels": 1,
+      "CTA": 1024,
+      "modes": [
+        "OFF",
+        "ON"
+      ]
+    },
+    {
+      "program": "myocyte",
+      "input_sha256": "977e34578994c3d2d1cbd1a8ecf13e09efc43b03bcb8615a141cf2a24c9d5992",
+      "kernels": 5993,
+      "CTA": 11986,
+      "modes": [
+        "OFF",
+        "ON"
+      ]
+    },
+    {
+      "program": "srad_v1",
+      "input_sha256": "0e62c67daa020853cf8a90b9f20a42d7e960e4d6c6e1db09173de1a58af199c4",
+      "kernels": 502,
+      "CTA": 181000,
+      "modes": [
+        "OFF",
+        "ON"
+      ]
+    }
+  ],
+  "stage2_gates": [
+    "R0 new native route/guard/strict/archive typed restore CPU and independent qualification PASS",
+    "C1 all four naturally strict accepted with true164 archive+typed restore",
+    "GESUMMV ON successful-retire-backed eligible_choice_different>0",
+    "C1 independent science review PASS",
+    "same immutable Core/build/lib/config/input identity"
+  ],
+  "failure": "Stop registration of remaining16; no witness substitution, old request/UUID reuse, or silent science retry",
+  "statistics": "Exact integer cycles and same-new-binary OFF per input; full10 GM only with all10 accepted pair results; missing not zero",
+  "zero_scientific_starts_from_publication": true
+}
