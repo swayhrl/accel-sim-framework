@@ -17,3 +17,9 @@
 已接受的 A Source5 CPU、实际 X1 单 slice ABI 和 283 constructor 可复用。旧 Source78/812 的 Host、Native 与数学 parser **不能直接绑定本批**：旧 parser 要求 `V2.live == V2.role_tvd`，而 A EXT2 的 V2 仅表示 Base、全局 role 包含 Ext；旧 Host 严格锁定旧 Source、旧模式及资格文档。必须将实际 X1 四类记录的 64 slice 检查与保持原数学/完整命令人口的验证链整合，并绑定新 Source5 的 43 字段 Host、Native22+实际 Host/Trace-child pins、五份不可变 Spec 和 scoped 唯一入口。此项未闭合前，首次消费会有不可退款的验收风险，因此尚未注册或启动。
 
 下一项具体工作：完成并验证该 Source-specific consumer 与 Host/Native 合同，然后在共享锁下增量登记 GEMM 3、Stencil 2，实时资源准入后按点独立执行。不会再请求相同五点授权。
+
+## 12:30 UTC 后增量
+
+已新增 Source5 专属 `SOURCE_CPU_QUALIFICATION.json`，逐一 pin 既有生产 CPU、ELF 构建、实际 283 项 constructor 和 A 原始记录 ABI；其状态仅为工程资格，应用接受为 false。`exact5_consumer.py` 的正式调用现强制要求 Source 资格文件路径及 SHA。`consumer_preflight.py` 已在 174-new 只读通过：五份草案唯一、冻结数学主体 SHA `7cc347a6c62974eedf9e1e39b007c2716fa886d26057f005c938c820b48e1817`、Source5 资格引用和真实 A 单 slice CPU 三种模式均对齐；还验证 EXT2 的 `Base live=128`、`Ext live=128`、`role_tvd=256`，篡改该守恒关系会拒绝。
+
+该组件 preflight 不能代替 64 slice 完整应用验收。尚缺正式 Host/Native22 与 Trace-child pins、五份不可变 Spec、scoped Native 路由及全应用 consumer 接线。因此当前仍为五点登记 0、消费 0、模型运行 0；不能调用草案或旧 UMT1 脚本启动。
