@@ -23,3 +23,11 @@
 已新增 Source5 专属 `SOURCE_CPU_QUALIFICATION.json`，逐一 pin 既有生产 CPU、ELF 构建、实际 283 项 constructor 和 A 原始记录 ABI；其状态仅为工程资格，应用接受为 false。`exact5_consumer.py` 的正式调用现强制要求 Source 资格文件路径及 SHA。`consumer_preflight.py` 已在 174-new 只读通过：五份草案唯一、冻结数学主体 SHA `7cc347a6c62974eedf9e1e39b007c2716fa886d26057f005c938c820b48e1817`、Source5 资格引用和真实 A 单 slice CPU 三种模式均对齐；还验证 EXT2 的 `Base live=128`、`Ext live=128`、`role_tvd=256`，篡改该守恒关系会拒绝。
 
 该组件 preflight 不能代替 64 slice 完整应用验收。尚缺正式 Host/Native22 与 Trace-child pins、五份不可变 Spec、scoped Native 路由及全应用 consumer 接线。因此当前仍为五点登记 0、消费 0、模型运行 0；不能调用草案或旧 UMT1 脚本启动。
+
+## 12:43 UTC 后增量
+
+在 174-new 运行 `runtime/consumer_population_fixture.py`，使用 A 生产 CPU 的三种模式原始记录，将每种单 slice 记录仅用于构造**小型合成 64-slice ABI 人口**。三种模式的 64-slice 类型/字段/守恒、最终时钟选择通过；缺失末项、较新时钟不完整和 Ext 容量篡改均被拒绝。此测试不含完整应用命令、kernel、FT、drain 或真实模型，不得称为应用验收。
+
+`documents/SOURCE5_NATIVE22_CLOSURE.json`、`SOURCE5_HOST_TRACE_CHILD_DEPENDENCIES.json` 和 `RUNTIME_FULL43_CONTRACT.json` 已按当前节点文件建立。五份草案 Source5 相同，均含严格 43 字段和 283 项；Native22 与草案中 22 个路径的 SHA 相符。Host-child 五条为当前身份 pin；历史接受身份仍未知。这些是静态依赖资料，不是 Host 工程资格、正式 Spec、Native 安装或启动准入。
+
+旧 UMT1 Host 仍硬编码 Source812、旧请求/两 cohort、F 模式和旧阶段门槛；旧 `ep_perf_common_v2.py` 只支持单请求事务。当前必须做本批两个独立请求的运行时适配、Source5 Host 验证和 scoped Native 安装，并对接 `exact5_consumer.py`。在正式入口通过前，五点继续登记 0、消费 0、启动 0；授权有效，无需再次请求同一五点许可。
