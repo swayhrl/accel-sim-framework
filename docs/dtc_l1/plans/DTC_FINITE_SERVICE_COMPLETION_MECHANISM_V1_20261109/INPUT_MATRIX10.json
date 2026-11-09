@@ -1,0 +1,168 @@
+{
+  "schema": "DTC_FINITE_SERVICE_DISCOVERY10_PREREGISTRATION_V1",
+  "status": "DRAFT_NOT_REGISTERED",
+  "source": {
+    "repo": "swayhrl/accel-sim-framework",
+    "commit": "b9ff89f00ea8ff889e4189136501c714c5d7e345",
+    "path": "docs/dtc_l1/review_packs/CORE32_ORACLE_FINAL_SCIENTIFIC_REVIEW_20261109_V1/evidence/fixed/FIXED32_INPUT_AND_RESULT_INDEX.json",
+    "sha_type": "full input digest recorded in source; binding and exact spec must be re-pinned by Main"
+  },
+  "envelope": {
+    "inputs": 10,
+    "planned_off": 10,
+    "planned_on": 10,
+    "max_new_scientific_cells": 20,
+    "first_gate_pairs": 2,
+    "first_gate_cells": 4,
+    "remaining_pairs": 8,
+    "remaining_cells": 16,
+    "CH_cells": 0,
+    "other22_inputs": 22,
+    "other22_cells_not_authorized": 44,
+    "conditional_user_transfer_required": true
+  },
+  "selection_rule": "First 4 cells: freeze one positive-exposure witness from GESUMMV/MVT/ATAX/BICG and vectorAdd OFF/ON before science; if source/fixture lacks a valid witness, no scientific request. Rest 8 input pairs stay exact, never post-hoc substituted.",
+  "statistics": "S=C_OFF_same_new_binary/C_ON; exact integer signs; GM only for complete preregistered accepted matched input set; incomplete intersection marked partial and not claimed as full 10",
+  "programs": [
+    {
+      "order": 1,
+      "program": "GESUMMV",
+      "suite": "PolyBench/GPU",
+      "full_input_digest_sha256": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "declared_kernel_count": 1,
+      "declared_total_CTA": 16,
+      "declared_active_thread_instructions": 190918656,
+      "role": "strong opportunity / low CTA; actual phase witness candidate",
+      "planned_cells": [
+        "GESUMMV_OFF_NEWBUILD",
+        "GESUMMV_FINITE_CANDIDATE_NEWBUILD"
+      ]
+    },
+    {
+      "order": 2,
+      "program": "MVT",
+      "suite": "PolyBench/GPU",
+      "full_input_digest_sha256": "f437190767aaed4921e11e6b85f80fb3348da90ec0f18fa8fa1bdfcd76ae3079",
+      "declared_kernel_count": 2,
+      "declared_total_CTA": 32,
+      "declared_active_thread_instructions": 145666048,
+      "role": "physical-positive historical K1 / Oracle large; timing hypothesis",
+      "planned_cells": [
+        "MVT_OFF_NEWBUILD",
+        "MVT_FINITE_CANDIDATE_NEWBUILD"
+      ]
+    },
+    {
+      "order": 3,
+      "program": "ATAX",
+      "suite": "PolyBench/GPU",
+      "full_input_digest_sha256": "eededb785179fc0488c5a01d95154f6748ea45a2ea7bb18ecdbc316cf5166950",
+      "declared_kernel_count": 2,
+      "declared_total_CTA": 32,
+      "declared_active_thread_instructions": 145666048,
+      "role": "physical-positive and strong Oracle opportunity",
+      "planned_cells": [
+        "ATAX_OFF_NEWBUILD",
+        "ATAX_FINITE_CANDIDATE_NEWBUILD"
+      ]
+    },
+    {
+      "order": 4,
+      "program": "BICG",
+      "suite": "PolyBench/GPU",
+      "full_input_digest_sha256": "ae34174fbbdf83b20a72f44492665cf4b99ed35563f482f7d14763e89f398aef",
+      "declared_kernel_count": 2,
+      "declared_total_CTA": 32,
+      "declared_active_thread_instructions": 145666048,
+      "role": "physical-negative K2 and downstream traffic counterexample",
+      "planned_cells": [
+        "BICG_OFF_NEWBUILD",
+        "BICG_FINITE_CANDIDATE_NEWBUILD"
+      ]
+    },
+    {
+      "order": 5,
+      "program": "vectorAdd",
+      "suite": "CUDA Samples",
+      "full_input_digest_sha256": "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+      "declared_kernel_count": 1,
+      "declared_total_CTA": 23438,
+      "declared_active_thread_instructions": 84000768,
+      "role": "zero-reuse structural negative control; not guaranteed zero candidate effect",
+      "planned_cells": [
+        "vectorAdd_OFF_NEWBUILD",
+        "vectorAdd_FINITE_CANDIDATE_NEWBUILD"
+      ]
+    },
+    {
+      "order": 6,
+      "program": "scan",
+      "suite": "CUDA Samples",
+      "full_input_digest_sha256": "6df3a84b612086e8c10f7f66978b6b995b459a38b00892152cf116e90db72e39",
+      "declared_kernel_count": 33,
+      "declared_total_CTA": 166608,
+      "declared_active_thread_instructions": 1963460720,
+      "role": "multi-phase complexity and historical cadence engineering negatives",
+      "planned_cells": [
+        "scan_OFF_NEWBUILD",
+        "scan_FINITE_CANDIDATE_NEWBUILD"
+      ]
+    },
+    {
+      "order": 7,
+      "program": "3MM",
+      "suite": "PolyBench/GPU",
+      "full_input_digest_sha256": "977a2f7007cb1f9673fe3a5c17cdbb469335c619c172a0a882eb18410049eb3d",
+      "declared_kernel_count": 3,
+      "declared_total_CTA": 3072,
+      "declared_active_thread_instructions": 1813512192,
+      "role": "Oracle L2 exact-zero contrasting M/L1",
+      "planned_cells": [
+        "3MM_OFF_NEWBUILD",
+        "3MM_FINITE_CANDIDATE_NEWBUILD"
+      ]
+    },
+    {
+      "order": 8,
+      "program": "GEMM",
+      "suite": "PolyBench/GPU",
+      "full_input_digest_sha256": "fc0705ae3721e999217d849a3821ce25c92b8f1a5efcfd5020845641cb891318",
+      "declared_kernel_count": 1,
+      "declared_total_CTA": 1024,
+      "declared_active_thread_instructions": 739246080,
+      "role": "L2 exact-zero, PIB/micro service sensitive",
+      "planned_cells": [
+        "GEMM_OFF_NEWBUILD",
+        "GEMM_FINITE_CANDIDATE_NEWBUILD"
+      ]
+    },
+    {
+      "order": 9,
+      "program": "myocyte",
+      "suite": "Rodinia",
+      "full_input_digest_sha256": "977e34578994c3d2d1cbd1a8ecf13e09efc43b03bcb8615a141cf2a24c9d5992",
+      "declared_kernel_count": 5993,
+      "declared_total_CTA": 11986,
+      "declared_active_thread_instructions": 42921588,
+      "role": "Oracle L2 -2cycles; many-kernel sign and HtoD caution",
+      "planned_cells": [
+        "myocyte_OFF_NEWBUILD",
+        "myocyte_FINITE_CANDIDATE_NEWBUILD"
+      ]
+    },
+    {
+      "order": 10,
+      "program": "srad_v1",
+      "suite": "Rodinia",
+      "full_input_digest_sha256": "0e62c67daa020853cf8a90b9f20a42d7e960e4d6c6e1db09173de1a58af199c4",
+      "declared_kernel_count": 502,
+      "declared_total_CTA": 181000,
+      "declared_active_thread_instructions": 10136693400,
+      "role": "Oracle L2 -14652cycles; kernel-sign counterexample",
+      "planned_cells": [
+        "srad_v1_OFF_NEWBUILD",
+        "srad_v1_FINITE_CANDIDATE_NEWBUILD"
+      ]
+    }
+  ]
+}

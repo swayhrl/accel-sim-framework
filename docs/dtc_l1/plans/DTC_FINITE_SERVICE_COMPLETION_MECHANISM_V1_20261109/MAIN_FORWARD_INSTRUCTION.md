@@ -1,0 +1,5 @@
+# 一条交给174-DTC的首轮执行指令
+
+> 只在用户明确转交并要求执行时生效；没有用户转交，本文件不授权运行。
+
+请作为唯一174-DTC Main（本机API会话“DTC-L1交接-1”），从用户提供的GitHub**固定完整提交**读取`docs/dtc_l1/plans/DTC_FINITE_SERVICE_COMPLETION_MECHANISM_V1_20261109/README.md`，核验本目录`MANIFEST.json`，完整阅读`GOAL_174_DTC.md`、`SCIENTIFIC_BACKGROUND.md`、`INPUT_MATRIX10.json`、`SAFETY_AND_REVIEW_GATES.md`、`CONTEXT_INCREMENT.md`与`SOURCE_INDEX.json`，然后按`GOAL_174_DTC.md`执行新研究`DTC_L1_FINITE_SERVICE_AND_COMPLETION_MECHANISM_V1`。本条转交即批准该Goal**已明确约束的完整条件性范围**：证据选型→唯一有限机制冻结→隔离实现/定向CPU与独审→Gate全部通过后，首4格机制资格及其通过后的剩余16格，合计最多20个新科学格；未过Gate则NO_GO/SPEC_ONLY与0或实际少于20格，不为交付强行模拟。每个输入必须运行本轮同一新binary实际OFF和候选ON，旧Oracle/OFF、旧UUID/request/预算不可复用。CORE32其余22/44、CH、第二候选、消融、GPU/native/capture、Tag/SM89 HOLD恢复、生产源码及英文v0.23修改均未授权。复用已接受D/M/Main Oracle和历史结构证据，不重演全量raw审计。统一Main可多Agent流水并行，但只有唯一合法科学dispatcher；109-DTC-L1接手任务独立，不干预。实际更新174-DTC本机`CONTEXT.md`，在独立分支发布可回读结果、真实身份、负例与未决项，完整任务结束后STOP并将固定报告提交给用户，由科学窗口审阅。
