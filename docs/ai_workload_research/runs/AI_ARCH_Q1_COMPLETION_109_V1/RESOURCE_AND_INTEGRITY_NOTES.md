@@ -1,0 +1,17 @@
+# 资源与证据范围
+
+用户2026-11-09允许继续使用109并解除原资源预算。当前运维看门狗24h/23h及Host可用内存10GiB、磁盘保留32GiB、节点物理charged guard和GPU余量属于独立列出的物理保护，不冒充旧用户硬上限。精确配置见RESOURCE_CONTRACT.json与各窗口EXECUTION_BINDING.json。
+
+W1保留原RESOURCE_STOP与原RESOURCE_RECEIPT.json，不把其中预热末次未取得正常退出资格的结果算正式数据。W2重新完成全部8warmup、20formal、3ON诊断和1末态重载，32个job均真实exit0。根目录RESOURCE_RECEIPT.json是W1原始监督器收据；整体终态看RECEIPT.json和RESOURCE_ANALYSIS.json，W2原收据在windows/W2/RESOURCE_RECEIPT.json。
+
+W1与W2的所有实际GPU工作都由同一时刻唯一共同锁owner串行安排；CPU计划器不持锁、不导入GPU运行时。曾只向已验证自身CPU计划器发送SIGTERM以更新后续末态保存计划，GPU owner/worker未被信号干预。记录在W2/raw/CPU_PLANNER_CONTROLLED_RESTART.json。
+
+CPU计划器首次W2调用有路径绑定错误，读到了W1终态后退出，没有启动W2 GPU job。修复后在同一已持锁W2中推进。该次CPU-only调用覆盖了根目录FROZEN_DISPATCH_PLAN.json及PLANNER_STATUS.json两个控制元数据文件；不把这些后写元数据伪称W1当时的原始计划文件。W1实际DISPATCH队列、PLANNER_EVENTS、源码封存、所有job/raw与RESOURCE收据未被覆盖；原GPU执行的来源以EXECUTED_SOURCE_FREEZE.json、PRE_GPU_SOURCE_SET.tar.gz和实际队列为准。W2计划扩展前另封存了W2_INITIAL_DISPATCH_PLAN.json。
+
+亲和censored是已消失自身线程的未取得样本，不是CPU值0或完整亲和观察PASS。进程RSS沿用已接受生命周期范围；新受控terminal ACK到reap区间没有连续treeRSS采样，cgroup kernel peak保留。仅报告采样RSS和各SSH session charged峰值，不声称完整Goal所有helper加总峰值。CPU辅助工具各自HWM范围另列。
+
+Image-Lab实际loaded gate/version/身份、reservation、quiescence、锁inode与UUID每个窗口重新验证。共享desktop逐进程GPU activity观测缺口仍在；没有未知compute豁免，没有固定PID白名单。报告为VERIFIED_GATED_RESIDENT_SHARED_NATIVE_OBSERVATION，不冒充完全独占测量。
+
+没有模型/真实数据下载、依赖安装、驱动/时钟/功率改动、164访问、其它项目干预、模拟器或RTL。只有自身新private及缓存；旧V1/R1/R2和原作者资产保持只读。生产中的原生滚动恢复点只在更晚完整代已验真后按本Goal owner marker轮换，原始轮换收据保留。
+
+退出时两窗口context清除、锁和预约释放均有原始记录及后查。大state和私有数值保留在109，Git只发布必要日志、指标与完整SHA索引。发布后停止，不自动追加GPU工作。
