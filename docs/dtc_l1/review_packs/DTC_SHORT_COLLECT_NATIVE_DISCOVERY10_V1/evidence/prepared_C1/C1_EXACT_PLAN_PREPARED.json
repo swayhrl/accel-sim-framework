@@ -1,0 +1,99 @@
+{
+  "binary_sha256": "a9ec6f231d9491690eb913d1cb69d7d2dae0f769f8854efc4df0512b5f1fd00c",
+  "budget": 4,
+  "candidate_core": "9a0de9b9f97144f481b3e3637e329ebab01acb74",
+  "cells": [
+    {
+      "candidate_config_sha256": "1de5da58c556d4c3c2aa069df191f8bf0914317b4400d93859f073725cfbbe88",
+      "cohort": "E2-DTCSHORT-C1-GESUMMV-OFF-V1",
+      "expected": {
+        "CTA": 16,
+        "instructions": 190918656,
+        "kernels": 1
+      },
+      "host_cpu": 400,
+      "input_sha256": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "mode": "OFF",
+      "program": "GESUMMV",
+      "spec_path": "control/specs/E2-DTCSHORT-C1-GESUMMV-OFF-V1.json",
+      "spec_sha256": "94b57a98cf2be64b1698556fb399284d4c8307235991d806a6ebdddd01f50d0a",
+      "trace_kernelslist_sha256": "ed0da283145c822bb1b9fc13c78fe41088b43478b706fcb17d078d83111044a8"
+    },
+    {
+      "candidate_config_sha256": "3155d521901cc603db112dc48461067382d0130aef26a2f4be90fa845f256c1b",
+      "cohort": "E2-DTCSHORT-C1-GESUMMV-ON-V1",
+      "expected": {
+        "CTA": 16,
+        "instructions": 190918656,
+        "kernels": 1
+      },
+      "host_cpu": 401,
+      "input_sha256": "769e6d9fd5f9cd5386556211112b1a1dec6d2b46bf69881db357257752aa22e4",
+      "mode": "ON",
+      "program": "GESUMMV",
+      "spec_path": "control/specs/E2-DTCSHORT-C1-GESUMMV-ON-V1.json",
+      "spec_sha256": "22bd7f026c8c125ef7f3f0fdbcb79e8565d6cac5c9cb1be376f9662c5d25207e",
+      "trace_kernelslist_sha256": "ed0da283145c822bb1b9fc13c78fe41088b43478b706fcb17d078d83111044a8"
+    },
+    {
+      "candidate_config_sha256": "1de5da58c556d4c3c2aa069df191f8bf0914317b4400d93859f073725cfbbe88",
+      "cohort": "E2-DTCSHORT-C1-vectorAdd-OFF-V1",
+      "expected": {
+        "CTA": 23438,
+        "instructions": 84000768,
+        "kernels": 1
+      },
+      "host_cpu": 402,
+      "input_sha256": "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+      "mode": "OFF",
+      "program": "vectorAdd",
+      "spec_path": "control/specs/E2-DTCSHORT-C1-vectorAdd-OFF-V1.json",
+      "spec_sha256": "5df39ded33293bab31c158059a708e1fe61fd8d4df55f1781799cdba390aa8f9",
+      "trace_kernelslist_sha256": "196b85b78c9a8672600cd9aac4ad8f1ec4b9945c49df3533174a78f4179f8831"
+    },
+    {
+      "candidate_config_sha256": "3155d521901cc603db112dc48461067382d0130aef26a2f4be90fa845f256c1b",
+      "cohort": "E2-DTCSHORT-C1-vectorAdd-ON-V1",
+      "expected": {
+        "CTA": 23438,
+        "instructions": 84000768,
+        "kernels": 1
+      },
+      "host_cpu": 403,
+      "input_sha256": "e7bb67e63e3c38478ff50db4dcc25dee9262fe195b30589547b1ac5e2bc3d799",
+      "mode": "ON",
+      "program": "vectorAdd",
+      "spec_path": "control/specs/E2-DTCSHORT-C1-vectorAdd-ON-V1.json",
+      "spec_sha256": "370bc043dbb27c8185bbd7f13fc312272bfc2bf49fd09ab8056242b91feb2f4a",
+      "trace_kernelslist_sha256": "196b85b78c9a8672600cd9aac4ad8f1ec4b9945c49df3533174a78f4179f8831"
+    }
+  ],
+  "contract_commit": "dfd6d7aa0383b8fda9ff08672f8c9efc392df26f",
+  "framework_commit": "02775fd795cde5aae1480d81cee6eb481d0a08f4",
+  "launch_policy": {
+    "dispatcher": "single_exact_owner_under_actual_native_global_flock",
+    "host_cpu_assignment": "fixed_per_spec_400_401_402_403_and_runtime_guard_must_recheck_affinity_and_peers",
+    "max_simultaneous_cells": 4,
+    "no_launch_before": "R0_NATIVE_ROUTE_QUALIFIED",
+    "no_old_uuid_or_request": true,
+    "no_retry_after_consumption": true
+  },
+  "libcudart_sha256": "43b3dc2f3e04d577e6c682f632691aca637b2670aee52c18b809f4d4c4e64860",
+  "limits_per_cell": {
+    "max_process_tree_rss_bytes": 8371830784,
+    "max_process_tree_vms_bytes": 25333596160,
+    "max_result_directory_bytes": 268435456,
+    "timeout_seconds": 7776000
+  },
+  "request_id": "DTC_SHORT_COLLECT_C1_20261109_V1",
+  "reserve_formula": "4 cells x 2 local copies x 268435456 result limit + 536870912 headroom",
+  "reserved_write_bytes": 2684354560,
+  "runtime_binding_path": "/root/data/dtc_short_collect_native_discovery10_v1_20261109/control/RUNTIME_BINDINGS.json",
+  "runtime_sha256": "058d7094bec46eaeadce19aa314bea239b160ff05f5a39faed274dc0395ba3ad",
+  "schema": "DTC_SHORT_COLLECT_C1_EXACT_PLAN_V1",
+  "science_scope": "GESUMMV_OFF, GESUMMV_ON, vectorAdd_OFF, vectorAdd_ON under same new binary; C2 separately gated",
+  "source_pins_path": "/root/data/dtc_short_collect_native_discovery10_v1_20261109/control/SOURCE_PINS.json",
+  "source_pins_sha256": "e6dda791bd21b25c1a6dabcb93d2967c3f838bb0c72f80d8c216559fbe6679e3",
+  "stage": "C1",
+  "status": "PREPARED_UNREGISTERED_NO_UUID_NO_MODEL"
+}

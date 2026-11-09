@@ -1,0 +1,103 @@
+{
+  "blocking_findings": [
+    {
+      "id": "NATIVE_ARCHIVE_FREE_SPACE",
+      "native_free_bytes": 18560954368,
+      "other_write_reservations_bytes": 53619307492,
+      "required_free_bytes": 63397484672,
+      "status": "HOLD"
+    },
+    {
+      "archive_writes": 0,
+      "id": "TRUE164_POSITIVE_ARCHIVE_RESTORE",
+      "status": "UNQUALIFIED",
+      "typed_restores": 0
+    },
+    {
+      "id": "LIVE_DISPATCHER_PARENT_LEASE_PID_LOADER",
+      "reason": "No production dispatcher/launcher or actual live parent lease, PID/maps/loader closure",
+      "status": "UNQUALIFIED"
+    }
+  ],
+  "c1_registration_authorized": false,
+  "candidate_core": "9a0de9b9f97144f481b3e3637e329ebab01acb74",
+  "cpu_qualification": {
+    "actual_scientific_strict_tested": false,
+    "actual_true164_positive_path_tested": false,
+    "guard_tests_passed": 5,
+    "mechanism_fixture_tests_passed": 5,
+    "production_dispatcher_implemented": false,
+    "production_launcher_implemented": false,
+    "route_tests_passed": 7,
+    "scope": "CPU_SYNTHETIC_FIXTURES_ONLY",
+    "total_passed": 17
+  },
+  "decision_rule": "All R0 conditions must PASS before registering any exact request or starting a model. Current resource HOLD and incomplete dynamic/true164 qualification forbid release.",
+  "evidence_sha256": {
+    "control/RUNTIME_BINDINGS.json": "058d7094bec46eaeadce19aa314bea239b160ff05f5a39faed274dc0395ba3ad",
+    "control/SOURCE_PINS.json": "e6dda791bd21b25c1a6dabcb93d2967c3f838bb0c72f80d8c216559fbe6679e3",
+    "control/plans/C1_EXACT_PLAN_PREPARED.json": "12ed791d1c31e951a4fcdf99c661219e309d0363bfd4f9ab19342c82c68ec0f3",
+    "control/requests/C1_EXACT_REQUEST_PREPARED.json": "a5343229f5c3604204d55594e03401ca7d305ab2a98c9098a3e20e70e9d82509",
+    "evidence/R0_MECHANISM_EVIDENCE_CPU.json": "f7fd1c5ad396937072bb5dfd76144c0f345c18fb33fc3e8030c88ccc41110c9b",
+    "evidence/R0_TRUE164_GATE_ARITHMETIC.json": "5c6a0883410eee313fe7db3645cb74ee4acaa3508c1ed7c0c30bd770d998c2ac",
+    "evidence/R0_TRUE164_GATE_READBACK.json": "4a259d47b78ab3f9fce0d3b5c93bb0e88d079a4d69a832d9ba37e213136ed743",
+    "evidence/r0_native_route_cpu/CPU_ROUTE_EVIDENCE.json": "daa19c1cc5e4bd70f11ee2de412b431e72822a8f8a2a4737625651481fda3299",
+    "tools/mechanism_outbox.py": "8307a71198cd8769ce3faaa4627aa7b663d3acd71124a739856d984f2d327fc8",
+    "tools/mechanism_strict.py": "4d6fa76bb0563652ffbc4ff2c5060af8472f1bcfa8dc3316b511fb211a5cd8f5",
+    "tools/route_authority.py": "b921dc398d32436e88fbe059f3f4056175b27f75f7135304f609f434f376140a",
+    "tools/route_guard.py": "dfc1e206938c84846adcf9289e89f0bd348600cf6ff0778f97eb5cbb083da5f4",
+    "tools/route_lease.py": "84033fc5ba2074e1420fff060e296cbb40050619c1c3ce584c61b19170a1048b"
+  },
+  "goal_commit": "dfd6d7aa0383b8fda9ff08672f8c9efc392df26f",
+  "new_science_requests": 0,
+  "new_science_uuids": 0,
+  "next_action": "STOP_PENDING_NEW_EXPLICIT_TASK_OR_RESOURCE_CHANGE",
+  "r0_native_route_qualified": false,
+  "release_authorized": false,
+  "reviewer": "independent_source_binding_and_admission_review_agent",
+  "schema": "DTC_SHORT_COLLECT_R0_INDEPENDENT_REVIEW_V1",
+  "scientific_model_starts": 0,
+  "source_and_request_review": {
+    "active_request_files": 0,
+    "c1_exact_cells": [
+      [
+        "GESUMMV",
+        "OFF"
+      ],
+      [
+        "GESUMMV",
+        "ON"
+      ],
+      [
+        "vectorAdd",
+        "OFF"
+      ],
+      [
+        "vectorAdd",
+        "ON"
+      ]
+    ],
+    "c1_exact_request_validation": "PASS_PREPARED_UNREGISTERED",
+    "effective_options_each_cell": 271,
+    "global_registry_short_collect_entries": [],
+    "only_off_on_option_difference_by_program": {
+      "GESUMMV": [
+        "-gpgpu_dtc_l1_short_collect_first"
+      ],
+      "vectorAdd": [
+        "-gpgpu_dtc_l1_short_collect_first"
+      ]
+    },
+    "r0_release_present": false,
+    "result_directories": 0,
+    "runtime_file_sha_matches": {
+      "binary": true,
+      "libcudart": true,
+      "loader": true,
+      "strace": true
+    },
+    "source_pin_input_count": 10
+  },
+  "status": "R0_HOLD_NO_SCIENCE",
+  "utc": "2026-11-09T15:56:21.595675+00:00"
+}
