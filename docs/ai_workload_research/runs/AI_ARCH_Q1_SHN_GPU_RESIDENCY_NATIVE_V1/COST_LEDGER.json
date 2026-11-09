@@ -1,0 +1,191 @@
+{
+  "status": "DIAGNOSTIC_PARTIAL_ATTRIBUTION",
+  "scope": "Separate diagnostic runs; intervals can overlap and include instrumentation overhead. ON transformed train disables detailed region/transfer observer.",
+  "logical_bytes_warning": "Call operand bytes do not establish PCIe or DRAM traffic.",
+  "ledger": {
+    "DISCOVERY": {
+      "OFF": {
+        "job": "DISCOVERY_DIAG_OFF",
+        "complete": true,
+        "closed_window_host_seconds": 9.18872030545026,
+        "regions": {
+          "ID_D2H_host": {
+            "calls": 51,
+            "host_interval_sum_seconds": 0.052082967944443226,
+            "host_interval_union_seconds": 0.052082967944443226
+          },
+          "cpu_adam": {
+            "calls": 51,
+            "host_interval_sum_seconds": 3.4391346713528037,
+            "host_interval_union_seconds": 3.4391346713528037
+          },
+          "cpu_id_selection": {
+            "calls": 51,
+            "host_interval_sum_seconds": 0.5945915412157774,
+            "host_interval_union_seconds": 0.5945915412157774
+          },
+          "cpu_parameter_forwarding_adam": {
+            "calls": 299,
+            "host_interval_sum_seconds": 2.9197555482387543,
+            "host_interval_union_seconds": 2.9197555482387543
+          },
+          "frustum_launch_host": {
+            "calls": 51,
+            "host_interval_sum_seconds": 0.0379399424418807,
+            "host_interval_union_seconds": 0.0379399424418807
+          },
+          "gradient_D2H_host": {
+            "calls": 153,
+            "host_interval_sum_seconds": 0.4249273259192705,
+            "host_interval_union_seconds": 0.4249273259192705
+          },
+          "join": {
+            "calls": 51,
+            "host_interval_sum_seconds": 0.0014717187732458115,
+            "host_interval_union_seconds": 0.0014717187732458115
+          },
+          "metadata_D2H_host": {
+            "calls": 204,
+            "host_interval_sum_seconds": 0.20697833690792322,
+            "host_interval_union_seconds": 0.20697833690792322
+          },
+          "parameter_H2D_enqueue": {
+            "calls": 299,
+            "host_interval_sum_seconds": 0.09893960133194923,
+            "host_interval_union_seconds": 0.09893960133194923
+          },
+          "synchronize": {
+            "calls": 153,
+            "host_interval_sum_seconds": 0.9290203936398029,
+            "host_interval_union_seconds": 0.9206258775666356
+          }
+        },
+        "transfer_observer_installed": true,
+        "transfers_observed": {
+          "cuda:0->cpu": {
+            "calls": 408,
+            "logical_operand_bytes": 9343153524,
+            "host_call_seconds": 0.6171625139999997
+          },
+          "cpu->cuda:0": {
+            "calls": 503,
+            "logical_operand_bytes": 8450548036,
+            "host_call_seconds": 0.06449975799999999
+          }
+        },
+        "CUDA_event_count": 51,
+        "CUDA_event_span_sum_seconds": 1.5419580497741698,
+        "CUDA_event_scope": "Launch-gap-inclusive CUDA spans on a device clock; do not subtract from Host intervals or call pure kernel time"
+      },
+      "ON": {
+        "job": "DISCOVERY_DIAG_ON",
+        "complete": true,
+        "closed_window_host_seconds": 16.870821950025856,
+        "regions": {
+          "synchronize": {
+            "calls": 51,
+            "host_interval_sum_seconds": 0.8768831919878721,
+            "host_interval_union_seconds": 0.8768831919878721
+          }
+        },
+        "transfer_observer_installed": false,
+        "transfers_observed": null,
+        "CUDA_event_count": 51,
+        "CUDA_event_span_sum_seconds": 1.492402494430542,
+        "CUDA_event_scope": "Launch-gap-inclusive CUDA spans on a device clock; do not subtract from Host intervals or call pure kernel time"
+      }
+    },
+    "VALIDATION": {
+      "OFF": {
+        "job": "VALIDATION_DIAG_OFF",
+        "complete": true,
+        "closed_window_host_seconds": 9.330057811923325,
+        "regions": {
+          "ID_D2H_host": {
+            "calls": 51,
+            "host_interval_sum_seconds": 0.06963509041815996,
+            "host_interval_union_seconds": 0.06963509041815996
+          },
+          "cpu_adam": {
+            "calls": 51,
+            "host_interval_sum_seconds": 3.510440872050822,
+            "host_interval_union_seconds": 3.510440872050822
+          },
+          "cpu_id_selection": {
+            "calls": 51,
+            "host_interval_sum_seconds": 0.5682090884074569,
+            "host_interval_union_seconds": 0.5682090884074569
+          },
+          "cpu_parameter_forwarding_adam": {
+            "calls": 303,
+            "host_interval_sum_seconds": 2.8712957818061113,
+            "host_interval_union_seconds": 2.8712957818061113
+          },
+          "frustum_launch_host": {
+            "calls": 51,
+            "host_interval_sum_seconds": 0.03969363495707512,
+            "host_interval_union_seconds": 0.03969363495707512
+          },
+          "gradient_D2H_host": {
+            "calls": 153,
+            "host_interval_sum_seconds": 0.4503031559288502,
+            "host_interval_union_seconds": 0.4503031559288502
+          },
+          "join": {
+            "calls": 51,
+            "host_interval_sum_seconds": 0.0013011042028665543,
+            "host_interval_union_seconds": 0.0013011042028665543
+          },
+          "metadata_D2H_host": {
+            "calls": 204,
+            "host_interval_sum_seconds": 0.2056333515793085,
+            "host_interval_union_seconds": 0.2056333515793085
+          },
+          "parameter_H2D_enqueue": {
+            "calls": 303,
+            "host_interval_sum_seconds": 0.1136271869763732,
+            "host_interval_union_seconds": 0.1136271869763732
+          },
+          "synchronize": {
+            "calls": 153,
+            "host_interval_sum_seconds": 0.9024329874664545,
+            "host_interval_union_seconds": 0.9024329874664545
+          }
+        },
+        "transfer_observer_installed": true,
+        "transfers_observed": {
+          "cuda:0->cpu": {
+            "calls": 408,
+            "logical_operand_bytes": 9866804636,
+            "host_call_seconds": 0.6671925059999992
+          },
+          "cpu->cuda:0": {
+            "calls": 507,
+            "logical_operand_bytes": 8651899620,
+            "host_call_seconds": 0.065628977
+          }
+        },
+        "CUDA_event_count": 51,
+        "CUDA_event_span_sum_seconds": 1.5655642566680907,
+        "CUDA_event_scope": "Launch-gap-inclusive CUDA spans on a device clock; do not subtract from Host intervals or call pure kernel time"
+      },
+      "ON": {
+        "job": "VALIDATION_DIAG_ON",
+        "complete": true,
+        "closed_window_host_seconds": 20.626475990749896,
+        "regions": {
+          "synchronize": {
+            "calls": 51,
+            "host_interval_sum_seconds": 0.93030846118927,
+            "host_interval_union_seconds": 0.93030846118927
+          }
+        },
+        "transfer_observer_installed": false,
+        "transfers_observed": null,
+        "CUDA_event_count": 51,
+        "CUDA_event_span_sum_seconds": 1.5289835510253906,
+        "CUDA_event_scope": "Launch-gap-inclusive CUDA spans on a device clock; do not subtract from Host intervals or call pure kernel time"
+      }
+    }
+  }
+}
