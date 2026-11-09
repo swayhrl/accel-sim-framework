@@ -1,0 +1,188 @@
+DTC-L1 CORE32 Oracle 科学审查回执 V1
+日期：2026-11-09（Asia/Shanghai）
+审查角色：DTC-L1 科学审查、方法论与后续任务设计窗口
+性质：固定证据的审查与反馈；不构成新科学执行授权。
+
+一、正式决定
+
+1. 接受固定 trace 范围内的 D/M/Main 科学收尾。接受 FINAL_SIGNOFF.md 所声明的总签署和 STOP 边界。本轮 Controlled Oracle Implementation & Execution Goal 可在既定范围内正式关闭。
+2. 已具备完成执行交接的条件。从本回执起，默认“DTC-L1 Main”指本机 API 会话“DTC-L1交接-1”。只有历史查询需要时，才专门称“旧账户 Main”。旧账户不再与 Main 并行修改已移交文件。
+3. 本次接受仅覆盖 SM70/V100-derived 64SM、固定32输入、同一Oracle build下128格的受控trace性能反事实。原生完整应用数值、capture绑定、真实hook重叠、跨kernel coherence、有限机制因果、PPA/等成本比较与扩展输入资格不因此晋升。
+4. 三项结构方向的研究排序可接受；下一阶段草案尚需具体化。10输入/20格可保留为一个有限候选的预选发现集草案，不是已批准矩阵。
+5. 新模拟、新request、新预算消费、GPU采集、解除HOLD、新结构源码实现和CPU fixture执行均未由本回执授权。继续 STOP，待用户明确转交下一项任务。
+
+二、固定来源
+
+合同/准备包：18b1ee9d339902e555fc2e04ef51c84f77dfe1b1
+运行结果：7ffcca7f908a21f45ba1a6ebb3b335ff962f97df
+完整交接与D/M证据：3f0036f2868e20a8d9a4b6244c7c74d940954188
+本次正式科学包：b9ff89f00ea8ff889e4189136501c714c5d7e345
+本次正式提交tree：0cf90aa3df5cd5e1d62e0ea300fef0434f1b6262
+本次包MANIFEST.json SHA256：46df7173042df4970e3550a64465c7cd9400b17b483d95e372d57e2736acc03f
+
+包目录：
+https://github.com/swayhrl/accel-sim-framework/tree/b9ff89f00ea8ff889e4189136501c714c5d7e345/docs/dtc_l1/review_packs/CORE32_ORACLE_FINAL_SCIENTIFIC_REVIEW_20261109_V1
+
+主要证据相对路径：
+- REPORT.zh.md
+- FINAL_SIGNOFF.md
+- MANIFEST.json
+- analysis/MAIN_CROSSCHECK.json
+- analysis/DTC_CORE32_REVIEW.csv
+- evidence/D/REVIEW.fixed.json
+- evidence/D/VERIFIED128_ROWS.json
+- evidence/D/FIXED32_MATCHED_PAIRS.json
+- evidence/D/CYCLE_ACCOUNTING128.json
+- evidence/M/REPORT.zh.md
+- evidence/M/APPLICATION_OPPORTUNITY_MATRIX.csv
+- evidence/M/KERNEL_CASES.json
+- evidence/M/INPUT_PROVENANCE.json
+- evidence/M/CELL_EVIDENCE_REFERENCES.json
+- evidence/M/COUNTER_MISSINGNESS.json
+- evidence/fixed/FIXED32_INPUT_AND_RESULT_INDEX.json
+- NODE_RELATIONSHIP.md
+- NEXT_STRUCTURE_DRAFT.md
+
+三、本窗口实际做过的有界核验
+
+本次通过GitHub固定commit读取正式包，不访问174/164/109进程、活动raw、锁或registry，也不重新执行模型或重复D的完整raw审计。
+
+发布回读：
+- b9ff89f固定包的24个manifest成员以及MANIFEST自身，共25个远端文件，实际字节数及Git blob SHA全部一致。
+- 24个成员的SHA256与manifest全部一致，远端成员集合与manifest加自身完全对应。
+- 包内GITHUB_READBACK_PRE_SIGNOFF.json只对应fe1b7e62发布前版本；本窗口直接对b9ff89f进行了上述回读，避免用旧回读替代最终版本。
+- 本窗口未读取API端D盘的最终回读回执，也不声称已核验其本机CONTEXT.md。本次独立远端回读足以核实正式发布包的可取得性与字节身份。
+- 机器回执：B9_REMOTE_READBACK_VERIFIED.json。
+
+身份和算术：
+- D表128行、128个唯一UUID、128个唯一RESULT SHA，全部PASS。
+- 32输入各具OFF/M/L2/L1四格，固定输入digest、D/M/fixed索引的周期与结果/strict/archive身份一致。
+- M证据引用与固定索引的Core/Framework/binary/libcudart、配置pins、spec及结果指针一致；同输入四模式非Oracle选项摘要一致，共32/32。这里核的是冻结证据连接，并非重新认证source/build。
+- D 96配对、Main 96配对与M 32应用表一致；历史7ffcca源CSV的128项身份、周期和结果SHA也一致。
+- 用整数周期与Fraction判断正/零/负；对CORE32、4个suite、initial8、remaining24的21组GM和符号统计独立复算一致。
+- 128项kernel_cycle_sum = last_cumulative_cycle = D result cycles；kernel数量合计29,192。
+- 12个案例×3模式的kernel分组周期和、数量、saved cycles闭合；102条所选kernel的身份、S/H及D来源连接一致。
+- 其中24个小case-mode包含完整kernel，能重新推导全部符号；scan/stencil/myocyte/srad_v1等大案例的完整符号分布仍来自冻结M分析。本次核了分组和、摘要一致性、选例及来源，没有重新枚举29,192条raw kernel。
+- 机器回执：INDEPENDENT_BOUNDED_RECOMPUTE.json、CROSS_EVIDENCE_JOIN128.json。
+
+D/M/Main证据等级：
+- D：独立raw、strict、归档及typed restore审查，复用既有trace-body/capture相关证据边界。
+- M：冻结的机会分析、qualified analyzer与kernel cache，raw_log_reads=0。
+- Main：冻结产物的逐格连接、配对复算、正式报告与发布。
+- 本科学窗口：远端包字节与Git blob核验、冻结表格的有界独立复算及方法论审阅。
+以上四层不能混称。D原回执goal_completion_claimed=false和M静态NOT_YET字段保持不变；后续Main签署和本回执通过来源关系向前补充状态。
+
+四、定量结论与解释审核
+
+CORE32：
+M GM = 1.6767585258096842，正/零/负=32/0/0。
+L2 GM = 1.2806486845080634，正/零/负=19/11/2。
+L1 GM = 1.9399115770053144，正/零/负=32/0/0。
+
+S = C_OFF/C_mode；GM = exp(mean(log S))，同集合逐输入等权。
+H = (C_OFF-C_mode)/C_OFF；1-1/GM(S)不等于H的算术均值。
+实际同build OFF是分母；历史DH-P0不能替代。initial8高GM不能代替完整32；总体GM不能通过对四个suite GM不加权平均得到。
+
+L2精确零11项：
+3MM、BlackScholes、GEMM、cutcp、dwt2d、gaussian、histogram、lud、mergeSort、particlefilter_naive、transpose。
+
+L2回退：
+- myocyte：145147976 -> 145147978，增加2周期。
+- srad_v1：7324411 -> 7339063，增加14652周期。
+
+L2近零正响应：
+- bfs减少5周期，4170294/4170289 > 1。
+- mri-q减少692周期，360174/359482 > 1。
+不能把上述正/负关系因显示精度抹为零，也不能将固定模拟中的微小差异直接外推为现实芯片的显著收益或损失。
+
+kernel案例：
+- myocyte/L2：5993个kernel，0快、5992相等、1慢；其ordinal 1为25652 -> 25654。M和L1各为32快、5961相等、0慢。
+- srad_v1/L2：502个kernel，215快、13相等、274慢。prepare/reduce/srad/srad2/compress/extract分组saved cycles为-1503/-2869/-11304/+1079/-55/0，和为-14652。
+- srad_v1应用整体在M/L1下改善，但仍分别有3/21个kernel回退。
+- stencil应用整体L2少4398周期，kernel分布仍为52快、2相等、46慢。
+- 3MM/GEMM的小案例逐kernel L2精确零成立。
+- M比L1快的五项为3MM、GEMM、fastWalshTransform、scalarProd、heartwall；myocyte相等。模式不是已证明单调、嵌套或可加的硬件上界。
+这些案例定位周期变化出现在哪些kernel组，尚不证明变化的微架构因果。
+
+计数器：
+29,192条kernel事实中，averagemflatency、avg_icnt2mem_latency、avg_icnt2sh_latency各100个显式null，avg_mrq_latency为21156个。上述计数沿用冻结M缺失记录及其资格，未重新扫描raw计数。
+未打印字段和显式null保持UNKNOWN；仅具有固定源码证明的稀疏省略零可独立标为source-derived值。32B L2 sector、32B DRAM atom、request object、128B line分别处理。均值、积分、峰值、瞬时gauge和累计值不得任意相减。
+ready/collect均值不是关键路径占比；physical占用可能包含Ref-free retained cache；零DRAM不证明compute-bound。
+
+真实性与外推：
+当前prefill=1、flushL1=1、flushL2=0、OO source-event invalidate=0的条件要继续保留。ordered HtoD/sidecar/strict不证明capture ELF/数据内容绑定、真实hook重叠、跨kernel coherence或完整应用数值。native typed restore是归档恢复证据，不等于native数值认证。myocyte的5993个kernel不能命名为已认证求解步数。
+Oracle支持固定trace中的受控反事实响应，不证明可实现同量收益、CH/DH等面积收益或严格数学上界；PPA与成本仍UNKNOWN。
+历史F128/F256、Physical/PIB与V2结果是各自Core/binary/config下的E2，不能混入本轮Oracle GM。V2 fixed8约0.78%/0.84%与Oracle CORE32 GM不能计算收益兑现率。
+
+五、最小文字反馈（不阻塞本轮关闭）
+
+1. DTC_L1_11_REVIEW_BRIEF.md“myocyte和srad_v1内部正/零/负混合”的简写宜精确化。
+建议表述：“不同程序与模式具有不同的kernel符号分布。myocyte/L2为0快、5992相等、1慢；myocyte/M及L1各为32快、5961相等、0慢。srad_v1/L2为215快、13相等、274慢。”
+REPORT.zh.md的实际计数正确；这是避免压缩叙述误读，不要求更改冻结D/M数据。
+
+2. NODE_RELATIONSHIP.md的109 -> 164 -> 174-new是通用资产关系。建议后续CONTEXT明确：“本轮每个输入的实际来源以固定spec/input/result索引为准；通用资产链不认证本批所有SM70输入都来自109。”现有文件已有边界，该补记不构成新增采集或补证要求。
+
+3. REPORT.zh.md提及的main_crosscheck.py目前仅在本机deliveries。建议在下一次文档维护时将其固定版本及运行说明一并保存，方便复算；本窗口已独立复算主要结果，故不据此退回科学收尾，也不要求再审raw。
+
+六、下一阶段排序与关键反证
+
+第一：有限下游服务与本地完成路径中的一个具体机制。
+理由：强Oracle响应与历史有限资源干预的正负并存，支持继续寻找真实有限路径的性能机会。
+限定：现有“协同”仍是E3。候选须精确说明改变注入、返回、notify、collect、WB/retire中的哪一个作用点；不能把整个领域名称当成已定义方案。
+E2限定：历史F同时改变FR-FCFS窗口与shared credits，并非孤立L2容量干预，也不能单独证明本地完成机制。
+主要反证：候选在预测phase未被触发；触发后等待或阻塞只转移到下一阶段；单纯扩容/重排带来同等或更慢结果；有限端口或时序成本抵消改善；所谓效果实际由不公平基线或附带参数改变造成。
+
+第二：PIB/Ref与physical生命周期。
+理由：admission、引用注册、完成等待与释放的耦合值得核查；历史小幅和相反响应不支持统一扩容必然有益。
+主要反证：高physical占用主要来自可保留缓存而非活动引用压力；候选没有改善受阻准入；扩大一处只将等待转移到另一处；Ref/credit/generation或公平性受到破坏。
+该方向可能与第一方向涉及相同的完成/释放事件。最终按一个真实机制组织实验，不因目录名称重叠而另开两套任务。
+
+第三：Tag映射与前进性先验安全。
+理由：当前首先存在安全问题，尚不能依据Oracle强响应确定Tag的性能价值。
+现有1024Tag/physical640的NO_FREE_LINE安全HOLD继续有效。先在独立合同下明确可达状态、回收条件、Ref/generation保护和外部公平返回假设。有限fixture的通过不等于无条件证明完整GPU前进性。
+主要反证：仍存在合法状态下无法回收且无法完成的循环依赖，或修复依赖无限搜索、无成本端口/仲裁和未经声明的顺序保证。
+
+七、首选候选在未来获准前的最低定义与资格
+
+1. 具体作用点：正常生产DTC路径的函数、状态结构、选择/推进条件及适用请求；不能采用Oracle虚拟命中或虚拟data-ready。
+2. 强基线：明确已接受且可实现的DTC基线Core/config；新binary中的实际OFF仅关闭候选，其他配置、输入和观测能力一致。Oracle所有虚拟模式保持关闭。不能以退化对照制造收益。
+3. 有限实现：entry数、状态位、读写端口、每周期比较/选择次数、服务延迟、吞吐、背压、年龄公平性和时钟假设。配置quota增大必须落实到真实调用与端口服务。
+4. 所有权与安全：按实际受影响路径说明required-sector、parent、generation、Ref、credit的创建/关闭及terminal drain。只改仲裁时聚焦仲裁、公平性和交互风险；未改变部分复用既有资格，不因换执行端重做全量验证。
+5. 有界CPU准备：若另获授权，再按改动覆盖部分mask、相关32/64/128B路径、迟到/重复回复、背压、fence/store/atomic、drain等必要情形；固定失败案例和独立安全审阅。无关路径不扩张为全项目重审。
+6. 成本：列状态位、队列、比较器、端口、额外阶段和潜在临界路径影响。没有RTL/库或可核模型时，面积与频率保持UNKNOWN；不编造面积数值作为形式门槛。
+7. 可证伪预测：逐输入/phase说明机制是否暴露、应改变哪些事件、哪些工作量应保持、什么结果会推翻主要解释。仅平均等待或占用率下降不足以证明关键路径因果。
+8. DTC特有性：若策略同样适用CH，DH自身改善可以是发现结果；DTC独有优势或等成本收益另需未来匹配CH和成本合同。当前CH启动预算仍为0。
+
+八、10输入/20格草案的审阅意见
+
+名单可暂时保留：GESUMMV、MVT、ATAX、BICG、vectorAdd、scan、3MM、GEMM、myocyte、srad_v1。
+该集合包含6个PolyBench/GPU、2个CUDA Samples、2个Rodinia，未覆盖Parboil。它是有意挑选的机会/反例发现集，不是CORE32代表性子样本。其GM只能称该10输入发现集GM。
+
+20格能回答：一个明确有限候选，在10个预先固定输入上，相对同新build实际OFF的整体性能效果、安全与机制暴露情况。
+20格不能单独回答：两个同时改变的机制各自贡献、两者协同、全CORE32总体收益、DTC独有优势、等面积收益。
+
+因此现阶段不必增加输入或预算：
+- 单一机制：保留每输入OFF+候选的20格首批草案。
+- 两个独立改动：将结论限制为组合总效果；如要声称协同，未来合同再设计最小有辨别力的OFF/A/B/A+B组件对照，并由用户另批准确启动数。不可借历史F/V2/Oracle点拼接2×2。
+- GEMM/3MM的L2精确零、myocyte/srad_v1的L2回退是Oracle响应控制，不能预言新候选必须零响应或回退。
+- 四个主目标和vectorAdd/scan各自应承担明确诊断角色，不能只按大Oracle加速比挑选或事后替换。
+- 科学有效的零响应和退化应保留；不以“所有程序都加速”作为扩展资格。安全/语义资格与性能取舍分开。
+- 如有工程失败或缺失，报告计划10输入、实际接受N及缺失原因；条件接受交集GM不能被当成预登记10输入的完整结果。
+- 每格使用新UUID/request，旧Oracle OFF、DH-P0及旧预算不复用。其余22输入/44格继续单独待批；不自动扩展或重跑128格。
+
+九、CONTEXT.md应纳入的增量
+
+以下内容供用户将回执转交Main后维护到D:/Codex/Token-API/workspaces/DTC-L1/CONTEXT.md。科学窗口未直接读写该D盘文件，不假定两端聊天自动同步。
+
+- 唯一执行端：DTC-L1 Main = 本机API会话“DTC-L1交接-1”；旧账户Main仅历史查询。
+- 当前阶段：CORE32 Oracle的128运行、D全128独审、M完整32分析、Main整合/正式发布/总签署及科学窗口审阅均完成；固定trace范围的本轮Goal接受关闭。
+- 固定来源：18b1合同；7ffcca运行结果；3f0036f完整交接；b9ff89f正式包；本科学审查回执与三份有界核验JSON。
+- final包已由科学窗口在b9ff89f直接核验24成员+manifest共25文件的SHA/bytes/Git blob；API本机回读回执仍是API自己的证据，不与本回执混称。
+- D/M历史静态状态不覆写，采用逐格来源关联表达后续终审与签署。
+- L2 11个精确零、myocyte+2和srad_v1+14652周期回退、bfs-5和mri-q-692周期近零正响应永久保留。
+- E1/E2/E3分开；不同总体GM不计算兑现率；应用汇总不能推断所有kernel同向。
+- 下一阶段排序：有限服务/完成单一机制；PIB/Ref/physical生命周期；Tag安全。20格只是发现集草案，尚未授权。
+- 后续独立资格：原生数值/capture绑定；有限机制因果；面积/功耗/吞吐与CH公平性；扩展输入及泛化证据。
+- 当前STOP；新科学启动、CPU候选实现、HOLD释放及新capture都等待用户另行转交明确任务。
+
+本回执未修改原科学包、原RESULT、D/M文件、registry、publisher或英文v0.23。后续若保存文字澄清，请以新增审查记录关联固定b9ff89f，保留原始证据与历史负例。
