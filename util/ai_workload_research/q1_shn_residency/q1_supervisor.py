@@ -9,6 +9,7 @@ from resource_monitor import collect_snapshot,enforce_snapshot,disk_bytes,Monito
 from rss_lifecycle import OwnLifecycle,SessionMemory,finalize_races
 from desktop_policy import apply_desktop_policy,admit_low_activity,runtime_activity
 from process_observation import observe_processes,enforce_observation
+from offline_asset_guard import verify_alexnet
 TOOL=Path(__file__).resolve().parent;ROOT=TOOL.parents[2]
 OUT=Path(os.environ.get("Q1_EXECUTION_OUT",ROOT/"docs/ai_workload_research/runs/AI_ARCH_Q1_COMPLETION_109_V1"))
 def dump(p,j):
@@ -280,6 +281,9 @@ class Q1Supervisor:
         return row
     def run(self):
         try:
+            # CPU-only asset identity check before reservation, flock or NVML.
+            self.r["auxiliary_asset_preflight"]=verify_alexnet(self.out/".private/cache/torch")
+            self.save()
             os.sched_setaffinity(0,set(self.cfg["supervisor_affinity"]))
             if shutil.disk_usage(self.out).free<self.cfg["free_bytes_min"]:raise MonitorStop("RESOURCE_STOP","Admission filesystem free below contracted minimum")
             mem=int(next(l.split()[1] for l in Path("/proc/meminfo").read_text().splitlines() if l.startswith("MemAvailable:")))*1024

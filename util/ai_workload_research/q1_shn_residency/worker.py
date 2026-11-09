@@ -1,6 +1,7 @@
 """Single owned GS-Scale worker. No framework import before proven parent flock."""
 import os,sys,json,time,ast,hashlib,copy,random,traceback,shutil,gc,math,re
 from pathlib import Path
+from offline_asset_guard import verify_alexnet,install_external_network_guard
 TOOL=Path(__file__).resolve().parent
 ROOT=TOOL.parents[2]
 sys.path.insert(0,str(TOOL.parent/"q1_3dgs_completion"))
@@ -333,6 +334,10 @@ def main():
     owner=int(os.environ["Q1_LOCK_OWNER_PID"])
     assert kernel_holders(CFG["lock"])==[owner],"No live proven parent common flock"
     assert owner==os.getppid(),"Actual worker must be direct child of lock supervisor"
+    # Recheck the exact LPIPS auxiliary weights before CUDA and block Python
+    # external downloads while retaining loopback gate and AF_UNIX IPC.
+    verify_alexnet(os.environ["TORCH_HOME"])
+    install_external_network_guard()
     import torch,numpy as np,threading,dataclasses,importlib.util
     assert torch.__version__=="2.2.0+cu121"
     torch.set_num_threads(1);torch.set_num_interop_threads(1)
