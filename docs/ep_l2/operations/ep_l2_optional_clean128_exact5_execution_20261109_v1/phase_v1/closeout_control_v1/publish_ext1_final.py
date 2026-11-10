@@ -69,12 +69,26 @@ def main():
   options=es['expected_effective_options']
   assert len(options)==283 and set(options)==set(base) and options[OPTION]==str(mode)
   assert {k for k in options if options[k]!=base[k]}==({OPTION} if mode else set())
+ phase_dir=R/'documents/EXT1_TRIPLET_PHASE_20261110_V1'
+ if not phase_dir.exists():
+  subprocess.check_call(['/usr/bin/python3','-B',str(R/'runtime/analyze_stencil_triplet.py')],
+                        cwd='/root/workspace',timeout=3600)
+ phase=read(phase_dir/'TRIPLET_PHASE_EVIDENCE.json')
+ assert phase['schema']=='EP_L2_STENCIL_EXT012_PHASE_COMPARISON_V1'
+ assert phase['cycles']=={'EXT0':evidence[0][0]['cycles'],'EXT1':p['cycles'],'EXT2':evidence[2][0]['cycles']}
+ assert phase['source_identity']==p['source_identity'] and phase['input_identity_sha256']==p['input_identity_sha256']
+ assert len(phase['rows'])==100
  assert not DEST.exists();DEST.mkdir(parents=True)
  for name,src in {'ACCEPTED_POINT.json':point,'NATIVE_EXIT.json':done,'FROZEN_SPEC.json':spec,
   'VALIDATED_APPLICATION_BUNDLE.json':validation,'ARCHIVE_RECEIPT.json':receipt,
   'ARCHIVE_MANIFEST.json':manifest,'BACKGROUND_MONITOR_STATUS.json':R/'control/EXT1_BACKGROUND_MONITOR_STATUS.json',
   'ACCEPT_ARCHIVE_LOG.txt':R/'control/EXT1_ACCEPT_ARCHIVE_20261110.log',
-  'publish_ext1_final.py':R/'runtime/publish_ext1_final.py'}.items():shutil.copyfile(src,DEST/name)
+  'publish_ext1_final.py':R/'runtime/publish_ext1_final.py',
+  'analyze_stencil_triplet.py':R/'runtime/analyze_stencil_triplet.py',
+  'analyze_stencil_phase_ext1_base.py':R/'runtime/analyze_stencil_phase_ext1_base.py',
+  'TRIPLET_PHASE_EVIDENCE.json':phase_dir/'TRIPLET_PHASE_EVIDENCE.json',
+  'TRIPLET_PHASE_ROWS.csv':phase_dir/'TRIPLET_PHASE_ROWS.csv',
+  'TRIPLET_PHASE_REPORT.md':phase_dir/'TRIPLET_PHASE_REPORT.md'}.items():shutil.copyfile(src,DEST/name)
  c0=evidence[0][0]['cycles'];c2=evidence[2][0]['cycles'];c1=p['cycles']
  assert c0==4768893 and c2==4786427
  summary={'schema':'EP_L2_STENCIL_EXT1_FINAL_SAME_SOURCE_COMPARISON_V1',
@@ -101,7 +115,7 @@ def main():
  decision=('CLEAN 策略包净改善；若整体仍比 EXT0 慢，下一轮优先审查迁移成本。' if c2<c1 else
            'CLEAN 策略包在此输入上净变慢，应停止同结构 CLEAN 扩点并先分析机制成本。' if c2>c1 else
            'CLEAN 策略包的应用 cycles 净差为零，后续先分析成本。')
- report=f'''# Stencil EXT1 单点最终回执\n\n新增单点 `{CASE}` 以 Source5、同一 Stencil 输入和完整 283 项实际配置完成一次正式消费，Native 状态 `CLOSED_ACCEPTED`，无重试和退款。三点的 Source、ELF、输入、100 个有序 kernel、6400 CTA 和 2,193,446,000 指令一致；283 项实际选项仅 `{OPTION}` 分别为 0/1/2。完整 raw 留在 174-new 执行根。真164 归档 SHA256 `{sha(archive)}`，并通过两个不同 Native 目标的独立完整恢复；Source KEEP。\n\n| 比较 | 应用 cycles | 净差 |\n|---|---:|---:|\n| EXT0 | {c0} | 基线 |\n| EXT1 | {c1} | EXT1−EXT0 = {c1-c0:+d} |\n| EXT2 | {c2} | EXT2−EXT1 = {c2-c1:+d} |\n\nEXT2−EXT0 = {c2-c0:+d} cycles。EXT1−EXT0 是扩展硬件迁移包的净效应；EXT2−EXT1 是同一扩展硬件下开启 CLEAN 策略包的净增量，包含查询、spill、占用和服务成本。{decision}这三个确定性单点不能把局部机制各自分解为独占关键路径周期，也不证明物理 PPA、能耗、数值 oracle 或跨负载收益；应用数值输出仍为 UNKNOWN。\n\n验收、归档和三点一致性证据见同目录 JSON；固定 Host、启动身份和实时准入见相邻 `live_ext1_v1/`。\n'''
+ report=f'''# Stencil EXT1 单点最终回执\n\n新增单点 `{CASE}` 以 Source5、同一 Stencil 输入和完整 283 项实际配置完成一次正式消费，Native 状态 `CLOSED_ACCEPTED`，无重试和退款。三点的 Source、ELF、输入、100 个有序 kernel、6400 CTA 和 2,193,446,000 指令一致；283 项实际选项仅 `{OPTION}` 分别为 0/1/2。完整 raw 留在 174-new 执行根。真164 归档 SHA256 `{sha(archive)}`，并通过两个不同 Native 目标的独立完整恢复；Source KEEP。\n\n| 比较 | 应用 cycles | 净差 |\n|---|---:|---:|\n| EXT0 | {c0} | 基线 |\n| EXT1 | {c1} | EXT1−EXT0 = {c1-c0:+d} |\n| EXT2 | {c2} | EXT2−EXT1 = {c2-c1:+d} |\n\nEXT2−EXT0 = {c2-c0:+d} cycles。EXT1−EXT0 是扩展硬件迁移包的净效应；EXT2−EXT1 是同一扩展硬件下开启 CLEAN 策略包的净增量，包含查询、spill、占用和服务成本。{decision}这三个确定性单点不能把局部机制各自分解为独占关键路径周期，也不证明物理 PPA、能耗、数值 oracle 或跨负载收益；应用数值输出仍为 UNKNOWN。\n\n验收、归档、三点一致性及逐 kernel 阶段分析证据见同目录 JSON/CSV；固定 Host、启动身份和实时准入见相邻 `live_ext1_v1/`。\n'''
  (DEST/'README.md').write_text(report)
  manifest_index={str(z.relative_to(DEST)):sha(z) for z in DEST.rglob('*') if z.is_file()}
  (DEST/'EVIDENCE_INDEX.json').write_text(json.dumps(manifest_index,indent=2)+'\n')
