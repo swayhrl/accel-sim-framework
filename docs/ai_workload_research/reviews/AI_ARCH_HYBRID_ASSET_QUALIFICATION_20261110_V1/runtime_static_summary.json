@@ -1,0 +1,16 @@
+{
+  "node": "109",
+  "method": "CPU-only read of installed Python source; no vLLM import, runner, CUDA or model load",
+  "installed_environment": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1",
+  "installed_vllm_version": "0.30.0",
+  "fixed_qwen_card": "Qwen/Qwen3.5-4B@851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "card_requirement": "vLLM main branch required; text-only example uses --language-model-only",
+  "installed_source_evidence": {
+    "cli_option": "vllm/engine/arg_utils.py:1367 declares --language-model-only",
+    "config_effect": "vllm/config/multimodal.py:483-484 returns zero modality limit in language_model_only mode",
+    "model_registry": "vllm/model_executor/models/registry.py:204 and :597 register Qwen3_5ForCausalLM and Qwen3_5ForConditionalGeneration",
+    "pruning_marker": "vllm/model_executor/models/qwen3_5.py:473-474 declares supports_multimodal_pruning=True"
+  },
+  "decision": "RUNTIME_VERSION_GATE_OPEN",
+  "limits": "Static presence does not establish compatibility of the fixed checkpoint with installed 0.30.0, actual vision pruning, SM89 GDN execution, numerical correctness, quality or live capacity."
+}

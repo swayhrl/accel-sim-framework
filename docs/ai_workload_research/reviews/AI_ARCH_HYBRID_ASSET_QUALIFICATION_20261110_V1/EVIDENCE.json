@@ -1,0 +1,81 @@
+{
+  "goal": "AI_ARCH_HYBRID_ASSET_QUALIFICATION_20261110_V1",
+  "node": "109",
+  "execution_scope": "CPU-only asset and natural-session qualification",
+  "source_channel": "hf-mirror.com fixed revision paths; official Hugging Face API timed out on Windows and 109; mirror is not independent official real-time confirmation",
+  "acquisition_events": {
+    "primary_range_attempt": "failed with curl=56, HTTP 206, connection reset by peer",
+    "repair_attempt": "one curl=28 connection timeout; fixed missing ranges retried as 32 MiB subranges",
+    "final_result": "both whole safetensors files match fixed LFS SHA-256; failed temporary fragments retained only in private directory"
+  },
+  "model": {
+    "repository": "Qwen/Qwen3.5-4B",
+    "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "license": "Apache-2.0",
+    "tokenizer_json": {
+      "bytes": 12807982,
+      "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42"
+    },
+    "weight_index_tensors": 738,
+    "weight_index_logical_bytes": 9319737856,
+    "weights": [
+      {
+        "name": "model.safetensors-00001-of-00002.safetensors",
+        "expected_bytes": 5329398688,
+        "expected_lfs_sha256": "26a93f066e1916adb13453dae5a0c707c0fbc71299ed98779571a907b8e74c61",
+        "whole_file_verified": true
+      },
+      {
+        "name": "model.safetensors-00002-of-00002.safetensors",
+        "expected_bytes": 3990429408,
+        "expected_lfs_sha256": "cb544bd9bfae93dc59b0f22b292f5933573854a7f9b97835c67060d7d910e188",
+        "whole_file_verified": true
+      }
+    ],
+    "header_index_verified": true,
+    "header_summary_file": "model_header_summary.json",
+    "header_total_tensors": 738,
+    "header_logical_bytes": 9319737856,
+    "header_dtype_tensors": {"BF16": 690, "F32": 48},
+    "header_component_bytes": {"model.language_model": 8411510272, "model.visual": 667028480},
+    "static_asset_gate": "PASS_WITH_SCOPE_LIMITS"
+  },
+  "natural_inputs": {
+    "wildchat": {
+      "repository": "allenai/WildChat",
+      "revision": "f66566ceaaeb619dd98ffb0f3bf3ce1f86775ac4",
+      "shard": "data/train-00005-of-00006.parquet",
+      "bytes": 231061961,
+      "sha256": "2023b66a16cf095fcd3686e10259dc089eca95f739fa1c863b07af56029f9f00",
+      "license": "ODC-BY database license; individual content and privacy rights remain separate",
+      "rows": 88238,
+      "filtered_multiturn_candidates": 27628,
+      "discovery": 22079,
+      "holdout": 5549,
+      "split_rule": "SHA256(conversation_id UTF-8), first eight bytes big-endian modulo five; zero is holdout"
+    },
+    "exgentic": {
+      "repository": "Exgentic/agent-llm-traces",
+      "revision": "70036b93a04e61b0ea2706a68b962f4f26774587",
+      "shard": "data/train-00022-of-00039.parquet",
+      "bytes": 265853,
+      "sha256": "38bd8d57ceb882de7d2afb7354fec558687dbc67621c2293e92a3f9ce4d3351a",
+      "card_license": "CDLA-Permissive-2.0",
+      "sessions": 46,
+      "chat_spans": 273,
+      "benchmark": "tau2_airline",
+      "source_model": "GPT-4.1 variants, not Qwen"
+    }
+  },
+  "cpu_tokenizer_probe": {
+    "class": "Qwen3_5Tokenizer",
+    "discovery_sessions": 64,
+    "second_turn_tokens_min_median_p90_max": [33, 429.5, 1059, 3032],
+    "last_turn_tokens_min_median_p90_max": [68, 785.5, 3029, 4169],
+    "history_source": "original WildChat GPT assistant turns, not Qwen generation",
+    "cuda_initialized": false
+  },
+  "runtime_static_gate": "RUNTIME_VERSION_GATE_OPEN: model card requests vLLM main; installed 0.30.0 has the CLI option and model source entry but no native execution verification",
+  "gpu_result": "NONE",
+  "private_asset_directory": "/data/c16/aiarch_hybrid_asset_qualification_20261110_v1/"
+}

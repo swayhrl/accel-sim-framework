@@ -1,0 +1,83 @@
+{
+  "rows": 88238,
+  "columns": [
+    [
+      "conversation_id",
+      "VARCHAR"
+    ],
+    [
+      "model",
+      "VARCHAR"
+    ],
+    [
+      "timestamp",
+      "TIMESTAMP WITH TIME ZONE"
+    ],
+    [
+      "conversation",
+      "STRUCT(\"content\" VARCHAR, \"language\" VARCHAR, redacted BOOLEAN, \"role\" VARCHAR, toxic BOOLEAN)[]"
+    ],
+    [
+      "turn",
+      "BIGINT"
+    ],
+    [
+      "language",
+      "VARCHAR"
+    ],
+    [
+      "openai_moderation",
+      "STRUCT(categories STRUCT(harassment BOOLEAN, \"harassment/threatening\" BOOLEAN, hate BOOLEAN, \"hate/threatening\" BOOLEAN, \"self-harm\" BOOLEAN, \"self-harm/instructions\" BOOLEAN, \"self-harm/intent\" BOOLEAN, sexual BOOLEAN, \"sexual/minors\" BOOLEAN, violence BOOLEAN, \"violence/graphic\" BOOLEAN), category_scores STRUCT(harassment DOUBLE, \"harassment/threatening\" DOUBLE, hate DOUBLE, \"hate/threatening\" DOUBLE, \"self-harm\" DOUBLE, \"self-harm/instructions\" DOUBLE, \"self-harm/intent\" DOUBLE, sexual DOUBLE, \"sexual/minors\" DOUBLE, violence DOUBLE, \"violence/graphic\" DOUBLE), flagged BOOLEAN)[]"
+    ],
+    [
+      "detoxify_moderation",
+      "STRUCT(identity_attack FLOAT, insult FLOAT, obscene FLOAT, severe_toxicity FLOAT, sexual_explicit FLOAT, threat FLOAT, toxicity FLOAT)[]"
+    ],
+    [
+      "toxic",
+      "BOOLEAN"
+    ],
+    [
+      "redacted",
+      "BOOLEAN"
+    ]
+  ],
+  "counts": {
+    "distinct_ids": 88238,
+    "multi_turn": 28941,
+    "four_or_more_messages": 28941,
+    "multi_turn_last_assistant": 28941,
+    "turn_message_count_equal": 88238,
+    "redacted_rows": 464,
+    "toxic_rows": 0,
+    "empty_or_null_content_messages": 1774,
+    "redacted_messages": 867,
+    "toxic_messages": 0
+  },
+  "turn_range": [
+    1,
+    1.0,
+    78,
+    2,
+    2.0,
+    156
+  ],
+  "roles": [
+    [
+      "assistant",
+      174864
+    ],
+    [
+      "user",
+      174864
+    ]
+  ],
+  "candidate_filter": {
+    "count": 27628,
+    "split": {
+      "discovery": 22079,
+      "holdout": 5549
+    },
+    "rule": "SHA256(conversation_id UTF-8) first 8 bytes big-endian mod 5: 0=holdout"
+  }
+}

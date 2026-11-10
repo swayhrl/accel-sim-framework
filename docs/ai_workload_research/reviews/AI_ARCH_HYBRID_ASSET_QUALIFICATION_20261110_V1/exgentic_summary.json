@@ -1,0 +1,93 @@
+{
+  "rows": 46,
+  "columns": [
+    [
+      "harness",
+      "VARCHAR"
+    ],
+    [
+      "benchmark",
+      "VARCHAR"
+    ],
+    [
+      "models",
+      "VARCHAR[]"
+    ],
+    [
+      "max_tokens",
+      "BIGINT"
+    ],
+    [
+      "total_tokens",
+      "BIGINT"
+    ],
+    [
+      "session_id",
+      "VARCHAR"
+    ],
+    [
+      "spans",
+      "STRUCT(span_id VARCHAR, \"name\" VARCHAR, kind VARCHAR, start_time VARCHAR, end_time VARCHAR, attributes STRUCT(\"gen_ai.operation.name\" VARCHAR, \"gen_ai.request.model\" VARCHAR, \"gen_ai.response.model\" VARCHAR, \"gen_ai.usage.input_tokens\" BIGINT, \"gen_ai.usage.output_tokens\" BIGINT, \"gen_ai.response.id\" VARCHAR, \"gen_ai.response.finish_reasons\" VARCHAR[], \"gen_ai.input.messages\" VARCHAR, \"gen_ai.output.messages\" VARCHAR, \"gen_ai.tool.definitions\" VARCHAR), resource_attributes STRUCT(\"telemetry.sdk.language\" VARCHAR, \"telemetry.sdk.name\" VARCHAR, \"telemetry.sdk.version\" VARCHAR, \"service.name\" VARCHAR, \"service.version\" VARCHAR), status STRUCT(code BIGINT, message VARCHAR), \"type\" VARCHAR, harness VARCHAR, benchmark VARCHAR, models VARCHAR[], session_id VARCHAR, trace_id VARCHAR)[]"
+    ],
+    [
+      "collected_at",
+      "VARCHAR"
+    ]
+  ],
+  "span_counts": {
+    "spans": 273,
+    "sessions": 46,
+    "chat_spans": 273,
+    "input_payloads": 273,
+    "output_payloads": 273,
+    "valid_input_json": 273,
+    "valid_output_json": 273,
+    "stop_finish": 273,
+    "status_one": 273,
+    "status_two": 0
+  },
+  "session_counts": {
+    "multi_chat_sessions": 46,
+    "multi_paired_json_sessions": 46,
+    "multi_stop_sessions": 46
+  },
+  "benchmarks": [
+    [
+      "tau2_airline",
+      46
+    ]
+  ],
+  "harnesses": [
+    [
+      "openai_solo",
+      8
+    ],
+    [
+      "smolagents_code",
+      38
+    ]
+  ],
+  "model_lists": [
+    [
+      [
+        "openai/Azure/gpt-4.1"
+      ],
+      33
+    ],
+    [
+      [
+        "openai/Azure/gpt-4.1",
+        "Azure/gpt-4.1"
+      ],
+      13
+    ]
+  ],
+  "message_array_lengths": [
+    2,
+    8.0,
+    20,
+    1913,
+    3726.0,
+    10367
+  ]
+}
