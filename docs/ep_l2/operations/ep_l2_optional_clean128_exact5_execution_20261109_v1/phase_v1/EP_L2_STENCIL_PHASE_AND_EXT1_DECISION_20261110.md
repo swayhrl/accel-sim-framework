@@ -32,7 +32,7 @@ raw 的 `gpu_sim_cycle` 是逐 kernel 增量；B0/M0 `kernel_shared_delta` 每 k
 | Ext retained responses | 0 | 56,712 | +56,712 |
 | 实际 lower reads | 3,474,210 | 3,407,781 | −66,429 |
 | 实际 lower read bytes | 111,174,720 | 109,048,992 | −2,125,728 |
-| B0 lookup wait 观察 | 7,310,059 | 7,351,805 | +41,746 |
+| TVDV2 lookup wait 观察 | 7,310,059 | 7,351,805 | +41,746 |
 | B0 bank wait 观察 | 1,048,720 | 1,054,873 | +6,153 |
 | B0 `block_payload` 事件 | 976,140 | 8,078,684 | +7,102,544 |
 
@@ -42,4 +42,4 @@ EXT2 另有 2,410,324 次 Ext query、2,388,405 次 selector read、77,538 次 E
 
 ## 决策与下一动作
 
-若要决定 CLEAN 策略本身应继续优化，最小可辨识对照是**同一 Stencil 输入的 EXT1 一点**：EXT0→EXT1 测迁移包净效应，EXT1→EXT2 测同扩展硬件下 CLEAN 保留增量，EXT0→EXT2 仍是已测的整体净效应。`EXT1` 申请草案见 [EP_L2_STENCIL_EXT1_EXACT_REQUEST_DRAFT_20261110.md](EP_L2_STENCIL_EXT1_EXACT_REQUEST_DRAFT_20261110.md)。它请求一个新的、明确授权的一次消费点；旧五点两份 request 已关闭且余额为零。本轮没有 EXT1 授权或运行。取得批准后先做当前 Native/owner/资源核对，再由唯一 Main 按新精确范围登记与执行；如不批准，保留当前负结果并停止该扩展方向的额外模拟。
+若要决定 CLEAN 策略本身应继续优化，最小可辨识对照是**同一 Stencil 输入的 EXT1 一点**：EXT0→EXT1 测迁移包净效应，EXT1→EXT2 测同扩展硬件下 CLEAN 保留增量，EXT0→EXT2 仍是已测的整体净效应。`EXT1` 申请草案见 [EP_L2_STENCIL_EXT1_EXACT_REQUEST_DRAFT_20261110.md](EP_L2_STENCIL_EXT1_EXACT_REQUEST_DRAFT_20261110.md)。它请求一个新的、明确授权的一次消费点；旧五点各 cohort 均为 `CLOSED_ACCEPTED`，两份 request 余额均为零（registry 中 request 行的状态字段仍为 `RUNNING`）。本轮没有 EXT1 授权或运行。取得批准后先做当前 Native/owner/资源核对，再由唯一 Main 按新精确范围登记与执行；如不批准，保留当前负结果并停止该扩展方向的额外模拟。

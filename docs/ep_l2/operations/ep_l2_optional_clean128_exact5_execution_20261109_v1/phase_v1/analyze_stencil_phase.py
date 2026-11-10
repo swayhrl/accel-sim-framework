@@ -73,6 +73,8 @@ def read_case(ext, registry):
     b0 = collections.defaultdict(collections.Counter)
     m0 = collections.defaultdict(collections.Counter)
     counts = collections.Counter()
+    seen_b0 = collections.defaultdict(set)
+    seen_m0 = collections.defaultdict(set)
     snaps = {kind: collections.defaultdict(list) for kind in SNAP_KEYS}
     with gzip.open(raw, 'rt', errors='strict') as stream:
         for line in stream:
@@ -93,6 +95,10 @@ def read_case(ext, registry):
                 d = fields(line)
                 uid = int(d['kernel_uid'])
                 require(1 <= uid <= 100, f'{case}: B0 UID')
+                slice_id = int(d['slice'])
+                require(0 <= slice_id < 64 and slice_id not in seen_b0[uid],
+                        f'{case}: duplicate/invalid B0 slice for UID {uid}')
+                seen_b0[uid].add(slice_id)
                 counts[('B0', uid)] += 1
                 for key in B0_KEYS:
                     b0[uid][key] += int(d[key])
@@ -100,6 +106,10 @@ def read_case(ext, registry):
                 d = fields(line)
                 uid = int(d['kernel_uid'])
                 require(1 <= uid <= 100, f'{case}: M0 UID')
+                slice_id = int(d['slice'])
+                require(0 <= slice_id < 64 and slice_id not in seen_m0[uid],
+                        f'{case}: duplicate/invalid M0 slice for UID {uid}')
+                seen_m0[uid].add(slice_id)
                 counts[('M0', uid)] += 1
                 for key in M0_KEYS:
                     m0[uid][key] += int(d[key])
@@ -109,6 +119,10 @@ def read_case(ext, registry):
                         d = fields(line)
                         s = int(d['slice'])
                         require(0 <= s < 64, f'{case}: snapshot slice')
+                        if kind == 'EPL2TVDX1|SEGMENT|':
+                            require(int(d['mode']) == ext and int(d['base_capacity']) == 128
+                                    and int(d['ext_capacity']) == 128,
+                                    f'{case}: segment identity')
                         snaps[kind][s].append({k: int(d[k]) for k in keys})
                         break
 
