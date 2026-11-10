@@ -1,0 +1,54 @@
+{
+  "date": "2026-11-10",
+  "scope": "109-AI-ARCH CPU-only targeted qualification",
+  "old_authority": {
+    "a70n_commit": "5076223db5db0256fd0ccacec50b5347a0cab8c5",
+    "a70n_tree": "592e12903c8fa029fb5108a967f8a00bb9cb9458",
+    "literature_commit": "4642b573f0b5aa3faa3cf2fa705bed3b66ee109a"
+  },
+  "model_candidate": {
+    "id": "Qwen/Qwen3.5-4B",
+    "revision_from_a70n": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "local_complete_checkpoint": "NOT_FOUND_IN_CHECKED_ROOTS",
+    "fresh_hf_metadata_check": "TLS_CONNECTION_RESET_NO_NEW_CLAIM"
+  },
+  "checked_asset_roots": [
+    "/data/c16/models: name search depth <= 3",
+    "/data/c16/cache: name search depth <= 2",
+    "/home/huangrulin/.cache/huggingface/hub: model-name search depth <= 1",
+    "/home/huangrulin/.cache/huggingface/datasets: directory absent"
+  ],
+  "natural_session_payload": "NOT_FOUND_IN_CHECKED_ROOTS_OR_FIXED_PROJECT_EVIDENCE",
+  "unacquired_public_input_candidates": {
+    "source": "The Storage View of KV Cache, arXiv 2611.10178v1, section 3.3 and appendix A table 1",
+    "candidates": ["WildChat raw-text conversations", "Exgentic raw-text agent runs"],
+    "local_bytes_license_quality": "NOT_CHECKED_OR_ACQUIRED"
+  },
+  "installed_runtime": {
+    "root": "/data/c16/envs/c16-vllm-v0.30.0-sm89-v1",
+    "vllm_dist": "0.30.0",
+    "transformers_dist": "5.18.0",
+    "qwen_model_source_sha256": "3abeac36180df7bd1bd96b1a7c698a8f212d92c063026420cbdd16d1980e90e6",
+    "registry_source_sha256": "a08a98aaae52ced32226aa647f58d682ac600b9572651a9b377b97846bc99212",
+    "gdn_source_sha256": "b80f8e6f3fff442fb880aebb3209c52f814f66490009f4ac4003de603576d10a",
+    "qwen_registry_and_gdn_code": "STATIC_PRESENT",
+    "gdn_prefill_sm89_from_source": "TRITON_FLA_FALLBACK",
+    "native_abi_numeric_performance": "NOT_EXECUTED"
+  },
+  "derived_content_bytes": {
+    "gdn_conv_state_per_sequence": 51511296,
+    "full_attention_kv_per_token": 32768,
+    "content_capacity_crossing_tokens": 1572,
+    "physical_peak": "UNKNOWN"
+  },
+  "gates": {
+    "G1_model": "FAIL_MISSING_LOCAL_WEIGHTS_IDENTITY",
+    "G2_natural_sessions": "FAIL_MISSING_FULL_CONTENT_AND_QUALITY_IDENTITY",
+    "G3_runtime": "STATIC_SOURCE_ONLY_NATIVE_UNCHECKED",
+    "G4_numeric_quality_capacity": "UNKNOWN_NO_NATIVE_INPUT"
+  },
+  "terminal_status": "NO_GPU_PROBE_READY/QUALIFICATION_STOP",
+  "gpu_or_cuda_calls": 0,
+  "weight_or_dataset_downloads": 0,
+  "dependency_installs": 0
+}
