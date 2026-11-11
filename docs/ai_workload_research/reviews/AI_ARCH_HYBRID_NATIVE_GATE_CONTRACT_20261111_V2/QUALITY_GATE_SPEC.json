@@ -1,0 +1,76 @@
+{
+  "schema": "AI_ARCH_QWEN35_4B_4SESSION_QUALITY_GATE_V2",
+  "status": "FROZEN_PROPOSED_NOT_EXECUTION_AUTHORITY",
+  "v1_head": "d750e4a7d3477f93198f419b7682756ab661c88f",
+  "source_commit": "8e836c7bb0b0428fe2c04630ef21ddf6b9d3269f",
+  "selected_digest_list_sha256": "a5f4cfb551054561d6353d096143679bb8603c7ab0a2831d5f409ea86feee701",
+  "selected_count": 4,
+  "source_admission": {
+    "fields": [
+      "rights_and_access",
+      "pii_risk_review",
+      "user2_gpt_dependency",
+      "counterfactual_applicability"
+    ],
+    "allowed": [
+      "SOURCE_COUNTERFACTUAL_ADMISSIBLE",
+      "ORIGINAL_GPT_DEPENDENT",
+      "INDETERMINATE",
+      "CONTENT_REVIEW_BLOCKED"
+    ],
+    "all_four_must_be_admissible_before_gpu": true,
+    "no_replacement": true
+  },
+  "run_budget": {
+    "single_window_seconds": 1800,
+    "max_loads": 1,
+    "max_sessions": 4,
+    "max_generations": 8,
+    "output_tokens_per_generation": 256,
+    "max_model_len": 8192,
+    "max_num_seqs": 1,
+    "gpu_memory_utilization": 0.85,
+    "own_nvml_max_gib": 14,
+    "host_rss_max_gib": 40,
+    "charged_memory_max_gib": 48,
+    "mem_available_min_gib": 10,
+    "new_private_disk_max_gib": 4,
+    "filesystem_free_min_gib": 32,
+    "requires_separate_user_gpu_goal": true,
+    "requires_slot_approval": true
+  },
+  "per_session_required": {
+    "technical": [
+      "source_binding",
+      "user1_to_qwen_a1",
+      "user1_qwen_a1_user2_to_qwen_a2",
+      "no_gpt_assistant_inserted",
+      "effective_chat_template",
+      "nonthinking_applied",
+      "token_lengths_and_end_reasons",
+      "no_truncation",
+      "context_max_not_exceeded",
+      "service_context_cleanup"
+    ],
+    "human_dimensions": [
+      "a1_relevance_and_appropriate_safety",
+      "user2_applicability_in_qwen_history",
+      "a2_correctness_and_history_consistency",
+      "coherent_complete_no_fabricated_actions"
+    ],
+    "per_dimension_values": [
+      "ACCEPT",
+      "REJECT",
+      "INDETERMINATE"
+    ],
+    "independent_raters_min": 2,
+    "blind_to": [
+      "original_gpt_assistant",
+      "other_rater_opinion",
+      "GPU_performance"
+    ],
+    "adjudicate_disagreement": true
+  },
+  "result_rule": "Four of four sessions must satisfy technical completeness and independent per-dimension ACCEPT for LOCAL_4_SESSION_CONTEXTUAL_ACCEPT; not a population quality PASS; unavailable reviewers -> QUALITY_GATE_OPEN; no mechanism approval",
+  "privacy": "Only local restricted private texts; public hashes/counts/rubric states without IDs, text or PII"
+}
