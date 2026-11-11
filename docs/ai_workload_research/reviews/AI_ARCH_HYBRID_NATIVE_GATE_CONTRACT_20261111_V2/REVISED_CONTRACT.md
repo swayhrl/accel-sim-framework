@@ -22,7 +22,7 @@
 
 ### G0：GPU之前的私有内容、合法性和语义适配门
 
-四条候选已经冻结；在任何GPU预约/锁前，仅在109的受限私有目录读取其两条user文本，记录去内容审计：来源、同一conversation绑定、角色与message数量、非空、tokenizer身份；额外人工核验潜在PII/敏感数据及使用/访问范围。WildChat ODC-BY数据库许可与标记为false都**不**自动保证每条文本的再披露权或无PII。不得将原文、生成文本、会话ID、私人数据或派生prompt传到Git、第三方模型/云评测器或174节点。
+四条候选已经冻结；在任何GPU预约/锁前，仅在109的受限私有目录读取其两条user文本；有权限的源适配核查者可额外**只读**原GPT assistant₁以判断user₂是否依赖它，但该原回答不得进入Qwen输入、不得成为质量gold，也不展示给后续盲评者。记录去内容审计：来源、同一conversation绑定、角色与message数量、非空、tokenizer身份；额外人工核验潜在PII/敏感数据及使用/访问范围。WildChat ODC-BY数据库许可与标记为false都**不**自动保证每条文本的再披露权或无PII。不得将原文、生成文本、会话ID、私人数据或派生prompt传到Git、第三方模型/云评测器或174节点。
 
 **事前判定user₂可适配性**：是否依赖原GPT回答中的特定不可由user₁确定的事实、名单、措辞、链接、格式或承诺。通用“继续/展开上文”不是自动不合格，但必须记录条件性；真正依赖原GPT独有内容或无法判定时，标记 `ORIGINAL_GPT_DEPENDENT` / `INDETERMINATE`。质量/安全审查无法合法完成亦标记 `CONTENT_REVIEW_BLOCKED`。
 
